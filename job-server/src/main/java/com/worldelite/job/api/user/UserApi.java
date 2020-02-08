@@ -1,11 +1,15 @@
 package com.worldelite.job.api.user;
 
-import com.worldelite.job.context.anatation.RequireLogin;
+import com.worldelite.job.constants.UserType;
+import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.controller.BaseController;
 import com.worldelite.job.form.LoginForm;
 import com.worldelite.job.form.RegisterForm;
+import com.worldelite.job.form.UserExpectJobForm;
+import com.worldelite.job.service.UserExpectJobService;
 import com.worldelite.job.service.UserService;
 import com.worldelite.job.vo.ApiResult;
+import com.worldelite.job.vo.UserExpectJobVo;
 import com.worldelite.job.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +29,9 @@ public class UserApi extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserExpectJobService userExpectJobService;
 
     /**
      * 邮箱注册
@@ -69,6 +76,18 @@ public class UserApi extends BaseController {
     public ApiResult<UserVo> myInfo(){
         UserVo loginUser = userService.getUserInfo(curUser().getId());
         return ApiResult.ok(loginUser);
+    }
+
+    /**
+     * 保存用户求职意向
+     *
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("save-expect-job")
+    public ApiResult saveUserExpectJob(@RequestBody UserExpectJobForm expectJobForm){
+        UserExpectJobVo userExpectJobVo = userExpectJobService.saveUserExpectJob(expectJobForm);
+        return ApiResult.ok(userExpectJobVo);
     }
 
     /**

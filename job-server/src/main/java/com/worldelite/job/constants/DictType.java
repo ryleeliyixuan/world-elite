@@ -5,7 +5,8 @@ package com.worldelite.job.constants;
  */
 public enum DictType {
 
-    DEGREE(1);
+    DEGREE(1),
+    CITY(2);
 
     public final int value;
 

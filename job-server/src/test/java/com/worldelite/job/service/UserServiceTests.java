@@ -5,6 +5,7 @@ import com.worldelite.job.JobApplication;
 import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.entity.Country;
 import com.worldelite.job.mapper.CountryMapper;
+import com.worldelite.job.vo.JobCategoryVo;
 import com.worldelite.job.vo.UserVo;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -28,4 +29,12 @@ public class UserServiceTests {
     private UserService userService;
 
 
+    @Autowired
+    private JobCategoryService jobCategoryService;
+
+    @Test
+    public void test_getCategoryTree(){
+        List<JobCategoryVo> categoryVoList = jobCategoryService.getCategoryTree();
+        Assert.assertTrue(!categoryVoList.isEmpty());
+    }
 }

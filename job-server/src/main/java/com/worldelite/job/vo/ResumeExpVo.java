@@ -1,13 +1,40 @@
 package com.worldelite.job.vo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.entity.ResumeExperience;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.Date;
 
 /**
  * @author yeguozhong yedaxia.github.com
  */
-public class ResumeExpVo implements VoConvertable<ResumeExpVo, ResumeExperience>{
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ResumeExpVo extends EditFlag implements VoConvertable<ResumeExpVo, ResumeExperience>{
+
+    private Integer id;
+    @JSONField(format = "yyyy-MM")
+    private Date startTime;
+    @JSONField(format = "yyyy-MM")
+    private Date finishTime;
+    private String company;
+    private String depart;
+    private String post;
+    private String description;
+    private Integer position;
+
     @Override
-    public ResumeExpVo asVo(ResumeExperience resumeExperience) {
-        return null;
+    public ResumeExpVo asVo(ResumeExperience resumeExp) {
+        setId(resumeExp.getId());
+        setStartTime(resumeExp.getStartDate());
+        setFinishTime(resumeExp.getFinishDate());
+        setCompany(resumeExp.getCompany());
+        setDepart(resumeExp.getDepart());
+        setPost(resumeExp.getPost());
+        setDescription(resumeExp.getDescription());
+        setPosition(resumeExp.getPosition());
+        return this;
     }
 }

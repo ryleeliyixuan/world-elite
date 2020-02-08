@@ -1,5 +1,6 @@
 package com.worldelite.job.service;
 
+import com.worldelite.job.anatation.ResumeScore;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.User;
 import com.worldelite.job.exception.ServiceException;
@@ -11,18 +12,22 @@ import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ApiCode;
 import com.worldelite.job.vo.ResumeVo;
 import com.worldelite.job.vo.UserVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 /**
  * @author yeguozhong yedaxia.github.com
  */
+@Slf4j
 @Service
 public class ResumeService extends BaseService {
 
@@ -34,6 +39,15 @@ public class ResumeService extends BaseService {
 
     @Autowired
     private ResumeEduService resumeEduService;
+
+    @Autowired
+    private ResumeExpService resumeExpService;
+
+    @Autowired
+    private ResumePracticeService resumePracticeService;
+
+    @Autowired
+    private UserExpectJobService userExpectJobService;
 
     /**
      * 获取我的默认简历，如果没有就创建一个空简历
@@ -61,6 +75,10 @@ public class ResumeService extends BaseService {
         resumeVo.setPhoneCode(userVo.getPhoneCode());
         resumeVo.setPhone(userVo.getPhone());
         resumeVo.setResumeEduList(resumeEduService.getResumeEduList(defaultResume.getId()));
+        resumeVo.setResumeExpList(resumeExpService.getResumeExpList(defaultResume.getId()));
+        resumeVo.setResumePracticeList(resumePracticeService.getResumePracticeList(defaultResume.getId()));
+        resumeVo.setUserExpectJob(userExpectJobService.getUserExpectJob(userId));
+        resumeVo.setResumeCompleteProgress(calResumeCompleteProgress(resumeVo));
         return resumeVo;
     }
 
@@ -130,5 +148,35 @@ public class ResumeService extends BaseService {
         if (resume != null && resume.getUserId() != null && !resume.getUserId().equals(curUser().getId())) {
             throw new ServiceException(ApiCode.PERMISSION_DENIED);
         }
+    }
+
+    /**
+     * 计算简历完成度
+     * @param resumeVo
+     * @return
+     */
+    private Integer calResumeCompleteProgress(ResumeVo resumeVo){
+        Class resumeClass = resumeVo.getClass();
+        double total = 0, current = 0;
+        try{
+            for(Field field : resumeClass.getDeclaredFields()){
+                ResumeScore resumeScore = field.getAnnotation(ResumeScore.class);
+                if(resumeScore != null){
+                    total += resumeScore.value();
+                    field.setAccessible(true);
+                    Object value = field.get(resumeVo);
+                    if(value != null){
+                        if(value instanceof Collection && CollectionUtils.isNotEmpty((Collection)value)){
+                            current += resumeScore.value();
+                        }else{
+                            current += resumeScore.value();
+                        }
+                    }
+                }
+            }
+        }catch (Exception ex){
+            log.error("cal resume progress error", ex);
+        }
+        return total == 0? 0: (int)(current / total * 100);
     }
 }

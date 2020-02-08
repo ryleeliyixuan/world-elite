@@ -72,9 +72,7 @@ public class ResumeEduService extends BaseService{
     public void deleteResumeEdu(Integer id){
         ResumeEdu resumeEdu = resumeEduMapper.selectByPrimaryKey(id);
         if(resumeEdu != null){
-            if(!resumeEdu.getUserId().equals(curUser().getId())){
-                throw new ServiceException(ApiCode.PERMISSION_DENIED);
-            }
+            resumeService.checkResumeCreator(resumeEdu.getResumeId());
             resumeEduMapper.deleteByPrimaryKey(resumeEdu.getId());
         }
     }

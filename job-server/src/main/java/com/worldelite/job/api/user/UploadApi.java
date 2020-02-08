@@ -1,7 +1,6 @@
 package com.worldelite.job.api.user;
 
-import com.worldelite.job.constants.UserType;
-import com.worldelite.job.context.anatation.RequireLogin;
+import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.controller.BaseController;
 import com.worldelite.job.service.sdk.AliOssService;
 import com.worldelite.job.vo.ApiResult;

@@ -31,6 +31,14 @@ export function getMyInfo(){
   })
 }
 
+export function saveUserExpectJob(data){
+  return request({
+    url: '/user/save-expect-job',
+    method: 'post',
+    data
+  })
+}
+
 export function logout(){
   return request({
     url: '/user/logout',

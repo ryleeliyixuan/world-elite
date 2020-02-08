@@ -32,14 +32,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'bootstrap/scss/bootstrap.scss';
 
 h3 {
     font-size: 22px;
 }
-a.edit-text{
-    cursor: pointer;
-    font-size: 14px;
-    color: $info;
-}
+
 </style>

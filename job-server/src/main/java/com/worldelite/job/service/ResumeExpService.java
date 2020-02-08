@@ -1,14 +1,18 @@
 package com.worldelite.job.service;
 
+import com.github.pagehelper.PageHelper;
 import com.worldelite.job.entity.ResumeEdu;
 import com.worldelite.job.entity.ResumeExperience;
 import com.worldelite.job.form.ResumeExpForm;
 import com.worldelite.job.mapper.ResumeExperienceMapper;
+import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.ResumeEduVo;
 import com.worldelite.job.vo.ResumeExpVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -42,7 +46,8 @@ public class ResumeExpService extends BaseService{
         }
 
         resumeExp.setCompany(resumeExpForm.getCompany());
-        resumeExp.setPosition(resumeExpForm.getPosition());
+        resumeExp.setDepart(resumeExpForm.getDepart());
+        resumeExp.setPost(resumeExpForm.getPost());
         resumeExp.setStartDate(resumeExpForm.getStartDate());
         resumeExp.setFinishDate(resumeExpForm.getFinishDate());
         resumeExp.setDescription(resumeExpForm.getDescription());
@@ -57,5 +62,30 @@ public class ResumeExpService extends BaseService{
         return new ResumeExpVo().asVo(resumeExp);
     }
 
+    /**
+     * 删除工作经验
+     *
+     * @param id
+     */
+    public void deleteResumeExp(Integer id){
+        ResumeExperience resumeExp = resumeExpMapper.selectByPrimaryKey(id);
+        if(resumeExp != null){
+            resumeService.checkResumeCreator(resumeExp.getResumeId());
+            resumeExpMapper.deleteByPrimaryKey(resumeExp.getId());
+        }
+    }
 
+    /**
+     * 获取工作经验列表
+     *
+     * @param resumeId
+     * @return
+     */
+    public List<ResumeExpVo> getResumeExpList(Long resumeId){
+        ResumeExperience options = new ResumeExperience();
+        options.setResumeId(resumeId);
+        PageHelper.orderBy("position desc");
+        List<ResumeExperience> resumeExpList = resumeExpMapper.selectAndList(options);
+        return AppUtils.asVoList(resumeExpList, ResumeExpVo.class);
+    }
 }

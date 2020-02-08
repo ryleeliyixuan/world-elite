@@ -29,9 +29,9 @@
                   />
                 </h4>
                 <p>
-                  <span v-if="resume.graduateTime">{{resume.graduateTime}}毕业 / </span>
-                  <span v-if="resume.curPlace">现居{{resume.curPlace}} / </span>
-                  <span v-if="resume.returnTime">{{resume.returnTime}}回国 / </span>
+                  <span v-if="resume.graduateTime">{{resume.graduateTime}}毕业 /</span>
+                  <span v-if="resume.curPlace">现居{{resume.curPlace}} /</span>
+                  <span v-if="resume.returnTime">{{resume.returnTime}}回国 /</span>
                   <span v-if="resume.age">{{resume.age}}岁</span>
                 </p>
                 <p>
@@ -63,88 +63,142 @@
                 v-on:edit-click="handleEditResumeEdu('create')"
               />
               <div class="mt-3">
-                <b-media
+                <div
                   class="edit-box pt-2"
                   v-for="resumeEdu in resume.resumeEduList"
                   :key="resumeEdu.id"
+                  v-on:mouseover="resumeEdu.showEditFlag = 1"
+                  v-on:mouseout="resumeEdu.showEditFlag = 0"
                 >
-                  <h6>
-                    {{resumeEdu.schoolName}}
-                    <span
-                      class="ml-3 time-text"
-                    >{{resumeEdu.startTime}}到{{resumeEdu.finishTime}}</span>
-                  </h6>
-                  <p>{{resumeEdu.degree.name}} / {{resumeEdu.majorName}} / GPA {{resumeEdu.gpa}}</p>
-                  <div class="edit-item-box">
-                    <a class="p-2" v-on:click="handleEditResumeEdu('update', resumeEdu)">
-                      <font-awesome-icon :icon="['fa', 'pencil-alt']" />
-                    </a>
-                    <a class="p-2">
-                      <font-awesome-icon :icon="['fa', 'trash-alt']" />
-                    </a>
-                  </div>
-                </b-media>
+                  <b-media>
+                    <h6>
+                      {{resumeEdu.schoolName}}
+                      <span
+                        class="ml-3 time-text"
+                      >{{resumeEdu.startTime}}到{{resumeEdu.finishTime}}</span>
+                    </h6>
+                    <p>{{resumeEdu.degree.name}} / {{resumeEdu.majorName}} / GPA {{resumeEdu.gpa}}</p>
+                    <div class="edit-item-box" v-show="resumeEdu.showEditFlag == 1">
+                      <a
+                        class="p-2 edit-text"
+                        v-on:click="handleEditResumeEdu('update', resumeEdu)"
+                      >
+                        <font-awesome-icon :icon="['fa', 'pencil-alt']" />
+                      </a>
+                      <a class="p-2 edit-text" v-on:click="handleDelResumeEdu(resumeEdu.id)">
+                        <font-awesome-icon :icon="['fa', 'trash-alt']" />
+                      </a>
+                    </div>
+                  </b-media>
+                </div>
               </div>
             </div>
             <div class="resume-box">
-              <EditResumeTitle title="工作经验" :icon="['fa', 'plus-square']" iconText="添加" />
+              <EditResumeTitle
+                title="工作经验"
+                :icon="['fa', 'plus-square']"
+                iconText="添加"
+                v-on:edit-click="handleEditResumeExp('create')"
+              />
               <div class="mt-3">
-                <b-media class="edit-box pt-2 pb-4">
-                  <h6>
-                    广州市不待信息科技有限公司
-                    <span class="ml-3 position-text">研发部 . Java工程师</span>
-                    <span class="ml-3 time-text">2019.01-2020.01</span>
-                  </h6>
-                  <div class="description-text mt-3">
-                    1.为公司的日常账务管理、资产结账、成本核算等板块提供支持和运营管理。
-                    2.熟练掌握SAP系统；负责固定资产采购订单签核、AP、转固、处置、减值等日常账务处理。
-                    3.每月固定资产结账，编制管理报表；每月编制资本支出、折旧滚动预测报表；编制年度资本预算；组织固定资产盘点。
-                    4.负责成本核算；参与年度预算编制，年度预算标准成本制定与维护，生产成本及销售成本核算，月末结账，编制相关管理报表及盈利预测表，完成主管交代的其他工作。
-                  </div>
-                </b-media>
-                <b-media class="edit-box pt-2">
-                  <h6>
-                    广州市不待信息科技有限公司
-                    <span class="ml-3 position-text">研发部 . Java工程师</span>
-                    <span class="ml-3 time-text">2019.01-2020.01</span>
-                  </h6>
-                  <div class="description-text mt-3">
-                    1.为公司的日常账务管理、资产结账、成本核算等板块提供支持和运营管理。
-                    2.熟练掌握SAP系统；负责固定资产采购订单签核、AP、转固、处置、减值等日常账务处理。
-                    3.每月固定资产结账，编制管理报表；每月编制资本支出、折旧滚动预测报表；编制年度资本预算；组织固定资产盘点。
-                    4.负责成本核算；参与年度预算编制，年度预算标准成本制定与维护，生产成本及销售成本核算，月末结账，编制相关管理报表及盈利预测表，完成主管交代的其他工作。
-                  </div>
-                </b-media>
+                <div
+                  class="edit-box pt-2 pb-4"
+                  v-for="resumeExp in resume.resumeExpList"
+                  :key="resumeExp.id"
+                  v-on:mouseover="resumeExp.showEditFlag = 1"
+                  v-on:mouseout="resumeExp.showEditFlag = 0"
+                >
+                  <b-media>
+                    <h6>
+                      {{resumeExp.company}}
+                      <span
+                        class="ml-3 position-text"
+                      >{{resumeExp.depart}} . {{resumeExp.post}}</span>
+                      <span class="ml-3 time-text">{{resumeExp.startTime}}到{{resumeExp.finishTime}}</span>
+                    </h6>
+                    <div class="description-text mt-3" v-html="resumeExp.description"></div>
+                    <div class="edit-item-box" v-show="resumeExp.showEditFlag == 1">
+                      <a
+                        class="p-2 edit-text"
+                        v-on:click="handleEditResumeExp('update', resumeExp)"
+                      >
+                        <font-awesome-icon :icon="['fa', 'pencil-alt']" />
+                      </a>
+                      <a class="p-2 edit-text" v-on:click="handleDelResumeExp(resumeExp.id)">
+                        <font-awesome-icon :icon="['fa', 'trash-alt']" />
+                      </a>
+                    </div>
+                  </b-media>
+                </div>
               </div>
             </div>
             <div class="resume-box">
-              <EditResumeTitle title="校园实践" :icon="['fa', 'plus-square']" iconText="添加" />
-              <div class="mt-3"></div>
+              <EditResumeTitle
+                title="校园实践"
+                :icon="['fa', 'plus-square']"
+                iconText="添加"
+                v-on:edit-click="handleEditResumePractice('create')"
+              />
+              <div class="mt-3">
+                <div
+                  class="edit-box pt-2 pb-4"
+                  v-for="practice in resume.resumePracticeList"
+                  :key="practice.id"
+                  v-on:mouseover="practice.showEditFlag = 1"
+                  v-on:mouseout="practice.showEditFlag = 0"
+                >
+                  <b-media>
+                    <h6>
+                      {{practice.title}}
+                      <span
+                        class="ml-3 time-text"
+                      >{{practice.startTime}}到{{practice.finishTime}}</span>
+                    </h6>
+                    <div class="description-text mt-3" v-html="practice.description"></div>
+                    <div class="edit-item-box" v-show="practice.showEditFlag == 1">
+                      <a
+                        class="p-2 edit-text"
+                        v-on:click="handleEditResumePractice('update', practice)"
+                      >
+                        <font-awesome-icon :icon="['fa', 'pencil-alt']" />
+                      </a>
+                      <a class="p-2 edit-text" v-on:click="handleDelResumePractice(practice.id)">
+                        <font-awesome-icon :icon="['fa', 'trash-alt']" />
+                      </a>
+                    </div>
+                  </b-media>
+                </div>
+              </div>
             </div>
           </div>
         </b-col>
         <b-col>
           <div class="resume-objective">
-            <b-row>
-              <b-col cols="auto" class="mr-auto">
-                <h3>求职意向</h3>
-              </b-col>
-              <b-col cols="auto" align-self="center">
-                <a>
-                  <font-awesome-icon :icon="['fa', 'edit']" />编辑
-                </a>
-              </b-col>
-            </b-row>
-            <div class="mt-3">
-              <p>广州 / 深圳 / 北京</p>
-              <p>互联网 / 通信 / 制造业</p>
-              <p>软件工程师 / Java工程师 / Android开发</p>
-              <p>15K ~ 20K</p>
+            <EditResumeTitle
+              title="求职意向"
+              :icon="['fa', 'pencil-alt']"
+              iconText="编辑"
+              v-on:edit-click="handleEditExpectJob"
+            />
+            <div class="mt-3" v-if="resume.userExpectJob">
+              <p>
+                <span v-for="(item, index) in resume.userExpectJob.cityList" :key="index">
+                  {{item.name}}
+                  <span v-if="(index + 1) !== resume.userExpectJob.cityList.length">/</span>
+                </span>
+              </p>
+              <p>
+                <span v-for="(item, index) in resume.userExpectJob.categoryList" :key="index">
+                  {{item.name}}
+                  <span v-if="(index + 1) !== resume.userExpectJob.categoryList.length">/</span>
+                </span>
+              </p>
+              <p>{{resume.userExpectJob.minSalary}}K ~ {{resume.userExpectJob.maxSalary}}K</p>
             </div>
           </div>
           <div class="resume-preview">
             <p>简历完成度</p>
-            <b-progress :value="80" :max="100" show-value class="mb-3" variant="info"></b-progress>
+            <b-progress :value="resume.resumeCompleteProgress" :max="100" show-value class="mb-3" variant="info"></b-progress>
             <b-button variant="info" block>预览简历</b-button>
           </div>
           <div class="resume-nav" v-sticky="{stickyTop: 2}">
@@ -159,7 +213,7 @@
       </b-row>
     </b-container>
     <!--Basic Info-->
-    <el-dialog title="基本信息" :visible.sync="showBasicDialog" width="600px" top="10vh">
+    <el-dialog title="编辑基本信息" :visible.sync="showBasicDialog" width="600px" top="10vh">
       <el-form ref="resumeForm" :model="resumeForm" label-width="80px">
         <el-form-item label="姓名">
           <el-input v-model="resumeForm.name" placeholder="你的真实姓名" maxlength="20" show-word-limit></el-input>
@@ -236,8 +290,8 @@
       </span>
     </el-dialog>
     <!--编辑自我介绍-->
-    <el-dialog title="自我介绍" :visible.sync="showIntroDialog" width="650px" top="10vh">
-      <quill-editor v-model="resumeForm.introduction" :options="editorOption"></quill-editor>
+    <el-dialog title="编辑自我介绍" :visible.sync="showIntroDialog" width="650px" top="10vh">
+      <quill-editor v-model="resumeForm.introduction" :options="introEditorOption"></quill-editor>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showIntroDialog = false">取 消</el-button>
         <el-button type="primary" @click="handleSaveResumeBasic" :loading="posting">保 存</el-button>
@@ -256,25 +310,15 @@
           />
         </el-form-item>
         <el-form-item label="在校时间">
-          <el-col :span="11">
             <el-date-picker
-              type="month"
-              placeholder="入校时间"
+              type="monthrange"
+              start-placeholder="入校时间"
+              end-placeholder="毕业时间"
               value-format="yyyy-MM"
-              v-model="resumeEduForm.startTime"
+              v-model="resumeEduForm.workingDates"
               class="w-100"
             />
-          </el-col>
-          <el-col class="text-center" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-date-picker
-              type="month"
-              value-format="yyyy-MM"
-              placeholder="毕业时间"
-              v-model="resumeEduForm.finishTime"
-              class="w-100"
-            />
-          </el-col>
+          
         </el-form-item>
         <el-form-item label="学历">
           <el-select v-model="resumeEduForm.degreeId" placeholder="请选择学历">
@@ -298,6 +342,156 @@
         <el-button type="primary" @click="handleSaveResumeEdu" :loading="posting">保 存</el-button>
       </span>
     </el-dialog>
+    <!--编辑工作经历-->
+    <el-dialog title="添加工作经验" :visible.sync="showExpDialog" width="600px" top="10vh">
+      <el-form ref="resumeEduForm" :model="resumeExpForm" label-width="80px">
+        <el-form-item label="公司名称">
+          <el-autocomplete
+            v-model="resumeExpForm.company"
+            :fetch-suggestions="searchCompanyName"
+            value-key="fullName"
+            placeholder="请输入公司名称"
+            class="w-100"
+            :maxlength="100"
+            show-word-limit
+          />
+        </el-form-item>
+        <el-form-item label="所属部门">
+          <el-input
+            v-model="resumeExpForm.depart"
+            placeholder="请填写部门信息"
+            :maxlength="40"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="职位名称">
+          <el-input
+            v-model="resumeExpForm.post"
+            placeholder="请填写职位名称"
+            :maxlength="40"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="在职时间">
+          <el-date-picker
+            v-model="resumeExpForm.workingDates"
+            type="monthrange"
+            value-format="yyyy-MM"
+            start-placeholder="入职时间"
+            end-placeholder="离职时间"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="工作内容">
+          <quill-editor v-model="resumeExpForm.description" :options="expEditorOption"></quill-editor>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showExpDialog = false">取 消</el-button>
+        <el-button type="primary" @click="handleSaveResumeExp" :loading="posting">保 存</el-button>
+      </div>
+    </el-dialog>
+    <!--编辑实践经验-->
+    <el-dialog title="添加实践经验" :visible.sync="showPracticeDialog" width="600px" top="10vh">
+      <el-form ref="resumePracticeForm" :model="resumePracticeForm" label-width="80px">
+        <el-form-item label="实践主题">
+          <el-input
+            v-model="resumePracticeForm.title"
+            placeholder="请填写实践主题"
+            :maxlength="50"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="实践时间">
+          <el-date-picker
+            v-model="resumePracticeForm.workingDates"
+            type="monthrange"
+            value-format="yyyy-MM"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="工作内容">
+          <quill-editor v-model="resumePracticeForm.description" :options="practiceEditorOption"></quill-editor>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showPracticeDialog = false">取 消</el-button>
+        <el-button type="primary" @click="handleSaveResumePractice" :loading="posting">保 存</el-button>
+      </div>
+    </el-dialog>
+    <!--编辑求职意向-->
+    <el-dialog title="编辑求职意向" :visible.sync="showExpectJobDialog" width="500px" top="10vh">
+      <el-form ref="expectJobForm" :model="expectJobForm" label-width="80px">
+        <el-form-item label="意向城市">
+          <el-select
+            v-model="expectJobForm.cityIds"
+            multiple
+            filterable
+            clearable
+            placeholder="最多选择三个"
+            class="w-100"
+          >
+            <el-option
+              v-for="item in cityOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="意向职位">
+          <el-cascader
+            placeholder="最多选择三个"
+            :show-all-levels="false"
+            :options="jobCategoryOptions"
+            :props="jobCatetoryProps"
+            filterable
+            clearable
+            v-model="expectJobForm.categoryIds"
+            class="w-100"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item label="薪资范围">
+          <el-col :span="11">
+            <el-select
+              v-model="expectJobForm.minSalary"
+              filterable
+              clearable
+              placeholder="请选择"
+              class="w-100"
+            >
+              <el-option
+                v-for="item in minSalaryOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col class="text-center" :span="2">-</el-col>
+          <el-col :span="11">
+            <el-select
+              v-model="expectJobForm.maxSalary"
+              filterable
+              clearable
+              placeholder="请选择"
+              class="w-100"
+            >
+              <el-option
+                v-for="item in maxSalaryOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showExpectJobDialog = false">取 消</el-button>
+        <el-button type="primary" @click="handleSaveExpectJob" :loading="posting">保 存</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -312,15 +506,24 @@ import { getAllCountries, getCurrentCountry } from "@/api/country_api";
 import {
   getResumeInfo,
   saveResumeBasic,
-  saveResumeEdu
+  saveResumeEdu,
+  delResumeEdu,
+  saveResumeExp,
+  delResumeExp,
+  saveResumePractice,
+  delResumePractice
 } from "@/api/resume_api";
 import { searchSchool } from "@/api/school_api";
 import { listByType } from "@/api/dict_api";
+import { serachByName } from "@/api/company_api";
+import { getCategoryTree } from "@/api/category_api";
+import { saveUserExpectJob } from "@/api/user_api";
 
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
+import Toast from "@/utils/toast";
 
 import {
   faEdit,
@@ -371,23 +574,98 @@ export default {
         degreeId: undefined,
         startTime: undefined,
         finishTime: undefined,
+        workingDates: undefined,
         gpa: undefined
+      },
+      resumeExpForm: {
+        id: undefined,
+        resumeId: undefined,
+        workingDates: undefined,
+        startTime: undefined,
+        finishTime: undefined,
+        company: undefined,
+        depart: undefined,
+        post: undefined,
+        description: undefined
+      },
+      resumePracticeForm: {
+        id: undefined,
+        resumeId: undefined,
+        workingDates: undefined,
+        startTime: undefined,
+        finishTime: undefined,
+        title: undefined,
+        description: undefined
+      },
+      expectJobForm: {
+        cityIds: [],
+        categoryIds: [],
+        minSalary: undefined,
+        maxSalary: undefined
       },
       resume: {},
       countryOptions: [],
       degreeOptions: [],
+      cityOptions: [],
+      jobCategoryOptions: [],
       showBasicDialog: false,
       showIntroDialog: false,
       showEduDialog: false,
+      showExpDialog: false,
+      showPracticeDialog: false,
+      showExpectJobDialog: false,
       posting: false,
-      editorOption: {
+      introEditorOption: {
         theme: "snow",
         placeholder: "关于你的能力，特长和成就。",
         modules: {
           toolbar: [["bold"], [{ list: "ordered" }, { list: "bullet" }]]
         }
-      }
+      },
+      expEditorOption: {
+        theme: "bubble",
+        placeholder: "关于你在这个岗位的职责，工作内容和成就。",
+        modules: {
+          toolbar: [["bold"], [{ list: "ordered" }, { list: "bullet" }]]
+        }
+      },
+      practiceEditorOption: {
+        theme: "bubble",
+        placeholder: "关于你在实践中的所获。",
+        modules: {
+          toolbar: [["bold"], [{ list: "ordered" }, { list: "bullet" }]]
+        }
+      },
+      jobCatetoryProps: {
+        multiple: true,
+        expandTrigger: "hover",
+        value: "id",
+        label: "name",
+        emitPath: false,
+        children: "children"
+      },
+      minSalaryOptions: [],
+      maxSalaryOptions: []
     };
+  },
+  watch: {
+    "expectJobForm.cityIds": function(newVal, oldVal) {
+      if (newVal.length > 3) {
+        this.expectJobForm.cityIds = oldVal;
+        Toast.error("意向城市不能超过3个");
+      }
+    },
+    "expectJobForm.categoryIds": function(newVal, oldVal) {
+      if (newVal.length > 3) {
+        this.expectJobForm.categoryIds = oldVal;
+        Toast.error("意向职位不能超过3个");
+      }
+    },
+    "expectJobForm.minSalary": function() {
+      this.maxSalaryOptions = this.generateSalaryOptions(
+        this.expectJobForm.minSalary
+      );
+    }
   },
   directives: {
     sticky: VueSticky
@@ -411,7 +689,12 @@ export default {
         }
       });
       listByType(1).then(response => (this.degreeOptions = response.data.list));
+      listByType(2).then(response => (this.cityOptions = response.data.list));
+      getCategoryTree().then(
+        response => (this.jobCategoryOptions = response.data)
+      );
       this.getResumeInfo();
+      this.minSalaryOptions = this.generateSalaryOptions(1);
     },
     getResumeInfo() {
       getResumeInfo().then(response => {
@@ -442,14 +725,90 @@ export default {
       this.showEduDialog = true;
       this.resumeEduForm.resumeId = this.resume.id;
       if (type === "update") {
-         this.resumeEduForm.id = resumeEdu.id
-         this.resumeEduForm.schoolName = resumeEdu.schoolName
-         this.resumeEduForm.majorName = resumeEdu.majorName
-         this.resumeEduForm.degreeId = resumeEdu.degree.id
-         this.resumeEduForm.startTime = resumeEdu.startTime
-         this.resumeEduForm.finishTime = resumeEdu.finishTime
-         this.resumeEduForm.gpa = resumeEdu.gpa
+        this.resumeEduForm.id = resumeEdu.id;
+        this.resumeEduForm.schoolName = resumeEdu.schoolName;
+        this.resumeEduForm.majorName = resumeEdu.majorName;
+        this.resumeEduForm.degreeId = resumeEdu.degree.id;
+        this.resumeEduForm.startTime = resumeEdu.startTime;
+        this.resumeEduForm.finishTime = resumeEdu.finishTime;
+        this.resumeEduForm.gpa = resumeEdu.gpa;
+        this.resumeEduForm.workingDates = [
+          this.resumeEduForm.startTime,
+          this.resumeEduForm.finishTime
+        ];
+      } else {
+        this.resumeEduForm.id = undefined;
+        this.resumeEduForm.schoolName = undefined;
+        this.resumeEduForm.majorName = undefined;
+        this.resumeEduForm.degreeId = undefined;
+        this.resumeEduForm.startTime = undefined;
+        this.resumeEduForm.finishTime = undefined;
+        this.resumeEduForm.gpa = undefined;
       }
+    },
+    handleEditResumeExp(type, resumeExp) {
+      this.showExpDialog = true;
+      this.resumeExpForm.resumeId = this.resume.id;
+      if (type === "update") {
+        this.resumeExpForm.id = resumeExp.id;
+        this.resumeExpForm.startTime = resumeExp.startTime;
+        this.resumeExpForm.finishTime = resumeExp.finishTime;
+        this.resumeExpForm.company = resumeExp.company;
+        this.resumeExpForm.depart = resumeExp.depart;
+        this.resumeExpForm.post = resumeExp.post;
+        this.resumeExpForm.description = resumeExp.description;
+        this.resumeExpForm.workingDates = [
+          this.resumeExpForm.startTime,
+          this.resumeExpForm.finishTime
+        ];
+      } else {
+        this.resumeExpForm.id = undefined;
+        this.resumeExpForm.startTime = undefined;
+        this.resumeExpForm.finishTime = undefined;
+        this.resumeExpForm.company = undefined;
+        this.resumeExpForm.depart = undefined;
+        this.resumeExpForm.post = undefined;
+        this.resumeExpForm.description = undefined;
+        this.resumeExpForm.workingDates = undefined;
+      }
+    },
+    handleEditResumePractice(type, resumePractice) {
+      this.showPracticeDialog = true;
+      this.resumePracticeForm.resumeId = this.resume.id;
+      if (type === "update") {
+        this.resumePracticeForm.id = resumePractice.id;
+        this.resumePracticeForm.startTime = resumePractice.startTime;
+        this.resumePracticeForm.finishTime = resumePractice.finishTime;
+        this.resumePracticeForm.title = resumePractice.title;
+        this.resumePracticeForm.description = resumePractice.description;
+        this.resumePracticeForm.workingDates = [
+          this.resumePracticeForm.startTime,
+          this.resumePracticeForm.finishTime
+        ];
+      } else {
+        this.resumePracticeForm.id = undefined;
+        this.resumePracticeForm.workingDates = undefined;
+        this.resumePracticeForm.startTime = undefined;
+        this.resumePracticeForm.finishTime = undefined;
+        this.resumePracticeForm.title = undefined;
+        this.resumePracticeForm.description = undefined;
+      }
+    },
+    handleEditExpectJob() {
+      this.showExpectJobDialog = true;
+      this.expectJobForm.cityIds = this.resume.userExpectJob.cityList.map(city => { return city.id })
+      this.expectJobForm.categoryIds = this.resume.userExpectJob.categoryList.map(category => { return category.id })
+      this.expectJobForm.minSalary = this.resume.userExpectJob.minSalary
+      this.expectJobForm.maxSalary = this.resume.userExpectJob.maxSalary
+    },
+    handleDelResumeEdu(id) {
+      this.handleDeleteItemById(delResumeEdu, id);
+    },
+    handleDelResumeExp(id) {
+      this.handleDeleteItemById(delResumeExp, id);
+    },
+    handleDelResumePractice(id) {
+      this.handleDeleteItemById(delResumePractice, id);
     },
     handleSaveResumeBasic() {
       this.posting = true;
@@ -465,10 +824,49 @@ export default {
     },
     handleSaveResumeEdu() {
       this.posting = true;
+      this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
+      this.resumeEduForm.finishTime = this.resumeEduForm.workingDates[1];
       saveResumeEdu(this.resumeEduForm)
         .then(() => {
           this.getResumeInfo();
           this.showEduDialog = false;
+        })
+        .finally(() => {
+          this.posting = false;
+        });
+    },
+    handleSaveResumeExp() {
+      this.posting = true;
+      this.resumeExpForm.startTime = this.resumeExpForm.workingDates[0];
+      this.resumeExpForm.finishTime = this.resumeExpForm.workingDates[1];
+      saveResumeExp(this.resumeExpForm)
+        .then(() => {
+          this.getResumeInfo();
+          this.showExpDialog = false;
+        })
+        .finally(() => {
+          this.posting = false;
+        });
+    },
+    handleSaveResumePractice() {
+      this.posting = true;
+      this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
+      this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
+      saveResumePractice(this.resumePracticeForm)
+        .then(() => {
+          this.getResumeInfo();
+          this.showPracticeDialog = false;
+        })
+        .finally(() => {
+          this.posting = false;
+        });
+    },
+    handleSaveExpectJob() {
+      this.posting = true;
+      saveUserExpectJob(this.expectJobForm)
+        .then(() => {
+          this.getResumeInfo();
+          this.showExpectJobDialog = false;
         })
         .finally(() => {
           this.posting = false;
@@ -481,6 +879,35 @@ export default {
       searchSchool(keyword).then(response => {
         cb(response.data);
       });
+    },
+    searchCompanyName(keyword, cb) {
+      if (keyword.length < 2) {
+        return;
+      }
+      serachByName(keyword).then(response => {
+        cb(response.data.list);
+      });
+    },
+    handleDeleteItemById(delById, id) {
+      this.$confirm("是否要删除该记录？", {
+        confirmButtonText: "删除"
+      }).then(() => {
+        delById(id).then(() => {
+          Toast.success("删除成功");
+          this.getResumeInfo();
+        });
+      });
+    },
+    generateSalaryOptions(minVal) {
+      minVal = minVal === undefined ? 1 : minVal;
+      const salaryOptions = [];
+      for (; minVal != 200; minVal++) {
+        salaryOptions.push({
+          label: minVal + "k",
+          value: minVal
+        });
+      }
+      return salaryOptions;
     }
   }
 };
@@ -560,6 +987,8 @@ $border-style: 1px solid #eee;
 </style>
 
 <style lang="scss">
+@import "bootstrap/scss/bootstrap.scss";
+
 .ql-container .ql-editor {
   min-height: 200px;
   font-size: 15px;
@@ -572,7 +1001,21 @@ $border-style: 1px solid #eee;
   padding-left: 0.5em;
   margin-bottom: 10px;
 }
+.ql-bubble {
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+}
 .b-toaster {
   z-index: 10000;
+}
+a.edit-text {
+  cursor: pointer;
+  font-size: 14px;
+  color: $info;
+}
+.ql-editor.ql-blank::before {
+  font-style: normal;
+  color: #c0c4cc;
+  font-size: 15px;
 }
 </style>

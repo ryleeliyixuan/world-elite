@@ -2,11 +2,15 @@ package com.worldelite.job.api.user;
 
 import com.worldelite.job.api.BaseApi;
 import com.worldelite.job.constants.UserType;
-import com.worldelite.job.context.anatation.RequireLogin;
+import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.form.ResumeEduForm;
+import com.worldelite.job.form.ResumeExpForm;
 import com.worldelite.job.form.ResumeForm;
+import com.worldelite.job.form.ResumePracticeForm;
 import com.worldelite.job.service.ResumeEduService;
+import com.worldelite.job.service.ResumeExpService;
+import com.worldelite.job.service.ResumePracticeService;
 import com.worldelite.job.service.ResumeService;
 import com.worldelite.job.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,12 @@ public class ResumeApi extends BaseApi {
 
     @Autowired
     private ResumeEduService resumeEduService;
+
+    @Autowired
+    private ResumeExpService resumeExpService;
+
+    @Autowired
+    private ResumePracticeService resumePracticeService;
 
     /**
      * 获取我的简历信息
@@ -79,25 +89,53 @@ public class ResumeApi extends BaseApi {
     /**
      * 保存工作经验
      *
-     * @param experience
+     * @param resumeExpForm
      * @return
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-exp")
-    public ApiResult<ResumeExpVo> saveResumeExp(@RequestBody ResumeExperience experience){
-        return null;
+    public ApiResult<ResumeExpVo> saveResumeExp(@RequestBody ResumeExpForm resumeExpForm){
+        ResumeExpVo resumeExpVo = resumeExpService.saveResumeExp(resumeExpForm);
+        return ApiResult.ok(resumeExpVo);
+    }
+
+    /**
+     * 删除工作经验
+     *
+     * @param id
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("del-resume-exp")
+    public ApiResult deleteResumeEpx(@RequestParam Integer id){
+        resumeExpService.deleteResumeExp(id);
+        return ApiResult.ok();
     }
 
     /**
      * 保存实践经验
      *
-     * @param practice
+     * @param practiceForm
      * @return
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-practice")
-    public ApiResult<ResumePracticeVo> saveResumePractice(@RequestBody ResumePractice practice){
-        return null;
+    public ApiResult<ResumePracticeVo> saveResumePractice(@RequestBody ResumePracticeForm practiceForm){
+        ResumePracticeVo resumePracticeVo = resumePracticeService.saveResumePractice(practiceForm);
+        return ApiResult.ok(resumePracticeVo);
+    }
+
+    /**
+     * 删除实践经验
+     *
+     * @param id
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("del-resume-practice")
+    public ApiResult deleteResumePractice(@RequestParam Integer id){
+        resumePracticeService.deleteResumePractice(id);
+        return ApiResult.ok();
     }
 
     /**

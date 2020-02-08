@@ -4,14 +4,16 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.entity.ResumeEdu;
 import com.worldelite.job.service.DictService;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
 /**
  * @author yeguozhong yedaxia.github.com
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ResumeEduVo implements VoConvertable<ResumeEduVo, ResumeEdu>{
+public class ResumeEduVo extends EditFlag implements VoConvertable<ResumeEduVo, ResumeEdu>{
 
     private Integer id;
     private String schoolName;

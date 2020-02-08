@@ -39,10 +39,26 @@ export function saveResumeExp(data){
       })
 }
 
+export function delResumeExp(id){
+    return request({
+        url: '/resume/del-resume-exp',
+        method: 'post',
+        params: {id: id}
+      })
+}
+
 export function saveResumePractice(data){
     return request({
         url: '/resume/save-resume-practice',
         method: 'post',
         data
+      })
+}
+
+export function delResumePractice(id){
+    return request({
+        url: '/resume/del-resume-practice',
+        method: 'post',
+        params: {id: id}
       })
 }
