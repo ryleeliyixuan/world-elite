@@ -1,6 +1,7 @@
 package com.worldelite.job.context.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.context.AttrKeys;
 import com.worldelite.job.context.MessageResource;
@@ -63,6 +64,11 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             }
             if(!accessAllow(requireLogin, loginUser)){
                 ResponseUtils.writeAsJson(response, ApiResult.fail(ApiCode.NEED_LOGIN, messageResource.getMessage("permission.denied")));
+                return false;
+            }
+            if(ArrayUtils.contains(requireLogin.allow(), UserType.COMPANY)
+                    && loginUser.getStatus() == UserStatus.NOT_ACTIVATE.value){
+                ResponseUtils.writeAsJson(response, ApiResult.fail(ApiCode.NOT_ACTIVATE, messageResource.getMessage("user.not.activate")));
                 return false;
             }
         }

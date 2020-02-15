@@ -49,6 +49,12 @@ public class ResumeService extends BaseService {
     @Autowired
     private UserExpectJobService userExpectJobService;
 
+    @Autowired
+    private ResumeSkillService resumeSkillService;
+
+    @Autowired
+    private ResumeLinkService resumeLinkService;
+
     /**
      * 获取我的默认简历，如果没有就创建一个空简历
      *
@@ -71,6 +77,7 @@ public class ResumeService extends BaseService {
             defaultResume = resumeList.get(0);
         }
         ResumeVo resumeVo = new ResumeVo().asVo(defaultResume);
+        resumeVo.setAvatar(AppUtils.absOssUrl(userVo.getAvatar()));
         resumeVo.setEmail(userVo.getEmail());
         resumeVo.setPhoneCode(userVo.getPhoneCode());
         resumeVo.setPhone(userVo.getPhone());
@@ -78,7 +85,9 @@ public class ResumeService extends BaseService {
         resumeVo.setResumeExpList(resumeExpService.getResumeExpList(defaultResume.getId()));
         resumeVo.setResumePracticeList(resumePracticeService.getResumePracticeList(defaultResume.getId()));
         resumeVo.setUserExpectJob(userExpectJobService.getUserExpectJob(userId));
-        resumeVo.setResumeCompleteProgress(calResumeCompleteProgress(resumeVo));
+        resumeVo.setResumeSkillList(resumeSkillService.getResumeSkillList(defaultResume.getId()));
+        resumeVo.setResumeLinkList(resumeLinkService.getResumeLinkList(defaultResume.getId()));
+        resumeVo.setResumeCompleteProgress(AppUtils.calCompleteProgress(resumeVo));
         return resumeVo;
     }
 
@@ -123,7 +132,7 @@ public class ResumeService extends BaseService {
 
         UserForm userForm = new UserForm();
         userForm.setId(curUser().getId());
-        userForm.setAvatar(resumeForm.getAvatar());
+        userForm.setAvatar(AppUtils.getOssKey(resumeForm.getAvatar()));
         userForm.setName(resumeForm.getName());
         userForm.setGender(resumeForm.getGender());
         userForm.setPhoneCode(resumeForm.getPhoneCode());
@@ -148,35 +157,5 @@ public class ResumeService extends BaseService {
         if (resume != null && resume.getUserId() != null && !resume.getUserId().equals(curUser().getId())) {
             throw new ServiceException(ApiCode.PERMISSION_DENIED);
         }
-    }
-
-    /**
-     * 计算简历完成度
-     * @param resumeVo
-     * @return
-     */
-    private Integer calResumeCompleteProgress(ResumeVo resumeVo){
-        Class resumeClass = resumeVo.getClass();
-        double total = 0, current = 0;
-        try{
-            for(Field field : resumeClass.getDeclaredFields()){
-                ResumeScore resumeScore = field.getAnnotation(ResumeScore.class);
-                if(resumeScore != null){
-                    total += resumeScore.value();
-                    field.setAccessible(true);
-                    Object value = field.get(resumeVo);
-                    if(value != null){
-                        if(value instanceof Collection && CollectionUtils.isNotEmpty((Collection)value)){
-                            current += resumeScore.value();
-                        }else{
-                            current += resumeScore.value();
-                        }
-                    }
-                }
-            }
-        }catch (Exception ex){
-            log.error("cal resume progress error", ex);
-        }
-        return total == 0? 0: (int)(current / total * 100);
     }
 }

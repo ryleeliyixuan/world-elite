@@ -5,11 +5,14 @@ import store from './store'
 import { BootstrapVue} from 'bootstrap-vue'
 import '@/style/app.scss'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import ElementUI from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
 
 import '@/permission' 
 
 Vue.config.productionTip = false
 
+Vue.use(ElementUI)
 Vue.use(BootstrapVue)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

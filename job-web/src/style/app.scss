@@ -1,2 +1,14 @@
 @import 'bootstrap/scss/bootstrap.scss';
 @import 'bootstrap-vue/src/index.scss';
+
+.app-padding{
+    padding: 0 80px;
+}
+
+.text-small{
+    font-size: 14px
+}
+
+.text-gray{
+    color: $gray-600;
+}

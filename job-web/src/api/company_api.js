@@ -7,3 +7,11 @@ export function serachByName(name){
         params: {name: name, page:1, limit:10}
       })
 }
+
+export function getCompanyInfo(id){
+  return request({
+    url: '/company/company-home-data',
+    method: 'get',
+    params: {id: id}
+  })
+}

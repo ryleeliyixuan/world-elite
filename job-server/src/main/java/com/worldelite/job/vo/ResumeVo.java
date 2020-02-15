@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.anatation.ResumeScore;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeExperience;
+import com.worldelite.job.entity.ResumeLink;
 import com.worldelite.job.entity.ResumePractice;
 import com.worldelite.job.util.TimeUtils;
 import lombok.Data;
@@ -18,6 +19,8 @@ import java.util.List;
 public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
 
     private String id;
+    @ResumeScore
+    private String avatar;
     @ResumeScore
     private String name;
     @ResumeScore
@@ -54,6 +57,8 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     private List<ResumePracticeVo> resumePracticeList;
     @ResumeScore
     private List<ResumeSkillVo> resumeSkillList;
+
+    private List<ResumeLinkVo> resumeLinkList;
 
     private UserExpectJobVo userExpectJob;
 

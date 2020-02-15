@@ -31,6 +31,14 @@ public class DictService extends BaseService{
        return dict == null? null: new DictVo().asVo(dict);
     }
 
+    public List<DictVo> getDictList(DictListForm listForm){
+        Dict options = new Dict();
+        options.setName(listForm.getName());
+        options.setType(listForm.getType());
+        List<Dict> dictList = dictMapper.selectAndList(options);
+        return AppUtils.asVoList(dictList, DictVo.class);
+    }
+
     public PageResult<DictVo> getDictPage(DictListForm listForm){
         Dict options = new Dict();
         options.setName(listForm.getName());

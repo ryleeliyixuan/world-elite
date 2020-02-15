@@ -63,4 +63,5 @@ public interface ResumeMapper {
 
 
     List<Resume> selectByUserId(Long userId);
+
 }

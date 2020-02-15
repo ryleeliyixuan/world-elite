@@ -83,8 +83,13 @@ public class UserService extends BaseService {
         user = new User();
         user.setId(AppUtils.nextId());
         user.setEmail(registerForm.getEmail());
-        user.setStatus(UserStatus.NOT_ACTIVATE.value);
-        user.setType(UserType.GENERAL.value);
+        if(registerForm.getUserType() == null || registerForm.getUserType() == UserType.GENERAL.value){
+            user.setStatus(UserStatus.NORMAL.value);
+            user.setType(UserType.GENERAL.value);
+        }else if(registerForm.getUserType() == UserType.COMPANY.value){
+            user.setStatus(UserStatus.NOT_ACTIVATE.value);
+            user.setType(UserType.COMPANY.value);
+        }
         user.setSalt(RandomStringUtils.randomAlphanumeric(40));
         user.setSubscribeFlag(registerForm.getSubscribeFlag());
         final String encodePass = DigestUtils.sha256Hex(registerForm.getPassword() + user.getSalt());
@@ -118,6 +123,9 @@ public class UserService extends BaseService {
         User user = userMapper.selectByEmail(loginForm.getEmail());
         if(user == null){
             throw new ServiceException(message("login.validate.fail"));
+        }
+        if(user.getStatus() == UserStatus.BLACK.value){
+            throw new ServiceException(message("user.black.list"));
         }
         final String encodePass = DigestUtils.sha256Hex(loginForm.getPassword() + user.getSalt());
         if(!StringUtils.equals(encodePass, user.getPassword())){

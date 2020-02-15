@@ -22,7 +22,19 @@ const constantRoutes = [
     {
         path: '/edit-resume',
         component: () => import('@/views/EditResumePage'),
-        meta: { title: '简历编辑' }
+        meta: { title: '编辑简历' }
+    },
+    {
+        path: '/company/:id',
+        name: 'company',
+        component: () => import('@/views/CompanyHomePage'),
+        meta: { title: '公司主页' }
+    },
+    {
+        path: '/job/:id',
+        name: 'job',
+        component: () => import('@/views/JobPage'),
+        meta: { title: '职位详情' }
     }
 ]
 

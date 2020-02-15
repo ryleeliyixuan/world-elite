@@ -62,4 +62,6 @@ public interface CompanyMapper {
     int updateByPrimaryKey(Company record);
 
     List<Company> selectAndList(Company options);
+
+    Company selectSimpleById(Long id);
 }

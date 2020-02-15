@@ -23,4 +23,22 @@ public class ConfigService extends BaseService{
         Config config = configMapper.selectByType(ConfigType.VALIDATE_EMAIL_BODY.value);
         return config == null ? null : config.getContent().replace("${ACTIVATE_CODE}", activateCode);
     }
+
+    /**
+     * 验证通过发送邮箱内容
+     * @return
+     */
+    public String getVerificationPassEmailBody(){
+        Config config = configMapper.selectByType(ConfigType.VERIFICATION_PASS_EMAIL.value);
+        return config == null? "" :config.getContent();
+    }
+
+    /**
+     * 验证失败发送邮箱内容
+     * @return
+     */
+    public String getVerificationRejectEmailBody(String reason){
+        Config config = configMapper.selectByType(ConfigType.VERIFICATION_REJECT_EMAIL.value);
+        return config == null? "" :config.getContent().replace("${REASON}", reason);
+    }
 }

@@ -1,10 +1,12 @@
 package com.worldelite.job.context.config;
 
 
+import com.worldelite.job.context.MessageResource;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.vo.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,7 +20,6 @@ import java.util.List;
 @Slf4j
 @ControllerAdvice
 public class GlobalControllerAdvice {
-
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = Exception.class)
     @ResponseBody

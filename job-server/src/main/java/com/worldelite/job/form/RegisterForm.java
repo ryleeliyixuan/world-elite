@@ -22,6 +22,8 @@ public class RegisterForm {
 
     @Length(min = 8, message = "{password.format.error}")
     private String password;
+    
+    private Byte userType;
 
     private Byte subscribeFlag;
 }

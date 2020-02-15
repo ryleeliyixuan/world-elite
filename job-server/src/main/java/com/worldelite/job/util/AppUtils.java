@@ -2,18 +2,26 @@ package com.worldelite.job.util;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.worldelite.job.anatation.ResumeScore;
+import com.worldelite.job.context.MessageResource;
 import com.worldelite.job.context.config.AliConfig;
 import com.worldelite.job.context.config.DomainConfig;
 import com.worldelite.job.form.PageForm;
+import com.worldelite.job.vo.ResumeVo;
 import com.worldelite.job.vo.VoConvertable;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,6 +29,8 @@ import java.util.List;
  * @author yeguozhong yedaxia.github.com
  */
 public class AppUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppUtils.class);
 
     private static final IdWorker ID_WORKER = new IdWorker();
 
@@ -30,7 +40,7 @@ public class AppUtils {
      * @return
      */
     public static String absOssUrl(String relativeUrl){
-        if(relativeUrl == null)
+        if(StringUtils.isEmpty(relativeUrl))
             return "";
 
         if(relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")){
@@ -101,6 +111,14 @@ public class AppUtils {
     }
 
     /**
+     * 消息对象
+     * @return
+     */
+    public static MessageResource message(){
+        return getBean(MessageResource.class);
+    }
+
+    /**
      * get HttpServletResponse instance
      *
      * @return
@@ -150,6 +168,37 @@ public class AppUtils {
                 page.setOrderBy(pageForm.getSort());
             }
         }
+    }
+
+    /**
+     * 计算进度
+     *
+     * @param object
+     * @return
+     */
+    public static Integer calCompleteProgress(Object object){
+        Class resumeClass = object.getClass();
+        double total = 0, current = 0;
+        try{
+            for(Field field : resumeClass.getDeclaredFields()){
+                ResumeScore resumeScore = field.getAnnotation(ResumeScore.class);
+                if(resumeScore != null){
+                    total += resumeScore.value();
+                    field.setAccessible(true);
+                    Object value = field.get(object);
+                    if(value != null){
+                        if(value instanceof Collection && CollectionUtils.isNotEmpty((Collection)value)){
+                            current += resumeScore.value();
+                        }else{
+                            current += resumeScore.value();
+                        }
+                    }
+                }
+            }
+        }catch (Exception ex){
+            LOGGER.error("cal resume progress error", ex);
+        }
+        return total == 0? 0: (int)(current / total * 100);
     }
 
     /**

@@ -7,8 +7,6 @@ import lombok.Data;
  */
 @Data
 public class ResumeSkillForm {
-    private Integer id;
     private Long resumeId;
-    private String name;
-    private Byte level;
+    private String[] tagList;
 }

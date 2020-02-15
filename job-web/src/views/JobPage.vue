@@ -1,0 +1,196 @@
+<template>
+  <div class="app-container">
+    <b-row align-v="center">
+      <b-col>
+        <div class="text-gray text-small">{{job.companyUser.company.name}}招聘</div>
+        <h2 class="mt-3">
+          {{job.name}}
+          <span
+            class="text-danger ml-4 salary-text"
+          >{{`${job.minSalary}K - ${job.maxSalary}K`}}{{job.salaryMonths? ` × ${job.salaryMonths}个月` : ''}}</span>
+        </h2>
+        <div class="mt-2">{{job.city.name}} / {{job.minDegree.name}} / {{job.jobType.name}}</div>
+        <div class="mt-2 text-gray text-small">{{job.time}}</div>
+      </b-col>
+      <b-col cols="4">
+        <el-button
+          :type="job.favoriteFlag == 1? 'info' :'primary'"
+          icon="el-icon-star-off"
+          plain
+          :loading="favoriteLoading"
+          @click="handleFavorite"
+        >{{job.favoriteFlag == 1? '取消收藏': '收藏岗位'}}</el-button>
+        <el-button
+          type="primary"
+          :loading="applyLoading"
+          icon="el-icon-s-promotion"
+          @click="handleAppleJob"
+          v-bind:disabled="job.applyFlag == 1"
+        >{{job.applyFlag == 1? '已申请' : '申请岗位'}}</el-button>
+      </b-col>
+    </b-row>
+    <el-divider />
+    <b-row>
+      <b-col class="mr-4">
+        <div v-html="job.description"></div>
+        <div v-if="job.address" class="mt-4">
+          <h5 class="mt-4 mb-4">工作地址</h5>
+          <p>
+            {{job.address.address}}
+            <el-link
+              :underline="false"
+              class="float-right text-info"
+              @click="mapDialogVisible = true"
+            >
+              <i class="el-icon-location-information"></i>查看地图
+            </el-link>
+          </p>
+        </div>
+      </b-col>
+      <b-col cols="4">
+        <b-link :to="`/company/${job.companyUser.company.id}`">
+          <b-row no-gutters align-v="end">
+            <b-col cols="4">
+              <b-img :src="job.companyUser.company.logo" class="w-100"></b-img>
+            </b-col>
+            <b-col class="ml-2">
+              <div class="company-text text-muted">{{job.companyUser.company.name}}</div>
+            </b-col>
+          </b-row>
+        </b-link>
+        <div v-if="job.companyUser.company.industry" class="text-gray text-small mt-4">
+          <i class="el-icon-menu mr-2"></i>
+          {{job.companyUser.company.industry.name}}
+        </div>
+        <div v-if="job.companyUser.company.stage" class="text-gray text-small mt-2">
+          <i class="el-icon-collection-tag mr-2"></i>
+          {{job.companyUser.company.property.name}} . {{job.companyUser.company.stage.name}}
+        </div>
+        <div v-if="job.companyUser.company.scale" class="text-gray text-small mt-2">
+          <i class="el-icon-user mr-2"></i>
+          {{job.companyUser.company.scale.name}}
+        </div>
+        <div v-if="job.companyUser.company.homepage" class="text-gray text-small mt-2">
+          <i class="el-icon-s-home mr-2"></i>
+          <el-link :href="companyLink" target="_blank" :underline="false">{{companyLinkName}}</el-link>
+        </div>
+      </b-col>
+    </b-row>
+    <el-dialog title="查看地图" :visible.sync="mapDialogVisible" width="700px" top="10vh">
+      <div class="map-box">
+        <el-amap vid="amap" :zoom="mapZoom" :center="job.address.mapWindow.position">
+          <el-amap-info-window
+            :position="job.address.mapWindow.position"
+            :content="job.address.mapWindow.content"
+          ></el-amap-info-window>
+        </el-amap>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import Vue from "vue";
+import VueAMap from "vue-amap";
+import { getJobInfo, applyJob } from "@/api/job_api";
+import { doFavorite } from "@/api/favorite_api";
+
+Vue.use(VueAMap);
+
+VueAMap.initAMapApiLoader({
+  key: process.env.VUE_APP_AMAP_KEY,
+  v: "1.4.4"
+});
+
+export default {
+  name: "JobPage",
+  data() {
+    return {
+      job: {},
+      favoriteForm: {
+        objectId: undefined,
+        type: 1,
+        favorite: false
+      },
+      mapZoom: 14,
+      mapDialogVisible: false,
+      favoriteLoading: false,
+      applyLoading: false
+    };
+  },
+  created() {
+    this.initData();
+  },
+  watch: {
+    $route() {
+      this.initData();
+    }
+  },
+  computed: {
+    companyLink() {
+      return this.job.companyUser.company.homepage.startsWith("http")
+        ? this.job.companyUser.company.homepage
+        : "http://" + this.job.companyUser.company.homepage;
+    },
+    companyLinkName() {
+      return this.job.companyUser.company.homepage.replace(/http(s)?:\/\//);
+    }
+  },
+  methods: {
+    initData() {
+      const jobId = this.$route.params.id;
+      getJobInfo(jobId).then(response => {
+        this.job = response.data;
+        this.favoriteForm.objectId = this.job.id;
+        this.favoriteForm.favorite = this.job.favoriteFlag == 1;
+        if (this.job.address) {
+          this.job.address.mapWindow = {
+            position: [this.job.address.longitude, this.job.address.latitude],
+            content: this.job.address.address
+          };
+        }
+      });
+    },
+    handleFavorite() {
+      this.favoriteLoading = true;
+      this.favoriteForm.favorite = !this.favoriteForm.favorite;
+      doFavorite(this.favoriteForm)
+        .then(() => {
+          this.job.favoriteFlag = this.favoriteForm.favorite ? 1 : 0;
+          this.$message("操作成功");
+        })
+        .finally(() => {
+          this.favoriteLoading = false;
+        });
+    },
+    handleAppleJob() {
+      this.applyLoading = true;
+      applyJob(this.job.id)
+        .then(() => {
+          this.job.applyFlag = 1;
+          this.$message("申请成功");
+        })
+        .finally(() => {
+          this.applyLoading = false;
+        });
+    }
+  }
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+.app-container {
+  width: 1000px;
+  margin: 30px auto;
+}
+.salary-text {
+  font-size: 20px;
+}
+.company-text {
+  font-size: 18px;
+}
+.map-box {
+  height: 400px;
+}
+</style>

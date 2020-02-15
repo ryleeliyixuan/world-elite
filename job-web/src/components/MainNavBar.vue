@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" type="dark" variant="info">
+    <b-navbar toggleable="lg" type="dark" variant="info" class="main-nav">
       <b-navbar-brand href="/">World Edlite</b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -30,7 +30,7 @@
               <em>{{ loginUser.name == '' ? '新用户': loginUser.name }}</em>
             </template>
             <b-dropdown-item to="/edit-resume">我的简历</b-dropdown-item>
-            <b-dropdown-item href="#">退出登录</b-dropdown-item>
+            <b-dropdown-item @click="handleLogout">退出登录</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -64,5 +64,8 @@ export default {
 <style scoped>
   input.nav-search-bar{
     width: 350px;
+  }
+  .main-nav{
+    padding: 10px 80px;
   }
 </style>
