@@ -73,8 +73,7 @@
       </el-form-item>
       <el-form-item label="工作类型" prop="jobType">
         <el-radio-group v-model="jobForm.jobType">
-          <el-radio :label="1" border>全职</el-radio>
-          <el-radio :label="2" border>兼职</el-radio>
+          <el-radio :label="jobType.id" border v-for="jobType in jobTypeOptions" :key="jobType.id">{{jobType.name}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="职位描述" prop="description">

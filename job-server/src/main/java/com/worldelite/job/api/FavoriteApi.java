@@ -4,13 +4,12 @@ import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.form.FavoriteForm;
+import com.worldelite.job.form.PageForm;
 import com.worldelite.job.service.FavoriteService;
 import com.worldelite.job.vo.ApiResult;
+import com.worldelite.job.vo.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -35,5 +34,19 @@ public class FavoriteApi {
     public ApiResult favorite(@Valid @RequestBody FavoriteForm favoriteForm){
         Boolean result = favoriteService.favorite(favoriteForm);
         return ApiResult.ok(result);
+    }
+
+
+    /**
+     * 获取当前用户收藏的工作列表
+     *
+     * @param pageForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @GetMapping("get-favorite-jobs")
+    public ApiResult getFavoriteJobList(PageForm pageForm){
+        PageResult pageResult = favoriteService.getUserFavoriteJobList(pageForm);
+        return ApiResult.ok(pageResult);
     }
 }

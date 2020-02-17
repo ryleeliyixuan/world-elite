@@ -23,3 +23,19 @@ export function applyJob(id){
         params: {id: id}
     })
 }
+
+export function searchJob(data){
+    return request({
+        url: '/job/search-job',
+        method: 'post',
+        data
+    })
+}
+
+export function myApplyJobList(data){
+    return request({
+        url: '/job/my-apply-jobs',
+        method: 'get',
+        data
+    })
+}

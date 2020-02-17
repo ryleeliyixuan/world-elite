@@ -84,6 +84,22 @@ public class CompanyService extends BaseService{
     }
 
     /**
+     * 获取用户关联的公司
+     * @param userId
+     * @return
+     */
+    public CompanyVo getUserCompany(Long userId){
+        CompanyUser options = new CompanyUser();
+        options.setUserId(userId);
+        List<CompanyUser> companyUserList = companyUserMapper.selectAndList(options);
+        if (CollectionUtils.isEmpty(companyUserList)) {
+            return null;
+        }
+        CompanyUser companyUser = companyUserList.get(0);
+        return getCompanyInfo(companyUser.getCompanyId());
+    }
+
+    /**
      * 获取公司首页数据
      *
      * @param companyId
@@ -98,25 +114,36 @@ public class CompanyService extends BaseService{
         jobListForm.setLimit(3);
         jobListForm.setSort("-pub_time");
         companyVo.setJobList(jobService.getJobList(jobListForm).getList());
+        companyVo.setAddressList(companyAddressService.getCompanyAddressList(Long.valueOf(companyVo.getId())));
         return companyVo;
     }
 
     /**
-     * 获取公司信息
+     * 获取当前用户的公司信息
+     *
+     * @return
+     */
+    public CompanyVo getMyCompanyInfo(){
+        CompanyVo companyVo = getUserCompany(curUser().getId());
+        companyVo.setCompleteProgress(AppUtils.calCompleteProgress(companyVo));
+        companyVo.setAddressList(companyAddressService.getCompanyAddressList(Long.valueOf(companyVo.getId())));
+        return companyVo;
+    }
+
+    /**
+     * 获取公司信息：适合列表
      *
      * @param companyId
      * @return
      */
     public CompanyVo getCompanyInfo(Long companyId) {
-        Company company = companyMapper.selectByPrimaryKey(companyId);
+        Company company = companyMapper.selectSimpleById(companyId);
         if (company == null) return null;
         CompanyVo companyVo = new CompanyVo().asVo(company);
         companyVo.setScale(dictService.getById(company.getScaleId()));
         companyVo.setStage(dictService.getById(company.getStageId()));
         companyVo.setIndustry(dictService.getById(company.getIndustryId()));
         companyVo.setProperty(dictService.getById(company.getPropertyId()));
-        companyVo.setAddressList(companyAddressService.getCompanyAddressList(companyId));
-        companyVo.setCompleteProgress(AppUtils.calCompleteProgress(companyVo));
         return companyVo;
     }
 

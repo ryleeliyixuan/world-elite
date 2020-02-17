@@ -3,15 +3,19 @@ import { register, login, logout, getMyInfo } from '@/api/user_api'
 
 const state = {
     token: getToken(),
-    loginUser: undefined
+    name: undefined,
+    avatar: undefined
 }
 
 const mutations = {
     SET_TOKEN: (state, token) => {
         state.token = token
     },
-    SET_USER: (state, user) => {
-        state.loginUser = user;
+    SET_NAME: (state, name) => {
+        state.name = name;
+    },
+    SET_AVATAR: (state, avatar) => {
+        state.avatar = avatar;
     }
 }
 
@@ -22,7 +26,8 @@ const actions = {
                 const { data } = response
 
                 commit('SET_TOKEN', data.token)
-                commit('SET_USER', data)
+                commit('SET_NAME', data.name)
+                commit('SET_AVATAR', data.avatar)
 
                 setToken(data.token)
                 resolve()
@@ -37,7 +42,8 @@ const actions = {
                 const { data } = response
 
                 commit('SET_TOKEN', data.token)
-                commit('SET_USER', data)
+                commit('SET_NAME', data.name)
+                commit('SET_AVATAR', data.avatar)
 
                 setToken(data.token)
                 resolve()
@@ -50,7 +56,8 @@ const actions = {
         return new Promise((resolve, reject) => {
             getMyInfo().then(response => {
                 const { data } = response
-                commit('SET_USER', data)
+                commit('SET_NAME', data.name)
+                commit('SET_AVATAR', data.avatar)
                 resolve()
             }).catch(error => {
                 reject(error)
@@ -61,8 +68,9 @@ const actions = {
         return new Promise((resolve, reject) => {
             logout().then(() => {
 
-                commit('SET_TOKEN', '')
-                commit('SET_USER', null)
+                commit('SET_TOKEN', undefined)
+                commit('SET_NAME', undefined)
+                commit('SET_AVATAR', undefined)
 
                 removeToken()
                 resolve()

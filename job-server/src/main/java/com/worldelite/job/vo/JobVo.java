@@ -29,8 +29,10 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     @JSONField(format = "yyyy-MM-dd")
     private Date time;
 
-    private Byte favoriteFlag;
-    private Byte applyFlag;
+    private Byte favoriteFlag; //是否已收藏
+    private Byte applyFlag; //是否已投递
+
+    private Byte applyStatus; //投递状态
 
     @Override
     public JobVo asVo(Job job) {

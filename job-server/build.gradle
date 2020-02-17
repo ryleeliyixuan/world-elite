@@ -45,6 +45,10 @@ dependencies {
 	implementation 'com.maxmind.geoip2:geoip2:2.13.0'
 	implementation group: 'com.alibaba', name: 'easyexcel', version: '2.1.6'
 	implementation group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
+	implementation group: 'org.apache.lucene', name: 'lucene-core', version: '6.6.0'
+	implementation group: 'org.apache.lucene', name: 'lucene-queries', version: '6.6.0'
+	implementation group: 'org.lionsoul', name: 'jcseg-analyzer', version: '2.6.0'
+	implementation group: 'org.lionsoul', name: 'jcseg-core', version: '2.6.0'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

@@ -12,11 +12,12 @@ public enum DictType {
     COMPANY_SCALE(5), //公司规模
     INDUSTRY(6),//行业
     COMPANY_PROPERTY(7),//企业性质
-    JOB_TYPE(8); //职位类型
+    JOB_TYPE(8),//职位类型
+    SALARY_RANGE(9);  //薪资范围
 
     public final int value;
 
-    DictType(int value){
+    DictType(int value) {
         this.value = value;
     }
 }

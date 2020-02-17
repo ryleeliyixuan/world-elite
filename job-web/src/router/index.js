@@ -35,11 +35,26 @@ const constantRoutes = [
         name: 'job',
         component: () => import('@/views/JobPage'),
         meta: { title: '职位详情' }
+    },
+    {
+        path: '/job-list',
+        component: () => import('@/views/JobListPage'),
+        meta: { title: '职位列表' }
+    },
+    {
+        path: '/apply-jobs',
+        component: () => import('@/views/ApplyJobListPage'),
+        meta: { title: '我的投递' }
+    },
+    {
+        path: '/favorites',
+        component: () => import('@/views/FavoriteListPage'),
+        meta: { title: '我的收藏' }
     }
 ]
 
 const createRouter = () => new Router({
-    mode: 'hash', // require service support
+    mode: 'history', // require service support
     scrollBehavior: () => ({ y: 0 }),
     routes: constantRoutes
 })

@@ -2,7 +2,7 @@
   <div class="app-container">
     <b-row align-v="center">
       <b-col>
-        <div class="text-gray text-small">{{job.companyUser.company.name}}招聘</div>
+        <div class="text-gray text-small" v-if="job.companyUser && job.companyUser.company">{{job.companyUser.company.name}}招聘</div>
         <h2 class="mt-3">
           {{job.name}}
           <span
@@ -47,7 +47,7 @@
           </p>
         </div>
       </b-col>
-      <b-col cols="4">
+      <b-col cols="4" v-if="job.companyUser && job.companyUser.company">
         <b-link :to="`/company/${job.companyUser.company.id}`">
           <b-row no-gutters align-v="end">
             <b-col cols="4">
@@ -76,7 +76,13 @@
         </div>
       </b-col>
     </b-row>
-    <el-dialog title="查看地图" :visible.sync="mapDialogVisible" width="700px" top="10vh">
+    <el-dialog
+      title="查看地图"
+      :visible.sync="mapDialogVisible"
+      width="700px"
+      top="10vh"
+      v-if="job.address && job.address.mapWindow"
+    >
       <div class="map-box">
         <el-amap vid="amap" :zoom="mapZoom" :center="job.address.mapWindow.position">
           <el-amap-info-window

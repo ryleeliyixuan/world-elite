@@ -5,10 +5,18 @@ import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.form.JobForm;
 import com.worldelite.job.form.JobListForm;
+import com.worldelite.job.form.JobSearchForm;
+import com.worldelite.job.form.PageForm;
+import com.worldelite.job.service.DictService;
 import com.worldelite.job.service.JobService;
+import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.vo.ApiResult;
+import com.worldelite.job.vo.DictVo;
 import com.worldelite.job.vo.JobVo;
 import com.worldelite.job.vo.PageResult;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +31,12 @@ public class JobApi extends BaseApi{
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private SearchService searchService;
+
+    @Autowired
+    private DictService dictService;
 
     /**
      * 保存职位
@@ -58,7 +72,7 @@ public class JobApi extends BaseApi{
      */
     @GetMapping("get-job-info")
     public ApiResult<JobVo> getJobInfo(@RequestParam Long id){
-        JobVo jobVo = jobService.getJobInfo(id);
+        JobVo jobVo = jobService.getJobDetail(id);
         return ApiResult.ok(jobVo);
     }
 
@@ -90,7 +104,7 @@ public class JobApi extends BaseApi{
     }
 
     /**
-     * 投递简历
+     * 申请工作
      *
      * @param id
      * @return
@@ -100,5 +114,46 @@ public class JobApi extends BaseApi{
     public ApiResult applyJob(@RequestParam Long id){
         jobService.applyJob(id);
         return ApiResult.ok();
+    }
+
+    /**
+     * 获取当前用户申请的职位列表
+     *
+     * @return
+     */
+    @GetMapping("my-apply-jobs")
+    @RequireLogin(allow = UserType.GENERAL)
+    public ApiResult myApplyJobList(PageForm pageForm){
+        PageResult<JobVo> pageResult = jobService.getUserApplyJobList(pageForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 搜索职位
+     *
+     * @param searchForm
+     * @return
+     */
+    @PostMapping("search-job")
+    public ApiResult searchJobList(@RequestBody JobSearchForm searchForm){
+        if(searchForm.getSalaryRangeId() != null){
+            DictVo salaryRange =  dictService.getById(searchForm.getSalaryRangeId());
+            if(salaryRange != null){
+                String[] values =  salaryRange.getValue().split("-");
+                if(values.length == 2){
+                    searchForm.setMinSalary(NumberUtils.toInt(values[0]));
+                    searchForm.setMaxSalary(NumberUtils.toInt(values[1]));
+                }
+            }
+        }
+
+        PageResult pageResult;
+        if(StringUtils.isEmpty(searchForm.getKeyword())){
+            pageResult = jobService.getUserRecommendJobList(searchForm);
+        }else{
+            pageResult =  searchService.searchJob(searchForm);
+        }
+
+        return ApiResult.ok(pageResult);
     }
 }

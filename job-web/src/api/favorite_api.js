@@ -7,3 +7,11 @@ export function doFavorite(data){
         data
     })
 }
+
+export function getFavoriteJobList(data){
+    return request({
+        url: '/favorite/get-favorite-jobs',
+        method: 'get',
+        params: data
+    })
+}

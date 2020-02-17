@@ -8,7 +8,7 @@ export function listByType(type){
             type: type,
             page: 1,
             limit: 500,
-            sort: '+value'
+            sort: '+id'
         } 
       })
 }

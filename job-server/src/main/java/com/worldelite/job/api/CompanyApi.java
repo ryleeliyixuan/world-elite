@@ -88,8 +88,7 @@ public class CompanyApi extends BaseApi {
     @RequireLogin(allow = UserType.COMPANY)
     @GetMapping("my-company-info")
     public ApiResult<CompanyVo> getMyCompanyInfo() {
-        CompanyUserVo companyUserVo = companyService.getCompanyUser(curUser().getId());
-        CompanyVo companyVo = companyService.getCompanyInfo(Long.valueOf(companyUserVo.getCompany().getId()));
+        CompanyVo companyVo = companyService.getMyCompanyInfo();
         return ApiResult.ok(companyVo);
     }
 
