@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.JobApplyMapper">
-  <select id="selectAndList" parameterType="com.worldelite.job.entity.JobApply" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from t_job_apply
-    <where>
-      <if test="jobId != null">
-        and job_id = #{jobId,jdbcType=BIGINT}
-      </if>
-      <if test="userId != null">
-        and user_id = #{userId,jdbcType=BIGINT}
-      </if>
-      <if test="resumeId != null">
-        and resume_id = #{resumeId,jdbcType=BIGINT}
-      </if>
-      <if test="status != null">
-        and status = #{status,jdbcType=TINYINT}
-      </if>
-    </where>
-  </select>
+    <select id="selectAndList" parameterType="com.worldelite.job.entity.JobApply" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_job_apply
+        <where>
+            <if test="jobId != null">
+                and job_id = #{jobId,jdbcType=BIGINT}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="resumeId != null">
+                and resume_id = #{resumeId,jdbcType=BIGINT}
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=TINYINT}
+            </if>
+        </where>
+    </select>
+    <select id="selectApplyResumeList" parameterType="com.worldelite.job.entity.JobApplyOptions" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_job_apply
+        <where>
+            <if test="creatorId != null">
+                and job_id in (select id from t_job where creator_id = #{creatorId,jdbcType=BIGINT})
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=TINYINT}
+            </if>
+            <if test="jobIds != null">
+                and job_id in (${jobIds})
+            </if>
+            <if test="name != null">
+                and resume_id in (select id from t_resume where name like CONCAT('%', #{name},'%'))
+            </if>
+        </where>
+    </select>
 </mapper>

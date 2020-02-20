@@ -178,4 +178,18 @@ public class ResumeApi extends BaseApi {
         resumeLinkService.deleteResumeLink(id);
         return ApiResult.ok();
     }
+
+
+    /**
+     * 获取当前企业用户需要处理的简历列表
+     *
+     * @param listForm
+     * @return
+     */
+    @PostMapping("my-apply-resume-list")
+    @RequireLogin(allow = UserType.COMPANY)
+    public ApiResult getUserApplyResumeList(@RequestBody ApplyResumeListForm listForm){
+        PageResult pageResult = resumeService.getUserApplyResumeList(listForm);
+        return ApiResult.ok(pageResult);
+    }
 }

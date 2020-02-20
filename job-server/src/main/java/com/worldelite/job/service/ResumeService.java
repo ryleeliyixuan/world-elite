@@ -1,25 +1,30 @@
 package com.worldelite.job.service;
 
+import com.github.pagehelper.Page;
 import com.worldelite.job.anatation.ResumeScore;
+import com.worldelite.job.entity.JobApply;
+import com.worldelite.job.entity.JobApplyOptions;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.User;
 import com.worldelite.job.exception.ServiceException;
+import com.worldelite.job.form.ApplyResumeListForm;
 import com.worldelite.job.form.ResumeForm;
 import com.worldelite.job.form.UserForm;
+import com.worldelite.job.mapper.JobApplyMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.mapper.UserMapper;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.ApiCode;
-import com.worldelite.job.vo.ResumeVo;
-import com.worldelite.job.vo.UserVo;
+import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +38,9 @@ public class ResumeService extends BaseService {
 
     @Autowired
     private ResumeMapper resumeMapper;
+
+    @Autowired
+    private JobApplyMapper jobApplyMapper;
 
     @Autowired
     private UserService userService;
@@ -54,6 +62,9 @@ public class ResumeService extends BaseService {
 
     @Autowired
     private ResumeLinkService resumeLinkService;
+
+    @Autowired
+    private JobService jobService;
 
     /**
      * 获取我的默认简历，如果没有就创建一个空简历
@@ -89,6 +100,17 @@ public class ResumeService extends BaseService {
         resumeVo.setResumeLinkList(resumeLinkService.getResumeLinkList(defaultResume.getId()));
         resumeVo.setResumeCompleteProgress(AppUtils.calCompleteProgress(resumeVo));
         return resumeVo;
+    }
+
+    /**
+     * 获取简历信息
+     *
+     * @param resumeId
+     * @return
+     */
+    public ResumeVo getResumeInfo(Long resumeId){
+        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
+        return toResumeVo(resume);
     }
 
     /**
@@ -141,6 +163,49 @@ public class ResumeService extends BaseService {
         userService.modifyUser(userForm);
 
         return new ResumeVo().asVo(resume);
+    }
+
+    /**
+     * 获取当前用户需要处理的简历列表
+     *
+     * @param listForm
+     * @return
+     */
+    public PageResult<ApplyResumeVo> getUserApplyResumeList(ApplyResumeListForm listForm){
+        JobApplyOptions options = new JobApplyOptions();
+        options.setCreatorId(curUser().getId());
+        if(ArrayUtils.isNotEmpty(listForm.getJobIds())){
+            options.setJobIds(StringUtils.join(listForm.getJobIds(), ","));
+        }
+        options.setStatus(listForm.getApplyStatus());
+        options.setName(listForm.getName());
+        AppUtils.setPage(listForm);
+        Page<JobApply> jobApplyPage= (Page<JobApply>) jobApplyMapper.selectApplyResumeList(options);
+        PageResult pageResult = new PageResult(jobApplyPage);
+        List<ApplyResumeVo> applyResumeVoList = new ArrayList<>(jobApplyPage.size());
+        for(JobApply jobApply: jobApplyPage){
+            ApplyResumeVo applyResumeVo = new ApplyResumeVo();
+            applyResumeVo.setApplyStatus(jobApply.getStatus());
+            applyResumeVo.setJob(jobService.getJobInfo(jobApply.getJobId(), false));
+            applyResumeVo.setResume(getResumeInfo(jobApply.getResumeId()));
+            applyResumeVoList.add(applyResumeVo);
+        }
+        return pageResult;
+    }
+
+    private ResumeVo toResumeVo(Resume resume){
+        ResumeVo resumeVo = new ResumeVo().asVo(resume);
+        UserVo userVo = userService.getUserInfo(resume.getUserId());
+        resumeVo.setAvatar(AppUtils.absOssUrl(userVo.getAvatar()));
+        resumeVo.setEmail(userVo.getEmail());
+        resumeVo.setPhoneCode(userVo.getPhoneCode());
+        resumeVo.setPhone(userVo.getPhone());
+        List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduList(resume.getId());
+        resumeVo.setResumeEduList(resumeEduVoList);
+        if(CollectionUtils.isNotEmpty(resumeEduVoList)){
+            resumeVo.setMaxResumeEdu(resumeEduVoList.get(0));
+        }
+        return resumeVo;
     }
 
     /**

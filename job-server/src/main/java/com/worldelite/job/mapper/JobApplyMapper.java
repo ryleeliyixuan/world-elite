@@ -1,6 +1,7 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.JobApply;
+import com.worldelite.job.entity.JobApplyOptions;
 
 import java.util.List;
 
@@ -54,4 +55,6 @@ public interface JobApplyMapper {
     int updateByPrimaryKey(JobApply record);
 
     List<JobApply> selectAndList(JobApply options);
+
+    List<JobApply> selectApplyResumeList(JobApplyOptions options);
 }

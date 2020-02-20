@@ -14,7 +14,7 @@ function getPageTitle(pageTitle) {
 router.beforeEach(async (to, from, next) => {
     document.title = getPageTitle(to.meta.title)
     const hasToken = getToken()
-    if (hasToken && (store.getters.loginUser == undefined || store.getters.loginUser == null)) {
+    if (hasToken && (store.getters.name == undefined)) {
         await store.dispatch('user/MYINFO')
     }
     next()

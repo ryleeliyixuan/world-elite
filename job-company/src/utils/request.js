@@ -3,7 +3,7 @@ import store from '@/store'
 import router from '@/router'
 import { getToken } from '@/utils/auth'
 import Toast from '@/utils/toast'
-
+import {curRelativePath} from '@/utils/common'
 
 // create an axios instance
 const service = axios.create({
@@ -52,7 +52,7 @@ service.interceptors.response.use(
       if (res.code === 402) {
         // to re-login
         store.dispatch('user/LOGOUT').then(() => {
-          router.push({path: '/login', query: {redirect: router.path}})
+          router.push({path: '/login', query: {redirect: curRelativePath()}})
         });
       }
       return Promise.reject(new Error(res.msg || 'Error'))
