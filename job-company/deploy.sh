@@ -1,7 +1,7 @@
 #!/bin/sh
 
-deployPath=/apps/wolrdelite/static # 服务器发布路径
-sourcePath=~/source/wolrd-elite/erp-web #服务器源码路径
+deployPath=/apps/worldelite/static # 服务器发布路径
+sourcePath=~/source/world-elite/erp-web #服务器源码路径
 
 cd ${sourcePath}
 

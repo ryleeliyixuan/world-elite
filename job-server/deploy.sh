@@ -2,7 +2,7 @@
 
 module=apiServer # 打包模块名
 deployPath=~/apps # 服务器发布路径
-sourcePath=~/source/wolrd-elite/job-server #服务器源码路径
+sourcePath=~/source/world-elite/job-server #服务器源码路径
 appPropsFile=src/main/resources/application.properties;
 
 cd ${sourcePath}
