@@ -7,7 +7,7 @@ cd ${sourcePath}
 
 # 安装依赖包,并打包
 sudo npm install
-sudo npm run build:prod
+sudo npm run build
 
 # 覆盖发布
 sudo cp -Rf dist/* ${deployPath} 
