@@ -16,6 +16,7 @@ import com.worldelite.job.form.PageForm;
 import com.worldelite.job.mapper.CompanyUserMapper;
 import com.worldelite.job.mapper.JobApplyMapper;
 import com.worldelite.job.mapper.JobMapper;
+import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
@@ -62,6 +63,9 @@ public class JobService extends BaseService {
 
     @Autowired
     private SearchService searchService;
+
+    @Autowired
+    private IndexService indexService;
 
     /**
      * 获取职位信息: 适用列表
@@ -140,6 +144,9 @@ public class JobService extends BaseService {
             job.setUpdateTime(new Date());
             jobMapper.updateByPrimaryKeyWithBLOBs(job);
         }
+
+        //增加索引
+        indexService.saveJobItem(job.getId());
     }
 
     /**
