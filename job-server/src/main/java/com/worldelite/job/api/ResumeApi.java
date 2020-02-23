@@ -1,9 +1,7 @@
 package com.worldelite.job.api;
 
-import com.worldelite.job.api.BaseApi;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.anatation.RequireLogin;
-import com.worldelite.job.entity.*;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
@@ -191,5 +189,17 @@ public class ResumeApi extends BaseApi {
     public ApiResult getUserApplyResumeList(@RequestBody ApplyResumeListForm listForm){
         PageResult pageResult = resumeService.getUserApplyResumeList(listForm);
         return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 处理简历
+     *
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("handle-apply-resume")
+    public ApiResult handleApplyResume(@RequestBody JobApplyForm applyResumeForm){
+        resumeService.handleApplyResume(applyResumeForm);
+        return ApiResult.ok();
     }
 }

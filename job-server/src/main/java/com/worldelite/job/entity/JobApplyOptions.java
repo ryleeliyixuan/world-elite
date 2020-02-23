@@ -8,6 +8,8 @@ public class JobApplyOptions extends JobApply{
     private Long creatorId;
     private String jobIds;
     private String name;
+    private String degreeIds;
+    private String statuses;
 
     public Long getCreatorId() {
         return creatorId;
@@ -31,5 +33,21 @@ public class JobApplyOptions extends JobApply{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDegreeIds() {
+        return degreeIds;
+    }
+
+    public void setDegreeIds(String degreeIds) {
+        this.degreeIds = degreeIds;
+    }
+
+    public String getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(String statuses) {
+        this.statuses = statuses;
     }
 }

@@ -12,6 +12,7 @@ public interface ApiCode {
     int INVALID_PARAM = 401;
     int NEED_LOGIN = 402;
     int PERMISSION_DENIED = 403;
+    int OBJECT_NOT_FOUND = 404;
     int NOT_ACTIVATE = 405;
     int INVALID_OPERATION = 406;
 

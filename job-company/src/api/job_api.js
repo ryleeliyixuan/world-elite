@@ -31,3 +31,10 @@ export function takeOffJob(id) {
         params: { id: id }
     })
 }
+
+export function getUserJobOptions(){
+    return request({
+        url: '/job/user-job-options',
+        method: 'get',
+    })
+}

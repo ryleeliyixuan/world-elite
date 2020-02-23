@@ -14,6 +14,7 @@ import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.DictVo;
 import com.worldelite.job.vo.JobVo;
 import com.worldelite.job.vo.PageResult;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -62,6 +64,18 @@ public class JobApi extends BaseApi{
         jobListForm.setStatus(JobStatus.PUBLISH.value);
         PageResult pageResult = jobService.getJobList(jobListForm);
         return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 简历筛选-职位
+     *
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @GetMapping("user-job-options")
+    public ApiResult getUserJobOptions(){
+        List<JobVo> jobVoList = jobService.getUserJobOptions();
+        return ApiResult.ok(jobVoList);
     }
 
     /**

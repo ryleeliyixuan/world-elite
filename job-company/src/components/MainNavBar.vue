@@ -7,14 +7,21 @@
         </div>
       </el-col>
       <el-col :span="6">
-        <el-menu :router="true" mode="horizontal" v-if="token && token !== ''">
+        <el-menu
+          :router="true"
+          :default-active="activeIndex"
+          mode="horizontal"
+          v-if="token && token !== ''"
+        >
           <el-menu-item class="nav-item" index="/manage-job">职位管理</el-menu-item>
-          <el-menu-item class="nav-item" index="#">简历管理</el-menu-item>
+          <el-menu-item class="nav-item" index="/manage-resume">简历管理</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="13">
         <div class="text-right" v-if="token === undefined || token === ''">
-          <el-link :underline="false" class="p-4 mr-2" @click="$router.push('/register')"><b>免费加入</b></el-link>
+          <el-link :underline="false" class="p-4 mr-2" @click="$router.push('/register')">
+            <b>免费加入</b>
+          </el-link>
           <el-button type="primary" @click="$router.push('/login')">登录</el-button>
         </div>
         <div class="text-right" v-else>
@@ -25,7 +32,7 @@
           </el-link>
           <el-dropdown style="vertical-align: middle;">
             <span class="el-dropdown-link">
-              <el-avatar size="35" icon="el-icon-user-solid"></el-avatar>
+              <el-avatar :size="35" icon="el-icon-user-solid"></el-avatar>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
@@ -50,9 +57,14 @@ export default {
   },
   data() {
     return {
-      activeIndex: "0",
+      activeIndex: "/manage-job",
       keyword: this.$store.getters.keyword
     };
+  },
+  watch: {
+    $route() {
+       this.activeIndex = this.$route.path
+    }
   },
   methods: {
     handleLogout() {

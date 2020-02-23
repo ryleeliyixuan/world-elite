@@ -59,11 +59,11 @@
     </appender>
 
     <!-- 系统模块日志级别控制  -->
-    <logger name="com.wroldelite.job" level="info"/>
+    <logger name="com.worldelite.job" level="info"/>
     <!-- Spring日志级别控制  -->
     <logger name="org.springframework" level="warn"/>
     <!--sql 日志-->
-    <logger name="=com.wroldelite.job.mapper" level="debug"/>
+    <logger name="=com.worldelite.job.mapper" level="debug"/>
 
     <!--开发环境:打印控制台-->
     <springProfile name="dev">

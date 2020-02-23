@@ -28,14 +28,17 @@
             <if test="creatorId != null">
                 and job_id in (select id from t_job where creator_id = #{creatorId,jdbcType=BIGINT})
             </if>
-            <if test="status != null">
-                and status = #{status,jdbcType=TINYINT}
+            <if test="statuses != null">
+                and status in (${statuses})
             </if>
             <if test="jobIds != null">
                 and job_id in (${jobIds})
             </if>
             <if test="name != null">
                 and resume_id in (select id from t_resume where name like CONCAT('%', #{name},'%'))
+            </if>
+            <if test="degreeIds != null">
+                and resume_id in (select resume_id from t_resume_edu where degree_id in (${degreeIds}))
             </if>
         </where>
     </select>

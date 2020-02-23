@@ -39,6 +39,11 @@ const constantRoutes = [
         component: () => import('@/views/EditCompanyPage'),
         meta: { title: '编辑公司信息' }
     },
+    {
+        path: '/manage-resume',
+        component: () => import('@/views/ResumeManagePage'),
+        meta: { title: '简历管理' }
+    }
 ]
 
 const createRouter = () => new Router({

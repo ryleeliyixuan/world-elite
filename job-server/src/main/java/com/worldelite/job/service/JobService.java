@@ -5,6 +5,7 @@ import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.constants.JobApplyStatus;
 import com.worldelite.job.constants.JobStatus;
+import com.worldelite.job.entity.CompanyUser;
 import com.worldelite.job.entity.Job;
 import com.worldelite.job.entity.JobApply;
 import com.worldelite.job.entity.Resume;
@@ -22,6 +23,7 @@ import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -258,6 +260,23 @@ public class JobService extends BaseService {
         }
         pageResult.setList(jobVoList);
         return pageResult;
+    }
+
+    /**
+     * 简历筛选-职位
+     *
+     * @return
+     */
+    public List<JobVo> getUserJobOptions(){
+        Job options = new Job();
+        options.setCreatorId(curUser().getId());
+        options.setStatus(JobStatus.PUBLISH.value);
+        List<Job> jobList = jobMapper.selectAndList(options);
+        List<JobVo> jobVoList = new ArrayList<>(jobList.size());
+        for (Job job : jobList) {
+            jobVoList.add(toJobVo(job, false));
+        }
+        return jobVoList;
     }
 
     /**

@@ -11,6 +11,7 @@ import java.util.Date;
  */
 @Data
 public class ApplyResumeVo {
+    private Integer id;
     private ResumeVo resume;
     private JobVo job;
     private Byte applyStatus;

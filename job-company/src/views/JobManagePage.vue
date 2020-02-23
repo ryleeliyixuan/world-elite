@@ -153,7 +153,6 @@ export default {
   font-size: 15px;
 }
 .text-small {
-  color: $gray-400;
   font-size: 14px;
 }
 .text-large {

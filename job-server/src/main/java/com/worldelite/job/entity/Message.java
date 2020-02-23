@@ -24,7 +24,7 @@ public class Message {
      *
      * @mbg.generated
      */
-    private Integer fromUser;
+    private Long fromUser;
 
     /**
      *
@@ -33,7 +33,7 @@ public class Message {
      *
      * @mbg.generated
      */
-    private Integer toUser;
+    private Long toUser;
 
     /**
      *
@@ -112,7 +112,7 @@ public class Message {
      *
      * @mbg.generated
      */
-    public Integer getFromUser() {
+    public Long getFromUser() {
         return fromUser;
     }
 
@@ -124,7 +124,7 @@ public class Message {
      *
      * @mbg.generated
      */
-    public void setFromUser(Integer fromUser) {
+    public void setFromUser(Long fromUser) {
         this.fromUser = fromUser;
     }
 
@@ -136,7 +136,7 @@ public class Message {
      *
      * @mbg.generated
      */
-    public Integer getToUser() {
+    public Long getToUser() {
         return toUser;
     }
 
@@ -148,7 +148,7 @@ public class Message {
      *
      * @mbg.generated
      */
-    public void setToUser(Integer toUser) {
+    public void setToUser(Long toUser) {
         this.toUser = toUser;
     }
 

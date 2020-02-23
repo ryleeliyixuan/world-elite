@@ -2,6 +2,7 @@ package com.worldelite.job.service;
 
 import com.worldelite.job.anatation.SysLog;
 import com.worldelite.job.constants.Bool;
+import com.worldelite.job.constants.ConfigType;
 import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.constants.VerificationStatus;
 import com.worldelite.job.context.RedisKeys;
@@ -171,18 +172,16 @@ public class CompanyVerificationService extends BaseService{
 
 
     private void sendVerificationPassEmail(String email){
-        EmailForm emailForm = new EmailForm();
+        EmailForm emailForm = configService.getEmailForm(ConfigType.EMAIL_VERIFICATION_PASS);
         emailForm.setAddress(email);
-        emailForm.setSubject(message("verification.email.subject"));
-        emailForm.setEmailBody(configService.getVerificationPassEmailBody());
         emailService.sendEmail(emailForm);
     }
 
+
     private void sendVerificationRejectEmail(String email, String reason){
-        EmailForm emailForm = new EmailForm();
+        EmailForm emailForm = configService.getEmailForm(ConfigType.EMAIL_VERIFICATION_REJECT);
         emailForm.setAddress(email);
-        emailForm.setSubject(message("verification.email.subject"));
-        emailForm.setEmailBody(configService.getVerificationRejectEmailBody(reason));
+        emailForm.setEmailBody(emailForm.getEmailBody().replace("${REASON}", reason));
         emailService.sendEmail(emailForm);
     }
 }

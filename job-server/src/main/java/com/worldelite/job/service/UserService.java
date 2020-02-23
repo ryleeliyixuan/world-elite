@@ -107,10 +107,9 @@ public class UserService extends BaseService {
     public void sendEmailValidCode(String email){
         final String activateCode = RandomStringUtils.randomNumeric(6);
         redisTemplate.opsForValue().set(RedisKeys.VALIDATE_EMAIL_PREFIX + email, activateCode, ACTIVATE_EXPIRED_SECONDS, TimeUnit.SECONDS);
-        EmailForm emailForm = new EmailForm();
+        EmailForm emailForm = configService.getEmailForm(ConfigType.EMAIL_ACCOUNT_VALIDATE);
         emailForm.setAddress(email);
-        emailForm.setSubject(message("activate.email.subject"));
-        emailForm.setEmailBody(configService.getActivateEmailBody(activateCode));
+        emailForm.setEmailBody(emailForm.getEmailBody().replace("${ACTIVATE_CODE}", activateCode));
         emailService.sendEmail(emailForm);
     }
 

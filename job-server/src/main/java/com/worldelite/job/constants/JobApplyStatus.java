@@ -7,9 +7,9 @@ public enum JobApplyStatus {
 
     APPLY(1), //投递中
     VIEW(2),   //已查看
-    CANDIDATE(3), //候选人
+    CANDIDATE(3), //初筛
     INTERVIEW(4), //面试
-    OFFER(5), //入职
+    OFFER(5), //录用
     ABANDON(6), // 不合适
     EXPIRED(7) // 已过期
     ;

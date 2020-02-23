@@ -86,3 +86,19 @@ export function delResumeLink(id){
     params: {id: id}
   })
 }
+
+export function applyResumeList(data){
+  return request({
+    url: '/resume/my-apply-resume-list',
+    method: 'post',
+    data
+  })
+}
+
+export function handleApplyResume(data){
+  return request({
+    url: '/resume/handle-apply-resume',
+    method: 'post',
+    data
+  })
+}
