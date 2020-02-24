@@ -20,7 +20,8 @@
             </if>
         </where>
     </select>
-    <select id="selectApplyResumeList" parameterType="com.worldelite.job.entity.JobApplyOptions" resultMap="BaseResultMap">
+    <select id="selectApplyResumeList" parameterType="com.worldelite.job.entity.JobApplyOptions"
+            resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_job_apply
@@ -39,6 +40,25 @@
             </if>
             <if test="degreeIds != null">
                 and resume_id in (select resume_id from t_resume_edu where degree_id in (${degreeIds}))
+            </if>
+        </where>
+    </select>
+    <select id="countJobApply" parameterType="com.worldelite.job.entity.JobApplyOptions" resultType="java.lang.Integer">
+        select
+        count(id)
+        from t_job_apply
+        <where>
+            <if test="creatorId != null">
+                and job_id in (select id from t_job where creator_id = #{creatorId,jdbcType=BIGINT})
+            </if>
+            <if test="statuses != null">
+                and status in (${statuses})
+            </if>
+            <if test="jobId != null">
+                and job_id = #{jobId,jdbcType=BIGINT}
+            </if>
+            <if test="resumeId != null">
+                and resume_id = #{resumeId,jdbcType=BIGINT}
             </if>
         </where>
     </select>

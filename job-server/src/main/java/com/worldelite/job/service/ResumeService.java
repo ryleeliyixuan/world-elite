@@ -108,14 +108,23 @@ public class ResumeService extends BaseService {
     }
 
     /**
-     * 获取简历信息
+     * 获取简历详情
      *
      * @param resumeId
      * @return
      */
-    public ResumeVo getResumeInfo(Long resumeId) {
-        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
-        return toResumeVo(resume);
+    public ResumeVo getResumeDetail(Long resumeId){
+        JobApplyOptions options = new JobApplyOptions();
+        options.setCreatorId(curUser().getId());
+        options.setResumeId(resumeId);
+        final int count = jobApplyMapper.countJobApply(options);
+        if(count == 0){
+            throw new ServiceException(ApiCode.PERMISSION_DENIED);
+        }
+        ResumeVo resumeVo = getResumeInfo(resumeId);
+        resumeVo.setResumePracticeList(resumePracticeService.getResumePracticeList(resumeId));
+        resumeVo.setResumeLinkList(resumeLinkService.getResumeLinkList(resumeId));
+        return resumeVo;
     }
 
     /**
@@ -228,6 +237,10 @@ public class ResumeService extends BaseService {
         jobApply.setStatus(applyResumeForm.getStatus());
         jobApplyMapper.updateByPrimaryKeySelective(jobApply);
 
+        if(applyResumeForm.getStatus() == JobApplyStatus.VIEW.value){
+            return;
+        }
+
         // 发送站内和邮件消息
         UserVo toUser = userService.getUserInfo(resume.getUserId());
         final String jobPlaceholder = String.format("%s.%s", job.getCompanyUser().getCompany().getName(), job.getName());
@@ -262,6 +275,27 @@ public class ResumeService extends BaseService {
         }
     }
 
+    /**
+     * 检查简历创建者是否登录用户
+     *
+     * @param resumeId
+     */
+    public void checkResumeCreator(Long resumeId) {
+        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
+        checkResumeCreator(resume);
+    }
+
+    /**
+     * 获取简历信息
+     *
+     * @param resumeId
+     * @return
+     */
+    private ResumeVo getResumeInfo(Long resumeId) {
+        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
+        return toResumeVo(resume);
+    }
+
     private ResumeVo toResumeVo(Resume resume) {
         ResumeVo resumeVo = new ResumeVo().asVo(resume);
         UserVo userVo = userService.getUserInfo(resume.getUserId());
@@ -277,16 +311,6 @@ public class ResumeService extends BaseService {
             resumeVo.setMaxResumeEdu(JSON.parseObject(JSON.toJSONString(resumeEduVoList.get(0)), ResumeEduVo.class));
         }
         return resumeVo;
-    }
-
-    /**
-     * 检查简历创建者是否登录用户
-     *
-     * @param resumeId
-     */
-    public void checkResumeCreator(Long resumeId) {
-        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
-        checkResumeCreator(resume);
     }
 
     private void checkResumeCreator(Resume resume) {

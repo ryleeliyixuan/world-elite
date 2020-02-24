@@ -6,7 +6,12 @@
     </el-menu>
     <div class="d-flex mt-4">
       <div class="p-2 flex-grow-1">
-        <el-input placeholder="搜索职位名称" v-model="listQuery.name" class="w-50">
+        <el-input
+          placeholder="搜索职位名称"
+          v-model="listQuery.name"
+          class="w-50"
+          @change.native="handleListPageRoute"
+        >
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
@@ -15,7 +20,13 @@
       </div>
     </div>
     <div class="job-list">
-      <el-card class="job-item mt-4" shadow="hover" v-for="job in pageResult.list" :key="job.id">
+      <el-card
+        class="job-item mt-4 link-pointer"
+        shadow="hover"
+        v-for="job in pageResult.list"
+        :key="job.id"
+        @click.native="handleJobClick(job)"
+      >
         <el-row :gutter="10" align="middle" type="flex">
           <el-col class="mr-auto">
             <h5>{{job.name}}</h5>
@@ -25,24 +36,35 @@
             <div class="text-small">发布时间：{{job.time}}</div>
           </el-col>
           <el-col :span="3" class="text-center">
-            <el-link type="primary" :underline="false">
-              <div class="text-center text-large">100</div>
+            <el-link type="primary" :underline="false" @click.stop="handleResumeListClick(job, '1,2')">
+              <div class="text-center text-large">{{job.newResumeCount}}</div>
               <div class="text-center">新简历</div>
             </el-link>
           </el-col>
           <el-col :span="3" class="text-center">
-            <el-link type="primary" :underline="false">
-              <div class="text-center text-large">100</div>
-              <div class="text-center">候选</div>
+            <el-link type="primary" :underline="false" @click.stop="handleResumeListClick(job, '3')">
+              <div class="text-center text-large">{{job.candidateResumeCount}}</div>
+              <div class="text-center">初筛</div>
+            </el-link>
+          </el-col>
+          <el-col :span="3" class="text-center">
+            <el-link type="primary" :underline="false" @click.stop="handleResumeListClick(job, '4')">
+              <div class="text-center text-large">{{job.interviewResumeCount}}</div>
+              <div class="text-center">面试</div>
             </el-link>
           </el-col>
           <el-col :span="4" class="text-center">
-            <el-link type="info" :underline="false" class="p-2" @click="handleEditJob(job.id)">编辑</el-link>
+            <el-link
+              type="info"
+              :underline="false"
+              class="p-2"
+              @click.stop="handleEditJob(job.id)"
+            >编辑</el-link>
             <el-link
               type="danger"
               :underline="false"
               class="p-2"
-              @click="handleTakeOffJob(job.id)"
+              @click.stop="handleTakeOffJob(job.id)"
             >关闭</el-link>
           </el-col>
         </el-row>
@@ -53,8 +75,9 @@
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
-      @pagination="getList"
+      @pagination="handleListPageRoute"
     />
+    <el-backtop></el-backtop>
   </div>
 </template>
 
@@ -87,10 +110,10 @@ export default {
       }
       if (this.$route.query.status) {
         this.listQuery.status = this.$route.query.status;
-        if(this.listQuery.status == 2){
-            this.activeIndex = "online";
-        }else{
-            this.activeIndex = "offline";
+        if (this.listQuery.status == 2) {
+          this.activeIndex = "online";
+        } else {
+          this.activeIndex = "offline";
         }
       }
       if (this.$route.query.page) {
@@ -108,6 +131,7 @@ export default {
     },
     handleSelectMenu(index) {
       this.activeIndex = index;
+      this.listQuery.page = 1;
       this.listQuery.status = index == "online" ? 2 : 3;
       this.$nextTick(() => {
         this.$router.push({ path: "/manage-job", query: this.listQuery });
@@ -135,7 +159,22 @@ export default {
       });
     },
     handleEditJob(id) {
-      this.$router.push({ path: "/edit-job", query: { "id": id } });
+      this.$router.push({ path: "/edit-job", query: { id: id } });
+    },
+    handleListPageRoute() {
+      this.$router.push({ path: "/manage-job", query: this.listQuery });
+    },
+    handleJobClick(job) {
+      self.location = `${process.env.VUE_APP_WEB_HOST}/job/${job.id}`;
+    },
+    handleResumeListClick(job, statuses) {
+      this.$router.push({
+        path: "/manage-resume",
+        query: {
+          jobIds: job.id,
+          statuses: statuses
+        }
+      });
     }
   }
 };

@@ -5,10 +5,7 @@ import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.constants.JobApplyStatus;
 import com.worldelite.job.constants.JobStatus;
-import com.worldelite.job.entity.CompanyUser;
-import com.worldelite.job.entity.Job;
-import com.worldelite.job.entity.JobApply;
-import com.worldelite.job.entity.Resume;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.JobForm;
 import com.worldelite.job.form.JobListForm;
@@ -256,7 +253,19 @@ public class JobService extends BaseService {
         PageResult<JobVo> pageResult = new PageResult<>(jobPage);
         List<JobVo> jobVoList = new ArrayList<>(jobPage.size());
         for (Job job : jobPage) {
-            jobVoList.add(toJobVo(job, true));
+            JobApplyOptions applyOptions = new JobApplyOptions();
+            applyOptions.setJobId(job.getId());
+            applyOptions.setStatuses(StringUtils.join(new Byte[]{JobApplyStatus.APPLY.value, JobApplyStatus.VIEW.value}, ","));
+            final int newResumeCount = jobApplyMapper.countJobApply(applyOptions);
+            applyOptions.setStatuses(String.valueOf(JobApplyStatus.CANDIDATE.value));
+            final int candidateResumeCount = jobApplyMapper.countJobApply(applyOptions);
+            applyOptions.setStatuses(String.valueOf(JobApplyStatus.INTERVIEW.value));
+            final int interviewResumeCount = jobApplyMapper.countJobApply(applyOptions);
+            JobVo jobVo = toJobVo(job, true);
+            jobVo.setNewResumeCount(newResumeCount);
+            jobVo.setCandidateResumeCount(candidateResumeCount);
+            jobVo.setInterviewResumeCount(interviewResumeCount);
+            jobVoList.add(jobVo);
         }
         pageResult.setList(jobVoList);
         return pageResult;

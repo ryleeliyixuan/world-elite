@@ -43,6 +43,11 @@ const constantRoutes = [
         path: '/manage-resume',
         component: () => import('@/views/ResumeManagePage'),
         meta: { title: '简历管理' }
+    },
+    {
+        path: '/resume',
+        component: () => import('@/views/ResumePage'),
+        meta: { title: '简历' }
     }
 ]
 

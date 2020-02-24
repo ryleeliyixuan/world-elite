@@ -12,3 +12,16 @@ export function curRelativePath() {
     return result_url;
 }
 
+/**
+ * 去掉http部分
+ */
+export function linkName(link){
+    return link.replace(/http(s)?:\/\//, '');
+}
+
+/**
+ * 完整链接
+ */
+export function wholeLink(link){
+    return link.startsWith("http")? link : "http://" + link;
+}

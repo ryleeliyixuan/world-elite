@@ -2,6 +2,7 @@ package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.JobApply;
 import com.worldelite.job.entity.JobApplyOptions;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -57,4 +58,6 @@ public interface JobApplyMapper {
     List<JobApply> selectAndList(JobApply options);
 
     List<JobApply> selectApplyResumeList(JobApplyOptions options);
+
+    int countJobApply(JobApplyOptions options);
 }

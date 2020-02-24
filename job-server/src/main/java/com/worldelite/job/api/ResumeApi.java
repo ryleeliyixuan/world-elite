@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * 简历接口
+ *
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
@@ -43,19 +44,33 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin
     @GetMapping("my-resume")
-    public ApiResult<ResumeVo> myResume(){
+    public ApiResult<ResumeVo> myResume() {
         ResumeVo resumeVo = resumeService.getDefaultOrCreate(curUser().getId());
         return ApiResult.ok(resumeVo);
     }
 
     /**
+     * 查看简历详情
+     *
+     * @param id
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @GetMapping("resume-detail")
+    public ApiResult<ResumeVo> getResumeDetail(@RequestParam Long id) {
+        ResumeVo resumeVo = resumeService.getResumeDetail(id);
+        return ApiResult.ok(resumeVo);
+    }
+
+    /**
      * 保存基本信息
+     *
      * @param resumeForm
      * @return
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-basic")
-    public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm){
+    public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm) {
         ResumeVo resumeVo = resumeService.saveBasic(resumeForm);
         return ApiResult.ok(resumeVo);
     }
@@ -68,7 +83,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-edu")
-    public ApiResult<ResumeEduVo> saveResumeEdu(@RequestBody ResumeEduForm resumeEduForm){
+    public ApiResult<ResumeEduVo> saveResumeEdu(@RequestBody ResumeEduForm resumeEduForm) {
         ResumeEduVo resumeEduVo = resumeEduService.saveResumeEdu(resumeEduForm);
         return ApiResult.ok(resumeEduVo);
     }
@@ -81,7 +96,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("del-resume-edu")
-    public ApiResult deleteResumeEdu(@RequestParam Integer id){
+    public ApiResult deleteResumeEdu(@RequestParam Integer id) {
         resumeEduService.deleteResumeEdu(id);
         return ApiResult.ok();
     }
@@ -94,7 +109,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-exp")
-    public ApiResult<ResumeExpVo> saveResumeExp(@RequestBody ResumeExpForm resumeExpForm){
+    public ApiResult<ResumeExpVo> saveResumeExp(@RequestBody ResumeExpForm resumeExpForm) {
         ResumeExpVo resumeExpVo = resumeExpService.saveResumeExp(resumeExpForm);
         return ApiResult.ok(resumeExpVo);
     }
@@ -107,7 +122,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("del-resume-exp")
-    public ApiResult deleteResumeEpx(@RequestParam Integer id){
+    public ApiResult deleteResumeEpx(@RequestParam Integer id) {
         resumeExpService.deleteResumeExp(id);
         return ApiResult.ok();
     }
@@ -120,7 +135,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-practice")
-    public ApiResult<ResumePracticeVo> saveResumePractice(@RequestBody ResumePracticeForm practiceForm){
+    public ApiResult<ResumePracticeVo> saveResumePractice(@RequestBody ResumePracticeForm practiceForm) {
         ResumePracticeVo resumePracticeVo = resumePracticeService.saveResumePractice(practiceForm);
         return ApiResult.ok(resumePracticeVo);
     }
@@ -133,7 +148,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("del-resume-practice")
-    public ApiResult deleteResumePractice(@RequestParam Integer id){
+    public ApiResult deleteResumePractice(@RequestParam Integer id) {
         resumePracticeService.deleteResumePractice(id);
         return ApiResult.ok();
     }
@@ -146,7 +161,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-skills")
-    public ApiResult saveResumeSkills(@RequestBody ResumeSkillForm resumeSkillForm){
+    public ApiResult saveResumeSkills(@RequestBody ResumeSkillForm resumeSkillForm) {
         List<ResumeSkillVo> resumeSkillVoList = resumeSkillService.saveResumeSkill(resumeSkillForm);
         return ApiResult.ok(resumeSkillVoList);
     }
@@ -159,7 +174,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-link")
-    public ApiResult saveResumeLink(@RequestBody ResumeLinkForm resumeLinkForm){
+    public ApiResult saveResumeLink(@RequestBody ResumeLinkForm resumeLinkForm) {
         ResumeLinkVo resumeLinkVo = resumeLinkService.saveResumeLink(resumeLinkForm);
         return ApiResult.ok(resumeLinkVo);
     }
@@ -172,7 +187,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("del-resume-link")
-    public ApiResult delResumeLink(@RequestParam Integer id){
+    public ApiResult delResumeLink(@RequestParam Integer id) {
         resumeLinkService.deleteResumeLink(id);
         return ApiResult.ok();
     }
@@ -186,7 +201,7 @@ public class ResumeApi extends BaseApi {
      */
     @PostMapping("my-apply-resume-list")
     @RequireLogin(allow = UserType.COMPANY)
-    public ApiResult getUserApplyResumeList(@RequestBody ApplyResumeListForm listForm){
+    public ApiResult getUserApplyResumeList(@RequestBody ApplyResumeListForm listForm) {
         PageResult pageResult = resumeService.getUserApplyResumeList(listForm);
         return ApiResult.ok(pageResult);
     }
@@ -198,7 +213,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("handle-apply-resume")
-    public ApiResult handleApplyResume(@RequestBody JobApplyForm applyResumeForm){
+    public ApiResult handleApplyResume(@RequestBody JobApplyForm applyResumeForm) {
         resumeService.handleApplyResume(applyResumeForm);
         return ApiResult.ok();
     }

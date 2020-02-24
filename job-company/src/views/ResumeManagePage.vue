@@ -40,15 +40,38 @@
           <span>应聘岗位：{{applyResume.job.name}}</span>
           <span class="ml-4">应聘时间：{{applyResume.time}}</span>
           <div class="float-right">
-            <el-button type="primary" size="small" @click="handleApplyResume(3, applyResume.id)" v-if="applyResume.applyStatus == 1 || applyResume.applyStatus == 2">通过初筛</el-button>
-            <el-button type="primary" size="small" @click="handleApplyResume(4, applyResume.id)" v-if="applyResume.applyStatus == 3">进入面试</el-button>
-            <el-button type="primary" size="small" @click="handleApplyResume(5, applyResume.id)" v-if="applyResume.applyStatus == 4">已录用</el-button>
-            <el-button type="danger" plain size="small" @click="handleApplyResume(6, applyResume.id)" v-if="applyResume.applyStatus != 5">不合适</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleApplyResume(3, applyResume.id)"
+              v-if="applyResume.applyStatus == 1 || applyResume.applyStatus == 2"
+            >通过初筛</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleApplyResume(4, applyResume.id)"
+              v-if="applyResume.applyStatus == 3"
+            >进入面试</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleApplyResume(5, applyResume.id)"
+              v-if="applyResume.applyStatus == 4"
+            >录用</el-button>
+            <el-button
+              type="danger"
+              plain
+              size="small"
+              @click="handleApplyResume(6, applyResume.id)"
+              v-if="applyResume.applyStatus != 5"
+            >不合适</el-button>
           </div>
         </div>
-        <b-media>
+        <b-media @click="handleShowResume(applyResume)" style="cursor: pointer;">
           <template v-slot:aside>
-            <el-avatar :src="applyResume.resume.avatar"></el-avatar>
+            <el-badge is-dot class="item" :hidden="applyResume.applyStatus !== 1">
+              <el-avatar :src="applyResume.resume.avatar"></el-avatar>
+            </el-badge>
           </template>
           <b-media-body>
             <h6>
@@ -114,6 +137,46 @@
       :limit.sync="listQuery.limit"
       @pagination="handleListPageRoute"
     />
+
+    <div class="resume-drawer" v-if="reviewDrawerVisible && activeApplyResume">
+      <div class="resume-drawer-header">
+        <el-row type="flex" class="row-bg" justify="space-between">
+          <el-col :span="12" class="mt-4 ml-4">
+            <el-button
+              type="primary"
+              @click="handleApplyResume(3, activeApplyResume.id)"
+              v-if="activeApplyResume.applyStatus == 1 || activeApplyResume.applyStatus == 2"
+            >通过初筛</el-button>
+            <el-button
+              type="primary"
+              @click="handleApplyResume(4, activeApplyResume.id)"
+              v-if="activeApplyResume.applyStatus == 3"
+            >进入面试</el-button>
+            <el-button
+              type="primary"
+              @click="handleApplyResume(5, activeApplyResume.id)"
+              v-if="activeApplyResume.applyStatus == 4"
+            >录用</el-button>
+            <el-button
+              type="danger"
+              plain
+              @click="handleApplyResume(6, activeApplyResume.id)"
+              v-if="activeApplyResume.applyStatus != 5"
+            >不合适</el-button>
+          </el-col>
+          <el-col :span="6" class="text-right">
+            <el-button
+              type="text"
+              class="el-icon-close text-muted close-text p-4"
+              @click="reviewDrawerVisible=false"
+            ></el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="resume-drawer-body pl-4 pr-4 pb-4">
+        <ResumeView :resumeId="activeApplyResume.resume.id"></ResumeView>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -122,10 +185,11 @@ import Pagination from "@/components/Pagination";
 import { applyResumeList, handleApplyResume } from "@/api/resume_api";
 import { listByType } from "@/api/dict_api";
 import { getUserJobOptions } from "@/api/job_api";
+import ResumeView from "@/components/ResumeView";
 
 export default {
   name: "ResumeManagePage",
-  components: { Pagination },
+  components: { Pagination, ResumeView },
   data() {
     return {
       activeIndex: "1,2",
@@ -137,6 +201,8 @@ export default {
         limit: 20
       },
       total: 0,
+      activeApplyResume: undefined,
+      reviewDrawerVisible: false,
       pageResult: {},
       degreeOptions: [],
       jobOptions: [],
@@ -223,12 +289,21 @@ export default {
           this.getList();
         });
       });
+    },
+    handleShowResume(applyResume) {
+      this.reviewDrawerVisible = true;
+      this.activeApplyResume = applyResume;
+      if(applyResume.applyStatus === 1){
+          handleApplyResume({ id: applyResume.id, status: 2 }).then(()=>{
+              applyResume.applyStatus = 2;
+          });
+      }
     }
   }
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .app-container {
   margin: 0 auto;
   width: 1000px;
@@ -236,7 +311,36 @@ export default {
 .text-small {
   font-size: 14px;
 }
-.text-large {
-  font-size: 18px;
+.close-text {
+  font-size: 30px;
+}
+.resume-drawer {
+  right: 0px;
+  height: 100%;
+  width: 50%;
+  top: 0px;
+  bottom: 0px;
+  position: fixed;
+  box-sizing: border-box;
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 10px -5px,
+    rgba(0, 0, 0, 0.14) 0px 16px 24px 2px, rgba(0, 0, 0, 0.12) 0px 6px 30px 5px;
+}
+.resume-drawer-header {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  background: #fff;
+  height: 80px;
+  border-bottom: 1px solid #eee;
+}
+.resume-drawer-body {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding-top: 80px;
+  overflow: auto;
 }
 </style>

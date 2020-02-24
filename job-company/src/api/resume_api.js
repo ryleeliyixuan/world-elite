@@ -102,3 +102,11 @@ export function handleApplyResume(data){
     data
   })
 }
+
+export function getResumeDetail(id){
+  return request({
+    url: '/resume/resume-detail',
+    method: 'get',
+    params: {id: id}
+  })
+}

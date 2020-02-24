@@ -35,6 +35,10 @@ public class JobVo implements VoConvertable<JobVo, Job>{
 
     private Byte applyStatus; //投递状态
 
+    private Integer candidateResumeCount; // 候选简历数
+    private Integer newResumeCount; // 新投递简历数
+    private Integer interviewResumeCount; //进入面试简历数
+
     @Override
     public JobVo asVo(Job job) {
         setId(String.valueOf(job.getId()));
