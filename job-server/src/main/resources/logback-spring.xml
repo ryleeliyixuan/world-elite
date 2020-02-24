@@ -66,7 +66,7 @@
     <logger name="=com.worldelite.job.mapper" level="debug"/>
 
     <!--开发环境:打印控制台-->
-    <springProfile name="dev">
+    <springProfile name="local">
         <root level="info">
             <appender-ref ref="console"/>
         </root>
