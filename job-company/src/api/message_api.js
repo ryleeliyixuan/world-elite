@@ -1,0 +1,23 @@
+import request from '@/utils/request'
+
+export function getMessageList(data) {
+    return request({
+        url: '/message/list',
+        method: 'get',
+        data
+    })
+}
+
+export function getUnReadMessageCount() {
+    return request({
+        url: '/message/unread-count',
+        method: 'get'
+    })
+}
+
+export function readAllMessage() {
+    return request({
+        url: '/message/read-all-message',
+        method: 'post'
+    })
+}

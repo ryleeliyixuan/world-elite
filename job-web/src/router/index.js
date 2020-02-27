@@ -50,6 +50,11 @@ const constantRoutes = [
         path: '/favorites',
         component: () => import('@/views/FavoriteListPage'),
         meta: { title: '我的收藏' }
+    },
+    {
+        path: '/messages',
+        component: () => import('@/views/MessageListPage'),
+        meta: { title: '消息通知' }
     }
 ]
 

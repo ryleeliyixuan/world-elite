@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.worldelite.job.mapper.MessageMapper">
+  <select id="selectAndList" resultMap="BaseResultMap" parameterType="com.worldelite.job.entity.Message">
+    select
+    <include refid="Base_Column_List" />
+    from t_message
+    <where>
+      <if test="fromUser != null">
+        and from_user = #{fromUser,jdbcType=BIGINT}
+      </if>
+      <if test="toUser != null">
+        and to_user = #{toUser,jdbcType=BIGINT}
+      </if>
+      <if test="readFlag != null">
+        and read_flag = #{readFlag,jdbcType=TINYINT}
+      </if>
+    </where>
+  </select>
+  <select id="countMessage" resultType="java.lang.Integer" parameterType="com.worldelite.job.entity.Message">
+    select
+    count(id)
+    from t_message
+    <where>
+      <if test="fromUser != null">
+        and from_user = #{fromUser,jdbcType=BIGINT}
+      </if>
+      <if test="toUser != null">
+        and to_user = #{toUser,jdbcType=BIGINT}
+      </if>
+      <if test="readFlag != null">
+        and read_flag = #{readFlag,jdbcType=TINYINT}
+      </if>
+    </where>
+  </select>
+  <update id="setUserMessageRead">
+    update t_message
+    set read_flag = 1
+    where
+    to_user = #{toUser,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -2,7 +2,7 @@
   <div class="resume-container" v-if="resume">
     <b-media class="mt-3">
       <template v-slot:aside>
-        <el-avatar :src="resume.avatar" />
+        <el-image :src="resume.avatar" class="avatar" />
       </template>
       <h5>
         {{resume.name}}
@@ -153,20 +153,23 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .resume-container {
   font-size: 15px;
-  
-}
-.description-text p {
-  margin-bottom: 5px;
-}
-.time-text {
-  font-size: 14px;
-  font-weight: 400;
-}
-.resume-title {
-  border-left: 3px solid #409eff;
-  padding-left: 10px;
+  .avatar{
+    width: 80px;
+    height: 80px;
+  }
+  .description-text p {
+    margin-bottom: 5px;
+  }
+  .time-text {
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .resume-title {
+    border-left: 3px solid #409eff;
+    padding-left: 10px;
+  }
 }
 </style>
