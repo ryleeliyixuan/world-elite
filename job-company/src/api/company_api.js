@@ -8,21 +8,6 @@ export function serachByName(name) {
   })
 }
 
-export function saveVerifyInfo(data) {
-  return request({
-    url: '/company/save-verify-info',
-    method: 'post',
-    data
-  })
-}
-
-export function getVerifyInfo() {
-  return request({
-    url: '/company/my-verify-info',
-    method: 'get',
-  })
-}
-
 export function myCompanyInfo(){
   return request({
     url: '/company/my-company-info',

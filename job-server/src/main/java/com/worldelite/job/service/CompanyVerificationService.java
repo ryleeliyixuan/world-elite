@@ -9,6 +9,7 @@ import com.worldelite.job.context.RedisKeys;
 import com.worldelite.job.entity.Company;
 import com.worldelite.job.entity.CompanyUser;
 import com.worldelite.job.entity.CompanyVerification;
+import com.worldelite.job.entity.Message;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.CompanyVerifyForm;
 import com.worldelite.job.form.EmailForm;
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * @author yeguozhong yedaxia.github.com
  */
 @Service
-public class CompanyVerificationService extends BaseService{
+public class CompanyVerificationService extends BaseService {
 
     @Autowired
     private CompanyVerificationMapper verificationMapper;
@@ -55,14 +56,18 @@ public class CompanyVerificationService extends BaseService{
     @Autowired
     private ConfigService configService;
 
+    @Autowired
+    private MessageService messageService;
+
     /**
      * 获取用户的审核信息
+     *
      * @param userId
      * @return
      */
-    public CompanyVerificationVo getVerificationInfo(Long userId){
+    public CompanyVerificationVo getVerificationInfo(Long userId) {
         CompanyVerification companyVerification = verificationMapper.selectByUserId(userId);
-        return companyVerification != null? new CompanyVerificationVo().asVo(companyVerification): null;
+        return companyVerification != null ? new CompanyVerificationVo().asVo(companyVerification) : null;
     }
 
     /**
@@ -71,12 +76,12 @@ public class CompanyVerificationService extends BaseService{
      * @param companyVerifyForm
      */
     @Transactional
-    public void saveVerification(CompanyVerifyForm companyVerifyForm){
+    public void saveVerification(CompanyVerifyForm companyVerifyForm) {
         CompanyVerification companyVerification = verificationMapper.selectByUserId(curUser().getId());
-        if(companyVerification!= null && companyVerification.getStatus() == VerificationStatus.PASS.value){
+        if (companyVerification != null && companyVerification.getStatus() == VerificationStatus.PASS.value) {
             throw new ServiceException(ApiCode.INVALID_OPERATION);
         }
-        if(companyVerification == null){
+        if (companyVerification == null) {
             companyVerification = new CompanyVerification();
         }
         companyVerification.setUserId(curUser().getId());
@@ -87,10 +92,10 @@ public class CompanyVerificationService extends BaseService{
         companyVerification.setStatus(VerificationStatus.REVIEWING.value);
         companyVerification.setIdCard(companyVerifyForm.getIdCard());
         companyVerification.setIdCardPic(AppUtils.getOssKey(companyVerifyForm.getIdCardPic()));
-        if(companyVerification.getId() != null){
+        if (companyVerification.getId() != null) {
             companyVerification.setUpdateTime(new Date());
             verificationMapper.updateByPrimaryKeySelective(companyVerification);
-        }else{
+        } else {
             verificationMapper.insertSelective(companyVerification);
         }
 
@@ -103,45 +108,46 @@ public class CompanyVerificationService extends BaseService{
 
     /**
      * 通过审核
-     *
      **/
     @SysLog
     @Transactional
-    public void passVerification(Long userId){
+    public void passVerification(Long userId) {
         CompanyVerification companyVerification = verificationMapper.selectByUserId(userId);
-        if(companyVerification == null || companyVerification.getStatus() != VerificationStatus.REVIEWING.value){
+        if (companyVerification == null || companyVerification.getStatus() != VerificationStatus.REVIEWING.value) {
             throw new ServiceException(ApiCode.INVALID_OPERATION);
         }
         companyVerification.setStatus(VerificationStatus.PASS.value);
         companyVerification.setUpdateTime(new Date());
         verificationMapper.updateByPrimaryKeySelective(companyVerification);
 
-        Company companyOptions = new Company();
-        companyOptions.setFullName(companyVerification.getCompany());
-        List<Company> companyList = companyMapper.selectAndList(companyOptions);
-
-        Company company;
-        if(CollectionUtils.isEmpty(companyList)){
+        Company company = companyMapper.selectByFullName(companyVerification.getCompany());
+        if (company == null) {
             Company newCompany = new Company();
             newCompany.setId(AppUtils.nextId());
             newCompany.setFullName(companyVerification.getCompany());
             companyMapper.insertSelective(newCompany);
             company = newCompany;
-        }else{
-            company = companyList.get(0);
         }
 
-        CompanyUser companyUserOptions = new CompanyUser();
-        companyUserOptions.setCompanyId(company.getId());
-        companyUserOptions.setUserId(userId);
-        List<CompanyUser> companyUserList = companyUserMapper.selectAndList(companyUserOptions);
-        if(CollectionUtils.isEmpty(companyUserList)){
-            CompanyUser companyUser = new CompanyUser();
-            companyUser.setUserId(userId);
-            companyUser.setPost(companyVerification.getPost());
-            companyUser.setCompanyId(company.getId());
-            companyUserMapper.insertSelective(companyUser);
-        }
+        CompanyUser companyUser = new CompanyUser();
+        companyUser.setUserId(userId);
+        companyUser.setPost(companyVerification.getPost());
+        companyUser.setCompanyId(company.getId());
+        companyUserMapper.insertSelective(companyUser);
+
+        // 修改用户状态
+        UserForm userForm = new UserForm();
+        userForm.setId(userId);
+        userForm.setStatus(UserStatus.NORMAL.value);
+        userService.modifyUser(userForm);
+
+
+        // 发送站内消息
+        Message message = new Message();
+        message.setToUser(userId);
+        message.setFromUser(curUser().getId());
+        message.setContent(message("message.verification.pass"));
+        messageService.sendMessage(message);
 
         // 发送审核成功邮件
         UserVo userVo = userService.getUserInfo(userId);
@@ -155,9 +161,9 @@ public class CompanyVerificationService extends BaseService{
      * @param reason 拒绝原因
      */
     @SysLog
-    public void rejectVerification(Long userId, String reason){
+    public void rejectVerification(Long userId, String reason) {
         CompanyVerification companyVerification = verificationMapper.selectByUserId(userId);
-        if(companyVerification == null || companyVerification.getStatus() != VerificationStatus.REVIEWING.value){
+        if (companyVerification == null || companyVerification.getStatus() != VerificationStatus.REVIEWING.value) {
             throw new ServiceException(ApiCode.INVALID_OPERATION);
         }
         companyVerification.setStatus(VerificationStatus.REJECT.value);
@@ -165,20 +171,27 @@ public class CompanyVerificationService extends BaseService{
         companyVerification.setUpdateTime(new Date());
         verificationMapper.updateByPrimaryKeySelective(companyVerification);
 
+        // 发送站内消息
+        Message message = new Message();
+        message.setToUser(userId);
+        message.setFromUser(curUser().getId());
+        message.setContent(message("message.verification.reject", reason));
+        messageService.sendMessage(message);
+
         //发送审核失败邮件
         UserVo userVo = userService.getUserInfo(userId);
         sendVerificationRejectEmail(userVo.getEmail(), reason);
     }
 
 
-    private void sendVerificationPassEmail(String email){
+    private void sendVerificationPassEmail(String email) {
         EmailForm emailForm = configService.getEmailForm(ConfigType.EMAIL_VERIFICATION_PASS);
         emailForm.setAddress(email);
         emailService.sendEmail(emailForm);
     }
 
 
-    private void sendVerificationRejectEmail(String email, String reason){
+    private void sendVerificationRejectEmail(String email, String reason) {
         EmailForm emailForm = configService.getEmailForm(ConfigType.EMAIL_VERIFICATION_REJECT);
         emailForm.setAddress(email);
         emailForm.setEmailBody(emailForm.getEmailBody().replace("${REASON}", reason));

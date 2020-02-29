@@ -2,6 +2,7 @@ package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.entity.User;
 import com.worldelite.job.form.CompanyAddressForm;
 import com.worldelite.job.form.CompanyForm;
 import com.worldelite.job.form.CompanyListForm;
@@ -26,8 +27,6 @@ public class CompanyApi extends BaseApi {
     @Autowired
     private CompanyService companyService;
 
-    @Autowired
-    private CompanyVerificationService companyVerificationService;
 
     @Autowired
     private CompanyAddressService companyAddressService;
@@ -45,39 +44,27 @@ public class CompanyApi extends BaseApi {
     }
 
     /**
+     * 获取公司列表
+     *
+     * @param listForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("list")
+    public ApiResult listCompany(CompanyListForm listForm){
+        PageResult pageResult = companyService.getCompanyList(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
      * 获取公司信息
      * @param id
      * @return
      */
     @GetMapping("/company-home-data")
-    public ApiResult<CompanyVo> getCompanyInfo(@RequestParam Long id){
+    public ApiResult<CompanyVo> getCompanyHomeData(@RequestParam Long id){
         CompanyVo companyVo = companyService.getCompanyHomeData(id);
         return ApiResult.ok(companyVo);
-    }
-
-    /**
-     * 提交验证信息
-     *
-     * @param companyVerifyForm
-     * @return
-     */
-    @RequireLogin
-    @PostMapping("save-verify-info")
-    public ApiResult saveVerifyInfo(@Valid @RequestBody CompanyVerifyForm companyVerifyForm) {
-        companyVerificationService.saveVerification(companyVerifyForm);
-        return ApiResult.ok();
-    }
-
-    /**
-     * 获取我的验证信息
-     *
-     * @return
-     */
-    @RequireLogin
-    @GetMapping("my-verify-info")
-    public ApiResult myVerifyInfo() {
-        CompanyVerificationVo companyVerificationVo = companyVerificationService.getVerificationInfo(curUser().getId());
-        return ApiResult.ok(companyVerificationVo);
     }
 
     /**
@@ -93,11 +80,24 @@ public class CompanyApi extends BaseApi {
     }
 
     /**
+     * 获取公司信息
+     *
+     * @param id
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("get-company-info")
+    public ApiResult getCompanyInfo(@RequestParam Long id){
+        CompanyVo companyVo = companyService.getCompanyInfo(id);
+        return ApiResult.ok(companyVo);
+    }
+
+    /**
      * 保存公司信息
      *
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @PostMapping("save-company")
     public ApiResult saveCompany(@Valid @RequestBody CompanyForm companyForm) {
         companyService.saveCompany(companyForm);
@@ -110,7 +110,7 @@ public class CompanyApi extends BaseApi {
      * @param companyAddressForm
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @PostMapping("save-company-addr")
     public ApiResult saveCompanyAddress(@Valid @RequestBody CompanyAddressForm companyAddressForm) {
         companyAddressService.saveCompanyAddress(companyAddressForm);
@@ -123,13 +123,12 @@ public class CompanyApi extends BaseApi {
      * @param id
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @PostMapping("del-company-addr")
     public ApiResult delCompanyAddress(@RequestParam Integer id) {
         companyAddressService.delCompanyAddress(id);
         return ApiResult.ok();
     }
-
 
     /**
      * 获取当前用户公司地址列表

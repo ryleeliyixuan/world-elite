@@ -9,6 +9,12 @@
             <if test="fullName != null">
                 and full_name like CONCAT('%', #{fullName},'%')
             </if>
+            <if test="industryId != null">
+                and industry_id = #{industryId,jdbcType=INTEGER}
+            </if>
+            <if test="cityId != null">
+                and id in (select city_id from t_company_address where city_id = #{cityId,jdbcType=INTEGER})
+            </if>
         </where>
     </select>
     <select id="selectSimpleById" resultMap="BaseResultMap">
@@ -16,5 +22,11 @@
         <include refid="Base_Column_List"/>
         from t_company
         where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectByFullName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_company
+        where full_name = #{fullName,jdbcType=VARCHAR}
     </select>
 </mapper>

@@ -1,14 +1,16 @@
 package com.worldelite.job.api;
 
+import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.VerificationStatus;
 import com.worldelite.job.controller.BaseController;
-import com.worldelite.job.form.LoginForm;
-import com.worldelite.job.form.RegisterForm;
-import com.worldelite.job.form.UserExpectJobForm;
+import com.worldelite.job.form.*;
+import com.worldelite.job.service.CompanyVerificationService;
 import com.worldelite.job.service.UserExpectJobService;
 import com.worldelite.job.service.UserService;
 import com.worldelite.job.vo.ApiResult;
+import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.UserExpectJobVo;
 import com.worldelite.job.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class UserApi extends BaseController {
 
     @Autowired
     private UserExpectJobService userExpectJobService;
+
+    @Autowired
+    private CompanyVerificationService companyVerificationService;
 
     /**
      * 邮箱注册
@@ -88,6 +93,43 @@ public class UserApi extends BaseController {
     public ApiResult saveUserExpectJob(@RequestBody UserExpectJobForm expectJobForm){
         UserExpectJobVo userExpectJobVo = userExpectJobService.saveUserExpectJob(expectJobForm);
         return ApiResult.ok(userExpectJobVo);
+    }
+
+    /**
+     * 用户列表
+     * @param listForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("list")
+    public ApiResult getUserList(UserListForm listForm){
+        PageResult pageResult = userService.getUserList(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 获取企业用户列表
+     *
+     * @param listForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("company-user-list")
+    public ApiResult listCompanyUser(UserListForm listForm){
+        PageResult pageResult = userService.getCompanyUserList(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 修改用户状态
+     *
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("modify-status")
+    public ApiResult modifyUserStatus(@RequestBody StatusForm statusForm){
+        userService.modifyUserStatus(statusForm);
+        return ApiResult.ok();
     }
 
     /**

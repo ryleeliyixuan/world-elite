@@ -50,6 +50,18 @@ public class ResumeApi extends BaseApi {
     }
 
     /**
+     * 获取简历列表
+     * @param listForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("list")
+    public ApiResult getResumeList(@RequestBody ResumeListForm listForm){
+
+        return null;
+    }
+
+    /**
      * 查看简历详情
      *
      * @param id

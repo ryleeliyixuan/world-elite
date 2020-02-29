@@ -1,8 +1,11 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.JobStatus;
+import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.Company;
+import com.worldelite.job.entity.CompanyOptions;
 import com.worldelite.job.entity.CompanyUser;
 import com.worldelite.job.entity.Job;
 import com.worldelite.job.exception.ServiceException;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -52,12 +56,32 @@ public class CompanyService extends BaseService{
      * @return
      */
     public PageResult<CompanyVo> search(CompanyListForm companyListForm) {
-        AppUtils.setPage(companyListForm);
-        Company options = new Company();
+        CompanyOptions options = new CompanyOptions();
         options.setFullName(companyListForm.getName());
+        AppUtils.setPage(companyListForm);
         Page<Company> companyPage = (Page<Company>) companyMapper.selectAndList(options);
         PageResult<CompanyVo> pageResult = new PageResult<>(companyPage);
         pageResult.setList(AppUtils.asVoList(companyPage, CompanyVo.class));
+        return pageResult;
+    }
+
+    /**
+     * 获取公司列表
+     *
+     * @param listForm
+     * @return
+     */
+    public PageResult<CompanyVo> getCompanyList(CompanyListForm listForm){
+        CompanyOptions options = new CompanyOptions();
+        BeanUtil.copyProperties(listForm, options);
+        AppUtils.setPage(listForm);
+        Page<Company> companyPage = (Page<Company>) companyMapper.selectAndList(options);
+        PageResult<CompanyVo> pageResult = new PageResult<>(companyPage);
+        List<CompanyVo> companyVoList = new ArrayList<>(companyPage.size());
+        for(Company company: companyPage){
+            companyVoList.add(toCompanyVo(company));
+        }
+        pageResult.setList(companyVoList);
         return pageResult;
     }
 
@@ -77,7 +101,7 @@ public class CompanyService extends BaseService{
         CompanyUser companyUser = companyUserList.get(0);
         CompanyUserVo companyUserVo = new CompanyUserVo();
         companyUserVo.asVo(userMapper.selectByPrimaryKey(userId));
-        companyUserVo.setCompany(getCompanyInfo(companyUser.getCompanyId()));
+        companyUserVo.setCompany(getSimpleCompanyInfo(companyUser.getCompanyId()));
         companyUserVo.setDepart(companyUser.getDepart());
         companyUserVo.setPost(companyUser.getPost());
         return companyUserVo;
@@ -96,7 +120,7 @@ public class CompanyService extends BaseService{
             return null;
         }
         CompanyUser companyUser = companyUserList.get(0);
-        return getCompanyInfo(companyUser.getCompanyId());
+        return getSimpleCompanyInfo(companyUser.getCompanyId());
     }
 
     /**
@@ -106,7 +130,7 @@ public class CompanyService extends BaseService{
      * @return
      */
     public CompanyVo getCompanyHomeData(Long companyId){
-        CompanyVo companyVo = getCompanyInfo(companyId);
+        CompanyVo companyVo = getSimpleCompanyInfo(companyId);
         JobListForm jobListForm = new JobListForm();
         jobListForm.setCompanyId(companyId);
         jobListForm.setStatus(JobStatus.PUBLISH.value);
@@ -125,8 +149,23 @@ public class CompanyService extends BaseService{
      */
     public CompanyVo getMyCompanyInfo(){
         CompanyVo companyVo = getUserCompany(curUser().getId());
-        companyVo.setCompleteProgress(AppUtils.calCompleteProgress(companyVo));
         companyVo.setAddressList(companyAddressService.getCompanyAddressList(Long.valueOf(companyVo.getId())));
+        companyVo.setCompleteProgress(AppUtils.calCompleteProgress(companyVo));
+        return companyVo;
+    }
+
+    /**
+     * 获取公司信息
+     *
+     * @param id
+     * @return
+     */
+    public CompanyVo getCompanyInfo(Long id){
+        Company company = companyMapper.selectByPrimaryKey(id);
+        if (company == null) return null;
+        CompanyVo companyVo = toCompanyVo(company);
+        companyVo.setAddressList(companyAddressService.getCompanyAddressList(Long.valueOf(companyVo.getId())));
+        companyVo.setCompleteProgress(AppUtils.calCompleteProgress(companyVo));
         return companyVo;
     }
 
@@ -136,15 +175,10 @@ public class CompanyService extends BaseService{
      * @param companyId
      * @return
      */
-    public CompanyVo getCompanyInfo(Long companyId) {
+    private CompanyVo getSimpleCompanyInfo(Long companyId) {
         Company company = companyMapper.selectSimpleById(companyId);
         if (company == null) return null;
-        CompanyVo companyVo = new CompanyVo().asVo(company);
-        companyVo.setScale(dictService.getById(company.getScaleId()));
-        companyVo.setStage(dictService.getById(company.getStageId()));
-        companyVo.setIndustry(dictService.getById(company.getIndustryId()));
-        companyVo.setProperty(dictService.getById(company.getPropertyId()));
-        return companyVo;
+        return toCompanyVo(company);
     }
 
     /**
@@ -174,6 +208,10 @@ public class CompanyService extends BaseService{
      * @param companyId
      */
     public void checkCompanyUser(Long companyId) {
+        // 管理员
+        if(curUser().getType() == UserType.ADMIN.value){
+            return;
+        }
         CompanyUser options = new CompanyUser();
         options.setUserId(curUser().getId());
         options.setCompanyId(companyId);
@@ -181,5 +219,14 @@ public class CompanyService extends BaseService{
         if (CollectionUtils.isEmpty(companyUserList)) {
             throw new ServiceException(ApiCode.PERMISSION_DENIED);
         }
+    }
+
+    private CompanyVo toCompanyVo(Company company){
+        CompanyVo companyVo = new CompanyVo().asVo(company);
+        companyVo.setScale(dictService.getById(company.getScaleId()));
+        companyVo.setStage(dictService.getById(company.getStageId()));
+        companyVo.setIndustry(dictService.getById(company.getIndustryId()));
+        companyVo.setProperty(dictService.getById(company.getPropertyId()));
+        return companyVo;
     }
 }

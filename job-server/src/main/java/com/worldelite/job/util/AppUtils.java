@@ -1,5 +1,6 @@
 package com.worldelite.job.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.worldelite.job.anatation.ResumeScore;
@@ -9,6 +10,7 @@ import com.worldelite.job.context.config.DomainConfig;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.vo.ResumeVo;
 import com.worldelite.job.vo.VoConvertable;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

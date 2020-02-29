@@ -1,6 +1,7 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.Company;
+import com.worldelite.job.entity.CompanyOptions;
 
 import java.util.List;
 
@@ -61,7 +62,9 @@ public interface CompanyMapper {
      */
     int updateByPrimaryKey(Company record);
 
-    List<Company> selectAndList(Company options);
+    List<Company> selectAndList(CompanyOptions options);
 
     Company selectSimpleById(Long id);
+
+    Company selectByFullName(String fullName);
 }

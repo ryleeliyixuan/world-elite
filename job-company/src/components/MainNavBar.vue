@@ -25,15 +25,34 @@
           <el-button type="primary" @click="$router.push('/login')">登录</el-button>
         </div>
         <div class="text-right" v-else>
-          <el-popover placement="bottom-end" width="300" trigger="hover" @show="getMessageList" title="系统通知">
+          <el-popover
+            placement="bottom-end"
+            width="300"
+            trigger="hover"
+            @show="getMessageList"
+            title="系统通知"
+          >
             <div class="message-list" v-if="newMessageList && newMessageList.length !== 0">
-                <div class="message-item" v-for="message in newMessageList" :key="message.id">
-                    {{message.content}} <el-link v-if="message.url && message.url != ''" :href="meesage.url" :underline="false">查看</el-link>
-                </div>
+              <div class="message-item" v-for="message in newMessageList" :key="message.id">
+                <el-badge is-dot v-if="message.readFlag === 0" />
+                {{message.content}}
+                <el-link
+                  v-if="message.url && message.url != ''"
+                  :href="meesage.url"
+                  :underline="false"
+                >查看</el-link>
+              </div>
             </div>
             <div class="text-center p-2" v-else>暂无新消息</div>
-            <div class="text-center p-2"><el-link type="primary" :underline="false" @click="goMessageList">查看全部</el-link></div>
-            <el-link :underline="false" class="mr-4 p-2 nav-message" slot="reference" @click="goMessageList">
+            <div class="text-center p-2">
+              <el-link type="primary" :underline="false" @click="goMessageList">查看全部</el-link>
+            </div>
+            <el-link
+              :underline="false"
+              class="mr-4 p-2 nav-message"
+              slot="reference"
+              @click="goMessageList"
+            >
               <el-badge is-dot v-if="messageCount !== 0">
                 <i class="el-icon-message-solid"></i>
               </el-badge>
@@ -46,7 +65,15 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <el-link class="no-decoration" :underline="false" href="/edit-company">公司主页</el-link>
+                <el-link
+                  class="no-decoration"
+                  :underline="false"
+                  href="/verify"
+                  v-if="status === 0"
+                >审核资料</el-link>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-link class="no-decoration" :underline="false" href="/edit-company" v-if="status !== 0">公司主页</el-link>
               </el-dropdown-item>
               <el-dropdown-item @click.native="handleLogout" class="text-danger">退出登录</el-dropdown-item>
             </el-dropdown-menu>
@@ -64,7 +91,7 @@ import { getUnReadMessageCount, getMessageList } from "@/api/message_api";
 export default {
   name: "MainNavBar",
   computed: {
-    ...mapGetters(["token", "name", "messageCount"])
+    ...mapGetters(["token", "name", "messageCount", "status"])
   },
   data() {
     return {
@@ -77,11 +104,16 @@ export default {
   watch: {
     $route() {
       this.activeIndex = this.$route.path;
+      this.getUnReadMessageCount();
     }
+  },
+  created() {
+    this.activeIndex = this.$route.path;
+    this.getUnReadMessageCount();
   },
   methods: {
     ...mapMutations({
-       setMessageCount: 'setting/MESSAGE_COUNT'
+      setMessageCount: "setting/MESSAGE_COUNT"
     }),
     handleLogout() {
       this.$store.dispatch("user/LOGOUT").then(() => {
@@ -91,19 +123,19 @@ export default {
     getUnReadMessageCount() {
       if (this.token && this.token !== "") {
         getUnReadMessageCount().then(response => {
-           this.setMessageCount(response.data);
+          this.setMessageCount(response.data);
         });
       }
     },
     getMessageList() {
       if (this.token && this.token !== "") {
-         getMessageList(this.messageListForm).then(response => {
-            this.newMessageList = response.data.list;
-         });
+        getMessageList(this.messageListForm).then(response => {
+          this.newMessageList = response.data.list;
+        });
       }
     },
     goMessageList() {
-       this.$router.push('/messages');
+      this.$router.push("/messages");
     }
   }
 };
@@ -137,5 +169,13 @@ a.no-decoration:hover {
 a.logo-text:hover,
 a.nav-item:hover {
   text-decoration: none;
+}
+
+.message-item{
+  padding: 10px 5px;
+  border-bottom: 1px solid #EEE;
+  line-height: 1.5em;
+  font-size: 15px;
+  color: #888;
 }
 </style>

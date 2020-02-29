@@ -63,7 +63,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
             if(!accessAllow(requireLogin, loginUser)){
-                ResponseUtils.writeAsJson(response, ApiResult.fail(ApiCode.NEED_LOGIN, messageResource.getMessage("permission.denied")));
+                ResponseUtils.writeAsJson(response, ApiResult.fail(ApiCode.PERMISSION_DENIED, messageResource.getMessage("permission.denied")));
                 return false;
             }
             if(ArrayUtils.contains(requireLogin.allow(), UserType.COMPANY)

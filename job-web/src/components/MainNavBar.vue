@@ -34,6 +34,7 @@
           <el-popover placement="bottom-end" width="300" trigger="hover" @show="getMessageList" title="系统通知">
             <div class="message-list" v-if="newMessageList && newMessageList.length !== 0">
                 <div class="message-item" v-for="message in newMessageList" :key="message.id">
+                    <el-badge is-dot v-if="message.readFlag === 0"/>
                     {{message.content}} <el-link v-if="message.url && message.url != ''" :href="meesage.url" :underline="false">查看</el-link>
                 </div>
             </div>

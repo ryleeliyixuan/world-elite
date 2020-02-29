@@ -10,4 +10,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CompanyListForm extends PageForm{
     private String name;
+    private String fullName;
+    private Integer industryId;
+    private Integer cityId;
 }

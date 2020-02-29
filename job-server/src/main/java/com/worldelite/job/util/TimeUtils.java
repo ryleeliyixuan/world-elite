@@ -36,4 +36,21 @@ public class TimeUtils {
         return Math.max(age, 0);
     }
 
+    /**
+     * 获取今天的最后一秒
+     *
+     * @param date
+     * @return
+     */
+    public static Date finalSecOfTheDay(Date date){
+        if(date == null){
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        return calendar.getTime();
+    }
 }

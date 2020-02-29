@@ -1,23 +1,24 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.Page;
+import com.worldelite.job.anatation.SysLog;
 import com.worldelite.job.constants.ConfigType;
 import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.constants.VerificationStatus;
 import com.worldelite.job.context.AttrKeys;
 import com.worldelite.job.context.RedisKeys;
-import com.worldelite.job.entity.LoginLog;
-import com.worldelite.job.entity.User;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
-import com.worldelite.job.form.EmailForm;
-import com.worldelite.job.form.LoginForm;
-import com.worldelite.job.form.RegisterForm;
-import com.worldelite.job.form.UserForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.LoginLogMapper;
 import com.worldelite.job.mapper.UserMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.RequestUtils;
-import com.worldelite.job.vo.UserVo;
+import com.worldelite.job.vo.*;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -55,6 +58,15 @@ public class UserService extends BaseService {
     @Autowired
     private LoginLogMapper loginLogMapper;
 
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private CompanyVerificationService companyVerificationService;
+
     @Value("${token.expired.seconds}")
     private Long TOKEN_EXPIRED_SECONDS;
 
@@ -76,17 +88,17 @@ public class UserService extends BaseService {
 
         final String validCodeKey = RedisKeys.VALIDATE_EMAIL_PREFIX + registerForm.getEmail();
 
-        if(!registerForm.getValidCode().equals(redisTemplate.opsForValue().get(validCodeKey))){
+        if (!registerForm.getValidCode().equals(redisTemplate.opsForValue().get(validCodeKey))) {
             throw new ServiceException(message("activate.email.expired"));
         }
 
         user = new User();
         user.setId(AppUtils.nextId());
         user.setEmail(registerForm.getEmail());
-        if(registerForm.getUserType() == null || registerForm.getUserType() == UserType.GENERAL.value){
+        if (registerForm.getUserType() == null || registerForm.getUserType() == UserType.GENERAL.value) {
             user.setStatus(UserStatus.NORMAL.value);
             user.setType(UserType.GENERAL.value);
-        }else if(registerForm.getUserType() == UserType.COMPANY.value){
+        } else if (registerForm.getUserType() == UserType.COMPANY.value) {
             user.setStatus(UserStatus.NOT_ACTIVATE.value);
             user.setType(UserType.COMPANY.value);
         }
@@ -104,7 +116,7 @@ public class UserService extends BaseService {
     /**
      * 发送邮件验证码
      */
-    public void sendEmailValidCode(String email){
+    public void sendEmailValidCode(String email) {
         final String activateCode = RandomStringUtils.randomNumeric(6);
         redisTemplate.opsForValue().set(RedisKeys.VALIDATE_EMAIL_PREFIX + email, activateCode, ACTIVATE_EXPIRED_SECONDS, TimeUnit.SECONDS);
         EmailForm emailForm = configService.getEmailForm(ConfigType.EMAIL_ACCOUNT_VALIDATE);
@@ -118,16 +130,16 @@ public class UserService extends BaseService {
      *
      * @return
      */
-    public UserVo emailLogin(LoginForm loginForm){
+    public UserVo emailLogin(LoginForm loginForm) {
         User user = userMapper.selectByEmail(loginForm.getEmail());
-        if(user == null){
+        if (user == null) {
             throw new ServiceException(message("login.validate.fail"));
         }
-        if(user.getStatus() == UserStatus.BLACK.value){
+        if (user.getStatus() == UserStatus.BLACK.value) {
             throw new ServiceException(message("user.black.list"));
         }
         final String encodePass = DigestUtils.sha256Hex(loginForm.getPassword() + user.getSalt());
-        if(!StringUtils.equals(encodePass, user.getPassword())){
+        if (!StringUtils.equals(encodePass, user.getPassword())) {
             throw new ServiceException(message("login.validate.fail"));
         }
         UserVo loginUser = new UserVo().asVo(user);
@@ -141,12 +153,12 @@ public class UserService extends BaseService {
      * @param id
      * @return
      */
-    public UserVo getUserInfo(Long id){
+    public UserVo getUserInfo(Long id) {
         User user = userMapper.selectByPrimaryKey(id);
         UserVo userVo = new UserVo().asVo(user);
         userVo.setEmail(user.getEmail());
         userVo.setPhoneCode(user.getPhoneCode());
-        if(user.getPhone() != null){
+        if (user.getPhone() != null) {
             userVo.setPhone(String.valueOf(user.getPhone()));
         }
         return userVo;
@@ -157,14 +169,99 @@ public class UserService extends BaseService {
      *
      * @param userForm
      */
-    public void modifyUser(UserForm userForm){
+    public void modifyUser(UserForm userForm) {
         User user = userMapper.selectByPrimaryKey(userForm.getId());
-        if(user != null){
+        if (user != null) {
             user.setAvatar(AppUtils.getOssKey(userForm.getAvatar()));
             user.setPhoneCode(userForm.getPhoneCode());
             user.setPhone(userForm.getPhone());
             user.setGender(userForm.getGender());
             user.setName(userForm.getName());
+            user.setStatus(userForm.getStatus());
+            user.setUpdateTime(new Date());
+            userMapper.updateByPrimaryKeySelective(user);
+        }
+    }
+
+    /**
+     * 获取用户列表
+     *
+     * @return
+     */
+    public PageResult<UserVo> getUserList(UserListForm listForm) {
+        UserOptions options = new UserOptions();
+        BeanUtil.copyProperties(listForm, options);
+        AppUtils.setPage(listForm);
+        Page<User> userPage = (Page<User>) userMapper.selectAndList(options);
+        PageResult<UserVo> pageResult = new PageResult<>(userPage);
+        pageResult.setList(AppUtils.asVoList(userPage, UserVo.class));
+        return pageResult;
+    }
+
+    /**
+     * 获取企业用户列表
+     *
+     * @param listForm
+     * @return
+     */
+    public PageResult<CompanyUserVo> getCompanyUserList(UserListForm listForm){
+        UserOptions options = new UserOptions();
+        BeanUtil.copyProperties(listForm, options);
+        // 待审核用户
+        if(listForm.getStatus() == UserStatus.NOT_ACTIVATE.value){
+            options.setVerifyStatus(VerificationStatus.REVIEWING.value);
+        }
+        AppUtils.setPage(listForm);
+        Page<User> userPage = (Page<User>) userMapper.selectAndList(options);
+        PageResult<CompanyUserVo> pageResult = new PageResult<>(userPage);
+        List<CompanyUserVo> companyUserVoList = new ArrayList<>(userPage.size());
+        for(User user : userPage){
+            CompanyUserVo companyUserVo = null;
+            if(user.getStatus() == UserStatus.NOT_ACTIVATE.value){
+                CompanyVerificationVo verificationVo = companyVerificationService.getVerificationInfo(user.getId());
+                if(verificationVo != null){
+                    companyUserVo = new CompanyUserVo();
+                    companyUserVo.asVo(user);
+                    companyUserVo.setPost(verificationVo.getPost());
+                    CompanyVo companyVo = new CompanyVo();
+                    companyVo.setFullName(verificationVo.getCompany());
+                    companyUserVo.setCompany(companyVo);
+                }
+            }else{
+                companyUserVo = companyService.getCompanyUser(user.getId());
+            }
+
+            if(companyUserVo != null){
+                companyUserVoList.add(companyUserVo);
+            }
+        }
+        pageResult.setList(companyUserVoList);
+        return pageResult;
+    }
+
+    /**
+     * 修改用户状态
+     *
+     * @param userForm
+     */
+    @SysLog
+    public void modifyUserStatus(StatusForm userForm) {
+        User user = userMapper.selectByPrimaryKey(userForm.getUserId());
+        if (user != null) {
+
+            // 站内消息
+            Message message = new Message();
+            message.setToUser(user.getId());
+            if (user.getStatus() == UserStatus.NORMAL.value && userForm.getStatus() == UserStatus.BLACK.value) {
+                message.setContent(message("message.status.black", userForm.getReason()));
+            } else if (user.getStatus() == UserStatus.BLACK.value && userForm.getStatus() == UserStatus.NORMAL.value) {
+                message.setContent(message("message.status.recover"));
+            }
+            if(message.getContent() != null){
+                messageService.sendMessage(message);
+            }
+
+            user.setStatus(userForm.getStatus());
             user.setUpdateTime(new Date());
             userMapper.updateByPrimaryKeySelective(user);
         }
@@ -173,8 +270,8 @@ public class UserService extends BaseService {
     /**
      * 退出登录
      */
-    public void logout(){
-        if(curUser() != null){
+    public void logout() {
+        if (curUser() != null) {
             redisTemplate.delete(curUser().getToken());
         }
     }

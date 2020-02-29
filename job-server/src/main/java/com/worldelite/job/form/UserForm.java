@@ -14,5 +14,6 @@ public class UserForm {
     private Long phone;
     private String avatar;
     private Byte gender;
+    private Byte status;
 
 }

@@ -1,6 +1,9 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.User;
+import com.worldelite.job.entity.UserOptions;
+
+import java.util.List;
 
 public interface UserMapper {
     /**
@@ -52,4 +55,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User selectByEmail(String email);
+
+    List<User> selectAndList(UserOptions options);
 }

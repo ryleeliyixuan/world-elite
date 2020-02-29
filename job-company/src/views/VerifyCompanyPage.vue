@@ -78,7 +78,8 @@
 
 <script>
 import { getUploadPicToken } from "@/api/upload_api";
-import { serachByName, saveVerifyInfo, getVerifyInfo } from "@/api/company_api";
+import { serachByName } from "@/api/company_api";
+import { saveVerifyInfo, getVerifyInfo  } from "@/api/verify_api";
 
 export default {
   data() {
