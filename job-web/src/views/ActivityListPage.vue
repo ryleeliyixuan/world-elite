@@ -24,7 +24,7 @@
         shadow="hover"
         v-for="activity in list"
         :key="activity.id"
-        class="mb-2"
+        class="mb-2 link-pointer"
         @click.native="openActivity(activity)"
       >
         <el-row :gutter="15">
@@ -104,7 +104,9 @@ export default {
         query: formatListQuery(this.listQuery)
       });
     },
-    openActivity() {}
+    openActivity(activity) {
+      window.open(activity.url);
+    }
   }
 };
 </script>

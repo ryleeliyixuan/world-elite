@@ -82,7 +82,7 @@ public class LuceneIndexService implements IndexService {
         try {
             indexWriter = createIndexWriter(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             //先删除，再添加
-            indexWriter.deleteDocuments(LongPoint.newExactQuery(JobIndexFields.JOB_ID, jobId));
+            indexWriter.deleteDocuments(LongPoint.newExactQuery(JobIndexFields.JOB_ID_INDEX, jobId));
             indexWriter.addDocument(createJobDoc(jobId));
             indexWriter.commit();
         } catch (IOException e) {
@@ -97,7 +97,7 @@ public class LuceneIndexService implements IndexService {
         IndexWriter indexWriter = null;
         try {
             indexWriter = createIndexWriter(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-            indexWriter.deleteDocuments(LongPoint.newExactQuery(JobIndexFields.JOB_ID, jobId));
+            indexWriter.deleteDocuments(LongPoint.newExactQuery(JobIndexFields.JOB_ID_INDEX, jobId));
             indexWriter.commit();
         } catch (IOException e) {
             log.error("deleteJobItem error ", e);
@@ -110,6 +110,7 @@ public class LuceneIndexService implements IndexService {
         JobVo jobVo = jobService.getJobDetail(jobId);
         final Document doc = new Document();
         doc.add(new StoredField(JobIndexFields.JOB_ID, jobId));
+        doc.add(new LongPoint(JobIndexFields.JOB_ID_INDEX, jobId));
         StringBuilder keyWordBuilder = new StringBuilder();
         keyWordBuilder.append(jobVo.getName());
         if (jobVo.getCategory() != null) {

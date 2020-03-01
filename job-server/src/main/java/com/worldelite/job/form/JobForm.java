@@ -1,5 +1,6 @@
 package com.worldelite.job.form;
 
+import com.worldelite.job.util.FormUtils;
 import lombok.Data;
 
 /**
@@ -18,4 +19,16 @@ public class JobForm {
     private Integer addressId;
     private Integer jobType;
     private String description;
+
+    public String getName() {
+        return FormUtils.removeAllHtmlTag(name);
+    }
+
+    public String getDepart() {
+        return FormUtils.removeAllHtmlTag(depart);
+    }
+
+    public String getDescription() {
+        return FormUtils.safeHtml(description);
+    }
 }

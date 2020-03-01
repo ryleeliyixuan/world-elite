@@ -25,6 +25,11 @@ const constantRoutes = [
         meta: { title: '验证身份' }
     },
     {
+        path: '/verify-status',
+        component: () => import('@/views/VerifyStatusPage'),
+        meta: { title: '审核结果' }
+    },
+    {
         path: '/manage-job',
         component: () => import('@/views/JobManagePage'),
         meta: { title: '职位管理' }

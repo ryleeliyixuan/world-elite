@@ -10,8 +10,13 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "HomePage",
+  computed: {
+    ...mapGetters(["token"])
+  },
   data() {
     return {
       picUrl:
@@ -20,7 +25,7 @@ export default {
   },
   methods:{
     handleJoin(){
-      this.$router.push('/register');
+      this.$router.push(this.token?'/edit-job':'/register');
     }
   }
 };

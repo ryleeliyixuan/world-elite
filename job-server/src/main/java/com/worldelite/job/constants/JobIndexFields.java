@@ -13,6 +13,11 @@ public interface JobIndexFields {
     String JOB_ID = "job_id";
 
     /**
+     * 索引ID
+     */
+    String JOB_ID_INDEX = "job_id_index";
+
+    /**
      * 关键字字段：职位名称 + 职位类别 + 城市 + 公司 + 行业 + 工作类型
      */
     String KEYWORD_INDEX = "keyword";

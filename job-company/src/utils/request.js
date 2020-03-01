@@ -54,6 +54,8 @@ service.interceptors.response.use(
         store.dispatch('user/LOGOUT').then(() => {
           router.push({path: '/login', query: {redirect: curRelativePath()}})
         });
+      }else if(res.code === 405){
+         router.push({path: '/verify-status'})
       }
       return Promise.reject(new Error(res.msg || 'Error'))
     } else {

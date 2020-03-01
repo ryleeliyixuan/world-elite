@@ -13,9 +13,9 @@ public class ResumeExpForm {
     private Integer id;
     private Long resumeId;
     @JSONField(format = "yyyy-MM")
-    private Date startDate;
+    private Date startTime;
     @JSONField(format = "yyyy-MM")
-    private Date finishDate;
+    private Date finishTime;
     private String company;
     private String depart;
     private String post;

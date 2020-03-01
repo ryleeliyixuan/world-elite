@@ -2,13 +2,12 @@
   <div class="app-container">
     <h5>系统消息</h5>
     <div class="message-list mt-4" v-if="list && list.length != 0">
-      <el-card shadow="hover" class="mb-2 text-muted" v-for="message in list" :key="message.id">
+      <div class="mb-2 pt-3 pb-3 text-muted border-bottom" v-for="message in list" :key="message.id">
         <el-badge is-dot v-if="message.readFlag == 0" />
         {{message.content}}
         <el-link v-if="message.url && message.url != ''" :href="meesage.url" :underline="false">查看</el-link>
-      </el-card>
+      </div>
     </div>
-    <div v-else class="p-2">暂无消息</div>
     <pagination
       v-show="total"
       :total="total"
@@ -65,5 +64,8 @@ export default {
 .app-container {
   width: 800px;
   margin: 0 auto;
+}
+.border-bottom{
+   border-bottom: #EEE 1px solid
 }
 </style>

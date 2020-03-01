@@ -38,7 +38,7 @@
           <div class="recommend-jobs mb-4">
             <el-row :gutter="12">
               <el-col :span="8" v-for="job in company.jobList" :key="job.id">
-                <el-card shadow="hover"  @click.native="onJobClick(job)">
+                <el-card shadow="hover"  @click.native="onJobClick(job)" class="link-pointer">
                   <h6>
                     {{job.name}}
                     <span
@@ -75,7 +75,7 @@
         </el-collapse>
       </div>
       <div class="job-box" v-else>
-        <el-card shadow="hover" v-for="job in jobPage.list" :key="job.id" class="mb-2">
+        <el-card shadow="hover" v-for="job in jobPage.list" :key="job.id" class="mb-2 link-pointer" @click.native="onJobClick(job)">
           <h6>
             {{job.name}}
             <span

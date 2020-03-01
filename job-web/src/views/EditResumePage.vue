@@ -20,7 +20,6 @@
                     :accept="uploadPicOptions.acceptFileType"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess"
-                    :on-error="handleAvatarError"
                     :before-upload="beforeAvatarUpload"
                   >
                     <img
@@ -318,6 +317,7 @@
           <el-date-picker
             v-model="resumeForm.graduateTime"
             type="month"
+            format="yyyy-MM"
             value-format="yyyy-MM"
             placeholder="选择日期"
           ></el-date-picker>
@@ -327,6 +327,7 @@
             v-model="resumeForm.returnTime"
             type="month"
             placeholder="选择日期"
+            format="yyyy-MM"
             value-format="yyyy-MM"
           ></el-date-picker>
         </el-form-item>
@@ -674,6 +675,7 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 import Toast from "@/utils/toast";
+import { checkPicSize } from "@/utils/common";
 
 import {
   faEdit,
@@ -716,25 +718,13 @@ export default {
       },
       resumeFormRules: {
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        birth: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择生日",
-            trigger: "change"
-          }
-        ],
+        birth: [{ required: true, message: "请选择生日", trigger: "change" }],
         gender: [{ required: true, message: "请选择性别", trigger: "change" }],
         curPlace: [
           { required: true, message: "请输入所在城市", trigger: "blur" }
         ],
         graduateTime: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择毕业时间",
-            trigger: "change"
-          }
+          { required: true, message: "请选择毕业时间", trigger: "change" }
         ]
       },
       resumeEduForm: {
@@ -939,7 +929,7 @@ export default {
         this.countryOptions = response.data;
       });
       getCurrentCountry().then(response => {
-        const { data } = response.data;
+        const { data } = response;
         if (data && data.phoneCode && this.resumeForm.phoneCode === undefined) {
           this.resumeForm.phoneCode = data.phoneCode;
         }
@@ -957,28 +947,27 @@ export default {
     },
     beforeAvatarUpload(file) {
       return new Promise((resolve, reject) => {
-        getUploadPicToken(file.name)
-          .then(response => {
-            const { data } = response;
-            this.uploadPicOptions.action = data.host;
-            this.uploadPicOptions.params = data;
-            this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
-            resolve(data);
-          })
-          .catch(error => {
-            reject(error);
-          });
+        if (checkPicSize(file)) {
+          reject();
+        } else {
+          getUploadPicToken(file.name)
+            .then(response => {
+              const { data } = response;
+              this.uploadPicOptions.action = data.host;
+              this.uploadPicOptions.params = data;
+              this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+              resolve(data);
+            })
+            .catch(error => {
+              reject(error);
+            });
+        }
       });
     },
     handleAvatarSuccess() {
       this.resumeForm.avatar = this.uploadPicOptions.fileUrl;
       this.resume.avatar = this.uploadPicOptions.fileUrl;
       this.handleSaveResumeBasic();
-    },
-    handleAvatarError(err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-      Toast.error(err);
     },
     getResumeInfo() {
       getResumeInfo().then(response => {
@@ -1048,10 +1037,12 @@ export default {
         this.resumeExpForm.depart = resumeExp.depart;
         this.resumeExpForm.post = resumeExp.post;
         this.resumeExpForm.description = resumeExp.description;
-        this.resumeExpForm.workingDates = [
-          this.resumeExpForm.startTime,
-          this.resumeExpForm.finishTime
-        ];
+        if (resumeExp.startTime && resumeExp.finishTime) {
+          this.resumeExpForm.workingDates = [
+            this.resumeExpForm.startTime,
+            this.resumeExpForm.finishTime
+          ];
+        }
       } else {
         this.resumeExpForm.id = undefined;
         this.resumeExpForm.startTime = undefined;
@@ -1353,8 +1344,8 @@ export default {
       document.documentElement.scrollTop = scrollTop;
       window.pageYOffset = scrollTop;
     },
-    handlePreview(){
-      this.$router.push({ path: `/resume/${this.resume.id}` })
+    handlePreview() {
+      this.$router.push({ path: `/resume/${this.resume.id}` });
     }
   }
 };

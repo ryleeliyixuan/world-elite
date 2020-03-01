@@ -48,8 +48,8 @@ public class ResumeExpService extends BaseService{
         resumeExp.setCompany(resumeExpForm.getCompany());
         resumeExp.setDepart(resumeExpForm.getDepart());
         resumeExp.setPost(resumeExpForm.getPost());
-        resumeExp.setStartDate(resumeExpForm.getStartDate());
-        resumeExp.setFinishDate(resumeExpForm.getFinishDate());
+        resumeExp.setStartTime(resumeExpForm.getStartTime());
+        resumeExp.setFinishTime(resumeExpForm.getFinishTime());
         resumeExp.setDescription(resumeExpForm.getDescription());
 
         if(resumeExp.getId() == null){

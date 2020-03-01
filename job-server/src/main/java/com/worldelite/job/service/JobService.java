@@ -96,6 +96,7 @@ public class JobService extends BaseService {
      * @param jobForm
      * @return
      */
+    @Transactional
     public void saveJob(JobForm jobForm) {
 
         Job job = null;
@@ -107,9 +108,6 @@ public class JobService extends BaseService {
 
         if (job == null) {
             job = new Job();
-            job.setCreatorId(curUser().getId());
-            job.setPubTime(new Date());
-            job.setStatus(JobStatus.PUBLISH.value);
         }
 
         job.setAddressId(jobForm.getAddressId());
@@ -138,11 +136,17 @@ public class JobService extends BaseService {
         job.setSalaryMonths(jobForm.getSalaryMonths());
 
         if (job.getId() == null) {
+            job.setCreatorId(curUser().getId());
+            job.setStatus(JobStatus.PUBLISH.value);
+            job.setPubTime(new Date());
             job.setId(AppUtils.nextId());
             jobMapper.insertSelective(job);
         } else {
+            if(job.getStatus() != JobStatus.PUBLISH.value){
+                job.setPubTime(new Date());
+            }
             job.setUpdateTime(new Date());
-            jobMapper.updateByPrimaryKeyWithBLOBs(job);
+            jobMapper.updateByPrimaryKeySelective(job);
         }
 
         //增加索引

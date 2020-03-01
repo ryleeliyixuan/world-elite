@@ -109,22 +109,6 @@ public class CompanyService extends BaseService{
     }
 
     /**
-     * 获取用户关联的公司
-     * @param userId
-     * @return
-     */
-    public CompanyVo getUserCompany(Long userId){
-        CompanyUser options = new CompanyUser();
-        options.setUserId(userId);
-        List<CompanyUser> companyUserList = companyUserMapper.selectAndList(options);
-        if (CollectionUtils.isEmpty(companyUserList)) {
-            return null;
-        }
-        CompanyUser companyUser = companyUserList.get(0);
-        return getSimpleCompanyInfo(companyUser.getCompanyId());
-    }
-
-    /**
      * 获取公司首页数据
      *
      * @param companyId
@@ -132,12 +116,15 @@ public class CompanyService extends BaseService{
      */
     public CompanyVo getCompanyHomeData(Long companyId){
         CompanyVo companyVo = getSimpleCompanyInfo(companyId);
+        if(companyVo == null){
+            return null;
+        }
         JobListForm jobListForm = new JobListForm();
         jobListForm.setCompanyId(companyId);
         jobListForm.setStatus(JobStatus.PUBLISH.value);
         jobListForm.setPage(1);
         jobListForm.setLimit(3);
-        jobListForm.setSort("-pub_time");
+        jobListForm.setSort("-id");
         companyVo.setJobList(jobService.getJobList(jobListForm).getList());
         companyVo.setAddressList(companyAddressService.getCompanyAddressList(Long.valueOf(companyVo.getId())));
         return companyVo;
@@ -149,7 +136,11 @@ public class CompanyService extends BaseService{
      * @return
      */
     public CompanyVo getMyCompanyInfo(){
-        CompanyVo companyVo = getUserCompany(curUser().getId());
+        CompanyUser companyUser = companyUserMapper.selectByUserId(curUser().getId());
+        if(companyUser == null){
+            return null;
+        }
+        CompanyVo companyVo = getCompanyInfo(companyUser.getCompanyId());
         companyVo.setAddressList(companyAddressService.getCompanyAddressList(Long.valueOf(companyVo.getId())));
         companyVo.setCompleteProgress(AppUtils.calCompleteProgress(companyVo));
         return companyVo;
@@ -201,14 +192,13 @@ public class CompanyService extends BaseService{
         company.setIndustryId(companyForm.getIndustryId());
         company.setPropertyId(companyForm.getPropertyId());
         company.setLogo(AppUtils.getOssKey(companyForm.getLogo()));
-        company.setUpdateTime(new Date());
         company.setIntroduction(companyForm.getIntroduction());
         if(company.getId() == null){
             company.setId(AppUtils.nextId());
             companyMapper.insertSelective(company);
         }else{
             company.setUpdateTime(new Date());
-            companyMapper.updateByPrimaryKeyWithBLOBs(company);
+            companyMapper.updateByPrimaryKeySelective(company);
         }
         return company.getId();
     }

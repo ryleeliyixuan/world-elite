@@ -11,3 +11,5 @@ sudo npm run build:stage
 
 # 覆盖发布
 sudo cp -Rf dist/* ${deployPath} 
+
+

@@ -15,6 +15,7 @@
           class="text-input-width"
           show-word-limit
           placeholder="请填写职位名称"
+          :disabled="isModify"
         ></el-input>
       </el-form-item>
       <el-form-item label="职位类型" prop="categoryId">
@@ -26,6 +27,7 @@
           filterable
           clearable
           v-model="jobForm.categoryId"
+          :disabled="isModify"
         ></el-cascader>
       </el-form-item>
       <el-form-item label="工作地点" prop="addressId">
@@ -80,7 +82,7 @@
         <quill-editor v-model="jobForm.description" :options="descriptionEditorOption"></quill-editor>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :loading="posting" @click="onSubmit">发布</el-button>
+        <el-button type="primary" :loading="posting" @click="onSubmit">{{pubButtonText}}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -91,6 +93,7 @@ import { getCategoryTree } from "@/api/category_api";
 import { listByType } from "@/api/dict_api";
 import { saveJob, getJobInfo } from "@/api/job_api";
 import { getCompanyAddrList } from '@/api/company_api'
+import Toast from '@/utils/toast'
 
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -181,7 +184,13 @@ export default {
   },
   computed:{
     title(){
-      return this.$route.query.id? '修改职位': '新增职位';
+      return this.$route.query.id? '编辑职位': '新增职位';
+    },
+    pubButtonText(){
+      return this.$route.query.id? '保存': '发布';
+    },
+    isModify(){
+      return this.$route.query.id !== undefined
     }
   },
   methods: {
@@ -218,7 +227,8 @@ export default {
           this.posting = true;
           saveJob(this.jobForm)
             .then(() => {
-              this.$message("发布成功");
+              Toast.success(this.isModify?"保存成功":"发布成功");
+              this.$router.go(-1);
             })
             .finally(() => {
               this.posting = false;

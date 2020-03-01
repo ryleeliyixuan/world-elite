@@ -56,7 +56,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="t_activity" domainObjectName="Activity" enableCountByExample="false" enableDeleteByExample="false"
+        <table tableName="t_resume_experience" domainObjectName="ResumeExperience"  enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false"
                enableUpdateByExample="false"/>
 

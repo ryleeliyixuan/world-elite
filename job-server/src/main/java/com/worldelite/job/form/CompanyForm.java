@@ -1,5 +1,6 @@
 package com.worldelite.job.form;
 
+import com.worldelite.job.util.FormUtils;
 import lombok.Data;
 
 /**
@@ -17,4 +18,20 @@ public class CompanyForm {
     private Integer propertyId;
     private String homepage;
     private String introduction;
+
+    public String getName() {
+        return FormUtils.removeAllHtmlTag(name);
+    }
+
+    public String getFullName() {
+        return FormUtils.removeAllHtmlTag(fullName);
+    }
+
+    public String getHomepage() {
+        return FormUtils.removeAllHtmlTag(homepage);
+    }
+
+    public String getIntroduction() {
+        return FormUtils.safeHtml(introduction);
+    }
 }

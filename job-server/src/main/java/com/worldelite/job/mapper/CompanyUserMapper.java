@@ -54,4 +54,6 @@ public interface CompanyUserMapper {
     int updateByPrimaryKey(CompanyUser record);
 
     List<CompanyUser> selectAndList(CompanyUser options);
+
+    CompanyUser selectByUserId(Long userId);
 }

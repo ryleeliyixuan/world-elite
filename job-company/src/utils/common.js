@@ -1,3 +1,4 @@
+import Toast from './toast'
 
 /**
  * 获取当前相对路径
@@ -65,4 +66,15 @@ export function parseListQuery(query, listQuery){
             }
         });
     }
+}
+
+/**
+ * 图片大小是否在2Mb内
+ */
+export function checkPicSize(file){
+    const overSize =  file.size / 1024 / 1024 > 2;
+    if(overSize){
+        Toast.error('图片大小不能超过2Mb')
+    }
+    return overSize;
 }

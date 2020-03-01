@@ -1,8 +1,8 @@
 <template>
-  <div class="app-container">
-    <div class="search-bar">
-      <div class="search-filter mt-2 mt-2">
-        <el-select
+  <div class="app-container  mt-2">
+    <el-row :gutter="10">
+       <el-col :span="4">
+         <el-select
           v-model="listQuery.cityIds"
           multiple
           filterable
@@ -10,17 +10,20 @@
           placeholder="城市"
           @change="handleFilter"
           size="small"
+          class="w-100"
         >
           <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
-        <el-select
+       </el-col>
+       <el-col :span="4">
+         <el-select
           v-model="listQuery.salaryRangeId"
           filterable
           clearable
           placeholder="薪资"
           @change="handleFilter"
           size="small"
-          class="ml-2"
+          class="w-100"
         >
           <el-option
             v-for="item in salaryRangeOptions"
@@ -29,7 +32,9 @@
             :value="item.id"
           ></el-option>
         </el-select>
-        <el-select
+       </el-col>
+       <el-col :span="4">
+         <el-select
           v-model="listQuery.companyIndustryIds"
           multiple
           filterable
@@ -37,7 +42,7 @@
           placeholder="行业"
           @change="handleFilter"
           size="small"
-          class="ml-2"
+          class="w-100"
         >
           <el-option
             v-for="item in companyIndustryOptions"
@@ -46,7 +51,9 @@
             :value="item.id"
           ></el-option>
         </el-select>
-        <el-select
+       </el-col>
+       <el-col :span="4">
+         <el-select
           v-model="listQuery.companyScaleIds"
           multiple
           filterable
@@ -54,7 +61,7 @@
           placeholder="公司规模"
           @change="handleFilter"
           size="small"
-          class="ml-2"
+          class="w-100"
         >
           <el-option
             v-for="item in companyScaleOptions"
@@ -63,15 +70,16 @@
             :value="item.id"
           ></el-option>
         </el-select>
-
-        <el-select
+       </el-col>
+       <el-col :span="4">
+         <el-select
           v-model="listQuery.jobType"
           filterable
           clearable
           placeholder="工作类型"
           @change="handleFilter"
           size="small"
-          class="ml-2"
+          class="w-100"
         >
           <el-option
             v-for="item in jobTypeOptions"
@@ -80,8 +88,9 @@
             :value="item.id"
           ></el-option>
         </el-select>
-      </div>
-    </div>
+       </el-col>
+    </el-row>
+
     <pagination
       v-show="total"
       :total="total"
@@ -94,7 +103,7 @@
         shadow="hover"
         v-for="job in pageResult.list"
         :key="job.id"
-        class="mb-2"
+        class="mb-2 link-pointer"
         @click.native="openJobDetail(job.id)"
       >
         <b-row>

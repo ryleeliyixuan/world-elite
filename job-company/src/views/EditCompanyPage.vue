@@ -250,6 +250,9 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import EditResumeTitle from "@/components/EditResumeTitle";
 import { getUploadPicToken } from "@/api/upload_api";
 import { listByType } from "@/api/dict_api";
+import { checkPicSize } from '@/utils/common'
+import Toast from '@/utils/toast'
+
 import {
   myCompanyInfo,
   saveCompany,
@@ -481,6 +484,9 @@ export default {
     },
     beforeAvatarUpload(file) {
       return new Promise((resolve, reject) => {
+        if(checkPicSize(file)){
+          reject();
+        }
         getUploadPicToken(file.name)
           .then(response => {
             const { data } = response;
@@ -517,7 +523,7 @@ export default {
               this.posting = true;
               saveCompanyAddr(this.companyAddrForm)
                 .then(() => {
-                  this.$message("保存成功");
+                  Toast.success("保存成功");
                   this.loadCompanyInfo();
                   this.showAddressDialog = false;
                 })
@@ -534,7 +540,7 @@ export default {
         confirmButtonText: "删除"
       }).then(() => {
         delCompanyAddr(id).then(() => {
-          this.$message("操作成功");
+          Toast.success("操作成功");
           this.loadCompanyInfo();
         });
       });
@@ -543,8 +549,9 @@ export default {
       this.posting = true;
       saveCompany(this.companyForm)
         .then(() => {
-          this.$message("保存成功");
+          Toast.success("保存成功");
           this.loadCompanyInfo();
+          this.showBasicDialog = false;
           this.showAddressDialog = false;
           this.showIntroDialog = false;
         })

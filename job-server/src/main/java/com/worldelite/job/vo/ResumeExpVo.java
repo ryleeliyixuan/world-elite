@@ -28,8 +28,8 @@ public class ResumeExpVo extends EditFlag implements VoConvertable<ResumeExpVo, 
     @Override
     public ResumeExpVo asVo(ResumeExperience resumeExp) {
         setId(resumeExp.getId());
-        setStartTime(resumeExp.getStartDate());
-        setFinishTime(resumeExp.getFinishDate());
+        setStartTime(resumeExp.getStartTime());
+        setFinishTime(resumeExp.getFinishTime());
         setCompany(resumeExp.getCompany());
         setDepart(resumeExp.getDepart());
         setPost(resumeExp.getPost());

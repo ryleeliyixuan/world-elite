@@ -65,28 +65,31 @@
               <div class="text-center">面试</div>
             </el-link>
           </el-col>
-          <el-col :span="4" class="text-center">
-            <el-link
-              type="info"
-              :underline="false"
+          <el-col :span="8" class="text-center">
+            <el-button
+              type="primary"
+              size="mini"
               class="p-2"
               v-if="job.status == 2"
               @click.stop="handleEditJob(job.id)"
-            >编辑</el-link>
-            <el-link
+              icon="el-icon-edit"
+            >编辑</el-button>
+            <el-button
+              size="mini"
               type="danger"
-              :underline="false"
               class="p-2"
               v-if="job.status == 2"
               @click.stop="handleTakeOffJob(job.id)"
-            >关闭</el-link>
-            <el-link
+              icon="el-icon-close"
+            >关闭</el-button>
+            <el-button
               type="danger"
-              :underline="false"
+              size="mini"
               class="p-2"
               v-if="job.status == 3"
+              icon="el-icon-refresh-right"
               @click.stop="handleReopenJob(job.id)"
-            >重新开放</el-link>
+            >重新开放</el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -115,7 +118,8 @@ export default {
         name: "",
         status: "2",
         page: 1,
-        limit: 20
+        limit: 20,
+        sort: '-id'
       },
       total: 0,
       pageResult: {}
@@ -132,7 +136,7 @@ export default {
       this.$router.push("/edit-job");
     },
     handleSelectMenu(index) {
-      this.$router.push({ path: this.$route.path, query: {status: index} });
+      this.$router.push({ path: this.$route.path, query: { status: index } });
     },
     getList() {
       parseListQuery(this.$route.query, this.listQuery);
@@ -156,7 +160,7 @@ export default {
         });
       });
     },
-    handleFilter(){
+    handleFilter() {
       this.listQuery.page = 1;
       this.handleRouteList();
     },
@@ -181,7 +185,7 @@ export default {
         }
       });
     },
-    handleReopenJob(id){
+    handleReopenJob(id) {
       this.$confirm("此操作将重新开放该职位, 是否继续?", "提示", {
         confirmButtonText: "继续",
         cancelButtonText: "取消",

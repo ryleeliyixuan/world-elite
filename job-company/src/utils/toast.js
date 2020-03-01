@@ -1,21 +1,20 @@
+import { Message } from 'element-ui'
 
 const toaster = {
     success(message){
-        getVm().$bvToast.toast(message, {
-            title: "提示",
-            toaster: 'b-toaster-top-center',
-            variant: "success"
-          });
+        Message({
+            message: message || 'Error',
+            type: 'success',
+            duration: 5 * 1000
+          })
     },
     error(message){
-        getVm().$bvToast.toast(message, {
-            title: "提示",
-            toaster: 'b-toaster-top-center',
-            variant: "danger"
-          });
+        Message({
+            message: message || 'Error',
+            type: 'error',
+            duration: 5 * 1000
+          })
     }
 }
-
-const getVm = () => document._vm_instance
 
 export default toaster;
