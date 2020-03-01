@@ -66,10 +66,11 @@ export const constantRoutes = [
     path: '/company',
     component: Layout,
     redirect: '/company/list',
+    meta: { title: '企业管理', icon: 'company' },
     children: [{
       path: 'list',
       component: () => import('@/views/company/index'),
-      meta: { title: '企业管理', icon: 'company' }
+      meta: { title: '企业列表' }
     },
     {
       path: 'edit',
@@ -77,6 +78,55 @@ export const constantRoutes = [
       component: () => import('@/views/company/EditCompanyPage'),
       meta: { title: '编辑企业' }
     }]
+  },
+  {
+    path: '/resume',
+    component: Layout,
+    redirect: '/resume/list',
+    children: [{
+      path: 'list',
+      component: () => import('@/views/resume/index'),
+      meta: { title: '简历管理', icon: 'resume' }
+    }]
+  },
+  {
+    path: '/job',
+    component: Layout,
+    redirect: '/job/list',
+    children: [{
+      path: 'list',
+      component: () => import('@/views/job/index'),
+      meta: { title: '职位管理', icon: 'job' }
+    }]
+  },
+  {
+    path: '/activity',
+    component: Layout,
+    redirect: '/activity/list',
+    meta: { title: '活动管理', icon: 'activity' },
+    children: [{
+      path: 'list',
+      component: () => import('@/views/activity/index'),
+      meta: { title: '活动列表' }
+    },
+    {
+      path: 'edit',
+      component: () => import('@/views/activity/EditActivityPage'),
+      meta: { title: '活动编辑' },
+      hidden: true
+    }]
+  },
+  {
+    path: '/dict',
+    component: Layout,
+    redirect: '/dict/index',
+    children: [
+      {
+        path: 'index',
+        meta: { title: '字典管理', icon: 'dict' },
+        component: () => import('@/views/dict/index')
+      }
+    ]
   },
   {
     path: '/404',

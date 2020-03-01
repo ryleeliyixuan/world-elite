@@ -54,3 +54,11 @@ export function getCompanyInfo(id){
     params: {id: id}
   })
 }
+
+export function delCompany(id){
+  return request({
+    url: '/company/del-company',
+    method: 'post',
+    params: {id: id}
+  })
+}

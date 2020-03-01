@@ -25,3 +25,44 @@ export function linkName(link){
 export function wholeLink(link){
     return link.startsWith("http")? link : "http://" + link;
 }
+
+/**
+ * 格式化查询条件，用于列表查询条件
+ */
+export function formatListQuery(listQuery){
+   const newQuery = {}; 
+   Object.keys(listQuery).forEach(key => {
+         if(listQuery[key]){
+            if(listQuery[key] instanceof Array){
+                if(listQuery[key].length !== 0){
+                    newQuery[key] = listQuery[key].join(',')
+                }
+            }else{
+                newQuery[key] = listQuery[key]
+            }
+         }
+   });
+   return newQuery;
+}
+
+/**
+ * 把路由的查询条件映射到listQuery
+ */
+export function parseListQuery(query, listQuery){
+    if(query){
+        Object.keys(query).forEach(key => {
+            // eslint-disable-next-line no-console
+            if(listQuery[key]){
+                if(listQuery[key].constructor == Array){
+                    listQuery[key] = query[key].split(',').map(v => parseInt(v));
+                }else if(listQuery[key].constructor == Number){
+                    listQuery[key] = parseInt(query[key]);
+                }else{
+                    listQuery[key] = query[key];
+                }
+            }else{
+                listQuery[key] = query[key];
+            }
+        });
+    }
+}

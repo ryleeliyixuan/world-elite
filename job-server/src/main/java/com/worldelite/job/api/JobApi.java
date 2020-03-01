@@ -111,9 +111,22 @@ public class JobApi extends BaseApi{
      * @return
      */
     @PostMapping("take-off-job")
-    @RequireLogin(allow = UserType.COMPANY)
-    public ApiResult takeOffJob(@RequestParam Long id){
-        jobService.takeOffJob(id);
+    @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
+    public ApiResult takeOffJob(@RequestParam Long id, String reason){
+        jobService.takeOffJob(id, reason);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 重新开放职位
+     *
+     * @param id
+     * @return
+     */
+    @RequireLogin(allow = {UserType.COMPANY})
+    @PostMapping("open-job")
+    public ApiResult reOpenJob(@RequestParam Long id){
+        jobService.openJob(id);
         return ApiResult.ok();
     }
 
@@ -168,6 +181,19 @@ public class JobApi extends BaseApi{
             pageResult =  searchService.searchJob(searchForm);
         }
 
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 获取工作列表
+     *
+     * @param listForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("list")
+    public ApiResult getJobList(JobListForm listForm){
+        PageResult pageResult = jobService.getJobList(listForm);
         return ApiResult.ok(pageResult);
     }
 }

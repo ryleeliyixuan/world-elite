@@ -100,7 +100,20 @@ public class CompanyApi extends BaseApi {
     @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @PostMapping("save-company")
     public ApiResult saveCompany(@Valid @RequestBody CompanyForm companyForm) {
-        companyService.saveCompany(companyForm);
+        Long companyId = companyService.saveCompany(companyForm);
+        return ApiResult.ok(String.valueOf(companyId));
+    }
+
+    /**
+     * 删除公司
+     *
+     * @param id
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("del-company")
+    public ApiResult delCompany(@RequestParam Long id){
+        companyService.delCompany(id);
         return ApiResult.ok();
     }
 

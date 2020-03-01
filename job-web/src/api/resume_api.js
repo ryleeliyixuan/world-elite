@@ -86,3 +86,11 @@ export function delResumeLink(id){
     params: {id: id}
   })
 }
+
+export function getResumeDetail(id) {
+  return request({
+    url: '/resume/resume-detail',
+    method: 'get',
+    params: { id: id }
+  })
+}

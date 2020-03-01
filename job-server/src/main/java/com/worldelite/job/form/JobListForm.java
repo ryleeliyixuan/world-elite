@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class JobListForm extends PageForm{
+    private Long jobId;
     private Long creatorId;
     private Long companyId;
     private Integer jobType;

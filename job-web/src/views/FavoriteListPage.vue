@@ -1,7 +1,14 @@
 <template>
   <div class="app-container">
     <h5>我的收藏</h5>
-    <div class="job-list mt-3 w-75" v-if="pageResult.list && pageResult.list.length !== 0">
+    <pagination
+      v-show="total"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="handleRouteList"
+    />
+    <div class="job-list w-75" v-if="pageResult.list && pageResult.list.length !== 0">
       <el-card
         shadow="hover"
         v-for="job in pageResult.list"
@@ -30,13 +37,12 @@
         </b-media>
       </el-card>
     </div>
-    <div class="mt-3 w-75" v-else>暂无收藏</div>
     <pagination
       v-show="total"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
-      @pagination="getJobList"
+      @pagination="handleRouteList"
     />
   </div>
 </template>
@@ -44,6 +50,7 @@
 <script>
 import { getFavoriteJobList, doFavorite } from "@/api/favorite_api";
 import Pagination from "@/components/Pagination";
+import { formatListQuery, parseListQuery } from "@/utils/common";
 
 export default {
   name: "JobListPage",
@@ -65,10 +72,11 @@ export default {
     };
   },
   created() {
-    this.getJobList();
+    this.getList();
   },
   methods: {
-    getJobList() {
+    getList() {
+      parseListQuery(this.$route.query, this.listQuery);
       getFavoriteJobList(this.listQuery).then(response => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
@@ -83,12 +91,18 @@ export default {
       doFavorite(this.favoriteForm)
         .then(() => {
           this.$message("取消收藏成功");
-          this.getJobList();
+          this.getList();
         })
         .finally(() => {
           this.favoriteLoading = false;
         });
-    }
+    },
+    handleRouteList() {
+      this.$router.push({
+        path: this.$route.path,
+        query: formatListQuery(this.listQuery)
+      });
+    },
   }
 };
 </script>

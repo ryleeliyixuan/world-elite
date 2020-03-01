@@ -1,5 +1,7 @@
 <template>
-  <div class="app-container"></div>
+  <div class="app-container">
+      欢迎使用WorldElite管理后台
+  </div>
 </template>
 
 <script>

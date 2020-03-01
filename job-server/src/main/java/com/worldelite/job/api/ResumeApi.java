@@ -51,14 +51,15 @@ public class ResumeApi extends BaseApi {
 
     /**
      * 获取简历列表
+     *
      * @param listForm
      * @return
      */
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("list")
     public ApiResult getResumeList(@RequestBody ResumeListForm listForm){
-
-        return null;
+        PageResult pageResult = resumeService.getResumeList(listForm);
+        return ApiResult.ok(pageResult);
     }
 
     /**
@@ -67,7 +68,7 @@ public class ResumeApi extends BaseApi {
      * @param id
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin
     @GetMapping("resume-detail")
     public ApiResult<ResumeVo> getResumeDetail(@RequestParam Long id) {
         ResumeVo resumeVo = resumeService.getResumeDetail(id);

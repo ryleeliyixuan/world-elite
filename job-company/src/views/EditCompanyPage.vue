@@ -115,7 +115,7 @@
               class="mb-3"
               variant="info"
             ></b-progress>
-            <b-button variant="info" block>预览主页</b-button>
+            <b-button variant="info" block @click="previewCompanyPage">预览主页</b-button>
           </div>
         </b-col>
       </b-row>
@@ -567,6 +567,9 @@ export default {
         };
         this.poiMapMarker.position = [center.lng, center.lat];
       }
+    },
+    previewCompanyPage(){
+      self.location = `${process.env.VUE_APP_WEB_HOST}/company/${this.company.id}`;
     }
   }
 };

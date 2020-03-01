@@ -9,4 +9,20 @@
     from t_resume
     where user_id = #{userId,jdbcType=BIGINT}
   </select>
+  <select id="selectAndList" resultMap="BaseResultMap" parameterType="com.worldelite.job.entity.Resume">
+    select
+    <include refid="Base_Column_List" />
+    from t_resume
+    <where>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT}
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=TINYINT}
+      </if>
+    </where>
+  </select>
 </mapper>

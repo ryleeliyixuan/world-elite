@@ -1,7 +1,14 @@
 <template>
   <div class="app-container">
     <h5>我的投递</h5>
-    <div class="job-list mt-3 w-75" v-if="pageResult.list && pageResult.list.length !== 0">
+    <pagination
+      v-show="total"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="handleRouteList"
+    />
+    <div class="job-list w-75" v-if="pageResult.list && pageResult.list.length !== 0">
       <el-card
         shadow="hover"
         v-for="job in pageResult.list"
@@ -19,18 +26,17 @@
             <span class="ml-3 text-gray text-small">{{`${job.city.name} / ${job.minDegree.name}`}}</span>
           </div>
           <template v-slot:aside>
-              <el-tag>{{ job.applyStatus | statusFilter }}</el-tag>
-          </template>    
+            <el-tag>{{ job.applyStatus | statusFilter }}</el-tag>
+          </template>
         </b-media>
       </el-card>
     </div>
-    <div class="mt-3 w-75" v-else>暂无投递</div>
     <pagination
       v-show="total"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
-      @pagination="getJobList"
+      @pagination="handleRouteList"
     />
   </div>
 </template>
@@ -38,6 +44,7 @@
 <script>
 import { myApplyJobList } from "@/api/job_api";
 import Pagination from "@/components/Pagination";
+import { formatListQuery, parseListQuery } from "@/utils/common";
 
 export default {
   name: "JobListPage",
@@ -68,13 +75,25 @@ export default {
     }
   },
   created() {
-    this.getJobList();
+    this.getList();
+  },
+  watch: {
+    $route() {
+      this.getList();
+    }
   },
   methods: {
-    getJobList() {
+    getList() {
+      parseListQuery(this.$route.query, this.listQuery);
       myApplyJobList(this.listQuery).then(response => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
+      });
+    },
+    handleRouteList() {
+      this.$router.push({
+        path: this.$route.path,
+        query: formatListQuery(this.listQuery)
       });
     },
     openJobDetail(id) {

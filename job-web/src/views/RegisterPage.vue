@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <h3 class="text-center">加入Edlite World</h3>
+    <h3 class="text-center">加入Elite World</h3>
     <b-container>
       <b-row align-h="center">
         <b-form @submit="onSubmit" @reset="onReset" class="register-form">
@@ -19,7 +19,7 @@
             <b-form-input size="lg" v-model="form.password" type="password" required placeholder="设置不少于8位的密码"></b-form-input>
           </b-input-group>
 
-          <p class="mt-4 mb-4 text-policy">点击“同意并加入”，即表示您同意遵守WorldEdlite的《用户协议》、《隐私政策》及《Cookie 政策》。</p>
+          <p class="mt-4 mb-4 text-policy">点击“同意并加入”，即表示您同意遵守WorldElite的《用户协议》、《隐私政策》及《Cookie 政策》。</p>
 
           <b-button block size="lg" type="submit" variant="info" :disabled="form.privateFlag != 1">同意并加入</b-button>
         </b-form>

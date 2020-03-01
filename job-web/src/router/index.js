@@ -37,6 +37,12 @@ const constantRoutes = [
         meta: { title: '职位详情' }
     },
     {
+        path: '/resume/:id',
+        name: 'resume',
+        component: () => import('@/views/ResumePage'),
+        meta: { title: '简历预览' }
+    },
+    {
         path: '/job-list',
         component: () => import('@/views/JobListPage'),
         meta: { title: '职位列表' }
@@ -55,6 +61,11 @@ const constantRoutes = [
         path: '/messages',
         component: () => import('@/views/MessageListPage'),
         meta: { title: '消息通知' }
+    },
+    {
+        path: '/activity-list',
+        component: () => import('@/views/ActivityListPage'),
+        meta: { title: '活动列表' }
     }
 ]
 

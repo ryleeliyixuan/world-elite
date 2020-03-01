@@ -11,8 +11,4 @@ import lombok.EqualsAndHashCode;
 public class ResumeListForm extends PageForm{
     private Long userId;
     private String name;
-    private Integer[] degreeIds;
-    private Integer[] schoolIds;
-    private Double minGpa;
-    private Double maxGpa;
 }

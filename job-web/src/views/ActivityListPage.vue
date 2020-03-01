@@ -1,0 +1,128 @@
+<template>
+  <div class="app-container">
+    <div class="search-filter mt-2 mt-2">
+      <el-select
+        v-model="listQuery.cityId"
+        filterable
+        clearable
+        placeholder="活动城市"
+        @change="handleFilter"
+        size="small"
+      >
+        <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>
+    </div>
+    <pagination
+      v-show="total"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="handleRouteList"
+    />
+    <div class="activity-list w-80" v-if="list.length !== 0">
+      <el-card
+        shadow="hover"
+        v-for="activity in list"
+        :key="activity.id"
+        class="mb-2"
+        @click.native="openActivity(activity)"
+      >
+        <el-row :gutter="15">
+          <el-col :span="4">
+            <el-image :src="activity.thumbnail" class="w-100"></el-image>
+          </el-col>
+          <el-col :span="20">
+            <h5>{{activity.title}} <el-tag type="primary">{{activity.city.name}}</el-tag></h5>
+            <div class="text-label"><b>活动地址：</b> {{activity.address}}</div>
+            <div class="text-label"><b>活动时间：</b> {{activity.startTime}} 到 {{activity.finishTime}}</div>
+            <div class="mt-2 text-desc">{{activity.summary}} <el-link :href="activity.url" target="_blank" :underline="false" type="primary">查看详情 <i class="el-icon-d-arrow-right"/></el-link></div>
+          </el-col>
+        </el-row>
+      </el-card>
+    </div>
+    <pagination
+      v-show="total"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="handleRouteList"
+    />
+  </div>
+</template>
+
+<script>
+import { listByType } from "@/api/dict_api";
+import { getActivityList } from "@/api/activity_api";
+import Pagination from "@/components/Pagination";
+import { formatListQuery, parseListQuery } from "@/utils/common";
+
+export default {
+  name: "JobListPage",
+  components: { Pagination },
+  data() {
+    return {
+      listQuery: {
+        cityId: undefined,
+        page: 1,
+        limit: 10
+      },
+      total: 0,
+      list: [],
+      cityOptions: []
+    };
+  },
+  created() {
+    this.initData();
+  },
+  watch: {
+    $route() {
+      this.getList();
+    }
+  },
+  methods: {
+    initData() {
+      listByType(2).then(response => (this.cityOptions = response.data.list));
+      this.getList();
+    },
+    handleFilter() {
+      this.listQuery.page = 1;
+      this.handleRouteList();
+    },
+    getList() {
+      parseListQuery(this.$route.query, this.listQuery);
+      if (this.listQuery.cityId) {
+        this.listQuery.cityId = parseInt(this.listQuery.cityId);
+      }
+      getActivityList(this.listQuery).then(response => {
+        this.list = response.data.list;
+        this.total = response.data.total;
+      });
+    },
+    handleRouteList() {
+      this.$router.push({
+        path: this.$route.path,
+        query: formatListQuery(this.listQuery)
+      });
+    },
+    openActivity() {}
+  }
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss">
+.app-container {
+  width: 1000px;
+  margin: 20px auto;
+}
+
+.text-label{
+  color: #555;
+  font-size: 15px;
+}
+
+.text-desc{
+   font-size: 15px;
+   color: #888;
+}
+</style>

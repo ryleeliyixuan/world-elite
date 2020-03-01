@@ -16,4 +16,7 @@ public class DomainConfig {
 
     @Value("${domain.inner.oss}")
     private String innerOss;
+
+    @Value("domain.web.host")
+    private String webHost;
 }

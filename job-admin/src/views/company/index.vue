@@ -3,7 +3,14 @@
     <div class="filter-container">
       <el-form :inline="true" :model="listQuery">
         <el-form-item>
-          <el-input v-model="listQuery.fullName" placeholder="公司名称" @keyup.enter.native="handleFilter"></el-input>
+          <el-button type="success" @click="handleNewCompany" icon="el-icon-plus">添加企业</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="listQuery.fullName"
+            placeholder="公司名称"
+            @keyup.enter.native="handleFilter"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-select
@@ -77,11 +84,19 @@
       <el-table-column
         label="操作"
         align="center"
-        class-name="small-padding fixed-width"
-        fixed="right"
+        width="200"
       >
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleModify(row)" icon="el-icon-edit">编辑</el-button>
+          <el-popconfirm title="你确定要删除该企业？" @onConfirm="handleDelete(row)"> 
+            <el-button
+              type="danger"
+              size="mini"
+              confirmButtonText="删除"
+              icon="el-icon-delete"
+              slot="reference"
+            >删除</el-button>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -93,14 +108,30 @@
       :limit.sync="listQuery.limit"
       @pagination="handleRouteList"
     />
+
+    <el-dialog
+      title="添加公司"
+      :visible.sync="newDialogVisible"
+      width="30%"
+    >
+      <el-form ref="form" :model="companyForm">
+        <el-form-item>
+          <el-input v-model="companyForm.fullName" placeholder="公司全称"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="newDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleSaveCompany">下一步</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import { getCompanyList } from "@/api/company_api";
-import { listByType } from '@/api/dict_api'
+import { getCompanyList, saveCompany, delCompany } from "@/api/company_api";
+import { listByType } from "@/api/dict_api";
 
 export default {
   name: "CompanyList",
@@ -121,7 +152,11 @@ export default {
         sort: "-id"
       },
       industryOptions: [],
-      cityOptions: []
+      cityOptions: [],
+      newDialogVisible: false,
+      companyForm: {
+        fullName: ""
+      }
     };
   },
   created() {
@@ -133,10 +168,12 @@ export default {
     }
   },
   methods: {
-    initData(){
-       listByType(7).then(response => this.industryOptions = response.data.list);
-       listByType(2).then(response => this.cityOptions = response.data.list);
-       this.getList();
+    initData() {
+      listByType(7).then(
+        response => (this.industryOptions = response.data.list)
+      );
+      listByType(2).then(response => (this.cityOptions = response.data.list));
+      this.getList();
     },
     getList() {
       this.listLoading = true;
@@ -165,7 +202,26 @@ export default {
       this.handleRouteList();
     },
     handleModify(company) {
-        this.$router.push({path: '/company/edit', query: {id: company.id}})
+      this.$router.push({ path: "/company/edit", query: { id: company.id } });
+    },
+    handleNewCompany() {
+      this.newDialogVisible = true;
+      this.companyForm.fullName = "";
+    },
+    handleSaveCompany() {
+      this.newDialogVisible = false;
+      saveCompany(this.companyForm).then(response => {
+        this.$router.push({
+          path: "/company/edit",
+          query: { id: response.data }
+        });
+      });
+    },
+    handleDelete(company) {
+        delCompany(company.id).then(()=>{
+            this.$message('删除成功');
+            this.getList();
+        })
     }
   }
 };

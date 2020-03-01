@@ -7,9 +7,9 @@
         </div>
       </el-col>
       <el-col :span="4">
-        <el-menu :router="true" mode="horizontal">
+        <el-menu :router="true" mode="horizontal" :default-active="activeIndex">
           <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
-          <el-menu-item class="nav-item" index="#">活动</el-menu-item>
+          <el-menu-item class="nav-item" index="/activity-list">活动</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="10" class="ml-4">
@@ -110,7 +110,7 @@ export default {
       });
     },
     handleSearch() {
-      this.$router.push({ path: "/job-list", query: { q: this.keyword } });
+      this.$router.push({ path: "/job-list", query: { keyword: this.keyword } });
     },
     getUnReadMessageCount() {
       if (this.token && this.token !== "") {

@@ -9,6 +9,7 @@ import lombok.Data;
 public class CompanyForm {
     private Long id;
     private String name;
+    private String fullName;
     private String logo;
     private Integer scaleId;
     private Integer stageId;

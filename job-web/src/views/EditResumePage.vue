@@ -13,28 +13,23 @@
               />
               <b-media class="mt-3">
                 <template v-slot:aside>
-                  <div
-                    @mouseover="showUploadAvatarIcon = true"
-                    @mouseout="showUploadAvatarIcon = false"
+                  <el-upload
+                    class="avatar-uploader"
+                    :action="uploadPicOptions.action"
+                    :data="uploadPicOptions.params"
+                    :accept="uploadPicOptions.acceptFileType"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :on-error="handleAvatarError"
+                    :before-upload="beforeAvatarUpload"
                   >
-                    <el-upload
-                      class="avatar-uploader"
-                      :action="uploadPicOptions.action"
-                      :data="uploadPicOptions.params"
-                      :accept="uploadPicOptions.acceptFileType"
-                      :show-file-list="false"
-                      :on-success="handleAvatarSuccess"
-                      :on-error="handleAvatarError"
-                      :before-upload="beforeAvatarUpload"
-                    >
-                      <img
-                        v-if="(resume.avatar && resume.avatar !== '') && showUploadAvatarIcon === false"
-                        :src="resume.avatar"
-                        class="avatar"
-                      />
-                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                  </div>
+                    <img
+                      v-if="(resume.avatar && resume.avatar !== '')"
+                      :src="resume.avatar"
+                      class="avatar"
+                    />
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  </el-upload>
                 </template>
                 <h4>
                   {{resume.name}}
@@ -275,7 +270,7 @@
               class="mb-3"
               variant="info"
             ></b-progress>
-            <b-button variant="info" block>预览简历</b-button>
+            <b-button variant="info" block @click="handlePreview">预览简历</b-button>
           </div>
           <div class="resume-nav" v-sticky="{stickyTop: 2}">
             <b-nav vertical>
@@ -702,7 +697,6 @@ library.add(
   faTrashAlt
 );
 
-
 export default {
   name: "EditResumePage",
   data() {
@@ -873,6 +867,7 @@ export default {
       showUploadAvatarIcon: false,
       showSkillDialog: false,
       showLinkDialog: false,
+      showPreviewDialog: false,
       posting: false,
       introEditorOption: {
         theme: "snow",
@@ -1357,6 +1352,9 @@ export default {
       document.body.scrollTop = scrollTop;
       document.documentElement.scrollTop = scrollTop;
       window.pageYOffset = scrollTop;
+    },
+    handlePreview(){
+      this.$router.push({ path: `/resume/${this.resume.id}` })
     }
   }
 };

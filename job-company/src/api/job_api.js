@@ -38,3 +38,11 @@ export function getUserJobOptions(){
         method: 'get',
     })
 }
+
+export function reopenJob(id){
+    return request({
+        url: '/job/open-job',
+        method: 'post',
+        params: {id: id}
+    })
+}

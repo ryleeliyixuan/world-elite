@@ -1,9 +1,11 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.ConfigType;
 import com.worldelite.job.constants.JobApplyStatus;
+import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,22 +111,56 @@ public class ResumeService extends BaseService {
     }
 
     /**
+     * 获取简历列表
+     *
+     * @param listForm
+     * @return
+     */
+    public PageResult getResumeList(ResumeListForm listForm){
+        ResumeOptions resumeOptions = new ResumeOptions();
+        BeanUtil.copyProperties(listForm, resumeOptions);
+        AppUtils.setPage(listForm);
+        Page<Resume> resumePage = (Page<Resume>) resumeMapper.selectAndList(resumeOptions);
+        PageResult<ResumeVo> pageResult = new PageResult<>(resumePage);
+        List<ResumeVo> resumeVoList = new ArrayList<>(resumePage.size());
+        for(Resume resume: resumePage){
+            ResumeVo resumeVo = new ResumeVo().asVo(resume);
+            List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduList(resume.getId());
+            resumeVo.setResumeEduList(resumeEduVoList);
+            if (CollectionUtils.isNotEmpty(resumeEduVoList)) {
+                ResumeEduVo maxResumeEduVo = new ResumeEduVo();
+                BeanUtil.copyProperties(resumeEduVoList.get(0), maxResumeEduVo);
+                resumeVo.setMaxResumeEdu(maxResumeEduVo);
+            }
+            resumeVoList.add(resumeVo);
+        }
+        pageResult.setList(resumeVoList);
+        return pageResult;
+    }
+
+    /**
      * 获取简历详情
      *
      * @param resumeId
      * @return
      */
     public ResumeVo getResumeDetail(Long resumeId){
-        JobApplyOptions options = new JobApplyOptions();
-        options.setCreatorId(curUser().getId());
-        options.setResumeId(resumeId);
-        final int count = jobApplyMapper.countJobApply(options);
-        if(count == 0){
-            throw new ServiceException(ApiCode.PERMISSION_DENIED);
+        // 检查权限
+        if(curUser().getType() == UserType.COMPANY.value) {
+            JobApplyOptions options = new JobApplyOptions();
+            options.setCreatorId(curUser().getId());
+            options.setResumeId(resumeId);
+            final int count = jobApplyMapper.countJobApply(options);
+            if (count == 0) {
+                throw new ServiceException(ApiCode.PERMISSION_DENIED);
+            }
+        }else if(curUser().getType() == UserType.GENERAL.value){
+            checkResumeCreator(resumeId);
         }
         ResumeVo resumeVo = getResumeInfo(resumeId);
         resumeVo.setResumePracticeList(resumePracticeService.getResumePracticeList(resumeId));
         resumeVo.setResumeLinkList(resumeLinkService.getResumeLinkList(resumeId));
+        resumeVo.setResumeCompleteProgress(AppUtils.calCompleteProgress(resumeVo));
         return resumeVo;
     }
 
@@ -308,7 +345,9 @@ public class ResumeService extends BaseService {
         resumeVo.setResumeSkillList(resumeSkillService.getResumeSkillList(resume.getId()));
         resumeVo.setResumeExpList(resumeExpService.getResumeExpList(resume.getId()));
         if (CollectionUtils.isNotEmpty(resumeEduVoList)) {
-            resumeVo.setMaxResumeEdu(JSON.parseObject(JSON.toJSONString(resumeEduVoList.get(0)), ResumeEduVo.class));
+            ResumeEduVo maxResumeEduVo = new ResumeEduVo();
+            BeanUtil.copyProperties(resumeEduVoList.get(0), maxResumeEduVo);
+            resumeVo.setMaxResumeEdu(maxResumeEduVo);
         }
         return resumeVo;
     }

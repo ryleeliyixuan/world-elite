@@ -8,7 +8,7 @@
           filterable
           clearable
           placeholder="城市"
-          @change="handleSearch"
+          @change="handleFilter"
           size="small"
         >
           <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -18,7 +18,7 @@
           filterable
           clearable
           placeholder="薪资"
-          @change="handleSearch"
+          @change="handleFilter"
           size="small"
           class="ml-2"
         >
@@ -35,7 +35,7 @@
           filterable
           clearable
           placeholder="行业"
-          @change="handleSearch"
+          @change="handleFilter"
           size="small"
           class="ml-2"
         >
@@ -52,7 +52,7 @@
           filterable
           clearable
           placeholder="公司规模"
-          @change="handleSearch"
+          @change="handleFilter"
           size="small"
           class="ml-2"
         >
@@ -63,12 +63,13 @@
             :value="item.id"
           ></el-option>
         </el-select>
+
         <el-select
           v-model="listQuery.jobType"
           filterable
           clearable
           placeholder="工作类型"
-          @change="handleSearch"
+          @change="handleFilter"
           size="small"
           class="ml-2"
         >
@@ -81,7 +82,14 @@
         </el-select>
       </div>
     </div>
-    <div class="job-list mt-3 w-75" v-if="pageResult.list && pageResult.list.length !== 0">
+    <pagination
+      v-show="total"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="handleRouteList"
+    />
+    <div class="job-list w-75" v-if="pageResult.list && pageResult.list.length !== 0">
       <el-card
         shadow="hover"
         v-for="job in pageResult.list"
@@ -124,13 +132,12 @@
         </b-row>
       </el-card>
     </div>
-    <div class="mt-3 w-75" v-else>暂无符合条件记录</div>
     <pagination
       v-show="total"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
-      @pagination="getJobList"
+      @pagination="handleRouteList"
     />
   </div>
 </template>
@@ -139,6 +146,10 @@
 import { listByType } from "@/api/dict_api";
 import { searchJob } from "@/api/job_api";
 import Pagination from "@/components/Pagination";
+import {
+  formatListQuery,
+  parseListQuery
+} from "@/utils/common";
 
 export default {
   name: "JobListPage",
@@ -169,14 +180,14 @@ export default {
   },
   created() {
     this.initData();
-    this.getJobList();
+    this.getList();
   },
   watch: {
-    '$route'() {
-      this.getJobList();
+    $route() {
+      this.getList();
     },
-    'listQuery.keyword'(){
-      this.$store.commit('setting/SET_KEYWORD', this.listQuery.keyword);
+    "listQuery.keyword"() {
+      this.$store.commit("setting/SET_KEYWORD", this.listQuery.keyword);
     }
   },
   methods: {
@@ -195,15 +206,27 @@ export default {
         response => (this.salaryRangeOptions = response.data.list)
       );
     },
-    handleSearch() {
+    handleFilter() {
       this.listQuery.page = 1;
-      this.getJobList();
+      this.handleRouteList();
     },
-    getJobList() {
-      this.listQuery.keyword = this.$route.query.q;
+    getList() {
+      parseListQuery(this.$route.query, this.listQuery);
+      if(this.listQuery.salaryRangeId){
+         this.listQuery.salaryRangeId = parseInt(this.listQuery.salaryRangeId);
+      }
+      if(this.listQuery.jobType){
+         this.listQuery.jobType = parseInt(this.listQuery.jobType);
+      }
       searchJob(this.listQuery).then(response => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
+      });
+    },
+    handleRouteList() {
+      this.$router.push({
+        path: this.$route.path,
+        query: formatListQuery(this.listQuery)
       });
     },
     openJobDetail(id) {

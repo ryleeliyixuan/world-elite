@@ -12,6 +12,9 @@
     <include refid="Base_Column_List" />
     from t_job
     <where>
+      <if test="id != null">
+        and id = #{id,jdbcType=BIGINT}
+      </if>
       <if test="companyId != null">
         and company_id = #{companyId,jdbcType=BIGINT}
       </if>

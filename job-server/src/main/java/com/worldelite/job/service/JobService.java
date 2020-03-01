@@ -1,10 +1,7 @@
 package com.worldelite.job.service;
 
 import com.github.pagehelper.Page;
-import com.worldelite.job.constants.Bool;
-import com.worldelite.job.constants.FavoriteType;
-import com.worldelite.job.constants.JobApplyStatus;
-import com.worldelite.job.constants.JobStatus;
+import com.worldelite.job.constants.*;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.JobForm;
@@ -25,6 +22,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +63,9 @@ public class JobService extends BaseService {
 
     @Autowired
     private IndexService indexService;
+
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 获取职位信息: 适用列表
@@ -243,6 +244,7 @@ public class JobService extends BaseService {
     public PageResult<JobVo> getJobList(JobListForm jobListForm) {
         AppUtils.setPage(jobListForm);
         Job options = new Job();
+        options.setId(jobListForm.getJobId());
         options.setCompanyId(jobListForm.getCompanyId());
         options.setCreatorId(jobListForm.getCreatorId());
         options.setName(jobListForm.getName());
@@ -293,10 +295,43 @@ public class JobService extends BaseService {
      *
      * @param jobId
      */
-    public void takeOffJob(Long jobId) {
+    @Transactional
+    public void takeOffJob(Long jobId, String reason) {
         Job job = jobMapper.selectSimpleById(jobId);
-        checkJobCreator(job);
+        if(curUser().getType() != UserType.ADMIN.value){
+            checkJobCreator(job);
+        }
         job.setStatus(JobStatus.OFFLINE.value);
+        job.setUpdateTime(new Date());
+
+        // 被管理员强制下架，记录原因，并发送消息
+        if(curUser().getType() == UserType.ADMIN.value){
+            job.setRemark(reason);
+
+            Message message = new Message();
+            message.setFromUser(curUser().getId());
+            message.setFromUser(job.getCreatorId());
+            message.setContent(message("message.job.takeoff", job.getName(), reason));
+            message.setUrl(AppUtils.wholeWebUrl(String.format("job/%s", jobId)));
+            messageService.sendMessage(message);
+        }
+
+        jobMapper.updateByPrimaryKeySelective(job);
+    }
+
+    /**
+     * 开放职位
+     *
+     * @param jobId
+     */
+    public void openJob(Long jobId){
+        Job job = jobMapper.selectSimpleById(jobId);
+        if(job == null){
+            return;
+        }
+        checkJobCreator(job);
+        job.setStatus(JobStatus.PUBLISH.value);
+        job.setPubTime(new Date());
         job.setUpdateTime(new Date());
         jobMapper.updateByPrimaryKeySelective(job);
     }

@@ -2,6 +2,7 @@ package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
+import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.Company;
@@ -186,10 +187,14 @@ public class CompanyService extends BaseService{
      *
      * @param companyForm
      */
-    public void saveCompany(CompanyForm companyForm){
+    public Long saveCompany(CompanyForm companyForm){
         checkCompanyUser(companyForm.getId());
         Company company = companyMapper.selectByPrimaryKey(companyForm.getId());
+        if(company == null){
+            company = new Company();
+        }
         company.setName(companyForm.getName());
+        company.setFullName(companyForm.getFullName());
         company.setHomepage(companyForm.getHomepage());
         company.setStageId(companyForm.getStageId());
         company.setScaleId(companyForm.getScaleId());
@@ -198,9 +203,27 @@ public class CompanyService extends BaseService{
         company.setLogo(AppUtils.getOssKey(companyForm.getLogo()));
         company.setUpdateTime(new Date());
         company.setIntroduction(companyForm.getIntroduction());
-        companyMapper.updateByPrimaryKeyWithBLOBs(company);
+        if(company.getId() == null){
+            company.setId(AppUtils.nextId());
+            companyMapper.insertSelective(company);
+        }else{
+            company.setUpdateTime(new Date());
+            companyMapper.updateByPrimaryKeyWithBLOBs(company);
+        }
+        return company.getId();
     }
 
+    /**
+     * 删除公司
+     * @param companyId
+     */
+    public void delCompany(Long companyId){
+        Company company = companyMapper.selectSimpleById(companyId);
+        if(company != null){
+            company.setDelFlag(Bool.TRUE);
+            companyMapper.updateByPrimaryKeySelective(company);
+        }
+    }
 
     /**
      * 检查当前用户是否拥有公司信息的修改权限

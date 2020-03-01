@@ -38,17 +38,18 @@ public class AppUtils {
 
     /**
      * 获取Oss资源路径
+     *
      * @param relativeUrl
      * @return
      */
-    public static String absOssUrl(String relativeUrl){
-        if(StringUtils.isEmpty(relativeUrl))
+    public static String absOssUrl(String relativeUrl) {
+        if (StringUtils.isEmpty(relativeUrl))
             return "";
 
-        if(relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")){
+        if (relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")) {
             return relativeUrl;
         }
-        if(relativeUrl.startsWith("/")){
+        if (relativeUrl.startsWith("/")) {
             relativeUrl = relativeUrl.substring(1);
         }
         DomainConfig domainConfig = getBean(DomainConfig.class);
@@ -56,19 +57,40 @@ public class AppUtils {
     }
 
     /**
-     * 获取Oss资源路径
+     * 获取用户端网页链接
+     *
      * @param relativeUrl
      * @return
      */
-    public static String absOssInnerUrl(String relativeUrl){
-        if(relativeUrl == null)
+    public static String wholeWebUrl(String relativeUrl) {
+        if (StringUtils.isEmpty(relativeUrl))
+            return "";
+
+        if (relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")) {
+            return relativeUrl;
+        }
+        if (relativeUrl.startsWith("/")) {
+            relativeUrl = relativeUrl.substring(1);
+        }
+        DomainConfig domainConfig = getBean(DomainConfig.class);
+        return domainConfig.getWebHost() + relativeUrl;
+    }
+
+    /**
+     * 获取Oss资源路径
+     *
+     * @param relativeUrl
+     * @return
+     */
+    public static String absOssInnerUrl(String relativeUrl) {
+        if (relativeUrl == null)
             return "";
 
         DomainConfig domainConfig = getBean(DomainConfig.class);
-        if(relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")){
+        if (relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")) {
             return relativeUrl.replace(domainConfig.getOss(), domainConfig.getInnerOss());
         }
-        if(relativeUrl.startsWith("/")){
+        if (relativeUrl.startsWith("/")) {
             relativeUrl = relativeUrl.substring(1);
         }
         return domainConfig.getInnerOss() + relativeUrl;
@@ -80,12 +102,12 @@ public class AppUtils {
      * @param url
      * @return
      */
-    public static String getOssKey(String url){
-        if(StringUtils.isEmpty(url)){
+    public static String getOssKey(String url) {
+        if (StringUtils.isEmpty(url)) {
             return "";
         }
         AliConfig ossConfig = getBean(AliConfig.class);
-        if(!url.contains(ossConfig.getEndPoint())){
+        if (!url.contains(ossConfig.getEndPoint())) {
             return url;
         }
         return url.substring(url.indexOf(ossConfig.getEndPoint()) + ossConfig.getEndPoint().length() + 1);
@@ -94,11 +116,12 @@ public class AppUtils {
 
     /**
      * 获取 Bean 对象
+     *
      * @param clazz
      * @param <T>
      * @return
      */
-    public static <T> T getBean(Class<? extends Object> clazz){
+    public static <T> T getBean(Class<? extends Object> clazz) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         return (T) WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext()).getBean(clazz);
     }
@@ -108,15 +131,16 @@ public class AppUtils {
      *
      * @return
      */
-    public static HttpServletRequest request(){
+    public static HttpServletRequest request() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 
     /**
      * 消息对象
+     *
      * @return
      */
-    public static MessageResource message(){
+    public static MessageResource message() {
         return getBean(MessageResource.class);
     }
 
@@ -137,18 +161,18 @@ public class AppUtils {
      * @param <VO>
      * @return
      */
-    public static<VO extends VoConvertable> List<VO> asVoList(List entityList, Class<VO> voClass){
-        if(entityList == null || entityList.isEmpty()){
+    public static <VO extends VoConvertable> List<VO> asVoList(List entityList, Class<VO> voClass) {
+        if (entityList == null || entityList.isEmpty()) {
             return Collections.emptyList();
         }
         List voList = new ArrayList(entityList.size());
-        try{
-            for(Object e : entityList){
+        try {
+            for (Object e : entityList) {
                 VO vo = voClass.newInstance();
                 voList.add(vo.asVo(e));
             }
             return voList;
-        }catch (InstantiationException | IllegalAccessException e){
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return Collections.emptyList();
         }
@@ -159,14 +183,14 @@ public class AppUtils {
      *
      * @param pageForm
      */
-    public static void setPage(PageForm pageForm){
+    public static void setPage(PageForm pageForm) {
         Page page = PageHelper.startPage(pageForm.getPage(), pageForm.getLimit());
-        if(StringUtils.isNoneEmpty(pageForm.getSort())){
-            if(pageForm.getSort().startsWith("+")){
+        if (StringUtils.isNoneEmpty(pageForm.getSort())) {
+            if (pageForm.getSort().startsWith("+")) {
                 page.setOrderBy(String.format("%s asc", pageForm.getSort().substring(1)));
-            }else if(pageForm.getSort().startsWith("-")){
+            } else if (pageForm.getSort().startsWith("-")) {
                 page.setOrderBy(String.format("%s desc", pageForm.getSort().substring(1)));
-            }else{
+            } else {
                 page.setOrderBy(pageForm.getSort());
             }
         }
@@ -178,36 +202,37 @@ public class AppUtils {
      * @param object
      * @return
      */
-    public static Integer calCompleteProgress(Object object){
+    public static Integer calCompleteProgress(Object object) {
         Class resumeClass = object.getClass();
         double total = 0, current = 0;
-        try{
-            for(Field field : resumeClass.getDeclaredFields()){
+        try {
+            for (Field field : resumeClass.getDeclaredFields()) {
                 ResumeScore resumeScore = field.getAnnotation(ResumeScore.class);
-                if(resumeScore != null){
+                if (resumeScore != null) {
                     total += resumeScore.value();
                     field.setAccessible(true);
                     Object value = field.get(object);
-                    if(value != null){
-                        if(value instanceof Collection && CollectionUtils.isNotEmpty((Collection)value)){
+                    if (value != null) {
+                        if (value instanceof Collection && CollectionUtils.isNotEmpty((Collection) value)) {
                             current += resumeScore.value();
-                        }else{
+                        } else {
                             current += resumeScore.value();
                         }
                     }
                 }
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LOGGER.error("cal resume progress error", ex);
         }
-        return total == 0? 0: (int)(current / total * 100);
+        return total == 0 ? 0 : (int) (current / total * 100);
     }
 
     /**
      * 生成id
+     *
      * @return
      */
-    public static long nextId(){
+    public static long nextId() {
         return ID_WORKER.nextId();
     }
 }

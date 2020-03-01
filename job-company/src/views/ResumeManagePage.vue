@@ -14,7 +14,7 @@
         clearable
         filterable
         size="small"
-        @change="handleListPageRoute"
+        @change="handleFilter"
       >
         <el-option v-for="item in jobOptions" :key="item.id" :label="item.name" :value="item.id">
           <span style="float: left">{{ item.name }}</span>
@@ -29,7 +29,7 @@
         filterable
         size="small"
         class="ml-2"
-        @change="handleListPageRoute"
+        @change="handleFilter"
       >
         <el-option v-for="item in degreeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
@@ -174,7 +174,7 @@
         </el-row>
       </div>
       <div class="resume-drawer-body pl-4 pr-4 pb-4">
-        <ResumeView :resumeId="activeApplyResume.resume.id"></ResumeView>
+        <ResumeView :resumeId="activeApplyResume.resume.id" class="mt-3"></ResumeView>
       </div>
     </div>
   </div>
@@ -264,18 +264,20 @@ export default {
       });
     },
     handleListPageRoute() {
-      this.$nextTick(() => {
-        this.$router.push({
-          path: "/manage-resume",
-          query: {
-            jobIds: this.listQuery.jobIds.join(","),
-            degreeIds: this.listQuery.degreeIds.join(","),
-            statuses: this.listQuery.statuses.join(","),
-            page: this.listQuery.page,
-            limit: this.listQuery.limit
-          }
-        });
+      this.$router.push({
+        path: "/manage-resume",
+        query: {
+          jobIds: this.listQuery.jobIds.join(","),
+          degreeIds: this.listQuery.degreeIds.join(","),
+          statuses: this.listQuery.statuses.join(","),
+          page: this.listQuery.page,
+          limit: this.listQuery.limit
+        }
       });
+    },
+    handleFilter(){
+      this.listQuery.page = 1;
+      this.handleListPageRoute();
     },
     handleApplyResume(status, id) {
       const message = this.statusMessageMap[status];
@@ -293,10 +295,10 @@ export default {
     handleShowResume(applyResume) {
       this.reviewDrawerVisible = true;
       this.activeApplyResume = applyResume;
-      if(applyResume.applyStatus === 1){
-          handleApplyResume({ id: applyResume.id, status: 2 }).then(()=>{
-              applyResume.applyStatus = 2;
-          });
+      if (applyResume.applyStatus === 1) {
+        handleApplyResume({ id: applyResume.id, status: 2 }).then(() => {
+          applyResume.applyStatus = 2;
+        });
       }
     }
   }

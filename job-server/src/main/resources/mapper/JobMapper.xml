@@ -24,6 +24,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.worldelite.job.entity.Job">
     <!--
@@ -39,7 +40,7 @@
     -->
     id, company_id, creator_id, job_type, name, category_id, depart, min_degree_id, min_salary, 
     max_salary, salary_months, city_id, address_id, status, pub_time, create_time, update_time, 
-    del_flag
+    del_flag, remark
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -79,14 +80,14 @@
       max_salary, salary_months, city_id, 
       address_id, status, pub_time, 
       create_time, update_time, del_flag, 
-      description)
+      remark, description)
     values (#{id,jdbcType=BIGINT}, #{companyId,jdbcType=BIGINT}, #{creatorId,jdbcType=BIGINT}, 
       #{jobType,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{categoryId,jdbcType=INTEGER}, 
       #{depart,jdbcType=VARCHAR}, #{minDegreeId,jdbcType=INTEGER}, #{minSalary,jdbcType=INTEGER}, 
       #{maxSalary,jdbcType=INTEGER}, #{salaryMonths,jdbcType=INTEGER}, #{cityId,jdbcType=INTEGER}, 
       #{addressId,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, #{pubTime,jdbcType=TIMESTAMP}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=TINYINT}, 
-      #{description,jdbcType=LONGVARCHAR})
+      #{remark,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.worldelite.job.entity.Job">
     <!--
@@ -149,6 +150,9 @@
       <if test="delFlag != null">
         del_flag,
       </if>
+      <if test="remark != null">
+        remark,
+      </if>
       <if test="description != null">
         description,
       </if>
@@ -207,6 +211,9 @@
       </if>
       <if test="delFlag != null">
         #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
       <if test="description != null">
         #{description,jdbcType=LONGVARCHAR},
@@ -271,6 +278,9 @@
       <if test="delFlag != null">
         del_flag = #{delFlag,jdbcType=TINYINT},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="description != null">
         description = #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -300,6 +310,7 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       del_flag = #{delFlag,jdbcType=TINYINT},
+      remark = #{remark,jdbcType=VARCHAR},
       description = #{description,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -325,7 +336,8 @@
       pub_time = #{pubTime,jdbcType=TIMESTAMP},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      del_flag = #{delFlag,jdbcType=TINYINT}
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
