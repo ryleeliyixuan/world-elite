@@ -68,11 +68,21 @@
     <!--开发环境:打印控制台-->
     <springProfile name="local">
         <root level="info">
+            <appender-ref ref="file_info"/>
+            <appender-ref ref="file_error"/>
             <appender-ref ref="console"/>
         </root>
     </springProfile>
 
-    <!--线上测试、开发环境-->
+    <!--线上开发环境-->
+    <springProfile name="dev">
+        <root level="info">
+            <appender-ref ref="file_info"/>
+            <appender-ref ref="file_error"/>
+        </root>
+    </springProfile>
+
+    <!--线上正式环境-->
     <!--系统操作日志-->
     <springProfile name="prod">
         <root level="info">

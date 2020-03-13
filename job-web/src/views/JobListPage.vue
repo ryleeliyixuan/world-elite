@@ -116,12 +116,12 @@
                 >{{`${job.minSalary} - ${job.maxSalary}K`}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
                 <span
                   class="ml-3 text-gray text-small"
-                >{{`${job.city.name} / ${job.minDegree.name}`}}</span>
+                >{{`${job.city? job.city.name : ''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
               </div>
             </b-media>
           </b-col>
           <b-col>
-            <b-media right-align vertical-align="center">
+            <b-media right-align vertical-align="center" v-if="job.companyUser && job.companyUser.company">
               <template v-slot:aside>
                 <el-link :href="`/company/${job.companyUser.company.id}`">
                   <b-img
@@ -135,7 +135,7 @@
               <h6 class="mt-0 mb-1">{{job.companyUser.company.name}}</h6>
               <div
                 class="text-gray text-small"
-              >{{job.companyUser.company.industry.name}} / {{job.companyUser.company.stage.name}} / {{job.companyUser.company.scale.name}}</div>
+              >{{job.companyUser.company.industry?job.companyUser.company.industry.name:''}} / {{job.companyUser.company.stage?job.companyUser.company.stage.name:''}} / {{job.companyUser.company.scale?job.companyUser.company.scale.name:''}}</div>
             </b-media>
           </b-col>
         </b-row>

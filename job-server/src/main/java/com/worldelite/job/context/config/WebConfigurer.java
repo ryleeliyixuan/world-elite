@@ -3,6 +3,8 @@ package com.worldelite.job.context.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.google.code.kaptcha.util.Config;
 import com.maxmind.geoip2.DatabaseReader;
 import com.worldelite.job.context.interceptor.AuthInterceptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -56,6 +59,24 @@ public class WebConfigurer implements WebMvcConfigurer {
     public DatabaseReader databaseReader() throws IOException {
         File database = new File(geoipDbPath);
         return new DatabaseReader.Builder(database).build();
+    }
+
+    @Bean
+    public DefaultKaptcha captchaProducer(){
+        DefaultKaptcha captchaProducer =new DefaultKaptcha();
+        Properties properties =new Properties();
+        properties.setProperty("kaptcha.border","no");
+        properties.setProperty("kaptcha.textproducer.font.color","blue");
+        properties.setProperty("kaptcha.textproducer.char.space","4");
+        properties.setProperty("kaptcha.image.width","150");
+        properties.setProperty("kaptcha.image.height","40");
+        properties.setProperty("kaptcha.textproducer.font.size","40");
+        properties.setProperty("kaptcha.session.key","code");
+        properties.setProperty("kaptcha.textproducer.char.length","5");
+        properties.setProperty("kaptcha.textproducer.font.names","Arial");
+        Config config = new Config(properties);
+        captchaProducer.setConfig(config);
+        return  captchaProducer;
     }
 
     @Override

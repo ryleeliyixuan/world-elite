@@ -23,7 +23,7 @@
         </b-form>
       </b-row>
       <p class="text-center m-4">
-        <b-link href="#foo">忘记密码?</b-link>
+        <b-link href="/forget-pwd">忘记密码?</b-link>
       </p>
       <p class="text-center m-4">
         没有帐号？<b-link to="/register">立即加入</b-link>

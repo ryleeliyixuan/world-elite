@@ -35,15 +35,13 @@ public class UserApi extends BaseController {
     @Autowired
     private UserExpectJobService userExpectJobService;
 
-    @Autowired
-    private CompanyVerificationService companyVerificationService;
-
     /**
      * 邮箱注册
      *
      * @return
      */
     @PostMapping("register")
+    @Deprecated
     public ApiResult register(@Valid @RequestBody RegisterForm registerForm){
         UserVo userVo = userService.register(registerForm);
         return ApiResult.ok(userVo);
@@ -55,6 +53,7 @@ public class UserApi extends BaseController {
      * @return
      */
     @GetMapping("get-email-code")
+    @Deprecated
     public ApiResult activateEmail(@RequestParam @Email String email){
         userService.sendEmailValidCode(email);
         return ApiResult.ok();
@@ -67,6 +66,7 @@ public class UserApi extends BaseController {
      * @return
      */
     @PostMapping("email-login")
+    @Deprecated
     public ApiResult loginWithEmail(@Valid @RequestBody LoginForm loginForm){
         UserVo loginUser = userService.emailLogin(loginForm);
         return ApiResult.ok(loginUser);
@@ -138,6 +138,7 @@ public class UserApi extends BaseController {
      * @return
      */
     @PostMapping("logout")
+    @Deprecated
     public ApiResult logout(){
         userService.logout();
         return ApiResult.ok();

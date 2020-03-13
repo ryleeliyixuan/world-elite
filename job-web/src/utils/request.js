@@ -5,6 +5,8 @@ import { getToken } from '@/utils/auth'
 import Toast from '@/utils/toast'
 import {curRelativePath} from '@/utils/common'
 
+// cookie
+axios.defaults.withCredentials = true;
 
 // create an axios instance
 const service = axios.create({

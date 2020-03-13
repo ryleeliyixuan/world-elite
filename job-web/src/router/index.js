@@ -66,6 +66,11 @@ const constantRoutes = [
         path: '/activity-list',
         component: () => import('@/views/ActivityListPage'),
         meta: { title: '活动列表' }
+    },
+    {
+        path: '/forget-pwd',
+        component: () => import('@/views/ForgetPwdPage'),
+        meta: {title: '忘记密码'}
     }
 ]
 
