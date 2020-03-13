@@ -23,7 +23,6 @@ sudo apt-get install nginx
 sudo apt-get install mysql-server
 
 
-
 # 安装redis
 sudo apt-get install redis-server
 
@@ -39,6 +38,9 @@ sudo mkdir /apps/worldelite
 sudo mkdir /apps/worldelite/temp
 sudo mkdir /apps/worldelite/logs
 sudo mkdir /apps/worldelite/search-index
+sudo mkdir /apps/worldelite/static-admin
+sudo mkdir /apps/worldelite/static-web
+sudo mkdir /apps/worldelite/static-company
 
 mkdir ~/source  #源码目录
 mkdir ~/apps    #程序目录
