@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -48,7 +49,7 @@ public class ResponseUtils {
     }
 
     /**
-     * 返回静态文件，不能是大文件
+     * 返回静态文件
      *
      * @param response
      * @param file
@@ -61,7 +62,21 @@ public class ResponseUtils {
             LOGGER.error("", e);
             writeAsString(response, "error");
         }
+    }
 
+    /**
+     * 输出文件，并指定文件名
+     * @param response
+     * @param file
+     * @param fileName
+     */
+    public static void writeFile(HttpServletResponse response, File file, String fileName){
+        try{
+            writeStream(response, new FileInputStream(file), fileName, file.length());
+        }catch (IOException e){
+            LOGGER.error("", e);
+            writeAsString(response, "error");
+        }
     }
 
     public static void writeStream(HttpServletResponse response, InputStream stream, String fileName, long streamLen){
@@ -94,14 +109,12 @@ public class ResponseUtils {
                 contentType = "application/octet-stream";
         }
 
-        if(contentType.startsWith("application")){
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-        }
-
-        response.setContentType(contentType);
-        response.setContentLengthLong(streamLen);
-
         try{
+            if(contentType.startsWith("application")){
+                response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            }
+            response.setContentType(contentType);
+            response.setContentLengthLong(streamLen);
             byte[] buffer = new byte[1024];
             int readSize;
             while((readSize = stream.read(buffer)) != -1){

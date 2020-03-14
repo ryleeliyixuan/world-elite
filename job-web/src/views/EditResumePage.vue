@@ -262,14 +262,8 @@
           </div>
           <div class="resume-preview">
             <p>简历完成度</p>
-            <b-progress
-              :value="resume.resumeCompleteProgress"
-              :max="100"
-              show-value
-              class="mb-3"
-              variant="info"
-            ></b-progress>
-            <b-button variant="info" block @click="handlePreview">预览简历</b-button>
+            <el-progress :text-inside="true" :stroke-width="22" :percentage="resume.resumeCompleteProgress" :status="resume.resumeCompleteProgress == 100? 'success': 'warning'"></el-progress>
+            <el-button type="primary" class="mt-2 btn-preview" @click="handlePreview" icon="el-icon-document">预览简历</el-button>
           </div>
           <div class="resume-nav" v-sticky="{stickyTop: 2}">
             <b-nav vertical>
@@ -1432,6 +1426,11 @@ $border-style: 1px solid #eee;
 .link-item {
   padding-top: 8px;
   padding-bottom: 8px;
+}
+
+.btn-preview{
+  width: 100%;
+  font-size: 18px;
 }
 </style>
 

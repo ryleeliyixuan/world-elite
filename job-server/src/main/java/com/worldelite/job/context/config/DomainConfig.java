@@ -1,6 +1,7 @@
 package com.worldelite.job.context.config;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,13 @@ public class DomainConfig {
     @Value("${domain.inner.oss}")
     private String innerOss;
 
-    @Value("domain.web.host")
+    @Value("${domain.web.host}")
     private String webHost;
+
+    @Value("${server.port}")
+    private String serverPort;
+
+    public String getLocalHost(){
+        return "http://127.0.0.1:"+ serverPort;
+    }
 }

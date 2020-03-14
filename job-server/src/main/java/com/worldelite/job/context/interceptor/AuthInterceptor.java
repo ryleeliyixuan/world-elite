@@ -43,7 +43,11 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
 
-        final String token = request.getHeader("X-Token");
+        String token = request.getHeader("X-Token");
+
+        if(StringUtils.isEmpty(token)){
+            token = request.getParameter("_token");
+        }
 
         UserVo loginUser = null;
 

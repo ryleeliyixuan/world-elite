@@ -15,7 +15,7 @@ sudo ./gradlew clean build -x test
 
 # 拷贝到相应目录
 sudo cp build/libs/*.jar ${deployPath}/${module}.jar
-suco cp GeoLite2-City.mmdb /apps/worldelite/GeoLite2-City.mmdb
+sudo cp GeoLite2-City.mmdb /apps/worldelite/GeoLite2-City.mmdb
 
 # 重启服务
 if [ ! -f "/etc/init.d/${module}" ];then
