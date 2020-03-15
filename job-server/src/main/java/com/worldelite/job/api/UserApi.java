@@ -4,6 +4,7 @@ import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.VerificationStatus;
+import com.worldelite.job.context.SessionKeys;
 import com.worldelite.job.controller.BaseController;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.CompanyVerificationService;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
@@ -129,6 +131,24 @@ public class UserApi extends BaseController {
     @PostMapping("modify-status")
     public ApiResult modifyUserStatus(@RequestBody StatusForm statusForm){
         userService.modifyUserStatus(statusForm);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 修改 email
+     *
+     * @return
+     */
+    @RequireLogin
+    @PostMapping("modify-email")
+    public ApiResult modifyEmail(HttpSession session, @Valid @RequestBody ModifyEmailForm modifyEmailForm){
+        final String captcha = (String)session.getAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
+        // 立即删除
+        session.removeAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
+        if(captcha == null || !captcha.equalsIgnoreCase(modifyEmailForm.getImgValidCode())){
+            return ApiResult.fail(message("imageValidCode.invalid"));
+        }
+        userService.modifyUserEmail(modifyEmailForm);
         return ApiResult.ok();
     }
 

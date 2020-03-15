@@ -9,6 +9,7 @@ import com.worldelite.job.service.FavoriteService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,7 +32,7 @@ public class FavoriteApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("favorite")
-    public ApiResult favorite(@Valid @RequestBody FavoriteForm favoriteForm){
+    public ApiResult favorite(@RequestBody FavoriteForm favoriteForm){
         Boolean result = favoriteService.favorite(favoriteForm);
         return ApiResult.ok(result);
     }

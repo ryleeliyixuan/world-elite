@@ -268,6 +268,43 @@ public class UserService extends BaseService {
     }
 
     /**
+     * 修改用户 email
+     *
+     * @param modifyEmailForm
+     */
+    public void modifyUserEmail(ModifyEmailForm modifyEmailForm){
+
+        // 新邮箱验证码
+        final String emailValidCode = redisTemplate.opsForValue().get(RedisKeys.VALIDATE_EMAIL_PREFIX + modifyEmailForm.getNewEmail());
+        if(org.springframework.util.StringUtils.isEmpty(emailValidCode) || !emailValidCode.equals(modifyEmailForm.getValidCode())){
+            throw new ServiceException(message("activate.email.expired"));
+        }
+
+
+        // 密码是否正确
+        User user = userMapper.selectByPrimaryKey(curUser().getId());
+        if(!user.getPassword().equals(DigestUtils.sha256Hex(modifyEmailForm.getPassword() + user.getSalt()))){
+            throw new ServiceException(message("password.invalid"));
+        }
+
+        // 和原来邮箱一样
+        if(user.getEmail().equals(modifyEmailForm.getNewEmail())){
+            throw new ServiceException(message("modify.email.new.equals.old"));
+        }
+
+        // 新邮箱是否被注册
+        User newEmailUser = userMapper.selectByEmail(modifyEmailForm.getNewEmail());
+        if(newEmailUser != null){
+            throw new ServiceException(message("register.email.repeat"));
+        }
+
+        // 修改邮箱地址
+        user.setEmail(modifyEmailForm.getNewEmail());
+        user.setUpdateTime(new Date());
+        userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    /**
      * 退出登录
      */
     public void logout() {

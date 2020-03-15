@@ -37,4 +37,10 @@ public class AliConfig {
      */
     @Value("${oss.uploadMaxPicSize}")
     private Long uploadMaxPicSize;
+
+    /**
+     * 上传附件大小限制
+     */
+    @Value("${oss.uploadMaxAttachmentSize}")
+    private Long uploadMaxAttachmentSize;
 }

@@ -6,8 +6,10 @@ import com.worldelite.job.form.*;
 import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -17,6 +19,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/resume")
+@Validated
 public class ResumeApi extends BaseApi {
 
     @Autowired
@@ -83,7 +86,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-basic")
-    public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm) {
+    public ApiResult<ResumeVo> saveBasic(@Valid @RequestBody ResumeForm resumeForm) {
         ResumeVo resumeVo = resumeService.saveBasic(resumeForm);
         return ApiResult.ok(resumeVo);
     }
@@ -96,7 +99,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-edu")
-    public ApiResult<ResumeEduVo> saveResumeEdu(@RequestBody ResumeEduForm resumeEduForm) {
+    public ApiResult<ResumeEduVo> saveResumeEdu(@Valid @RequestBody ResumeEduForm resumeEduForm) {
         ResumeEduVo resumeEduVo = resumeEduService.saveResumeEdu(resumeEduForm);
         return ApiResult.ok(resumeEduVo);
     }
@@ -122,7 +125,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-exp")
-    public ApiResult<ResumeExpVo> saveResumeExp(@RequestBody ResumeExpForm resumeExpForm) {
+    public ApiResult<ResumeExpVo> saveResumeExp(@Valid @RequestBody ResumeExpForm resumeExpForm) {
         ResumeExpVo resumeExpVo = resumeExpService.saveResumeExp(resumeExpForm);
         return ApiResult.ok(resumeExpVo);
     }

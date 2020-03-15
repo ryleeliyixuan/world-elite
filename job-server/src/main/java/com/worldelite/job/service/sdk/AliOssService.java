@@ -24,19 +24,19 @@ public class AliOssService {
     private AliConfig aliOssConfig;
 
     /**
-     * 获取上传图片的token
+     * 获取上传的token
      *
      * @param fileType
      * @return
      */
-    public UploadTokenVo getUploadPicToken(String fileType){
+    public UploadTokenVo getUploadToken(OssDir ossDir, String fileType){
         OSSClient client = createOSSClient();
-        final String objectKey = genFileName(OssDir.PIC, fileType);
+        final String objectKey = genFileName(ossDir, fileType);
         final long expireEndTime = System.currentTimeMillis() + aliOssConfig.getUploadTokenExpired() * 1000;
         Date expiration = new Date(expireEndTime);
         PolicyConditions policyConds = new PolicyConditions();
-        policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0,
-                aliOssConfig.getUploadMaxPicSize() * 1024 * 1024);
+        long maxUploadSize = ossDir == OssDir.PIC? aliOssConfig.getUploadMaxPicSize(): aliOssConfig.getUploadMaxAttachmentSize();
+        policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, maxUploadSize * 1024 * 1024);
         final String postPolicy = client.generatePostPolicy(expiration, policyConds);
         byte[] binaryData = StringUtils.getBytesUtf8(postPolicy);
         String encodedPolicy = BinaryUtil.toBase64String(binaryData);

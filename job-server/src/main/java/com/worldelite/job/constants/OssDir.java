@@ -6,7 +6,8 @@ package com.worldelite.job.constants;
  */
 public enum OssDir {
 
-    PIC("pic");
+    PIC("pic"),
+    ATTACHMENT("attachment");
 
     public final String value;
 

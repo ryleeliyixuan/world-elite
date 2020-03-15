@@ -7,13 +7,17 @@ import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.DictVo;
 import com.worldelite.job.vo.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
 @RequestMapping("/api/dict")
+@Validated
 public class DictApi extends BaseApi{
 
     @Autowired
@@ -36,7 +40,7 @@ public class DictApi extends BaseApi{
      * @return
      */
     @PostMapping("save")
-    public ApiResult<DictVo> saveDict(@RequestBody DictForm dictForm){
+    public ApiResult<DictVo> saveDict(@Valid @RequestBody DictForm dictForm){
         DictVo dictVo = dictService.saveDict(dictForm);
         return ApiResult.ok(dictVo);
     }

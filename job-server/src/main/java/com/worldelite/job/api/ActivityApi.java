@@ -9,13 +9,17 @@ import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
 @RequestMapping("/api/activity")
+@Validated
 public class ActivityApi {
 
     @Autowired
@@ -35,7 +39,7 @@ public class ActivityApi {
 
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("save")
-    public ApiResult saveActivity(@RequestBody ActivityForm activityForm) {
+    public ApiResult saveActivity(@Valid @RequestBody ActivityForm activityForm) {
         activityService.saveActivity(activityForm);
         return ApiResult.ok();
     }

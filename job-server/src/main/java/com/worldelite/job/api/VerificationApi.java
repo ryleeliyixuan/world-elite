@@ -9,6 +9,7 @@ import com.worldelite.job.service.CompanyVerificationService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.CompanyVerificationVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/verify")
+@Validated
 public class VerificationApi extends BaseApi{
 
     @Autowired

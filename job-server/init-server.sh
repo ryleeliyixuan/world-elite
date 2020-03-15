@@ -45,6 +45,9 @@ sudo mkdir /apps/worldelite/static-company
 mkdir ~/source  #源码目录
 mkdir ~/apps    #程序目录
 
+# 安装 wkhtmltopdf
+
+
 # 下载源码，构建jar包，启动服务
 
 # 配置服务和开机启动

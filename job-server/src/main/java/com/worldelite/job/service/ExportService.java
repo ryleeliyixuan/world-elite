@@ -1,7 +1,10 @@
 package com.worldelite.job.service;
 
 import com.worldelite.job.context.config.DomainConfig;
+import com.worldelite.job.entity.Resume;
 import com.worldelite.job.exception.ServiceException;
+import com.worldelite.job.mapper.ResumeMapper;
+import com.worldelite.job.vo.ApiCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +26,9 @@ public class ExportService extends BaseService {
     @Autowired
     private DomainConfig domainConfig;
 
+    @Autowired
+    private ResumeMapper resumeMapper;
+
     /**
      * 导出PDF简历
      *
@@ -30,6 +36,10 @@ public class ExportService extends BaseService {
      * @return
      */
     public String exportResumeToPdf(Long resumeId) {
+        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
+        if(resume == null){
+            throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
+        }
         final String resumeTplUrl = String.format("%s/resume/%s?_token=%s",
                 domainConfig.getLocalHost(), resumeId, curUser().getToken());
         try {

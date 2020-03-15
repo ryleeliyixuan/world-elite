@@ -2,9 +2,11 @@ package com.worldelite.job.api;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
+import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.context.SessionKeys;
 import com.worldelite.job.controller.BaseController;
 import com.worldelite.job.form.LoginForm;
+import com.worldelite.job.form.ModifyEmailForm;
 import com.worldelite.job.form.RegisterForm;
 import com.worldelite.job.form.ResetPwdForm;
 import com.worldelite.job.service.AuthService;
@@ -93,7 +95,7 @@ public class AuthApi extends BaseController {
      * @return
      */
     @PostMapping("reset-pwd")
-    public ApiResult resetPassword(HttpSession session, @RequestBody ResetPwdForm resetPwdForm){
+    public ApiResult resetPassword(HttpSession session, @Valid @RequestBody ResetPwdForm resetPwdForm){
         final String captcha = (String)session.getAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
         // 立即删除
         session.removeAttribute(SessionKeys.KAPTCHA_SESSION_KEY);

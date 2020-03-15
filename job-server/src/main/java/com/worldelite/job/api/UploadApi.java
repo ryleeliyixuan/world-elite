@@ -1,6 +1,7 @@
 package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.OssDir;
 import com.worldelite.job.controller.BaseController;
 import com.worldelite.job.service.sdk.AliOssService;
 import com.worldelite.job.vo.ApiResult;
@@ -31,8 +32,20 @@ public class UploadApi extends BaseController {
     @RequireLogin
     @GetMapping("pic-token")
     public ApiResult getUploadPicToken(@RequestParam String fileName){
-        UploadTokenVo uploadTokenVo = ossService.getUploadPicToken(fileName);
+        UploadTokenVo uploadTokenVo = ossService.getUploadToken(OssDir.PIC, fileName);
         return ApiResult.ok(uploadTokenVo);
     }
 
+    /**
+     * 获取上传附件的token
+     *
+     * @param fileName
+     * @return
+     */
+    @RequireLogin
+    @GetMapping("attachment-token")
+    public ApiResult getUploadAttachmentToken(@RequestParam String fileName){
+        UploadTokenVo uploadTokenVo = ossService.getUploadToken(OssDir.ATTACHMENT, fileName);
+        return ApiResult.ok(uploadTokenVo);
+    }
 }
