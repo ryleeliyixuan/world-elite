@@ -8,6 +8,7 @@
         :model="employeeForm"
         :rules="employeeFormRules"
         label-width="130px"
+        label-position="left"
         class="w-50"
       >
         <el-form-item label="真实姓名" prop="name">

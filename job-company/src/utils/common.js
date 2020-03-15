@@ -1,4 +1,6 @@
 import Toast from './toast'
+import axios from 'axios'
+import { getDownloadUrl } from '@/api/file_api'
 
 /**
  * 获取当前相对路径
@@ -53,7 +55,7 @@ export function parseListQuery(query, listQuery){
     if(query){
         Object.keys(query).forEach(key => {
             // eslint-disable-next-line no-console
-            if(listQuery[key]){
+            if(query[key]){
                 if(listQuery[key].constructor == Array){
                     listQuery[key] = query[key].split(',').map(v => parseInt(v));
                 }else if(listQuery[key].constructor == Number){
@@ -77,4 +79,31 @@ export function checkPicSize(file){
         Toast.error('图片大小不能超过2Mb')
     }
     return overSize;
+}
+
+/**
+ * 下载文件
+ * fileKey: 对于服务器文件名
+ * fileName: 下载显示文件名
+ * success: 成功回调
+ */
+export function downloadFile(data) {
+    const downloadFileUrl = getDownloadUrl({ fileKey: data.fileKey, fileName: data.fileName });
+    axios.get(downloadFileUrl, {
+        responseType: 'blob', //重要
+    }).then((response) => {
+        if(response.data.size < 50){
+            setTimeout(function(){
+                downloadFile(data);
+            }, 2000);
+            return;
+        }
+        data.success();
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', data.fileName);
+        document.body.appendChild(link);
+        link.click();
+    })
 }

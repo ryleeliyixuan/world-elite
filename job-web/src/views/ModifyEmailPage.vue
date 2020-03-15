@@ -1,6 +1,6 @@
 <template>
   <div class="app-container mt-4">
-    <h3 class="text-center">重设密码</h3>
+    <h3 class="text-center">变更邮箱地址</h3>
     <el-form
       ref="form"
       :model="form"
@@ -9,8 +9,11 @@
       class="mt-4"
       label-position="left"
     >
-      <el-form-item label="登录邮箱" prop="email">
-        <el-input v-model="form.email" placeholder="请输入登录邮箱"></el-input>
+      <el-form-item label="登录密码" prop="password">
+        <el-input v-model="form.password" placeholder="请输入登录密码" type="password"></el-input>
+      </el-form-item>
+      <el-form-item label="新邮箱" prop="newEmail">
+        <el-input v-model="form.newEmail" placeholder="请输入新邮箱"></el-input>
       </el-form-item>
       <el-form-item label="验证码" prop="validCode">
         <el-input v-model="form.validCode" placeholder="邮箱验证码">
@@ -21,12 +24,6 @@
             @click="onEmailCodeClick"
           >获取验证码</el-button>
         </el-input>
-      </el-form-item>
-      <el-form-item label="新密码" prop="newPassword">
-        <el-input v-model="form.newPassword" placeholder="不少于8位，字母+数字" type="password"></el-input>
-      </el-form-item>
-      <el-form-item label="重复新密码" prop="repeatPassword">
-        <el-input v-model="form.repeatPassword" placeholder="重复一遍新密码" type="password"></el-input>
       </el-form-item>
       <el-form-item label="图片验证码" prop="imgValidCode">
         <el-input v-model="form.imgValidCode" placeholder="输入图片验证码">
@@ -46,47 +43,35 @@
 </template>
 
 <script>
-import { getEmailCode, resetPwd } from "@/api/auth_api";
+import { getEmailCode } from "@/api/auth_api";
+import { modifyEmail } from "@/api/user_api";
 import Validator from "@/utils/validator";
 import Toast from "@/utils/toast";
 export default {
   name: "ForgetPwdPage",
   data() {
-    const checkRepeatPassword = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error("请再次输入密码"));
-      } else if (value !== this.form.newPassword) {
-        callback(new Error("两次输入密码不一致!"));
-      } else {
-        callback();
-      }
-    };
     return {
       captchaUrl: process.env.VUE_APP_BASE_API + "/auth/get-captcha",
       sendingValidCode: false,
       form: {
-        email: "",
+        newEmail: "",
         validCode: "",
-        newPassword: "",
-        repeatPassword: "",
+        password: "",
         imgValidCode: ""
       },
       formRules: {
-        email: [
+        newEmail: [
           { required: true, validator: Validator.checkEmail, trigger: "blur" }
         ],
         validCode: [
           { required: true, message: "验证码不能为空", trigger: "blur" }
         ],
-        newPassword: [
+        password: [
           {
             required: true,
-            validator: Validator.checkPassword,
+            message: "密码不能为空",
             trigger: "blur"
           }
-        ],
-        repeatPassword: [
-          { required: true, validator: checkRepeatPassword, trigger: "blur" }
         ],
         imgValidCode: [
           { required: true, message: "图片验证码不能为空", trigger: "blur" }
@@ -101,7 +86,7 @@ export default {
     onSubmitClick() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          resetPwd(this.form)
+          modifyEmail(this.form)
             .then(() => {
               this.$confirm("重置密码成功", "提示", {
                 confirmButtonText: "重新登录",
@@ -117,14 +102,14 @@ export default {
       });
     },
     onEmailCodeClick() {
-      if (this.form.email === "") {
+      if (this.form.newEmail === "") {
         Toast.error("请先输入邮箱");
         return;
       }
       this.sendingValidCode = true;
-      getEmailCode(this.form.email)
+      getEmailCode(this.form.newEmail)
         .then(() => {
-          Toast.success("发送成功，请登录邮箱查看。");
+          Toast.success("发送成功，请登录新邮箱查看。");
         })
         .finally(() => {
           this.sendingValidCode = false;

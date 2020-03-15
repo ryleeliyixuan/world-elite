@@ -7,32 +7,58 @@
       <el-menu-item index="5">录用</el-menu-item>
     </el-menu>
     <div class="mt-3">
-      <el-select
-        v-model="listQuery.jobIds"
-        placeholder="职位"
-        multiple
-        clearable
-        filterable
-        size="small"
-        @change="handleFilter"
-      >
-        <el-option v-for="item in jobOptions" :key="item.id" :label="item.name" :value="item.id">
-          <span style="float: left">{{ item.name }}</span>
-          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.city.name }}</span>
-        </el-option>
-      </el-select>
-      <el-select
-        v-model="listQuery.degreeIds"
-        placeholder="学历"
-        multiple
-        clearable
-        filterable
-        size="small"
-        class="ml-2"
-        @change="handleFilter"
-      >
-        <el-option v-for="item in degreeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>
+      <el-row :gutter="10">
+        <el-col :span="6">
+          <el-input
+            v-model="listQuery.name"
+            @change.native="handleFilter"
+            class="w-100"
+            placeholder="应聘者名称"
+            size="small"
+          ></el-input>
+        </el-col>
+        <el-col :span="6">
+          <el-select
+            v-model="listQuery.jobIds"
+            placeholder="职位"
+            multiple
+            clearable
+            filterable
+            size="small"
+            class="w-100"
+            @change="handleFilter"
+          >
+            <el-option
+              v-for="item in jobOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+              <span style="float: left">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.city.name }}</span>
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="6">
+          <el-select
+            v-model="listQuery.degreeIds"
+            placeholder="学历"
+            multiple
+            clearable
+            filterable
+            size="small"
+            class="w-100"
+            @change="handleFilter"
+          >
+            <el-option
+              v-for="item in degreeOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-col>
+      </el-row>
     </div>
     <div class="resume-list mt-3">
       <el-card class="box-card mb-3" v-for="applyResume in pageResult.list" :key="applyResume.id">
@@ -163,6 +189,12 @@
               @click="handleApplyResume(6, activeApplyResume.id)"
               v-if="activeApplyResume.applyStatus != 5"
             >不合适</el-button>
+            <el-button
+              type="primary"
+              :loading="resumeExporting"
+              icon="el-icon-download"
+              @click="onDownloadResumeClick(activeApplyResume)"
+            >下载简历</el-button>
           </el-col>
           <el-col :span="6" class="text-right">
             <el-button
@@ -186,6 +218,8 @@ import { applyResumeList, handleApplyResume } from "@/api/resume_api";
 import { listByType } from "@/api/dict_api";
 import { getUserJobOptions } from "@/api/job_api";
 import ResumeView from "@/components/ResumeView";
+import { exportResumeToPdf } from "@/api/export_api";
+import { downloadFile, formatListQuery, parseListQuery } from "@/utils/common";
 
 export default {
   name: "ResumeManagePage",
@@ -194,6 +228,7 @@ export default {
     return {
       activeIndex: "1,2",
       listQuery: {
+        name: undefined,
         jobIds: [],
         degreeIds: [],
         statuses: [1, 2],
@@ -203,6 +238,7 @@ export default {
       total: 0,
       activeApplyResume: undefined,
       reviewDrawerVisible: false,
+      resumeExporting: false,
       pageResult: {},
       degreeOptions: [],
       jobOptions: [],
@@ -236,27 +272,13 @@ export default {
       });
     },
     getList() {
-      if (this.$route.query) {
-        if (this.$route.query.statuses) {
-          this.listQuery.statuses = this.$route.query.statuses.split(",");
-          this.activeIndex = this.$route.query.statuses;
-        }
-        if (this.$route.query.jobIds) {
-          this.listQuery.jobIds = this.$route.query.jobIds.split(",");
-        }
-        if (this.$route.query.degreeIds) {
-          this.listQuery.degreeIds = this.$route.query.degreeIds
-            .split(",")
-            .map(id => {
-              return parseInt(id);
-            });
-        }
-        if (this.$route.query.page) {
-          this.listQuery.page = this.$route.query.page;
-        }
-        if (this.$route.query.limit) {
-          this.listQuery.limit = this.$route.query.limit;
-        }
+      if (this.$route.query.statuses) {
+        this.activeIndex = this.$route.query.statuses;
+      }
+      parseListQuery(this.$route.query, this.listQuery);
+      if(this.$route.query.jobIds){
+        // long 类型当做string处理，浏览器会丢失精度
+        this.listQuery.jobIds = this.$route.query.jobIds.split(',');
       }
       applyResumeList(this.listQuery).then(response => {
         this.pageResult = response.data;
@@ -265,17 +287,11 @@ export default {
     },
     handleListPageRoute() {
       this.$router.push({
-        path: "/manage-resume",
-        query: {
-          jobIds: this.listQuery.jobIds.join(","),
-          degreeIds: this.listQuery.degreeIds.join(","),
-          statuses: this.listQuery.statuses.join(","),
-          page: this.listQuery.page,
-          limit: this.listQuery.limit
-        }
+        path: this.$route.path,
+        query: formatListQuery(this.listQuery)
       });
     },
-    handleFilter(){
+    handleFilter() {
       this.listQuery.page = 1;
       this.handleListPageRoute();
     },
@@ -300,6 +316,26 @@ export default {
           applyResume.applyStatus = 2;
         });
       }
+    },
+    onDownloadResumeClick(applyResume) {
+      this.resumeExporting = true;
+      let fileName = `${applyResume.job.name}_${applyResume.resume.name}`;
+      if (applyResume.resume.maxResumeEdu) {
+        fileName += `_${applyResume.resume.maxResumeEdu.schoolName}_${applyResume.resume.maxResumeEdu.majorName}`;
+      }
+      exportResumeToPdf(applyResume.resume.id)
+        .then(response => {
+          downloadFile({
+            fileKey: response.data,
+            fileName: `${fileName}.pdf`,
+            success: () => {
+              this.resumeExporting = false;
+            }
+          });
+        })
+        .catch(() => {
+          this.resumeExporting = false;
+        });
     }
   }
 };

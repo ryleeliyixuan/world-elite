@@ -13,15 +13,13 @@
         </el-menu>
       </el-col>
       <el-col :span="10" class="ml-4">
-        <el-autocomplete
+        <el-input
           v-model="keyword"
           class="input-search w-100"
           placeholder="输入职位、公司"
           suffix-icon="el-icon-search"
-          :hide-loading="true"
-          :trigger-on-focus="false"
           @change.native="handleSearch"
-        ></el-autocomplete>
+        ></el-input>
       </el-col>
       <el-col :span="6">
         <div class="text-right" v-if="token === undefined || token === ''">

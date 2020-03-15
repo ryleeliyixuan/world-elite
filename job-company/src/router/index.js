@@ -55,6 +55,11 @@ const constantRoutes = [
         meta: { title: '简历' }
     },
     {
+        path: '/forget-pwd',
+        component: () => import('@/views/ForgetPwdPage'),
+        meta: {title: '忘记密码'}
+    },
+    {
         path: '/messages',
         component: () => import('@/views/MessageListPage'),
         meta: { title: '消息通知' }

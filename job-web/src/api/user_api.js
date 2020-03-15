@@ -39,6 +39,14 @@ export function saveUserExpectJob(data){
   })
 }
 
+export function modifyEmail(data){
+  return request({
+    url: '/user/modify-email',
+    method: 'post',
+    data
+  })
+}
+
 export function logout(){
   return request({
     url: '/user/logout',

@@ -52,7 +52,7 @@
                 <p>
                   <span class="mr-3">
                     <font-awesome-icon :icon="['fa', 'envelope']" />
-                    {{resume.email}}
+                    {{resume.email}}<el-link class="ml-2 el-icon-edit" type="primary" @click="onChangeEmailClick">变更</el-link>
                   </span>
                   <span class="ml-3" v-if="resume.phone && resume.phone != 0">
                     <font-awesome-icon :icon="['fa', 'mobile-alt']" />
@@ -235,7 +235,7 @@
           </div>
         </b-col>
         <b-col>
-          <div class="resume-objective">
+          <div class="resume-objective resume-right-box">
             <EditResumeTitle
               title="求职意向"
               :icon="['fa', 'pencil-alt']"
@@ -260,12 +260,15 @@
               <p>{{resume.userExpectJob.minSalary}}K ~ {{resume.userExpectJob.maxSalary}}K</p>
             </div>
           </div>
-          <div class="resume-preview">
+          <div class="resume-attachment resume-right-box">
+            <EditResumeTitle title="附件简历"/>
+          </div>
+          <div class="resume-preview resume-right-box">
             <p>简历完成度</p>
             <el-progress :text-inside="true" :stroke-width="22" :percentage="resume.resumeCompleteProgress" :status="resume.resumeCompleteProgress == 100? 'success': 'warning'"></el-progress>
             <el-button type="primary" class="mt-2 btn-preview" @click="handlePreview" icon="el-icon-document">预览简历</el-button>
           </div>
-          <div class="resume-nav" v-sticky="{stickyTop: 2}">
+          <div class="resume-nav resume-right-box" v-sticky="{stickyTop: 2}">
             <b-nav vertical>
               <b-nav-item @click="goAnchor('#Resume-Basic')">基本信息</b-nav-item>
               <b-nav-item @click="goAnchor('#Resume-Introduction')">自我介绍</b-nav-item>
@@ -1340,6 +1343,9 @@ export default {
     },
     handlePreview() {
       this.$router.push({ path: `/resume/${this.resume.id}` });
+    },
+    onChangeEmailClick(){
+      this.$router.push('/modify-email');
     }
   }
 };
@@ -1359,24 +1365,11 @@ $border-style: 1px solid #eee;
   border: $border-style;
 }
 
-.resume-objective {
+.resume-right-box{
   background: #fff;
   padding: 20px;
   border: $border-style;
-}
-
-.resume-nav {
-  background: #fff;
-  padding: 20px;
-  margin-top: 20px;
-  border: $border-style;
-}
-
-.resume-preview {
-  background: #fff;
-  padding: 20px;
-  margin-top: 20px;
-  border: $border-style;
+  margin-bottom: 15px;
 }
 
 .resume-box {
