@@ -129,6 +129,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/download',
+    component: Layout,
+    redirect: '/download/index',
+    children: [
+      {
+        path: 'index',
+        meta: { title: '下载管理', icon: 'download' },
+        component: () => import('@/views/download/index')
+      }
+    ]
+  },
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true

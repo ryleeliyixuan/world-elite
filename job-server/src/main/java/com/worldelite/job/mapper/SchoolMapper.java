@@ -54,4 +54,6 @@ public interface SchoolMapper {
     int updateByPrimaryKey(School record);
 
     List<School> selectLikeName(String name);
+
+    School selectByName(String name);
 }

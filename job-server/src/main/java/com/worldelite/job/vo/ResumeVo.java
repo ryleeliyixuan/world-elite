@@ -62,6 +62,21 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
 
     private UserExpectJobVo userExpectJob;
 
+    //已投递职位总数
+    private Integer applyTotalCount;
+
+    // 投递中的岗位数量
+    private Integer applyingCount;
+
+    // 通过初筛数量
+    private Integer applyCandidateCount;
+
+    // 进入面试数量
+    private Integer applyInterviewCount;
+
+    // 已录用
+    private Integer applyOfferCount;
+
     @Override
     public ResumeVo asVo(Resume resume) {
         setId(String.valueOf(resume.getId()));

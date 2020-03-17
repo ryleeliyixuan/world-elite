@@ -10,3 +10,15 @@ CHANGE COLUMN `finish_date` `finish_time` TIMESTAMP NULL DEFAULT NULL ;
 
 ALTER TABLE `db_worldelite`.`t_company_user`
 ADD UNIQUE INDEX `user_index` (`user_id` ASC);
+
+# 3-16
+
+ALTER TABLE `db_worldelite`.`t_user`
+ADD COLUMN `subscribe_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '订阅消息标志位' AFTER `expired`;
+
+# 3-17
+
+INSERT INTO `db_worldelite`.`t_dict` (`name`, `type`, `value`) VALUES ('1.0-2.0', '10', '1');
+INSERT INTO `db_worldelite`.`t_dict` (`name`, `type`, `value`) VALUES ('2.0-3.0', '10', '2');
+INSERT INTO `db_worldelite`.`t_dict` (`name`, `type`, `value`) VALUES ('3.0-4.0', '10', '3');
+INSERT INTO `db_worldelite`.`t_dict` (`name`, `type`, `value`) VALUES ('4.0-5.0', '10', '4');

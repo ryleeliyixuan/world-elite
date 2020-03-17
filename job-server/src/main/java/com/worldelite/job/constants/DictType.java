@@ -13,7 +13,9 @@ public enum DictType {
     INDUSTRY(6),//行业
     COMPANY_PROPERTY(7),//企业性质
     JOB_TYPE(8),//职位类型
-    SALARY_RANGE(9);  //薪资范围
+    SALARY_RANGE(9),//薪资范围
+    GPA_RANGE(10);  //GPA范围
+
 
     public final int value;
 

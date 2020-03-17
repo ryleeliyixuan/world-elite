@@ -27,6 +27,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleFilter">查询</el-button>
+          <el-button type="success" @click="exportAsExcel" :loading="exporting">导出Excel</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -104,6 +105,8 @@
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import { getUserList, modifyUserStatus } from "@/api/user_api";
+import { exportUserList } from '@/api/export_api'
+import Toast from '@/utils/toast'
 
 export default {
   name: "UserList",
@@ -141,7 +144,8 @@ export default {
         0: "未知",
         1: "男",
         2: "女"
-      }
+      },
+      exporting: false
     };
   },
   created() {
@@ -211,6 +215,12 @@ export default {
           });
         });
       }
+    },
+    exportAsExcel(){
+      this.exporting = true;
+      exportUserList(this.listQuery).then(response=>{
+        Toast.success('已加入下载队列，请稍后到【下载管理】进行下载');
+      }).finally(()=>this.exporting= false)
     }
   }
 };

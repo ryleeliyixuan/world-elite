@@ -1,28 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.ResumeMapper">
-  <select id="selectByUserId" resultMap="ResultMapWithBLOBs">
-    select
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from t_resume
-    where user_id = #{userId,jdbcType=BIGINT}
-  </select>
-  <select id="selectAndList" resultMap="BaseResultMap" parameterType="com.worldelite.job.entity.Resume">
-    select
-    <include refid="Base_Column_List" />
-    from t_resume
-    <where>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT}
-      </if>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR}
-      </if>
-      <if test="gender != null">
-        gender = #{gender,jdbcType=TINYINT}
-      </if>
-    </where>
-  </select>
+    <select id="selectByUserId" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from t_resume
+        where user_id = #{userId,jdbcType=BIGINT}
+    </select>
+    <select id="selectAndList" resultMap="BaseResultMap" parameterType="com.worldelite.job.entity.Resume">
+        select
+        <include refid="Base_Column_List"/>
+        from t_resume
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="gender != null">
+                and gender = #{gender,jdbcType=TINYINT}
+            </if>
+            <if test="minAge != null and maxAge != null">
+                and age between #{minAge, jdbcType=INTEGER} and #{maxAge, jdbcType=INTEGER}
+            </if>
+            <if test="(degreeIds != null and degreeIds != '') or (schoolIds != null and schoolIds != '') or (minGpa != null and maxGpa != null)">
+                and id in (select t_resume_edu.resume_id from t_resume_edu where
+                t_resume_edu.resume_id = t_resume.id
+                <if test="degreeIds != null and degreeIds != ''">
+                    and degree_id in (${degreeIds})
+                </if>
+                <if test=" schoolIds != null and schoolIds != ''">
+                    and school_id in (${schoolIds})
+                </if>
+                <if test="minGpa != null and maxGpa != null">
+                     and gpa between #{minGpa} and #{maxGpa}
+                </if>
+                )
+            </if>
+            <if test="categoryIds != null and categoryIds != ''">
+                and user_id in (select user_id from t_user_expect_job where category_id in (${categoryIds}))
+            </if>
+            <if test="cityIds != null and cityIds != ''">
+                and user_id in (select user_id from t_user_expect_place where city_id in (${cityIds}))
+            </if>
+            <if test="minSalary != null and maxSalary != null">
+                and user_id in (select user_id from t_user_expect_salary
+                where min_value &lt;= #{maxSalary} and max_value &gt;= #{minSalary})
+            </if>
+        </where>
+    </select>
 </mapper>

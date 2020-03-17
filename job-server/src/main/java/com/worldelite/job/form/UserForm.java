@@ -15,5 +15,5 @@ public class UserForm {
     private String avatar;
     private Byte gender;
     private Byte status;
-
+    private Byte subscribeFlag;
 }

@@ -55,3 +55,11 @@ export function takeOffJob(data){
         params: data
     })
 }
+
+export function getResumeApplyJobs(data){
+    return request({
+        url: '/job/resume-apply-jobs',
+        method: 'get',
+        params: data
+    })
+}

@@ -34,6 +34,8 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private Byte applyFlag; //是否已投递
 
     private Byte applyStatus; //投递状态
+    @JSONField(format = "yyyy-MM-dd")
+    private Date applyTime; //投递时间
 
     private Integer candidateResumeCount; // 候选简历数
     private Integer newResumeCount; // 新投递简历数

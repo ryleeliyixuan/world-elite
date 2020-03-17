@@ -1,7 +1,9 @@
 package com.worldelite.job.form;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -11,7 +13,8 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserListForm extends PageForm{
+public class UserListForm extends PageForm implements IExportable{
+
     private Long id;
     private String name;
     private String email;
@@ -22,4 +25,10 @@ public class UserListForm extends PageForm{
     private Date beginTime;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
+
+
+    @Override
+    public String genExportExcelName() {
+        return DigestUtils.md5Hex("UserList" + JSON.toJSONString(this)) + ".xlsx";
+    }
 }

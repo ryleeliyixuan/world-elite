@@ -9,8 +9,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ResumeOptions extends Resume{
-    private Integer[] degreeIds;
-    private Integer[] schoolIds;
+    private Integer minAge;
+    private Integer maxAge;
+    private String degreeIds;
+    private String schoolIds;
+    private String categoryIds;
+    private String cityIds;
     private Double minGpa;
     private Double maxGpa;
+    private Integer minSalary;
+    private Integer maxSalary;
 }

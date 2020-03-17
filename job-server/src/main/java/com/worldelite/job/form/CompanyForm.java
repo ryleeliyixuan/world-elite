@@ -4,6 +4,7 @@ import com.worldelite.job.util.FormUtils;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -15,13 +16,13 @@ public class CompanyForm {
     private String name;
     private String fullName;
     private String logo;
-    @NotBlank(message = "{edit.company.scale.not.null}")
+    @NotNull(message = "{edit.company.scale.not.null}")
     private Integer scaleId;
-    @NotBlank(message = "{edit.company.stage.not.null}")
+    @NotNull(message = "{edit.company.stage.not.null}")
     private Integer stageId;
-    @NotBlank(message = "{edit.company.industry.not.null}")
+    @NotNull(message = "{edit.company.industry.not.null}")
     private Integer industryId;
-    @NotBlank(message = "{edit.company.property.not.null}")
+    @NotNull(message = "{edit.company.property.not.null}")
     private Integer propertyId;
     private String homepage;
     private String introduction;

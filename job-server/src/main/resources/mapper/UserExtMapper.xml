@@ -30,6 +30,9 @@
       <if test="status != null">
         and status = #{status,jdbcType=TINYINT}
       </if>
+      <if test="subscribeFlag != null">
+        and subscribeFlag = #{subscribeFlag,jdbcType=TINYINT}
+      </if>
       <if test="beginTime != null and endTime != null">
         and (create_time between #{beginTime} and  #{endTime})
       </if>

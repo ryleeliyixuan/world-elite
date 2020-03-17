@@ -14,9 +14,11 @@ import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mapper.MessageMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.util.FormUtils;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -72,7 +74,11 @@ public class ResumeService extends BaseService {
     private ConfigService configService;
 
     @Autowired
+    private DictService dictService;
+
+    @Autowired
     private MessageService messageService;
+
 
     /**
      * 获取我的默认简历，如果没有就创建一个空简历
@@ -117,8 +123,35 @@ public class ResumeService extends BaseService {
      * @return
      */
     public PageResult getResumeList(ResumeListForm listForm){
+
+        if(listForm.getSalaryRangeId() != null){
+            DictVo salaryRange =  dictService.getById(listForm.getSalaryRangeId());
+            if(salaryRange != null){
+                String[] values =  salaryRange.getValue().split("-");
+                if(values.length == 2){
+                    listForm.setMinSalary(NumberUtils.toInt(values[0]));
+                    listForm.setMaxSalary(NumberUtils.toInt(values[1]));
+                }
+            }
+        }
+
+        if(listForm.getGpaRangeId() != null){
+            DictVo gpaRange =  dictService.getById(listForm.getGpaRangeId());
+            if(gpaRange != null){
+                String[] values =  gpaRange.getValue().split("-");
+                if(values.length == 2){
+                    listForm.setMinGpa(NumberUtils.toDouble(values[0]));
+                    listForm.setMaxGpa(NumberUtils.toDouble(values[1]));
+                }
+            }
+        }
+
         ResumeOptions resumeOptions = new ResumeOptions();
         BeanUtil.copyProperties(listForm, resumeOptions);
+        resumeOptions.setCategoryIds(FormUtils.joinWhereIds(listForm.getCategoryIds()));
+        resumeOptions.setCityIds(FormUtils.joinWhereIds(listForm.getCityIds()));
+        resumeOptions.setDegreeIds(FormUtils.joinWhereIds(listForm.getDegreeIds()));
+        resumeOptions.setSchoolIds(FormUtils.joinWhereIds(listForm.getSchoolIds()));
         AppUtils.setPage(listForm);
         Page<Resume> resumePage = (Page<Resume>) resumeMapper.selectAndList(resumeOptions);
         PageResult<ResumeVo> pageResult = new PageResult<>(resumePage);
@@ -132,6 +165,32 @@ public class ResumeService extends BaseService {
                 BeanUtil.copyProperties(resumeEduVoList.get(0), maxResumeEduVo);
                 resumeVo.setMaxResumeEdu(maxResumeEduVo);
             }
+
+            UserVo userVo = userService.getUserInfo(resume.getUserId());
+            resumeVo.setEmail(userVo.getEmail());
+            resumeVo.setPhone(userVo.getPhone());
+            resumeVo.setPhoneCode(userVo.getPhoneCode());
+
+            resumeVo.setUserExpectJob(userExpectJobService.getUserExpectJob(resume.getUserId()));
+
+            //统计简历投递情况
+            JobApplyOptions applyOptions = new JobApplyOptions();
+            applyOptions.setResumeId(resume.getId());
+            applyOptions.setUserId(listForm.getUserId());
+            final int applyTotalCount = jobApplyMapper.countJobApply(applyOptions);
+            resumeVo.setApplyTotalCount(applyTotalCount);
+            applyOptions.setStatuses(String.valueOf(JobApplyStatus.APPLY.value));
+            final int applyingCount = jobApplyMapper.countJobApply(applyOptions);
+            resumeVo.setApplyingCount(applyingCount);
+            applyOptions.setStatuses(String.valueOf(JobApplyStatus.CANDIDATE.value));
+            final int applyCandidateCount = jobApplyMapper.countJobApply(applyOptions);
+            resumeVo.setApplyCandidateCount(applyCandidateCount);
+            applyOptions.setStatuses(String.valueOf(JobApplyStatus.INTERVIEW.value));
+            final int applyInterviewCount = jobApplyMapper.countJobApply(applyOptions);
+            resumeVo.setApplyInterviewCount(applyInterviewCount);
+            applyOptions.setStatuses(String.valueOf(JobApplyStatus.OFFER.value));
+            final int  applyOfferCount = jobApplyMapper.countJobApply(applyOptions);
+            resumeVo.setApplyOfferCount(applyOfferCount);
             resumeVoList.add(resumeVo);
         }
         pageResult.setList(resumeVoList);

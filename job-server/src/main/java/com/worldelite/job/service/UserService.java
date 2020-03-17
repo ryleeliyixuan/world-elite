@@ -95,6 +95,7 @@ public class UserService extends BaseService {
         user = new User();
         user.setId(AppUtils.nextId());
         user.setEmail(registerForm.getEmail());
+        user.setSubscribeFlag(registerForm.getSubscribeFlag());
         if (registerForm.getUserType() == null || registerForm.getUserType() == UserType.GENERAL.value) {
             user.setStatus(UserStatus.NORMAL.value);
             user.setType(UserType.GENERAL.value);

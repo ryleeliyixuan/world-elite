@@ -55,7 +55,7 @@ export function parseListQuery(query, listQuery) {
   if (query) {
     Object.keys(query).forEach(key => {
       // eslint-disable-next-line no-console
-      if (query[key]) {
+      if (listQuery[key]) {
         if (listQuery[key].constructor == Array) {
           listQuery[key] = query[key].split(',').map(v => parseInt(v));
         } else if (listQuery[key].constructor == Number) {

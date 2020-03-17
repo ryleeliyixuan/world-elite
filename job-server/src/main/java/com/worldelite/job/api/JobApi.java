@@ -3,10 +3,7 @@ package com.worldelite.job.api;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.UserType;
-import com.worldelite.job.form.JobForm;
-import com.worldelite.job.form.JobListForm;
-import com.worldelite.job.form.JobSearchForm;
-import com.worldelite.job.form.PageForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.service.DictService;
 import com.worldelite.job.service.JobService;
 import com.worldelite.job.service.search.SearchService;
@@ -152,8 +149,21 @@ public class JobApi extends BaseApi{
      */
     @GetMapping("my-apply-jobs")
     @RequireLogin(allow = UserType.GENERAL)
-    public ApiResult myApplyJobList(PageForm pageForm){
-        PageResult<JobVo> pageResult = jobService.getUserApplyJobList(pageForm);
+    public ApiResult myApplyJobList(ApplyJobListForm listForm){
+        listForm.setUserId(curUser().getId());
+        PageResult<JobVo> pageResult = jobService.getApplyJobList(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 获取简历投递的岗位
+     *
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("resume-apply-jobs")
+    public ApiResult getResumeApplyJobList(ApplyJobListForm listForm){
+        PageResult<JobVo> pageResult = jobService.getApplyJobList(listForm);
         return ApiResult.ok(pageResult);
     }
 

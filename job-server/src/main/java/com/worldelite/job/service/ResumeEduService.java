@@ -2,13 +2,16 @@ package com.worldelite.job.service;
 
 import com.github.pagehelper.PageHelper;
 import com.worldelite.job.entity.ResumeEdu;
+import com.worldelite.job.entity.School;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.ResumeEduForm;
 import com.worldelite.job.mapper.ResumeEduMapper;
 import com.worldelite.job.mapper.ResumeMapper;
+import com.worldelite.job.mapper.SchoolMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ApiCode;
 import com.worldelite.job.vo.ResumeEduVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,9 @@ public class ResumeEduService extends BaseService{
     @Autowired
     private ResumeService resumeService;
 
+    @Autowired
+    private SchoolMapper schoolMapper;
+
     /**
      * 保存简历 - 教育信息
      * @param resumeEduForm
@@ -45,6 +51,13 @@ public class ResumeEduService extends BaseService{
             resumeEdu = new ResumeEdu();
             resumeEdu.setResumeId(resumeEduForm.getResumeId());
             resumeEdu.setUserId(curUser().getId());
+        }
+
+        if(StringUtils.isNoneEmpty(resumeEduForm.getSchoolName())){
+            School school = schoolMapper.selectByName(resumeEduForm.getSchoolName());
+            if(school != null){
+                resumeEdu.setSchoolId(school.getId());
+            }
         }
 
         resumeEdu.setSchoolName(resumeEduForm.getSchoolName());

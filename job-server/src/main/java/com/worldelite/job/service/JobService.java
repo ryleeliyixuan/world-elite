@@ -4,10 +4,7 @@ import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
-import com.worldelite.job.form.JobForm;
-import com.worldelite.job.form.JobListForm;
-import com.worldelite.job.form.JobSearchForm;
-import com.worldelite.job.form.PageForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.CompanyUserMapper;
 import com.worldelite.job.mapper.JobApplyMapper;
 import com.worldelite.job.mapper.JobMapper;
@@ -372,19 +369,22 @@ public class JobService extends BaseService {
     /**
      * 获取用户申请的职位
      *
-     * @param pageForm
+     * @param listForm
      * @return
      */
-    public PageResult<JobVo> getUserApplyJobList(PageForm pageForm) {
+    public PageResult<JobVo> getApplyJobList(ApplyJobListForm listForm) {
         JobApply options = new JobApply();
-        options.setUserId(curUser().getId());
-        AppUtils.setPage(pageForm);
+        options.setUserId(listForm.getUserId());
+        options.setResumeId(listForm.getResumeId());
+        options.setStatus(listForm.getStatus());
+        AppUtils.setPage(listForm);
         Page<JobApply> jobApplyPage = (Page<JobApply>) jobApplyMapper.selectAndList(options);
         PageResult<JobVo> pageResult = new PageResult<>(jobApplyPage);
         List<JobVo> jobVoList = new ArrayList<>(jobApplyPage.size());
         for (JobApply jobApply : jobApplyPage) {
             JobVo jobVo = getJobInfo(jobApply.getJobId(), true);
             jobVo.setApplyStatus(jobApply.getStatus());
+            jobVo.setApplyTime(jobApply.getCreateTime());
             jobVoList.add(jobVo);
         }
         pageResult.setList(jobVoList);

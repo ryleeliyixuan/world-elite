@@ -35,4 +35,16 @@ public class FormUtils {
         }
         return HtmlUtil.filter(htmlContent);
     }
+
+    /**
+     *  拼接where 的id条件
+     * @param ids
+     * @return
+     */
+    public static String joinWhereIds(Integer[] ids){
+        if(ids == null || ids.length == 0){
+            return "";
+        }
+        return StringUtils.join(ids, ",");
+    }
 }

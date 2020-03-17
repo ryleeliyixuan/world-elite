@@ -46,6 +46,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleFilter">查询</el-button>
+          <el-button type="success" @click="exportAsExcel" :loading="exporting">导出Excel</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -134,7 +135,11 @@
     />
 
     <el-drawer title="用户审核资料" :visible.sync="verifyDrawerVisible" direction="rtl" size="40%">
-      <div class="drawer__footer" style="padding: 12px" v-if="verifyUser && verifyUser.status === 0">
+      <div
+        class="drawer__footer"
+        style="padding: 12px"
+        v-if="verifyUser && verifyUser.status === 0"
+      >
         <el-button type="success" icon="el-icon-check" @click="handleVerifyUser(row, 2)">通过</el-button>
         <el-button type="warning" icon="el-icon-close" @click="handleVerifyUser(row, 3)">拒绝</el-button>
       </div>
@@ -150,6 +155,8 @@ import VerificationView from "./VerificationView";
 import { getCompanyUserList, modifyUserStatus } from "@/api/user_api";
 import { verifyCompanyUser } from "@/api/verify_api";
 import { serachByCompanyName } from "@/api/company_api";
+import { exportUserList } from '@/api/export_api'
+import Toast from '@/utils/toast'
 
 export default {
   name: "UserList",
@@ -192,7 +199,8 @@ export default {
       loadingCompanyOptions: false,
       companyOptions: [],
       verifyDrawerVisible: false,
-      verifyUser: undefined
+      verifyUser: undefined,
+      exporting: false
     };
   },
   created() {
@@ -310,6 +318,12 @@ export default {
     showUserVerfication(user) {
       this.verifyDrawerVisible = true;
       this.verifyUser = user;
+    },
+    exportAsExcel(){
+      this.exporting = true;
+      exportUserList(this.listQuery).then(response=>{
+        Toast.success('已加入下载队列，请稍后到【下载管理】进行下载');
+      }).finally(()=>this.exporting= false)
     }
   }
 };

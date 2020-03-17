@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.worldelite.job.anatation.ResumeScore;
+import com.worldelite.job.context.AppContext;
 import com.worldelite.job.context.MessageResource;
 import com.worldelite.job.context.config.AliConfig;
 import com.worldelite.job.context.config.DomainConfig;
@@ -116,14 +117,12 @@ public class AppUtils {
 
     /**
      * 获取 Bean 对象
-     *
      * @param clazz
      * @param <T>
      * @return
      */
-    public static <T> T getBean(Class<? extends Object> clazz) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        return (T) WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext()).getBean(clazz);
+    public static <T> T getBean(Class<T> clazz){
+        return AppContext.getApplicationContext().getBean(clazz);
     }
 
     /**
