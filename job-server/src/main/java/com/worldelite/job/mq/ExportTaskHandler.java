@@ -2,6 +2,7 @@ package com.worldelite.job.mq;
 
 import com.alibaba.fastjson.JSON;
 import com.worldelite.job.context.MessageTopic;
+import com.worldelite.job.form.JobListForm;
 import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.form.UserListForm;
 import com.worldelite.job.service.excel.IExportExcelService;
@@ -14,7 +15,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Component;
 
 /**
- *  导出excel任务消息处理
+ * 导出excel任务消息处理
  *
  * @author yeguozhong yedaxia.github.com
  */
@@ -33,13 +34,16 @@ public class ExportTaskHandler implements MessageListener {
         RedisSerializer<String> valueSerializer = stringRedisTemplate.getStringSerializer();
         String deserialize = valueSerializer.deserialize(message.getBody());
         ExportMessage exportMessage = JSON.parseObject(deserialize, ExportMessage.class);
-        if(exportMessage != null){
-            switch (exportMessage.getMsgType()){
+        if (exportMessage != null) {
+            switch (exportMessage.getMsgType()) {
                 case ExportMessageType.EXPORT_USER:
                     handleExportUserList(exportMessage);
                     break;
                 case ExportMessageType.EXPORT_RESUME:
                     handleExportResumeList(exportMessage);
+                    break;
+                case ExportMessageType.EXPORT_JOB:
+                    handleExportJobList(exportMessage);
                     break;
             }
         }
@@ -50,7 +54,7 @@ public class ExportTaskHandler implements MessageListener {
      *
      * @param message
      */
-    public void sendExportMessage(ExportMessage message){
+    public void sendExportMessage(ExportMessage message) {
         stringRedisTemplate.convertAndSend(MessageTopic.TOPIC_EXPORT_EXCEL, JSON.toJSONString(message));
     }
 
@@ -59,17 +63,28 @@ public class ExportTaskHandler implements MessageListener {
      *
      * @param message
      */
-    private void handleExportUserList(ExportMessage message){
+    private void handleExportUserList(ExportMessage message) {
         UserListForm listForm = JSON.parseObject(message.getContent(), UserListForm.class);
         exportExcelService.exportUserList(message.getUserId(), listForm);
     }
 
     /**
      * 导出简历列表
+     *
      * @param message
      */
-    private void handleExportResumeList(ExportMessage message){
+    private void handleExportResumeList(ExportMessage message) {
         ResumeListForm listForm = JSON.parseObject(message.getContent(), ResumeListForm.class);
         exportExcelService.exportResumeList(message.getUserId(), listForm);
+    }
+
+    /**
+     * 导出职位列表
+     *
+     * @param message
+     */
+    private void handleExportJobList(ExportMessage message){
+        JobListForm jobListForm = JSON.parseObject(message.getContent(), JobListForm.class);
+        exportExcelService.exportJobList(message.getUserId(), jobListForm);
     }
 }

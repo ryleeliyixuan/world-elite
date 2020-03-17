@@ -218,7 +218,21 @@ public class ResumeApi extends BaseApi {
     @PostMapping("my-apply-resume-list")
     @RequireLogin(allow = UserType.COMPANY)
     public ApiResult getUserApplyResumeList(@RequestBody ApplyResumeListForm listForm) {
-        PageResult pageResult = resumeService.getUserApplyResumeList(listForm);
+        listForm.setCreatorId(curUser().getId());
+        PageResult pageResult = resumeService.getApplyResumeList(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 获取申请的简历列表
+     *
+     * @param listForm
+     * @return
+     */
+    @PostMapping("apply-resume-list")
+    @RequireLogin(allow = UserType.ADMIN)
+    public ApiResult<ApplyResumeVo> getApplyResumeList(@RequestBody ApplyResumeListForm listForm) {
+        PageResult<ApplyResumeVo> pageResult = resumeService.getApplyResumeList(listForm);
         return ApiResult.ok(pageResult);
     }
 

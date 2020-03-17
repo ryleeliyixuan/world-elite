@@ -2,6 +2,7 @@ package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.form.JobListForm;
 import com.worldelite.job.form.ResumeLinkForm;
 import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.form.UserListForm;
@@ -61,6 +62,19 @@ public class ExportApi extends BaseApi{
     @PostMapping("export-resume-list")
     public ApiResult exportResumeList(@RequestBody ResumeListForm listForm){
         exportService.queueExportExcel(ExportMessageType.EXPORT_RESUME, listForm);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 导出职位列表
+     *
+     * @param listForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("export-job-list")
+    public ApiResult exportJobList(@RequestBody JobListForm listForm){
+        exportService.queueExportExcel(ExportMessageType.EXPORT_JOB, listForm);
         return ApiResult.ok();
     }
 }

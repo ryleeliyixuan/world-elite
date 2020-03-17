@@ -26,6 +26,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleFilter">查询</el-button>
+          <el-button type="success" @click="exportAsExcel" :loading="exporting">导出Excel</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -73,6 +74,26 @@
       <el-table-column label="状态" prop="status">
         <template slot-scope="{row}">{{statusMap[row.status]}}</template>
       </el-table-column>
+      <el-table-column label="投递数" align="center">
+        <template slot-scope="{row}">
+           <el-link type="primary" @click="showResumeApplyJobs(row.id)">{{row.totalResumeCount}}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="待处理" align="center">
+        <template slot-scope="{row}">
+           <el-link type="primary" @click="showResumeApplyJobs(row.id, [1,2])">{{row.newResumeCount}}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="候选简历" align="center">
+        <template slot-scope="{row}">
+           <el-link type="primary" @click="showResumeApplyJobs(row.id, [3])">{{row.candidateResumeCount}}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="进入面试" align="center">
+        <template slot-scope="{row}">
+           <el-link type="primary" @click="showResumeApplyJobs(row.id, [4])">{{row.interviewResumeCount}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="{row}">
           <el-button size="mini" type="danger" @click="handleTakeOffJob" v-if="row.status == 2">下架</el-button>
@@ -88,6 +109,30 @@
       :limit.sync="listQuery.limit"
       @pagination="handleRouteList"
     />
+
+    <el-drawer title="投递简历" :visible.sync="applyResumeDrawerVisible" direction="rtl" size="50%">
+      <div style="margin: 0 12px">
+        <pagination
+          v-show="applyResumePage.total>0"
+          :total="applyResumePage.total"
+          :page.sync="applyResumeForm.page"
+          :limit.sync="applyResumeForm.limit"
+          @pagination="getJobApplyResumeList"
+        />
+        <el-table key="applyResumeTable" :data="applyResumePage.list" style="margin-top: 10px">
+          <el-table-column label="简历ID" prop="resume.id"></el-table-column>
+          <el-table-column label="用户名" prop="resume.name"></el-table-column>
+          <el-table-column label="投递时间" prop="time"></el-table-column>
+        </el-table>
+        <pagination
+          v-show="applyResumePage.total>0"
+          :total="applyResumePage.total"
+          :page.sync="applyResumeForm.page"
+          :limit.sync="applyResumeForm.limit"
+          @pagination="getJobApplyResumeList"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -96,6 +141,9 @@ import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import { getJobList, takeOffJob } from "@/api/job_api";
 import { serachByCompanyName } from "@/api/company_api";
+import { getApplyResumeList } from '@/api/resume_api'
+import { exportJobList } from '@/api/export_api'
+import Toast from '@/utils/toast'
 
 export default {
   name: "JobList",
@@ -128,7 +176,20 @@ export default {
       loadingCompanyOptions: false,
       companyOptions: [],
       resumeDrawerVisible: false,
-      selectResume: undefined
+      selectResume: undefined,
+      applyResumeDrawerVisible: false,
+      applyResumePage:{
+        total: 0,
+        list:[]
+      },
+      applyResumeForm:{
+        jobIds: undefined,
+        statuses: undefined,
+        page: 1,
+        limit: 20,
+        sort: "-id"
+      },
+      exporting:false
     };
   },
   created() {
@@ -198,6 +259,27 @@ export default {
     },
     goJobDetail(jobId){
         window.open(`${process.env.VUE_APP_WEB_HOST}/job/${jobId}`)
+    },
+    showResumeApplyJobs(jobId, statues) {
+      this.applyResumeDrawerVisible = true;
+      this.applyResumeForm.page = 1;
+      this.applyResumeForm.jobIds = [jobId];
+      this.applyResumeForm.statuses = statues;
+      this.getJobApplyResumeList();
+    },
+    getJobApplyResumeList(){
+      getApplyResumeList(this.applyResumeForm).then(response=>{
+        this.applyResumePage.total = response.data.total
+        this.applyResumePage.list = response.data.list
+      })
+    },
+    exportAsExcel(){
+      this.exporting = true;
+      exportJobList(this.listQuery)
+        .then(response => {
+          Toast.success("已加入下载队列，请稍后到【下载管理】进行下载");
+        })
+        .finally(() => (this.exporting = false));
     }
   }
 };

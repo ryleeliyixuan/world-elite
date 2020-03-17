@@ -276,14 +276,14 @@ public class ResumeService extends BaseService {
     }
 
     /**
-     * 获取当前用户需要处理的简历列表
+     * 获取需要处理的简历列表
      *
      * @param listForm
      * @return
      */
-    public PageResult<ApplyResumeVo> getUserApplyResumeList(ApplyResumeListForm listForm) {
+    public PageResult<ApplyResumeVo> getApplyResumeList(ApplyResumeListForm listForm) {
         JobApplyOptions options = new JobApplyOptions();
-        options.setCreatorId(curUser().getId());
+        options.setCreatorId(listForm.getCreatorId());
         if (ArrayUtils.isNotEmpty(listForm.getJobIds())) {
             options.setJobIds(StringUtils.join(listForm.getJobIds(), ","));
         }

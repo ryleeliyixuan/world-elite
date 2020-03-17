@@ -33,7 +33,7 @@ class ResumeExcel {
     @ExcelProperty("邮箱")
     private String email;
     @ExcelProperty("投递总数")
-    private Integer applyTotalCount;
+    private Integer totalResumeCount;
     @ExcelProperty("投递中")
     private Integer applyingCount;
     @ExcelProperty("进入初筛")

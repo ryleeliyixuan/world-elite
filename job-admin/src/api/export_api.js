@@ -25,3 +25,11 @@ export function exportResumeList(data){
         data
     })
 }
+
+export function exportJobList(data){
+    return request({
+        url: '/export/export-job-list',
+        method: 'post',
+        data
+    })
+}

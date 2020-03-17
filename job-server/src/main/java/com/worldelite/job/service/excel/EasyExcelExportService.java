@@ -12,14 +12,8 @@ import com.worldelite.job.entity.Download;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.User;
 import com.worldelite.job.form.*;
-import com.worldelite.job.service.DownloadService;
-import com.worldelite.job.service.FileService;
-import com.worldelite.job.service.ResumeService;
-import com.worldelite.job.service.UserService;
-import com.worldelite.job.vo.PageResult;
-import com.worldelite.job.vo.ResumeEduVo;
-import com.worldelite.job.vo.ResumeVo;
-import com.worldelite.job.vo.UserVo;
+import com.worldelite.job.service.*;
+import com.worldelite.job.vo.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +45,9 @@ public class EasyExcelExportService implements IExportExcelService {
 
     @Autowired
     private DownloadService downloadService;
+
+    @Autowired
+    private JobService jobService;
 
     @Override
     public String exportUserList(Long userId, UserListForm listForm) {
@@ -144,7 +141,43 @@ public class EasyExcelExportService implements IExportExcelService {
 
     @Override
     public String exportJobList(Long userId, JobListForm listForm) {
-        return null;
+        final String excelFileName = listForm.genExportExcelName();
+
+        final File excelFile = fileService.getFile(excelFileName);
+        if (excelFile.exists()) {
+            return excelFileName;
+        }
+
+        PageResult<JobVo> pageResult;
+        List<JobExcel> excelData = new ArrayList<>();
+
+        Download download = new Download();
+        download.setUrl(excelFileName);
+        download.setUserId(userId);
+        String taskName = "职位列表_" + DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN);
+        download.setName(taskName);
+        downloadService.saveDownload(download);
+
+        long exportRecordCount = 0;
+
+        do {
+            pageResult = jobService.getJobList(listForm);
+            for (JobVo jobVo : pageResult.getList()) {
+                excelData.add(toJobExcel(jobVo));
+                exportRecordCount++;
+            }
+            listForm.setPage(listForm.getPage() + 1);
+            // 更新进度
+            download.setProgress(Math.min(excelData.size() * 100 / pageResult.getTotal(), 99));
+            downloadService.saveDownload(download);
+        } while (pageResult.getHasMore() && exportRecordCount < excelMaxCount);
+
+        EasyExcel.write(fileService.getFile(excelFileName), JobExcel.class).sheet().doWrite(excelData);
+
+        download.setProgress(100);
+        downloadService.saveDownload(download);
+
+        return excelFileName;
     }
 
     private UserExcel toUserExcel(UserVo user) {
@@ -171,7 +204,9 @@ public class EasyExcelExportService implements IExportExcelService {
             ResumeEduVo resumeEduVo = resumeVo.getMaxResumeEdu();
             resumeExcel.setSchool(resumeEduVo.getSchoolName());
             resumeExcel.setMajor(resumeEduVo.getMajorName());
-            resumeExcel.setDegree(resumeEduVo.getDegree().getName());
+            if(resumeEduVo.getDegree() != null){
+                resumeExcel.setDegree(resumeEduVo.getDegree().getName());
+            }
             resumeExcel.setGpa(String.valueOf(resumeEduVo.getGpa()));
         }
         if(resumeVo.getReturnTime() != null){
@@ -181,5 +216,36 @@ public class EasyExcelExportService implements IExportExcelService {
             resumeExcel.setGraduateTime(DateUtil.format(resumeVo.getGraduateTime(), DatePattern.NORM_DATE_PATTERN));
         }
         return resumeExcel;
+    }
+
+    private JobExcel toJobExcel(JobVo jobVo){
+        JobExcel jobExcel = new JobExcel();
+        BeanUtil.copyProperties(jobVo, jobExcel);
+        if(jobVo.getJobType() != null) {
+            jobExcel.setJobType(jobVo.getJobType().getName());
+        }
+        if(jobVo.getCategory() != null){
+            jobExcel.setCategory(jobVo.getCategory().getName());
+        }
+        if(jobVo.getCompanyUser() != null){
+            jobExcel.setCreator(jobVo.getCompanyUser().getName());
+            if(jobVo.getCompanyUser().getCompany() != null){
+                jobExcel.setCompany(jobVo.getCompanyUser().getCompany().getFullName());
+            }
+        }
+        if(jobVo.getMinSalary() != null && jobVo.getMaxSalary() != null){
+            String salary = String.format("%sK-%sK", jobVo.getMinSalary(), jobVo.getMaxSalary());
+            if(jobVo.getSalaryMonths() != null){
+                salary += ("x" + jobVo.getSalaryMonths());
+            }
+            jobExcel.setSalary(salary);
+        }
+        if(jobVo.getMinDegree() != null){
+            jobExcel.setDegree(jobVo.getMinDegree().getName());
+        }
+        if(jobVo.getCity() != null){
+            jobExcel.setCity(jobVo.getCity().getName());
+        }
+        return jobExcel;
     }
 }

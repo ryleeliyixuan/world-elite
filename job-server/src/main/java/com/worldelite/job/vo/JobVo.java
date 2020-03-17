@@ -37,8 +37,9 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     @JSONField(format = "yyyy-MM-dd")
     private Date applyTime; //投递时间
 
-    private Integer candidateResumeCount; // 候选简历数
+    private Integer totalResumeCount; //投递人数
     private Integer newResumeCount; // 新投递简历数
+    private Integer candidateResumeCount; // 候选简历数
     private Integer interviewResumeCount; //进入面试简历数
 
     @Override

@@ -1,5 +1,6 @@
 package com.worldelite.job.vo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
@@ -15,5 +16,6 @@ public class ApplyResumeVo {
     private ResumeVo resume;
     private JobVo job;
     private Byte applyStatus;
+    @JSONField(format = "yyyy-MM-dd")
     private Date time;
 }

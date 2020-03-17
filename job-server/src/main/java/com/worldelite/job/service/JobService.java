@@ -258,6 +258,7 @@ public class JobService extends BaseService {
         for (Job job : jobPage) {
             JobApplyOptions applyOptions = new JobApplyOptions();
             applyOptions.setJobId(job.getId());
+            final int totalResumeCount = jobApplyMapper.countJobApply(applyOptions);
             applyOptions.setStatuses(StringUtils.join(new Byte[]{JobApplyStatus.APPLY.value, JobApplyStatus.VIEW.value}, ","));
             final int newResumeCount = jobApplyMapper.countJobApply(applyOptions);
             applyOptions.setStatuses(String.valueOf(JobApplyStatus.CANDIDATE.value));
@@ -265,6 +266,7 @@ public class JobService extends BaseService {
             applyOptions.setStatuses(String.valueOf(JobApplyStatus.INTERVIEW.value));
             final int interviewResumeCount = jobApplyMapper.countJobApply(applyOptions);
             JobVo jobVo = toJobVo(job, true);
+            jobVo.setTotalResumeCount(totalResumeCount);
             jobVo.setNewResumeCount(newResumeCount);
             jobVo.setCandidateResumeCount(candidateResumeCount);
             jobVo.setInterviewResumeCount(interviewResumeCount);

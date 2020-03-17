@@ -102,3 +102,11 @@ export function getResumeList(data) {
     data
   })
 }
+
+export function getApplyResumeList(data){
+  return request({
+    url: '/resume/apply-resume-list',
+    method: 'post',
+    data
+  })
+}
