@@ -3,14 +3,17 @@ package com.worldelite.job.api;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.entity.ScanResult;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.DictService;
+import com.worldelite.job.service.IContentScanner;
 import com.worldelite.job.service.JobService;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.DictVo;
 import com.worldelite.job.vo.JobVo;
 import com.worldelite.job.vo.PageResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/job")
 @Validated
+@Slf4j
 public class JobApi extends BaseApi{
 
     @Autowired
@@ -39,6 +43,9 @@ public class JobApi extends BaseApi{
     @Autowired
     private DictService dictService;
 
+    @Autowired
+    private IContentScanner contentScanner;
+
     /**
      * 保存职位
      *
@@ -47,7 +54,11 @@ public class JobApi extends BaseApi{
      */
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("save")
-    public ApiResult saveJob(@Valid @RequestBody JobForm jobForm){
+    public ApiResult saveJob(@Valid @RequestBody JobForm jobForm) throws Exception{
+        ScanResult scanResult = contentScanner.scanText(jobForm.getDescription());
+        if(scanResult.getCode() != ScanResult.CODE_PASS){
+            return ApiResult.fail(message("content.scan.fail"));
+        }
         jobService.saveJob(jobForm);
         return ApiResult.ok();
     }

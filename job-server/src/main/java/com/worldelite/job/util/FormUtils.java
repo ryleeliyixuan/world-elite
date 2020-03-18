@@ -2,6 +2,8 @@ package com.worldelite.job.util;
 
 import cn.hutool.http.HtmlUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 /**
  * 对用户提交表单处理实用类
@@ -9,6 +11,12 @@ import org.apache.commons.lang3.StringUtils;
  * @author yeguozhong yedaxia.github.com
  */
 public class FormUtils {
+
+    private static final Whitelist WHITELIST = new Whitelist();
+
+    static {
+        WHITELIST.addTags("div","p","ul","ol","li","b","strong","i","em");
+    }
 
     /**
      * 过滤所有网页标签
@@ -33,7 +41,7 @@ public class FormUtils {
         if(StringUtils.isEmpty(htmlContent)){
             return null;
         }
-        return HtmlUtil.filter(htmlContent);
+        return Jsoup.clean(htmlContent, WHITELIST);
     }
 
     /**

@@ -40,11 +40,13 @@ dependencies {
 	implementation("com.squareup.okhttp3:okhttp:4.2.1")
 	implementation 'com.aliyun:aliyun-java-sdk-core:3.0.6'
 	implementation 'com.aliyun.oss:aliyun-sdk-oss:2.8.1'
+	implementation 'com.aliyun:aliyun-java-sdk-green:3.5.1'
+	implementation 'com.aliyun:aliyun-java-sdk-dm:3.1.0'
+
 	implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:1.2.12'
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 	implementation 'me.zhyd.oauth:JustAuth:1.13.2'
 	annotationProcessor 'org.projectlombok:lombok'
-	implementation 'com.aliyun:aliyun-java-sdk-dm:3.1.0'
 	implementation 'com.maxmind.geoip2:geoip2:2.13.0'
 	implementation group: 'com.alibaba', name: 'easyexcel', version: '2.1.6'
 	implementation group: 'org.jsoup', name: 'jsoup', version: '1.12.1'

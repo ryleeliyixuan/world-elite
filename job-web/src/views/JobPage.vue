@@ -40,7 +40,7 @@
           <h5 class="mt-4 mb-4">工作地址</h5>
           <p>
             {{job.address.address}}
-            <el-link
+            <el-link    
               :underline="false"
               class="float-right text-info"
               @click="mapDialogVisible = true"
