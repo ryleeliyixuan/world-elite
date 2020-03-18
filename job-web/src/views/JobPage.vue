@@ -2,7 +2,10 @@
   <div class="app-container">
     <b-row align-v="center">
       <b-col>
-        <div class="text-gray text-small" v-if="job.companyUser && job.companyUser.company">{{job.companyUser.company.name}}招聘</div>
+        <div
+          class="text-gray text-small"
+          v-if="job.companyUser && job.companyUser.company"
+        >{{job.companyUser.company.name}}招聘</div>
         <h2 class="mt-3">
           {{job.name}}
           <span
@@ -45,6 +48,10 @@
               <i class="el-icon-location-information"></i>查看地图
             </el-link>
           </p>
+        </div>
+        <div v-if="job.address">
+          <h5 class="mt-4 mb-4">分享该职位</h5>
+          <share :config="shareConfig"></share>
         </div>
       </b-col>
       <b-col cols="4" v-if="job.companyUser && job.companyUser.company">
@@ -100,8 +107,11 @@ import Vue from "vue";
 import VueAMap from "vue-amap";
 import { getJobInfo, applyJob } from "@/api/job_api";
 import { doFavorite } from "@/api/favorite_api";
-import { setPageTitle } from '@/utils/setting'
+import { setPageTitle } from "@/utils/setting";
+import Share from "vue-social-share";
+import "vue-social-share/dist/client.css";
 
+Vue.use(Share);
 Vue.use(VueAMap);
 
 VueAMap.initAMapApiLoader({
@@ -122,7 +132,14 @@ export default {
       mapZoom: 14,
       mapDialogVisible: false,
       favoriteLoading: false,
-      applyLoading: false
+      applyLoading: false,
+      shareConfig: {
+        source: "",
+        title: "",
+        description: "",
+        image: "",
+        sites: ["wechat", "qq", "weibo", "google", "facebook", "twitter"]
+      }
     };
   },
   created() {
@@ -148,7 +165,12 @@ export default {
       const jobId = this.$route.params.id;
       getJobInfo(jobId).then(response => {
         this.job = response.data;
-        setPageTitle(`${this.job.name} - ${this.job.companyUser.company?this.job.companyUser.company.name:''}`)
+        const title = `${this.job.name} - ${
+          this.job.companyUser.company ? this.job.companyUser.company.name : ""
+        }`;
+        setPageTitle(title);
+        this.shareConfig.title = title;
+        this.shareConfig.description = this.job.description;
         this.favoriteForm.objectId = this.job.id;
         this.favoriteForm.favorite = this.job.favoriteFlag == 1;
         if (this.job.address) {
