@@ -100,6 +100,7 @@ import Vue from "vue";
 import VueAMap from "vue-amap";
 import { getJobInfo, applyJob } from "@/api/job_api";
 import { doFavorite } from "@/api/favorite_api";
+import { setPageTitle } from '@/utils/setting'
 
 Vue.use(VueAMap);
 
@@ -147,6 +148,7 @@ export default {
       const jobId = this.$route.params.id;
       getJobInfo(jobId).then(response => {
         this.job = response.data;
+        setPageTitle(`${this.job.name} - ${this.job.companyUser.company?this.job.companyUser.company.name:''}`)
         this.favoriteForm.objectId = this.job.id;
         this.favoriteForm.favorite = this.job.favoriteFlag == 1;
         if (this.job.address) {

@@ -6,6 +6,7 @@ import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeExperience;
 import com.worldelite.job.entity.ResumeLink;
 import com.worldelite.job.entity.ResumePractice;
+import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.TimeUtils;
 import lombok.Data;
 
@@ -46,6 +47,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     private String email;
     @ResumeScore(2)
     private String introduction;
+    private String attachResume;
 
     private Integer resumeCompleteProgress;
 
@@ -83,6 +85,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
         setName(resume.getName());
         setGender(resume.getGender());
         setBirth(resume.getBirth());
+        setAttachResume(AppUtils.absOssUrl(resume.getAttachResume()));
         if(resume.getBirth() != null){
             setAge(TimeUtils.getCurrentAge(resume.getBirth()));
         }

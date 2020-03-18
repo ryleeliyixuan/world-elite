@@ -22,3 +22,8 @@ INSERT INTO `db_worldelite`.`t_dict` (`name`, `type`, `value`) VALUES ('1.0-2.0'
 INSERT INTO `db_worldelite`.`t_dict` (`name`, `type`, `value`) VALUES ('2.0-3.0', '10', '2');
 INSERT INTO `db_worldelite`.`t_dict` (`name`, `type`, `value`) VALUES ('3.0-4.0', '10', '3');
 INSERT INTO `db_worldelite`.`t_dict` (`name`, `type`, `value`) VALUES ('4.0-5.0', '10', '4');
+
+# 3-18
+
+ALTER TABLE `db_worldelite`.`t_login_log`
+CHANGE COLUMN `ip` `ip` VARCHAR(64) NOT NULL ;

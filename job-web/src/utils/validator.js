@@ -1,6 +1,6 @@
 const checkEmail = (rule, value, callback) => {
     
-    const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+    const mailReg = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/;
     if (!value) {
         return callback(new Error('邮箱不能为空'))
     }

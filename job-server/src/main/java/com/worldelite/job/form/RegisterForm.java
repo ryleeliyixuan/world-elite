@@ -24,7 +24,11 @@ public class RegisterForm {
 
     @Pattern(regexp = Regexs.PASSWORD_REGEX, message = "{password.format.error}")
     private String password;
-    
+
+    private String name;
+
+    private Byte gender;
+
     private Byte userType;
 
     private Byte subscribeFlag;

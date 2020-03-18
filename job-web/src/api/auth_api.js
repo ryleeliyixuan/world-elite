@@ -16,6 +16,14 @@ export function register(data) {
       })
 }
 
+export function bindAccount(data){
+  return request({
+    url: '/auth/bind-account',
+    method: 'post',
+    data
+  })
+}
+
 export function login(data){
     return request({
         url: '/auth/email-login',

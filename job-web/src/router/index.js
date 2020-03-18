@@ -76,6 +76,11 @@ const constantRoutes = [
         path: '/modify-email',
         component: () => import('@/views/ModifyEmailPage'),
         meta: {title: '修改邮箱'}
+    },
+    {
+        path: '/bind-account',
+        component: () => import('@/views/BindAccountPage'),
+        meta: {title: '绑定账号'}
     }
 ]
 

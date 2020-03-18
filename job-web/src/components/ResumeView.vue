@@ -94,6 +94,11 @@
           target="_blank"
         >{{resumeLink.name}}</el-link>
       </div>
+      <div class="mt-3" v-if="resume.attachResume">
+        <el-link :underline="false" type="primary" :href="resume.attachResume">
+          <b class="el-icon-link">附件简历</b>
+        </el-link>
+      </div>
     </div>
   </div>
 </template>

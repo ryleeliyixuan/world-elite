@@ -20,6 +20,7 @@
     "file-saver": "^2.0.2",
     "html2pdf": "0.0.11",
     "js-cookie": "2.2.0",
+    "svg-sprite-loader": "^4.2.1",
     "vue": "^2.6.10",
     "vue-amap": "^0.5.10",
     "vue-quill-editor": "^3.0.6",

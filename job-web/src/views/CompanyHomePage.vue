@@ -105,6 +105,7 @@ import Pagination from "@/components/Pagination";
 
 import { getCompanyInfo } from "@/api/company_api";
 import { getCompanyJobList } from "@/api/job_api";
+import { setPageTitle } from '@/utils/setting'
 
 Vue.use(VueAMap);
 
@@ -154,6 +155,7 @@ export default {
       this.listQuery.companyId = this.companyId;
       getCompanyInfo(this.companyId).then(response => {
         this.company = response.data;
+        setPageTitle(this.company.name);
         if (this.company.addressList) {
           for (const addr of this.company.addressList) {
             addr.mapWindow = {

@@ -26,14 +26,21 @@
         <b-link href="/forget-pwd">忘记密码?</b-link>
       </p>
       <p class="text-center m-4">
-        没有帐号？<b-link to="/register">立即加入</b-link>
+        没有帐号？
+        <b-link to="/register">立即加入</b-link>
       </p>
+      <el-divider>快捷登录</el-divider>
+      <div class="m-4 text-center">
+        <el-button type="success" circle class="btn-third-login" @click="goThridPartLoginUrl('wechat_open')"><svg-icon icon-class="wechat" /></el-button>
+        <el-button type="danger" circle class="btn-third-login" @click="goThridPartLoginUrl('google')"><svg-icon icon-class="google" /></el-button>
+     </div>
     </b-container>
   </div>
 </template>
 
 <script>
 export default {
+  name: "LoginPage",
   data() {
     return {
       form: {
@@ -57,6 +64,9 @@ export default {
       this.$store.dispatch("user/LOGIN", this.form).then(() => {
         this.$router.push({ path: this.redirect || "/" });
       });
+    },
+    goThridPartLoginUrl(type){
+      self.location = process.env.VUE_APP_BASE_API + '/oauth/login/' + type
     }
   }
 };
@@ -67,6 +77,14 @@ export default {
   width: 400px;
 }
 .app-container {
-  margin-top: 80px;
+  width: 600px;
+  margin: 80px auto 0;
+}
+.btn-third-login{
+    font-size: 28px;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    padding: 0px;
 }
 </style>

@@ -28,6 +28,7 @@
                       class="avatar"
                     />
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    <div slot="tip" class="el-upload__tip">建议大小：500 x 500</div>
                   </el-upload>
                 </template>
                 <h4>
@@ -52,7 +53,8 @@
                 <p>
                   <span class="mr-3">
                     <font-awesome-icon :icon="['fa', 'envelope']" />
-                    {{resume.email}}<el-link class="ml-2 el-icon-edit" type="primary" @click="onChangeEmailClick">变更</el-link>
+                    {{resume.email}}
+                    <el-link class="ml-2 el-icon-edit" type="primary" @click="onChangeEmailClick">变更</el-link>
                   </span>
                   <span class="ml-3" v-if="resume.phone && resume.phone != 0">
                     <font-awesome-icon :icon="['fa', 'mobile-alt']" />
@@ -261,12 +263,36 @@
             </div>
           </div>
           <div class="resume-attachment resume-right-box">
-            <EditResumeTitle title="附件简历"/>
+            <EditResumeTitle title="附件简历" />
+            <el-upload
+              class="mt-2 upload-attach-box"
+              :limit="1"
+              :action="uploadAttachmentOptions.action"
+              :data="uploadAttachmentOptions.params"
+              :accept="uploadAttachmentOptions.acceptFileType"
+              :show-file-list="false"
+              :on-success="handleUploadAttachmengSuccess"
+              :before-upload="beforeAttachmengUpload"
+            >
+              <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">大小不超过5Mb</div>
+            </el-upload>
+            <el-link v-if="resume.attachResume" :href="resume.attachResume" type="primary" icon="el-icon-link">下载附件简历</el-link>
           </div>
           <div class="resume-preview resume-right-box">
             <p>简历完成度</p>
-            <el-progress :text-inside="true" :stroke-width="22" :percentage="resume.resumeCompleteProgress" :status="resume.resumeCompleteProgress == 100? 'success': 'warning'"></el-progress>
-            <el-button type="primary" class="mt-2 btn-preview" @click="handlePreview" icon="el-icon-document">预览简历</el-button>
+            <el-progress
+              :text-inside="true"
+              :stroke-width="22"
+              :percentage="resume.resumeCompleteProgress"
+              :status="resume.resumeCompleteProgress == 100? 'success': 'warning'"
+            ></el-progress>
+            <el-button
+              type="primary"
+              class="mt-2 btn-preview"
+              @click="handlePreview"
+              icon="el-icon-document"
+            >预览简历</el-button>
           </div>
           <div class="resume-nav resume-right-box" v-sticky="{stickyTop: 2}">
             <b-nav vertical>
@@ -665,14 +691,14 @@ import { listByType } from "@/api/dict_api";
 import { serachByName } from "@/api/company_api";
 import { getCategoryTree } from "@/api/category_api";
 import { saveUserExpectJob } from "@/api/user_api";
-import { getUploadPicToken } from "@/api/upload_api";
+import { getUploadPicToken, getUploadAttachmentToken } from "@/api/upload_api";
 
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 import Toast from "@/utils/toast";
-import { checkPicSize } from "@/utils/common";
+import { checkPicSize, checkAttachmentSize } from "@/utils/common";
 
 import {
   faEdit,
@@ -711,7 +737,8 @@ export default {
         curPlace: "",
         phoneCode: undefined,
         phone: undefined,
-        introduction: ""
+        introduction: "",
+        attachResume: undefined
       },
       resumeFormRules: {
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
@@ -838,6 +865,12 @@ export default {
         params: {},
         fileUrl: "",
         acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG"
+      },
+      uploadAttachmentOptions: {
+        action: "",
+        params: {},
+        fileUrl: "",
+        acceptFileType: ".pdf,.doc,docx"
       },
       resume: {},
       countryOptions: [],
@@ -966,9 +999,34 @@ export default {
       this.resume.avatar = this.uploadPicOptions.fileUrl;
       this.handleSaveResumeBasic();
     },
+    beforeAttachmengUpload(file){
+       return new Promise((resolve, reject) => {
+        if (checkAttachmentSize(file)) {
+          reject();
+        } else {
+          getUploadAttachmentToken(file.name)
+            .then(response => {
+              const { data } = response;
+              this.uploadAttachmentOptions.action = data.host;
+              this.uploadAttachmentOptions.params = data;
+              this.uploadAttachmentOptions.fileUrl = data.host + "/" + data.key;
+              resolve(data);
+            })
+            .catch(error => {
+              reject(error);
+            });
+        }
+      });
+    },
+    handleUploadAttachmengSuccess(){
+      this.resumeForm.attachResume = this.uploadAttachmentOptions.fileUrl;
+      this.resume.attachResume = this.uploadAttachmentOptions.fileUrl;
+      this.handleSaveResumeBasic();
+    },
     getResumeInfo() {
       getResumeInfo().then(response => {
         this.resume = response.data;
+        this.setResumeFormValues();
       });
     },
     setResumeFormValues() {
@@ -984,14 +1042,12 @@ export default {
       this.resumeForm.introduction = this.resume.introduction;
     },
     handleEditResumeBasic() {
-      this.setResumeFormValues();
       this.showBasicDialog = true;
       this.$nextTick(() => {
         this.$refs["resumeForm"].clearValidate();
       });
     },
     handleEditResumeIntro() {
-      this.setResumeFormValues();
       this.showIntroDialog = true;
     },
     handleEditResumeEdu(type, resumeEdu) {
@@ -1344,8 +1400,8 @@ export default {
     handlePreview() {
       this.$router.push({ path: `/resume/${this.resume.id}` });
     },
-    onChangeEmailClick(){
-      this.$router.push('/modify-email');
+    onChangeEmailClick() {
+      this.$router.push("/modify-email");
     }
   }
 };
@@ -1365,7 +1421,7 @@ $border-style: 1px solid #eee;
   border: $border-style;
 }
 
-.resume-right-box{
+.resume-right-box {
   background: #fff;
   padding: 20px;
   border: $border-style;
@@ -1421,7 +1477,7 @@ $border-style: 1px solid #eee;
   padding-bottom: 8px;
 }
 
-.btn-preview{
+.btn-preview {
   width: 100%;
   font-size: 18px;
 }
@@ -1487,5 +1543,15 @@ $avatarSize: 100px;
   width: $avatarSize;
   height: $avatarSize;
   display: block;
+}
+
+.upload-attach-box .el-upload {
+  display: block;
+}
+
+.upload-attach-box .el-upload button {
+  width: 100%;
+  font-size: 18px;
+  padding: 12px;
 }
 </style>

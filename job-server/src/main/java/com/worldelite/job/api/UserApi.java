@@ -7,6 +7,7 @@ import com.worldelite.job.constants.VerificationStatus;
 import com.worldelite.job.context.SessionKeys;
 import com.worldelite.job.controller.BaseController;
 import com.worldelite.job.form.*;
+import com.worldelite.job.service.AuthService;
 import com.worldelite.job.service.CompanyVerificationService;
 import com.worldelite.job.service.UserExpectJobService;
 import com.worldelite.job.service.UserService;
@@ -35,6 +36,9 @@ public class UserApi extends BaseController {
     private UserService userService;
 
     @Autowired
+    private AuthService authService;
+
+    @Autowired
     private UserExpectJobService userExpectJobService;
 
     /**
@@ -45,7 +49,7 @@ public class UserApi extends BaseController {
     @PostMapping("register")
     @Deprecated
     public ApiResult register(@Valid @RequestBody RegisterForm registerForm){
-        UserVo userVo = userService.register(registerForm);
+        UserVo userVo = authService.register(registerForm);
         return ApiResult.ok(userVo);
     }
 
@@ -57,7 +61,7 @@ public class UserApi extends BaseController {
     @GetMapping("get-email-code")
     @Deprecated
     public ApiResult activateEmail(@RequestParam @Email String email){
-        userService.sendEmailValidCode(email);
+        authService.sendEmailValidCode(email);
         return ApiResult.ok();
     }
 
@@ -70,7 +74,7 @@ public class UserApi extends BaseController {
     @PostMapping("email-login")
     @Deprecated
     public ApiResult loginWithEmail(@Valid @RequestBody LoginForm loginForm){
-        UserVo loginUser = userService.emailLogin(loginForm);
+        UserVo loginUser = authService.emailLogin(loginForm);
         return ApiResult.ok(loginUser);
     }
 
@@ -160,7 +164,7 @@ public class UserApi extends BaseController {
     @PostMapping("logout")
     @Deprecated
     public ApiResult logout(){
-        userService.logout();
+        authService.logout();
         return ApiResult.ok();
     }
 }

@@ -3,12 +3,10 @@ package com.worldelite.job.api;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.UserType;
 import com.worldelite.job.context.SessionKeys;
 import com.worldelite.job.controller.BaseController;
-import com.worldelite.job.form.LoginForm;
-import com.worldelite.job.form.ModifyEmailForm;
-import com.worldelite.job.form.RegisterForm;
-import com.worldelite.job.form.ResetPwdForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.service.AuthService;
 import com.worldelite.job.service.UserService;
 import com.worldelite.job.util.ResponseUtils;
@@ -32,9 +30,6 @@ import javax.validation.constraints.Email;
 public class AuthApi extends BaseController {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private Producer captchaProducer;
 
     @Autowired
@@ -47,7 +42,7 @@ public class AuthApi extends BaseController {
      */
     @PostMapping("register")
     public ApiResult register(@Valid @RequestBody RegisterForm registerForm){
-        UserVo userVo = userService.register(registerForm);
+        UserVo userVo = authService.register(registerForm);
         return ApiResult.ok(userVo);
     }
 
@@ -58,7 +53,7 @@ public class AuthApi extends BaseController {
      */
     @GetMapping("get-email-code")
     public ApiResult activateEmail(@RequestParam @Email String email){
-        userService.sendEmailValidCode(email);
+        authService.sendEmailValidCode(email);
         return ApiResult.ok();
     }
 
@@ -85,7 +80,7 @@ public class AuthApi extends BaseController {
      */
     @PostMapping("email-login")
     public ApiResult loginWithEmail(@Valid @RequestBody LoginForm loginForm){
-        UserVo loginUser = userService.emailLogin(loginForm);
+        UserVo loginUser = authService.emailLogin(loginForm);
         return ApiResult.ok(loginUser);
     }
 
@@ -107,13 +102,24 @@ public class AuthApi extends BaseController {
     }
 
     /**
+     * 绑定第三方账号
+     * @return
+     */
+    @PostMapping("bind-account")
+    @RequireLogin(allow = UserType.GENERAL)
+    public ApiResult bindAccount(@Valid @RequestBody BindAccountForm bindAccountForm){
+        UserVo loginUser = authService.bindThirdAccount(bindAccountForm);
+        return ApiResult.ok(loginUser);
+    }
+
+    /**
      * 退出登录
      *
      * @return
      */
     @PostMapping("logout")
     public ApiResult logout(){
-        userService.logout();
+        authService.logout();
         return ApiResult.ok();
     }
 }

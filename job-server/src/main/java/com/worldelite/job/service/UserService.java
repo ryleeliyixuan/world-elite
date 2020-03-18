@@ -44,19 +44,10 @@ import java.util.concurrent.TimeUnit;
 public class UserService extends BaseService {
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Autowired
-    private ConfigService configService;
-
-    @Autowired
-    private IEmailService emailService;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private UserMapper userMapper;
-
-    @Autowired
-    private LoginLogMapper loginLogMapper;
 
     @Autowired
     private MessageService messageService;
@@ -66,87 +57,6 @@ public class UserService extends BaseService {
 
     @Autowired
     private CompanyVerificationService companyVerificationService;
-
-    @Value("${token.expired.seconds}")
-    private Long TOKEN_EXPIRED_SECONDS;
-
-    @Value("${activate.expired.seconds}")
-    private Long ACTIVATE_EXPIRED_SECONDS;
-
-    /**
-     * 用户注册
-     *
-     * @param registerForm
-     * @return
-     */
-    @Transactional
-    public UserVo register(RegisterForm registerForm) {
-        User user = userMapper.selectByEmail(registerForm.getEmail());
-        if (user != null) {
-            throw new ServiceException(message("register.email.repeat"));
-        }
-
-        final String validCodeKey = RedisKeys.VALIDATE_EMAIL_PREFIX + registerForm.getEmail();
-
-        if (!registerForm.getValidCode().equals(redisTemplate.opsForValue().get(validCodeKey))) {
-            throw new ServiceException(message("activate.email.expired"));
-        }
-
-        user = new User();
-        user.setId(AppUtils.nextId());
-        user.setEmail(registerForm.getEmail());
-        user.setSubscribeFlag(registerForm.getSubscribeFlag());
-        if (registerForm.getUserType() == null || registerForm.getUserType() == UserType.GENERAL.value) {
-            user.setStatus(UserStatus.NORMAL.value);
-            user.setType(UserType.GENERAL.value);
-        } else if (registerForm.getUserType() == UserType.COMPANY.value) {
-            user.setStatus(UserStatus.NOT_ACTIVATE.value);
-            user.setType(UserType.COMPANY.value);
-        }
-        user.setSalt(RandomStringUtils.randomAlphanumeric(40));
-        user.setSubscribeFlag(registerForm.getSubscribeFlag());
-        final String encodePass = DigestUtils.sha256Hex(registerForm.getPassword() + user.getSalt());
-        user.setPassword(encodePass);
-        userMapper.insertSelective(user);
-        UserVo loginUser = new UserVo().asVo(user);
-        saveUserToken(loginUser);
-        redisTemplate.delete(validCodeKey);
-        return loginUser;
-    }
-
-    /**
-     * 发送邮件验证码
-     */
-    public void sendEmailValidCode(String email) {
-        final String activateCode = RandomStringUtils.randomNumeric(6);
-        redisTemplate.opsForValue().set(RedisKeys.VALIDATE_EMAIL_PREFIX + email, activateCode, ACTIVATE_EXPIRED_SECONDS, TimeUnit.SECONDS);
-        EmailForm emailForm = configService.getEmailForm(ConfigType.EMAIL_ACCOUNT_VALIDATE);
-        emailForm.setAddress(email);
-        emailForm.setEmailBody(emailForm.getEmailBody().replace("${ACTIVATE_CODE}", activateCode));
-        emailService.sendEmail(emailForm);
-    }
-
-    /**
-     * 邮箱登录
-     *
-     * @return
-     */
-    public UserVo emailLogin(LoginForm loginForm) {
-        User user = userMapper.selectByEmail(loginForm.getEmail());
-        if (user == null) {
-            throw new ServiceException(message("login.validate.fail"));
-        }
-        if (user.getStatus() == UserStatus.BLACK.value) {
-            throw new ServiceException(message("user.black.list"));
-        }
-        final String encodePass = DigestUtils.sha256Hex(loginForm.getPassword() + user.getSalt());
-        if (!StringUtils.equals(encodePass, user.getPassword())) {
-            throw new ServiceException(message("login.validate.fail"));
-        }
-        UserVo loginUser = new UserVo().asVo(user);
-        saveUserToken(loginUser);
-        return loginUser;
-    }
 
     /**
      * 获取用户信息
@@ -173,7 +83,9 @@ public class UserService extends BaseService {
     public void modifyUser(UserForm userForm) {
         User user = userMapper.selectByPrimaryKey(userForm.getId());
         if (user != null) {
-            user.setAvatar(AppUtils.getOssKey(userForm.getAvatar()));
+            if(StringUtils.isNotEmpty(userForm.getAvatar())){
+                user.setAvatar(AppUtils.getOssKey(userForm.getAvatar()));
+            }
             user.setPhoneCode(userForm.getPhoneCode());
             user.setPhone(userForm.getPhone());
             user.setGender(userForm.getGender());
@@ -276,7 +188,7 @@ public class UserService extends BaseService {
     public void modifyUserEmail(ModifyEmailForm modifyEmailForm){
 
         // 新邮箱验证码
-        final String emailValidCode = redisTemplate.opsForValue().get(RedisKeys.VALIDATE_EMAIL_PREFIX + modifyEmailForm.getNewEmail());
+        final String emailValidCode = stringRedisTemplate.opsForValue().get(RedisKeys.VALIDATE_EMAIL_PREFIX + modifyEmailForm.getNewEmail());
         if(org.springframework.util.StringUtils.isEmpty(emailValidCode) || !emailValidCode.equals(modifyEmailForm.getValidCode())){
             throw new ServiceException(message("activate.email.expired"));
         }
@@ -303,30 +215,5 @@ public class UserService extends BaseService {
         user.setEmail(modifyEmailForm.getNewEmail());
         user.setUpdateTime(new Date());
         userMapper.updateByPrimaryKeySelective(user);
-    }
-
-    /**
-     * 退出登录
-     */
-    public void logout() {
-        if (curUser() != null) {
-            redisTemplate.delete(curUser().getToken());
-        }
-    }
-
-    /**
-     * 把用户登录凭证存到 cookie 中
-     *
-     * @param loginUser
-     */
-    private void saveUserToken(UserVo loginUser) {
-        final String token = loginUser.getId() + RandomStringUtils.randomAlphanumeric(20);
-        loginUser.setToken(token);
-        redisTemplate.opsForValue().set(token, JSON.toJSONString(loginUser), TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
-
-        LoginLog loginLog = new LoginLog();
-        loginLog.setIp(RequestUtils.getClientIP(AppUtils.request()));
-        loginLog.setUserId(loginUser.getId());
-        loginLogMapper.insertSelective(loginLog);
     }
 }

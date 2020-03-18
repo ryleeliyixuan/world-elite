@@ -38,6 +38,7 @@ public class ResumeForm {
     private String phoneCode;
     private Long phone;
     private String avatar;
+    private String attachResume;
 
     public String getName() {
         return FormUtils.removeAllHtmlTag(StringUtils.trim(name));

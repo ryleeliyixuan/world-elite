@@ -253,7 +253,9 @@ public class ResumeService extends BaseService {
         resume.setMaxDegreeId(resumeForm.getMaxDegreeId());
         resume.setMaritalStatus(resumeForm.getMaritalStatus());
         resume.setIntroduction(resumeForm.getIntroduction());
-
+        if(StringUtils.isNotEmpty(resumeForm.getAttachResume())){
+            resume.setAttachResume(AppUtils.getOssKey(resumeForm.getAttachResume()));
+        }
         if (resume.getId() == null) {
             resume.setId(AppUtils.nextId());
             resumeMapper.insertSelective(resume);

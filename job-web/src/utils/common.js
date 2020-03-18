@@ -16,6 +16,17 @@ export function curRelativePath() {
 }
 
 /**
+ * 是否是外链
+ * 
+ * @param {string} path
+ * @returns {Boolean}
+ */
+export function isExternal(path) {
+  return /^(https?:|mailto:|tel:)/.test(path)
+}
+
+
+/**
 * 去掉http部分
 */
 export function linkName(link) {
@@ -77,6 +88,17 @@ export function checkPicSize(file) {
     const overSize = file.size / 1024 / 1024 > 2;
     if (overSize) {
         Toast.error('图片大小不能超过2Mb')
+    }
+    return overSize;
+}
+
+/**
+ * 附件大小是否在5Mb内
+ */
+export function checkAttachmentSize(file) {
+    const overSize = file.size / 1024 / 1024 > 5;
+    if (overSize) {
+        Toast.error('附件大小不能超过2Mb')
     }
     return overSize;
 }
