@@ -19,7 +19,7 @@
         <el-input
           ref="email"
           v-model="loginForm.email"
-          placeholder="邮箱"
+          placeholder="登录邮箱"
           name="email"
           tabindex="1"
           auto-complete="on"

@@ -212,7 +212,14 @@ public class JobService extends BaseService {
             }
         }
 
-        return noRecommend ? getNewestJobList(jobSearchForm) : searchService.searchJob(jobSearchForm);
+        PageResult<JobVo> jobPageResult;
+
+        if(!noRecommend){
+            jobPageResult = searchService.searchJob(jobSearchForm);
+        }else{
+            jobPageResult = getNewestJobList(jobSearchForm);
+        }
+        return jobPageResult;
     }
 
     private Boolean isEmptySearch(JobSearchForm jobSearchForm) {

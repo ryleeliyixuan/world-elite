@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -13,10 +14,10 @@ import java.util.Date;
 public class ResumeExpForm {
     private Integer id;
     private Long resumeId;
-    @NotBlank(message = "{edit.resume.exp.time.not.null}")
+    @NotNull(message = "{edit.resume.exp.time.not.null}")
     @JSONField(format = "yyyy-MM")
     private Date startTime;
-    @NotBlank(message = "{edit.resume.exp.time.not.null}")
+    @NotNull(message = "{edit.resume.exp.time.not.null}")
     @JSONField(format = "yyyy-MM")
     private Date finishTime;
     @NotBlank(message = "{edit.resume.exp.company.not.blank}")

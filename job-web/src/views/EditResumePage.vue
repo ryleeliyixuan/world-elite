@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <b-container>
+      <h4 class="mb-4">{{$t('complete_resume')}}</h4>
       <b-row>
         <b-col cols="8">
           <div class="resume-body">
@@ -259,7 +260,7 @@
                   >/</span>
                 </span>
               </p>
-              <p>{{resume.userExpectJob.minSalary}}K ~ {{resume.userExpectJob.maxSalary}}K</p>
+              <p v-if="resume.userExpectJob.minSalary">{{resume.userExpectJob.minSalary}}K ~ {{resume.userExpectJob.maxSalary}}K</p>
             </div>
           </div>
           <div class="resume-attachment resume-right-box">
@@ -312,11 +313,12 @@
     <el-dialog title="编辑基本信息" :visible.sync="showBasicDialog" width="600px" top="10vh">
       <el-form ref="resumeForm" :model="resumeForm" :rules="resumeFormRules" label-width="80px">
         <el-form-item label="姓名" prop="name">
-          <el-input v-model="resumeForm.name" placeholder="你的真实姓名" maxlength="20" show-word-limit></el-input>
+          <el-input v-model="resumeForm.name" class="m-input-text-width" placeholder="你的真实姓名" maxlength="20" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="生日" prop="birth">
           <el-date-picker
             v-model="resumeForm.birth"
+            :picker-options="oldDatePickerOptions"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="选择日期"
@@ -331,6 +333,7 @@
         <el-form-item label="所在城市" prop="curPlace">
           <el-input
             v-model="resumeForm.curPlace"
+            class="m-input-text-width"
             placeholder="比如：洛杉矶"
             maxlength="50"
             show-word-limit
@@ -392,7 +395,7 @@
       <quill-editor v-model="resumeForm.introduction" :options="introEditorOption"></quill-editor>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showIntroDialog = false">取 消</el-button>
-        <el-button type="primary" @click="handleSaveResumeBasic" :loading="posting">保 存</el-button>
+        <el-button type="primary" @click="handleSaveResumeBasic(false)" :loading="posting">保 存</el-button>
       </span>
     </el-dialog>
     <!--编辑教育经历-->
@@ -921,7 +924,12 @@ export default {
       minSalaryOptions: [],
       maxSalaryOptions: [],
       newSkillTag: "",
-      skillTagListForm: []
+      skillTagListForm: [],
+      oldDatePickerOptions:{
+        disabledDate(time){
+          return time.getTime() >= Date.now() - 8.64e7;
+        }
+      }
     };
   },
   watch: {
@@ -997,7 +1005,7 @@ export default {
     handleAvatarSuccess() {
       this.resumeForm.avatar = this.uploadPicOptions.fileUrl;
       this.resume.avatar = this.uploadPicOptions.fileUrl;
-      this.handleSaveResumeBasic();
+      this.handleSaveResumeBasic(false);
     },
     beforeAttachmengUpload(file){
        return new Promise((resolve, reject) => {
@@ -1021,7 +1029,7 @@ export default {
     handleUploadAttachmengSuccess(){
       this.resumeForm.attachResume = this.uploadAttachmentOptions.fileUrl;
       this.resume.attachResume = this.uploadAttachmentOptions.fileUrl;
-      this.handleSaveResumeBasic();
+      this.handleSaveResumeBasic(false);
     },
     getResumeInfo() {
       getResumeInfo().then(response => {
@@ -1481,6 +1489,11 @@ $border-style: 1px solid #eee;
   width: 100%;
   font-size: 18px;
 }
+
+.m-input-text-width {
+  width: 220px;
+}
+
 </style>
 
 <style lang="scss">

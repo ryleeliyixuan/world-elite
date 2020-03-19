@@ -34,7 +34,9 @@ public class UserVo implements VoConvertable<UserVo, User>{
         setName(user.getName());
         setEmail(user.getEmail());
         setPhoneCode(user.getPhoneCode());
-        setPhone(String.valueOf(user.getPhone()));
+        if(user.getPhone() != null && user.getPhone() != 0){
+            setPhone(String.valueOf(user.getPhone()));
+        }
         setAvatar(AppUtils.absOssUrl(user.getAvatar()));
         setType(user.getType());
         setGender(user.getGender());

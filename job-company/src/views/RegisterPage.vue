@@ -1,30 +1,49 @@
 <template>
   <div class="app-container">
-    <h3 class="text-center">企业用户注册</h3>
+    <h3 class="text-center">{{$t('company_regist_title')}}</h3>
     <b-container>
       <b-row align-h="center">
         <b-form @submit="onSubmit" @reset="onReset" class="register-form">
           <b-input-group class="mt-4">
-            <b-form-input size="lg" v-model="form.email" type="email" required placeholder="请输入企业邮箱"></b-form-input>
+            <b-form-input
+              size="lg"
+              v-model="form.email"
+              type="email"
+              required
+              :placeholder="$t('company_email_input_tip')"
+            ></b-form-input>
           </b-input-group>
-          <b-input-group class="mt-4">
-            <b-form-input size="lg" v-model="form.validCode" required placeholder="邮箱验证码"></b-form-input>
+           <b-input-group class="mt-4">
+            <b-form-input size="lg" v-model="form.validCode" required :placeholder="$t('email_valid_code')"></b-form-input>
             <b-input-group-append>
-              <b-button size="lg" variant="info" v-on:click="recieveEmailCode">获取验证码</b-button>
+              <b-button size="lg" variant="info" v-on:click="recieveEmailCode">{{$t('get_valid_code')}}</b-button>
             </b-input-group-append>
           </b-input-group>
-
+          <el-alert class="mt-2" :title="$t('email_block_tip')" type="warning" v-if="showEmailBlockTip"></el-alert>
           <b-input-group class="mt-4">
-            <b-form-input size="lg" v-model="form.password" type="password" required placeholder="设置不少于8位的密码"></b-form-input>
+            <b-form-input
+              size="lg"
+              v-model="form.password"
+              type="password"
+              required
+              @input="showPasswordRuleTip = true"
+              :placeholder="$t('login_password')"
+            ></b-form-input>
           </b-input-group>
-
+          <el-alert class="mt-2" :title="$t('password_rule')" type="warning" v-if="showPasswordRuleTip"></el-alert>
           <p class="mt-4 mb-4 text-policy">点击“同意并加入”，即表示您同意遵守WorldElite的《用户协议》、《隐私政策》及《Cookie 政策》。</p>
-
-          <b-button block size="lg" type="submit" variant="info" :disabled="form.privateFlag != 1">同意并加入</b-button>
+          <b-button
+            block
+            size="lg"
+            type="submit"
+            variant="info"
+            :disabled="form.privateFlag != 1"
+          >{{$t('agree_to_regist')}}</b-button>
         </b-form>
       </b-row>
-       <p class="text-center m-4">
-        已经有帐号？<b-link to="/login">登录</b-link>
+      <p class="text-center m-4">
+        {{$t('ask_regist_before')}}
+        <b-link to="/login">{{$t('login')}}</b-link>
       </p>
     </b-container>
   </div>
@@ -32,10 +51,14 @@
 
 <script>
 import { getEmailCode } from "@/api/user_api";
+import Toast from "@/utils/toast";
 
 export default {
+  name: "RegisterPage",
   data() {
     return {
+      showEmailBlockTip: false,
+      showPasswordRuleTip: false,
       form: {
         email: "",
         validCode: "",
@@ -55,19 +78,12 @@ export default {
     },
     recieveEmailCode() {
       if (this.form.email == "") {
-        this.$bvToast.toast("请先填写邮箱", {
-          title: "提示",
-          toaster: 'b-toaster-top-center',
-          variant: "danger"
-        });
+        Toast.error("请先填写邮箱");
         return;
       }
       getEmailCode(this.form.email).then(() => {
-        this.$bvToast.toast("已发送，请查看邮箱", {
-          title: "提示",
-          toaster: 'b-toaster-top-center',
-          variant: "success"
-        });
+        this.showEmailBlockTip = true;
+        Toast.success("已发送，请登录邮箱查看");
       });
     },
     onReset(evt) {
@@ -88,16 +104,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'bootstrap/scss/bootstrap.scss';
-
 .register-form {
   width: 400px;
 }
 .app-container {
   margin-top: 100px;
 }
-.text-policy{
+.text-policy {
   font-size: 14px;
-  color: $gray-500;
+  color: #999;
 }
 </style>

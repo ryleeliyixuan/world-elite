@@ -86,7 +86,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-basic")
-    public ApiResult<ResumeVo> saveBasic(@Valid @RequestBody ResumeForm resumeForm) {
+    public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm) {
         ResumeVo resumeVo = resumeService.saveBasic(resumeForm);
         return ApiResult.ok(resumeVo);
     }

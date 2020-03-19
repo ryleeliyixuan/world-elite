@@ -66,13 +66,7 @@ public class UserService extends BaseService {
      */
     public UserVo getUserInfo(Long id) {
         User user = userMapper.selectByPrimaryKey(id);
-        UserVo userVo = new UserVo().asVo(user);
-        userVo.setEmail(user.getEmail());
-        userVo.setPhoneCode(user.getPhoneCode());
-        if (user.getPhone() != null) {
-            userVo.setPhone(String.valueOf(user.getPhone()));
-        }
-        return userVo;
+        return new UserVo().asVo(user);
     }
 
     /**

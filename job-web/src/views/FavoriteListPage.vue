@@ -13,11 +13,11 @@
         shadow="hover"
         v-for="job in pageResult.list"
         :key="job.id"
-        class="mb-2"
+        class="mb-2 link-pointer"
         @click.native="openJobDetail(job.id)"
       >
         <b-media right-align vertical-align="center">
-          <p class="text-small text-gray">{{job.companyUser.company.name}}</p>
+          <p class="text-small text-gray">{{job.companyUser.company.name}} <span class="float-right">{{job.time}}</span></p>
           <h6 class="mt-0 mb-1">{{job.name}}</h6>
           <div class>
             <b

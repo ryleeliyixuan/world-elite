@@ -53,7 +53,7 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setSalaryMonths(job.getSalaryMonths());
         setStatus(job.getStatus());
         setDescription(job.getDescription());
-        setTime(job.getCreateTime());
+        setTime(job.getPubTime());
         return this;
     }
 }

@@ -198,6 +198,7 @@ public class JobApi extends BaseApi{
         }
 
         PageResult pageResult;
+
         if(StringUtils.isEmpty(searchForm.getKeyword())){
             pageResult = jobService.getUserRecommendJobList(searchForm);
         }else{

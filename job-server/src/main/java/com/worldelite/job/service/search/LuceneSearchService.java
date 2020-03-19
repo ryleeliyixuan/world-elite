@@ -132,6 +132,9 @@ public class LuceneSearchService implements SearchService {
         }
         int num = pagerForm.getLimit() * (pagerForm.getPage() - 1);
         TopDocs tds = indexSearcher.search(query, num);
+        if(tds.scoreDocs.length == 0){
+            return null;
+        }
         return num <= tds.scoreDocs.length ? tds.scoreDocs[num - 1] : tds.scoreDocs[tds.scoreDocs.length - 1];
     }
 

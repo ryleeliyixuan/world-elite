@@ -212,8 +212,10 @@ public class AppUtils {
                     field.setAccessible(true);
                     Object value = field.get(object);
                     if (value != null) {
-                        if (value instanceof Collection && CollectionUtils.isNotEmpty((Collection) value)) {
-                            current += resumeScore.value();
+                        if (value instanceof Collection ) {
+                            if(CollectionUtils.isNotEmpty((Collection) value)){
+                                current += resumeScore.value();
+                            }
                         } else {
                             current += resumeScore.value();
                         }

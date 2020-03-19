@@ -8,6 +8,7 @@ import "element-ui/lib/theme-chalk/index.css";
 import '@/style/app.scss'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import i18n from '@/i18n'
 import '@/permission' 
 
 Vue.config.productionTip = false
@@ -19,6 +20,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 const _vm = new Vue({
   router,
   store,
+  i18n,
   render: h => h(App),
 }).$mount('#app')
 

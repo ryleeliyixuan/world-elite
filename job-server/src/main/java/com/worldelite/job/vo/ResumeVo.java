@@ -45,17 +45,17 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     @ResumeScore
     private String phone;
     private String email;
-    @ResumeScore(2)
+    @ResumeScore(4)
     private String introduction;
     private String attachResume;
 
     private Integer resumeCompleteProgress;
 
-    @ResumeScore(2)
+    @ResumeScore(4)
     private List<ResumeEduVo> resumeEduList;
-    @ResumeScore(2)
+    @ResumeScore(4)
     private List<ResumeExpVo> resumeExpList;
-    @ResumeScore(2)
+    @ResumeScore(4)
     private List<ResumePracticeVo> resumePracticeList;
     @ResumeScore
     private List<ResumeSkillVo> resumeSkillList;

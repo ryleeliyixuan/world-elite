@@ -18,6 +18,7 @@ import com.worldelite.job.mapper.UserMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -191,8 +192,12 @@ public class CompanyService extends BaseService{
         company.setScaleId(companyForm.getScaleId());
         company.setIndustryId(companyForm.getIndustryId());
         company.setPropertyId(companyForm.getPropertyId());
-        company.setLogo(AppUtils.getOssKey(companyForm.getLogo()));
-        company.setIntroduction(companyForm.getIntroduction());
+        if(StringUtils.isNotEmpty(companyForm.getLogo())){
+            company.setLogo(AppUtils.getOssKey(companyForm.getLogo()));
+        }
+        if(StringUtils.isNotEmpty(companyForm.getIntroduction())){
+            company.setIntroduction(companyForm.getIntroduction());
+        }
         if(company.getId() == null){
             company.setId(AppUtils.nextId());
             companyMapper.insertSelective(company);

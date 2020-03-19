@@ -47,7 +47,7 @@
           </el-popover>
           <el-dropdown style="vertical-align: middle;">
             <span class="el-dropdown-link">
-              <el-avatar :size="35" icon="el-icon-user-solid"></el-avatar>
+              <el-avatar :size="35" icon="el-icon-user-solid" :src="avatar"></el-avatar>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
@@ -75,7 +75,7 @@ import { getUnReadMessageCount, getMessageList } from "@/api/message_api";
 export default {
   name: "MainNavBar",
   computed: {
-    ...mapGetters(["token", "name", "messageCount"])
+    ...mapGetters(["token", "name", "avatar", "messageCount"])
   },
   data() {
     return {
