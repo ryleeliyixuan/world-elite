@@ -481,13 +481,17 @@ export default {
     handleSaveCompanyAddr() {
       geocoder.getAddress(this.poiMapMarker.position, (status, result) => {
         if (status === "complete" && result.info === "OK") {
-          this.companyAddrForm.city = result.regeocode.addressComponent.city;
-          if (this.companyAddrForm.city.endsWith("市")) {
-            this.companyAddrForm.city = this.companyAddrForm.city.substr(
-              0,
-              this.companyAddrForm.city.length - 1
-            );
+          const city = result.regeocode.addressComponent.city;
+          if(city != ''){
+              this.companyAddrForm.city = city.endsWith('市') ? city.substr(0, city.length - 1): city;
           }
+          
+          // 直辖市
+          const province = result.regeocode.addressComponent.province;
+          if(this.companyAddrForm.city == '' && province.endsWith('市')){
+            this.companyAddrForm.city = province.substr(0, province - 1);
+          }
+          
           this.$refs["companyAddrForm"].validate(valid => {
             if (valid) {
               this.posting = true;

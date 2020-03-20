@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       title: 'World Elite管理后台',
-      logo: 'https://bor-prod.oss-cn-shenzhen.aliyuncs.com/static/img/logo-buouren.png'
+      logo: ''
     }
   }
 }

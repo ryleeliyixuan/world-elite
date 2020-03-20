@@ -515,7 +515,7 @@ export default {
     handleSaveCompanyAddr() {
       geocoder.getAddress(this.poiMapMarker.position, (status, result) => {
         if (status === "complete" && result.info === "OK") {
-          console.log(result)
+         
           const city = result.regeocode.addressComponent.city;
           if(city != ''){
               this.companyAddrForm.city = city.endsWith('市') ? city.substr(0, city.length - 1): city;

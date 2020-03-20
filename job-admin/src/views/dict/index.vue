@@ -192,6 +192,10 @@ export default {
         {
           name: "薪资范围",
           value: 9
+        },
+        {
+          name: "GPA范围",
+          value: 10
         }
       ],
       dictForm: {
@@ -338,7 +342,8 @@ export default {
         : "";
     },
     getDictType(type) {
-      return this.dictTypeOptions.find(d => d.value === type).name;
+      const dictType = this.dictTypeOptions.find(d => d.value === type);
+      return dictType? dictType.name: '';
     }
   }
 };
