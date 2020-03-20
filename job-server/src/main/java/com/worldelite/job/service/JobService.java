@@ -314,6 +314,9 @@ public class JobService extends BaseService {
         job.setStatus(JobStatus.OFFLINE.value);
         job.setUpdateTime(new Date());
 
+        //从索引中删除
+        indexService.deleteJobItem(jobId);
+
         // 被管理员强制下架，记录原因，并发送消息
         if(curUser().getType() == UserType.ADMIN.value){
             job.setRemark(reason);
@@ -344,6 +347,9 @@ public class JobService extends BaseService {
         job.setPubTime(new Date());
         job.setUpdateTime(new Date());
         jobMapper.updateByPrimaryKeySelective(job);
+
+        // 加入索引
+        indexService.saveJobItem(jobId);
     }
 
     /**

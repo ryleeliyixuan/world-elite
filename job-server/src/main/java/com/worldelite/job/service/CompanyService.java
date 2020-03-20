@@ -116,7 +116,7 @@ public class CompanyService extends BaseService{
      * @return
      */
     public CompanyVo getCompanyHomeData(Long companyId){
-        CompanyVo companyVo = getSimpleCompanyInfo(companyId);
+        CompanyVo companyVo = getCompanyInfo(companyId);
         if(companyVo == null){
             return null;
         }

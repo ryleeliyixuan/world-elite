@@ -96,7 +96,7 @@
       </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="{row}">
-          <el-button size="mini" type="danger" @click="handleTakeOffJob" v-if="row.status == 2">下架</el-button>
+          <el-button size="mini" type="danger" @click="handleTakeOffJob(row)" v-if="row.status == 2">下架</el-button>
           <el-button size="mini" type="primary" @click="goJobDetail(row.id)" v-if="row.status == 3">查看</el-button>
         </template>
       </el-table-column>
@@ -242,18 +242,18 @@ export default {
         });
       }
     },
-    handleTakeOffJob(job, reason) {
-      if(reason == ''){
-          this.$message('原因不能为空');
-          return;
-      }  
+    handleTakeOffJob(job) {
       this.$prompt("请输入下架原因", "提示", {
         confirmButtonText: "提交",
         cancelButtonText: "取消"
       }).then(({ value }) => {
+        if(value == ''){
+          Toast.error('请填写原因');
+          return;
+        }
         takeOffJob({id: job.id, reason: value}).then(response => {
-          user.status = status;
-          this.$message("操作成功");
+          Toast.success("操作成功");
+          this.getList();
         });
       });
     },
