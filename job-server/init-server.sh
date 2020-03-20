@@ -52,3 +52,8 @@ mkdir ~/apps    #程序目录
 
 # 配置服务和开机启动
 
+sudo vi /etc/rc.local
+
+/etc/init.d/hm-api-service start
+/etc/init.d/hm-web-service start
+/etc/init.d/hm-portal-service start

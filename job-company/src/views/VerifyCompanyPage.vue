@@ -81,6 +81,7 @@
 import { getUploadPicToken } from "@/api/upload_api";
 import { serachByName } from "@/api/company_api";
 import { saveVerifyInfo, getVerifyInfo  } from "@/api/verify_api";
+import Validator from '@/utils/validator'
 
 export default {
   data() {
@@ -98,7 +99,7 @@ export default {
       employeeFormRules: {
         name: [{ required: true, message: "请输入你的名字", trigger: "blur" }],
         idCard: [
-          { required: true, message: "请输入身份证号", trigger: "blur" }
+          { required: true, validator: Validator.checkIdCard, trigger: "blur" }
         ],
         idCardPic: [
           { required: true, message: "请上传手持身份证照片", trigger: "blur" }
@@ -207,6 +208,6 @@ export default {
 <style scoped>
 .app-container {
   width: 800px;
-  margin: 60px auto 0;
+  margin: 0 auto;
 }
 </style>

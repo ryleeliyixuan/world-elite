@@ -29,7 +29,22 @@ const checkPassword = (rule, value, callback) => {
     }, 100)
 }
 
+const checkIdCard = (rule, value, callback) => {
+    if(!value){
+        return callback(new Error('身份证不能为空'))
+    }
+    var idRegx = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
+    setTimeout(() => {
+        if(idRegx.test(value)){
+            callback();
+        } else{
+            callback(new Error('证件号码格式有误'))
+        }
+    }, 100)
+}
+
 export default {
     checkEmail: checkEmail,
-    checkPassword: checkPassword
+    checkPassword: checkPassword,
+    checkIdCard: checkIdCard
 }

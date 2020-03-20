@@ -108,10 +108,10 @@ export default {
   width: 400px;
 }
 .app-container {
-  margin-top: 100px;
+  margin-top: 60px;
 }
 .text-policy {
   font-size: 14px;
   color: #999;
-}
+} 
 </style>

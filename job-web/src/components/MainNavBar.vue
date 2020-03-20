@@ -17,9 +17,10 @@
           v-model="keyword"
           class="input-search w-100"
           placeholder="输入职位、公司"
-          suffix-icon="el-icon-search"
           @change.native="handleSearch"
-        ></el-input>
+        >
+        <i slot="suffix" class="el-input__icon el-icon-search" @click="handleSearch"></i>
+        </el-input>
       </el-col>
       <el-col :span="6">
         <div class="text-right" v-if="token === undefined || token === ''">

@@ -1,5 +1,6 @@
 package com.worldelite.job.service;
 
+import com.alibaba.fastjson.JSON;
 import com.worldelite.job.anatation.SysLog;
 import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.ConfigType;

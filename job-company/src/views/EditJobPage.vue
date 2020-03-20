@@ -32,9 +32,16 @@
       </el-form-item>
       <el-form-item label="工作地点" prop="addressId">
         <el-select v-model="jobForm.addressId" filterable clearable placeholder="请选择工作地点">
-          <el-option v-for="item in addressOptions" :key="item.id" :label="item.address" :value="item.id"></el-option>
+          <el-option
+            v-for="item in addressOptions"
+            :key="item.id"
+            :label="item.address"
+            :value="item.id"
+          ></el-option>
         </el-select>
-        <b-link type="primary" to="/edit-company" class="ml-2"><i class="el-icon-plus"></i>增加地点</b-link>
+        <b-link type="primary" to="/edit-company" class="ml-2">
+          <i class="el-icon-plus"></i>增加地点
+        </b-link>
       </el-form-item>
       <el-form-item label="学历要求" prop="minDegreeId">
         <el-select v-model="jobForm.minDegreeId" filterable clearable placeholder="请选择最低学历">
@@ -75,7 +82,12 @@
       </el-form-item>
       <el-form-item label="工作类型" prop="jobType">
         <el-radio-group v-model="jobForm.jobType">
-          <el-radio :label="jobType.id" border v-for="jobType in jobTypeOptions" :key="jobType.id">{{jobType.name}}</el-radio>
+          <el-radio
+            :label="jobType.id"
+            border
+            v-for="jobType in jobTypeOptions"
+            :key="jobType.id"
+          >{{jobType.name}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="职位描述" prop="description">
@@ -92,8 +104,8 @@
 import { getCategoryTree } from "@/api/category_api";
 import { listByType } from "@/api/dict_api";
 import { saveJob, getJobInfo } from "@/api/job_api";
-import { getCompanyAddrList } from '@/api/company_api'
-import Toast from '@/utils/toast'
+import { getCompanyAddrList } from "@/api/company_api";
+import Toast from "@/utils/toast";
 
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -101,7 +113,7 @@ import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 
 export default {
-  name: 'NewJobPage',
+  name: "NewJobPage",
   components: {
     quillEditor
   },
@@ -180,17 +192,25 @@ export default {
     "jobForm.maxSalary": function() {
       this.jobForm.salary =
         this.jobForm.minSalary && this.jobForm.maxSalary ? 1 : undefined;
+    },
+    "jobForm": {
+      handler() {
+        if (this.jobForm.id === undefined) {
+          this.$store.commit("setting/JOB_DRAFT", this.jobForm);
+        }
+      },
+      deep: true
     }
   },
-  computed:{
-    title(){
-      return this.$route.query.id? '编辑职位': '新增职位';
+  computed: {
+    title() {
+      return this.$route.query.id ? "编辑职位" : "新增职位";
     },
-    pubButtonText(){
-      return this.$route.query.id? '保存': '发布';
+    pubButtonText() {
+      return this.$route.query.id ? "保存" : "发布";
     },
-    isModify(){
-      return this.$route.query.id !== undefined
+    isModify() {
+      return this.$route.query.id !== undefined;
     }
   },
   methods: {
@@ -198,36 +218,45 @@ export default {
       getCategoryTree().then(
         response => (this.jobCategoryOptions = response.data)
       );
-      getCompanyAddrList().then(response => (this.addressOptions = response.data));
+      getCompanyAddrList().then(
+        response => (this.addressOptions = response.data)
+      );
       listByType(1).then(response => (this.degreeOptions = response.data.list));
-      listByType(8).then(response => (this.jobTypeOptions = response.data.list));
+      listByType(8).then(
+        response => (this.jobTypeOptions = response.data.list)
+      );
       this.minSalaryOptions = this.generateSalaryOptions(0, 250);
       this.salaryMonthOptions = this.generateSalaryMonthOptions(11, 13);
-      if(jobId){
+      if (jobId) {
         getJobInfo(jobId).then(response => {
-          const {data} = response
+          const { data } = response;
           this.jobForm.id = data.id;
           this.jobForm.name = data.name;
           this.jobForm.categoryId = data.category.id;
           this.jobForm.depart = data.depart;
-          this.jobForm.minDegreeId = data.minDegree.id;
+          this.jobForm.minDegreeId = data.minDegree
+            ? data.minDegree.id
+            : undefined;
           this.jobForm.minSalary = data.minSalary;
           this.jobForm.maxSalary = data.maxSalary;
           this.jobForm.salaryMonths = data.salaryMonths;
-          this.jobForm.cityId = data.city.id;
-          this.jobForm.addressId = data.address? data.address.id: undefined;
-          this.jobForm.jobType = data.jobType?data.jobType.id: undefined;
+          this.jobForm.cityId = data.city ? data.city.id : undefined;
+          this.jobForm.addressId = data.address ? data.address.id : undefined;
+          this.jobForm.jobType = data.jobType ? data.jobType.id : undefined;
           this.jobForm.description = data.description;
-        })
+        });
+      } else if (this.$store.getters.jobDraft) {
+        this.jobForm = this.$store.getters.jobDraft;
       }
     },
     onSubmit() {
       this.$refs["jobForm"].validate(valid => {
         if (valid) {
+          this.$store.commit("setting/JOB_DRAFT", undefined);
           this.posting = true;
           saveJob(this.jobForm)
             .then(() => {
-              Toast.success(this.isModify?"保存成功":"发布成功");
+              Toast.success(this.isModify ? "保存成功" : "发布成功");
               this.$router.go(-1);
             })
             .finally(() => {
@@ -275,7 +304,7 @@ export default {
 
 <style scoped>
 .app-container {
-  margin: 50px 100px;
+  margin: 0px 100px;
   width: 800px;
 }
 .text-input-width {

@@ -101,7 +101,7 @@ public class CompanyApi extends BaseApi {
      */
     @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @PostMapping("save-company")
-    public ApiResult saveCompany(@Valid @RequestBody CompanyForm companyForm) {
+    public ApiResult saveCompany(@RequestBody CompanyForm companyForm) {
         Long companyId = companyService.saveCompany(companyForm);
         return ApiResult.ok(String.valueOf(companyId));
     }

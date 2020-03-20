@@ -134,14 +134,14 @@
       @pagination="handleRouteList"
     />
 
-    <el-drawer title="用户审核资料" :visible.sync="verifyDrawerVisible" direction="rtl" size="40%">
+    <el-drawer title="用户审核资料" :visible.sync="verifyDrawerVisible" direction="rtl" size="50%">
       <div
         class="drawer__footer"
         style="padding: 12px"
         v-if="verifyUser && verifyUser.status === 0"
       >
-        <el-button type="success" icon="el-icon-check" @click="handleVerifyUser(row, 2)">通过</el-button>
-        <el-button type="warning" icon="el-icon-close" @click="handleVerifyUser(row, 3)">拒绝</el-button>
+        <el-button type="success" icon="el-icon-check" @click="handleVerifyUser(verifyUser, 2)">通过</el-button>
+        <el-button type="warning" icon="el-icon-close" @click="handleVerifyUser(verifyUser, 3)">拒绝</el-button>
       </div>
       <VerificationView :userId="verifyUser?verifyUser.userId : undefined"></VerificationView>
     </el-drawer>

@@ -3,6 +3,7 @@ const getters = {
     status: state => state.user.status,
     name: state => state.user.name,
     avatar: state => state.user.avatar,
-    messageCount: state => state.setting.messageCount
+    messageCount: state => state.setting.messageCount,
+    jobDraft: state => state.setting.jobDraft
 }
 export default getters

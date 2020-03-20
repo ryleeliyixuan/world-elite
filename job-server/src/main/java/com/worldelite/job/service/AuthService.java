@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * @author yeguozhong yedaxia.github.com
  */
 @Service
-public class AuthService extends BaseService{
+public class AuthService extends BaseService {
 
     @Autowired
     private ConfigService configService;
@@ -79,11 +79,15 @@ public class AuthService extends BaseService{
         if (!registerForm.getValidCode().equals(stringRedisTemplate.opsForValue().get(validCodeKey))) {
             throw new ServiceException(message("activate.email.expired"));
         }
-        User user = newUser(registerForm);
-        UserVo loginUser = new UserVo().asVo(user);
-        saveUserToken(loginUser);
-        stringRedisTemplate.delete(validCodeKey);
-        return loginUser;
+        try {
+            User user = newUser(registerForm);
+            saveUserToken(user);
+            UserVo loginUser = new UserVo().asVo(user);
+            loginUser.setToken(user.getToken());
+            return loginUser;
+        } finally {
+            stringRedisTemplate.delete(validCodeKey);
+        }
     }
 
     /**
@@ -92,7 +96,7 @@ public class AuthService extends BaseService{
      * @param registerForm
      * @return
      */
-    public UserVo bindThirdAccount(BindAccountForm registerForm){
+    public UserVo bindThirdAccount(BindAccountForm registerForm) {
         checkRepeatEmail(registerForm.getEmail());
 
         final String validCodeKey = RedisKeys.VALIDATE_EMAIL_PREFIX + registerForm.getEmail();
@@ -100,28 +104,32 @@ public class AuthService extends BaseService{
             throw new ServiceException(message("activate.email.expired"));
         }
 
-        Auth options = new Auth();
-        options.setUserId(curUser().getId());
-        options.setAuthType(registerForm.getAuthType());
-        List<Auth> authList = authMapper.selectAndList(options);
-        if(CollectionUtils.isEmpty(authList)){
-            throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
+        try {
+            Auth options = new Auth();
+            options.setUserId(curUser().getId());
+            options.setAuthType(registerForm.getAuthType());
+            List<Auth> authList = authMapper.selectAndList(options);
+            if (CollectionUtils.isEmpty(authList)) {
+                throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
+            }
+
+            Auth auth = authList.get(0);
+            auth.setVerified(Bool.TRUE);
+            auth.setUpdateTime(new Date());
+            authMapper.updateByPrimaryKeySelective(auth);
+
+            User user = userMapper.selectByPrimaryKey(curUser().getId());
+            user.setEmail(registerForm.getEmail());
+            user.setSubscribeFlag(registerForm.getSubscribeFlag());
+            setUserPassword(user, registerForm.getPassword());
+            user.setUpdateTime(new Date());
+            userMapper.updateByPrimaryKeySelective(user);
+
+
+            return new UserVo().asVo(user);
+        } finally {
+            stringRedisTemplate.delete(validCodeKey);
         }
-
-        Auth auth = authList.get(0);
-        auth.setVerified(Bool.TRUE);
-        auth.setUpdateTime(new Date());
-        authMapper.updateByPrimaryKeySelective(auth);
-
-        User user = userMapper.selectByPrimaryKey(curUser().getId());
-        user.setEmail(registerForm.getEmail());
-        user.setSubscribeFlag(registerForm.getSubscribeFlag());
-        setUserPassword(user, registerForm.getPassword());
-        user.setUpdateTime(new Date());
-        userMapper.updateByPrimaryKeySelective(user);
-
-        stringRedisTemplate.delete(validCodeKey);
-        return new UserVo().asVo(user);
     }
 
     /**
@@ -153,8 +161,9 @@ public class AuthService extends BaseService{
         if (!org.apache.commons.lang3.StringUtils.equals(encodePass, user.getPassword())) {
             throw new ServiceException(message("login.validate.fail"));
         }
-        UserVo loginUser = new UserVo().asVo(user);
-        saveUserToken(loginUser);
+        saveUserToken(user);
+        UserVo loginUser =  new UserVo().asVo(user);
+        loginUser.setToken(user.getToken());
         return loginUser;
     }
 
@@ -165,13 +174,13 @@ public class AuthService extends BaseService{
      * @param resetPwdForm
      */
     @SysLog
-    public void resetPassword(ResetPwdForm resetPwdForm){
+    public void resetPassword(ResetPwdForm resetPwdForm) {
         User user = userMapper.selectByEmail(resetPwdForm.getEmail());
-        if(user == null){
+        if (user == null) {
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
         final String emailValidCode = stringRedisTemplate.opsForValue().get(RedisKeys.VALIDATE_EMAIL_PREFIX + resetPwdForm.getEmail());
-        if(StringUtils.isEmpty(emailValidCode) || !emailValidCode.equals(resetPwdForm.getValidCode())){
+        if (StringUtils.isEmpty(emailValidCode) || !emailValidCode.equals(resetPwdForm.getValidCode())) {
             throw new ServiceException(message("activate.email.expired"));
         }
 
@@ -182,23 +191,24 @@ public class AuthService extends BaseService{
 
     /**
      * 第三方登录
+     *
      * @return 返回跳转的链接
      */
     @Transactional
-    public String thirdPartLogin(AuthUser authUser){
+    public String thirdPartLogin(AuthUser authUser) {
         final String lockKey = String.format("%s::%s", authUser.getSource(), authUser.getUuid());
         final String lock = stringRedisTemplate.opsForValue().getAndSet(lockKey, "lock");
-        if(StringUtils.isNotEmpty(lock)){
+        if (StringUtils.isNotEmpty(lock)) {
             return null;
         }
 
-        try{
-            if("WECHAT_OPEN".equalsIgnoreCase(authUser.getSource())){
+        try {
+            if ("WECHAT_OPEN".equalsIgnoreCase(authUser.getSource())) {
                 return handleWechatOpenLogin(authUser);
-            }else if("GOOGLE".equalsIgnoreCase(authUser.getSource())){
+            } else if ("GOOGLE".equalsIgnoreCase(authUser.getSource())) {
 
             }
-        }finally {
+        } finally {
             stringRedisTemplate.delete(lockKey);
         }
 
@@ -220,7 +230,7 @@ public class AuthService extends BaseService{
      * @param registerForm
      * @return
      */
-    private User newUser(RegisterForm registerForm){
+    private User newUser(RegisterForm registerForm) {
         User user = new User();
         user.setId(AppUtils.nextId());
         user.setEmail(registerForm.getEmail());
@@ -240,7 +250,7 @@ public class AuthService extends BaseService{
         return user;
     }
 
-    private void checkRepeatEmail(String email){
+    private void checkRepeatEmail(String email) {
         User user = userMapper.selectByEmail(email);
         if (user != null) {
             throw new ServiceException(message("register.email.repeat"));
@@ -249,16 +259,17 @@ public class AuthService extends BaseService{
 
     /**
      * 设置用户密码
+     *
      * @param user
      * @param password
      */
-    private void setUserPassword(User user, String password){
+    private void setUserPassword(User user, String password) {
         user.setSalt(RandomStringUtils.randomAlphanumeric(40));
         final String encodePass = encodePassword(password, user.getSalt());
         user.setPassword(encodePass);
     }
 
-    private String encodePassword(String password, String salt){
+    private String encodePassword(String password, String salt) {
         return DigestUtils.sha256Hex(password + salt);
     }
 
@@ -267,10 +278,13 @@ public class AuthService extends BaseService{
      *
      * @param loginUser
      */
-    private void saveUserToken(UserVo loginUser) {
+    private void saveUserToken(User loginUser) {
         final String token = loginUser.getId() + RandomStringUtils.randomAlphanumeric(20);
         loginUser.setToken(token);
         stringRedisTemplate.opsForValue().set(token, JSON.toJSONString(loginUser), TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
+
+        //把token写入数据库
+        userMapper.updateByPrimaryKeySelective(loginUser);
 
         LoginLog loginLog = new LoginLog();
         loginLog.setIp(RequestUtils.getClientIP(AppUtils.request()));
@@ -278,7 +292,7 @@ public class AuthService extends BaseService{
         loginLogMapper.insertSelective(loginLog);
     }
 
-    private String handleWechatOpenLogin(AuthUser authUser){
+    private String handleWechatOpenLogin(AuthUser authUser) {
         String redirectUrl = "";
         Auth options = new Auth();
         options.setAuthType(AuthType.WECHAT_OPEN.value);
@@ -286,15 +300,15 @@ public class AuthService extends BaseService{
         options.setOpenId(authUser.getToken().getOpenId());
         List<Auth> authList = authMapper.selectAndList(options);
         User user;
-        if(CollectionUtils.isEmpty(authList)){
+        if (CollectionUtils.isEmpty(authList)) {
             RegisterForm registerForm = new RegisterForm();
             // 一个临时的唯一email 和 无意义的密码
-            registerForm.setEmail(UUID.randomUUID().toString()+"@myworldelite.com");
+            registerForm.setEmail(UUID.randomUUID().toString() + "@myworldelite.com");
             registerForm.setPassword(RandomStringUtils.random(20));
             registerForm.setUserType(UserType.GENERAL.value);
             registerForm.setName(authUser.getUsername());
-            registerForm.setGender(authUser.getGender() == AuthUserGender.MALE? Gender.MALE.value: Gender.FEMALE.value);
-            user  = newUser(registerForm);
+            registerForm.setGender(authUser.getGender() == AuthUserGender.MALE ? Gender.MALE.value : Gender.FEMALE.value);
+            user = newUser(registerForm);
 
             Auth auth = options;
             auth.setUserId(user.getId());
@@ -303,20 +317,31 @@ public class AuthService extends BaseService{
 
             // 跳转绑定账号
             redirectUrl = "bind-account";
-        }else{
+        } else {
             Auth auth = authList.get(0);
             user = userMapper.selectByPrimaryKey(auth.getUserId());
 
-            if(auth.getVerified() == Bool.FALSE){
+            if (auth.getVerified() == Bool.FALSE) {
                 redirectUrl = "bind-account";
-            }else{
+            } else {
                 redirectUrl = "/";
             }
         }
 
-        UserVo loginUser = new UserVo().asVo(user);
-        saveUserToken(loginUser);
+        saveUserToken(user);
 
-        return  AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, loginUser.getToken(), AuthType.WECHAT_OPEN.value));
+        return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.WECHAT_OPEN.value));
+    }
+
+    /**
+     * 更新登录用户的状态信息
+     *
+     * @param user
+     */
+    void updateLoginUserInfo(User user) {
+        if (user != null && StringUtils.isNotEmpty(user.getToken())) {
+            UserVo loginUser = new UserVo().asVo(user);
+            stringRedisTemplate.opsForValue().set(user.getToken(), JSON.toJSONString(loginUser), TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
+        }
     }
 }

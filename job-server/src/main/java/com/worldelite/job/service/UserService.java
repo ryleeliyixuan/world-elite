@@ -58,6 +58,9 @@ public class UserService extends BaseService {
     @Autowired
     private CompanyVerificationService companyVerificationService;
 
+    @Autowired
+    private AuthService authService;
+
     /**
      * 获取用户信息
      *
@@ -87,6 +90,7 @@ public class UserService extends BaseService {
             user.setStatus(userForm.getStatus());
             user.setUpdateTime(new Date());
             userMapper.updateByPrimaryKeySelective(user);
+            authService.updateLoginUserInfo(user);
         }
     }
 

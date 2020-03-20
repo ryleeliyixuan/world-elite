@@ -5,6 +5,9 @@ import { getToken } from '@/utils/auth'
 import Toast from '@/utils/toast'
 import {curRelativePath} from '@/utils/common'
 
+// allow cookie
+axios.defaults.withCredentials = true;
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -46,16 +49,16 @@ service.interceptors.response.use(
     const res = response.data
 
     if (res.code !== 0) {
-
-      Toast.error(res.msg);
-
       if (res.code === 402) {
+        Toast.error(res.msg);
         // to re-login
         store.dispatch('user/LOGOUT').then(() => {
           router.push({path: '/login', query: {redirect: curRelativePath()}})
         });
       }else if(res.code === 405){
          router.push({path: '/verify-status'})
+      }else{
+        Toast.error(res.msg);
       }
       return Promise.reject(new Error(res.msg || 'Error'))
     } else {

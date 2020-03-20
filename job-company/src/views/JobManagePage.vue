@@ -32,7 +32,7 @@
             <h5>{{job.name}}</h5>
             <div
               class="text-gray pt-2 pb-2"
-            >{{job.city.name}} / {{job.minDegree.name}} / {{job.minSalary}}-{{job.maxSalary}}K</div>
+            >{{job.city?job.city.name:''}} / {{job.minDegree?job.minDegree.name:'不限学历'}} / {{job.minSalary}}-{{job.maxSalary}}K</div>
             <div class="text-small">发布时间：{{job.time}}</div>
           </el-col>
           <el-col :span="3" class="text-center">
