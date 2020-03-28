@@ -5,15 +5,35 @@
       <b-row align-h="center">
         <b-form @submit="onSubmit" @reset="onReset" class="register-form">
           <b-input-group class="mt-4">
-            <b-form-input size="lg" v-model="form.email" type="email" required :placeholder="$t('login_email')"></b-form-input>
+            <b-form-input
+              size="lg"
+              v-model="form.email"
+              type="email"
+              required
+              :placeholder="$t('login_email')"
+            ></b-form-input>
           </b-input-group>
           <b-input-group class="mt-4">
-            <b-form-input size="lg" v-model="form.validCode" required :placeholder="$t('email_valid_code')"></b-form-input>
+            <b-form-input
+              size="lg"
+              v-model="form.validCode"
+              required
+              :placeholder="$t('email_valid_code')"
+            ></b-form-input>
             <b-input-group-append>
-              <b-button size="lg" variant="info" v-on:click="recieveEmailCode">{{$t('get_valid_code')}}</b-button>
+              <b-button
+                size="lg"
+                variant="info"
+                v-on:click="recieveEmailCode"
+              >{{$t('get_valid_code')}}</b-button>
             </b-input-group-append>
           </b-input-group>
-          <el-alert class="mt-2" :title="$t('email_block_tip')" type="warning" v-if="showEmailBlockTip"></el-alert>
+          <el-alert
+            class="mt-2"
+            :title="$t('email_block_tip')"
+            type="warning"
+            v-if="showEmailBlockTip"
+          ></el-alert>
           <b-input-group class="mt-4">
             <b-form-input
               size="lg"
@@ -24,7 +44,12 @@
               :placeholder="$t('login_password')"
             ></b-form-input>
           </b-input-group>
-          <el-alert class="mt-2" :title="$t('password_rule')" type="warning" v-if="showPasswordRuleTip"></el-alert>
+          <el-alert
+            class="mt-2"
+            :title="$t('password_rule')"
+            type="warning"
+            v-if="showPasswordRuleTip"
+          ></el-alert>
           <p class="mt-4 mb-4 text-policy">点击“同意并加入”，即表示您同意遵守WorldElite的《用户协议》、《隐私政策》及《Cookie 政策》。</p>
           <b-button
             block
@@ -44,7 +69,7 @@
 </template>
 
 <script>
-import { getEmailCode } from "@/api/user_api";
+import { getEmailCode, checkEmailExists } from "@/api/auth_api";
 import Toast from "@/utils/toast";
 
 export default {
@@ -75,9 +100,11 @@ export default {
         Toast.error("请先填写邮箱");
         return;
       }
-      getEmailCode(this.form.email).then(() => {
-        Toast.success("已发送，请登录邮箱查看");
-        this.showEmailBlockTip = true;
+      checkEmailExists(this.form.email).then(() => {
+        getEmailCode(this.form.email).then(() => {
+          Toast.success("已发送，请登录邮箱查看");
+          this.showEmailBlockTip = true;
+        });
       });
     },
     onReset(evt) {

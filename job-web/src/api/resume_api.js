@@ -94,3 +94,11 @@ export function getResumeDetail(id) {
     params: { id: id }
   })
 }
+
+export function delResumeAttachment(resumeId){
+  return request({
+    url: '/resume/del-resume-attachment',
+    method: 'post',
+    params: { resumeId: resumeId }
+  })
+}

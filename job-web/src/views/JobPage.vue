@@ -55,16 +55,16 @@
         </div>
       </b-col>
       <b-col cols="4" v-if="job.companyUser && job.companyUser.company">
-        <b-link :to="`/company/${job.companyUser.company.id}`">
+        <el-link :href="`/company/${job.companyUser.company.id}`" :underline="false">
           <b-row no-gutters align-v="end">
             <b-col cols="4">
               <b-img :src="job.companyUser.company.logo" class="w-100"></b-img>
             </b-col>
             <b-col class="ml-2">
-              <div class="company-text text-muted">{{job.companyUser.company.name}}</div>
+              <div class="company-text">{{job.companyUser.company.name}}</div>
             </b-col>
           </b-row>
-        </b-link>
+        </el-link>
         <div v-if="job.companyUser.company.industry" class="text-gray text-small mt-4">
           <i class="el-icon-menu mr-2"></i>
           {{job.companyUser.company.industry.name}}

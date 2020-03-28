@@ -92,6 +92,18 @@ public class ResumeApi extends BaseApi {
     }
 
     /**
+     * 删除附件简历
+     *
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("del-resume-attachment")
+    public ApiResult delResumeAttachment(@RequestParam Long resumeId){
+        resumeService.delResumeAttachment(resumeId);
+        return ApiResult.ok();
+    }
+
+    /**
      * 保存教育经历
      *
      * @param resumeEduForm

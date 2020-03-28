@@ -260,7 +260,9 @@
                   >/</span>
                 </span>
               </p>
-              <p v-if="resume.userExpectJob.minSalary">{{resume.userExpectJob.minSalary}}K ~ {{resume.userExpectJob.maxSalary}}K</p>
+              <p
+                v-if="resume.userExpectJob.minSalary"
+              >{{resume.userExpectJob.minSalary}}K ~ {{resume.userExpectJob.maxSalary}}K</p>
             </div>
           </div>
           <div class="resume-attachment resume-right-box">
@@ -278,7 +280,14 @@
               <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
               <div slot="tip" class="el-upload__tip">大小不超过5Mb</div>
             </el-upload>
-            <el-link v-if="resume.attachResume" :href="resume.attachResume" type="primary" icon="el-icon-link">下载附件简历</el-link>
+            <div v-if="resume.attachResume">
+              <el-link
+                :href="resume.attachResume"
+                type="primary"
+                icon="el-icon-link"
+              >下载附件简历</el-link>
+              <el-link type="danger" class="ml-4" @click="onDelResumeAttachClick"><i class="el-icon-delete"></i> 删除</el-link>
+            </div>
           </div>
           <div class="resume-preview resume-right-box">
             <p>简历完成度</p>
@@ -313,7 +322,13 @@
     <el-dialog title="编辑基本信息" :visible.sync="showBasicDialog" width="600px" top="10vh">
       <el-form ref="resumeForm" :model="resumeForm" :rules="resumeFormRules" label-width="80px">
         <el-form-item label="姓名" prop="name">
-          <el-input v-model="resumeForm.name" class="m-input-text-width" placeholder="你的真实姓名" maxlength="20" show-word-limit></el-input>
+          <el-input
+            v-model="resumeForm.name"
+            class="m-input-text-width"
+            placeholder="你的真实姓名"
+            maxlength="20"
+            show-word-limit
+          ></el-input>
         </el-form-item>
         <el-form-item label="生日" prop="birth">
           <el-date-picker
@@ -687,7 +702,8 @@ import {
   delResumePractice,
   saveResumeSkills,
   saveResumeLink,
-  delResumeLink
+  delResumeLink,
+  delResumeAttachment
 } from "@/api/resume_api";
 import { searchSchool } from "@/api/school_api";
 import { listByType } from "@/api/dict_api";
@@ -925,8 +941,8 @@ export default {
       maxSalaryOptions: [],
       newSkillTag: "",
       skillTagListForm: [],
-      oldDatePickerOptions:{
-        disabledDate(time){
+      oldDatePickerOptions: {
+        disabledDate(time) {
           return time.getTime() >= Date.now() - 8.64e7;
         }
       }
@@ -1007,8 +1023,8 @@ export default {
       this.resume.avatar = this.uploadPicOptions.fileUrl;
       this.handleSaveResumeBasic(false);
     },
-    beforeAttachmengUpload(file){
-       return new Promise((resolve, reject) => {
+    beforeAttachmengUpload(file) {
+      return new Promise((resolve, reject) => {
         if (checkAttachmentSize(file)) {
           reject();
         } else {
@@ -1026,7 +1042,7 @@ export default {
         }
       });
     },
-    handleUploadAttachmengSuccess(){
+    handleUploadAttachmengSuccess() {
       this.resumeForm.attachResume = this.uploadAttachmentOptions.fileUrl;
       this.resume.attachResume = this.uploadAttachmentOptions.fileUrl;
       this.handleSaveResumeBasic(false);
@@ -1227,6 +1243,7 @@ export default {
           this.showBasicDialog = false;
           this.showIntroDialog = false;
           this.getResumeInfo();
+          Toast.success("保存成功");
         })
         .finally(() => {
           this.posting = false;
@@ -1410,6 +1427,15 @@ export default {
     },
     onChangeEmailClick() {
       this.$router.push("/modify-email");
+    },
+    onDelResumeAttachClick(){
+       this.$confirm("是否要删除附件简历？", {
+        confirmButtonText: "删除"
+      }).then(() => {
+         delResumeAttachment(this.resume.id).then(()=>{
+             this.getResumeInfo();
+         })
+      });
     }
   }
 };
@@ -1493,7 +1519,6 @@ $border-style: 1px solid #eee;
 .m-input-text-width {
   width: 220px;
 }
-
 </style>
 
 <style lang="scss">

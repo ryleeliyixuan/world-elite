@@ -16,6 +16,14 @@ export function register(data) {
       })
 }
 
+export function checkEmailExists(email){
+  return request({
+    url: '/auth/check-email',
+    method: 'get',
+    params: {email: email}
+  })
+}
+
 export function login(data){
     return request({
         url: '/auth/email-login',

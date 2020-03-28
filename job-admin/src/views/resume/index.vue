@@ -370,7 +370,7 @@ export default {
       const query = this.$route.query;
       parseListQuery(query, this.listQuery);
       if (query.gender) {
-        this.listQuery.gender = parseInt(querygender);
+        this.listQuery.gender = parseInt(query.gender);
       }
       if (query.gpaRangeId) {
         this.listQuery.gpaRangeId = parseInt(query.gpaRangeId);

@@ -1,13 +1,16 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSON;
 import com.worldelite.job.context.config.DomainConfig;
 import com.worldelite.job.entity.Download;
 import com.worldelite.job.entity.Resume;
+import com.worldelite.job.entity.User;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.IExportable;
 import com.worldelite.job.form.UserListForm;
 import com.worldelite.job.mapper.ResumeMapper;
+import com.worldelite.job.mapper.UserMapper;
 import com.worldelite.job.mq.ExportMessage;
 import com.worldelite.job.mq.ExportTaskHandler;
 import com.worldelite.job.service.excel.IExportExcelService;
@@ -39,6 +42,9 @@ public class ExportService extends BaseService {
     private ResumeMapper resumeMapper;
 
     @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
     private DownloadService downloadService;
 
     @Autowired
@@ -58,13 +64,16 @@ public class ExportService extends BaseService {
         if(resume == null){
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
+        User loginUser = userMapper.selectByPrimaryKey(curUser().getId());
         final String resumeTplUrl = String.format("%s/resume/%s?_token=%s",
-                domainConfig.getLocalHost(), resumeId, curUser().getToken());
+                domainConfig.getLocalHost(), resumeId, loginUser.getToken());
+        File resumePdfFile = null;
         try {
-            File resumePdfFile = fileService.getFile(UUID.randomUUID().toString() + ".pdf");
+            resumePdfFile = fileService.getFile(UUID.randomUUID().toString() + ".pdf");
             Runtime.getRuntime().exec(String.format("wkhtmltopdf %s %s", resumeTplUrl, resumePdfFile.getAbsolutePath()));
             return resumePdfFile.getName();
         } catch (Exception ex) {
+            FileUtil.del(resumePdfFile);
             log.error("导出简历失败:" + resumeId, ex);
             throw new ServiceException(message("export.resume.fail"));
         }

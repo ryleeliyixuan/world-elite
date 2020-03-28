@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { getEmailCode } from "@/api/user_api";
+import { getEmailCode, checkEmailExists } from "@/api/user_api";
 import Toast from "@/utils/toast";
 
 export default {
@@ -81,9 +81,11 @@ export default {
         Toast.error("请先填写邮箱");
         return;
       }
-      getEmailCode(this.form.email).then(() => {
-        this.showEmailBlockTip = true;
-        Toast.success("已发送，请登录邮箱查看");
+      checkEmailExists(this.form.email).then(() => {
+        getEmailCode(this.form.email).then(() => {
+          Toast.success("已发送，请登录邮箱查看");
+          this.showEmailBlockTip = true;
+        });
       });
     },
     onReset(evt) {

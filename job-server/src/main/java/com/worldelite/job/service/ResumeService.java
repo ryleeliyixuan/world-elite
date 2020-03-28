@@ -278,6 +278,20 @@ public class ResumeService extends BaseService {
     }
 
     /**
+     * 删除附件简历
+     *
+     * @param resumeId
+     */
+    public void delResumeAttachment(Long resumeId){
+        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
+        if(resume != null){
+            checkResumeCreator(resume);
+            resume.setAttachResume("");
+            resumeMapper.updateByPrimaryKey(resume);
+        }
+    }
+
+    /**
      * 获取需要处理的简历列表
      *
      * @param listForm

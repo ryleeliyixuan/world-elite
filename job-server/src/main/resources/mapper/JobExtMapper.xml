@@ -36,6 +36,7 @@
       <if test="status != null">
         and status = #{status,jdbcType=TINYINT}
       </if>
+        and del_flag = 0
     </where>
   </select>
 </mapper>

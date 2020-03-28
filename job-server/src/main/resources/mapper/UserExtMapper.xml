@@ -12,8 +12,11 @@
     <include refid="Base_Column_List" />
     from t_user
     <where>
+      <if test="id != null">
+        and id  like CONCAT('%', #{id},'%')
+      </if>
       <if test="name != null and name != ''">
-        and name = #{name,jdbcType=VARCHAR}
+        and name like CONCAT('%', #{name},'%')
       </if>
       <if test="email != null and email != ''">
         and email = #{email,jdbcType=VARCHAR}

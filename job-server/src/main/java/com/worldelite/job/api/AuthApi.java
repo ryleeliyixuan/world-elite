@@ -47,6 +47,17 @@ public class AuthApi extends BaseController {
     }
 
     /**
+     * 检查 email 是否已经被注册
+     * @param email
+     * @return
+     */
+    @GetMapping("check-email")
+    public ApiResult checkEmailExists(@Email String email){
+        authService.checkRepeatEmail(email);
+        return ApiResult.ok();
+    }
+
+    /**
      * 获取邮箱验证码
      * @param email
      * @return

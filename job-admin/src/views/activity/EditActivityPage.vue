@@ -158,9 +158,9 @@ export default {
       }
     },
     handleSave() {
-      this.saveLoading = true;
       this.$refs['activityForm'].validate(valid => {
         if (valid) {
+          this.saveLoading = true;
           saveActivity(this.activityForm).then(() => {
             this.$message("保存成功");
             this.$router.go(-1);

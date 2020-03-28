@@ -5,12 +5,15 @@ import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.DictType;
 import com.worldelite.job.entity.Dict;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.DictForm;
 import com.worldelite.job.form.DictListForm;
 import com.worldelite.job.mapper.DictMapper;
 import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.ApiCode;
 import com.worldelite.job.vo.DictVo;
 import com.worldelite.job.vo.PageResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,8 +70,16 @@ public class DictService extends BaseService{
     public DictVo saveDict(DictForm dictForm){
         Dict dict = dictMapper.selectByPrimaryKey(dictForm.getId());
         if(dict == null){
+            Dict options = new Dict();
+            options.setName(dictForm.getName());
+            options.setType(dictForm.getType());
+            List<Dict> dictList = dictMapper.selectAndList(options);
+            if(CollectionUtils.isNotEmpty(dictList)){
+                throw new ServiceException("参数重复", ApiCode.INVALID_PARAM);
+            }
             dict = new Dict();
         }
+
         dict.setValue(dictForm.getValue());
         dict.setType(dictForm.getType());
         dict.setName(dictForm.getName());

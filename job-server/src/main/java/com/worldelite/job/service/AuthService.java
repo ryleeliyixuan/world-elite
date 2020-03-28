@@ -90,6 +90,7 @@ public class AuthService extends BaseService {
         }
     }
 
+
     /**
      * 绑定第三方账号
      *
@@ -220,7 +221,8 @@ public class AuthService extends BaseService {
      */
     public void logout() {
         if (curUser() != null) {
-            stringRedisTemplate.delete(curUser().getToken());
+            User user  = userMapper.selectByPrimaryKey(curUser().getId());
+            stringRedisTemplate.delete(user.getToken());
         }
     }
 
@@ -250,7 +252,12 @@ public class AuthService extends BaseService {
         return user;
     }
 
-    private void checkRepeatEmail(String email) {
+    /**
+     * 检查email是否已经被注册
+     * @param email
+     * @return
+     */
+    public void checkRepeatEmail(String email) {
         User user = userMapper.selectByEmail(email);
         if (user != null) {
             throw new ServiceException(message("register.email.repeat"));

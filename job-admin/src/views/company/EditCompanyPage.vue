@@ -98,7 +98,7 @@
       </el-col>
       <el-col :span="6">
         <div class="preview-box">
-          <el-button type="primary" style="margin-bottom: 20px">查看主页</el-button>
+          <el-button type="primary" style="margin-bottom: 20px" @click="goCompanyHome">查看主页</el-button>
           <p>公司主页完成度</p>
           <el-progress
             :text-inside="true"
@@ -548,6 +548,9 @@ export default {
         };
         this.poiMapMarker.position = [center.lng, center.lat];
       }
+    },
+    goCompanyHome(){
+      window.open(`${process.env.VUE_APP_WEB_HOST}/company/${this.company.id}`)
     }
   }
 };

@@ -15,10 +15,10 @@
         from t_resume
         <where>
             <if test="userId != null">
-                and user_id = #{userId,jdbcType=BIGINT}
+                and user_id like CONCAT('%', #{userId},'%')
             </if>
             <if test="name != null and name != ''">
-                and name = #{name,jdbcType=VARCHAR}
+                and name like CONCAT('%', #{name},'%')
             </if>
             <if test="gender != null">
                 and gender = #{gender,jdbcType=TINYINT}

@@ -319,6 +319,7 @@ public class JobService extends BaseService {
 
         // 被管理员强制下架，记录原因，并发送消息
         if(curUser().getType() == UserType.ADMIN.value){
+            job.setDelFlag(Bool.TRUE); // 管理员下架则直接删除
             job.setRemark(reason);
 
             Message message = new Message();
