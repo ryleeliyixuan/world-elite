@@ -207,7 +207,7 @@ public class AuthService extends BaseService {
             if ("WECHAT_OPEN".equalsIgnoreCase(authUser.getSource())) {
                 return handleWechatOpenLogin(authUser);
             } else if ("GOOGLE".equalsIgnoreCase(authUser.getSource())) {
-
+                return handleGoogleLogin(authUser);
             }
         } finally {
             stringRedisTemplate.delete(lockKey);
@@ -222,7 +222,9 @@ public class AuthService extends BaseService {
     public void logout() {
         if (curUser() != null) {
             User user  = userMapper.selectByPrimaryKey(curUser().getId());
-            stringRedisTemplate.delete(user.getToken());
+            if(user != null){
+                stringRedisTemplate.delete(user.getToken());
+            }
         }
     }
 
@@ -299,6 +301,11 @@ public class AuthService extends BaseService {
         loginLogMapper.insertSelective(loginLog);
     }
 
+    /**
+     * 处理微信开放平台登录
+     * @param authUser
+     * @return
+     */
     private String handleWechatOpenLogin(AuthUser authUser) {
         String redirectUrl = "";
         Auth options = new Auth();
@@ -338,6 +345,64 @@ public class AuthService extends BaseService {
         saveUserToken(user);
 
         return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.WECHAT_OPEN.value));
+    }
+
+    /**
+     * 处理谷歌登录
+     *
+     * @param authUser
+     * @return
+     */
+    private String handleGoogleLogin(AuthUser authUser){
+        String redirectUrl = "";
+        Auth options = new Auth();
+        options.setAuthType(AuthType.GOOGLE.value);
+        options.setAuthId(authUser.getUuid());
+        List<Auth> authList = authMapper.selectAndList(options);
+        User user;
+        if (CollectionUtils.isEmpty(authList)) {
+            RegisterForm registerForm = new RegisterForm();
+            registerForm.setUserType(UserType.GENERAL.value);
+            registerForm.setName(authUser.getNickname());
+
+            if(StringUtils.isNotEmpty(authUser.getEmail())){
+                if(userMapper.selectByEmail(authUser.getEmail()) == null){
+                    registerForm.setEmail(authUser.getEmail());
+                }
+            }
+
+            if(StringUtils.isEmpty(registerForm.getEmail())){
+                registerForm.setEmail(UUID.randomUUID().toString() + "@myworldelite.com");
+            }
+
+            registerForm.setPassword(RandomStringUtils.random(20));
+            if(authUser.getGender() != null){
+                registerForm.setGender(authUser.getGender() == AuthUserGender.MALE ? Gender.MALE.value : Gender.FEMALE.value);
+            }
+            user = newUser(registerForm);
+
+            Auth auth = options;
+            auth.setOpenId(authUser.getUuid());
+            auth.setUserId(user.getId());
+            auth.setVerified(Bool.FALSE); //绑定邮箱后解除
+            authMapper.insertSelective(auth);
+
+            // 跳转绑定账号
+            redirectUrl = "bind-account";
+        } else {
+            Auth auth = authList.get(0);
+            user = userMapper.selectByPrimaryKey(auth.getUserId());
+
+            if (auth.getVerified() == Bool.FALSE) {
+                redirectUrl = "bind-account";
+            } else {
+                redirectUrl = "/";
+            }
+        }
+
+        saveUserToken(user);
+
+        return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.GOOGLE.value));
     }
 
     /**

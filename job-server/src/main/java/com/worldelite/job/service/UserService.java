@@ -69,7 +69,7 @@ public class UserService extends BaseService {
      */
     public UserVo getUserInfo(Long id) {
         User user = userMapper.selectByPrimaryKey(id);
-        return new UserVo().asVo(user);
+        return user == null ? null: new UserVo().asVo(user);
     }
 
     /**
