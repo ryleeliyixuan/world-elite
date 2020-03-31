@@ -27,3 +27,20 @@ INSERT INTO `db_worldelite`.`t_dict` (`name`, `type`, `value`) VALUES ('4.0-5.0'
 
 ALTER TABLE `db_worldelite`.`t_login_log`
 CHANGE COLUMN `ip` `ip` VARCHAR(64) NOT NULL ;
+
+# 3-30
+
+CREATE TABLE `db_worldelite`.`t_recommend` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `object_id` BIGINT NOT NULL DEFAULT 0,
+  `object_type` TINYINT NOT NULL DEFAULT 0,
+  `position` INT NOT NULL DEFAULT 0,
+  `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`))
+COMMENT = '推荐表';
+
+# 3-31
+
+ALTER TABLE `db_worldelite`.`t_company`
+ADD COLUMN `synopsis` VARCHAR(150) NOT NULL DEFAULT '' COMMENT '一句话介绍' AFTER `homepage`;

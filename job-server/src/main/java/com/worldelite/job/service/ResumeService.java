@@ -167,9 +167,11 @@ public class ResumeService extends BaseService {
             }
 
             UserVo userVo = userService.getUserInfo(resume.getUserId());
-            resumeVo.setEmail(userVo.getEmail());
-            resumeVo.setPhone(userVo.getPhone());
-            resumeVo.setPhoneCode(userVo.getPhoneCode());
+            if(userVo != null){
+                resumeVo.setEmail(userVo.getEmail());
+                resumeVo.setPhone(userVo.getPhone());
+                resumeVo.setPhoneCode(userVo.getPhoneCode());
+            }
 
             resumeVo.setUserExpectJob(userExpectJobService.getUserExpectJob(resume.getUserId()));
 

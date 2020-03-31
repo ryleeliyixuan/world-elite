@@ -1,6 +1,6 @@
 <template>
   <div class="app-padding app-container">
-    <b-media class="mt-4" vertical-align="center">
+    <b-media class="mt-4" vertical-align="center" v-if="company">
       <template v-slot:aside>
         <b-img :src="company.logo" width="100" :alt="company.fullName" v-if="company.logo"></b-img>
         <b-img blank blank-color="#ccc" width="100" v-else></b-img>
@@ -120,7 +120,7 @@ export default {
   data() {
     return {
       companyId: undefined,
-      company: {},
+      company: undefined,
       total: 0,
       jobPage: {},
       tabIndex: "intro",

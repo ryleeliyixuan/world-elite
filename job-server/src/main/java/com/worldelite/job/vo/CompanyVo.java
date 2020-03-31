@@ -25,6 +25,8 @@ public class CompanyVo implements VoConvertable<CompanyVo, Company>{
     @ResumeScore
     private String introduction;
 
+    private String synopsis;
+
     @ResumeScore
     private DictVo scale;
     @ResumeScore
@@ -47,6 +49,7 @@ public class CompanyVo implements VoConvertable<CompanyVo, Company>{
         setName(company.getName());
         setFullName(company.getFullName());
         setLogo(AppUtils.absOssUrl(company.getLogo()));
+        setSynopsis(company.getSynopsis());
         setHomepage(company.getHomepage());
         setIntroduction(company.getIntroduction());
         return this;

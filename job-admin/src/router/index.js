@@ -141,6 +141,24 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/recommend',
+    component: Layout,
+    meta: { title: '推荐管理', icon: 'recommend' },
+    redirect: '/recommend/job',
+    children: [
+      {
+        path: 'job',
+        meta: { title: '推荐职位' },
+        component: () => import('@/views/recommend/RecommendJobPage')
+      },
+      {
+        path: 'company',
+        meta: { title: '推荐企业' },
+        component: () => import('@/views/recommend/RecommendCompanyPage')
+      }
+    ]
+  },
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true

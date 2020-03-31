@@ -198,6 +198,9 @@ public class CompanyService extends BaseService{
         if(StringUtils.isNotEmpty(companyForm.getIntroduction())){
             company.setIntroduction(companyForm.getIntroduction());
         }
+        if(StringUtils.isNotEmpty(companyForm.getSynopsis())){
+            company.setSynopsis(companyForm.getSynopsis());
+        }
         if(company.getId() == null){
             company.setId(AppUtils.nextId());
             companyMapper.insertSelective(company);

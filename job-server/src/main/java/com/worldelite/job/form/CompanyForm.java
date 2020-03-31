@@ -26,20 +26,22 @@ public class CompanyForm {
     private Integer propertyId;
     private String homepage;
     private String introduction;
+    private String synopsis;
 
-    public String getName() {
-        return FormUtils.removeAllHtmlTag(name);
+
+    public void setName(String name) {
+        this.name = FormUtils.removeAllHtmlTag(name);
     }
 
-    public String getFullName() {
-        return FormUtils.removeAllHtmlTag(fullName);
+    public void setFullName(String fullName) {
+        this.fullName = FormUtils.removeAllHtmlTag(fullName);
     }
 
-    public String getHomepage() {
-        return FormUtils.removeAllHtmlTag(homepage);
+    public void setIntroduction(String introduction) {
+        this.introduction = FormUtils.safeHtml(introduction);
     }
 
-    public String getIntroduction() {
-        return FormUtils.safeHtml(introduction);
+    public void setSynopsis(String synopsis) {
+        this.synopsis = FormUtils.removeAllHtmlTag(synopsis);
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <b-row align-v="center">
+    <b-row align-v="center" v-if="job">
       <b-col>
         <div
           class="text-gray text-small"
@@ -12,7 +12,7 @@
             class="text-danger ml-4 salary-text"
           >{{`${job.minSalary}K - ${job.maxSalary}K`}}{{job.salaryMonths? ` × ${job.salaryMonths}个月` : ''}}</span>
         </h2>
-        <div class="mt-2">{{job.city.name}} / {{job.minDegree.name}} / {{job.jobType.name}}</div>
+        <div class="mt-2">{{job.city? job.city.name: ''}} / {{job.minDegree? job.minDegree.name: ''}} / {{job.jobType? job.jobType.name: ''}}</div>
         <div class="mt-2 text-gray text-small">{{job.time}}</div>
       </b-col>
       <b-col cols="4">
@@ -69,7 +69,7 @@
           <i class="el-icon-menu mr-2"></i>
           {{job.companyUser.company.industry.name}}
         </div>
-        <div v-if="job.companyUser.company.stage" class="text-gray text-small mt-2">
+        <div v-if="job.companyUser.company.stage && job.companyUser.company.property" class="text-gray text-small mt-2">
           <i class="el-icon-collection-tag mr-2"></i>
           {{job.companyUser.company.property.name}} . {{job.companyUser.company.stage.name}}
         </div>
@@ -123,7 +123,7 @@ export default {
   name: "JobPage",
   data() {
     return {
-      job: {},
+      job: undefined,
       favoriteForm: {
         objectId: undefined,
         type: 1,

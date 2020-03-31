@@ -44,6 +44,7 @@
               <span class="ml-4">公司性质：{{company.property?company.property.name:''}}</span>
               <span class="ml-4">公司阶段：{{company.stage?company.stage.name:''}}</span>
             </p>
+            <p>一句话介绍：{{company.synopsis}}</p>
           </div>
           <div class="company-box box-margin">
             <EditResumeTitle
@@ -109,8 +110,8 @@
       </el-col>
     </el-row>
     <!--编辑基本信息-->
-    <el-dialog title="编辑基本信息" :visible.sync="showBasicDialog" width="600px" top="10vh">
-      <el-form ref="companyForm" :model="companyForm" :rules="companyFormRules" label-width="80px">
+    <el-dialog title="编辑基本信息" :visible.sync="showBasicDialog" width="700px" top="10vh">
+      <el-form ref="companyForm" :model="companyForm" :rules="companyFormRules" label-width="100px">
         <el-form-item label="公司简称" prop="name">
           <el-input
             v-model="companyForm.name"
@@ -165,6 +166,14 @@
             v-model="companyForm.homepage"
             placeholder="请填写主页链接"
             :maxlength="100"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="一句话介绍" prop="synopsis">
+          <el-input
+            v-model="companyForm.synopsis"
+            placeholder="一句话介绍"
+            :maxlength="120"
             show-word-limit
           ></el-input>
         </el-form-item>
@@ -283,7 +292,8 @@ export default {
         industryId: undefined,
         propertyId: undefined,
         homepage: undefined,
-        introduction: undefined
+        introduction: undefined,
+        synopsis: undefined
       },
       companyFormRules: {
         name: [{ required: true, message: "请输入公司简称", trigger: "blur" }],
@@ -423,6 +433,7 @@ export default {
           : undefined;
         this.companyForm.homepage = this.company.homepage;
         this.companyForm.introduction = this.company.introduction;
+        this.companyForm.synopsis = this.company.synopsis;
 
         this.companyAddrForm.companyId = this.company.id;
 
