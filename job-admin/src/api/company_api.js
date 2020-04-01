@@ -62,3 +62,19 @@ export function delCompany(id){
     params: {id: id}
   })
 }
+
+export function getCompanyWiki(companyId){
+  return request({
+    url: '/company/get-company-wiki',
+    method: 'get',
+    params: {companyId: companyId}
+  })
+}
+
+export function saveCompanyWiki(data){
+  return request({
+    url: '/company/save-company-wiki',
+    method: 'post',
+    data
+  })
+}

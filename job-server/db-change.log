@@ -44,3 +44,15 @@ COMMENT = '推荐表';
 
 ALTER TABLE `db_worldelite`.`t_company`
 ADD COLUMN `synopsis` VARCHAR(150) NOT NULL DEFAULT '' COMMENT '一句话介绍' AFTER `homepage`;
+
+# 04-01
+
+CREATE TABLE `db_worldelite`.`t_company_wiki` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `company_id` BIGINT NOT NULL DEFAULT 0,
+  `content` LONGTEXT NULL,
+  `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`))
+COMMENT = '企业百科';
+

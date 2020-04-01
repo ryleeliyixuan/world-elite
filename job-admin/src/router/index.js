@@ -77,6 +77,12 @@ export const constantRoutes = [
       hidden: true,
       component: () => import('@/views/company/EditCompanyPage'),
       meta: { title: '编辑企业' }
+    },
+    {
+      path: 'edit-wiki',
+      hidden: true,
+      component: () => import('@/views/company/EditCompanyWiki'),
+      meta: { title: '企业百科' }
     }]
   },
   {
@@ -141,20 +147,24 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/recommend',
+    path: '/config',
     component: Layout,
-    meta: { title: '推荐管理', icon: 'recommend' },
-    redirect: '/recommend/job',
+    meta: { title: '首页设置', icon: 'setting' },
     children: [
       {
-        path: 'job',
-        meta: { title: '推荐职位' },
-        component: () => import('@/views/recommend/RecommendJobPage')
+        path: 'index',
+        meta: { title: '文案配置' },
+        component: () => import('@/views/config/ConfigIndexPage')
       },
       {
-        path: 'company',
+        path: 'recommend-job',
+        meta: { title: '推荐职位' },
+        component: () => import('@/views/config/RecommendJobPage')
+      },
+      {
+        path: 'recommend-company',
         meta: { title: '推荐企业' },
-        component: () => import('@/views/recommend/RecommendCompanyPage')
+        component: () => import('@/views/config/RecommendCompanyPage')
       }
     ]
   },

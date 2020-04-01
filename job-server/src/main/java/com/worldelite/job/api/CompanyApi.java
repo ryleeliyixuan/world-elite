@@ -2,14 +2,13 @@ package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.entity.CompanyWiki;
 import com.worldelite.job.entity.User;
-import com.worldelite.job.form.CompanyAddressForm;
-import com.worldelite.job.form.CompanyForm;
-import com.worldelite.job.form.CompanyListForm;
-import com.worldelite.job.form.CompanyVerifyForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.service.CompanyAddressService;
 import com.worldelite.job.service.CompanyService;
 import com.worldelite.job.service.CompanyVerificationService;
+import com.worldelite.job.service.CompanyWikiService;
 import com.worldelite.job.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +31,10 @@ public class CompanyApi extends BaseApi {
 
     @Autowired
     private CompanyAddressService companyAddressService;
+
+
+    @Autowired
+    private CompanyWikiService companyWikiService;
 
     /**
      * 搜索公司
@@ -157,5 +160,31 @@ public class CompanyApi extends BaseApi {
         Long companyId = Long.valueOf(companyUserVo.getCompany().getId());
         List<CompanyAddressVo> addressVoList = companyAddressService.getCompanyAddressList(companyId);
         return ApiResult.ok(addressVoList);
+    }
+
+
+    /**
+     * 获取公司百科
+     * @param companyId
+     * @return
+     */
+    @RequireLogin
+    @GetMapping("get-company-wiki")
+    public ApiResult getCompanyWiki(@RequestParam Long companyId){
+        CompanyWikiVo companyWikiVo = companyWikiService.getCompanyWiki(companyId);
+        return ApiResult.ok(companyWikiVo);
+    }
+
+    /**
+     * 保存公司百科
+     *
+     * @param wikiForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("save-company-wiki")
+    public ApiResult saveCompanyWiki(@RequestBody CompanyWikiForm  wikiForm){
+        companyWikiService.saveCompanyWiki(wikiForm);
+        return ApiResult.ok();
     }
 }

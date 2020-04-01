@@ -51,6 +51,8 @@ public class CompanyService extends BaseService{
     @Autowired
     private JobService jobService;
 
+    @Autowired
+    private CompanyWikiService companyWikiService;
 
     /**
      * 搜索公司
@@ -127,7 +129,11 @@ public class CompanyService extends BaseService{
         jobListForm.setLimit(3);
         jobListForm.setSort("-id");
         companyVo.setJobList(jobService.getJobList(jobListForm).getList());
-        companyVo.setAddressList(companyAddressService.getCompanyAddressList(Long.valueOf(companyVo.getId())));
+        companyVo.setAddressList(companyAddressService.getCompanyAddressList(companyId));
+        if(curUser() != null){
+            CompanyWikiVo companyWikiVo = companyWikiService.getCompanyWiki(companyId);
+            companyVo.setCompanyWiki(companyWikiVo != null ? companyWikiVo.getContent(): null);
+        }
         return companyVo;
     }
 

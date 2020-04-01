@@ -43,6 +43,8 @@ public class CompanyVo implements VoConvertable<CompanyVo, Company>{
 
     private int completeProgress;
 
+    private String companyWiki;
+
     @Override
     public CompanyVo asVo(Company company) {
         setId(String.valueOf(company.getId()));

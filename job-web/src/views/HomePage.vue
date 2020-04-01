@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <div class="intro-box">
-      <b-img :src="picUrl" class="app-bg-img"></b-img>
+      <b-img :src="homeConfig.picUrl" class="app-bg-img"></b-img>
       <div class="slogon-box">
-        <h1 class="slogon">留学生专属招聘平台</h1>
-        <p class="slogon-description mt-2">轻松找到心仪的国内工作和实习机会</p>
-        <el-button type="primary" round class="button-join" @click="handleJoin">马上加入</el-button>
+        <h1 class="slogon">{{homeConfig.mainTitle}}</h1>
+        <p class="slogon-description mt-2">{{homeConfig.subTitle}}</p>
+        <el-button type="primary" round class="button-join" @click="handleJoin" v-if="token === undefined || token == ''">马上加入</el-button>
       </div>
     </div>
     <div class="content-box">
@@ -96,18 +96,22 @@
 
 <script>
 import { getRecommendList } from "@/api/recommend_api";
+import { getHomeConfig } from '@/api/config_api'
+import { mapGetters } from "vuex";
 
 export default {
   name: "HomePage",
   created() {
     this.initData();
   },
+  computed: {
+    ...mapGetters(["token"])
+  },
   data() {
     return {
       recommendJobList: [],
       recommendCompanyList: [],
-      picUrl:
-        "http://worldelite-debug.oss-cn-shanghai.aliyuncs.com/static/home-ad.svg"
+      homeConfig: {},
     };
   },
   methods: {
@@ -128,6 +132,9 @@ export default {
       }).then(response => {
         this.recommendCompanyList = response.data.list;
       });
+      getHomeConfig(8).then(response=>{
+         this.homeConfig = response.data
+      })
     },
     handleJoin() {
       this.$router.push("/register");
@@ -142,19 +149,20 @@ export default {
   position: relative;
   width: 1200px;
   margin: 0 auto;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 100px);
 }
 
 .intro-box .app-bg-img {
   position: absolute;
   width: 500px;
   height: 500px;
+  top: calc(50vh - 350px);
   right: 100px;
   z-index: -1;
 }
 
 .intro-box .slogon-box {
-  padding-top: 180px;
+  padding-top: calc(50vh - 180px);
 }
 
 .job-item,

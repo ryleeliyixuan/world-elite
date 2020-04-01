@@ -66,7 +66,11 @@
       highlight-current-row
       style="margin-top: 10px"
     >
-      <el-table-column label="ID" prop="id" width="180"></el-table-column>
+      <el-table-column label="ID" prop="id" width="180">
+         <template slot-scope="{row}">
+            <el-link @click="goCompanyDetail(row.id)" type="primary">{{row.id}}</el-link>
+         </template>  
+      </el-table-column>
       <el-table-column label="logo" prop="logo">
         <template slot-scope="{row}">
           <el-image :src="row.logo">
@@ -84,10 +88,11 @@
       <el-table-column
         label="操作"
         align="center"
-        width="200"
+        width="260"
       >
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleModify(row)" icon="el-icon-edit">编辑</el-button>
+          <el-button type="success" size="mini" @click="handleEditWiki(row)" icon="el-icon-edit">百科</el-button>
           <el-popconfirm title="你确定要删除该企业？" @onConfirm="handleDelete(row)"> 
             <el-button
               type="danger"
@@ -222,7 +227,13 @@ export default {
             this.$message('删除成功');
             this.getList();
         })
-    }
+    },
+    handleEditWiki(company){
+      this.$router.push({path: '/company/edit-wiki', query: { id: company.id }});
+    },
+    goCompanyDetail(companyId){
+        window.open(`${process.env.VUE_APP_WEB_HOST}/company/${companyId}`)
+    },
   }
 };
 </script>

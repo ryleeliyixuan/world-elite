@@ -1,16 +1,19 @@
 <template>
   <div class="app-container">
-    <b-img :src="picUrl" class="app-bg-img"></b-img>
-    <div class="content-box">
-      <h1 class="slogon">留学生专属招聘平台</h1>
-      <p class="slogon-description mt-2">轻松招聘高素质海外留学人才</p>
-      <el-button type="primary" round class="button-join" @click="handleJoin">免费发布职位</el-button>
+    <div class="intro-box">
+      <b-img :src="homeConfig.picUrl" class="app-bg-img"></b-img>
+      <div class="slogon-box">
+        <h1 class="slogon">{{homeConfig.mainTitle}}</h1>
+        <p class="slogon-description mt-2">{{homeConfig.subTitle}}</p>
+        <el-button type="primary" round class="button-join" @click="handleJoin" v-if="token === undefined || token == ''">马上加入</el-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { getHomeConfig } from '@/api/config_api'
 
 export default {
   name: "HomePage",
@@ -19,11 +22,18 @@ export default {
   },
   data() {
     return {
-      picUrl:
-        "http://worldelite-debug.oss-cn-shanghai.aliyuncs.com/static/home-ad.svg"
+       homeConfig: {},
     };
   },
+  created(){
+    this.initData();
+  },
   methods:{
+    initData(){
+      getHomeConfig(8).then(response=>{
+         this.homeConfig = response.data
+      })
+    },
     handleJoin(){
       this.$router.push(this.token?'/edit-job':'/register');
     }
@@ -33,18 +43,25 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.app-bg-img {
-  position: fixed;
+
+.intro-box {
+  position: relative;
+  width: 1200px;
+  margin: 0 auto;
+  height: calc(100vh - 100px);
+}
+
+.intro-box .app-bg-img {
+  position: absolute;
   width: 500px;
   height: 500px;
-  right: 200px;
+  top: calc(50vh - 350px);
+  right: 100px;
   z-index: -1;
 }
 
-.content-box {
-  width: 1200px;
-  padding-top: 180px;
-  margin: 0 auto;
+.intro-box .slogon-box {
+  padding-top: calc(50vh - 180px);
 }
 
 .slogon {

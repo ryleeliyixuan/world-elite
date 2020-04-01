@@ -25,7 +25,7 @@
       <el-menu-item index="intro">公司介绍</el-menu-item>
       <el-menu-item index="job">招聘岗位</el-menu-item>
     </el-menu>
-    <div class="mt-4">
+    <div class="mt-4" v-if="company">
       <div class="intro-box" v-if="tabIndex == 'intro'">
         <div v-if="company.jobList && company.jobList.length !== 0">
           <h5 class="mt-4 mb-4">
@@ -73,6 +73,10 @@
             </div>
           </el-collapse-item>
         </el-collapse>
+        <div v-if="company.companyWiki">
+           <h5 class="mt-4 mb-4">公司百科</h5>
+           <div class="introdution" v-html="company.companyWiki"></div>
+        </div>
       </div>
       <div class="job-box" v-else>
         <el-card shadow="hover" v-for="job in jobPage.list" :key="job.id" class="mb-2 link-pointer" @click.native="onJobClick(job)">
