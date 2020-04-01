@@ -7,7 +7,7 @@
         </div>
       </el-col>
       <el-col :span="4">
-        <el-menu :router="true" mode="horizontal" :default-active="activeIndex">
+        <el-menu :router="true" mode="horizontal" :default-active="activeIndex" @select="handleSelect">
           <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
           <el-menu-item class="nav-item" index="/activity-list">活动</el-menu-item>
         </el-menu>
@@ -16,8 +16,8 @@
         <el-input
           v-model="keyword"
           class="input-search w-100"
-          placeholder="输入职位、公司"
-          @change.native="handleSearch"
+          :placeholder="searchPlaceHolder"
+          @keyup.enter.native="handleSearch"
         >
         <i slot="suffix" class="el-input__icon el-icon-search" @click="handleSearch"></i>
         </el-input>
@@ -76,7 +76,10 @@ import { getUnReadMessageCount, getMessageList } from "@/api/message_api";
 export default {
   name: "MainNavBar",
   computed: {
-    ...mapGetters(["token", "name", "avatar", "messageCount"])
+    ...mapGetters(["token", "name", "avatar", "messageCount"]),
+    searchPlaceHolder(){
+       return this.activeIndex == '/activity-list' ? '搜索活动' : '输入职位、公司'
+    }
   },
   data() {
     return {
@@ -109,7 +112,16 @@ export default {
       });
     },
     handleSearch() {
-      this.$router.push({ path: "/job-list", query: { keyword: this.keyword } });
+      const cur_path = this.$route.path;
+      if(cur_path == '/job-list' || cur_path == '/activity-list'){
+         this.$store.commit("setting/SET_KEYWORD", this.keyword);
+      } else {
+         this.$router.push({ path: "/job-list", query: { keyword: this.keyword } });
+      }
+    },
+    handleSelect(){
+       this.keyword = ''
+       this.$store.commit("setting/SET_KEYWORD", this.keyword);
     },
     getUnReadMessageCount() {
       if (this.token && this.token !== "") {

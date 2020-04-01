@@ -155,6 +155,8 @@
 import { listByType } from "@/api/dict_api";
 import { searchJob } from "@/api/job_api";
 import Pagination from "@/components/Pagination";
+import { mapGetters} from "vuex";
+
 import {
   formatListQuery,
   parseListQuery
@@ -163,6 +165,9 @@ import {
 export default {
   name: "JobListPage",
   components: { Pagination },
+  computed: {
+    ...mapGetters(["keyword"])
+  },
   data() {
     return {
       listQuery: {
@@ -195,8 +200,9 @@ export default {
     $route() {
       this.getList();
     },
-    "listQuery.keyword"() {
-      this.$store.commit("setting/SET_KEYWORD", this.listQuery.keyword);
+    keyword(){
+       this.listQuery.keyword = this.keyword
+       this.handleRouteList();
     }
   },
   methods: {
@@ -233,7 +239,7 @@ export default {
       });
     },
     handleRouteList() {
-      this.$router.push({
+      this.$router.replace({
         path: this.$route.path,
         query: formatListQuery(this.listQuery)
       });

@@ -55,14 +55,19 @@ import { listByType } from "@/api/dict_api";
 import { getActivityList } from "@/api/activity_api";
 import Pagination from "@/components/Pagination";
 import { formatListQuery, parseListQuery } from "@/utils/common";
+import { mapGetters} from "vuex";
 
 export default {
   name: "JobListPage",
   components: { Pagination },
+  computed: {
+    ...mapGetters(["keyword"])
+  },
   data() {
     return {
       listQuery: {
         cityId: undefined,
+        title: undefined,
         page: 1,
         limit: 10
       },
@@ -77,6 +82,10 @@ export default {
   watch: {
     $route() {
       this.getList();
+    },
+    keyword(){
+       this.listQuery.title = this.keyword
+       this.handleRouteList();
     }
   },
   methods: {

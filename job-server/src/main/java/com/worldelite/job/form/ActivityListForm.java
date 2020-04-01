@@ -11,4 +11,5 @@ import lombok.EqualsAndHashCode;
 public class ActivityListForm extends PageForm{
     private Integer cityId;
     private Byte status;
+    private String title;
 }
