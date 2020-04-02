@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class CountryVo implements VoConvertable<CountryVo, Country>{
 
+    private Integer id;
     private String phoneCode;
     private String countryCode;
     private String chineseName;
@@ -16,6 +17,7 @@ public class CountryVo implements VoConvertable<CountryVo, Country>{
 
     @Override
     public CountryVo asVo(Country country) {
+        setId(country.getId());
         setPhoneCode(String.valueOf(country.getPhoneCode()));
         setChineseName(country.getChineseName());
         setEnglishName(country.getEnglishName());

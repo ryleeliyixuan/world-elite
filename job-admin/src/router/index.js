@@ -135,6 +135,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/school',
+    component: Layout,
+    redirect: '/school/index',
+    children: [
+      {
+        path: 'index',
+        meta: { title: '学校管理', icon: 'dict' },
+        component: () => import('@/views/school/index')
+      }
+    ]
+  },
+  {
     path: '/download',
     component: Layout,
     redirect: '/download/index',

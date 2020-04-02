@@ -182,7 +182,7 @@ export default {
           value: 7
         },
         {
-          name: "快递类型",
+          name: "职位类型",
           value: 8
         },
         {

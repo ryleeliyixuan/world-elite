@@ -56,4 +56,6 @@ public interface SchoolMapper {
     List<School> selectLikeName(String name);
 
     School selectByName(String name);
+
+    List<School> selectAndList(School options);
 }

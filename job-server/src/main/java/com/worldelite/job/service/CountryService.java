@@ -40,6 +40,11 @@ public class CountryService {
         return AppUtils.asVoList(countryList, CountryVo.class);
     }
 
+    public CountryVo getById(Integer id){
+        Country country = countryMapper.selectByPrimaryKey(id);
+        return country == null ? null: new CountryVo().asVo(country);
+    }
+
     /**
      * 根据ip获取国家代码
      *

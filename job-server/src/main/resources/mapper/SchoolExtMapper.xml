@@ -15,4 +15,17 @@
         where
         name = #{name}
     </select>
+    <select id="selectAndList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_school
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null and name != ''">
+                and name like CONCAT('%', #{name},'%')
+            </if>
+        </where>
+    </select>
 </mapper>
