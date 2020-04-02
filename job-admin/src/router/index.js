@@ -141,7 +141,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        meta: { title: '学校管理', icon: 'dict' },
+        meta: { title: '学校管理', icon: 'school' },
         component: () => import('@/views/school/index')
       }
     ]
