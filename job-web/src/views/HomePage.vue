@@ -5,12 +5,18 @@
       <div class="slogon-box">
         <h1 class="slogon">{{homeConfig.mainTitle}}</h1>
         <p class="slogon-description mt-2">{{homeConfig.subTitle}}</p>
-        <el-button type="primary" round class="button-join" @click="handleJoin" v-if="token === undefined || token == ''">马上加入</el-button>
+        <el-button
+          type="primary"
+          round
+          class="button-join"
+          @click="handleJoin"
+          v-if="token === undefined || token == ''"
+        >马上加入</el-button>
       </div>
     </div>
-    <div class="content-box">
-      <h4 class="mb-4">每日职位精选</h4>
-      <div class="recommend-jobs">
+    <div class="job-recommend-box">
+      <h3 class="main-title text-center">每日职位精选</h3>
+      <div class="recommend-jobs content-box">
         <el-row :gutter="20">
           <el-col
             :span="8"
@@ -18,7 +24,7 @@
             v-for="recommendJob in recommendJobList"
             :key="recommendJob.id"
           >
-            <el-card shadow="hover" class="link-pointer" v-if="recommendJob.object">
+            <el-card shadow="hover" class="link-pointer no-border" v-if="recommendJob.object">
               <el-link
                 :href="`/job/${recommendJob.object.id}`"
                 :underline="false"
@@ -57,8 +63,10 @@
           </el-col>
         </el-row>
       </div>
-      <h4 class="mb-4 mt-4">每日公司推荐</h4>
-      <div class="recommend-companys">
+    </div>
+    <div class="company-recommend-box">
+      <h3 class="main-title text-center">每日公司推荐</h3>
+      <div class="recommend-companys content-box">
         <el-row :gutter="20">
           <el-col
             :span="6"
@@ -66,8 +74,12 @@
             v-for="recommendCompany in recommendCompanyList"
             :key="recommendCompany.id"
           >
-            <el-card shadow="hover" class="link-pointer text-center" v-if="recommendCompany.object">
-              <el-link :href="`/company/${recommendCompany.object.id}`" :underline="false" style="display: block">
+            <el-card shadow="hover" class="link-pointer text-center no-border" v-if="recommendCompany.object">
+              <el-link
+                :href="`/company/${recommendCompany.object.id}`"
+                :underline="false"
+                style="display: block"
+              >
                 <el-image class="company-logo" :src="recommendCompany.object.logo"></el-image>
                 <h6 class="text-center text-truncate">{{recommendCompany.object.name}}</h6>
                 <div class="text-gray text-small text-center text-truncate">
@@ -96,7 +108,7 @@
 
 <script>
 import { getRecommendList } from "@/api/recommend_api";
-import { getHomeConfig } from '@/api/config_api'
+import { getHomeConfig } from "@/api/config_api";
 import { mapGetters } from "vuex";
 
 export default {
@@ -111,7 +123,7 @@ export default {
     return {
       recommendJobList: [],
       recommendCompanyList: [],
-      homeConfig: {},
+      homeConfig: {}
     };
   },
   methods: {
@@ -132,9 +144,9 @@ export default {
       }).then(response => {
         this.recommendCompanyList = response.data.list;
       });
-      getHomeConfig(8).then(response=>{
-         this.homeConfig = response.data
-      })
+      getHomeConfig(8).then(response => {
+        this.homeConfig = response.data;
+      });
     },
     handleJoin() {
       this.$router.push("/register");
@@ -180,9 +192,27 @@ export default {
   height: 100px;
 }
 
+.job-recommend-box {
+  background: #f7fbfd;
+  padding: 50px;
+}
+
+.company-recommend-box{
+   padding: 50px;
+}
+
 .content-box {
   width: 1200px;
   margin: 0 auto;
+}
+
+.no-border{
+  border:none;
+}
+
+.main-title{
+  margin-bottom: 40px;
+  color: #333;
 }
 
 .slogon {

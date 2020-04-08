@@ -53,9 +53,9 @@
             </el-row>
           </div>
         </div>
-        <h5 class="mt-4 mb-4">公司简介</h5>
+        <h5 class="mt-4 mb-4" v-if="company.introduction">公司简介</h5>
         <div class="introdution" v-html="company.introduction"></div>
-        <h5 class="mt-4 mb-4">公司地址</h5>
+        <h5 class="mt-4 mb-4" v-if="company.addressList && company.addressList.length != 0">公司地址</h5>
         <el-collapse
           v-model="activeAddress"
           accordion

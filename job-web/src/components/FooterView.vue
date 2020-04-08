@@ -40,9 +40,9 @@
       </el-row>
     </div>
     <div class="footer-copyright text-small text-center">
-        <span>京ICP备14023790号-2</span>
+        <span><a href="http://www.beian.miit.gov.cn/">蜀ICP备20009332</a></span>
         <span class="ml-4">©2020 成都寰球菁英信息科技有限公司</span>
-        <span span class="ml-4">Agile Studio工作室提供技术支持</span>
+        <span span class="ml-4"><a href="http://nowait.xin">Agile Studio工作室</a>提供技术支持</span>
     </div>
   </div>
 </template>
@@ -63,10 +63,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .app-footer {
-  border-top: 1px solid #eee;
   margin-top: 50px;
   padding: 40px 120px;
-  background: #fefefe;
+  background: #f7fbfd;
 }
 .link-text {
   font-size: 14px;
@@ -79,6 +78,6 @@ export default {
 }
 .footer-copyright {
   padding: 20px 120px;
-  background: #efefef;
+  background: #f7fbfd;
 }
 </style>
