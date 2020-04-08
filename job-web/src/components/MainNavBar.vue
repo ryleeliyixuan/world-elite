@@ -28,6 +28,7 @@
             <b>立即加入</b>
           </el-link>
           <el-button type="primary" @click="$router.push('/login')">登录</el-button>
+          <el-link :underline="false" class="ml-4 icon-company" :href="companyHomeUrl"><svg-icon icon-class="company" /></el-link>
         </div>
         <div class="text-right" v-else>
           <el-popover placement="bottom-end" width="300" trigger="hover" @show="getMessageList" title="系统通知">
@@ -89,7 +90,8 @@ export default {
          page: 1,
          limit: 5
       },
-      keyword: this.$store.getters.keyword
+      keyword: this.$store.getters.keyword,
+      companyHomeUrl: process.env.VUE_APP_COMPANY_URL
     };
   },
   watch: {
@@ -172,6 +174,10 @@ a.no-decoration:hover {
 a.logo-text:hover,
 a.nav-item:hover {
   text-decoration: none;
+}
+
+.icon-company{
+  font-size: 26px;
 }
 
 .message-item{

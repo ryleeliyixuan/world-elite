@@ -1,5 +1,5 @@
 const zh = {
-    register_welcome_title: '加入Elite World',
+    register_welcome_title: '加入World Elite',
     login_email: '登录邮箱',
     login_password: '登录密码',
     email_valid_code: '邮箱验证码',
