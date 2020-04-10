@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="intro-box">
+    <div class="intro-box container">
       <b-img :src="homeConfig.picUrl" class="app-bg-img"></b-img>
       <div class="slogon-box">
         <h1 class="slogon">{{homeConfig.mainTitle}}</h1>
@@ -16,7 +16,7 @@
     </div>
     <div class="job-recommend-box">
       <h3 class="main-title text-center">每日职位精选</h3>
-      <div class="recommend-jobs content-box">
+      <div class="recommend-jobs container">
         <el-row :gutter="20">
           <el-col
             :span="8"
@@ -66,7 +66,7 @@
     </div>
     <div class="company-recommend-box">
       <h3 class="main-title text-center">每日公司推荐</h3>
-      <div class="recommend-companys content-box">
+      <div class="recommend-companys container">
         <el-row :gutter="20">
           <el-col
             :span="6"
@@ -159,16 +159,14 @@ export default {
 <style scoped>
 .intro-box {
   position: relative;
-  width: 1200px;
-  margin: 0 auto;
   height: calc(100vh - 100px);
 }
 
 .intro-box .app-bg-img {
   position: absolute;
-  width: 500px;
-  height: 500px;
-  top: calc(50vh - 350px);
+  width: 480px;
+  height: 480px;
+  top: calc(50vh - 330px);
   right: 100px;
   z-index: -1;
 }
@@ -199,11 +197,6 @@ export default {
 
 .company-recommend-box{
    padding: 50px;
-}
-
-.content-box {
-  width: 1200px;
-  margin: 0 auto;
 }
 
 .no-border{

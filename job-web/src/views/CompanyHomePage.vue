@@ -1,5 +1,5 @@
 <template>
-  <div class="app-padding app-container">
+  <div class="app-container container">
     <b-media class="mt-4" vertical-align="center" v-if="company">
       <template v-slot:aside>
         <b-img :src="company.logo" width="100" :alt="company.fullName" v-if="company.logo"></b-img>
@@ -38,7 +38,7 @@
           <div class="recommend-jobs mb-4">
             <el-row :gutter="12">
               <el-col :span="8" v-for="job in company.jobList" :key="job.id">
-                <el-card shadow="hover"  @click.native="onJobClick(job)" class="link-pointer">
+                <el-card shadow="hover" @click.native="onJobClick(job)" class="link-pointer">
                   <h6>
                     {{job.name}}
                     <span
@@ -74,29 +74,37 @@
           </el-collapse-item>
         </el-collapse>
         <div v-if="company.companyWiki">
-           <h5 class="mt-4 mb-4">公司百科</h5>
-           <div class="introdution" v-html="company.companyWiki"></div>
+          <h5 class="mt-4 mb-4">公司百科</h5>
+          <div class="introdution" v-html="company.companyWiki"></div>
         </div>
       </div>
-      <div class="job-box" v-else>
-        <el-card shadow="hover" v-for="job in jobPage.list" :key="job.id" class="mb-2 link-pointer" @click.native="onJobClick(job)">
-          <h6>
-            {{job.name}}
-            <span
-              class="text-danger float-right"
-            >{{job.minSalary}}K - {{job.maxSalary}}K</span>
-          </h6>
-          <div
-            class="text-small text-gray"
-          >{{job.minDegree? job.minDegree.name: ''}} . {{job.city? job.city.name: ''}}</div>
-        </el-card>
-        <pagination
-          v-show="total"
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.limit"
-          @pagination="getCompanyJobList"
-        />
+      <div class="row job-box" v-else>
+        <div class="col-lg-8 col-md-10 col-sm-12">
+          <el-card
+            shadow="hover"
+            v-for="job in jobPage.list"
+            :key="job.id"
+            class="mb-2 link-pointer"
+            @click.native="onJobClick(job)"
+          >
+            <h6>
+              {{job.name}}
+              <span
+                class="text-danger float-right"
+              >{{job.minSalary}}K - {{job.maxSalary}}K</span>
+            </h6>
+            <div
+              class="text-small text-gray"
+            >{{job.minDegree? job.minDegree.name: ''}} . {{job.city? job.city.name: ''}}</div>
+          </el-card>
+          <pagination
+            v-show="total"
+            :total="total"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.limit"
+            @pagination="getCompanyJobList"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -109,7 +117,7 @@ import Pagination from "@/components/Pagination";
 
 import { getCompanyInfo } from "@/api/company_api";
 import { getCompanyJobList } from "@/api/job_api";
-import { setPageTitle } from '@/utils/setting'
+import { setPageTitle } from "@/utils/setting";
 
 Vue.use(VueAMap);
 
@@ -149,7 +157,7 @@ export default {
     }
   },
   watch: {
-    '$route' () {
+    $route() {
       this.initData();
     }
   },
@@ -179,13 +187,13 @@ export default {
     },
     handleSelectTab(tabIndex) {
       this.tabIndex = tabIndex;
-      if(tabIndex == 'intro'){
-          this.listQuery.page = 1;
-          this.getCompanyJobList();
+      if (tabIndex == "intro") {
+        this.listQuery.page = 1;
+        this.getCompanyJobList();
       }
     },
-    onJobClick(job){
-        this.$router.push({name: 'job', params: {id: job.id}})
+    onJobClick(job) {
+      this.$router.push({ name: "job", params: { id: job.id } });
     }
   }
 };
@@ -196,7 +204,6 @@ export default {
   height: 200px;
 }
 .app-container {
-  width: 1200px;
   margin: 0 auto;
 }
 </style>

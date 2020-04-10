@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="container">
     <div class="search-filter mt-2 mt-2">
       <el-select
         v-model="listQuery.cityId"
@@ -19,27 +19,47 @@
       :limit.sync="listQuery.limit"
       @pagination="handleRouteList"
     />
-    <div class="activity-list w-80" v-if="list.length !== 0">
-      <el-card
-        shadow="hover"
-        v-for="activity in list"
-        :key="activity.id"
-        class="mb-2 link-pointer"
-        @click.native="openActivity(activity)"
-      >
-        <el-row :gutter="15">
-          <el-col :span="4">
-            <el-image :src="activity.thumbnail" class="w-100"></el-image>
-          </el-col>
-          <el-col :span="20">
-            <h5>{{activity.title}} <el-tag type="primary">{{activity.city.name}}</el-tag></h5>
-            <div class="text-label"><b>活动地址：</b> {{activity.address}}</div>
-            <div class="text-label"><b>活动时间：</b> {{activity.startTime}} 到 {{activity.finishTime}}</div>
-            <div class="mt-2 text-desc">{{activity.summary}} <el-link :href="activity.url" target="_blank" :underline="false" type="primary">查看详情 <i class="el-icon-d-arrow-right"/></el-link></div>
-          </el-col>
-        </el-row>
-      </el-card>
+    <div class="row">
+      <div class="col-lg-10 col-md-11 col-sm-12">
+        <div class="activity-list" v-if="list.length !== 0">
+          <el-card
+            shadow="hover"
+            v-for="activity in list"
+            :key="activity.id"
+            class="mb-2 link-pointer"
+            @click.native="openActivity(activity)"
+          >
+            <el-row :gutter="15">
+              <el-col :span="4">
+                <el-image :src="activity.thumbnail" class="w-100"></el-image>
+              </el-col>
+              <el-col :span="20">
+                <h5>
+                  {{activity.title}}
+                  <el-tag type="primary">{{activity.city.name}}</el-tag>
+                </h5>
+                <div class="text-label">
+                  <b>活动地址：</b>
+                  {{activity.address}}
+                </div>
+                <div class="text-label">
+                  <b>活动时间：</b>
+                  {{activity.startTime}} 到 {{activity.finishTime}}
+                </div>
+                <div class="mt-2 text-desc">
+                  {{activity.summary}}
+                  <el-link :href="activity.url" target="_blank" :underline="false" type="primary">
+                    查看详情
+                    <i class="el-icon-d-arrow-right" />
+                  </el-link>
+                </div>
+              </el-col>
+            </el-row>
+          </el-card>
+        </div>
+      </div>
     </div>
+
     <pagination
       v-show="total"
       :total="total"
@@ -55,7 +75,7 @@ import { listByType } from "@/api/dict_api";
 import { getActivityList } from "@/api/activity_api";
 import Pagination from "@/components/Pagination";
 import { formatListQuery, parseListQuery } from "@/utils/common";
-import { mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "JobListPage",
@@ -83,9 +103,9 @@ export default {
     $route() {
       this.getList();
     },
-    keyword(){
-       this.listQuery.title = this.keyword
-       this.handleRouteList();
+    keyword() {
+      this.listQuery.title = this.keyword;
+      this.handleRouteList();
     }
   },
   methods: {
@@ -122,18 +142,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-.app-container {
-  width: 1000px;
-  margin: 20px auto;
-}
-
-.text-label{
+.text-label {
   color: #555;
   font-size: 15px;
 }
 
-.text-desc{
-   font-size: 15px;
-   color: #888;
+.text-desc {
+  font-size: 15px;
+  color: #888;
 }
 </style>

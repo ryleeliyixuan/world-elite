@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="container app-container">
     <b-row align-v="center" v-if="job">
       <b-col>
         <div
@@ -211,7 +211,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .app-container {
-  width: 1000px;
   margin: 30px auto;
 }
 .salary-text {

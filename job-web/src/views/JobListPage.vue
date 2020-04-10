@@ -1,8 +1,8 @@
 <template>
-  <div class="app-container  mt-2">
+  <div class="container mt-2">
     <el-row :gutter="10">
-       <el-col :span="4">
-         <el-select
+      <el-col :span="4">
+        <el-select
           v-model="listQuery.cityIds"
           multiple
           filterable
@@ -14,9 +14,9 @@
         >
           <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
-       </el-col>
-       <el-col :span="4">
-         <el-select
+      </el-col>
+      <el-col :span="4">
+        <el-select
           v-model="listQuery.salaryRangeId"
           filterable
           clearable
@@ -32,9 +32,9 @@
             :value="item.id"
           ></el-option>
         </el-select>
-       </el-col>
-       <el-col :span="4">
-         <el-select
+      </el-col>
+      <el-col :span="4">
+        <el-select
           v-model="listQuery.companyIndustryIds"
           multiple
           filterable
@@ -51,9 +51,9 @@
             :value="item.id"
           ></el-option>
         </el-select>
-       </el-col>
-       <el-col :span="4">
-         <el-select
+      </el-col>
+      <el-col :span="4">
+        <el-select
           v-model="listQuery.companyScaleIds"
           multiple
           filterable
@@ -70,9 +70,9 @@
             :value="item.id"
           ></el-option>
         </el-select>
-       </el-col>
-       <el-col :span="4">
-         <el-select
+      </el-col>
+      <el-col :span="4">
+        <el-select
           v-model="listQuery.jobType"
           filterable
           clearable
@@ -88,7 +88,7 @@
             :value="item.id"
           ></el-option>
         </el-select>
-       </el-col>
+      </el-col>
     </el-row>
 
     <pagination
@@ -98,49 +98,59 @@
       :limit.sync="listQuery.limit"
       @pagination="handleRouteList"
     />
-    <div class="job-list w-75" v-if="pageResult.list && pageResult.list.length !== 0">
-      <el-card
-        shadow="hover"
-        v-for="job in pageResult.list"
-        :key="job.id"
-        class="mb-2 link-pointer"
-        @click.native="openJobDetail(job.id)"
-      >
-        <b-row>
-          <b-col>
-            <b-media>
-              <h6 class="mt-0 mb-1">{{job.name}}</h6>
-              <div class>
-                <b
-                  class="text-danger"
-                >{{`${job.minSalary} - ${job.maxSalary}K`}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
-                <span
-                  class="ml-3 text-gray text-small"
-                >{{`${job.city? job.city.name : ''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
-              </div>
-            </b-media>
-          </b-col>
-          <b-col>
-            <b-media right-align vertical-align="center" v-if="job.companyUser && job.companyUser.company">
-              <template v-slot:aside>
-                <el-link :href="`/company/${job.companyUser.company.id}`">
-                  <b-img
-                    width="48"
-                    :src="job.companyUser.company.logo"
-                    v-if="job.companyUser.company.logo && job.companyUser.company.logo != ''"
-                  ></b-img>
-                  <b-img blank blank-color="#ccc" width="48" v-else></b-img>
-                </el-link>
-              </template>
-              <h6 class="mt-0 mb-1">{{job.companyUser.company.name}}</h6>
-              <div
-                class="text-gray text-small"
-              >{{job.companyUser.company.industry?job.companyUser.company.industry.name:''}} / {{job.companyUser.company.stage?job.companyUser.company.stage.name:''}} / {{job.companyUser.company.scale?job.companyUser.company.scale.name:''}}</div>
-            </b-media>
-          </b-col>
-        </b-row>
-      </el-card>
+
+    <div class="row">
+      <div class="col-lg-8 col-md-10 col-sm-12">
+        <div class="job-list" v-if="pageResult.list && pageResult.list.length !== 0">
+          <el-card
+            shadow="hover"
+            v-for="job in pageResult.list"
+            :key="job.id"
+            class="mb-2 link-pointer"
+            @click.native="openJobDetail(job.id)"
+          >
+            <b-row>
+              <b-col>
+                <b-media>
+                  <h6 class="mt-0 mb-1">{{job.name}}</h6>
+                  <div class>
+                    <b
+                      class="text-danger"
+                    >{{`${job.minSalary} - ${job.maxSalary}K`}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
+                    <span
+                      class="ml-3 text-gray text-small"
+                    >{{`${job.city? job.city.name : ''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
+                  </div>
+                </b-media>
+              </b-col>
+              <b-col>
+                <b-media
+                  right-align
+                  vertical-align="center"
+                  v-if="job.companyUser && job.companyUser.company"
+                >
+                  <template v-slot:aside>
+                    <el-link :href="`/company/${job.companyUser.company.id}`">
+                      <b-img
+                        width="48"
+                        :src="job.companyUser.company.logo"
+                        v-if="job.companyUser.company.logo && job.companyUser.company.logo != ''"
+                      ></b-img>
+                      <b-img blank blank-color="#ccc" width="48" v-else></b-img>
+                    </el-link>
+                  </template>
+                  <h6 class="mt-0 mb-1">{{job.companyUser.company.name}}</h6>
+                  <div
+                    class="text-gray text-small"
+                  >{{job.companyUser.company.industry?job.companyUser.company.industry.name:''}} / {{job.companyUser.company.stage?job.companyUser.company.stage.name:''}} / {{job.companyUser.company.scale?job.companyUser.company.scale.name:''}}</div>
+                </b-media>
+              </b-col>
+            </b-row>
+          </el-card>
+        </div>
+      </div>
     </div>
+
     <pagination
       v-show="total"
       :total="total"
@@ -155,12 +165,9 @@
 import { listByType } from "@/api/dict_api";
 import { searchJob } from "@/api/job_api";
 import Pagination from "@/components/Pagination";
-import { mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
-import {
-  formatListQuery,
-  parseListQuery
-} from "@/utils/common";
+import { formatListQuery, parseListQuery } from "@/utils/common";
 
 export default {
   name: "JobListPage",
@@ -200,9 +207,9 @@ export default {
     $route() {
       this.getList();
     },
-    keyword(){
-       this.listQuery.keyword = this.keyword
-       this.handleRouteList();
+    keyword() {
+      this.listQuery.keyword = this.keyword;
+      this.handleRouteList();
     }
   },
   methods: {
@@ -227,11 +234,11 @@ export default {
     },
     getList() {
       parseListQuery(this.$route.query, this.listQuery);
-      if(this.listQuery.salaryRangeId){
-         this.listQuery.salaryRangeId = parseInt(this.listQuery.salaryRangeId);
+      if (this.listQuery.salaryRangeId) {
+        this.listQuery.salaryRangeId = parseInt(this.listQuery.salaryRangeId);
       }
-      if(this.listQuery.jobType){
-         this.listQuery.jobType = parseInt(this.listQuery.jobType);
+      if (this.listQuery.jobType) {
+        this.listQuery.jobType = parseInt(this.listQuery.jobType);
       }
       searchJob(this.listQuery).then(response => {
         this.pageResult = response.data;
@@ -250,13 +257,3 @@ export default {
   }
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
-.app-container {
-  width: 1000px;
-  margin: 20px auto;
-}
-
-$search-height: 48px;
-</style>

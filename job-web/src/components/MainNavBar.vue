@@ -1,5 +1,5 @@
 <template>
-  <div class="app-nav">
+  <div class="app-nav container">
     <el-row align="middle" type="flex">
       <el-col :span="4">
         <div class="logo">
@@ -149,9 +149,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .app-nav {
-  width: 1200px;
   padding: 20px 0px;
-  margin: 0 auto;
 }
 
 .logo-text {
