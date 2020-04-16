@@ -43,4 +43,16 @@ public class ConfigApi {
         HomeConfigForm homeConfigForm = configService.getHomeConfig(configType);
         return ApiResult.ok(homeConfigForm);
     }
+
+
+    /**
+     * 用户协议
+     *
+     * @return
+     */
+    @GetMapping("user-protocol")
+    public ApiResult getUserProtocol(){
+        String protocol = configService.getUserProtocol();
+        return ApiResult.ok(protocol);
+    }
 }

@@ -15,3 +15,10 @@ export function getHomeConfig(configType){
         params: {configType: configType}
       })
 }
+
+export function getUserProtocol(){
+   return request({
+    url: '/config/user-protocol',
+    method: 'get'
+  })
+}

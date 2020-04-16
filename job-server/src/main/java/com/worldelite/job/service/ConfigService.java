@@ -61,4 +61,14 @@ public class ConfigService extends BaseService{
         Config config = configMapper.selectByType(configType);
         return config == null ? null : JSON.parseObject(config.getContent(), HomeConfigForm.class);
     }
+
+    /**
+     * 用户协议
+     *
+     * @return
+     */
+    public String getUserProtocol(){
+        Config config = configMapper.selectByType(ConfigType.USER_PROTOCOL.value);
+        return config == null ? null: config.getContent();
+    }
 }

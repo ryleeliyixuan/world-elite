@@ -81,6 +81,11 @@ const constantRoutes = [
         path: '/bind-account',
         component: () => import('@/views/BindAccountPage'),
         meta: {title: '绑定账号'}
+    },
+    {
+        path: '/user-protocol',
+        component: () => import('@/views/UserProtocolPage'),
+        meta: {title: '用户协议'}
     }
 ]
 
