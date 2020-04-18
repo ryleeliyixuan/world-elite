@@ -6,7 +6,7 @@ cd ${sourcePath}
 
 # 安装依赖包,并打包
 npm install
-npm run build:stage
+npm run build:prod
 
 # 覆盖发布
 sudo cp -Rf dist/* ${deployPath} 
