@@ -13,9 +13,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 /**
  * @author yeguozhong yedaxia.github.com
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = JobApplication.class)
-@WebAppConfiguration
+@SpringBootTest
 public class ContentScannerTests {
 
     @Autowired

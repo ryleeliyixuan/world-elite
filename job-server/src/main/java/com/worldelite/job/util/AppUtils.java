@@ -184,7 +184,7 @@ public class AppUtils {
      */
     public static void setPage(PageForm pageForm) {
         Page page = PageHelper.startPage(pageForm.getPage(), pageForm.getLimit());
-        if (StringUtils.isNoneEmpty(pageForm.getSort())) {
+        if (StringUtils.isNotEmpty(pageForm.getSort())) {
             if (pageForm.getSort().startsWith("+")) {
                 page.setOrderBy(String.format("%s asc", pageForm.getSort().substring(1)));
             } else if (pageForm.getSort().startsWith("-")) {

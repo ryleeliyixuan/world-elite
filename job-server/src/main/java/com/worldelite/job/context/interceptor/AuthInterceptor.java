@@ -51,9 +51,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
         UserVo loginUser = null;
 
-        if(StringUtils.isNoneEmpty(token)){
+        if(StringUtils.isNotEmpty(token)){
             final String userJson = redisTemplate.opsForValue().get(token);
-            if(StringUtils.isNoneEmpty(userJson)){
+            if(StringUtils.isNotEmpty(userJson)){
                 loginUser = JSON.parseObject(userJson, UserVo.class);
                 request.setAttribute(AttrKeys.LOGIN_USER, loginUser);
             }

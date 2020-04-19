@@ -10,6 +10,7 @@ import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.JobVo;
 import com.worldelite.job.vo.PageResult;
+import me.zhyd.oauth.utils.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,12 +65,17 @@ public class FavoriteService extends BaseService{
         Favorite options = new Favorite();
         options.setType(FavoriteType.JOB.value);
         options.setUserId(curUser().getId());
+        if(StringUtils.isEmpty(pageForm.getSort())){
+            pageForm.setSort("-id");
+        }
         AppUtils.setPage(pageForm);
         Page<Favorite> favoritePage= (Page<Favorite>)favoriteMapper.selectAndList(options);
         PageResult<JobVo> pageResult = new PageResult<>(favoritePage);
         List<JobVo> jobVoList = new ArrayList<>(favoritePage.size());
         for(Favorite favorite: favoritePage){
-            jobVoList.add(jobService.getJobInfo(favorite.getObjectId(), true));
+            JobVo jobVo = jobService.getJobInfo(favorite.getObjectId(), true);
+            jobVo.setFavoriteTime(favorite.getCreateTime());
+            jobVoList.add(jobVo);
         }
         pageResult.setList(jobVoList);
         return pageResult;

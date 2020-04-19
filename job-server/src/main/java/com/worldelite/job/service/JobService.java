@@ -393,6 +393,9 @@ public class JobService extends BaseService {
         options.setUserId(listForm.getUserId());
         options.setResumeId(listForm.getResumeId());
         options.setStatus(listForm.getStatus());
+        if(StringUtils.isEmpty(listForm.getSort())){
+            listForm.setSort("-id");
+        }
         AppUtils.setPage(listForm);
         Page<JobApply> jobApplyPage = (Page<JobApply>) jobApplyMapper.selectAndList(options);
         PageResult<JobVo> pageResult = new PageResult<>(jobApplyPage);

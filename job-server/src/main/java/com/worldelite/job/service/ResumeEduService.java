@@ -53,7 +53,7 @@ public class ResumeEduService extends BaseService{
             resumeEdu.setUserId(curUser().getId());
         }
 
-        if(StringUtils.isNoneEmpty(resumeEduForm.getSchoolName())){
+        if(StringUtils.isNotEmpty(resumeEduForm.getSchoolName())){
             School school = schoolMapper.selectByName(resumeEduForm.getSchoolName());
             if(school != null){
                 resumeEdu.setSchoolId(school.getId());
