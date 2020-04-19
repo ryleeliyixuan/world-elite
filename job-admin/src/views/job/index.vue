@@ -97,7 +97,7 @@
       <el-table-column label="操作" width="150">
         <template slot-scope="{row}">
           <el-button size="mini" type="danger" @click="handleTakeOffJob(row)" v-if="row.status == 2">下架</el-button>
-          <el-button size="mini" type="primary" @click="goJobDetail(row.id)" v-if="row.status == 3">查看</el-button>
+          <el-button size="mini" type="primary" @click="goJobDetail(row.id)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
