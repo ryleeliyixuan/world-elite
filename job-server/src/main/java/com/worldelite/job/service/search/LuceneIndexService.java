@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.JobIndexFields;
 import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.entity.Job;
+import com.worldelite.job.entity.JobOptions;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.service.CompanyService;
 import com.worldelite.job.service.JobCategoryService;
@@ -58,7 +59,7 @@ public class LuceneIndexService implements IndexService {
             indexWriter = createIndexWriter(IndexWriterConfig.OpenMode.CREATE);
             List<Job> jobList;
             int curPage = 1;
-            Job options = new Job();
+            JobOptions options = new JobOptions();
             options.setStatus(JobStatus.PUBLISH.value);
             do {
                 PageHelper.startPage(curPage++, 100, false);

@@ -139,7 +139,7 @@ public class JobService extends BaseService {
             job.setId(AppUtils.nextId());
             jobMapper.insertSelective(job);
         } else {
-            if(job.getStatus() != JobStatus.PUBLISH.value){
+            if (job.getStatus() != JobStatus.PUBLISH.value) {
                 job.setPubTime(new Date());
             }
             job.setUpdateTime(new Date());
@@ -214,9 +214,9 @@ public class JobService extends BaseService {
 
         PageResult<JobVo> jobPageResult;
 
-        if(!noRecommend){
+        if (!noRecommend) {
             jobPageResult = searchService.searchJob(jobSearchForm);
-        }else{
+        } else {
             jobPageResult = getNewestJobList(jobSearchForm);
         }
         return jobPageResult;
@@ -251,7 +251,7 @@ public class JobService extends BaseService {
      */
     public PageResult<JobVo> getJobList(JobListForm jobListForm) {
         AppUtils.setPage(jobListForm);
-        Job options = new Job();
+        JobOptions options = new JobOptions();
         options.setId(jobListForm.getJobId());
         options.setCompanyId(jobListForm.getCompanyId());
         options.setCreatorId(jobListForm.getCreatorId());
@@ -288,8 +288,8 @@ public class JobService extends BaseService {
      *
      * @return
      */
-    public List<JobVo> getUserJobOptions(){
-        Job options = new Job();
+    public List<JobVo> getUserJobOptions() {
+        JobOptions options = new JobOptions();
         options.setCreatorId(curUser().getId());
         options.setStatus(JobStatus.PUBLISH.value);
         List<Job> jobList = jobMapper.selectAndList(options);
@@ -307,8 +307,13 @@ public class JobService extends BaseService {
      */
     @Transactional
     public void takeOffJob(Long jobId, String reason) {
+        takeOffJob(false, jobId, reason);
+    }
+
+
+    public void takeOffJob(Boolean force, Long jobId, String reason) {
         Job job = jobMapper.selectSimpleById(jobId);
-        if(curUser().getType() != UserType.ADMIN.value){
+        if (!force && curUser().getType() != UserType.ADMIN.value) {
             checkJobCreator(job);
         }
         job.setStatus(JobStatus.OFFLINE.value);
@@ -317,14 +322,17 @@ public class JobService extends BaseService {
         //从索引中删除
         indexService.deleteJobItem(jobId);
 
-        // 被管理员强制下架，记录原因，并发送消息
-        if(curUser().getType() == UserType.ADMIN.value){
-            job.setDelFlag(Bool.TRUE); // 管理员下架则直接删除
-            job.setRemark(reason);
+        // 被系统或者管理员强制下架，记录原因，并发送消息
+        if (force || curUser().getType() == UserType.ADMIN.value) {
+
+            if(curUser() != null && curUser().getType() == UserType.ADMIN.value){
+                job.setDelFlag(Bool.TRUE); // 被管理员下架则直接删除
+                job.setRemark(reason);
+            }
 
             Message message = new Message();
-            message.setFromUser(curUser().getId());
-            message.setFromUser(job.getCreatorId());
+            message.setFromUser(curUser() == null? -1 : curUser().getId()); // -1 表示系统下架
+            message.setToUser(job.getCreatorId());
             message.setContent(message("message.job.takeoff", job.getName(), reason));
             message.setUrl(AppUtils.wholeWebUrl(String.format("job/%s", jobId)));
             messageService.sendMessage(message);
@@ -338,9 +346,9 @@ public class JobService extends BaseService {
      *
      * @param jobId
      */
-    public void openJob(Long jobId){
+    public void openJob(Long jobId) {
         Job job = jobMapper.selectSimpleById(jobId);
-        if(job == null){
+        if (job == null) {
             return;
         }
         checkJobCreator(job);
@@ -393,7 +401,7 @@ public class JobService extends BaseService {
         options.setUserId(listForm.getUserId());
         options.setResumeId(listForm.getResumeId());
         options.setStatus(listForm.getStatus());
-        if(StringUtils.isEmpty(listForm.getSort())){
+        if (StringUtils.isEmpty(listForm.getSort())) {
             listForm.setSort("-id");
         }
         AppUtils.setPage(listForm);

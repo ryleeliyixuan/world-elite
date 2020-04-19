@@ -1,6 +1,7 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.Job;
+import com.worldelite.job.entity.JobOptions;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public interface JobMapper {
      */
     int updateByPrimaryKey(Job record);
 
-    List<Job> selectAndList(Job options);
+    List<Job> selectAndList(JobOptions options);
 
     Job selectSimpleById(Long id);
 }

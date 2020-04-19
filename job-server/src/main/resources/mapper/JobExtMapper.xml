@@ -7,7 +7,7 @@
     from t_job
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAndList" resultMap="BaseResultMap" parameterType="com.worldelite.job.entity.Job">
+  <select id="selectAndList" resultMap="BaseResultMap" parameterType="com.worldelite.job.entity.JobOptions">
     select
     <include refid="Base_Column_List" />
     from t_job
@@ -36,7 +36,10 @@
       <if test="status != null">
         and status = #{status,jdbcType=TINYINT}
       </if>
-        and del_flag = 0
+      <if test="startPubTime != null and endPubTime !=null">
+        and (pub_time between #{startPubTime} and  #{endPubTime})
+      </if>
+      and del_flag = 0
     </where>
   </select>
 </mapper>
