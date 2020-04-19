@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import i18n from '@/i18n'
 import '@/permission' 
+import '@/icons' // icon
 
 Vue.config.productionTip = false
 

@@ -16,6 +16,16 @@ export function curRelativePath() {
 }
 
 /**
+ * 是否是外链
+ * 
+ * @param {string} path
+ * @returns {Boolean}
+ */
+export function isExternal(path) {
+    return /^(https?:|mailto:|tel:)/.test(path)
+}
+
+/**
  * 去掉http部分
  */
 export function linkName(link){

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <h3 class="text-center">欢迎回来</h3>
-    <p class="text-center">登录WorldEdlite，马上开始招聘。</p>
+    <p class="text-center">登录{{$t('app_name')}}，马上开始招聘。</p>
     <b-container>
       <b-row align-h="center">
         <b-form @submit="onSubmit" class="register-form">

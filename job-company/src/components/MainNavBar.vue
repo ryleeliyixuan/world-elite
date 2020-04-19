@@ -3,7 +3,7 @@
     <el-row align="middle" type="flex">
       <el-col :span="5">
         <div class="logo">
-          <el-link class="logo-text" type="primary" href="/" :underline="false">World Elite 企业端</el-link>
+          <el-link class="logo-text" type="primary" href="/" :underline="false">{{$t('app_name')}} 企业端</el-link>
         </div>
       </el-col>
       <el-col :span="6">
@@ -23,6 +23,7 @@
             <b>免费加入</b>
           </el-link>
           <el-button type="primary" @click="$router.push('/login')">登录</el-button>
+          <el-link :underline="false" class="ml-4 icon-home" :href="webHomeUrl"><svg-icon icon-class="home" /></el-link>
         </div>
         <div class="text-right" v-else>
           <el-popover
@@ -98,7 +99,8 @@ export default {
       activeIndex: "/manage-job",
       newMessageList: [],
       unreadMessageCount: 0,
-      keyword: this.$store.getters.keyword
+      keyword: this.$store.getters.keyword,
+      webHomeUrl: process.env.VUE_APP_WEB_HOST
     };
   },
   watch: {
@@ -151,6 +153,10 @@ export default {
 
 .logo-text {
   font-size: 25px;
+}
+
+.icon-home{
+  font-size: 23px;
 }
 
 .nav-item {

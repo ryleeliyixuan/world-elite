@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <h3 class="text-center m-4">绑定 Elite World 账号</h3>
+    <h3 class="text-center m-4">绑定 {{$t('app_name')}} 账号</h3>
     <el-form ref="form" :model="form" label-width="100px" :rules="formRules">
       <el-form-item label="登录邮箱" prop="email">
         <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>

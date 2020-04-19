@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <h3 class="text-center">{{$t('register_welcome_title')}}</h3>
+    <h3 class="text-center">加入 {{$t('app_name')}}</h3>
     <b-container>
       <b-row align-h="center">
         <b-form @submit="onSubmit" @reset="onReset" class="register-form">
@@ -50,7 +50,7 @@
             type="warning"
             v-if="showPasswordRuleTip"
           ></el-alert>
-          <p class="mt-4 mb-4 text-policy">点击“同意并加入”，即表示您同意遵守WorldElite的《用户协议》、《隐私政策》及《Cookie 政策》。</p>
+          <p class="mt-4 mb-4 text-policy">点击“同意并加入”，即表示您同意遵守{{$t('app_name')}}的<a href="http://www.myworldelite.com/user-protocol" target="_blank">《用户协议和隐私政策》</a>。</p>
           <b-button
             block
             size="lg"

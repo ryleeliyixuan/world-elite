@@ -6,4 +6,3 @@ const appName = 'World Elite'
 export function setPageTitle(pageTitle) {
     document.title = pageTitle? `${pageTitle} - ${appName}`: appName;
 }
-

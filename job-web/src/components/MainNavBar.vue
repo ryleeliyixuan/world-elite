@@ -3,7 +3,7 @@
     <el-row align="middle" type="flex">
       <el-col :span="4">
         <div class="logo">
-          <el-link class="logo-text" type="primary" href="/" :underline="false">World Elite</el-link>
+          <el-link class="logo-text" type="primary" href="/" :underline="false">{{$t('app_name')}}</el-link>
         </div>
       </el-col>
       <el-col :span="4">

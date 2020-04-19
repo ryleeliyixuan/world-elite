@@ -1,4 +1,5 @@
 const zh = {
+    app_name: 'World Elite',
     register_welcome_title: '加入Elite World',
     company_regist_title: '企业用户注册',
     login_email: '登录邮箱',
