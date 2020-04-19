@@ -30,7 +30,7 @@ export default {
   },
   methods:{
     initData(){
-      getHomeConfig(8).then(response=>{
+      getHomeConfig(9).then(response=>{
          this.homeConfig = response.data
       })
     },
