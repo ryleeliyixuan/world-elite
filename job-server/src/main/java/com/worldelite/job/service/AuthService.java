@@ -97,8 +97,10 @@ public class AuthService extends BaseService {
      * @param registerForm
      * @return
      */
+    @Transactional
     public UserVo bindThirdAccount(BindAccountForm registerForm) {
-        checkRepeatEmail(registerForm.getEmail());
+        // 如果邮箱已经注册，则直接绑定该邮箱
+        // checkRepeatEmail(registerForm.getEmail());
 
         final String validCodeKey = RedisKeys.VALIDATE_EMAIL_PREFIX + registerForm.getEmail();
         if (!registerForm.getValidCode().equals(stringRedisTemplate.opsForValue().get(validCodeKey))) {
@@ -125,7 +127,6 @@ public class AuthService extends BaseService {
             setUserPassword(user, registerForm.getPassword());
             user.setUpdateTime(new Date());
             userMapper.updateByPrimaryKeySelective(user);
-
 
             return new UserVo().asVo(user);
         } finally {

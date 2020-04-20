@@ -19,10 +19,6 @@ java -version
 # 安装nginx
 sudo apt-get install nginx
 
-# 安装mysql
-sudo apt-get install mysql-server
-
-
 # 安装redis
 sudo apt-get install redis-server
 
@@ -54,4 +50,8 @@ mkdir ~/apps    #程序目录
 
 sudo vi /etc/rc.local
 
-/etc/init.d/hm-api-service start
+添加:
+
+```
+/etc/init.d/eliteApiServer start
+```

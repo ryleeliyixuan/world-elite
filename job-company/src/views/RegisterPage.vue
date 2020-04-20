@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { getEmailCode, checkEmailExists } from "@/api/user_api";
+import { getEmailCode, checkEmailExists } from "@/api/auth_api";
 import Toast from "@/utils/toast";
 
 export default {
