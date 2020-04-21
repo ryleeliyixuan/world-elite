@@ -375,7 +375,8 @@ public class ResumeService extends BaseService {
         }
 
         if (emailForm != null) {
-            emailForm.setEmailBody(emailForm.getEmailBody().replace("${JOB}", jobPlaceholder));
+            final String emailBody = emailForm.getEmailBody().replace("${JOB}", jobPlaceholder).replace("${DETAIL_URL}", AppUtils.wholeWebUrl("/apply-jobs" ));
+            emailForm.setEmailBody(emailBody);
             emailForm.setAddress(toUser.getEmail());
             emailService.sendEmail(emailForm);
         }

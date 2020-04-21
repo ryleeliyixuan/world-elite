@@ -175,6 +175,9 @@ public class UserService extends BaseService {
             user.setStatus(userForm.getStatus());
             user.setUpdateTime(new Date());
             userMapper.updateByPrimaryKeySelective(user);
+
+            // 移除token，让用户重新登录
+            authService.removeUserToken(user.getId());
         }
     }
 

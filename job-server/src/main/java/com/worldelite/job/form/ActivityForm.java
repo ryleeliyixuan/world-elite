@@ -1,5 +1,6 @@
 package com.worldelite.job.form;
 
+import com.worldelite.job.util.AppUtils;
 import lombok.Data;
 import lombok.NonNull;
 import me.zhyd.oauth.utils.StringUtils;
@@ -36,4 +37,8 @@ public class ActivityForm {
     private Date finishTime;
     @NotBlank
     private String address;
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = AppUtils.getOssKey(thumbnail);
+    }
 }

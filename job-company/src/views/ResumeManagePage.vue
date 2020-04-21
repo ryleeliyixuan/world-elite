@@ -304,6 +304,7 @@ export default {
       }).then(() => {
         handleApplyResume({ id: id, status: status }).then(() => {
           this.$message("操作成功");
+          this.reviewDrawerVisible = false;
           this.getList();
         });
       });
@@ -358,6 +359,7 @@ export default {
   width: 50%;
   top: 0px;
   bottom: 0px;
+  z-index: 100;
   position: fixed;
   box-sizing: border-box;
   background-color: rgb(255, 255, 255);

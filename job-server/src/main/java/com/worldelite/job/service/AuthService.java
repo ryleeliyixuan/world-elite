@@ -268,6 +268,17 @@ public class AuthService extends BaseService {
     }
 
     /**
+     * 移除用户 token
+     * @param userId
+     */
+    public void removeUserToken(Long userId){
+        User user = userMapper.selectByPrimaryKey(userId);
+        if(user != null){
+            stringRedisTemplate.delete(user.getToken());
+        }
+    }
+
+    /**
      * 设置用户密码
      *
      * @param user
@@ -301,6 +312,7 @@ public class AuthService extends BaseService {
         loginLog.setUserId(loginUser.getId());
         loginLogMapper.insertSelective(loginLog);
     }
+
 
     /**
      * 处理微信开放平台登录
