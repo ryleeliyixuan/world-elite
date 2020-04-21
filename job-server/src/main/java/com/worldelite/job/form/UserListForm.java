@@ -29,6 +29,6 @@ public class UserListForm extends PageForm implements IExportable{
 
     @Override
     public String genExportExcelName() {
-        return DigestUtils.md5Hex("UserList" + JSON.toJSONString(this)) + ".xlsx";
+        return "用户列表_"+DigestUtils.md5Hex("UserList" + JSON.toJSONString(this)) + ".xlsx";
     }
 }

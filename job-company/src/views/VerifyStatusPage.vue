@@ -3,7 +3,7 @@
     <div v-if="result">
       <h5 class="text-danger">
         <i class="el-icon-warning" />
-        <span v-if="result.status == 1">我们将在 3 天内审核完，客服微信：WorldElite。</span>
+        <span v-if="result.status == 1">我们将尽快完成审核，请联系专属客服跟进审核进度，客服微信：dwj0826</span>
         <span v-else-if="result.status === 2">你已成功通过申请</span>
         <span v-else>审核被拒绝，原因是：</span>
       </h5>

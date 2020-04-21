@@ -29,6 +29,6 @@ public class ResumeListForm extends PageForm implements IExportable{
 
     @Override
     public String genExportExcelName() {
-        return DigestUtils.md5Hex("ResumeList" + JSON.toJSONString(this)) + ".xlsx";
+        return "简历列表_"+DigestUtils.md5Hex("ResumeList" + JSON.toJSONString(this)) + ".xlsx";
     }
 }

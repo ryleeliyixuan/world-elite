@@ -2,13 +2,17 @@
   <div id="app">
     <MainNavBar/>
     <router-view />
+    <FooterView/>
+    <el-backtop></el-backtop>
   </div>
 </template>
 
 <script>
 import MainNavBar from "@/components/MainNavBar";
+import FooterView from '@/components/FooterView'
+
 export default {
-  components: { MainNavBar },
+  components: { MainNavBar,FooterView },
   name: "app"
 };
 </script>

@@ -2,6 +2,7 @@ package com.worldelite.job.form;
 
 import lombok.Data;
 import lombok.NonNull;
+import me.zhyd.oauth.utils.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
