@@ -37,8 +37,4 @@ public class ActivityForm {
     private Date finishTime;
     @NotBlank
     private String address;
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = AppUtils.getOssKey(thumbnail);
-    }
 }

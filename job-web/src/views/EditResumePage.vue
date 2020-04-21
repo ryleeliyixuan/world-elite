@@ -1067,12 +1067,14 @@ export default {
     },
     handleEditResumeBasic() {
       this.showBasicDialog = true;
+      this.setResumeFormValues();
       this.$nextTick(() => {
         this.$refs["resumeForm"].clearValidate();
       });
     },
     handleEditResumeIntro() {
       this.showIntroDialog = true;
+      this.setResumeFormValues();
     },
     handleEditResumeEdu(type, resumeEdu) {
       this.showEduDialog = true;

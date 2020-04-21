@@ -374,7 +374,7 @@ public class JobService extends BaseService {
         }
 
         ResumeVo resumeVo = resumeService.getDefaultOrCreate(curUser().getId());
-        if (resumeVo == null && checkResumeComplete(resumeVo)) {
+        if (resumeVo == null || !checkResumeComplete(resumeVo)) {
             throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
         }
 
