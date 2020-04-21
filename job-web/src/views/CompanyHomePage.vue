@@ -2,7 +2,7 @@
   <div class="app-container container">
     <b-media class="mt-4" vertical-align="center" v-if="company">
       <template v-slot:aside>
-        <b-img :src="company.logo" width="100" :alt="company.fullName" v-if="company.logo"></b-img>
+        <b-img :src="company.logo" class="company-logo" :alt="company.fullName" v-if="company.logo"></b-img>
         <b-img blank blank-color="#ccc" width="100" v-else></b-img>
       </template>
       <b-media-body>
@@ -200,6 +200,10 @@ export default {
 </script>
 
 <style scoped>
+.company-logo{
+  width: 100px;
+  height: 100px;
+}
 .map-box {
   height: 200px;
 }
