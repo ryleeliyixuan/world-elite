@@ -23,6 +23,8 @@ class UserExcel {
     private String phone;
     @ExcelProperty("邮箱")
     private String email;
+    @ExcelProperty("订阅职位")
+    private String subscribeFlag;
     @ExcelProperty("注册时间")
     private String createTime;
     @ExcelProperty("状态")

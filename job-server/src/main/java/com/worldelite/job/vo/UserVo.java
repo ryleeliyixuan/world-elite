@@ -26,6 +26,7 @@ public class UserVo implements VoConvertable<UserVo, User>{
     private String email;
     @JSONField(format = "yyyy-MM-dd")
     private Date createTime;
+    private Byte subscribeFlag;
 
     @Override
     public UserVo asVo(User user) {
@@ -42,6 +43,7 @@ public class UserVo implements VoConvertable<UserVo, User>{
         setGender(user.getGender());
         setStatus(user.getStatus());
         setCreateTime(user.getCreateTime());
+        setSubscribeFlag(user.getSubscribeFlag());
         return this;
     }
 }

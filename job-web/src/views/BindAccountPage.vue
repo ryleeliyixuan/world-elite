@@ -18,6 +18,9 @@
       <el-form-item label="登录密码" prop="password">
         <el-input v-model="form.password" placeholder="8-20位字母+数字" type="password"></el-input>
       </el-form-item>
+      <el-form-item prop="subscribeFlag">
+        <el-checkbox  v-model="form.subscribeFlag" :true-label="1" :false-label="0">订阅职位邮件消息</el-checkbox>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmitClick">绑定账号</el-button>
       </el-form-item>
@@ -31,6 +34,7 @@ import Toast from "@/utils/toast";
 import Validator from "@/utils/validator";
 
 export default {
+  name: 'BindAccountPage',
   data() {
     return {
       form: {

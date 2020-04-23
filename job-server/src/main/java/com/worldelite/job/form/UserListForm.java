@@ -25,6 +25,7 @@ public class UserListForm extends PageForm implements IExportable{
     private Date beginTime;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
+    private Byte subscribeFlag;
 
 
     @Override

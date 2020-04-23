@@ -5,6 +5,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
+import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.Gender;
 import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.constants.UserType;
@@ -186,6 +187,7 @@ public class EasyExcelExportService implements IExportExcelService {
         userExcel.setGender(user.getGender() == Gender.MALE.value ? "男" : "女");
         userExcel.setPhone(String.valueOf(user.getPhone()));
         userExcel.setCreateTime(DateUtil.format(user.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN));
+        userExcel.setSubscribeFlag(user.getSubscribeFlag() == Bool.TRUE? "是": "否");
         if (user.getStatus() == UserStatus.NORMAL.value) {
             userExcel.setStatus("正常");
         } else if (user.getStatus() == UserStatus.BLACK.value) {

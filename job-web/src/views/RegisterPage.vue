@@ -50,7 +50,16 @@
             type="warning"
             v-if="showPasswordRuleTip"
           ></el-alert>
-          <p class="mt-4 mb-4 text-policy">点击“同意并加入”，即表示您同意遵守{{$t('app_name')}}的<a href="http://www.myworldelite.com/user-protocol" target="_blank">《用户协议和隐私政策》</a>。</p>
+          <b-input-group class="mt-4 mb-4">
+            <b-form-checkbox v-model="form.subscribeFlag" value="1" unchecked-value="0">订阅职位邮件消息</b-form-checkbox>
+          </b-input-group>
+          <p class="mt-4 text-policy">
+            点击“同意并加入”，即表示您同意遵守{{$t('app_name')}}的
+            <a
+              href="http://www.myworldelite.com/user-protocol"
+              target="_blank"
+            >《用户协议和隐私政策》</a>。
+          </p>
           <b-button
             block
             size="lg"

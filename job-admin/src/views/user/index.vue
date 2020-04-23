@@ -16,6 +16,22 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
+          <el-select
+            v-model="listQuery.subscribeFlag"
+            filterable
+            clearable
+            placeholder="订阅职位"
+            @change="handleFilter"
+          >
+            <el-option
+              v-for="item in subscribeOptions"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
           <el-date-picker
             v-model="dateRange"
             type="daterange"
@@ -58,6 +74,11 @@
         <template slot-scope="{row}">
           <span v-if="row.phoneCode">({{row.phoneCode}})</span>
           {{row.phone}}
+        </template>
+      </el-table-column>
+      <el-table-column label="订阅职位" prop="subscribeFlag">
+        <template slot-scope="{row}">
+          <span>{{row.subscribeFlag == 1 ? '是': '否'}}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" prop="status">
@@ -105,8 +126,9 @@
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import { getUserList, modifyUserStatus } from "@/api/user_api";
-import { exportUserList } from '@/api/export_api'
-import Toast from '@/utils/toast'
+import { exportUserList } from "@/api/export_api";
+import { formatListQuery, parseListQuery } from "@/utils/common";
+import Toast from "@/utils/toast";
 
 export default {
   name: "UserList",
@@ -124,6 +146,7 @@ export default {
         email: undefined,
         type: 1,
         status: undefined,
+        subscribeFlag: undefined,
         page: 1,
         limit: 20,
         beginTime: undefined,
@@ -145,6 +168,16 @@ export default {
         1: "男",
         2: "女"
       },
+      subscribeOptions: [
+        {
+          name: "否",
+          value: 0
+        },
+        {
+          name: "是",
+          value: 1
+        }
+      ],
       exporting: false
     };
   },
@@ -169,11 +202,12 @@ export default {
     getList() {
       this.listLoading = true;
       const query = this.$route.query;
-      if (query.page) {
-        this.listQuery.page = parseInt(query.page);
+      parseListQuery(query, this.listQuery);
+      if (query.subscribeFlag) {
+        this.listQuery.limit = parseInt(query.subscribeFlag);
       }
-      if (query.limit) {
-        this.listQuery.limit = parseInt(query.limit);
+      if (query.status) {
+        this.listQuery.limit = parseInt(query.status);
       }
       getUserList(this.listQuery).then(response => {
         const { total, list } = response.data;
@@ -183,7 +217,10 @@ export default {
       });
     },
     handleRouteList() {
-      this.$router.push({ path: this.$route.path, query: this.listQuery });
+      this.$router.push({
+        path: this.$route.path,
+        query: formatListQuery(this.listQuery)
+      });
     },
     handleFilter() {
       this.listQuery.page = 1;
@@ -216,11 +253,13 @@ export default {
         });
       }
     },
-    exportAsExcel(){
+    exportAsExcel() {
       this.exporting = true;
-      exportUserList(this.listQuery).then(response=>{
-        Toast.success('已加入下载队列，请稍后到【下载管理】进行下载');
-      }).finally(()=>this.exporting= false)
+      exportUserList(this.listQuery)
+        .then(response => {
+          Toast.success("已加入下载队列，请稍后到【下载管理】进行下载");
+        })
+        .finally(() => (this.exporting = false));
     }
   }
 };
