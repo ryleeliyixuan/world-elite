@@ -3,7 +3,7 @@
     <b-media class="mt-4" vertical-align="center" v-if="company">
       <template v-slot:aside>
         <b-img :src="company.logo" class="company-logo" :alt="company.fullName" v-if="company.logo"></b-img>
-        <b-img blank blank-color="#ccc" width="100" v-else></b-img>
+        <b-img blank blank-color="#ccc" class="company-logo" v-else></b-img>
       </template>
       <b-media-body>
         <h5 class="mt-0">{{company.name}}</h5>
