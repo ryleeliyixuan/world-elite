@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
       <div class="mb-2">
-          <el-button type="success" @click="onEditRecommendClick" icon="el-icon-plus">推荐企业</el-button>
+          <el-button type="success" @click="onEditRecommendClick" icon="el-icon-plus">推荐百科</el-button>
       </div>
       <el-table
       :key="tableKey"
@@ -34,7 +34,7 @@
     />
 
     <el-dialog
-      title="推荐企业"
+      title="推荐百科"
       :visible.sync="dialogVisible"
       width="30%"
     >
@@ -73,7 +73,7 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        objectType: 2,
+        objectType: 3,
         page: 1,
         limit: 20,
         sort: "+position"
@@ -81,7 +81,7 @@ export default {
       recommendForm: {
          id: undefined,
          objectId: undefined,
-         objectType: 2,
+         objectType: 3,
          position: undefined
       },
       dialogVisible: false

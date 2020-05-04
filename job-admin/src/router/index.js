@@ -177,6 +177,11 @@ export const constantRoutes = [
         path: 'recommend-company',
         meta: { title: '推荐企业' },
         component: () => import('@/views/config/RecommendCompanyPage')
+      },
+      {
+        path: 'recommend-wiki',
+        meta: { title: '推荐百科' },
+        component: () => import('@/views/config/RecommendCompanyWikiPage')
       }
     ]
   },

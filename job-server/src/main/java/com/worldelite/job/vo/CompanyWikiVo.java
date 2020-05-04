@@ -8,5 +8,6 @@ import lombok.Data;
 @Data
 public class CompanyWikiVo {
     private CompanyVo company;
+    private String summary;
     private String content;
 }

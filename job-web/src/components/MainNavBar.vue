@@ -6,9 +6,15 @@
           <el-link class="logo-text" type="primary" href="/" :underline="false">{{$t('app_name')}}</el-link>
         </div>
       </el-col>
-      <el-col :span="4">
-        <el-menu :router="true" mode="horizontal" :default-active="activeIndex" @select="handleSelect">
+      <el-col :span="5">
+        <el-menu
+          :router="true"
+          mode="horizontal"
+          :default-active="activeIndex"
+          @select="handleSelect"
+        >
           <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
+          <el-menu-item class="nav-item" index="/wiki-list">百科</el-menu-item>
           <el-menu-item class="nav-item" index="/activity-list">活动</el-menu-item>
         </el-menu>
       </el-col>
@@ -19,28 +25,48 @@
           :placeholder="searchPlaceHolder"
           @keyup.enter.native="handleSearch"
         >
-        <i slot="suffix" class="el-input__icon el-icon-search" @click="handleSearch"></i>
+          <i slot="suffix" class="el-input__icon el-icon-search" @click="handleSearch"></i>
         </el-input>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="5">
         <div class="text-right" v-if="token === undefined || token === ''">
           <el-link :underline="false" class="p-4 mr-2" @click="$router.push('/register')">
             <b>立即加入</b>
           </el-link>
           <el-button type="primary" @click="$router.push('/login')">登录</el-button>
-          <el-link :underline="false" class="ml-4 icon-company" :href="companyHomeUrl"><svg-icon icon-class="company" /></el-link>
+          <el-link :underline="false" class="ml-4 icon-company" :href="companyHomeUrl">
+            <svg-icon icon-class="company" />
+          </el-link>
         </div>
         <div class="text-right" v-else>
-          <el-popover placement="bottom-end" width="300" trigger="hover" @show="getMessageList" title="系统通知">
+          <el-popover
+            placement="bottom-end"
+            width="300"
+            trigger="hover"
+            @show="getMessageList"
+            title="系统通知"
+          >
             <div class="message-list" v-if="newMessageList && newMessageList.length !== 0">
-                <div class="message-item" v-for="message in newMessageList" :key="message.id">
-                    <el-badge is-dot v-if="message.readFlag === 0"/>
-                    {{message.content}} <el-link v-if="message.url && message.url != ''" :href="meesage.url" :underline="false">查看</el-link>
-                </div>
+              <div class="message-item" v-for="message in newMessageList" :key="message.id">
+                <el-badge is-dot v-if="message.readFlag === 0" />
+                {{message.content}}
+                <el-link
+                  v-if="message.url && message.url != ''"
+                  :href="meesage.url"
+                  :underline="false"
+                >查看</el-link>
+              </div>
             </div>
             <div class="text-center p-2" v-else>暂无新消息</div>
-            <div class="text-center p-2"><el-link type="primary" :underline="false" @click="goMessageList">查看全部</el-link></div>
-            <el-link :underline="false" class="mr-4 p-2 nav-message" slot="reference" @click="goMessageList">
+            <div class="text-center p-2">
+              <el-link type="primary" :underline="false" @click="goMessageList">查看全部</el-link>
+            </div>
+            <el-link
+              :underline="false"
+              class="mr-4 p-2 nav-message"
+              slot="reference"
+              @click="goMessageList"
+            >
               <el-badge is-dot v-if="messageCount !== 0">
                 <i class="el-icon-message-solid"></i>
               </el-badge>
@@ -78,8 +104,14 @@ export default {
   name: "MainNavBar",
   computed: {
     ...mapGetters(["token", "name", "avatar", "messageCount"]),
-    searchPlaceHolder(){
-       return this.activeIndex == '/activity-list' ? '搜索活动' : '输入职位、公司'
+    searchPlaceHolder() {
+      if (this.activeIndex == "/activity-list") {
+        return "搜索活动";
+      } else if (this.activeIndex == "/wiki-list") {
+        return "搜索百科";
+      } else {
+        return "搜索职位";
+      }
     }
   },
   data() {
@@ -87,8 +119,8 @@ export default {
       activeIndex: "",
       newMessageList: [],
       messageListForm: {
-         page: 1,
-         limit: 5
+        page: 1,
+        limit: 5
       },
       keyword: this.$store.getters.keyword,
       companyHomeUrl: process.env.VUE_APP_COMPANY_URL
@@ -98,6 +130,10 @@ export default {
     $route() {
       this.activeIndex = this.$route.path;
       this.getUnReadMessageCount();
+      if (this.isHomeListPage()) {
+        this.keyword = this.$route.query.keyword;
+        this.$store.commit("setting/SET_KEYWORD", this.keyword);
+      }
     }
   },
   created() {
@@ -106,7 +142,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-       setMessageCount: 'setting/MESSAGE_COUNT'
+      setMessageCount: "setting/MESSAGE_COUNT"
     }),
     handleLogout() {
       this.$store.dispatch("user/LOGOUT").then(() => {
@@ -115,32 +151,39 @@ export default {
     },
     handleSearch() {
       const cur_path = this.$route.path;
-      if(cur_path == '/job-list' || cur_path == '/activity-list'){
-         this.$store.commit("setting/SET_KEYWORD", this.keyword);
+      if (this.isHomeListPage()) {
+        this.$store.commit("setting/SET_KEYWORD", this.keyword);
       } else {
-         this.$router.push({ path: "/job-list", query: { keyword: this.keyword } });
+        this.$router.push({
+          path: "/job-list",
+          query: { keyword: this.keyword }
+        });
       }
     },
-    handleSelect(){
-       this.keyword = ''
-       this.$store.commit("setting/SET_KEYWORD", this.keyword);
+    isHomeListPage(){
+       const cur_path = this.$route.path;
+       return cur_path == "/job-list" || cur_path == "/activity-list" || cur_path == "/wiki-list";
+    },
+    handleSelect() {
+      this.keyword = "";
+      this.$store.commit("setting/SET_KEYWORD", this.keyword);
     },
     getUnReadMessageCount() {
       if (this.token && this.token !== "") {
         getUnReadMessageCount().then(response => {
-           this.setMessageCount(response.data);
+          this.setMessageCount(response.data);
         });
       }
     },
     getMessageList() {
       if (this.token && this.token !== "") {
-         getMessageList(this.messageListForm).then(response => {
-            this.newMessageList = response.data.list;
-         });
+        getMessageList(this.messageListForm).then(response => {
+          this.newMessageList = response.data.list;
+        });
       }
     },
     goMessageList() {
-       this.$router.push('/messages');
+      this.$router.push("/messages");
     }
   }
 };
@@ -174,13 +217,13 @@ a.nav-item:hover {
   text-decoration: none;
 }
 
-.icon-company{
+.icon-company {
   font-size: 26px;
 }
 
-.message-item{
+.message-item {
   padding: 10px 5px;
-  border-bottom: 1px solid #EEE;
+  border-bottom: 1px solid #eee;
   line-height: 1.5em;
   font-size: 15px;
   color: #888;

@@ -5,7 +5,7 @@ package com.worldelite.job.constants;
  */
 public enum ObjectType {
 
-    JOB(1),COMPANY(2);
+    JOB(1),COMPANY(2),COMPANY_WIKI(3);
     public final byte value;
 
     ObjectType(int value) {

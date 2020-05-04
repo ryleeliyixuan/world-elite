@@ -3,6 +3,14 @@
     <h3 v-if="company">{{company.fullName}} - 企业百科</h3>
     <div class="quill-wrap">
       <quill-editor v-model="wikiForm.content" ref="myQuillEditor" :options="editorOption"></quill-editor>
+      <el-input
+        class="mt-2"
+        type="textarea"
+        maxlength="500"
+        placeholder="请输入百科摘要，不输入则摘取正文前 150 个字符"
+        show-word-limit
+        v-model="wikiForm.summary"
+      ></el-input>
       <el-upload
         style="display:none"
         ref="upload"
@@ -23,22 +31,22 @@
 <script>
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
-import { quillEditor} from "vue-quill-editor";
-import Quill from 'quill'
-import ImageResize from 'quill-image-resize-module';
+import { quillEditor } from "vue-quill-editor";
+import Quill from "quill";
+import ImageResize from "quill-image-resize-module";
 import { getUploadPicToken } from "@/api/upload_api";
-import { getCompanyWiki, saveCompanyWiki } from '@/api/company_api'
+import { getCompanyWiki, saveCompanyWiki } from "@/api/company_api";
 import Toast from "@/utils/toast";
 
-Quill.register('modules/imageResize', ImageResize);
+Quill.register("modules/imageResize", ImageResize);
 
 export default {
   name: "EditCompanyWiki",
   components: {
     quillEditor
   },
-  created(){
-      this.initData();
+  created() {
+    this.initData();
   },
   data() {
     return {
@@ -46,6 +54,7 @@ export default {
       saveLoading: false,
       wikiForm: {
         companyId: undefined,
+        summary: undefined,
         content: undefined
       },
       uploadPicOptions: {
@@ -77,15 +86,16 @@ export default {
     };
   },
   methods: {
-    initData(){
-        const companyId = this.$route.query.id;
-        getCompanyWiki(companyId).then(response => {
-            const {data} = response;
-            this.company = data.company;
-            this.wikiForm.companyId = data.company.id;
-            this.wikiForm.content = data.content;
-        })
-    },  
+    initData() {
+      const companyId = this.$route.query.id;
+      getCompanyWiki(companyId).then(response => {
+        const { data } = response;
+        this.company = data.company;
+        this.wikiForm.companyId = data.company.id;
+        this.wikiForm.content = data.content;
+        this.wikiForm.summary = data.summary;
+      });
+    },
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
         getUploadPicToken(file.name)
@@ -101,10 +111,15 @@ export default {
           });
       });
     },
-    handleUploadSuccess(){
-       const selection = this.$refs.myQuillEditor.quill.getSelection();
-       this.$refs.myQuillEditor.quill.insertEmbed(selection !== null ? selection.index : 0, "image", this.uploadPicOptions.fileUrl, Quill.sources.USER) 
-       this.$refs['upload'].clearFiles();
+    handleUploadSuccess() {
+      const selection = this.$refs.myQuillEditor.quill.getSelection();
+      this.$refs.myQuillEditor.quill.insertEmbed(
+        selection !== null ? selection.index : 0,
+        "image",
+        this.uploadPicOptions.fileUrl,
+        Quill.sources.USER
+      );
+      this.$refs["upload"].clearFiles();
     },
     imgHandler(state) {
       if (state) {
@@ -112,13 +127,16 @@ export default {
         fileInput.click(); // 加一个触发事件
       }
     },
-    handleSave(){
-        this.saveLoading = true;
-        saveCompanyWiki(this.wikiForm).then(() => {
-            Toast.success('保存成功');
-        }).finally(()=>{
-            this.saveLoading = false;
+    handleSave() {
+      this.saveLoading = true;
+      saveCompanyWiki(this.wikiForm)
+        .then(() => {
+          Toast.success("保存成功");
+          this.initData();
         })
+        .finally(() => {
+          this.saveLoading = false;
+        });
     }
   },
   mounted() {

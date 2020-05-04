@@ -23,7 +23,7 @@
             <b
               class="text-danger"
             >{{`${job.minSalary} - ${job.maxSalary}K`}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
-            <span class="ml-3 text-gray text-small">{{`${job.city.name} / ${job.minDegree.name}`}}</span>
+            <span class="ml-3 text-gray text-small">{{`${job.city?job.city.name:''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
           </div>
           <template v-slot:aside>
             <el-button

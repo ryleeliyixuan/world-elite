@@ -4,13 +4,20 @@
   <select id="selectAndList" parameterType="com.worldelite.job.entity.CompanyWiki" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from t_company_wiki
     <where>
       <if test="companyId != null">
         and company_id = #{companyId,jdbcType=BIGINT}
       </if>
     </where>
+  </select>
+  <select id="selectByCompanyId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_company_wiki
+    where
+    company_id = #{companyId,jdbcType=BIGINT}
   </select>
 </mapper>

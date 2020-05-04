@@ -8,5 +8,6 @@ import lombok.Data;
 @Data
 public class CompanyWikiForm {
     private Long companyId;
+    private String summary;
     private String content;
 }

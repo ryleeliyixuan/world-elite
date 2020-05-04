@@ -35,7 +35,7 @@
               :value="item.id"
             >
               <span style="float: left">{{ item.name }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.city.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.city? item.city.name: '' }}</span>
             </el-option>
           </el-select>
         </el-col>
@@ -380,6 +380,7 @@ export default {
   position: absolute;
   top: 0;
   bottom: 0;
+  width: 100%;
   padding-top: 80px;
   overflow: auto;
 }

@@ -86,6 +86,11 @@ const constantRoutes = [
         path: '/user-protocol',
         component: () => import('@/views/UserProtocolPage'),
         meta: {title: '用户协议'}
+    },
+    {
+        path: '/wiki-list',
+        component: () => import('@/views/CompanyWikiListPage'),
+        meta: {title: '百科'}
     }
 ]
 

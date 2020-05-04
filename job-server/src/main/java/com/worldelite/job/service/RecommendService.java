@@ -43,7 +43,8 @@ public class RecommendService {
             if(jobVo == null){
                 throw new ServiceException(ApiCode.INVALID_PARAM);
             }
-        }else if(recommendForm.getObjectType() == ObjectType.COMPANY.value){
+        }else if(recommendForm.getObjectType() == ObjectType.COMPANY.value
+                || recommendForm.getObjectType() == ObjectType.COMPANY_WIKI.value){
              CompanyVo companyVo = companyService.getCompanyInfo(recommendForm.getObjectId());
              if(companyVo == null){
                  throw new ServiceException(ApiCode.INVALID_PARAM);
@@ -96,7 +97,7 @@ public class RecommendService {
             recommendVo.setCreateTime(recommend.getCreateTime());
             if(listForm.getObjectType() == ObjectType.JOB.value){
                 recommendVo.setObject(jobService.getJobInfo(recommend.getObjectId(), true));
-            }else if(listForm.getObjectType() == ObjectType.COMPANY.value){
+            }else if(listForm.getObjectType() == ObjectType.COMPANY.value || listForm.getObjectType() == ObjectType.COMPANY_WIKI.value){
                 recommendVo.setObject(companyService.getCompanyInfo(recommend.getObjectId()));
             }
             recommendVoList.add(recommendVo);

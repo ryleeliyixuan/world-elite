@@ -62,4 +62,6 @@ public interface CompanyWikiMapper {
     int updateByPrimaryKey(CompanyWiki record);
 
     List<CompanyWiki> selectAndList(CompanyWiki options);
+
+    CompanyWiki selectByCompanyId(Long companyId);
 }

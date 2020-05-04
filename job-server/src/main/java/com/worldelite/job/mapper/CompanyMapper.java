@@ -2,6 +2,7 @@ package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.Company;
 import com.worldelite.job.entity.CompanyOptions;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -63,6 +64,8 @@ public interface CompanyMapper {
     int updateByPrimaryKey(Company record);
 
     List<Company> selectAndList(CompanyOptions options);
+
+    List<Company> searchWikiByName(@Param("name") String name);
 
     Company selectSimpleById(Long id);
 

@@ -5,10 +5,7 @@ import com.github.pagehelper.Page;
 import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.UserType;
-import com.worldelite.job.entity.Company;
-import com.worldelite.job.entity.CompanyOptions;
-import com.worldelite.job.entity.CompanyUser;
-import com.worldelite.job.entity.Job;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.CompanyMapper;
@@ -66,6 +63,25 @@ public class CompanyService extends BaseService{
         Page<Company> companyPage = (Page<Company>) companyMapper.selectAndList(options);
         PageResult<CompanyVo> pageResult = new PageResult<>(companyPage);
         pageResult.setList(AppUtils.asVoList(companyPage, CompanyVo.class));
+        return pageResult;
+    }
+
+    /**
+     * 搜索公司百科
+     * @param listForm
+     * @return
+     */
+    public PageResult<CompanyVo> searchCompanyWiki(CompanyWikiListForm listForm){
+        AppUtils.setPage(listForm);
+        Page<Company> companyPage = (Page<Company>) companyMapper.searchWikiByName(listForm.getKeyword());
+        PageResult<CompanyVo> pageResult = new PageResult<>(companyPage);
+        List<CompanyVo> companyVoList = new ArrayList<>(companyPage.size());
+        for(Company company: companyPage){
+            CompanyVo companyVo = toCompanyVo(company);
+            companyVo.setWikiSummary(companyWikiService.getCompanyWikiSummary(company.getId()));
+            companyVoList.add(companyVo);
+        }
+        pageResult.setList(companyVoList);
         return pageResult;
     }
 
@@ -165,6 +181,7 @@ public class CompanyService extends BaseService{
         CompanyVo companyVo = toCompanyVo(company);
         companyVo.setAddressList(companyAddressService.getCompanyAddressList(Long.valueOf(companyVo.getId())));
         companyVo.setCompleteProgress(AppUtils.calCompleteProgress(companyVo));
+        companyVo.setWikiSummary(companyWikiService.getCompanyWikiSummary(id));
         return companyVo;
     }
 

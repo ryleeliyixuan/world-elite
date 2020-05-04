@@ -116,13 +116,7 @@ public class JobService extends BaseService {
         job.setName(jobForm.getName());
         job.setCategoryId(jobForm.getCategoryId());
         job.setAddressId(jobForm.getAddressId());
-
-        if (jobForm.getAddressId() != null) {
-            CompanyAddressVo addressVo = companyAddressService.getCompanyAddress(jobForm.getAddressId());
-            if (addressVo != null) {
-                job.setCityId(addressVo.getCityId());
-            }
-        }
+        job.setCityId(jobForm.getCityId());
 
         job.setDepart(jobForm.getDepart());
         job.setDescription(jobForm.getDescription());

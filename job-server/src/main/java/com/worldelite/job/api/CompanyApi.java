@@ -1,20 +1,23 @@
 package com.worldelite.job.api;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.ObjectType;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.entity.Company;
 import com.worldelite.job.entity.CompanyWiki;
 import com.worldelite.job.entity.User;
 import com.worldelite.job.form.*;
-import com.worldelite.job.service.CompanyAddressService;
-import com.worldelite.job.service.CompanyService;
-import com.worldelite.job.service.CompanyVerificationService;
-import com.worldelite.job.service.CompanyWikiService;
+import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +39,9 @@ public class CompanyApi extends BaseApi {
     @Autowired
     private CompanyWikiService companyWikiService;
 
+    @Autowired
+    private RecommendService recommendService;
+
     /**
      * 搜索公司
      *
@@ -45,6 +51,33 @@ public class CompanyApi extends BaseApi {
     @GetMapping("search")
     public ApiResult<CompanyVo> search(CompanyListForm companyListForm) {
         PageResult pageResult = companyService.search(companyListForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 百科列表
+     *
+     * @return
+     */
+    @GetMapping("wiki-list")
+    public ApiResult<CompanyVo> listCompanyWiki(CompanyWikiListForm listForm){
+        PageResult pageResult;
+        if(StringUtils.isNotEmpty(listForm.getKeyword())){
+            pageResult = companyService.searchCompanyWiki(listForm);
+        }else{
+            RecommendListForm recommendListForm = new RecommendListForm();
+            BeanUtil.copyProperties(listForm, recommendListForm);
+            recommendListForm.setObjectType(ObjectType.COMPANY_WIKI.value);
+            PageResult<RecommendVo> recommendPageResult = recommendService.getRecommendList(recommendListForm);
+            pageResult = recommendPageResult;
+            if(CollectionUtils.isNotEmpty(recommendPageResult.getList())){
+                List<CompanyVo> companyVoList = new ArrayList<>(recommendPageResult.getList().size());
+                for(RecommendVo<CompanyVo> recommendVo: recommendPageResult.getList()){
+                    companyVoList.add(recommendVo.getObject());
+                }
+                pageResult.setList(companyVoList);
+            }
+        }
         return ApiResult.ok(pageResult);
     }
 

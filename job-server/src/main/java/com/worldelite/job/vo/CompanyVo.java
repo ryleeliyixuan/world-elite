@@ -43,6 +43,7 @@ public class CompanyVo implements VoConvertable<CompanyVo, Company>{
 
     private int completeProgress;
 
+    private String wikiSummary;
     private String companyWiki;
 
     @Override

@@ -15,3 +15,11 @@ export function getCompanyInfo(id){
     params: {id: id}
   })
 }
+
+export function getCompanyWikiList(data){
+  return request({
+    url: '/company/wiki-list',
+    method: 'get',
+    params: data
+  })
+}

@@ -31,6 +31,8 @@ public class JobForm {
     private Integer jobType;
     @NotNull(message = "{edit.job.description.not.blank}")
     private String description;
+    @NotNull(message = "{edit.job.city.not.blank}")
+    private Integer cityId;
 
     public String getName() {
         return FormUtils.removeAllHtmlTag(name);

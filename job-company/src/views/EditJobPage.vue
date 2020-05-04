@@ -30,6 +30,16 @@
           :disabled="isModify"
         ></el-cascader>
       </el-form-item>
+      <el-form-item label="工作城市" prop="cityId">
+        <el-select v-model="jobForm.cityId" filterable clearable placeholder="请选择工作城市">
+          <el-option
+            v-for="item in cityOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="工作地点" prop="addressId">
         <el-select v-model="jobForm.addressId" filterable clearable placeholder="请选择工作地点">
           <el-option
@@ -128,6 +138,7 @@ export default {
         minSalary: undefined,
         maxSalary: undefined,
         salaryMonths: undefined,
+        cityId: undefined,
         addressId: undefined,
         jobType: undefined,
         description: undefined,
@@ -141,6 +152,7 @@ export default {
         minDegreeId: [
           { required: true, message: "请选择学历要求", trigger: "change" }
         ],
+        cityId: [{required: true, message: "请选择工作城市", trigger: "change"}],
         addressId: [
           { required: true, message: "请选择工作地点", trigger: "change" }
         ],
@@ -160,6 +172,7 @@ export default {
         emitPath: false,
         children: "children"
       },
+      cityOptions: [],
       addressOptions: [],
       degreeOptions: [],
       minSalaryOptions: [],
@@ -225,6 +238,7 @@ export default {
       listByType(8).then(
         response => (this.jobTypeOptions = response.data.list)
       );
+      listByType(2).then(response => this.cityOptions = response.data.list);
       this.minSalaryOptions = this.generateSalaryOptions(0, 250);
       this.salaryMonthOptions = this.generateSalaryMonthOptions(11, 13);
       if (jobId) {
