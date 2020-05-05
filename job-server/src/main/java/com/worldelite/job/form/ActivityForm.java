@@ -24,10 +24,9 @@ public class ActivityForm {
     private String thumbnail;
     @NotBlank
     private String summary;
-    @NotBlank
-    private String url;
     @NotNull
     private Integer cityId;
+    @NotBlank
     private String description;
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")

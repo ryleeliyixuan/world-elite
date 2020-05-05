@@ -3,6 +3,7 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.ActivityStatus;
+import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.Dict;
 import com.worldelite.job.form.ActivityForm;
@@ -23,13 +24,16 @@ import java.util.List;
  * @author yeguozhong yedaxia.github.com
  */
 @Service
-public class ActivityService {
+public class ActivityService extends BaseService{
 
     @Autowired
     private ActivityMapper activityMapper;
 
     @Autowired
     private DictService dictService;
+
+    @Autowired
+    private FavoriteService favoriteService;
 
     /**
      * 获取活动列表
@@ -107,6 +111,9 @@ public class ActivityService {
         }
         ActivityVo activityVo = new ActivityVo().asVo(activity);
         activityVo.setCity(dictService.getById(activity.getCityId()));
+        if(curUser() != null){
+            activityVo.setJoinFlag(favoriteService.checkUserFavorite(activity.getId().longValue(), FavoriteType.ACTIVITY));
+        }
         return activityVo;
     }
 }

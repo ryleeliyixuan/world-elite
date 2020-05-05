@@ -91,6 +91,11 @@ const constantRoutes = [
         path: '/wiki-list',
         component: () => import('@/views/CompanyWikiListPage'),
         meta: {title: '百科'}
+    },
+    {
+        path: '/activity/:id',
+        component: () => import('@/views/ActivityPage'),
+        meta: {title: '活动详情'}
     }
 ]
 

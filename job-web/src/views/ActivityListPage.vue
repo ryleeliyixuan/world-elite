@@ -46,13 +46,6 @@
                   <b>活动时间：</b>
                   {{activity.startTime}} 到 {{activity.finishTime}}
                 </div>
-                <div class="mt-2 text-desc">
-                  {{activity.summary}}
-                  <el-link :href="activity.url" target="_blank" :underline="false" type="primary">
-                    查看详情
-                    <i class="el-icon-d-arrow-right" />
-                  </el-link>
-                </div>
               </el-col>
             </el-row>
           </el-card>
@@ -134,7 +127,7 @@ export default {
       });
     },
     openActivity(activity) {
-      window.open(activity.url);
+      this.$router.push(`/activity/${activity.id}`);
     }
   }
 };
