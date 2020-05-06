@@ -6,8 +6,8 @@
         <h5>
           {{resume.name}}
           <i
-            class="text-danger gender-text"
-            v-bind:class="[resume.gender === 1? 'el-icon-female': 'el-icon-male']"
+            class="gender-text"
+            v-bind:class="[resume.gender === 2? 'text-danger el-icon-female': 'text-primary el-icon-male']"
           ></i>
         </h5>
         <div>

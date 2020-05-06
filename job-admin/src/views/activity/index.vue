@@ -50,9 +50,9 @@
       </el-table-column>
       <el-table-column label="所在城市" prop="city.name"></el-table-column>
       <el-table-column label="活动地点" prop="address"></el-table-column>
-      <el-table-column label="报名链接" prop="url">
+      <el-table-column label="活动详情" prop="url">
         <template slot-scope="{row}">
-          <el-link :href="row.url" type="primary">点击查看</el-link>
+          <el-link :href="getActivityUrl(row.id)" type="primary" target="_blank">点击查看</el-link>
         </template>
       </el-table-column>
 
@@ -157,6 +157,9 @@ export default {
     },
     handleNewActivity() {
       this.$router.push("/activity/edit");
+    },
+    getActivityUrl(id){
+      return `${process.env.VUE_APP_WEB_HOST}/activity/${id}`
     },
     handleModify(activity) {
       this.$router.push({ path: "/activity/edit", query: { id: activity.id } });

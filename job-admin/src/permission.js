@@ -1,4 +1,5 @@
 import router from './router'
+import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
@@ -24,6 +25,7 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
+      await store.dispatch('user/MYINFO')
       next()
       NProgress.done()
     }

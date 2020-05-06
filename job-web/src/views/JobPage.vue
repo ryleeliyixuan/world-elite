@@ -17,12 +17,12 @@
       </b-col>
       <b-col cols="4">
         <el-button
-          :type="job.favoriteFlag == 1? 'info' :'primary'"
-          icon="el-icon-star-off"
+          type="primary"
+          :icon="job.favoriteFlag == 1? 'el-icon-star-on' : 'el-icon-star-off'"
           plain
           :loading="favoriteLoading"
           @click="handleFavorite"
-        >{{job.favoriteFlag == 1? '取消收藏': '收藏岗位'}}</el-button>
+        >{{job.favoriteFlag == 1? '已收藏': '收藏岗位'}}</el-button>
         <el-button
           type="primary"
           :loading="applyLoading"

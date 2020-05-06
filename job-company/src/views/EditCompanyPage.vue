@@ -585,7 +585,7 @@ export default {
       }
     },
     previewCompanyPage(){
-      self.location = `${process.env.VUE_APP_WEB_HOST}/company/${this.company.id}`;
+      window.open(`${process.env.VUE_APP_WEB_HOST}/company/${this.company.id}`);
     }
   }
 };

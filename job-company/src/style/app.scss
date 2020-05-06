@@ -4,3 +4,8 @@
 .link-pointer{
     cursor: pointer;
 }
+
+//safari光标bug
+.el-input__inner {
+    line-height: normal!important;
+}

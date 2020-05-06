@@ -454,7 +454,7 @@
           <el-input v-model="resumeEduForm.majorName" placeholder="请输入所学专业"></el-input>
         </el-form-item>
         <el-form-item label="GPA" prop="gpa">
-          <el-input v-model="resumeEduForm.gpa" type="number" placeholder="请输入GPA"></el-input>
+          <el-input v-model="resumeEduForm.gpa" type="number" placeholder="请输入GPA" min="0"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -965,6 +965,11 @@ export default {
       this.maxSalaryOptions = this.generateSalaryOptions(
         this.expectJobForm.minSalary
       );
+    },
+    "resumeEduForm.gpa": function(newVal,oldVal){
+      if(newVal < 0){
+        this.resumeEduForm.gpa = 0;
+      }
     }
   },
   directives: {

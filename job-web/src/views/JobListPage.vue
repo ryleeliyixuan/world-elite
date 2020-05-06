@@ -17,7 +17,8 @@
       </el-col>
       <el-col :span="4">
         <el-select
-          v-model="listQuery.salaryRangeId"
+          v-model="listQuery.salaryRangeIds"
+          multiple
           filterable
           clearable
           placeholder="薪资"
@@ -73,7 +74,8 @@
       </el-col>
       <el-col :span="4">
         <el-select
-          v-model="listQuery.jobType"
+          v-model="listQuery.jobTypes"
+          multiple
           filterable
           clearable
           placeholder="工作类型"
@@ -179,8 +181,8 @@ export default {
     return {
       listQuery: {
         keyword: "",
-        salaryRangeId: undefined,
-        jobType: undefined,
+        salaryRangeIds: [],
+        jobTypes: [],
         cityIds: [],
         companyIndustryIds: [],
         companyScaleIds: [],
@@ -234,12 +236,6 @@ export default {
     },
     getList() {
       parseListQuery(this.$route.query, this.listQuery);
-      if (this.listQuery.salaryRangeId) {
-        this.listQuery.salaryRangeId = parseInt(this.listQuery.salaryRangeId);
-      }
-      if (this.listQuery.jobType) {
-        this.listQuery.jobType = parseInt(this.listQuery.jobType);
-      }
       searchJob(this.listQuery).then(response => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;

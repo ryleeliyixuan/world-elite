@@ -111,7 +111,10 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-resume-edu")
-    public ApiResult<ResumeEduVo> saveResumeEdu(@Valid @RequestBody ResumeEduForm resumeEduForm) {
+    public ApiResult saveResumeEdu(@Valid @RequestBody ResumeEduForm resumeEduForm) {
+        if(resumeEduForm.getGpa() != null && resumeEduForm.getGpa() < 0){
+            return ApiResult.fail(ApiCode.INVALID_PARAM, message("edit.resume.edu.gpa.below.zero"));
+        }
         ResumeEduVo resumeEduVo = resumeEduService.saveResumeEdu(resumeEduForm);
         return ApiResult.ok(resumeEduVo);
     }

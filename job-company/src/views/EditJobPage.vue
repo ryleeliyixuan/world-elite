@@ -3,6 +3,7 @@
     <h5 class="mb-4">{{title}}</h5>
     <el-form
       ref="jobForm"
+      size="medium"
       :model="jobForm"
       :rules="jobFormRules"
       label-width="80px"

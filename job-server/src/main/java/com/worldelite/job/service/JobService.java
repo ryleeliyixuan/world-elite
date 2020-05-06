@@ -220,6 +220,8 @@ public class JobService extends BaseService {
         return org.apache.commons.lang.StringUtils.isEmpty(jobSearchForm.getKeyword())
                 && jobSearchForm.getSalaryRangeId() == null
                 && jobSearchForm.getJobType() == null
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getSalaryRangeIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getJobTypes())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCityIds())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCategoryIds())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyStageIds())

@@ -8,6 +8,7 @@ import com.worldelite.job.service.JobService;
 import com.worldelite.job.vo.DictVo;
 import com.worldelite.job.vo.JobVo;
 import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.SalaryRange;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +49,9 @@ public class LuceneSearchService implements SearchService {
     @Autowired
     private JobService jobService;
 
+    @Autowired
+    private DictService dictService;
+
     private static IndexReader sIndexReader;
 
     @Override
@@ -83,9 +87,23 @@ public class LuceneSearchService implements SearchService {
             Query query = IntPoint.newRangeQuery(JobIndexFields.AVER_SALARY_INDEX, searchForm.getMinSalary(), searchForm.getMaxSalary());
             queryBuilder.add(query, BooleanClause.Occur.MUST);
         }
+        if(ArrayUtils.isNotEmpty(searchForm.getSalaryRangeIds())){
+            BooleanQuery.Builder salaryRangeQueryBuilder = new BooleanQuery.Builder();
+            for(Integer rangeId: searchForm.getSalaryRangeIds()){
+                SalaryRange salaryRange = dictService.getSalaryRange(rangeId);
+                if(salaryRange != null){
+                    Query query = IntPoint.newRangeQuery(JobIndexFields.AVER_SALARY_INDEX, salaryRange.getMin(), salaryRange.getMax());
+                    salaryRangeQueryBuilder.add(query, BooleanClause.Occur.SHOULD);
+                }
+            }
+            queryBuilder.add(salaryRangeQueryBuilder.build(), BooleanClause.Occur.MUST);
+        }
         if(searchForm.getJobType() != null){
             Query query = IntPoint.newExactQuery(JobIndexFields.JOB_TYPE_INDEX, searchForm.getJobType());
             queryBuilder.add(query, BooleanClause.Occur.MUST);
+        }
+        if(ArrayUtils.isNotEmpty(searchForm.getJobTypes())){
+            queryBuilder.add(addMultiShouldQuery(searchForm.getJobTypes(), JobIndexFields.JOB_TYPE_INDEX), BooleanClause.Occur.MUST);
         }
         return searchByQuery(queryBuilder.build(), searchForm);
     }

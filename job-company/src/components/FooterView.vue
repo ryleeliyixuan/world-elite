@@ -10,23 +10,16 @@
           <div>
             <el-link class="link-text" href="http://company.myworldelite.com/">{{$t('app_name')}}企业端</el-link>
           </div>
-          <div>
-            <el-link class="link-text" href="http://www.agilestudio.cn">AgileStudio工作室</el-link>
-          </div>
         </el-col>
         <el-col :span="6">
           <h5 class="mb-3">用户帮助</h5>
           <div>
-            <el-link class="link-text" href="http://www.myworldelite.com/user-protocol">用户服务协议</el-link>
-          </div>
-          <div>
-            <el-link class="link-text" href="http://www.myworldelite.com/user-protocol">隐私政策</el-link>
+            <el-link class="link-text" href="http://www.myworldelite.com/user-protocol">用户协议以及隐私政策</el-link>
           </div>
         </el-col>
         <el-col :span="6">
           <h5 class="mb-3">联系我们</h5>
-          <div class="link-text">商务服务：wenjiad@myworldelite.com</div>
-          <div class="link-text">反馈建议：wenjiad@myworldelite.com</div>
+          <div class="link-text">邮箱：wenjiad@myworldelite.com</div>
         </el-col>
         <el-col :span="6">
           <div class="link-text text-center">

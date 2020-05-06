@@ -6,8 +6,8 @@
         <h5>
           {{resume.name}}
           <i
-            class="text-danger gender-text"
-            v-bind:class="[resume.gender === 1? 'el-icon-female': 'el-icon-male']"
+            class="gender-text"
+            v-bind:class="[resume.gender === 2? 'text-danger el-icon-female': 'text-primary el-icon-male']"
           ></i>
         </h5>
         <div>
@@ -93,6 +93,11 @@
           :href="wholeLink(resumeLink.link)"
           target="_blank"
         >{{resumeLink.name}}</el-link>
+      </div>
+      <div class="mt-3" v-if="resume.attachResume">
+        <el-link :underline="false" type="primary" :href="resume.attachResume">
+          <b class="el-icon-link">附件简历</b>
+        </el-link>
       </div>
     </div>
   </div>

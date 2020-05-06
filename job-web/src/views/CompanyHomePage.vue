@@ -24,12 +24,12 @@
           </b-col>
           <b-col  cols="4">
             <el-button
-              :type="company.favoriteFlag == 1? 'info' :'primary'"
-              icon="el-icon-star-off"
+              type="primary"
+              :icon="company.favoriteFlag == 1? 'el-icon-star-on' : 'el-icon-star-off'"
               plain
               :loading="favoriteLoading"
               @click="handleFavorite"
-            >{{company.favoriteFlag == 1? '取消收藏': '收藏企业'}}</el-button>
+            >{{company.favoriteFlag == 1? '已收藏': '收藏岗位'}}</el-button>
           </b-col>
         </b-row>
       </b-media-body>

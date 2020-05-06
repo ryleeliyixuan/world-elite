@@ -23,7 +23,7 @@
             <b>免费加入</b>
           </el-link>
           <el-button type="primary" @click="$router.push('/login')">登录</el-button>
-          <el-link :underline="false" class="ml-4 icon-home" :href="webHomeUrl"><svg-icon icon-class="home" /></el-link>
+          <el-link :underline="false" class="ml-4 icon-home" :href="webHomeUrl" target="_blank"><svg-icon icon-class="home" /></el-link>
         </div>
         <div class="text-right" v-else>
           <el-popover

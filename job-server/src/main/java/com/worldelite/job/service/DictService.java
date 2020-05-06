@@ -13,7 +13,9 @@ import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ApiCode;
 import com.worldelite.job.vo.DictVo;
 import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.SalaryRange;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -102,6 +104,20 @@ public class DictService extends BaseService{
             dict.setDelFlag(Bool.TRUE);
             dictMapper.updateByPrimaryKeySelective(dict);
         }
+    }
+
+    public SalaryRange getSalaryRange(Integer id){
+        DictVo dictVo = getById(id);
+        if(dictVo != null){
+            String[] values =  dictVo.getValue().split("-");
+            if(values.length == 2){
+                SalaryRange salaryRange = new SalaryRange();
+                salaryRange.setMin(NumberUtils.toInt(values[0]));
+                salaryRange.setMax(NumberUtils.toInt(values[1]));
+                return salaryRange;
+            }
+        }
+        return null;
     }
 
     /**

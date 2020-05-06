@@ -34,7 +34,7 @@
             <b>立即加入</b>
           </el-link>
           <el-button type="primary" @click="$router.push('/login')">登录</el-button>
-          <el-link :underline="false" class="ml-4 icon-company" :href="companyHomeUrl">
+          <el-link :underline="false" class="ml-4 icon-company" :href="companyHomeUrl" target="_blank">
             <svg-icon icon-class="company" />
           </el-link>
         </div>

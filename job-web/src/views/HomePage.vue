@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="job-recommend-box">
-      <h3 class="main-title text-center">每日职位精选</h3>
+      <h3 class="main-title text-center">职位精选</h3>
       <div class="recommend-jobs container">
         <el-row :gutter="20">
           <el-col
@@ -65,7 +65,7 @@
       </div>
     </div>
     <div class="company-recommend-box">
-      <h3 class="main-title text-center">每日公司推荐</h3>
+      <h3 class="main-title text-center">百科推荐</h3>
       <div class="recommend-companys container">
         <el-row :gutter="20">
           <el-col
