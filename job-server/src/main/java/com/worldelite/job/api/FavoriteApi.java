@@ -4,6 +4,7 @@ import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.form.FavoriteForm;
+import com.worldelite.job.form.FavoriteListForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.service.FavoriteService;
 import com.worldelite.job.vo.ApiResult;
@@ -19,7 +20,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/favorite")
-public class FavoriteApi {
+public class FavoriteApi extends BaseApi{
 
     @Autowired
     private FavoriteService favoriteService;
@@ -39,15 +40,29 @@ public class FavoriteApi {
 
 
     /**
-     * 获取当前用户收藏的工作列表
+     * 获取当前用户收藏列表
+     *
+     * @param listForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @GetMapping("my-favorite-list")
+    public ApiResult getFavoriteJobList(FavoriteListForm listForm){
+        PageResult pageResult = favoriteService.getUserFavoriteList(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 用户参与活动
      *
      * @param pageForm
      * @return
      */
     @RequireLogin(allow = UserType.GENERAL)
-    @GetMapping("get-favorite-jobs")
-    public ApiResult getFavoriteJobList(PageForm pageForm){
-        PageResult pageResult = favoriteService.getUserFavoriteJobList(pageForm);
+    @GetMapping("my-favorite-activities")
+    public ApiResult getFavoriteActivityList(PageForm pageForm){
+        PageResult pageResult = favoriteService.getUserActivityList(curUser().getId(), pageForm);
         return ApiResult.ok(pageResult);
     }
+
 }

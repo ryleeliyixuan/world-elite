@@ -1,10 +1,13 @@
 package com.worldelite.job.vo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.anatation.ResumeScore;
+import com.worldelite.job.constants.Bool;
 import com.worldelite.job.entity.Company;
 import com.worldelite.job.util.AppUtils;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,6 +48,10 @@ public class CompanyVo implements VoConvertable<CompanyVo, Company>{
 
     private String wikiSummary;
     private String companyWiki;
+
+    private Byte favoriteFlag = Bool.FALSE; //是否已收藏
+    @JSONField(format = "yyyy-MM-dd")
+    private Date favoriteTime; //收藏时间
 
     @Override
     public CompanyVo asVo(Company company) {

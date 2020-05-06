@@ -3,6 +3,7 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.Bool;
+import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.*;
@@ -50,6 +51,9 @@ public class CompanyService extends BaseService{
 
     @Autowired
     private CompanyWikiService companyWikiService;
+
+    @Autowired
+    private FavoriteService favoriteService;
 
     /**
      * 搜索公司
@@ -271,6 +275,10 @@ public class CompanyService extends BaseService{
         companyVo.setStage(dictService.getById(company.getStageId()));
         companyVo.setIndustry(dictService.getById(company.getIndustryId()));
         companyVo.setProperty(dictService.getById(company.getPropertyId()));
+        if(curUser() != null){
+            Boolean favorite = favoriteService.checkUserFavorite(company.getId(), FavoriteType.COMPANY);
+            companyVo.setFavoriteFlag(favorite? Bool.TRUE: Bool.FALSE);
+        }
         return companyVo;
     }
 }

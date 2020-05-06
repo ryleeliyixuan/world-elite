@@ -87,6 +87,9 @@
               <el-dropdown-item>
                 <el-link class="no-decoration" :underline="false" href="/favorites">我的收藏</el-link>
               </el-dropdown-item>
+              <el-dropdown-item>
+                <el-link class="no-decoration" :underline="false" href="/my-activities">我的活动</el-link>
+              </el-dropdown-item>
               <el-dropdown-item @click.native="handleLogout" class="text-danger">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>

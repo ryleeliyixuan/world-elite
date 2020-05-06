@@ -58,6 +58,11 @@ const constantRoutes = [
         meta: { title: '我的收藏' }
     },
     {
+        path: '/my-activities',
+        component: () => import('@/views/MyActivityListPage'),
+        meta: { title: '我的活动' }
+    },
+    {
         path: '/messages',
         component: () => import('@/views/MessageListPage'),
         meta: { title: '消息通知' }

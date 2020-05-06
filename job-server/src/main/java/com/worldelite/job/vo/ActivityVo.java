@@ -29,6 +29,8 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity>{
     private String address;
 
     private Boolean joinFlag;
+    @JSONField(format = "yyyy-MM-dd HH:mm")
+    private Date joinTime;
 
     @Override
     public ActivityVo asVo(Activity activity) {

@@ -46,6 +46,9 @@
                   <b>活动时间：</b>
                   {{activity.startTime}} 到 {{activity.finishTime}}
                 </div>
+                <div class="mt-2 text-desc">
+                  {{activity.summary}}
+                </div>
               </el-col>
             </el-row>
           </el-card>

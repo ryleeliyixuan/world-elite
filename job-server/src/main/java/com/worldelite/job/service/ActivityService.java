@@ -65,6 +65,11 @@ public class ActivityService extends BaseService{
         return toActivityVo(activity);
     }
 
+    public ActivityVo getSimpleActivity(Integer id){
+        Activity activity = activityMapper.selectSimpleById(id);
+        return toActivityVo(activity);
+    }
+
     /**
      * 保存活动
      *

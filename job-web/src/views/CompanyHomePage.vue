@@ -6,19 +6,32 @@
         <b-img blank blank-color="#ccc" class="company-logo" v-else></b-img>
       </template>
       <b-media-body>
-        <h5 class="mt-0">{{company.name}}</h5>
-        <p class="mb-0">
-          <span v-if="company.stage">{{company.stage.name}} .</span>
-          <span v-if="company.property">{{company.property.name}} .</span>
-          <span v-if="company.industry">{{company.industry.name}} .</span>
-          <span v-if="company.scale">{{company.scale.name}}</span>
-        </p>
-        <div class="mt-2 mb-0" v-if="company.homepage">
-          <el-link :href="companyLink" target="_blank" :underline="false">
-            公司官网
-            <i class="el-icon-position el-icon--right"></i>
-          </el-link>
-        </div>
+        <b-row align-v="center">
+          <b-col>
+            <h5 class="mt-0">{{company.name}}</h5>
+            <p class="mb-0">
+              <span v-if="company.stage">{{company.stage.name}} .</span>
+              <span v-if="company.property">{{company.property.name}} .</span>
+              <span v-if="company.industry">{{company.industry.name}} .</span>
+              <span v-if="company.scale">{{company.scale.name}}</span>
+            </p>
+            <div class="mt-2 mb-0" v-if="company.homepage">
+              <el-link :href="companyLink" target="_blank" :underline="false">
+                公司官网
+                <i class="el-icon-position el-icon--right"></i>
+              </el-link>
+            </div>
+          </b-col>
+          <b-col  cols="4">
+            <el-button
+              :type="company.favoriteFlag == 1? 'info' :'primary'"
+              icon="el-icon-star-off"
+              plain
+              :loading="favoriteLoading"
+              @click="handleFavorite"
+            >{{company.favoriteFlag == 1? '取消收藏': '收藏企业'}}</el-button>
+          </b-col>
+        </b-row>
       </b-media-body>
     </b-media>
     <el-menu :default-active="tabIndex" mode="horizontal" @select="handleSelectTab">
@@ -118,6 +131,7 @@ import Pagination from "@/components/Pagination";
 import { getCompanyInfo } from "@/api/company_api";
 import { getCompanyJobList } from "@/api/job_api";
 import { setPageTitle } from "@/utils/setting";
+import { doFavorite } from "@/api/favorite_api";
 
 Vue.use(VueAMap);
 
@@ -143,7 +157,13 @@ export default {
         page: 1,
         limit: 10,
         sort: "-pub_time"
-      }
+      },
+      favoriteForm: {
+        objectId: undefined,
+        type: 2,
+        favorite: false
+      },
+      favoriteLoading: false
     };
   },
   created() {
@@ -165,6 +185,7 @@ export default {
     initData() {
       this.companyId = this.$route.params.id;
       this.listQuery.companyId = this.companyId;
+      this.favoriteForm.objectId = this.companyId;
       getCompanyInfo(this.companyId).then(response => {
         this.company = response.data;
         setPageTitle(this.company.name);
@@ -192,6 +213,18 @@ export default {
         this.getCompanyJobList();
       }
     },
+    handleFavorite() {
+      this.favoriteLoading = true;
+      this.favoriteForm.favorite = !this.favoriteForm.favorite;
+      doFavorite(this.favoriteForm)
+        .then(() => {
+          this.company.favoriteFlag = this.favoriteForm.favorite ? 1 : 0;
+          this.$message("操作成功");
+        })
+        .finally(() => {
+          this.favoriteLoading = false;
+        });
+    },
     onJobClick(job) {
       this.$router.push({ name: "job", params: { id: job.id } });
     }
@@ -200,7 +233,7 @@ export default {
 </script>
 
 <style scoped>
-.company-logo{
+.company-logo {
   width: 100px;
   height: 100px;
 }

@@ -8,9 +8,17 @@ export function doFavorite(data){
     })
 }
 
-export function getFavoriteJobList(data){
+export function getFavoriteList(data){
     return request({
-        url: '/favorite/get-favorite-jobs',
+        url: '/favorite/my-favorite-list',
+        method: 'get',
+        params: data
+    })
+}
+
+export function getFavoriteActivityList(data){
+    return request({
+        url: '/favorite/my-favorite-activities',
         method: 'get',
         params: data
     })

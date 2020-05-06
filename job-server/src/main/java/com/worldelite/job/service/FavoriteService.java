@@ -5,9 +5,12 @@ import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.entity.Favorite;
 import com.worldelite.job.form.FavoriteForm;
+import com.worldelite.job.form.FavoriteListForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.ActivityVo;
+import com.worldelite.job.vo.CompanyVo;
 import com.worldelite.job.vo.JobVo;
 import com.worldelite.job.vo.PageResult;
 import me.zhyd.oauth.utils.StringUtils;
@@ -30,6 +33,12 @@ public class FavoriteService extends BaseService{
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private ActivityService activityService;
+
+    @Autowired
+    private CompanyService companyService;
 
     /**
      * 收藏或者取消收藏
@@ -61,6 +70,7 @@ public class FavoriteService extends BaseService{
      * @param pageForm
      * @return
      */
+    @Deprecated
     public PageResult<JobVo> getUserFavoriteJobList(PageForm pageForm){
         Favorite options = new Favorite();
         options.setType(FavoriteType.JOB.value);
@@ -78,6 +88,67 @@ public class FavoriteService extends BaseService{
             jobVoList.add(jobVo);
         }
         pageResult.setList(jobVoList);
+        return pageResult;
+    }
+
+    /**
+     * 获取用户收藏列表
+     *
+     * @param favoriteListForm
+     * @return
+     */
+    public PageResult getUserFavoriteList(FavoriteListForm favoriteListForm){
+        Favorite options = new Favorite();
+        options.setType(favoriteListForm.getType());
+        options.setUserId(curUser().getId());
+        if(StringUtils.isEmpty(favoriteListForm.getSort())){
+            favoriteListForm.setSort("-id");
+        }
+        AppUtils.setPage(favoriteListForm);
+        Page<Favorite> favoritePage= (Page<Favorite>)favoriteMapper.selectAndList(options);
+        PageResult pageResult = new PageResult<>(favoritePage);
+        if(FavoriteType.JOB.value == favoriteListForm.getType()){
+            List<JobVo> jobVoList = new ArrayList<>(favoritePage.size());
+            for(Favorite favorite: favoritePage){
+                JobVo jobVo = jobService.getJobInfo(favorite.getObjectId(), true);
+                jobVo.setFavoriteTime(favorite.getCreateTime());
+                jobVoList.add(jobVo);
+            }
+            pageResult.setList(jobVoList);
+        }else if(FavoriteType.COMPANY.value == favoriteListForm.getType()){
+            List<CompanyVo> companyVoList = new ArrayList<>(favoritePage.size());
+            for(Favorite favorite: favoritePage){
+                CompanyVo companyVo = companyService.getCompanyInfo(favorite.getObjectId());
+                companyVo.setFavoriteTime(favorite.getCreateTime());
+                companyVoList.add(companyVo);
+            }
+            pageResult.setList(companyVoList);
+        }
+        return pageResult;
+    }
+
+    /**
+     * 获取用户的活动列表
+     * @param pageForm
+     * @return
+     */
+    public PageResult<ActivityVo> getUserActivityList(Long userId, PageForm pageForm){
+        Favorite options = new Favorite();
+        options.setType(FavoriteType.ACTIVITY.value);
+        options.setUserId(userId);
+        if(StringUtils.isEmpty(pageForm.getSort())){
+            pageForm.setSort("-id");
+        }
+        AppUtils.setPage(pageForm);
+        Page<Favorite> favoritePage= (Page<Favorite>)favoriteMapper.selectAndList(options);
+        PageResult<ActivityVo> pageResult = new PageResult<>(favoritePage);
+        List<ActivityVo> activityVoList = new ArrayList<>(favoritePage.size());
+        for(Favorite favorite: favoritePage){
+            ActivityVo activityVo = activityService.getSimpleActivity(favorite.getObjectId().intValue());
+            activityVo.setJoinTime(favorite.getCreateTime());
+            activityVoList.add(activityVo);
+        }
+        pageResult.setList(activityVoList);
         return pageResult;
     }
 
