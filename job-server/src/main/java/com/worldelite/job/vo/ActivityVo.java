@@ -27,6 +27,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity>{
     @JSONField(format = "yyyy-MM-dd HH:mm")
     private Date finishTime;
     private String address;
+    private Byte status;
 
     private Boolean joinFlag;
     @JSONField(format = "yyyy-MM-dd HH:mm")

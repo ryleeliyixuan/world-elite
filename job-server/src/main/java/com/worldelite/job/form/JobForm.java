@@ -23,7 +23,6 @@ public class JobForm {
     private Integer minSalary;
     @NotNull(message = "{edit.job.salary.not.null}")
     private Integer maxSalary;
-    @NotNull(message = "{edit.job.salary.not.null}")
     private Integer salaryMonths;
     @NotNull(message = "{edit.job.address.not.null}")
     private Integer addressId;

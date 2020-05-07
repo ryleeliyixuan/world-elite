@@ -110,6 +110,15 @@ public class ActivityService extends BaseService{
         }
     }
 
+    /**
+     * 删除活动
+     *
+     * @param id
+     */
+    public void deleteActivity(Integer id){
+        activityMapper.deleteByPrimaryKey(id);
+    }
+
     private ActivityVo toActivityVo(Activity activity){
         if(activity == null){
             return null;

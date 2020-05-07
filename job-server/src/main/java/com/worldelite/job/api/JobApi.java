@@ -128,6 +128,19 @@ public class JobApi extends BaseApi{
     }
 
     /**
+     * 删除职位
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("delete")
+    @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
+    public ApiResult deleteJob(@RequestParam Long id){
+        jobService.deleteJob(id);
+        return ApiResult.ok();
+    }
+
+    /**
      * 重新开放职位
      *
      * @param id

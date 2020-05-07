@@ -51,4 +51,10 @@ public class ActivityApi {
         return ApiResult.ok();
     }
 
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("delete")
+    public ApiResult deleteActivity(@RequestParam Integer id){
+        activityService.deleteActivity(id);
+        return ApiResult.ok();
+    }
 }

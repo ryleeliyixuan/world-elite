@@ -83,13 +83,22 @@
               icon="el-icon-close"
             >关闭</el-button>
             <el-button
-              type="danger"
+              type="success"
               size="mini"
               class="p-2"
               v-if="job.status == 3"
               icon="el-icon-refresh-right"
               @click.stop="handleReopenJob(job.id)"
             >重新开放</el-button>
+            <el-button
+              size="mini"
+              class="p-2"
+              icon="el-icon-close"
+              v-if="job.status == 3"
+              onfirmButtonText="删除"
+              @click.stop="handleReopenJob(job.id)"
+              type="danger"
+            >删除</el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -106,7 +115,12 @@
 </template>
 
 <script>
-import { getManageJobList, takeOffJob, reopenJob } from "@/api/job_api";
+import {
+  getManageJobList,
+  takeOffJob,
+  reopenJob,
+  deleteJob
+} from "@/api/job_api";
 import Pagination from "@/components/Pagination";
 import { formatListQuery, parseListQuery } from "@/utils/common";
 
@@ -119,7 +133,7 @@ export default {
         status: "2",
         page: 1,
         limit: 20,
-        sort: '-id'
+        sort: "-id"
       },
       total: 0,
       pageResult: {}
@@ -160,6 +174,21 @@ export default {
         });
       });
     },
+    handleDeleteJob(job) {
+      this.$confirm("此操作将删除该职位, 是否继续?", "提示", {
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        deleteJob({ id: job.id }).then(() => {
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+          this.getList();
+        });
+      });
+    },
     handleFilter() {
       this.listQuery.page = 1;
       this.handleRouteList();
@@ -174,7 +203,7 @@ export default {
       this.$router.push({ path: "/edit-job", query: { id: id } });
     },
     handleJobClick(job) {
-      self.location = `${process.env.VUE_APP_WEB_HOST}/job/${job.id}`;
+      window.open(`${process.env.VUE_APP_WEB_HOST}/job/${job.id}`);
     },
     handleResumeListClick(job, statuses) {
       this.$router.push({

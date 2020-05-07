@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container edit-job-container">
     <h5 class="mb-4">{{title}}</h5>
     <el-form
       ref="jobForm"
@@ -33,12 +33,7 @@
       </el-form-item>
       <el-form-item label="工作城市" prop="cityId">
         <el-select v-model="jobForm.cityId" filterable clearable placeholder="请选择工作城市">
-          <el-option
-            v-for="item in cityOptions"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          ></el-option>
+          <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="工作地点" prop="addressId">
@@ -82,7 +77,12 @@
           ></el-option>
         </el-select>
         <span class="pl-2 pr-2">×</span>
-        <el-select v-model="jobForm.salaryMonths" placeholder="薪资月数" class="ml-2 salary-option">
+        <el-select
+          v-model="jobForm.salaryMonths"
+          clearable
+          placeholder="薪资月数(可选)"
+          class="ml-2 salary-month-option"
+        >
           <el-option
             v-for="item in salaryMonthOptions"
             :key="item.value"
@@ -153,7 +153,9 @@ export default {
         minDegreeId: [
           { required: true, message: "请选择学历要求", trigger: "change" }
         ],
-        cityId: [{required: true, message: "请选择工作城市", trigger: "change"}],
+        cityId: [
+          { required: true, message: "请选择工作城市", trigger: "change" }
+        ],
         addressId: [
           { required: true, message: "请选择工作地点", trigger: "change" }
         ],
@@ -207,7 +209,7 @@ export default {
       this.jobForm.salary =
         this.jobForm.minSalary && this.jobForm.maxSalary ? 1 : undefined;
     },
-    "jobForm": {
+    jobForm: {
       handler() {
         if (this.jobForm.id === undefined) {
           this.$store.commit("setting/JOB_DRAFT", this.jobForm);
@@ -239,7 +241,7 @@ export default {
       listByType(8).then(
         response => (this.jobTypeOptions = response.data.list)
       );
-      listByType(2).then(response => this.cityOptions = response.data.list);
+      listByType(2).then(response => (this.cityOptions = response.data.list));
       this.minSalaryOptions = this.generateSalaryOptions(0, 250);
       this.salaryMonthOptions = this.generateSalaryMonthOptions(11, 13);
       if (jobId) {
@@ -333,26 +335,32 @@ export default {
 <style lang="scss">
 @import "bootstrap/scss/bootstrap.scss";
 
-.ql-container .ql-editor {
-  min-height: 200px;
-  font-size: 15px;
-}
-.ql-editor p {
-  margin-bottom: 10px;
-}
-.ql-editor ol,
-.ql-editor ul {
-  padding-left: 0.5em;
-  margin-bottom: 10px;
-}
-.ql-bubble {
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-}
+.edit-job-container {
+  .ql-container .ql-editor {
+    min-height: 200px;
+    font-size: 15px;
+  }
+  .ql-editor p {
+    margin-bottom: 10px;
+  }
+  .ql-editor ol,
+  .ql-editor ul {
+    padding-left: 0.5em;
+    margin-bottom: 10px;
+  }
+  .ql-bubble {
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+  }
 
-.ql-editor.ql-blank::before {
-  font-style: normal;
-  color: #c0c4cc;
-  font-size: 15px;
+  .ql-editor.ql-blank::before {
+    font-style: normal;
+    color: #c0c4cc;
+    font-size: 15px;
+  }
+
+  .salary-month-option {
+    width: 140px;
+  }
 }
 </style>

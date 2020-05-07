@@ -14,6 +14,49 @@
         >马上加入</el-button>
       </div>
     </div>
+    <div class="company-recommend-box">
+      <h3 class="main-title text-center">百科推荐</h3>
+      <div class="recommend-companys container">
+        <el-row :gutter="20">
+          <el-col
+            :span="6"
+            class="company-item"
+            v-for="recommendCompany in recommendCompanyList"
+            :key="recommendCompany.id"
+          >
+            <el-card
+              shadow="hover"
+              class="link-pointer text-center no-border"
+              v-if="recommendCompany.object"
+            >
+              <el-link
+                :href="`/company/${recommendCompany.object.id}`"
+                :underline="false"
+                style="display: block"
+              >
+                <el-image class="company-logo" :src="recommendCompany.object.logo"></el-image>
+                <h6 class="text-center text-truncate">{{recommendCompany.object.name}}</h6>
+                <div class="text-gray text-small text-center text-truncate">
+                  <span
+                    v-if="recommendCompany.object.stage"
+                  >{{recommendCompany.object.stage.name}} .</span>
+                  <span
+                    v-if="recommendCompany.object.property"
+                  >{{recommendCompany.object.property.name}} .</span>
+                  <span
+                    v-if="recommendCompany.object.industry"
+                  >{{recommendCompany.object.industry.name}} .</span>
+                  <span v-if="recommendCompany.object.scale">{{recommendCompany.object.scale.name}}</span>
+                </div>
+                <div
+                  class="text-gray text-small text-center mt-2 text-truncate"
+                >{{recommendCompany.object.synopsis}}</div>
+              </el-link>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
     <div class="job-recommend-box">
       <h3 class="main-title text-center">职位精选</h3>
       <div class="recommend-jobs container">
@@ -58,45 +101,6 @@
                     class="text-gray text-small text-truncate"
                   >{{recommendJob.object.companyUser.company.industry?recommendJob.object.companyUser.company.industry.name:''}} / {{recommendJob.object.companyUser.company.stage?recommendJob.object.companyUser.company.stage.name:''}} / {{recommendJob.object.companyUser.company.scale?recommendJob.object.companyUser.company.scale.name:''}}</div>
                 </b-media>
-              </el-link>
-            </el-card>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-    <div class="company-recommend-box">
-      <h3 class="main-title text-center">百科推荐</h3>
-      <div class="recommend-companys container">
-        <el-row :gutter="20">
-          <el-col
-            :span="6"
-            class="company-item"
-            v-for="recommendCompany in recommendCompanyList"
-            :key="recommendCompany.id"
-          >
-            <el-card shadow="hover" class="link-pointer text-center no-border" v-if="recommendCompany.object">
-              <el-link
-                :href="`/company/${recommendCompany.object.id}`"
-                :underline="false"
-                style="display: block"
-              >
-                <el-image class="company-logo" :src="recommendCompany.object.logo"></el-image>
-                <h6 class="text-center text-truncate">{{recommendCompany.object.name}}</h6>
-                <div class="text-gray text-small text-center text-truncate">
-                  <span
-                    v-if="recommendCompany.object.stage"
-                  >{{recommendCompany.object.stage.name}} .</span>
-                  <span
-                    v-if="recommendCompany.object.property"
-                  >{{recommendCompany.object.property.name}} .</span>
-                  <span
-                    v-if="recommendCompany.object.industry"
-                  >{{recommendCompany.object.industry.name}} .</span>
-                  <span v-if="recommendCompany.object.scale">{{recommendCompany.object.scale.name}}</span>
-                </div>
-                <div
-                  class="text-gray text-small text-center mt-2 text-truncate"
-                >{{recommendCompany.object.synopsis}}</div>
               </el-link>
             </el-card>
           </el-col>
@@ -191,19 +195,19 @@ export default {
 }
 
 .job-recommend-box {
+  padding: 50px;
+}
+
+.company-recommend-box {
   background: #f7fbfd;
   padding: 50px;
 }
 
-.company-recommend-box{
-   padding: 50px;
+.no-border {
+  border: none;
 }
 
-.no-border{
-  border:none;
-}
-
-.main-title{
+.main-title {
   margin-bottom: 40px;
   color: #333;
 }

@@ -96,8 +96,11 @@
       </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="{row}">
-          <el-button size="mini" type="danger" @click="handleTakeOffJob(row)" v-if="row.status == 2">下架</el-button>
           <el-button size="mini" type="primary" @click="goJobDetail(row.id)">查看</el-button>
+          <el-button size="mini" type="danger" @click="handleTakeOffJob(row)" v-if="row.status == 2">下架</el-button>
+          <el-popconfirm title="你确定要删除该职位？" @onConfirm="handleDeleteJob(row)"  v-if="row.status == 3">
+              <el-button size="mini" onfirmButtonText="删除" slot="reference" type="danger">删除</el-button>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -139,7 +142,7 @@
 <script>
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import { getJobList, takeOffJob } from "@/api/job_api";
+import { getJobList, takeOffJob, deleteJob } from "@/api/job_api";
 import { serachByCompanyName } from "@/api/company_api";
 import { getApplyResumeList } from '@/api/resume_api'
 import { exportJobList } from '@/api/export_api'
@@ -256,6 +259,12 @@ export default {
           this.getList();
         });
       });
+    },
+    handleDeleteJob(job){
+      deleteJob({id: job.id}).then(response => {
+         Toast.success("操作成功");
+          this.getList();
+      })
     },
     goJobDetail(jobId){
         window.open(`${process.env.VUE_APP_WEB_HOST}/job/${jobId}`)

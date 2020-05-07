@@ -56,6 +56,14 @@ export function takeOffJob(data){
     })
 }
 
+export function deleteJob(data){
+    return request({
+        url: '/job/delete',
+        method: 'post',
+        params: data
+    })
+}
+
 export function getResumeApplyJobs(data){
     return request({
         url: '/job/resume-apply-jobs',

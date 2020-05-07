@@ -17,6 +17,14 @@ export function saveActivity(data) {
   })
 }
 
+export function deleteActivity(id) {
+  return request({
+    url: '/activity/delete',
+    method: 'post',
+    params: { id: id }
+  })
+}
+
 export function takeoffActivity(id) {
   return request({
     url: '/activity/takeoff',

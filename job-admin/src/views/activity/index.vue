@@ -85,7 +85,7 @@
 <script>
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import { getActivityList, takeoffActivity } from "@/api/activity_api";
+import { getActivityList, takeoffActivity, deleteActivity } from "@/api/activity_api";
 import { listByType } from "@/api/dict_api";
 
 export default {

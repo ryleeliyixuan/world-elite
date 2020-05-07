@@ -32,6 +32,15 @@ export function takeOffJob(id) {
     })
 }
 
+export function deleteJob(data){
+    return request({
+        url: '/job/delete',
+        method: 'post',
+        params: data
+    })
+}
+
+
 export function getUserJobOptions(){
     return request({
         url: '/job/user-job-options',

@@ -84,6 +84,8 @@ export default {
       listQuery: {
         cityId: undefined,
         title: undefined,
+        status: "2",
+        sort: "-id",
         page: 1,
         limit: 10
       },

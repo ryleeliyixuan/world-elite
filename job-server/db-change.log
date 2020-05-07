@@ -71,3 +71,6 @@ ADD COLUMN `post` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '职位' AFTER `title`
 
 ALTER TABLE `db_worldelite`.`t_resume_experience`
 ADD COLUMN `on_work` TINYINT NOT NULL DEFAULT 0 COMMENT '在职' AFTER `finish_time`;
+
+ALTER TABLE `db_worldelite`.`t_job`
+CHANGE COLUMN `salary_months` `salary_months` INT(11) NULL DEFAULT '0' COMMENT '薪资发放月数' ;

@@ -1,5 +1,6 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.entity.*;
@@ -118,7 +119,10 @@ public class JobService extends BaseService {
         job.setAddressId(jobForm.getAddressId());
         job.setCityId(jobForm.getCityId());
 
-        job.setDepart(jobForm.getDepart());
+        if(jobForm.getDepart() != null){
+            job.setDepart(jobForm.getDepart());
+        }
+
         job.setDescription(jobForm.getDescription());
         job.setJobType(jobForm.getJobType());
         job.setMinDegreeId(jobForm.getMinDegreeId());
@@ -137,7 +141,7 @@ public class JobService extends BaseService {
                 job.setPubTime(new Date());
             }
             job.setUpdateTime(new Date());
-            jobMapper.updateByPrimaryKeySelective(job);
+            jobMapper.updateByPrimaryKeyWithBLOBs(job);
         }
 
         //增加索引
@@ -305,6 +309,30 @@ public class JobService extends BaseService {
         takeOffJob(false, jobId, reason);
     }
 
+    /**
+     * 删除职位
+     * @param jobId
+     */
+    @Transactional
+    public void deleteJob(Long jobId){
+        Job job = jobMapper.selectSimpleById(jobId);
+
+        if(job == null){
+            throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
+        }
+
+        if(job.getStatus() == JobStatus.PUBLISH.value){
+            throw new ServiceException(message("请先下架再进行删除"), ApiCode.INVALID_OPERATION);
+        }
+
+        if (curUser().getType() != UserType.ADMIN.value) {
+            checkJobCreator(job);
+        }
+
+        job.setDelFlag(Bool.FALSE);
+        job.setUpdateTime(new Date());
+        jobMapper.updateByPrimaryKeySelective(job);
+    }
 
     public void takeOffJob(Boolean force, Long jobId, String reason) {
         Job job = jobMapper.selectSimpleById(jobId);
