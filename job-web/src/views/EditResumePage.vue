@@ -132,7 +132,7 @@
                       <span
                         class="ml-3 position-text"
                       >{{resumeExp.depart}} . {{resumeExp.post}}</span>
-                      <span class="ml-3 time-text">{{resumeExp.startTime}}到{{resumeExp.finishTime}}</span>
+                      <span class="ml-3 time-text">{{resumeExp.onWork == 1? '在职': `${resumeExp.startTime}到${resumeExp.finishTime}`}}</span>
                     </h6>
                     <div class="description-text mt-3" v-html="resumeExp.description"></div>
                     <div class="edit-item-box" v-show="resumeExp.showEditFlag == 1">
@@ -168,6 +168,10 @@
                   <b-media>
                     <h6>
                       {{practice.title}}
+                      <span
+                        class="ml-3 position-text"
+                        v-if="practice.post"
+                      >{{practice.post}}</span>
                       <span
                         class="ml-3 time-text"
                       >{{practice.startTime}}到{{practice.finishTime}}</span>
@@ -503,14 +507,16 @@
             show-word-limit
           ></el-input>
         </el-form-item>
-        <el-form-item label="在职时间" prop="workingDates">
+        <el-form-item label="在职时间" prop="workingTimeFlag">
           <el-date-picker
             v-model="resumeExpForm.workingDates"
             type="monthrange"
             value-format="yyyy-MM"
             start-placeholder="入职时间"
             end-placeholder="离职时间"
+            :disabled="resumeExpForm.onWork == 1"
           ></el-date-picker>
+          <el-checkbox class="ml-2" v-model="resumeExpForm.onWork" label="在职" border :true-label="1" :false-label="0"></el-checkbox>
         </el-form-item>
         <el-form-item label="工作内容" prop="description">
           <quill-editor v-model="resumeExpForm.description" :options="expEditorOption"></quill-editor>
@@ -534,6 +540,14 @@
             v-model="resumePracticeForm.title"
             placeholder="请填写实践主题"
             :maxlength="50"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="担任职位" prop="post">
+          <el-input
+            v-model="resumePracticeForm.post"
+            placeholder="请填写担任职位"
+            :maxlength="40"
             show-word-limit
           ></el-input>
         </el-form-item>
@@ -808,13 +822,15 @@ export default {
       resumeExpForm: {
         id: undefined,
         resumeId: undefined,
+        workingTimeFlag: 1,
         workingDates: undefined,
         startTime: undefined,
         finishTime: undefined,
         company: undefined,
         depart: undefined,
         post: undefined,
-        description: undefined
+        description: undefined,
+        onWork: 0,
       },
       resumeExpFormRules: {
         company: [
@@ -822,7 +838,7 @@ export default {
         ],
         depart: [{ required: true, message: "请输入部门", trigger: "blur" }],
         post: [{ required: true, message: "请输入职位", trigger: "blur" }],
-        workingDates: [
+        workingTimeFlag: [
           {
             required: true,
             message: "请输入在职时间",
@@ -840,6 +856,7 @@ export default {
         startTime: undefined,
         finishTime: undefined,
         title: undefined,
+        post:undefined,
         description: undefined
       },
       resumePracticeFormRules: {
@@ -1131,6 +1148,7 @@ export default {
         this.resumeExpForm.depart = resumeExp.depart;
         this.resumeExpForm.post = resumeExp.post;
         this.resumeExpForm.description = resumeExp.description;
+        this.resumeExpForm.onWork = resumeExp.onWork;
         if (resumeExp.startTime && resumeExp.finishTime) {
           this.resumeExpForm.workingDates = [
             this.resumeExpForm.startTime,
@@ -1146,6 +1164,7 @@ export default {
         this.resumeExpForm.post = undefined;
         this.resumeExpForm.description = undefined;
         this.resumeExpForm.workingDates = undefined;
+        this.resumeExpForm.onWork = 0;
       }
       this.$nextTick(() => {
         this.$refs["resumeExpForm"].clearValidate();
@@ -1160,6 +1179,7 @@ export default {
         this.resumePracticeForm.finishTime = resumePractice.finishTime;
         this.resumePracticeForm.title = resumePractice.title;
         this.resumePracticeForm.description = resumePractice.description;
+        this.resumePracticeForm.post = resumePractice.post
         this.resumePracticeForm.workingDates = [
           this.resumePracticeForm.startTime,
           this.resumePracticeForm.finishTime
@@ -1171,6 +1191,7 @@ export default {
         this.resumePracticeForm.finishTime = undefined;
         this.resumePracticeForm.title = undefined;
         this.resumePracticeForm.description = undefined;
+        this.resumePracticeForm.post = undefined;
       }
       this.$nextTick(() => {
         this.$refs["resumePracticeForm"].clearValidate();
@@ -1287,8 +1308,10 @@ export default {
       this.$refs["resumeExpForm"].validate(valid => {
         if (valid) {
           this.posting = true;
-          this.resumeExpForm.startTime = this.resumeExpForm.workingDates[0];
-          this.resumeExpForm.finishTime = this.resumeExpForm.workingDates[1];
+          if(this.resumeExpForm.workingDates && this.resumeExpForm.workingDates.length == 2){
+             this.resumeExpForm.startTime = this.resumeExpForm.workingDates[0];
+             this.resumeExpForm.finishTime = this.resumeExpForm.workingDates[1];
+          }
           saveResumeExp(this.resumeExpForm)
             .then(() => {
               this.getResumeInfo();

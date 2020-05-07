@@ -68,7 +68,15 @@
         <h4 class="resume-title">工作经验</h4>
         <#list resume.resumeExpList as exp>
         <div class="mt-3">
-            <p><b>${exp.company}</b><em class="ml-3 pull-right">${exp.startTime?string("yyyy-MM")} 到 ${exp.finishTime?string("yyyy-MM")}</em></p>
+            <p><b>${exp.company}</b>
+                <em class="ml-3 pull-right">
+                    <#if exp.onWork?? && exp.onWork == 1>
+                        在职
+                    <#else>
+                        ${exp.startTime?string("yyyy-MM")} 到 ${exp.finishTime?string("yyyy-MM")}
+                    </#if>
+                </em>
+            </p>
             <p class="text-post">${exp.depart} . ${exp.post}</p>
             <p class="desc-text">${exp.description}</p>
         </div>
@@ -81,6 +89,9 @@
         <#list resume.resumePracticeList as practice>
         <div class="mt-3">
             <p><b>${practice.title}</b><em class="ml-3 pull-right">${practice.startTime?string("yyyy-MM")} 到 ${practice.finishTime?string("yyyy-MM")}</em></p>
+            <#if practice.post?? && practice.post != ''>
+                <p class="text-post">${practice.post}</p>
+            </#if>
             <p class="desc-text">${practice.description}</p>
         </div>
         </#list>

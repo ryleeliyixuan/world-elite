@@ -2,7 +2,7 @@ import Cookies from 'universal-cookie';
  
 const cookies = new Cookies();
 
-const TokenKey = 'web_user_token'
+const TokenKey = 'company_user_token'
 
 export function getToken() {
   return cookies.get(TokenKey)

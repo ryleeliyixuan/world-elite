@@ -21,6 +21,7 @@ public class ResumePracticeVo extends EditFlag implements VoConvertable<ResumePr
     private Date finishTime;
     private String title;
     private String description;
+    private String post;
 
     @Override
     public ResumePracticeVo asVo(ResumePractice resumePractice) {
@@ -29,6 +30,7 @@ public class ResumePracticeVo extends EditFlag implements VoConvertable<ResumePr
         setFinishTime(resumePractice.getFinishTime());
         setTitle(resumePractice.getTitle());
         setDescription(resumePractice.getDescription());
+        setPost(resumePractice.getPost());
         return this;
     }
 }

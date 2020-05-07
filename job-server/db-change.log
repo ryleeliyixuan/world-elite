@@ -63,3 +63,11 @@ ADD COLUMN `summary` VARCHAR(500) NOT NULL DEFAULT '' COMMENT '摘要' AFTER `co
 
 ALTER TABLE `db_worldelite`.`t_activity`
 CHANGE COLUMN `description` `description` LONGTEXT NULL DEFAULT NULL ;
+
+# 05-07
+
+ALTER TABLE `db_worldelite`.`t_resume_practice`
+ADD COLUMN `post` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '职位' AFTER `title`;
+
+ALTER TABLE `db_worldelite`.`t_resume_experience`
+ADD COLUMN `on_work` TINYINT NOT NULL DEFAULT 0 COMMENT '在职' AFTER `finish_time`;

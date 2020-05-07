@@ -8,6 +8,7 @@ import com.worldelite.job.mapper.ResumePracticeMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ResumeExpVo;
 import com.worldelite.job.vo.ResumePracticeVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,10 +44,7 @@ public class ResumePracticeService extends BaseService{
             resumePractice.setResumeId(practiceForm.getResumeId());
         }
 
-        resumePractice.setTitle(practiceForm.getTitle());
-        resumePractice.setStartTime(practiceForm.getStartTime());
-        resumePractice.setFinishTime(practiceForm.getFinishTime());
-        resumePractice.setDescription(practiceForm.getDescription());
+        BeanUtils.copyProperties(practiceForm, resumePractice);
 
         if(resumePractice.getId() == null){
             practiceMapper.insertSelective(resumePractice);

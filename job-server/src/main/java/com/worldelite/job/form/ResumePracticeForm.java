@@ -24,4 +24,5 @@ public class ResumePracticeForm {
     private String title;
     @NotBlank(message = "{edit.resume.practice.description.not.blank}")
     private String description;
+    private String post;
 }

@@ -14,12 +14,11 @@ import java.util.Date;
 public class ResumeExpForm {
     private Integer id;
     private Long resumeId;
-    @NotNull(message = "{edit.resume.exp.time.not.null}")
     @JSONField(format = "yyyy-MM")
     private Date startTime;
-    @NotNull(message = "{edit.resume.exp.time.not.null}")
     @JSONField(format = "yyyy-MM")
     private Date finishTime;
+    private Byte onWork;
     @NotBlank(message = "{edit.resume.exp.company.not.blank}")
     private String company;
     @NotBlank(message = "{edit.resume.exp.depart.not.blank}")

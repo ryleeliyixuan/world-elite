@@ -38,7 +38,7 @@
           <span
             class="ml-3 position-text"
           >{{resumeExp.depart}} . {{resumeExp.post}}</span>
-          <span class="ml-3 time-text">{{resumeExp.startTime}}到{{resumeExp.finishTime}}</span>
+          <span class="ml-3 time-text">{{resumeExp.onWork == 1? '在职': `${resumeExp.startTime}到${resumeExp.finishTime}`}}</span>
         </h6>
         <div class="description-text" v-html="resumeExp.description"></div>
       </div>
@@ -63,9 +63,8 @@
       <div class="mt-4" v-for="practice in resume.resumePracticeList" :key="practice.id">
         <h6>
           {{practice.title}}
-          <span
-            class="ml-3 time-text"
-          >{{practice.startTime}}到{{practice.finishTime}}</span>
+          <span class="ml-3 position-text" v-if="practice.post">{{practice.post}}</span>
+          <span class="ml-3 time-text">{{practice.startTime}}到{{practice.finishTime}}</span>
         </h6>
         <div class="description-text" v-html="practice.description"></div>
       </div>
@@ -173,6 +172,10 @@ export default {
   .resume-title {
     border-left: 3px solid #409eff;
     padding-left: 10px;
+  }
+  .position-text {
+    font-size: 14px;
+    font-weight: 500;
   }
 }
 </style>

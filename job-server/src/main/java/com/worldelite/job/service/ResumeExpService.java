@@ -8,6 +8,7 @@ import com.worldelite.job.mapper.ResumeExperienceMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ResumeEduVo;
 import com.worldelite.job.vo.ResumeExpVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,12 +46,7 @@ public class ResumeExpService extends BaseService{
             resumeExp.setResumeId(resumeExpForm.getResumeId());
         }
 
-        resumeExp.setCompany(resumeExpForm.getCompany());
-        resumeExp.setDepart(resumeExpForm.getDepart());
-        resumeExp.setPost(resumeExpForm.getPost());
-        resumeExp.setStartTime(resumeExpForm.getStartTime());
-        resumeExp.setFinishTime(resumeExpForm.getFinishTime());
-        resumeExp.setDescription(resumeExpForm.getDescription());
+        BeanUtils.copyProperties(resumeExpForm, resumeExp);
 
         if(resumeExp.getId() == null){
             resumeExpMapper.insertSelective(resumeExp);

@@ -24,6 +24,7 @@ public class ResumeExpVo extends EditFlag implements VoConvertable<ResumeExpVo, 
     private String post;
     private String description;
     private Integer position;
+    private Byte onWork;
 
     @Override
     public ResumeExpVo asVo(ResumeExperience resumeExp) {
@@ -35,6 +36,7 @@ public class ResumeExpVo extends EditFlag implements VoConvertable<ResumeExpVo, 
         setPost(resumeExp.getPost());
         setDescription(resumeExp.getDescription());
         setPosition(resumeExp.getPosition());
+        setOnWork(resumeExp.getOnWork());
         return this;
     }
 }
