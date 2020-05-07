@@ -229,7 +229,16 @@
     />
 
     <el-drawer title="简历详情" :visible.sync="resumeDrawerVisible" direction="rtl" size="50%">
-      <ResumeView :resumeId="selectResume.id" v-if="selectResume" class="pl-4 pr-4 pb-4"></ResumeView>
+      <div class="pl-4 pr-4">
+        <el-button
+              type="primary"
+              size="small"
+              :loading="resumeExporting"
+              icon="el-icon-download"
+              @click="onDownloadResumeClick(selectResume)"
+       >下载简历</el-button>
+      <ResumeView :resumeId="selectResume.id" v-if="selectResume" class="pb-4 mt-2"></ResumeView>
+      </div>
     </el-drawer>
 
     <el-drawer title="投递职位" :visible.sync="applyJobDrawerVisible" direction="rtl" size="50%">
@@ -275,8 +284,9 @@ import { listByType } from "@/api/dict_api";
 import { searchSchool } from "@/api/school_api";
 import { getCategoryTree } from "@/api/category_api";
 import { getResumeApplyJobs } from "@/api/job_api";
-import { formatListQuery, parseListQuery } from "@/utils/common";
-import { exportResumeList } from "@/api/export_api";
+import { downloadFile, formatListQuery, parseListQuery } from "@/utils/common";
+import { exportResumeList, exportResumeToPdf } from "@/api/export_api";
+
 import Toast from "@/utils/toast";
 
 export default {
@@ -339,7 +349,8 @@ export default {
         emitPath: false,
         children: "children"
       },
-      exporting: false
+      exporting: false,
+      resumeExporting: false
     };
   },
   created() {
@@ -432,6 +443,26 @@ export default {
     },
     getJobDetailUrl(jobId){
         return `${process.env.VUE_APP_WEB_HOST}/job/${jobId}`
+    },
+    onDownloadResumeClick(resume) {
+      this.resumeExporting = true;
+      let fileName = `${resume.name}`;
+      if (resume.maxResumeEdu) {
+        fileName += `_${resume.maxResumeEdu.schoolName}_${resume.maxResumeEdu.majorName}`;
+      }
+      exportResumeToPdf(resume.id)
+        .then(response => {
+          downloadFile({
+            fileKey: response.data,
+            fileName: `${fileName}.pdf`,
+            success: () => {
+              this.resumeExporting = false;
+            }
+          });
+        })
+        .catch(() => {
+          this.resumeExporting = false;
+        });
     }
   }
 };

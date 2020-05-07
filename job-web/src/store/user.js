@@ -29,7 +29,7 @@ const actions = {
                 commit('SET_NAME', data.name)
                 commit('SET_AVATAR', data.avatar)
 
-                setToken(data.token)
+                setToken(data.token, loginForm.rememberFlag)
                 resolve()
             }).catch(error => {
                 reject(error)
@@ -44,7 +44,7 @@ const actions = {
                 commit('SET_TOKEN', data.token)
                 commit('SET_NAME', data.name)
                 commit('SET_AVATAR', data.avatar)
-
+                
                 setToken(data.token)
                 resolve()
             }).catch(error => {

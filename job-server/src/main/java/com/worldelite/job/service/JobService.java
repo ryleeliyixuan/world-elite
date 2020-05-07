@@ -188,11 +188,6 @@ public class JobService extends BaseService {
                     }
                 }
 
-                if (jobSearchForm.getMinSalary() == null || jobSearchForm.getMaxSalary() == null) {
-                    jobSearchForm.setMinSalary(expectJobVo.getMinSalary());
-                    jobSearchForm.setMaxSalary(expectJobVo.getMaxSalary());
-                }
-
             } else if (CollectionUtils.isNotEmpty(resumeVo.getResumeSkillList())) {
                 StringBuilder keywordBuilder = new StringBuilder();
 
@@ -206,13 +201,17 @@ public class JobService extends BaseService {
             }
         }
 
-        PageResult<JobVo> jobPageResult;
+        PageResult<JobVo> jobPageResult = null;
 
         if (!noRecommend) {
             jobPageResult = searchService.searchJob(jobSearchForm);
-        } else {
+        }
+
+        // 如果没有推荐结果，就返回最新职位
+        if (jobPageResult == null || CollectionUtils.isEmpty(jobPageResult.getList())) {
             jobPageResult = getNewestJobList(jobSearchForm);
         }
+
         return jobPageResult;
     }
 
@@ -321,13 +320,13 @@ public class JobService extends BaseService {
         // 被系统或者管理员强制下架，记录原因，并发送消息
         if (force || curUser().getType() == UserType.ADMIN.value) {
 
-            if(curUser() != null && curUser().getType() == UserType.ADMIN.value){
+            if (curUser() != null && curUser().getType() == UserType.ADMIN.value) {
                 job.setDelFlag(Bool.TRUE); // 被管理员下架则直接删除
                 job.setRemark(reason);
             }
 
             Message message = new Message();
-            message.setFromUser(curUser() == null? -1 : curUser().getId()); // -1 表示系统下架
+            message.setFromUser(curUser() == null ? -1 : curUser().getId()); // -1 表示系统下架
             message.setToUser(job.getCreatorId());
             message.setContent(message("message.job.takeoff", job.getName(), reason));
             message.setUrl(AppUtils.wholeWebUrl(String.format("job/%s", jobId)));
@@ -370,9 +369,11 @@ public class JobService extends BaseService {
         }
 
         ResumeVo resumeVo = resumeService.getDefaultOrCreate(curUser().getId());
-        if (resumeVo == null || !checkResumeComplete(resumeVo)) {
+        if (resumeVo == null) {
             throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
         }
+
+        checkResumeComplete(resumeVo);
 
         if (checkUserApply(jobId)) {
             throw new ServiceException(message("job.apply.repeat"));
@@ -479,12 +480,38 @@ public class JobService extends BaseService {
         }
     }
 
-    private boolean checkResumeComplete(ResumeVo resumeVo) {
-        return StringUtils.isNotEmpty(resumeVo.getName())
-                && resumeVo.getAge() != null
-                && resumeVo.getBirth() != null
-                && resumeVo.getGender() != null
-                && StringUtils.isNotEmpty(resumeVo.getIntroduction())
-                && CollectionUtils.isNotEmpty(resumeVo.getResumeEduList());
+    private void checkResumeComplete(ResumeVo resumeVo) {
+        if (StringUtils.isEmpty(resumeVo.getName())
+                || resumeVo.getAge() == null
+                || resumeVo.getBirth() == null
+                || resumeVo.getGender() == null) {
+
+            throw new ServiceException("请先完善简历：基本信息未填写", ApiCode.UNCOMPLETE_RESUME);
+        }
+
+        if (StringUtils.isEmpty(resumeVo.getAvatar())) {
+            throw new ServiceException("请先完善简历：简历头像未上传", ApiCode.UNCOMPLETE_RESUME);
+        }
+
+        if (StringUtils.isEmpty(resumeVo.getIntroduction())) {
+            throw new ServiceException("请先完善简历：自我介绍未填写", ApiCode.UNCOMPLETE_RESUME);
+        }
+
+        if (CollectionUtils.isEmpty(resumeVo.getResumeEduList())) {
+            throw new ServiceException("请先完善简历：教育经历未填写", ApiCode.UNCOMPLETE_RESUME);
+        }
+
+
+        if (CollectionUtils.isEmpty(resumeVo.getResumeExpList())) {
+            throw new ServiceException("请先完善简历：工作经验未填写", ApiCode.UNCOMPLETE_RESUME);
+        }
+
+        if (CollectionUtils.isEmpty(resumeVo.getResumePracticeList())) {
+            throw new ServiceException("请先完善简历：实践经验未填写", ApiCode.UNCOMPLETE_RESUME);
+        }
+
+        if (CollectionUtils.isEmpty(resumeVo.getResumeSkillList())) {
+            throw new ServiceException("请先完善简历：能力标签未填写", ApiCode.UNCOMPLETE_RESUME);
+        }
     }
 }

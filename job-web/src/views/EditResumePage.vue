@@ -247,22 +247,30 @@
             />
             <div class="mt-3" v-if="resume.userExpectJob">
               <p>
-                <span v-for="(item, index) in resume.userExpectJob.cityList" :key="index">
-                  {{item.name}}
-                  <span v-if="(index + 1) !== resume.userExpectJob.cityList.length">/</span>
-                </span>
+                <el-tag
+                  v-for="city in  resume.userExpectJob.cityList"
+                  :key="city.id"
+                  effect="plain"
+                  class="mr-2"
+                  size="small"
+                >{{ city.name }}</el-tag>
               </p>
               <p>
-                <span v-for="(item, index) in resume.userExpectJob.categoryList" :key="index">
-                  {{item.name}}
-                  <span
-                    v-if="(index + 1) !== resume.userExpectJob.categoryList.length"
-                  >/</span>
-                </span>
+                <el-tag
+                  v-for="category in  resume.userExpectJob.categoryList"
+                  :key="category.id"
+                  effect="plain"
+                  class="mr-2"
+                  size="small"
+                >{{ category.name }}</el-tag>
               </p>
-              <p
-                v-if="resume.userExpectJob.minSalary"
-              >{{resume.userExpectJob.minSalary}}K ~ {{resume.userExpectJob.maxSalary}}K</p>
+              <p v-if="resume.userExpectJob.minSalary">
+                <el-tag
+                  effect="plain"
+                  class="mr-2"
+                  size="small"
+                >{{resume.userExpectJob.minSalary}}K ~ {{resume.userExpectJob.maxSalary}}K</el-tag>
+              </p>
             </div>
           </div>
           <div class="resume-attachment resume-right-box">
@@ -281,12 +289,10 @@
               <div slot="tip" class="el-upload__tip">大小不超过5Mb</div>
             </el-upload>
             <div v-if="resume.attachResume">
-              <el-link
-                :href="resume.attachResume"
-                type="primary"
-                icon="el-icon-link"
-              >下载附件简历</el-link>
-              <el-link type="danger" class="ml-4" @click="onDelResumeAttachClick"><i class="el-icon-delete"></i> 删除</el-link>
+              <el-link :href="resume.attachResume" type="primary" icon="el-icon-link">下载附件简历</el-link>
+              <el-link type="danger" class="ml-4" @click="onDelResumeAttachClick">
+                <i class="el-icon-delete"></i> 删除
+              </el-link>
             </div>
           </div>
           <div class="resume-preview resume-right-box">
@@ -962,12 +968,16 @@ export default {
       }
     },
     "expectJobForm.minSalary": function() {
-      this.maxSalaryOptions = this.generateSalaryOptions(
-        this.expectJobForm.minSalary
-      );
+      if (this.expectJobForm.minSalary) {
+        this.maxSalaryOptions = this.generateSalaryOptions(
+          this.expectJobForm.minSalary
+        );
+      } else {
+        this.expectJobForm.maxSalary = undefined;
+      }
     },
-    "resumeEduForm.gpa": function(newVal,oldVal){
-      if(newVal < 0){
+    "resumeEduForm.gpa": function(newVal, oldVal) {
+      if (newVal < 0) {
         this.resumeEduForm.gpa = 0;
       }
     }
@@ -1435,13 +1445,13 @@ export default {
     onChangeEmailClick() {
       this.$router.push("/modify-email");
     },
-    onDelResumeAttachClick(){
-       this.$confirm("是否要删除附件简历？", {
+    onDelResumeAttachClick() {
+      this.$confirm("是否要删除附件简历？", {
         confirmButtonText: "删除"
       }).then(() => {
-         delResumeAttachment(this.resume.id).then(()=>{
-             this.getResumeInfo();
-         })
+        delResumeAttachment(this.resume.id).then(() => {
+          this.getResumeInfo();
+        });
       });
     }
   }

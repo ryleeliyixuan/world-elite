@@ -1,15 +1,21 @@
-import Cookies from 'js-cookie'
+import Cookies from 'universal-cookie';
+ 
+const cookies = new Cookies();
 
-const TokenKey = 'user_token'
+const TokenKey = 'web_user_token'
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return cookies.get(TokenKey)
 }
 
-export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+export function setToken(token,  rememberFlag) {
+  if(rememberFlag && rememberFlag == 1){
+    cookies.set(TokenKey, token, {maxAge: 864000})
+  }else{
+    cookies.set(TokenKey, token)
+  } 
 }
 
 export function removeToken() {
-  return Cookies.remove(TokenKey)
+  return cookies.remove(TokenKey)
 }

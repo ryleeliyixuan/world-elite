@@ -18,7 +18,9 @@
               placeholder="密码"
             ></b-form-input>
           </b-input-group>
-
+          <b-input-group class="mt-4">
+            <b-form-checkbox v-model="form.rememberFlag" value="1" unchecked-value="0">保持登录状态</b-form-checkbox>
+          </b-input-group>
           <b-button type="submit" size="lg" variant="info" class="mt-4" block>登录</b-button>
         </b-form>
       </b-row>
@@ -45,7 +47,8 @@ export default {
     return {
       form: {
         email: "",
-        password: ""
+        password: "",
+        rememberFlag: 1
       },
       redirect: undefined
     };

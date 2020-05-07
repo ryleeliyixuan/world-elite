@@ -196,7 +196,7 @@
       </div>
     </el-dialog>
     <!--添加公司地址-->
-    <el-dialog title="添加公司地址" :visible.sync="showAddressDialog" width="600px" top="10vh">
+    <el-dialog title="添加公司地址" :visible.sync="showAddressDialog" width="800px" top="10vh">
       <el-form
         ref="companyAddrForm"
         :model="companyAddrForm"
@@ -213,8 +213,8 @@
         </el-form-item>
         <el-form-item label="选择定位" prop="location">
           <p class="text-gray">输入城市和写字楼位置，然后拖动定位器进行选择。</p>
-          <div class="map-box">
-            <el-amap vid="marker" :zoom="mapZoom" :center="poiMapMarker.position">
+          <div class="edit-map-box">
+            <el-amap vid="marker" :zoom="mapZoom" :center="poiMapMarker.position" :plugin="mapPlugin">
               <el-amap-search-box
                 class="map-search-box"
                 :search-option="mapSearchOption"
@@ -291,7 +291,8 @@ VueAMap.initAMapApiLoader({
     "AMap.Autocomplete",
     "AMap.PlaceSearch",
     "AMap.Scale",
-    "AMap.Geocoder"
+    "AMap.Geocoder",
+    'AMap.ToolBar'
   ],
   v: "1.4.4"
 });
@@ -387,6 +388,14 @@ export default {
         },
         draggable: true
       },
+      mapPlugin: [{
+          pName: 'ToolBar',
+          events: {
+            init(instance) {
+                console.log(instance);
+            }
+          }
+       }],
       mapSearchOption: {
         city: "北京",
         citylimit: false
@@ -613,10 +622,14 @@ $border-style: 1px solid #eee;
   height: 200px;
 }
 
+.edit-map-box{
+   height: 300px;
+}
+
 .map-search-box {
   position: absolute;
   top: 70px;
-  left: 20px;
+  right: 20px;
 }
 
 .preview-box {

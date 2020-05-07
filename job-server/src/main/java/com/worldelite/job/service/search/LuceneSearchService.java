@@ -4,12 +4,12 @@ import com.worldelite.job.constants.JobIndexFields;
 import com.worldelite.job.form.JobSearchForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.service.DictService;
+import com.worldelite.job.service.JobCategoryService;
 import com.worldelite.job.service.JobService;
-import com.worldelite.job.vo.DictVo;
-import com.worldelite.job.vo.JobVo;
-import com.worldelite.job.vo.PageResult;
-import com.worldelite.job.vo.SalaryRange;
+import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.SetUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -29,7 +29,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * lucene 搜索实现
@@ -51,6 +53,9 @@ public class LuceneSearchService implements SearchService {
 
     @Autowired
     private DictService dictService;
+
+    @Autowired
+    private JobCategoryService categoryService;
 
     private static IndexReader sIndexReader;
 
@@ -79,9 +84,18 @@ public class LuceneSearchService implements SearchService {
         if (ArrayUtils.isNotEmpty(searchForm.getCategoryIds())) {
             BooleanQuery.Builder categoryQueryBuilder = new BooleanQuery.Builder();
             categoryQueryBuilder.add(addMultiShouldQuery(searchForm.getCategoryIds(), JobIndexFields.CATEGORY_FIRST_INDEX), BooleanClause.Occur.SHOULD);
-            categoryQueryBuilder.add(addMultiShouldQuery(searchForm.getCategoryIds(), JobIndexFields.CATEGORY_SECOND_INDEX), BooleanClause.Occur.SHOULD);
-            categoryQueryBuilder.add(addMultiShouldQuery(searchForm.getCategoryIds(), JobIndexFields.CATEGORY_THIRD_INDEX), BooleanClause.Occur.SHOULD);
-            queryBuilder.add(queryBuilder.build(), BooleanClause.Occur.MUST);
+            // 把二级职位也计算上，避免结果太少
+            Set<Integer> secondCategorySet = new HashSet<>();
+            for(Integer categoryId: searchForm.getCategoryIds()){
+                JobCategoryVo jobCategoryVo = categoryService.getById(categoryId);
+                if(jobCategoryVo != null){
+                    secondCategorySet.add(jobCategoryVo.getParentId());
+                }
+            }
+            if(CollectionUtils.isNotEmpty(secondCategorySet)){
+                categoryQueryBuilder.add(addMultiShouldQuery(secondCategorySet.toArray(new Integer[0]), JobIndexFields.CATEGORY_SECOND_INDEX), BooleanClause.Occur.SHOULD);
+            }
+            queryBuilder.add(categoryQueryBuilder.build(), BooleanClause.Occur.MUST);
         }
         if(searchForm.getMinSalary() != null && searchForm.getMaxSalary() != null){
             Query query = IntPoint.newRangeQuery(JobIndexFields.AVER_SALARY_INDEX, searchForm.getMinSalary(), searchForm.getMaxSalary());
