@@ -17,7 +17,7 @@ public class MessageVo implements VoConvertable<MessageVo, Message>{
 
     @Override
     public MessageVo asVo(Message message) {
-        setId(id);
+        setId(message.getId());
         setContent(message.getContent());
         setUrl(message.getUrl());
         setReadFlag(message.getReadFlag());

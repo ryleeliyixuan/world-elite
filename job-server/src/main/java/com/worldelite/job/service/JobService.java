@@ -413,6 +413,14 @@ public class JobService extends BaseService {
         newJobApply.setStatus(JobApplyStatus.APPLY.value);
         newJobApply.setResumeId(Long.valueOf(resumeVo.getId()));
         jobApplyMapper.insertSelective(newJobApply);
+
+        // 给职位创建者发消息
+        Message message = new Message();
+        message.setFromUser(curUser().getId());
+        message.setToUser(job.getCreatorId());
+        message.setContent(message("message.job.apply", job.getName()));
+        message.setUrl("/manage-job");
+        messageService.sendMessage(message);
     }
 
     /**

@@ -3,13 +3,19 @@
     <h5>系统消息</h5>
     <div class="message-list mt-4" v-if="list && list.length != 0">
       <div class="mb-2 pt-3 pb-3 text-muted border-bottom" v-for="message in list" :key="message.id">
-        <el-badge is-dot v-if="message.readFlag == 0" />
-        {{message.content}}
-        <el-link v-if="message.url && message.url != ''" :href="meesage.url" :underline="false">查看</el-link>
+        <div class="d-flex">
+          <el-badge is-dot v-if="message.readFlag == 0" />
+          <div class="flex-fill">
+            <b-col>{{message.content}}<el-link v-if="message.url && message.url != ''" :href="message.url" :underline="false">查看<i class="el-icon-d-arrow-right"></i></el-link></b-col>
+          </div>
+          <div>
+              <el-link type="info" :underline="false" @click.stop="handleDeleteMessage(message.id)"><i class="el-icon-close"></i></el-link>
+          </div>
+        </div>
       </div>
     </div>
     <pagination
-      v-show="total"
+      v-show="total>0"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
@@ -19,7 +25,7 @@
 </template>
 
 <script>
-import { getMessageList, readAllMessage } from "@/api/message_api";
+import { getMessageList, readAllMessage, deleteMessage } from "@/api/message_api";
 import { mapMutations } from "vuex";
 import Pagination from "@/components/Pagination";
 
@@ -54,6 +60,11 @@ export default {
           });
         }
       });
+    },
+    handleDeleteMessage(id){
+      deleteMessage(id).then(() => {
+        this.getList();
+      })
     }
   }
 };

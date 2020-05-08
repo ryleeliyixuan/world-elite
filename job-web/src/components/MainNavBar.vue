@@ -52,7 +52,7 @@
                 {{message.content}}
                 <el-link
                   v-if="message.url && message.url != ''"
-                  :href="meesage.url"
+                  :href="message.url"
                   :underline="false"
                 >查看</el-link>
               </div>

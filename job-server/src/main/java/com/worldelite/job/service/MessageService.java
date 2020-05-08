@@ -86,4 +86,8 @@ public class MessageService extends BaseService{
     public void markAllRead(){
         messageMapper.setUserMessageRead(curUser().getId());
     }
+
+    public void deleteMessage(Integer id){
+        messageMapper.deleteByPrimaryKey(id);
+    }
 }

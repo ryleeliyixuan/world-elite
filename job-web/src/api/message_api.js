@@ -21,3 +21,11 @@ export function readAllMessage() {
         method: 'post'
     })
 }
+
+export function deleteMessage(id){
+    return request({
+        url: '/message/delete',
+        method: 'post',
+        params: {id :id}
+    })
+}

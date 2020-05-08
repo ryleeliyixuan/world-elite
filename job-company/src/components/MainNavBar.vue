@@ -39,20 +39,20 @@
                 {{message.content}}
                 <el-link
                   v-if="message.url && message.url != ''"
-                  :href="meesage.url"
+                  :href="message.url"
                   :underline="false"
                 >查看</el-link>
               </div>
             </div>
             <div class="text-center p-2" v-else>暂无新消息</div>
             <div class="text-center p-2">
-              <el-link type="primary" :underline="false" @click="goMessageList">查看全部</el-link>
+              <el-link type="primary" :underline="false" @click="gotoMessageList">查看全部</el-link>
             </div>
             <el-link
               :underline="false"
               class="mr-4 p-2 nav-message"
               slot="reference"
-              @click="goMessageList"
+              @click="gotoMessageList"
             >
               <el-badge is-dot v-if="messageCount !== 0">
                 <i class="el-icon-message-solid"></i>
@@ -136,7 +136,7 @@ export default {
         });
       }
     },
-    goMessageList() {
+    gotoMessageList() {
       this.$router.push("/messages");
     }
   }

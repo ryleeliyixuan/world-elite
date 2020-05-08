@@ -46,4 +46,11 @@ public class MessageApi {
         messageService.markAllRead();
         return ApiResult.ok();
     }
+
+    @RequireLogin
+    @PostMapping("delete")
+    public ApiResult deleteMessage(@RequestParam Integer id){
+        messageService.deleteMessage(id);
+        return ApiResult.ok();
+    }
 }
