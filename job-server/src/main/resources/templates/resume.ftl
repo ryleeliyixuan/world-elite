@@ -45,8 +45,8 @@
     <div class="media">
         <div class="media-body">
             <h3 class="media-heading text-name">${resume.name}</h3>
-            <p>${resume.graduateTime?string("yyyy-MM")}毕业 / 现居${resume.curPlace} / ${resume.returnTime?string("yyyy-MM")}回国 / ${resume.age}岁 </p>
-            <p><i class="glyphicon glyphicon-phone-alt"></i> (+${resume.phoneCode})${resume.phone} <span class="ml-3">${resume.email}</span></p>
+            <p><#if resume.graduateTime??>${resume.graduateTime?string("yyyy-MM")}毕业</#if> / 现居${resume.curPlace} / <#if resume.returnTime??>${resume.returnTime?string("yyyy-MM")}回国 /</#if> ${resume.age}岁 </p>
+            <p><i class="glyphicon glyphicon-phone-alt"></i> <#if resume.phoneCode??>(+${resume.phoneCode})</#if>${resume.phone} <span class="ml-3">${resume.email}</span></p>
         </div>
         <div class="media-right">
             <img class="media-object user-avatar" src="${resume.avatar}">
