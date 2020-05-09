@@ -363,4 +363,10 @@ export default {
     width: 140px;
   }
 }
+
+li.el-cascader-node{
+  font-size: 15px;
+  line-height: 40px;
+  height: 40px;
+}
 </style>
