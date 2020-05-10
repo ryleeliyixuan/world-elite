@@ -11,4 +11,8 @@
       </if>
     </where>
   </select>
+  <delete id="deleteByUserId" parameterType="java.lang.Long">
+    delete from t_user_expect_salary
+    where user_id = #{userId,jdbcType=BIGINT}
+  </delete>
 </mapper>

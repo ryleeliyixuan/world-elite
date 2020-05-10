@@ -55,3 +55,11 @@ export function reopenJob(id){
         params: {id: id}
     })
 }
+
+export function getCompanyJobList(data) {
+    return request({
+        url: '/job/company-job-list',
+        method: 'get',
+        params: data
+    })
+}

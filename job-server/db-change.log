@@ -74,3 +74,11 @@ ADD COLUMN `on_work` TINYINT NOT NULL DEFAULT 0 COMMENT '在职' AFTER `finish_t
 
 ALTER TABLE `db_worldelite`.`t_job`
 CHANGE COLUMN `salary_months` `salary_months` INT(11) NULL DEFAULT '0' COMMENT '薪资发放月数' ;
+
+# 5.10
+
+ALTER TABLE `db_worldelite`.`t_resume_practice`
+ADD COLUMN `on_work` TINYINT(4) NULL DEFAULT 0 COMMENT '实践中' AFTER `update_time`;
+
+ALTER TABLE `db_worldelite`.`t_job`
+ADD COLUMN `address` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '工作地址' AFTER `address_id`;

@@ -58,4 +58,6 @@ public interface MessageMapper {
     int countMessage(Message options);
 
     int setUserMessageRead(Long toUser);
+
+    int deleteUserMessages(Long toUser);
 }

@@ -23,13 +23,6 @@
             </div>
           </b-col>
           <b-col  cols="4">
-            <el-button
-              type="primary"
-              :icon="company.favoriteFlag == 1? 'el-icon-star-on' : 'el-icon-star-off'"
-              plain
-              :loading="favoriteLoading"
-              @click="handleFavorite"
-            >{{company.favoriteFlag == 1? '已收藏': '收藏岗位'}}</el-button>
           </b-col>
         </b-row>
       </b-media-body>
@@ -86,13 +79,9 @@
             </div>
           </el-collapse-item>
         </el-collapse>
-        <div v-if="company.companyWiki && company.companyWiki != ''">
+        <div v-if="company.companyWiki">
           <h5 class="mt-4 mb-4">公司百科</h5>
-          <div v-if="token && token != ''" class="introdution" v-html="company.companyWiki"></div>
-          <div v-else>
-            <p>登录后查看百科</p>
-            <el-button type="primary" @click="onLoginClick">马上登录</el-button>
-          </div>
+          <div class="introdution" v-html="company.companyWiki"></div>
         </div>
       </div>
       <div class="row job-box" v-else>
@@ -134,9 +123,6 @@ import Pagination from "@/components/Pagination";
 
 import { getCompanyInfo } from "@/api/company_api";
 import { getCompanyJobList } from "@/api/job_api";
-import { setPageTitle } from "@/utils/setting";
-import { doFavorite } from "@/api/favorite_api";
-import { mapGetters } from "vuex";
 
 Vue.use(VueAMap);
 
@@ -179,8 +165,7 @@ export default {
       return this.company.homepage.startsWith("http")
         ? this.company.homepage
         : "http://" + this.company.homepage;
-    },
-    ...mapGetters(["token"])
+    }
   },
   watch: {
     $route() {
@@ -194,7 +179,6 @@ export default {
       this.favoriteForm.objectId = this.companyId;
       getCompanyInfo(this.companyId).then(response => {
         this.company = response.data;
-        setPageTitle(this.company.name);
         if (this.company.addressList) {
           for (const addr of this.company.addressList) {
             addr.mapWindow = {
@@ -219,23 +203,8 @@ export default {
         this.getCompanyJobList();
       }
     },
-    handleFavorite() {
-      this.favoriteLoading = true;
-      this.favoriteForm.favorite = !this.favoriteForm.favorite;
-      doFavorite(this.favoriteForm)
-        .then(() => {
-          this.company.favoriteFlag = this.favoriteForm.favorite ? 1 : 0;
-          this.$message("操作成功");
-        })
-        .finally(() => {
-          this.favoriteLoading = false;
-        });
-    },
     onJobClick(job) {
-      this.$router.push({ name: "job", params: { id: job.id } });
-    },
-    onLoginClick(){
-      this.$router.push('/login');
+      window.open(`${process.env.VUE_APP_WEB_HOST}/job/${job.id}`);
     }
   }
 };

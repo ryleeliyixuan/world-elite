@@ -45,3 +45,11 @@ export function getCompanyAddrList(){
     method: 'get'
   })
 }
+
+export function getCompanyInfo(id){
+  return request({
+    url: '/company/company-home-data',
+    method: 'get',
+    params: {id: id}
+  })
+}

@@ -39,4 +39,9 @@
     where
     to_user = #{toUser,jdbcType=BIGINT}
   </update>
+  <delete id="deleteUserMessages">
+    delete from t_message
+    where
+    to_user = #{toUser,jdbcType=BIGINT}
+  </delete>
 </mapper>

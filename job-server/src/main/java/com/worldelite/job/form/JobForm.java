@@ -25,7 +25,7 @@ public class JobForm {
     private Integer maxSalary;
     private Integer salaryMonths;
     @NotNull(message = "{edit.job.address.not.null}")
-    private Integer addressId;
+    private String address;
     @NotNull(message = "{edit.job.type.not.null}")
     private Integer jobType;
     @NotNull(message = "{edit.job.description.not.blank}")

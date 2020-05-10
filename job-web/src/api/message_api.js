@@ -29,3 +29,10 @@ export function deleteMessage(id){
         params: {id :id}
     })
 }
+
+export function deleteAllMessage(){
+    return request({
+        url: '/message/delete-all',
+        method: 'post',
+    })
+}

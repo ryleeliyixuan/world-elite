@@ -172,9 +172,7 @@
                         class="ml-3 position-text"
                         v-if="practice.post"
                       >{{practice.post}}</span>
-                      <span
-                        class="ml-3 time-text"
-                      >{{practice.startTime}}到{{practice.finishTime}}</span>
+                      <span class="ml-3 time-text">{{practice.onWork == 1? '实践中': `${practice.startTime}到${practice.finishTime}`}}</span>
                     </h6>
                     <div class="description-text mt-3" v-html="practice.description"></div>
                     <div class="edit-item-box" v-show="practice.showEditFlag == 1">
@@ -551,14 +549,16 @@
             show-word-limit
           ></el-input>
         </el-form-item>
-        <el-form-item label="实践时间" prop="workingDates">
+        <el-form-item label="实践时间" prop="workingTimeFlag">
           <el-date-picker
             v-model="resumePracticeForm.workingDates"
             type="monthrange"
             value-format="yyyy-MM"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
+            :disabled="resumePracticeForm.onWork == 1"
           ></el-date-picker>
+          <el-checkbox class="ml-2" v-model="resumePracticeForm.onWork" label="实践中" border :true-label="1" :false-label="0"></el-checkbox>
         </el-form-item>
         <el-form-item label="实践内容" prop="description">
           <quill-editor v-model="resumePracticeForm.description" :options="practiceEditorOption"></quill-editor>
@@ -857,11 +857,13 @@ export default {
         finishTime: undefined,
         title: undefined,
         post:undefined,
-        description: undefined
+        description: undefined,
+        workingTimeFlag: 1,
+        onWork: 0,
       },
       resumePracticeFormRules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        workingDates: [
+        workingTimeFlag: [
           { required: true, message: "请输入实践时间", trigger: "change" }
         ],
         description: [
@@ -883,24 +885,6 @@ export default {
         categoryIds: [],
         minSalary: undefined,
         maxSalary: undefined
-      },
-      expectJobFormRules: {
-        cityIds: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个城市",
-            trigger: "change"
-          }
-        ],
-        categoryIds: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个职位",
-            trigger: "change"
-          }
-        ]
       },
       uploadPicOptions: {
         action: "",
@@ -1179,7 +1163,9 @@ export default {
         this.resumePracticeForm.finishTime = resumePractice.finishTime;
         this.resumePracticeForm.title = resumePractice.title;
         this.resumePracticeForm.description = resumePractice.description;
-        this.resumePracticeForm.post = resumePractice.post
+        this.resumePracticeForm.post = resumePractice.post;
+        this.resumePracticeForm.onWork = resumePractice.onWork;
+
         this.resumePracticeForm.workingDates = [
           this.resumePracticeForm.startTime,
           this.resumePracticeForm.finishTime
@@ -1192,6 +1178,7 @@ export default {
         this.resumePracticeForm.title = undefined;
         this.resumePracticeForm.description = undefined;
         this.resumePracticeForm.post = undefined;
+        this.resumePracticeForm.onWork  = undefined;
       }
       this.$nextTick(() => {
         this.$refs["resumePracticeForm"].clearValidate();

@@ -63,6 +63,12 @@ const constantRoutes = [
         path: '/messages',
         component: () => import('@/views/MessageListPage'),
         meta: { title: '消息通知' }
+    },
+    {
+        path: '/company/:id',
+        name: 'company',
+        component: () => import('@/views/CompanyHomePage'),
+        meta: { title: '公司主页预览' }
     }
 ]
 

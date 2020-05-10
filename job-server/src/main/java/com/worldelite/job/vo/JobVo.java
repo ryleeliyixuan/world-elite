@@ -26,7 +26,7 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private Byte status;
     private String description;
     private Long creatorId;
-    private CompanyAddressVo address;
+    private String address;
     @JSONField(format = "yyyy-MM-dd")
     private Date time;
 
@@ -56,6 +56,7 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setStatus(job.getStatus());
         setDescription(job.getDescription());
         setTime(job.getPubTime());
+        setAddress(job.getAddress());
         return this;
     }
 }

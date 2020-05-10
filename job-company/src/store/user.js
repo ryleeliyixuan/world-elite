@@ -1,5 +1,6 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { register, login, logout, getMyInfo } from '@/api/user_api'
+import Toast from '@/utils/toast'
 
 const state = {
     token: getToken(),
@@ -28,6 +29,11 @@ const actions = {
         return new Promise((resolve, reject) => {
             login(loginForm).then(response => {
                 const { data } = response
+                
+                if(data.type != 2){
+                    Toast.error('该账号不允许登录企业端');
+                    return;
+                }
 
                 commit('SET_TOKEN', data.token)
                 commit('SET_NAME', data.name)

@@ -45,11 +45,11 @@
     <div class="media">
         <div class="media-body">
             <h3 class="media-heading text-name">${resume.name}</h3>
-            <p><#if resume.graduateTime??>${resume.graduateTime?string("yyyy-MM")}毕业</#if> / 现居${resume.curPlace} / <#if resume.returnTime??>${resume.returnTime?string("yyyy-MM")}回国 /</#if> ${resume.age}岁 </p>
-            <p><i class="glyphicon glyphicon-phone-alt"></i> <#if resume.phoneCode??>(+${resume.phoneCode})</#if>${resume.phone} <span class="ml-3">${resume.email}</span></p>
+            <p><#if resume.graduateTime??>${resume.graduateTime?string("yyyy-MM")}毕业</#if> <#if resume.curPlace??>/ 现居${resume.curPlace} / </#if><#if resume.returnTime??>${resume.returnTime?string("yyyy-MM")}回国 /</#if> <#if resume.age??>${resume.age}岁 </#if></p>
+            <p><i class="glyphicon glyphicon-phone-alt"></i> <#if resume.phoneCode??>(+${resume.phoneCode})</#if>${(resume.phone)!''} <span class="ml-3">${(resume.email)!''}</span></p>
         </div>
         <div class="media-right">
-            <img class="media-object user-avatar" src="${resume.avatar}">
+            <img class="media-object user-avatar" src="${(resume.avatar)!''}">
         </div>
     </div>
     <#if resume.resumeEduList?? && resume.resumeEduList?size != 0>
@@ -58,7 +58,7 @@
         <#list resume.resumeEduList as edu>
         <div class="mt-3">
             <p><b>${edu.schoolName}</b><em class="ml-3 pull-right">${edu.startTime?string("yyyy-MM")} 到 ${edu.finishTime?string("yyyy-MM")}</em></p>
-            <p>${edu.majorName} / ${(edu.degree.name)!''} / GPA ${edu.gpa}</p>
+            <p>${(edu.majorName)!''} / ${(edu.degree.name)!''} / GPA ${(edu.gpa)!''}</p>
         </div>
         </#list>
     </div>
@@ -77,8 +77,8 @@
                     </#if>
                 </em>
             </p>
-            <p class="text-post">${exp.depart} . ${exp.post}</p>
-            <p class="desc-text">${exp.description}</p>
+            <p class="text-post">${(exp.depart)!''} . ${(exp.post)!''}</p>
+            <p class="desc-text">${(exp.description)!''}</p>
         </div>
         </#list>
     </div>
@@ -88,11 +88,19 @@
         <h4 class="resume-title">实践经验</h4>
         <#list resume.resumePracticeList as practice>
         <div class="mt-3">
-            <p><b>${practice.title}</b><em class="ml-3 pull-right">${practice.startTime?string("yyyy-MM")} 到 ${practice.finishTime?string("yyyy-MM")}</em></p>
+            <p><b>${practice.title}</b
+                ><em class="ml-3 pull-right">
+                    <#if practice.onWork?? && practice.onWork == 1>
+                        实践中
+                    <#else>
+                    ${practice.startTime?string("yyyy-MM")} 到 ${practice.finishTime?string("yyyy-MM")}
+                    </#if>
+                </em>
+            </p>
             <#if practice.post?? && practice.post != ''>
                 <p class="text-post">${practice.post}</p>
             </#if>
-            <p class="desc-text">${practice.description}</p>
+            <p class="desc-text">${(practice.description)!''}</p>
         </div>
         </#list>
     </div>
@@ -102,15 +110,15 @@
         <#if resume.resumeSkillList?? && resume.resumeSkillList?size != 0>
         <div>
             <#list resume.resumeSkillList as skill>
-            <span class="tag">${skill.name}</span>
+            <span class="tag">${(skill.name)!''}</span>
             </#list>
         </div>
         </#if>
-        <p class="desc-text mt-2">${resume.introduction}</p>
+        <p class="desc-text mt-2">${(resume.introduction)!''}</p>
         <#if resume.resumeLinkList?? && resume.resumeLinkList?size != 0>
         <p class="mt-1"><b>社交平台：</b>
             <#list resume.resumeLinkList as link>
-            <a href="${link.link}" class="ml-2">${link.name}</a>
+            <a href="${(link.link)!''}" class="ml-2">${(link.name)!''}</a>
             </#list>
         </p>
         </#if>

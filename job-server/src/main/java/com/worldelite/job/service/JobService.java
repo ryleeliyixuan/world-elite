@@ -108,7 +108,6 @@ public class JobService extends BaseService {
             job = new Job();
         }
 
-        job.setAddressId(jobForm.getAddressId());
         CompanyUserVo companyUserVo = companyService.getCompanyUser(curUser().getId());
         if (companyUserVo != null) {
             job.setCompanyId(Long.valueOf(companyUserVo.getCompany().getId()));
@@ -116,7 +115,7 @@ public class JobService extends BaseService {
 
         job.setName(jobForm.getName());
         job.setCategoryId(jobForm.getCategoryId());
-        job.setAddressId(jobForm.getAddressId());
+        job.setAddress(jobForm.getAddress());
         job.setCityId(jobForm.getCityId());
 
         if(jobForm.getDepart() != null){
@@ -471,7 +470,6 @@ public class JobService extends BaseService {
             return null;
         }
         JobVo jobVo = toJobVo(job, true);
-        jobVo.setAddress(companyAddressService.getCompanyAddress(job.getAddressId()));
         if (curUser() != null) {
             Boolean favorite = favoriteService.checkUserFavorite(job.getId(), FavoriteType.JOB);
             jobVo.setFavoriteFlag(favorite ? Bool.TRUE : Bool.FALSE);

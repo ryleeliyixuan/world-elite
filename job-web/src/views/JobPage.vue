@@ -39,17 +39,10 @@
         <div v-if="job.address" class="mt-4">
           <h5 class="mt-4 mb-4">工作地址</h5>
           <p>
-            {{job.address.address}}
-            <el-link    
-              :underline="false"
-              class="float-right text-info"
-              @click="mapDialogVisible = true"
-            >
-              <i class="el-icon-location-information"></i>查看地图
-            </el-link>
+            {{job.address}}
           </p>
         </div>
-        <div v-if="job.address">
+        <div>
           <h5 class="mt-4 mb-4">分享该职位</h5>
           <share :config="shareConfig"></share>
         </div>
@@ -83,22 +76,6 @@
         </div>
       </b-col>
     </b-row>
-    <el-dialog
-      title="查看地图"
-      :visible.sync="mapDialogVisible"
-      width="700px"
-      top="10vh"
-      v-if="job.address && job.address.mapWindow"
-    >
-      <div class="map-box">
-        <el-amap vid="amap" :zoom="mapZoom" :center="job.address.mapWindow.position">
-          <el-amap-info-window
-            :position="job.address.mapWindow.position"
-            :content="job.address.mapWindow.content"
-          ></el-amap-info-window>
-        </el-amap>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -173,12 +150,6 @@ export default {
         this.shareConfig.description = this.job.description;
         this.favoriteForm.objectId = this.job.id;
         this.favoriteForm.favorite = this.job.favoriteFlag == 1;
-        if (this.job.address) {
-          this.job.address.mapWindow = {
-            position: [this.job.address.longitude, this.job.address.latitude],
-            content: this.job.address.address
-          };
-        }
       });
     },
     handleFavorite() {

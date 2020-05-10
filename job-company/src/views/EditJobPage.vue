@@ -36,18 +36,14 @@
           <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="工作地点" prop="addressId">
-        <el-select v-model="jobForm.addressId" filterable clearable placeholder="请选择工作地点">
-          <el-option
-            v-for="item in addressOptions"
-            :key="item.id"
-            :label="item.address"
-            :value="item.id"
-          ></el-option>
-        </el-select>
-        <b-link type="primary" to="/edit-company" class="ml-2">
-          <i class="el-icon-plus"></i>增加地点
-        </b-link>
+      <el-form-item label="工作地点" prop="address">
+        <el-input
+          v-model="jobForm.address"
+          maxlength="250"
+          class="text-input-width"
+          show-word-limit
+          placeholder="请填写工作地点"
+        ></el-input>
       </el-form-item>
       <el-form-item label="学历要求" prop="minDegreeId">
         <el-select v-model="jobForm.minDegreeId" filterable clearable placeholder="请选择最低学历">
@@ -115,7 +111,6 @@
 import { getCategoryTree } from "@/api/category_api";
 import { listByType } from "@/api/dict_api";
 import { saveJob, getJobInfo } from "@/api/job_api";
-import { getCompanyAddrList } from "@/api/company_api";
 import Toast from "@/utils/toast";
 
 import "quill/dist/quill.core.css";
@@ -140,7 +135,7 @@ export default {
         maxSalary: undefined,
         salaryMonths: undefined,
         cityId: undefined,
-        addressId: undefined,
+        address: undefined,
         jobType: undefined,
         description: undefined,
         salary: undefined
@@ -156,8 +151,8 @@ export default {
         cityId: [
           { required: true, message: "请选择工作城市", trigger: "change" }
         ],
-        addressId: [
-          { required: true, message: "请选择工作地点", trigger: "change" }
+        address: [
+          { required: true, message: "请填写工作地点", trigger: "blur" }
         ],
         jobType: [
           { required: true, message: "请选择工作类型", trigger: "change" }
@@ -176,7 +171,6 @@ export default {
         children: "children"
       },
       cityOptions: [],
-      addressOptions: [],
       degreeOptions: [],
       minSalaryOptions: [],
       maxSalaryOptions: [],
@@ -234,9 +228,6 @@ export default {
       getCategoryTree().then(
         response => (this.jobCategoryOptions = response.data)
       );
-      getCompanyAddrList().then(
-        response => (this.addressOptions = response.data)
-      );
       listByType(1).then(response => (this.degreeOptions = response.data.list));
       listByType(8).then(
         response => (this.jobTypeOptions = response.data.list)
@@ -258,7 +249,7 @@ export default {
           this.jobForm.maxSalary = data.maxSalary;
           this.jobForm.salaryMonths = data.salaryMonths;
           this.jobForm.cityId = data.city ? data.city.id : undefined;
-          this.jobForm.addressId = data.address ? data.address.id : undefined;
+          this.jobForm.address = data.address;
           this.jobForm.jobType = data.jobType ? data.jobType.id : undefined;
           this.jobForm.description = data.description;
         });

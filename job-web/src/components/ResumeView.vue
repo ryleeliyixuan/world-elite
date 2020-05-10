@@ -64,7 +64,7 @@
         <h6>
           {{practice.title}}
           <span class="ml-3 position-text" v-if="practice.post">{{practice.post}}</span>
-          <span class="ml-3 time-text">{{practice.startTime}}到{{practice.finishTime}}</span>
+          <span class="ml-3 time-text">{{practice.onWork == 1? '实践中': `${practice.startTime}到${practice.finishTime}`}}</span>
         </h6>
         <div class="description-text" v-html="practice.description"></div>
       </div>

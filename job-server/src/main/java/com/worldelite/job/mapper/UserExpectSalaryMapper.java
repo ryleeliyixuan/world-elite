@@ -54,5 +54,7 @@ public interface UserExpectSalaryMapper {
      */
     int updateByPrimaryKey(UserExpectSalary record);
 
+    int deleteByUserId(Long userId);
+
     UserExpectSalary selectByUserId(Long userId);
 }

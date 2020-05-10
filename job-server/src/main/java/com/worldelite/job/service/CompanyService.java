@@ -150,10 +150,8 @@ public class CompanyService extends BaseService{
         jobListForm.setSort("-id");
         companyVo.setJobList(jobService.getJobList(jobListForm).getList());
         companyVo.setAddressList(companyAddressService.getCompanyAddressList(companyId));
-        if(curUser() != null){
-            CompanyWikiVo companyWikiVo = companyWikiService.getCompanyWiki(companyId);
-            companyVo.setCompanyWiki(companyWikiVo != null ? companyWikiVo.getContent(): null);
-        }
+        CompanyWikiVo companyWikiVo = companyWikiService.getCompanyWiki(companyId);
+        companyVo.setCompanyWiki(companyWikiVo != null ? companyWikiVo.getContent(): "");
         return companyVo;
     }
 

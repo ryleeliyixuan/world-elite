@@ -106,20 +106,14 @@ public class UserExpectJobService extends BaseService{
                expectJobMapper.insertSelective(userExpectJob);
             }
         }
-        UserExpectSalary userExpectSalary = expectSalaryMapper.selectByUserId(curUser().getId());
-        if(userExpectSalary == null){
-            userExpectSalary = new UserExpectSalary();
+        expectSalaryMapper.deleteByUserId(curUser().getId());
+        if(userExpectJobForm.getMinSalary() != null && userExpectJobForm.getMaxSalary() != null){
+            UserExpectSalary userExpectSalary = new UserExpectSalary();
             userExpectSalary.setUserId(curUser().getId());
             userExpectSalary.setMinValue(userExpectJobForm.getMinSalary());
             userExpectSalary.setMaxValue(userExpectJobForm.getMaxSalary());
             expectSalaryMapper.insertSelective(userExpectSalary);
-        }else{
-            userExpectSalary.setMinValue(userExpectJobForm.getMinSalary());
-            userExpectSalary.setMaxValue(userExpectJobForm.getMaxSalary());
-            userExpectSalary.setUpdateTime(new Date());
-            expectSalaryMapper.updateByPrimaryKeySelective(userExpectSalary);
         }
-
         return getUserExpectJob(curUser().getId());
     }
 }

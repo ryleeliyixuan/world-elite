@@ -53,4 +53,11 @@ public class MessageApi {
         messageService.deleteMessage(id);
         return ApiResult.ok();
     }
+
+    @RequireLogin
+    @PostMapping("delete-all")
+    public ApiResult deleteAllMessage(){
+        messageService.deleteAllMessage();
+        return ApiResult.ok();
+    }
 }

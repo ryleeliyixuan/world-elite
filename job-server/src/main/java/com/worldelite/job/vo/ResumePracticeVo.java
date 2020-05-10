@@ -1,9 +1,11 @@
 package com.worldelite.job.vo;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.entity.ResumePractice;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
 
@@ -22,15 +24,11 @@ public class ResumePracticeVo extends EditFlag implements VoConvertable<ResumePr
     private String title;
     private String description;
     private String post;
+    private Byte onWork;
 
     @Override
     public ResumePracticeVo asVo(ResumePractice resumePractice) {
-        setId(resumePractice.getId());
-        setStartTime(resumePractice.getStartTime());
-        setFinishTime(resumePractice.getFinishTime());
-        setTitle(resumePractice.getTitle());
-        setDescription(resumePractice.getDescription());
-        setPost(resumePractice.getPost());
+        BeanUtil.copyProperties(resumePractice, this);
         return this;
     }
 }

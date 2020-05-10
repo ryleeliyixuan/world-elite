@@ -88,6 +88,16 @@ public class MessageService extends BaseService{
     }
 
     public void deleteMessage(Integer id){
-        messageMapper.deleteByPrimaryKey(id);
+        Message message = messageMapper.selectByPrimaryKey(id);
+        if(message.getToUser().equals(curUser().getId())){
+            messageMapper.deleteByPrimaryKey(id);
+        }
+    }
+
+    /**
+     * 删除所有消息
+     */
+    public void deleteAllMessage(){
+        messageMapper.deleteUserMessages(curUser().getId());
     }
 }
