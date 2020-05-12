@@ -203,7 +203,7 @@ export default {
       this.$router.push({ path: "/edit-job", query: { id: id } });
     },
     handleJobClick(job) {
-      window.open(`${process.env.VUE_APP_WEB_HOST}/job/${job.id}`);
+      window.open(`/job/${job.id}`);
     },
     handleResumeListClick(job, statuses) {
       this.$router.push({

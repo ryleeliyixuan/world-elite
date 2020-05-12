@@ -1,28 +1,41 @@
 @import 'bootstrap/scss/bootstrap.scss';
 @import 'bootstrap-vue/src/index.scss';
 
-.app-padding{
+.app-padding {
     padding: 0 80px;
 }
 
-.text-small{
+.text-small {
     font-size: 14px;
     font-weight: 400;
 }
 
-.text-gray{
+.text-gray {
     color: $gray-600;
 }
 
-.link-pointer{
+.link-pointer {
     cursor: pointer;
 }
 
-a:hover{
-    text-decoration:none!important;
+a:hover {
+    text-decoration: none !important;
 }
 
 //safari光标bug
 .el-input__inner {
-    line-height: normal!important;
+    line-height: normal !important;
+}
+
+// 兼容编辑器
+.ql-align-center {
+    text-align: center;
+}
+
+.ql-align-justify {
+    text-align: justify;
+}
+
+.ql-align-right {
+    text-align: right;
 }

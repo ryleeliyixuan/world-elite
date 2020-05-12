@@ -9,3 +9,16 @@
 .el-input__inner {
     line-height: normal!important;
 }
+
+// 兼容编辑器
+.ql-align-center {
+    text-align: center;
+}
+
+.ql-align-justify {
+    text-align: justify;
+}
+
+.ql-align-right {
+    text-align: right;
+}

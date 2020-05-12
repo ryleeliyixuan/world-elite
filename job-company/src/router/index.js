@@ -69,7 +69,13 @@ const constantRoutes = [
         name: 'company',
         component: () => import('@/views/CompanyHomePage'),
         meta: { title: '公司主页预览' }
-    }
+    },
+    {
+        path: '/job/:id',
+        name: 'job',
+        component: () => import('@/views/JobPage'),
+        meta: { title: '职位详情' }
+    },
 ]
 
 const createRouter = () => new Router({

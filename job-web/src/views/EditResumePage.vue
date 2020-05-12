@@ -574,7 +574,6 @@
       <el-form
         ref="expectJobForm"
         :model="expectJobForm"
-        :rules="expectJobFormRules"
         label-width="80px"
       >
         <el-form-item label="意向城市" prop="cityIds">
@@ -1314,8 +1313,10 @@ export default {
       this.$refs["resumePracticeForm"].validate(valid => {
         if (valid) {
           this.posting = true;
-          this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
-          this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
+          if(this.resumePracticeForm.workingDates && this.resumePracticeForm.workingDates.length == 2){
+            this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
+            this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
+          }
           saveResumePractice(this.resumePracticeForm)
             .then(() => {
               this.getResumeInfo();

@@ -33,7 +33,7 @@
               icon="el-icon-delete"
               size="small"
               :loading="favoriteLoading"
-            >取消报名</el-button>
+            >取消关注</el-button>
           </template>
         </b-media>
       </el-card>
