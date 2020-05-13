@@ -81,7 +81,7 @@
         </el-collapse>
         <div v-if="company.companyWiki">
           <h5 class="mt-4 mb-4">公司百科</h5>
-          <div class="introdution" v-html="company.companyWiki"></div>
+          <div class="introdution ql-editor" v-html="company.companyWiki"></div>
         </div>
       </div>
       <div class="row job-box" v-else>

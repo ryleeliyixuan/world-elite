@@ -145,6 +145,7 @@ export default {
 </script>
 <style lang="scss">
 .ql-snow .ql-editor {
+  white-space: normal!important;
   p {
     font-size: 1rem;
     font-weight: 400;

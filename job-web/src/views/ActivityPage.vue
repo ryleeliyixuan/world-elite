@@ -28,7 +28,7 @@
         </div>
       </b-media-body>
      </b-media>
-     <div class="introdution mt-4" v-html="activity.description" v-if="activity"></div>
+     <div class="introdution mt-4 ql-editor" v-html="activity.description" v-if="activity"></div>
   </div>
 </template>
 
