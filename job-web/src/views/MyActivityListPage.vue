@@ -96,7 +96,7 @@ export default {
       this.favoriteForm.objectId = acitivity.id;
       doFavorite(this.favoriteForm)
         .then(() => {
-          this.$message("取消报名成功");
+          this.$message("取消成功");
           this.getList();
         })
         .finally(() => {
