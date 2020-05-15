@@ -121,7 +121,7 @@ public class AuthService extends BaseService {
             auth.setUpdateTime(new Date());
             authMapper.updateByPrimaryKeySelective(auth);
 
-            User user = userMapper.selectByPrimaryKey(curUser().getId());
+            User user = userMapper.selectByEmail(registerForm.getEmail());
             user.setEmail(registerForm.getEmail());
             user.setSubscribeFlag(registerForm.getSubscribeFlag());
             setUserPassword(user, registerForm.getPassword());
