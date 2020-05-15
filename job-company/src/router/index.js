@@ -75,7 +75,7 @@ const constantRoutes = [
         name: 'job',
         component: () => import('@/views/JobPage'),
         meta: { title: '职位详情' }
-    },
+    }
 ]
 
 const createRouter = () => new Router({

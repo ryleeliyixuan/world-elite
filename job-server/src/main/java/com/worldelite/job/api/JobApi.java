@@ -1,5 +1,6 @@
 package com.worldelite.job.api;
 
+import com.alibaba.druid.sql.PagerUtils;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.UserType;
@@ -232,5 +233,18 @@ public class JobApi extends BaseApi{
     public ApiResult getJobList(JobListForm listForm){
         PageResult pageResult = jobService.getJobList(listForm);
         return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 获取工作简历推荐
+     *
+     * @param jobId
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @GetMapping("recommend-resumes")
+    public ApiResult getRecommendResumes(@RequestParam Long jobId){
+        PageResult pageResult = searchService.getJobRecommendResumes(jobId, PageForm.pageOf(1, 5));
+        return ApiResult.ok(pageResult.getList());
     }
 }

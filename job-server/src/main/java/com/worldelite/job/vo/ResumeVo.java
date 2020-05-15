@@ -48,6 +48,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     @ResumeScore(4)
     private String introduction;
     private String attachResume;
+    private Long userId;
 
     private Integer resumeCompleteProgress;
 
@@ -84,6 +85,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
         setId(String.valueOf(resume.getId()));
         setName(resume.getName());
         setGender(resume.getGender());
+        setUserId(resume.getUserId());
         setBirth(resume.getBirth());
         setAttachResume(AppUtils.absOssUrl(resume.getAttachResume()));
         if(resume.getBirth() != null){

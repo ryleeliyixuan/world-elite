@@ -9,10 +9,13 @@ import com.worldelite.job.mapper.JobCategoryMapper;
 import com.worldelite.job.mapper.UserExpectJobMapper;
 import com.worldelite.job.mapper.UserExpectPlaceMapper;
 import com.worldelite.job.mapper.UserExpectSalaryMapper;
+import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.vo.DictVo;
 import com.worldelite.job.vo.JobCategoryVo;
+import com.worldelite.job.vo.ResumeVo;
 import com.worldelite.job.vo.UserExpectJobVo;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +45,12 @@ public class UserExpectJobService extends BaseService{
 
     @Autowired
     private DictService dictService;
+
+    @Autowired
+    private IndexService indexService;
+
+    @Autowired
+    private ResumeService resumeService;
 
     /**
      * 获取用户求职意向
@@ -113,6 +122,14 @@ public class UserExpectJobService extends BaseService{
             userExpectSalary.setMinValue(userExpectJobForm.getMinSalary());
             userExpectSalary.setMaxValue(userExpectJobForm.getMaxSalary());
             expectSalaryMapper.insertSelective(userExpectSalary);
+        }
+
+        ResumeVo resumeVo = resumeService.getDefaultOrCreate(curUser().getId());
+        Long resumeId = NumberUtils.toLong(resumeVo.getId());
+        if(ArrayUtils.isEmpty(userExpectJobForm.getCityIds()) && ArrayUtils.isEmpty(userExpectJobForm.getCategoryIds())){
+            indexService.deleteResumeItem(resumeId);
+        }else {
+            indexService.saveResumeItem(resumeId);
         }
         return getUserExpectJob(curUser().getId());
     }

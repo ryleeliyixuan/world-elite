@@ -101,7 +101,7 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.$store.dispatch("user/REGISTER", this.form).then(() => {
-        this.$router.push({ path: "/edit-resume" });
+        this.$router.replace({ path: "/regist-success" });
       });
     },
     recieveEmailCode() {

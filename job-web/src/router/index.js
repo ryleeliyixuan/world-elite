@@ -101,6 +101,11 @@ const constantRoutes = [
         path: '/activity/:id',
         component: () => import('@/views/ActivityPage'),
         meta: {title: '活动详情'}
+    },
+    {
+        path: '/regist-success',
+        component: () => import('@/views/RegisterSuccessPage'),
+        meta: {title: '注册成功'}
     }
 ]
 

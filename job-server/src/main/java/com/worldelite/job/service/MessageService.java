@@ -3,18 +3,26 @@ package com.worldelite.job.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.Bool;
+import com.worldelite.job.constants.FavoriteType;
+import com.worldelite.job.entity.Favorite;
 import com.worldelite.job.entity.Message;
 import com.worldelite.job.form.MessageListForm;
 import com.worldelite.job.form.PageForm;
+import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.mapper.MessageMapper;
 import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.CompanyVo;
+import com.worldelite.job.vo.JobVo;
 import com.worldelite.job.vo.MessageVo;
 import com.worldelite.job.vo.PageResult;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -24,6 +32,9 @@ public class MessageService extends BaseService{
 
     @Autowired
     private MessageMapper messageMapper;
+
+    @Autowired
+    private FavoriteMapper favoriteMapper;
 
     /**
      * 发送站内消息
@@ -99,5 +110,31 @@ public class MessageService extends BaseService{
      */
     public void deleteAllMessage(){
         messageMapper.deleteUserMessages(curUser().getId());
+    }
+
+    /**
+     * 给订阅了企业的用户发送工作消息
+     */
+    public void sendJobSubscribeMessage(JobVo jobVo){
+        int page = 1;
+        int pageSize = 20;
+        List<Favorite> favoriteList;
+        CompanyVo companyVo = jobVo.getCompanyUser().getCompany();
+        Favorite options = new Favorite();
+        options.setType(FavoriteType.COMPANY.value);
+        options.setObjectId(NumberUtils.toLong(companyVo.getId()));
+        do{
+            PageHelper.startPage(page, pageSize, false);
+            favoriteList = favoriteMapper.selectAndList(options);
+            for(Favorite favorite: favoriteList){
+                Message message = new Message();
+                message.setFromUser(jobVo.getCreatorId());
+                message.setToUser(favorite.getUserId());
+                message.setContent(message("message.job.subscribe", companyVo.getName(), jobVo.getName()));
+                message.setUrl(String.format("/job/%s", jobVo.getId()));
+                messageMapper.insertSelective(message);
+            }
+            page++;
+        }while(CollectionUtils.isNotEmpty(favoriteList));
     }
 }

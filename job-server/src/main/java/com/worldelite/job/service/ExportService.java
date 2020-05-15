@@ -8,16 +8,13 @@ import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.User;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.IExportable;
-import com.worldelite.job.form.UserListForm;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.mapper.UserMapper;
 import com.worldelite.job.mq.ExportMessage;
 import com.worldelite.job.mq.ExportTaskHandler;
-import com.worldelite.job.service.excel.IExportExcelService;
 import com.worldelite.job.vo.ApiCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 

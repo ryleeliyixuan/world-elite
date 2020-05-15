@@ -12,4 +12,8 @@ public interface MessageTopic {
      */
     String TOPIC_EXPORT_EXCEL = "topic_export_excel";
 
+    /**
+     * 消息
+     */
+    String TOPIC_SEND_MESSAGE = "topic_send_message";
 }

@@ -29,7 +29,7 @@
               plain
               :loading="favoriteLoading"
               @click="handleFavorite"
-            >{{company.favoriteFlag == 1? '已收藏': '收藏岗位'}}</el-button>
+            >{{company.favoriteFlag == 1? '已收藏': '收藏企业'}}</el-button>
           </b-col>
         </b-row>
       </b-media-body>

@@ -154,7 +154,7 @@ export default {
         type: 2,
         favorite: false
       },
-      favoriteLoading: false
+      favoriteLoading: false,
     };
   },
   created() {

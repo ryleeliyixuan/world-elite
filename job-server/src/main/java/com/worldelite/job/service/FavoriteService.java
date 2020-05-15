@@ -9,10 +9,7 @@ import com.worldelite.job.form.FavoriteListForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.ActivityVo;
-import com.worldelite.job.vo.CompanyVo;
-import com.worldelite.job.vo.JobVo;
-import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.*;
 import me.zhyd.oauth.utils.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,4 +164,5 @@ public class FavoriteService extends BaseService{
         List<Favorite> favoriteList = favoriteMapper.selectAndList(options);
         return CollectionUtils.isNotEmpty(favoriteList);
     }
+
 }

@@ -63,3 +63,11 @@ export function getCompanyJobList(data) {
         params: data
     })
 }
+
+export function getJobRecommendResumes(jobId){
+    return request({
+        url: '/job/recommend-resumes',
+        method: 'get',
+        params: {jobId: jobId}
+    })
+}

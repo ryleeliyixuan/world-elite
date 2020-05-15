@@ -74,7 +74,7 @@ export default {
           bindAccount(this.form)
             .then(() => {
                Toast.success("绑定成功");
-               this.$router.replace('/')
+               this.$router.replace({ path: "/regist-success" });
             })
         }
       });

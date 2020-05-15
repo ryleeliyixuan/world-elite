@@ -3,6 +3,7 @@ package com.worldelite.job.context.config;
 
 import com.worldelite.job.context.MessageTopic;
 import com.worldelite.job.mq.ExportTaskHandler;
+import com.worldelite.job.mq.MessageTaskHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,9 @@ public class SubscriberConfig {
     @Autowired
     private ExportTaskHandler exportExcelTaskHandler;
 
+    @Autowired
+    private MessageTaskHandler messageTaskHandler;
+
     /**
      * 创建消息监听容器
      *
@@ -32,6 +36,7 @@ public class SubscriberConfig {
         RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
         redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
         redisMessageListenerContainer.addMessageListener(exportExcelTaskHandler, new PatternTopic(MessageTopic.TOPIC_EXPORT_EXCEL));
+        redisMessageListenerContainer.addMessageListener(messageTaskHandler, new PatternTopic(MessageTopic.TOPIC_SEND_MESSAGE));
         return redisMessageListenerContainer;
     }
 

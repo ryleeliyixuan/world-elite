@@ -35,23 +35,23 @@ public class CompanyWikiService {
      *
      * @param companyWikiForm
      */
-    public void saveCompanyWiki(CompanyWikiForm companyWikiForm){
+    public void saveCompanyWiki(CompanyWikiForm companyWikiForm) {
         CompanyWiki options = new CompanyWiki();
         options.setCompanyId(companyWikiForm.getCompanyId());
         List<CompanyWiki> wikiList = companyWikiMapper.selectAndList(options);
         CompanyWiki companyWiki;
-        if(CollectionUtils.isEmpty(wikiList)){
+        if (CollectionUtils.isEmpty(wikiList)) {
             companyWiki = new CompanyWiki();
-        }else{
+        } else {
             companyWiki = wikiList.get(0);
         }
         BeanUtil.copyProperties(companyWikiForm, companyWiki);
-        if(StringUtils.isEmpty(companyWikiForm.getSummary()) && StringUtils.isNotEmpty(companyWikiForm.getContent())){
+        if (StringUtils.isEmpty(companyWikiForm.getSummary()) && StringUtils.isNotEmpty(companyWikiForm.getContent())) {
             companyWiki.setSummary(StringUtils.substring(FormUtils.removeAllHtmlTag(companyWikiForm.getContent()), 0, 150));
         }
-        if(companyWiki.getId() != null){
+        if (companyWiki.getId() != null) {
             companyWikiMapper.updateByPrimaryKeySelective(companyWiki);
-        }else{
+        } else {
             companyWikiMapper.insertSelective(companyWiki);
         }
     }
@@ -62,13 +62,13 @@ public class CompanyWikiService {
      * @param companyId
      * @return
      */
-    public CompanyWikiVo getCompanyWiki(Long companyId){
+    public CompanyWikiVo getCompanyWiki(Long companyId) {
         CompanyWikiVo companyWikiVo = new CompanyWikiVo();
         companyWikiVo.setCompany(companyService.getCompanyInfo(companyId));
         CompanyWiki options = new CompanyWiki();
         options.setCompanyId(companyId);
         CompanyWiki companyWiki = companyWikiMapper.selectByCompanyId(companyId);
-        if(companyWiki != null){
+        if (companyWiki != null) {
             companyWikiVo.setContent(companyWiki.getContent());
             companyWikiVo.setSummary(companyWiki.getSummary());
         }
@@ -81,11 +81,11 @@ public class CompanyWikiService {
      * @param companyId
      * @return
      */
-    public String getCompanyWikiSummary(Long companyId){
+    public String getCompanyWikiSummary(Long companyId) {
         CompanyWiki options = new CompanyWiki();
         options.setCompanyId(companyId);
         List<CompanyWiki> wikiList = companyWikiMapper.selectAndList(options);
-        if(CollectionUtils.isNotEmpty(wikiList)){
+        if (CollectionUtils.isNotEmpty(wikiList)) {
             return wikiList.get(0).getSummary();
         }
         return null;

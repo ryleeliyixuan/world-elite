@@ -9,6 +9,8 @@ import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.CompanyUserMapper;
 import com.worldelite.job.mapper.JobApplyMapper;
 import com.worldelite.job.mapper.JobMapper;
+import com.worldelite.job.mq.JobMessage;
+import com.worldelite.job.mq.MessageTaskHandler;
 import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.util.AppUtils;
@@ -64,6 +66,9 @@ public class JobService extends BaseService {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private MessageTaskHandler messageTaskHandler;
 
     /**
      * 获取职位信息: 适用列表
@@ -135,6 +140,8 @@ public class JobService extends BaseService {
             job.setPubTime(new Date());
             job.setId(AppUtils.nextId());
             jobMapper.insertSelective(job);
+            //发送订阅消息
+            messageTaskHandler.sendJobMessage(new JobMessage(getJobInfo(job.getId(), true)));
         } else {
             if (job.getStatus() != JobStatus.PUBLISH.value) {
                 job.setPubTime(new Date());

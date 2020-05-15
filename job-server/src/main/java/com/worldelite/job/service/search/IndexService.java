@@ -25,4 +25,17 @@ public interface IndexService {
      * @param jobId
      */
     void deleteJobItem(Long jobId);
+
+    /**
+     * 在索引中添加或者更新简历索引
+     *
+     * @param resumeId
+     */
+    void saveResumeItem(Long resumeId);
+
+    /**
+     * 在索引中删除简历记录
+     * @param resumeId
+     */
+    void deleteResumeItem(Long resumeId);
 }

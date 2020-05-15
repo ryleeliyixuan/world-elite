@@ -1,6 +1,7 @@
 package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.ConfigType;
@@ -13,11 +14,13 @@ import com.worldelite.job.mapper.JobApplyMapper;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mapper.MessageMapper;
 import com.worldelite.job.mapper.ResumeMapper;
+import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.FormUtils;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -406,7 +409,7 @@ public class ResumeService extends BaseService {
      * @param resumeId
      * @return
      */
-    private ResumeVo getResumeInfo(Long resumeId) {
+    public ResumeVo getResumeInfo(Long resumeId) {
         Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
         return toResumeVo(resume);
     }
@@ -414,17 +417,18 @@ public class ResumeService extends BaseService {
     private ResumeVo toResumeVo(Resume resume) {
         ResumeVo resumeVo = new ResumeVo().asVo(resume);
         UserVo userVo = userService.getUserInfo(resume.getUserId());
-        resumeVo.setAvatar(AppUtils.absOssUrl(userVo.getAvatar()));
-        resumeVo.setEmail(userVo.getEmail());
-        resumeVo.setPhoneCode(userVo.getPhoneCode());
-        resumeVo.setPhone(userVo.getPhone());
+        if(userVo != null){
+            resumeVo.setAvatar(AppUtils.absOssUrl(userVo.getAvatar()));
+            resumeVo.setEmail(userVo.getEmail());
+            resumeVo.setPhoneCode(userVo.getPhoneCode());
+            resumeVo.setPhone(userVo.getPhone());
+        }
         List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduList(resume.getId());
         resumeVo.setResumeEduList(resumeEduVoList);
         resumeVo.setResumeSkillList(resumeSkillService.getResumeSkillList(resume.getId()));
         resumeVo.setResumeExpList(resumeExpService.getResumeExpList(resume.getId()));
         if (CollectionUtils.isNotEmpty(resumeEduVoList)) {
-            ResumeEduVo maxResumeEduVo = new ResumeEduVo();
-            BeanUtil.copyProperties(resumeEduVoList.get(0), maxResumeEduVo);
+            ResumeEduVo maxResumeEduVo = JSON.parseObject(JSON.toJSONString(resumeEduVoList.get(0)), ResumeEduVo.class);
             resumeVo.setMaxResumeEdu(maxResumeEduVo);
         }
         return resumeVo;
