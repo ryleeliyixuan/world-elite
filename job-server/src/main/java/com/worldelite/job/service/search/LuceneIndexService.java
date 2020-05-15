@@ -8,12 +8,14 @@ import com.worldelite.job.entity.Job;
 import com.worldelite.job.entity.JobOptions;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeOptions;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
@@ -100,9 +102,12 @@ public class LuceneIndexService implements IndexService {
             resumeList = resumeMapper.selectAndList(options);
             for (Resume resume : resumeList) {
                 Document doc = createResumeDoc(resume.getId());
-                indexWriter.addDocument(doc);
+                if (doc != null) {
+                    indexWriter.addDocument(doc);
+                }
             }
-        } while (CollectionUtils.isNotEmpty(resumeList));    }
+        } while (CollectionUtils.isNotEmpty(resumeList));
+    }
 
     @Override
     public void saveJobItem(Long jobId) {
@@ -196,7 +201,10 @@ public class LuceneIndexService implements IndexService {
             indexWriter = createIndexWriter(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             //先删除，再添加
             indexWriter.deleteDocuments(LongPoint.newExactQuery(ResumeIndexFields.RESUME_ID_INDEX, resumeId));
-            indexWriter.addDocument(createResumeDoc(resumeId));
+            Document doc = createResumeDoc(resumeId);
+            if (doc != null) {
+                indexWriter.addDocument(doc);
+            }
             indexWriter.commit();
         } catch (IOException e) {
             log.error("saveResumeItem error ", e);
@@ -220,7 +228,9 @@ public class LuceneIndexService implements IndexService {
     }
 
     private Document createResumeDoc(Long resumeId) {
-        ResumeVo resumeVo = resumeService.getResumeInfo(resumeId);
+        ResumeVo resumeVo = resumeService.getResumeDetail(resumeId);
+        if (checkIfResumeNotComplete(resumeVo)) return null;
+
         final Document doc = new Document();
         doc.add(new StoredField(ResumeIndexFields.RESUME_ID, resumeId));
         doc.add(new LongPoint(ResumeIndexFields.RESUME_ID_INDEX, resumeId));
@@ -230,29 +240,29 @@ public class LuceneIndexService implements IndexService {
             if (CollectionUtils.isNotEmpty(expectJobVo.getCityList())) {
                 int index = 1;
                 for (DictVo city : expectJobVo.getCityList()) {
-                    if(index == 1){
+                    if (index == 1) {
                         doc.add(new IntPoint(ResumeIndexFields.EXPECT_JOB_FIRST_CITY, city.getId()));
                     }
-                    if(index == 2){
+                    if (index == 2) {
                         doc.add(new IntPoint(ResumeIndexFields.EXPECT_JOB_SECOND_CITY, city.getId()));
                     }
-                    if(index == 3){
+                    if (index == 3) {
                         doc.add(new IntPoint(ResumeIndexFields.EXPECT_JOB_THIRD_CITY, city.getId()));
                     }
                     index++;
                 }
             }
 
-            if(CollectionUtils.isNotEmpty(expectJobVo.getCategoryList())){
+            if (CollectionUtils.isNotEmpty(expectJobVo.getCategoryList())) {
                 int index = 1;
                 for (JobCategoryVo categoryVo : expectJobVo.getCategoryList()) {
-                    if(index == 1){
+                    if (index == 1) {
                         doc.add(new IntPoint(ResumeIndexFields.EXPECT_JOB_FIRST_CATEGORY, categoryVo.getId()));
                     }
-                    if(index == 2){
+                    if (index == 2) {
                         doc.add(new IntPoint(ResumeIndexFields.EXPECT_JOB_SECOND_CATEGORY, categoryVo.getId()));
                     }
-                    if(index == 3){
+                    if (index == 3) {
                         doc.add(new IntPoint(ResumeIndexFields.EXPECT_JOB_THIRD_CATEGORY, categoryVo.getId()));
                     }
                     index++;
@@ -267,5 +277,17 @@ public class LuceneIndexService implements IndexService {
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         config.setOpenMode(openMode);
         return new IndexWriter(FSDirectory.open(Paths.get(searchIndexPath)), config);
+    }
+
+    private Boolean checkIfResumeNotComplete(ResumeVo resumeVo) {
+        return StringUtils.isEmpty(resumeVo.getName())
+                || resumeVo.getAge() == null
+                || resumeVo.getBirth() == null
+                || resumeVo.getGender() == null
+                || StringUtils.isEmpty(resumeVo.getAvatar())
+                || StringUtils.isEmpty(resumeVo.getIntroduction())
+                || CollectionUtils.isEmpty(resumeVo.getResumeExpList())
+                || CollectionUtils.isEmpty(resumeVo.getResumePracticeList())
+                || CollectionUtils.isEmpty(resumeVo.getResumeSkillList());
     }
 }
