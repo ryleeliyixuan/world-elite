@@ -127,6 +127,29 @@ public class UserApi extends BaseController {
     }
 
     /**
+     * 保存管理员
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("add-admin")
+    public ApiResult addAdmin(@Valid @RequestBody AdminForm adminForm){
+        userService.saveAdmin(adminForm);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 删除管理员
+     * @param userId
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("delete-admin")
+    public ApiResult deleteAdmin(@RequestParam Long userId){
+        userService.deleteAdmin(userId);
+        return ApiResult.ok();
+    }
+
+    /**
      * 修改用户状态
      *
      * @return

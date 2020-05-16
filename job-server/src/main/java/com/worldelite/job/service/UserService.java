@@ -217,4 +217,49 @@ public class UserService extends BaseService {
         user.setUpdateTime(new Date());
         userMapper.updateByPrimaryKeySelective(user);
     }
+
+    /**
+     * 保存管理员
+     * @param adminForm
+     */
+    public void saveAdmin(AdminForm adminForm){
+        User admin = userMapper.selectByEmail(adminForm.getEmail());
+        if(admin != null){
+            throw new ServiceException("该email已经注册用户，不能注册管理员");
+        }
+        admin = new User();
+        admin.setName(adminForm.getName());
+        admin.setEmail(adminForm.getEmail());
+        admin.setStatus(UserStatus.NORMAL.value);
+        admin.setType(UserType.ADMIN.value);
+        setUserPassword(admin, adminForm.getPassword());
+        userMapper.insertSelective(admin);
+    }
+
+    /**
+     * 删除管理员
+     * @param userId
+     */
+    public void deleteAdmin(Long userId){
+        User admin = userMapper.selectByPrimaryKey(userId);
+        if(admin != null && admin.getType() == UserType.ADMIN.value){
+            userMapper.deleteByPrimaryKey(userId);
+        }
+    }
+
+    /**
+     * 设置用户密码
+     *
+     * @param user
+     * @param password
+     */
+    private void setUserPassword(User user, String password) {
+        user.setSalt(RandomStringUtils.randomAlphanumeric(40));
+        final String encodePass = encodePassword(password, user.getSalt());
+        user.setPassword(encodePass);
+    }
+
+    private String encodePassword(String password, String salt) {
+        return DigestUtils.sha256Hex(password + salt);
+    }
 }

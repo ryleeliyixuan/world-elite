@@ -69,3 +69,19 @@ export function getCompanyUserList(data) {
     params: data
   })
 }
+
+export function addAdmin(data){
+  return request({
+    url: '/user/add-admin',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteAdmin(userId){
+  return request({
+    url: '/user/delete-admin',
+    method: 'post',
+    params: {userId: userId}
+  })
+}

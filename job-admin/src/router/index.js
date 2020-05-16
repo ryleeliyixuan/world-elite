@@ -60,6 +60,11 @@ export const constantRoutes = [
       path: 'general',
       component: () => import('@/views/user/index'),
       meta: { title: '普通用户' }
+    },
+    {
+      path: 'admin',
+      component: () => import('@/views/user/AdminUserList'),
+      meta: { title: '管理员' }
     }]
   },
   {
