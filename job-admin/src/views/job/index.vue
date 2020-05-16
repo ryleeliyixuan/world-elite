@@ -94,10 +94,11 @@
            <el-link type="primary" @click="showResumeApplyJobs(row.id, [4])">{{row.interviewResumeCount}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="300">
         <template slot-scope="{row}">
           <el-button size="mini" type="primary" @click="goJobDetail(row.id)">查看</el-button>
           <el-button size="mini" type="danger" @click="handleTakeOffJob(row)" v-if="row.status == 2">下架</el-button>
+          <el-button size="mini" type="success" @click="handleRecommendResume(row)" v-if="row.status == 2">推荐简历</el-button>
           <el-popconfirm title="你确定要删除该职位？" @onConfirm="handleDeleteJob(row)"  v-if="row.status == 3">
               <el-button size="mini" onfirmButtonText="删除" slot="reference" type="danger">删除</el-button>
           </el-popconfirm>
@@ -142,7 +143,7 @@
 <script>
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import { getJobList, takeOffJob, deleteJob } from "@/api/job_api";
+import { getJobList, takeOffJob, deleteJob, recommendResumeForJob } from "@/api/job_api";
 import { serachByCompanyName } from "@/api/company_api";
 import { getApplyResumeList } from '@/api/resume_api'
 import { exportJobList } from '@/api/export_api'
@@ -289,6 +290,16 @@ export default {
           Toast.success("已加入下载队列，请稍后到【下载管理】进行下载");
         })
         .finally(() => (this.exporting = false));
+    },
+    handleRecommendResume(job){
+       this.$prompt('请输入推荐简历ID', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+            recommendResumeForJob(job.id, value).then(response => {
+              Toast.success('推荐成功');
+            })
+        })
     }
   }
 };

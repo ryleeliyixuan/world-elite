@@ -247,4 +247,17 @@ public class JobApi extends BaseApi{
         PageResult pageResult = searchService.getJobRecommendResumes(jobId, PageForm.pageOf(1, 5));
         return ApiResult.ok(pageResult.getList());
     }
+
+    /**
+     * 推荐简历
+     * @param jobId
+     * @param resumeId
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("recommend-resume-for-job")
+    public ApiResult recommendResumeForJob(@RequestParam Long jobId , @RequestParam Long resumeId){
+        jobService.recommendResumeForJob(jobId, resumeId);
+        return ApiResult.ok();
+    }
 }

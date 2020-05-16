@@ -71,3 +71,11 @@ export function getResumeApplyJobs(data){
         params: data
     })
 }
+
+export function recommendResumeForJob(jobId, resumeId){
+    return request({
+        url: '/job/recommend-resume-for-job',
+        method: 'post',
+        params: {jobId: jobId, resumeId: resumeId}
+    })
+}

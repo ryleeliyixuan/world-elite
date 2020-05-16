@@ -457,6 +457,29 @@ public class JobService extends BaseService {
         return pageResult;
     }
 
+    /**
+     * 推荐简历
+     *
+     * @param jobId
+     * @param resumeId
+     */
+    public void recommendResumeForJob(Long jobId, Long resumeId){
+        Job job = jobMapper.selectByPrimaryKey(jobId);
+        if(job == null){
+            throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
+        }
+        ResumeVo resumeVo = resumeService.getResumeInfo(resumeId);
+        if(resumeVo == null){
+            throw new ServiceException("简历不存在，请检查输入的简历ID", ApiCode.OBJECT_NOT_FOUND);
+        }
+        Message message = new Message();
+        message.setFromUser(-1L);
+        message.setToUser(job.getCreatorId());
+        message.setContent(message("message.recommend.resume.for.job", job.getName(), resumeVo.getName()));
+        message.setUrl(String.format("/resume?resumeId=%s", resumeId));
+        messageService.sendMessage(message);
+    }
+
     private JobVo toJobVo(Job job, Boolean includeCompany) {
         if (job == null) {
             return null;
