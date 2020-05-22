@@ -12,23 +12,23 @@ import java.util.Date;
 @Data
 public class JobVo implements VoConvertable<JobVo, Job>{
 
-    private String id;
-    private DictVo jobType;
-    private String name;
-    private CompanyUserVo companyUser;
-    private JobCategoryVo category;
-    private String depart;
-    private DictVo minDegree;
-    private Integer minSalary;
-    private Integer maxSalary;
-    private Integer salaryMonths;
-    private DictVo city;
-    private Byte status;
-    private String description;
-    private Long creatorId;
-    private String address;
+    private String id; //职位ID
+    private DictVo jobType; //职位类型
+    private String name; //职位名称
+    private CompanyUserVo companyUser; //企业用户
+    private JobCategoryVo category; //职位类型
+    private String depart; //部门
+    private DictVo minDegree; // 学历要求
+    private Integer minSalary; //最低薪资
+    private Integer maxSalary;//最高薪资
+    private Integer salaryMonths; //发放月数
+    private DictVo city; //工作城市
+    private Byte status; //职位状态
+    private String description; //职位描述
+    private Long creatorId; //创建人
+    private String address; //工作地址
     @JSONField(format = "yyyy-MM-dd")
-    private Date time;
+    private Date time; //发布时间
 
     private Byte favoriteFlag; //是否已收藏
     @JSONField(format = "yyyy-MM-dd")

@@ -7,14 +7,17 @@ import com.worldelite.job.form.RecommendListForm;
 import com.worldelite.job.service.RecommendService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.RecommendVo;
+import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
+ * 推荐接口
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
-@RequestMapping("/api/recommend")
+@RequestMapping("/api/recommend/")
 public class RecommendApi {
 
     @Autowired
@@ -27,6 +30,7 @@ public class RecommendApi {
      */
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("save")
+    @ApiDoc
     public ApiResult saveRecommend(@RequestBody RecommendForm recommendForm){
         recommendService.saveRecommend(recommendForm);
         return ApiResult.ok();
@@ -35,11 +39,12 @@ public class RecommendApi {
     /**
      * 删除推荐
      *
-     * @param id
+     * @param id 推荐ID
      * @return
      */
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("delete")
+    @ApiDoc
     public ApiResult delRecommend(@RequestParam Integer id){
         recommendService.deleteRecommend(id);
         return ApiResult.ok();
@@ -52,7 +57,8 @@ public class RecommendApi {
      * @return
      */
     @GetMapping("list")
-    public ApiResult getRecommendList(RecommendListForm listForm){
+    @ApiDoc
+    public ApiResult<PageResult<RecommendVo>> getRecommendList(RecommendListForm listForm){
         PageResult pageResult = recommendService.getRecommendList(listForm);
         return ApiResult.ok(pageResult);
     }

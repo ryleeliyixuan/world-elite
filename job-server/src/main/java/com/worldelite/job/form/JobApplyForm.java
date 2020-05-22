@@ -7,6 +7,6 @@ import lombok.Data;
  */
 @Data
 public class JobApplyForm {
-    private Integer id;
-    private Byte status;
+    private Integer id; //申请ID
+    private Byte status; //状态
 }

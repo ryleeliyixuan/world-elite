@@ -12,16 +12,16 @@ import java.util.Date;
  */
 @Data
 public class ResumePracticeForm {
-    private Integer id;
-    private Long resumeId;
+    private Integer id; //实践ID
+    private Long resumeId; //简历ID
     @JSONField(format = "yyyy-MM")
-    private Date startTime;
+    private Date startTime; //开始时间
     @JSONField(format = "yyyy-MM")
-    private Date finishTime;
+    private Date finishTime; //结束时间
     @NotBlank(message = "{edit.resume.practice.title.not.blank}")
-    private String title;
+    private String title; //标题
     @NotBlank(message = "{edit.resume.practice.description.not.blank}")
-    private String description;
-    private String post;
-    private Byte onWork;
+    private String description; //描述
+    private String post; //职位
+    private Byte onWork; //实践中
 }

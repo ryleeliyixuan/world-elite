@@ -1,5 +1,6 @@
 package com.worldelite.job.vo;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CompanyUserVo extends UserVo{
-    private CompanyVo company;
-    private String depart;
-    private String post;
+    private CompanyVo company; //公司
+    private String depart; //部门
+    private String post; //职位
 }

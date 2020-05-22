@@ -9,9 +9,9 @@ import lombok.Data;
 @Data
 public class ResumeSkillVo implements VoConvertable<ResumeSkillVo, ResumeSkill>{
 
-    private Integer id;
-    private String name;
-    private Byte level;
+    private Integer id; //技能ID
+    private String name; //技能名
+    private Byte level; //等级
 
     @Override
     public ResumeSkillVo asVo(ResumeSkill resumeSkill) {

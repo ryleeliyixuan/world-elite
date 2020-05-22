@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class DictForm {
-    private Integer id;
+    private Integer id; //字典ID
     @NotBlank
-    private String name;
+    private String name; //字典名称
     @NotNull
-    private Integer type;
-    private String value;
+    private Integer type; //字典类型
+    private String value; //字典值
 }

@@ -9,5 +9,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SchoolListForm extends PageForm{
-    private String name;
+    private String name; //学校名
 }

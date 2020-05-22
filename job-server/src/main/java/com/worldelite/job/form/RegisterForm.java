@@ -17,19 +17,19 @@ public class RegisterForm {
 
     @NotNull
     @Email(message = "{email.format.error}")
-    private String email;
+    private String email; //邮箱
 
     @NotBlank(message = "{vcode.not.empty}")
-    private String validCode;
+    private String validCode; //验证码
 
     @Pattern(regexp = Regexs.PASSWORD_REGEX, message = "{password.format.error}")
-    private String password;
+    private String password; //密码
 
-    private String name;
+    private String name; //名字
 
-    private Byte gender;
+    private Byte gender; //性别
 
-    private Byte userType;
+    private Byte userType; //用户类型
 
-    private Byte subscribeFlag;
+    private Byte subscribeFlag; //是否订阅
 }

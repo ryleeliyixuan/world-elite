@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>简历接口</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<div id="wmd-preview" class="wmd-preview">
+<h1><a href="../index.html">《首页</a> 简历接口:</h1>
+<div class="toc">
+    <ul>
+    <li><a href="#我的简历信息">我的简历信息</a></li><li><a href="#获取简历列表">获取简历列表</a></li><li><a href="#查看简历详情">查看简历详情</a></li><li><a href="#保存基本信息">保存基本信息</a></li><li><a href="#删除附件简历">删除附件简历</a></li><li><a href="#保存教育经历">保存教育经历</a></li><li><a href="#保存工作经验">保存工作经验</a></li><li><a href="#删除工作经验">删除工作经验</a></li><li><a href="#保存实践经验">保存实践经验</a></li><li><a href="#删除实践经验">删除实践经验</a></li><li><a href="#保存擅长技能">保存擅长技能</a></li><li><a href="#保存简历链接">保存简历链接</a></li><li><a href="#删除简历链接">删除简历链接</a></li><li><a href="#获取当前企业用户需要处理的简历列表">获取当前企业用户需要处理的简历列表</a></li><li><a href="#获取申请的简历列表">获取申请的简历列表</a></li><li><a href="#处理简历">处理简历</a></li>
+    </ul>
+</div>
+<hr>
+<h2 id="我的简历信息">我的简历信息</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/resume/my-resume
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_myResume_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_myResume_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "id": "string //简历ID",
+    "avatar": "string //头像",
+    "name": "string //名字",
+    "gender": "byte //性别",
+    "age": "int //年龄",
+    "birth": "date //生日",
+    "maxResumeEdu": {
+      "showEditFlag": "byte",
+      "id": "int //学历ID",
+      "schoolName": "string //学校名",
+      "majorName": "string //专业",
+      "startTime": "date //开始时间",
+      "finishTime": "date //结束时间",
+      "degree": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "gpa": "double //gpa"
+    },
+    "returnTime": "date //回国时间",
+    "graduateTime": "date //毕业时间",
+    "curPlace": "string //现居地址",
+    "phoneCode": "string //号码区号",
+    "phone": "string //电话号码",
+    "email": "string //邮箱",
+    "introduction": "string //个人介绍",
+    "attachResume": "string //附件简历",
+    "userId": "long //用户Id",
+    "resumeCompleteProgress": "int //简历完善进度",
+    "resumeEduList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //学历ID",
+        "schoolName": "string //学校名",
+        "majorName": "string //专业",
+        "startTime": "date //开始时间",
+        "finishTime": "date //结束时间",
+        "degree": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "gpa": "double //gpa"
+      }
+    ],
+    "resumeExpList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //工作经验ID",
+        "startTime": "date //开始时间",
+        "finishTime": "date //结束时间",
+        "company": "string //公司名",
+        "depart": "string //部门",
+        "post": "string //职位",
+        "description": "string //描述",
+        "position": "int //排序",
+        "onWork": "byte //是在在职"
+      }
+    ],
+    "resumePracticeList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //实践ID",
+        "startTime": "date //开始时间",
+        "finishTime": "date //结束时间",
+        "title": "string //标题",
+        "description": "string //描述",
+        "post": "string //职位",
+        "onWork": "byte //是否实践中"
+      }
+    ],
+    "resumeSkillList": [
+      {
+        "id": "int //技能ID",
+        "name": "string //技能名",
+        "level": "byte //等级"
+      }
+    ],
+    "resumeLinkList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //链接ID",
+        "name": "string //名称",
+        "link": "string //链接url"
+      }
+    ],
+    "userExpectJob": {
+      "categoryList": [
+        {
+          "id": "int //类型ID",
+          "name": "string //类型名",
+          "parentId": "int //父类型",
+          "position": "int //排序"
+        }
+      ],
+      "cityList": [
+        {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        }
+      ],
+      "minSalary": "int //最低薪资",
+      "maxSalary": "int //最高薪资"
+    },
+    "applyTotalCount": "int //已投递职位总数",
+    "applyingCount": "int //投递中的岗位数量",
+    "applyCandidateCount": "int //通过初筛数量",
+    "applyInterviewCount": "int //进入面试数量",
+    "applyOfferCount": "int //已录用"
+  }
+}
+</pre>
+
+<hr><h2 id="获取简历列表">获取简历列表</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "page": "int //页数",
+  "limit": "int //每页条数",
+  "sort": "string //排序",
+  "userId": "long //用户ID",
+  "name": "string //用户名",
+  "gender": "byte //性别",
+  "minAge": "int //最小年龄区间",
+  "maxAge": "int //最大年龄区间",
+  "degreeIds": "int[] //学历",
+  "schoolIds": "int[] //学校",
+  "categoryIds": "int[] //意向职位类型",
+  "cityIds": "int[] //意向城市",
+  "minGpa": "double //最小gpa区间",
+  "maxGpa": "double //最大gpa期间",
+  "gpaRangeId": "int //gpa范围ID",
+  "minSalary": "int //最低薪酬区间",
+  "maxSalary": "int //最高薪酬区间",
+  "salaryRangeId": "int //薪酬区间ID"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_getResumeList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_getResumeList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "total": "int //总记录数",
+    "pageCount": "int //页数",
+    "currentPage": "int //当前页",
+    "pageSize": "int //每页记录数",
+    "list": [
+      {
+        "id": "string //简历ID",
+        "avatar": "string //头像",
+        "name": "string //名字",
+        "gender": "byte //性别",
+        "age": "int //年龄",
+        "birth": "date //生日",
+        "maxResumeEdu": {
+          "showEditFlag": "byte",
+          "id": "int //学历ID",
+          "schoolName": "string //学校名",
+          "majorName": "string //专业",
+          "startTime": "date //开始时间",
+          "finishTime": "date //结束时间",
+          "degree": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "gpa": "double //gpa"
+        },
+        "returnTime": "date //回国时间",
+        "graduateTime": "date //毕业时间",
+        "curPlace": "string //现居地址",
+        "phoneCode": "string //号码区号",
+        "phone": "string //电话号码",
+        "email": "string //邮箱",
+        "introduction": "string //个人介绍",
+        "attachResume": "string //附件简历",
+        "userId": "long //用户Id",
+        "resumeCompleteProgress": "int //简历完善进度",
+        "resumeEduList": [
+          {
+            "showEditFlag": "byte",
+            "id": "int //学历ID",
+            "schoolName": "string //学校名",
+            "majorName": "string //专业",
+            "startTime": "date //开始时间",
+            "finishTime": "date //结束时间",
+            "degree": {
+              "id": "int //字典ID",
+              "name": "string //字典名",
+              "type": "int //字典类型",
+              "value": "string //字典值"
+            },
+            "gpa": "double //gpa"
+          }
+        ],
+        "resumeExpList": [
+          {
+            "showEditFlag": "byte",
+            "id": "int //工作经验ID",
+            "startTime": "date //开始时间",
+            "finishTime": "date //结束时间",
+            "company": "string //公司名",
+            "depart": "string //部门",
+            "post": "string //职位",
+            "description": "string //描述",
+            "position": "int //排序",
+            "onWork": "byte //是在在职"
+          }
+        ],
+        "resumePracticeList": [
+          {
+            "showEditFlag": "byte",
+            "id": "int //实践ID",
+            "startTime": "date //开始时间",
+            "finishTime": "date //结束时间",
+            "title": "string //标题",
+            "description": "string //描述",
+            "post": "string //职位",
+            "onWork": "byte //是否实践中"
+          }
+        ],
+        "resumeSkillList": [
+          {
+            "id": "int //技能ID",
+            "name": "string //技能名",
+            "level": "byte //等级"
+          }
+        ],
+        "resumeLinkList": [
+          {
+            "showEditFlag": "byte",
+            "id": "int //链接ID",
+            "name": "string //名称",
+            "link": "string //链接url"
+          }
+        ],
+        "userExpectJob": {
+          "categoryList": [
+            {
+              "id": "int //类型ID",
+              "name": "string //类型名",
+              "parentId": "int //父类型",
+              "position": "int //排序"
+            }
+          ],
+          "cityList": [
+            {
+              "id": "int //字典ID",
+              "name": "string //字典名",
+              "type": "int //字典类型",
+              "value": "string //字典值"
+            }
+          ],
+          "minSalary": "int //最低薪资",
+          "maxSalary": "int //最高薪资"
+        },
+        "applyTotalCount": "int //已投递职位总数",
+        "applyingCount": "int //投递中的岗位数量",
+        "applyCandidateCount": "int //通过初筛数量",
+        "applyInterviewCount": "int //进入面试数量",
+        "applyOfferCount": "int //已录用"
+      }
+    ],
+    "hasMore": "boolean //是否还有更多"
+  }
+}
+</pre>
+
+<hr><h2 id="查看简历详情">查看简历详情</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/resume/resume-detail
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>id</td><td>long</td><td>true</td><td>简历ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_getResumeDetail_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_getResumeDetail_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "id": "string //简历ID",
+    "avatar": "string //头像",
+    "name": "string //名字",
+    "gender": "byte //性别",
+    "age": "int //年龄",
+    "birth": "date //生日",
+    "maxResumeEdu": {
+      "showEditFlag": "byte",
+      "id": "int //学历ID",
+      "schoolName": "string //学校名",
+      "majorName": "string //专业",
+      "startTime": "date //开始时间",
+      "finishTime": "date //结束时间",
+      "degree": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "gpa": "double //gpa"
+    },
+    "returnTime": "date //回国时间",
+    "graduateTime": "date //毕业时间",
+    "curPlace": "string //现居地址",
+    "phoneCode": "string //号码区号",
+    "phone": "string //电话号码",
+    "email": "string //邮箱",
+    "introduction": "string //个人介绍",
+    "attachResume": "string //附件简历",
+    "userId": "long //用户Id",
+    "resumeCompleteProgress": "int //简历完善进度",
+    "resumeEduList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //学历ID",
+        "schoolName": "string //学校名",
+        "majorName": "string //专业",
+        "startTime": "date //开始时间",
+        "finishTime": "date //结束时间",
+        "degree": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "gpa": "double //gpa"
+      }
+    ],
+    "resumeExpList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //工作经验ID",
+        "startTime": "date //开始时间",
+        "finishTime": "date //结束时间",
+        "company": "string //公司名",
+        "depart": "string //部门",
+        "post": "string //职位",
+        "description": "string //描述",
+        "position": "int //排序",
+        "onWork": "byte //是在在职"
+      }
+    ],
+    "resumePracticeList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //实践ID",
+        "startTime": "date //开始时间",
+        "finishTime": "date //结束时间",
+        "title": "string //标题",
+        "description": "string //描述",
+        "post": "string //职位",
+        "onWork": "byte //是否实践中"
+      }
+    ],
+    "resumeSkillList": [
+      {
+        "id": "int //技能ID",
+        "name": "string //技能名",
+        "level": "byte //等级"
+      }
+    ],
+    "resumeLinkList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //链接ID",
+        "name": "string //名称",
+        "link": "string //链接url"
+      }
+    ],
+    "userExpectJob": {
+      "categoryList": [
+        {
+          "id": "int //类型ID",
+          "name": "string //类型名",
+          "parentId": "int //父类型",
+          "position": "int //排序"
+        }
+      ],
+      "cityList": [
+        {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        }
+      ],
+      "minSalary": "int //最低薪资",
+      "maxSalary": "int //最高薪资"
+    },
+    "applyTotalCount": "int //已投递职位总数",
+    "applyingCount": "int //投递中的岗位数量",
+    "applyCandidateCount": "int //通过初筛数量",
+    "applyInterviewCount": "int //进入面试数量",
+    "applyOfferCount": "int //已录用"
+  }
+}
+</pre>
+
+<hr><h2 id="保存基本信息">保存基本信息</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/save-resume-basic
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "id": "long //简历ID",
+  "name": "string //名称",
+  "gender": "byte //性别",
+  "birth": "date //生日",
+  "countryId": "int //国籍",
+  "maxDegreeId": "int //最高学历",
+  "returnTime": "date //回国时间",
+  "graduateTime": "date //毕业时间",
+  "curPlace": "string //现居地址",
+  "introduction": "string //个人接受",
+  "phoneCode": "string //电话区号",
+  "phone": "long //电话号码",
+  "avatar": "string //头像",
+  "attachResume": "string //附件简历"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_saveBasic_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_saveBasic_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "id": "string //简历ID",
+    "avatar": "string //头像",
+    "name": "string //名字",
+    "gender": "byte //性别",
+    "age": "int //年龄",
+    "birth": "date //生日",
+    "maxResumeEdu": {
+      "showEditFlag": "byte",
+      "id": "int //学历ID",
+      "schoolName": "string //学校名",
+      "majorName": "string //专业",
+      "startTime": "date //开始时间",
+      "finishTime": "date //结束时间",
+      "degree": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "gpa": "double //gpa"
+    },
+    "returnTime": "date //回国时间",
+    "graduateTime": "date //毕业时间",
+    "curPlace": "string //现居地址",
+    "phoneCode": "string //号码区号",
+    "phone": "string //电话号码",
+    "email": "string //邮箱",
+    "introduction": "string //个人介绍",
+    "attachResume": "string //附件简历",
+    "userId": "long //用户Id",
+    "resumeCompleteProgress": "int //简历完善进度",
+    "resumeEduList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //学历ID",
+        "schoolName": "string //学校名",
+        "majorName": "string //专业",
+        "startTime": "date //开始时间",
+        "finishTime": "date //结束时间",
+        "degree": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "gpa": "double //gpa"
+      }
+    ],
+    "resumeExpList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //工作经验ID",
+        "startTime": "date //开始时间",
+        "finishTime": "date //结束时间",
+        "company": "string //公司名",
+        "depart": "string //部门",
+        "post": "string //职位",
+        "description": "string //描述",
+        "position": "int //排序",
+        "onWork": "byte //是在在职"
+      }
+    ],
+    "resumePracticeList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //实践ID",
+        "startTime": "date //开始时间",
+        "finishTime": "date //结束时间",
+        "title": "string //标题",
+        "description": "string //描述",
+        "post": "string //职位",
+        "onWork": "byte //是否实践中"
+      }
+    ],
+    "resumeSkillList": [
+      {
+        "id": "int //技能ID",
+        "name": "string //技能名",
+        "level": "byte //等级"
+      }
+    ],
+    "resumeLinkList": [
+      {
+        "showEditFlag": "byte",
+        "id": "int //链接ID",
+        "name": "string //名称",
+        "link": "string //链接url"
+      }
+    ],
+    "userExpectJob": {
+      "categoryList": [
+        {
+          "id": "int //类型ID",
+          "name": "string //类型名",
+          "parentId": "int //父类型",
+          "position": "int //排序"
+        }
+      ],
+      "cityList": [
+        {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        }
+      ],
+      "minSalary": "int //最低薪资",
+      "maxSalary": "int //最高薪资"
+    },
+    "applyTotalCount": "int //已投递职位总数",
+    "applyingCount": "int //投递中的岗位数量",
+    "applyCandidateCount": "int //通过初筛数量",
+    "applyInterviewCount": "int //进入面试数量",
+    "applyOfferCount": "int //已录用"
+  }
+}
+</pre>
+
+<hr><h2 id="删除附件简历">删除附件简历</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/del-resume-attachment
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>resumeId</td><td>long</td><td>true</td><td>简历ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_delResumeAttachment_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_delResumeAttachment_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="保存教育经历">保存教育经历</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/save-resume-edu
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "id": "int //教育经历ID",
+  "resumeId": "long //简历ID",
+  "schoolName": "string //学校",
+  "majorName": "string //专业",
+  "degreeId": "int //学历",
+  "startTime": "date //开始时间",
+  "finishTime": "date //结束时间",
+  "gpa": "double //gpa"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_saveResumeEdu_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_saveResumeEdu_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "showEditFlag": "byte",
+    "id": "int //学历ID",
+    "schoolName": "string //学校名",
+    "majorName": "string //专业",
+    "startTime": "date //开始时间",
+    "finishTime": "date //结束时间",
+    "degree": {
+      "id": "int //字典ID",
+      "name": "string //字典名",
+      "type": "int //字典类型",
+      "value": "string //字典值"
+    },
+    "gpa": "double //gpa"
+  }
+}
+</pre>
+
+<hr><h2 id="保存工作经验">保存工作经验</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/save-resume-exp
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "id": "int //工作经验ID",
+  "resumeId": "long //简历ID",
+  "startTime": "date //开始时间",
+  "finishTime": "date //结束时间",
+  "onWork": "byte //是否在职",
+  "company": "string //公司",
+  "depart": "string //部门",
+  "post": "string //职位",
+  "description": "string //描述"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_saveResumeExp_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_saveResumeExp_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "showEditFlag": "byte",
+    "id": "int //工作经验ID",
+    "startTime": "date //开始时间",
+    "finishTime": "date //结束时间",
+    "company": "string //公司名",
+    "depart": "string //部门",
+    "post": "string //职位",
+    "description": "string //描述",
+    "position": "int //排序",
+    "onWork": "byte //是在在职"
+  }
+}
+</pre>
+
+<hr><h2 id="删除工作经验">删除工作经验</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/del-resume-exp
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>id</td><td>int</td><td>true</td><td>工作经验ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_deleteResumeEpx_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_deleteResumeEpx_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="保存实践经验">保存实践经验</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/save-resume-practice
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "id": "int //实践ID",
+  "resumeId": "long //简历ID",
+  "startTime": "date //开始时间",
+  "finishTime": "date //结束时间",
+  "title": "string //标题",
+  "description": "string //描述",
+  "post": "string //职位",
+  "onWork": "byte //实践中"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_saveResumePractice_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_saveResumePractice_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "showEditFlag": "byte",
+    "id": "int //实践ID",
+    "startTime": "date //开始时间",
+    "finishTime": "date //结束时间",
+    "title": "string //标题",
+    "description": "string //描述",
+    "post": "string //职位",
+    "onWork": "byte //是否实践中"
+  }
+}
+</pre>
+
+<hr><h2 id="删除实践经验">删除实践经验</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/del-resume-practice
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>id</td><td>int</td><td>true</td><td>实践ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_deleteResumePractice_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_deleteResumePractice_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="保存擅长技能">保存擅长技能</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/save-resume-skills
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "resumeId": "long //简历ID",
+  "tagList": "string[] //技能标签"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_saveResumeSkills_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_saveResumeSkills_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": [
+    {
+      "id": "int //技能ID",
+      "name": "string //技能名",
+      "level": "byte //等级"
+    }
+  ]
+}
+</pre>
+
+<hr><h2 id="保存简历链接">保存简历链接</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/save-resume-link
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "id": "int //链接ID",
+  "resumeId": "long //简历ID",
+  "name": "string //名称",
+  "link": "string //链接Url"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_saveResumeLink_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_saveResumeLink_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "showEditFlag": "byte",
+    "id": "int //链接ID",
+    "name": "string //名称",
+    "link": "string //链接url"
+  }
+}
+</pre>
+
+<hr><h2 id="删除简历链接">删除简历链接</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/del-resume-link
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>id</td><td>int</td><td>true</td><td>链接ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_delResumeLink_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_delResumeLink_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="获取当前企业用户需要处理的简历列表">获取当前企业用户需要处理的简历列表</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/my-apply-resume-list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "page": "int //页数",
+  "limit": "int //每页条数",
+  "sort": "string //排序",
+  "creatorId": "long //职位发布者",
+  "name": "string //用户简历名称",
+  "statuses": "byte[] //投递状态",
+  "jobIds": "long[] //职位",
+  "degreeIds": "int[] //学历"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_getUserApplyResumeList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_getUserApplyResumeList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "total": "int //总记录数",
+    "pageCount": "int //页数",
+    "currentPage": "int //当前页",
+    "pageSize": "int //每页记录数",
+    "list": [
+      {
+        "id": "int",
+        "resume": {
+          "id": "string //简历ID",
+          "avatar": "string //头像",
+          "name": "string //名字",
+          "gender": "byte //性别",
+          "age": "int //年龄",
+          "birth": "date //生日",
+          "maxResumeEdu": {
+            "showEditFlag": "byte",
+            "id": "int //学历ID",
+            "schoolName": "string //学校名",
+            "majorName": "string //专业",
+            "startTime": "date //开始时间",
+            "finishTime": "date //结束时间",
+            "degree": {
+              "id": "int //字典ID",
+              "name": "string //字典名",
+              "type": "int //字典类型",
+              "value": "string //字典值"
+            },
+            "gpa": "double //gpa"
+          },
+          "returnTime": "date //回国时间",
+          "graduateTime": "date //毕业时间",
+          "curPlace": "string //现居地址",
+          "phoneCode": "string //号码区号",
+          "phone": "string //电话号码",
+          "email": "string //邮箱",
+          "introduction": "string //个人介绍",
+          "attachResume": "string //附件简历",
+          "userId": "long //用户Id",
+          "resumeCompleteProgress": "int //简历完善进度",
+          "resumeEduList": [
+            {
+              "showEditFlag": "byte",
+              "id": "int //学历ID",
+              "schoolName": "string //学校名",
+              "majorName": "string //专业",
+              "startTime": "date //开始时间",
+              "finishTime": "date //结束时间",
+              "degree": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "gpa": "double //gpa"
+            }
+          ],
+          "resumeExpList": [
+            {
+              "showEditFlag": "byte",
+              "id": "int //工作经验ID",
+              "startTime": "date //开始时间",
+              "finishTime": "date //结束时间",
+              "company": "string //公司名",
+              "depart": "string //部门",
+              "post": "string //职位",
+              "description": "string //描述",
+              "position": "int //排序",
+              "onWork": "byte //是在在职"
+            }
+          ],
+          "resumePracticeList": [
+            {
+              "showEditFlag": "byte",
+              "id": "int //实践ID",
+              "startTime": "date //开始时间",
+              "finishTime": "date //结束时间",
+              "title": "string //标题",
+              "description": "string //描述",
+              "post": "string //职位",
+              "onWork": "byte //是否实践中"
+            }
+          ],
+          "resumeSkillList": [
+            {
+              "id": "int //技能ID",
+              "name": "string //技能名",
+              "level": "byte //等级"
+            }
+          ],
+          "resumeLinkList": [
+            {
+              "showEditFlag": "byte",
+              "id": "int //链接ID",
+              "name": "string //名称",
+              "link": "string //链接url"
+            }
+          ],
+          "userExpectJob": {
+            "categoryList": [
+              {
+                "id": "int //类型ID",
+                "name": "string //类型名",
+                "parentId": "int //父类型",
+                "position": "int //排序"
+              }
+            ],
+            "cityList": [
+              {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              }
+            ],
+            "minSalary": "int //最低薪资",
+            "maxSalary": "int //最高薪资"
+          },
+          "applyTotalCount": "int //已投递职位总数",
+          "applyingCount": "int //投递中的岗位数量",
+          "applyCandidateCount": "int //通过初筛数量",
+          "applyInterviewCount": "int //进入面试数量",
+          "applyOfferCount": "int //已录用"
+        },
+        "job": {
+          "id": "string //职位ID",
+          "jobType": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "name": "string //职位名称",
+          "companyUser": {
+            "id": "long //用于后端",
+            "userId": "string //字符串ID，用于前端",
+            "name": "string //名字",
+            "avatar": "string //头像",
+            "gender": "byte //性别",
+            "type": "byte //用户类型",
+            "status": "byte //状态",
+            "token": "string //登录凭证",
+            "phoneCode": "string //电话区号",
+            "phone": "string //电话号码",
+            "email": "string //邮箱",
+            "createTime": "date //创建时间",
+            "subscribeFlag": "byte //订阅标志",
+            "company": {
+              "id": "string //公司ID",
+              "name": "string //公司简称",
+              "fullName": "string //公司全称",
+              "logo": "string //logo",
+              "homepage": "string //主页",
+              "introduction": "string //公司介绍",
+              "synopsis": "string //公司一句话介绍",
+              "scale": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "stage": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "industry": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "property": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "addressList": [
+                {
+                  "id": "int //地址ID",
+                  "cityId": "int //城市ID",
+                  "address": "string //地址",
+                  "latitude": "double //纬度",
+                  "longitude": "double //经度"
+                }
+              ],
+              "completeProgress": "int //完善进度",
+              "wikiSummary": "string //百科摘要",
+              "companyWiki": "string //公司百科",
+              "favoriteFlag": "byte //收藏标志",
+              "favoriteTime": "date //收藏时间"
+            },
+            "depart": "string //部门",
+            "post": "string //职位"
+          },
+          "category": {
+            "id": "int //类型ID",
+            "name": "string //类型名",
+            "parentId": "int //父类型",
+            "position": "int //排序"
+          },
+          "depart": "string //部门",
+          "minDegree": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "minSalary": "int //最低薪资",
+          "maxSalary": "int //最高薪资",
+          "salaryMonths": "int //发放月数",
+          "city": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "status": "byte //职位状态",
+          "description": "string //职位描述",
+          "creatorId": "long //创建人",
+          "address": "string //工作地址",
+          "time": "date //发布时间",
+          "favoriteFlag": "byte //是否已收藏",
+          "favoriteTime": "date //收藏时间",
+          "applyFlag": "byte //是否已投递",
+          "applyStatus": "byte //投递状态",
+          "applyTime": "date //投递时间",
+          "totalResumeCount": "int //投递人数",
+          "newResumeCount": "int //新投递简历数",
+          "candidateResumeCount": "int //候选简历数",
+          "interviewResumeCount": "int //进入面试简历数"
+        },
+        "applyStatus": "byte //状态",
+        "time": "date //申请时间"
+      }
+    ],
+    "hasMore": "boolean //是否还有更多"
+  }
+}
+</pre>
+
+<hr><h2 id="获取申请的简历列表">获取申请的简历列表</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/apply-resume-list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "page": "int //页数",
+  "limit": "int //每页条数",
+  "sort": "string //排序",
+  "creatorId": "long //职位发布者",
+  "name": "string //用户简历名称",
+  "statuses": "byte[] //投递状态",
+  "jobIds": "long[] //职位",
+  "degreeIds": "int[] //学历"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_getApplyResumeList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_getApplyResumeList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "total": "int //总记录数",
+    "pageCount": "int //页数",
+    "currentPage": "int //当前页",
+    "pageSize": "int //每页记录数",
+    "list": [
+      {
+        "id": "int",
+        "resume": {
+          "id": "string //简历ID",
+          "avatar": "string //头像",
+          "name": "string //名字",
+          "gender": "byte //性别",
+          "age": "int //年龄",
+          "birth": "date //生日",
+          "maxResumeEdu": {
+            "showEditFlag": "byte",
+            "id": "int //学历ID",
+            "schoolName": "string //学校名",
+            "majorName": "string //专业",
+            "startTime": "date //开始时间",
+            "finishTime": "date //结束时间",
+            "degree": {
+              "id": "int //字典ID",
+              "name": "string //字典名",
+              "type": "int //字典类型",
+              "value": "string //字典值"
+            },
+            "gpa": "double //gpa"
+          },
+          "returnTime": "date //回国时间",
+          "graduateTime": "date //毕业时间",
+          "curPlace": "string //现居地址",
+          "phoneCode": "string //号码区号",
+          "phone": "string //电话号码",
+          "email": "string //邮箱",
+          "introduction": "string //个人介绍",
+          "attachResume": "string //附件简历",
+          "userId": "long //用户Id",
+          "resumeCompleteProgress": "int //简历完善进度",
+          "resumeEduList": [
+            {
+              "showEditFlag": "byte",
+              "id": "int //学历ID",
+              "schoolName": "string //学校名",
+              "majorName": "string //专业",
+              "startTime": "date //开始时间",
+              "finishTime": "date //结束时间",
+              "degree": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "gpa": "double //gpa"
+            }
+          ],
+          "resumeExpList": [
+            {
+              "showEditFlag": "byte",
+              "id": "int //工作经验ID",
+              "startTime": "date //开始时间",
+              "finishTime": "date //结束时间",
+              "company": "string //公司名",
+              "depart": "string //部门",
+              "post": "string //职位",
+              "description": "string //描述",
+              "position": "int //排序",
+              "onWork": "byte //是在在职"
+            }
+          ],
+          "resumePracticeList": [
+            {
+              "showEditFlag": "byte",
+              "id": "int //实践ID",
+              "startTime": "date //开始时间",
+              "finishTime": "date //结束时间",
+              "title": "string //标题",
+              "description": "string //描述",
+              "post": "string //职位",
+              "onWork": "byte //是否实践中"
+            }
+          ],
+          "resumeSkillList": [
+            {
+              "id": "int //技能ID",
+              "name": "string //技能名",
+              "level": "byte //等级"
+            }
+          ],
+          "resumeLinkList": [
+            {
+              "showEditFlag": "byte",
+              "id": "int //链接ID",
+              "name": "string //名称",
+              "link": "string //链接url"
+            }
+          ],
+          "userExpectJob": {
+            "categoryList": [
+              {
+                "id": "int //类型ID",
+                "name": "string //类型名",
+                "parentId": "int //父类型",
+                "position": "int //排序"
+              }
+            ],
+            "cityList": [
+              {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              }
+            ],
+            "minSalary": "int //最低薪资",
+            "maxSalary": "int //最高薪资"
+          },
+          "applyTotalCount": "int //已投递职位总数",
+          "applyingCount": "int //投递中的岗位数量",
+          "applyCandidateCount": "int //通过初筛数量",
+          "applyInterviewCount": "int //进入面试数量",
+          "applyOfferCount": "int //已录用"
+        },
+        "job": {
+          "id": "string //职位ID",
+          "jobType": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "name": "string //职位名称",
+          "companyUser": {
+            "id": "long //用于后端",
+            "userId": "string //字符串ID，用于前端",
+            "name": "string //名字",
+            "avatar": "string //头像",
+            "gender": "byte //性别",
+            "type": "byte //用户类型",
+            "status": "byte //状态",
+            "token": "string //登录凭证",
+            "phoneCode": "string //电话区号",
+            "phone": "string //电话号码",
+            "email": "string //邮箱",
+            "createTime": "date //创建时间",
+            "subscribeFlag": "byte //订阅标志",
+            "company": {
+              "id": "string //公司ID",
+              "name": "string //公司简称",
+              "fullName": "string //公司全称",
+              "logo": "string //logo",
+              "homepage": "string //主页",
+              "introduction": "string //公司介绍",
+              "synopsis": "string //公司一句话介绍",
+              "scale": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "stage": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "industry": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "property": {
+                "id": "int //字典ID",
+                "name": "string //字典名",
+                "type": "int //字典类型",
+                "value": "string //字典值"
+              },
+              "addressList": [
+                {
+                  "id": "int //地址ID",
+                  "cityId": "int //城市ID",
+                  "address": "string //地址",
+                  "latitude": "double //纬度",
+                  "longitude": "double //经度"
+                }
+              ],
+              "completeProgress": "int //完善进度",
+              "wikiSummary": "string //百科摘要",
+              "companyWiki": "string //公司百科",
+              "favoriteFlag": "byte //收藏标志",
+              "favoriteTime": "date //收藏时间"
+            },
+            "depart": "string //部门",
+            "post": "string //职位"
+          },
+          "category": {
+            "id": "int //类型ID",
+            "name": "string //类型名",
+            "parentId": "int //父类型",
+            "position": "int //排序"
+          },
+          "depart": "string //部门",
+          "minDegree": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "minSalary": "int //最低薪资",
+          "maxSalary": "int //最高薪资",
+          "salaryMonths": "int //发放月数",
+          "city": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "status": "byte //职位状态",
+          "description": "string //职位描述",
+          "creatorId": "long //创建人",
+          "address": "string //工作地址",
+          "time": "date //发布时间",
+          "favoriteFlag": "byte //是否已收藏",
+          "favoriteTime": "date //收藏时间",
+          "applyFlag": "byte //是否已投递",
+          "applyStatus": "byte //投递状态",
+          "applyTime": "date //投递时间",
+          "totalResumeCount": "int //投递人数",
+          "newResumeCount": "int //新投递简历数",
+          "candidateResumeCount": "int //候选简历数",
+          "interviewResumeCount": "int //进入面试简历数"
+        },
+        "applyStatus": "byte //状态",
+        "time": "date //申请时间"
+      }
+    ],
+    "hasMore": "boolean //是否还有更多"
+  }
+}
+</pre>
+
+<hr><h2 id="处理简历">处理简历</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/resume/handle-apply-resume
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_handleApplyResume_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_handleApplyResume_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr>
+</div>
+</body>
+</html>

@@ -13,19 +13,19 @@ import java.util.Date;
  */
 @Data
 public class ResumeEduForm {
-    private Integer id;
-    private Long resumeId;
+    private Integer id; //教育经历ID
+    private Long resumeId; //简历ID
     @NotBlank(message = "{edit.resume.edu.school.name.not.blank}")
-    private String schoolName;
+    private String schoolName; //学校
     @NotBlank(message = "{edit.resume.edu.major.not.blank}")
-    private String majorName;
+    private String majorName; //专业
     @NotNull(message = "{edit.resume.edu.degree.not.null}")
-    private Integer degreeId;
+    private Integer degreeId; //学历
     @NotNull(message = "{edit.resume.edu.time.not.null}")
     @JSONField(format = "yyyy-MM")
-    private Date startTime;
+    private Date startTime; //开始时间
     @NotNull(message = "{edit.resume.edu.time.not.null}")
     @JSONField(format = "yyyy-MM")
-    private Date finishTime;
-    private Double gpa;
+    private Date finishTime; //结束时间
+    private Double gpa; //gpa
 }

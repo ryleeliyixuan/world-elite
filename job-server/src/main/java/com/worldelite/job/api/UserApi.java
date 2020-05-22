@@ -11,10 +11,8 @@ import com.worldelite.job.service.AuthService;
 import com.worldelite.job.service.CompanyVerificationService;
 import com.worldelite.job.service.UserExpectJobService;
 import com.worldelite.job.service.UserService;
-import com.worldelite.job.vo.ApiResult;
-import com.worldelite.job.vo.PageResult;
-import com.worldelite.job.vo.UserExpectJobVo;
-import com.worldelite.job.vo.UserVo;
+import com.worldelite.job.vo.*;
+import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +26,7 @@ import javax.validation.constraints.Email;
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/")
 @Validated
 public class UserApi extends BaseController {
 
@@ -84,6 +82,7 @@ public class UserApi extends BaseController {
      */
     @RequireLogin
     @GetMapping("my-info")
+    @ApiDoc
     public ApiResult<UserVo> myInfo(){
         UserVo loginUser = userService.getUserInfo(curUser().getId());
         return ApiResult.ok(loginUser);
@@ -96,7 +95,8 @@ public class UserApi extends BaseController {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-expect-job")
-    public ApiResult saveUserExpectJob(@RequestBody UserExpectJobForm expectJobForm){
+    @ApiDoc
+    public ApiResult<UserExpectJobVo> saveUserExpectJob(@RequestBody UserExpectJobForm expectJobForm){
         UserExpectJobVo userExpectJobVo = userExpectJobService.saveUserExpectJob(expectJobForm);
         return ApiResult.ok(userExpectJobVo);
     }
@@ -108,7 +108,8 @@ public class UserApi extends BaseController {
      */
     @RequireLogin(allow = UserType.ADMIN)
     @GetMapping("list")
-    public ApiResult getUserList(UserListForm listForm){
+    @ApiDoc
+    public ApiResult<PageResult<UserVo>> getUserList(UserListForm listForm){
         PageResult pageResult = userService.getUserList(listForm);
         return ApiResult.ok(pageResult);
     }
@@ -121,7 +122,8 @@ public class UserApi extends BaseController {
      */
     @RequireLogin(allow = UserType.ADMIN)
     @GetMapping("company-user-list")
-    public ApiResult listCompanyUser(UserListForm listForm){
+    @ApiDoc
+    public ApiResult<PageResult<CompanyUserVo>> listCompanyUser(UserListForm listForm){
         PageResult pageResult = userService.getCompanyUserList(listForm);
         return ApiResult.ok(pageResult);
     }
@@ -132,6 +134,7 @@ public class UserApi extends BaseController {
      */
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("add-admin")
+    @ApiDoc
     public ApiResult addAdmin(@Valid @RequestBody AdminForm adminForm){
         userService.saveAdmin(adminForm);
         return ApiResult.ok();
@@ -139,11 +142,12 @@ public class UserApi extends BaseController {
 
     /**
      * 删除管理员
-     * @param userId
+     * @param userId 用户Id
      * @return
      */
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("delete-admin")
+    @ApiDoc
     public ApiResult deleteAdmin(@RequestParam Long userId){
         userService.deleteAdmin(userId);
         return ApiResult.ok();
@@ -156,6 +160,7 @@ public class UserApi extends BaseController {
      */
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("modify-status")
+    @ApiDoc
     public ApiResult modifyUserStatus(@RequestBody StatusForm statusForm){
         userService.modifyUserStatus(statusForm);
         return ApiResult.ok();
@@ -168,6 +173,7 @@ public class UserApi extends BaseController {
      */
     @RequireLogin
     @PostMapping("modify-email")
+    @ApiDoc
     public ApiResult modifyEmail(HttpSession session, @Valid @RequestBody ModifyEmailForm modifyEmailForm){
         final String captcha = (String)session.getAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
         // 立即删除

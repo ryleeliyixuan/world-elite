@@ -11,9 +11,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ResumeLinkVo extends EditFlag implements VoConvertable<ResumeLinkVo, ResumeLink>{
 
-    private Integer id;
-    private String name;
-    private String link;
+    private Integer id; //链接ID
+    private String name; //名称
+    private String link; //链接url
 
     @Override
     public ResumeLinkVo asVo(ResumeLink resumeLink) {

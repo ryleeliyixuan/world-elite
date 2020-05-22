@@ -12,9 +12,9 @@ import javax.validation.constraints.NotNull;
 @Data
 public class LoginForm {
     @Email(message = "{email.format.error}")
-    private String email;
+    private String email; // 邮箱
     @NotNull(message = "{password.not.empty}")
-    private String password;
+    private String password; //密码
 
     public String getEmail() {
         return email;

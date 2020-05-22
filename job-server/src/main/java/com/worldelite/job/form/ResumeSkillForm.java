@@ -7,6 +7,6 @@ import lombok.Data;
  */
 @Data
 public class ResumeSkillForm {
-    private Long resumeId;
-    private String[] tagList;
+    private Long resumeId; //简历ID
+    private String[] tagList; //技能标签
 }

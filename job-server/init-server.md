@@ -43,6 +43,7 @@ mkdir ~/apps    #程序目录
 
 # 安装 wkhtmltopdf
 
+https://wkhtmltopdf.org/
 
 # 下载源码，构建jar包，启动服务
 

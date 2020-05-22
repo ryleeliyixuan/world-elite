@@ -16,29 +16,28 @@ import java.util.Date;
 @Data
 public class ResumeForm {
 
-    private Long id;
+    private Long id; //简历ID
     @NotBlank(message = "{edit.resume.name.not.blank}")
-    private String name;
+    private String name; //名称
     @NotNull(message = "{edit.resume.birth.not.null}")
-    private Byte gender;
+    private Byte gender; //性别
     @NotNull(message = "{edit.resume.gender.not.null}")
     @JSONField(format = "yyyy-MM-dd")
-    private Date birth;
-    private Integer countryId;
-    private Integer maxDegreeId;
-    private Byte maritalStatus;
+    private Date birth; //生日
+    private Integer countryId; //国籍
+    private Integer maxDegreeId; //最高学历
     @JSONField(format = "yyyy-MM")
-    private Date returnTime;
+    private Date returnTime; //回国时间
     @NotNull(message = "{edit.resume.graduate.time.not.null}")
     @JSONField(format = "yyyy-MM")
-    private Date graduateTime;
+    private Date graduateTime; //毕业时间
     @NotBlank(message = "{edit.resume.place.not.blank}")
-    private String curPlace;
-    private String introduction;
-    private String phoneCode;
-    private Long phone;
-    private String avatar;
-    private String attachResume;
+    private String curPlace; //现居地址
+    private String introduction; //个人接受
+    private String phoneCode; //电话区号
+    private Long phone; //电话号码
+    private String avatar; //头像
+    private String attachResume; //附件简历
 
     public String getName() {
         return FormUtils.removeAllHtmlTag(StringUtils.trim(name));

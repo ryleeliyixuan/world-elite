@@ -14,12 +14,12 @@ import java.util.List;
 @Data
 public class PageResult<T> {
 
-    private Integer total;
-    private Integer pageCount;
-    private Integer currentPage;
-    private Integer pageSize;
-    private List<T> list;
-    private Boolean hasMore;
+    private Integer total; //总记录数
+    private Integer pageCount; //页数
+    private Integer currentPage; //当前页
+    private Integer pageSize; //每页记录数
+    private List<T> list; //列表数据
+    private Boolean hasMore; //是否还有更多
 
     public PageResult(){}
 

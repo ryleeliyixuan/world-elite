@@ -10,14 +10,14 @@ import lombok.Data;
 @Data
 public class CompanyVerificationVo implements VoConvertable<CompanyVerificationVo, CompanyVerification>{
 
-    private String name;
-    private String idCard;
-    private String idCardPic;
-    private String company;
-    private String post;
-    private String companyLicensePic;
-    private String remark;
-    private Byte status;
+    private String name; //名字
+    private String idCard; //身份证号
+    private String idCardPic; //身份证图片
+    private String company;  //公司
+    private String post;//职位
+    private String companyLicensePic;  //营业执照
+    private String remark; //备注
+    private Byte status; //状态
 
     @Override
     public CompanyVerificationVo asVo(CompanyVerification companyVerification) {

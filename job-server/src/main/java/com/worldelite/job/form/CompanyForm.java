@@ -11,22 +11,22 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class CompanyForm {
-    private Long id;
+    private Long id; //公司ID
     @NotBlank(message = "{edit.company.name.not.blank}")
-    private String name;
-    private String fullName;
-    private String logo;
+    private String name; //公司简称
+    private String fullName; //公司全称
+    private String logo; //logo
     @NotNull(message = "{edit.company.scale.not.null}")
-    private Integer scaleId;
+    private Integer scaleId; //规模ID
     @NotNull(message = "{edit.company.stage.not.null}")
-    private Integer stageId;
+    private Integer stageId; //阶段ID
     @NotNull(message = "{edit.company.industry.not.null}")
-    private Integer industryId;
+    private Integer industryId; //行业ID
     @NotNull(message = "{edit.company.property.not.null}")
-    private Integer propertyId;
-    private String homepage;
-    private String introduction;
-    private String synopsis;
+    private Integer propertyId; //性质ID
+    private String homepage; //主页
+    private String introduction; //公司介绍
+    private String synopsis; //一句话描述
 
 
     public void setName(String name) {

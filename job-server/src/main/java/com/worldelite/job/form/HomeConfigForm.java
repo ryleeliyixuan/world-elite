@@ -7,8 +7,8 @@ import lombok.Data;
  */
 @Data
 public class HomeConfigForm {
-    private Integer configType;
-    private String mainTitle;
-    private String subTitle;
-    private String picUrl;
+    private Integer configType; //配置类型
+    private String mainTitle; //主标题
+    private String subTitle; //副标题
+    private String picUrl; //图片
 }

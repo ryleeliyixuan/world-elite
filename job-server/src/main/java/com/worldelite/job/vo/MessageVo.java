@@ -9,11 +9,11 @@ import lombok.Data;
 @Data
 public class MessageVo implements VoConvertable<MessageVo, Message>{
 
-    private Integer id;
-    private UserVo fromUser;
-    private String content;
-    private String url;
-    private Byte readFlag;
+    private Integer id; // 消息ID
+    private UserVo fromUser; //来自用户
+    private String content; //消息内容
+    private String url; // 查看url
+    private Byte readFlag; //已读标志
 
     @Override
     public MessageVo asVo(Message message) {

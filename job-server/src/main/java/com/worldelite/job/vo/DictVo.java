@@ -10,10 +10,10 @@ import lombok.Data;
 @Data
 public class DictVo implements VoConvertable<DictVo, Dict>{
 
-    private Integer id;
-    private String name;
-    private Integer type;
-    private String value;
+    private Integer id; //字典ID
+    private String name;  //字典名
+    private Integer type;  //字典类型
+    private String value;  //字典值
 
     @Override
     public DictVo asVo(Dict dict) {

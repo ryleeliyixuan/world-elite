@@ -8,6 +8,7 @@ import com.worldelite.job.form.StatusForm;
 import com.worldelite.job.service.CompanyVerificationService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.CompanyVerificationVo;
+import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
+ * 企业验证接口
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
-@RequestMapping("/api/verify")
+@RequestMapping("/api/verify/")
 @Validated
 public class VerificationApi extends BaseApi{
 
@@ -33,6 +35,7 @@ public class VerificationApi extends BaseApi{
      */
     @RequireLogin
     @PostMapping("save-verify-info")
+    @ApiDoc
     public ApiResult saveVerifyInfo(@Valid @RequestBody CompanyVerifyForm companyVerifyForm) {
         companyVerificationService.saveVerification(companyVerifyForm);
         return ApiResult.ok();
@@ -45,7 +48,8 @@ public class VerificationApi extends BaseApi{
      */
     @RequireLogin
     @GetMapping("my-verify-info")
-    public ApiResult myVerifyInfo() {
+    @ApiDoc
+    public ApiResult<CompanyVerificationVo> myVerifyInfo() {
         CompanyVerificationVo companyVerificationVo = companyVerificationService.getVerificationInfo(curUser().getId());
         return ApiResult.ok(companyVerificationVo);
     }
@@ -53,12 +57,13 @@ public class VerificationApi extends BaseApi{
     /**
      * 获取审核资料
      *
-     * @param userId
+     * @param userId 用户Id
      * @return
      */
     @RequireLogin(allow = UserType.ADMIN)
     @GetMapping("get-verify-info")
-    public ApiResult getVerifyInfo(@RequestParam Long userId){
+    @ApiDoc
+    public ApiResult<CompanyVerificationVo> getVerifyInfo(@RequestParam Long userId){
         CompanyVerificationVo companyVerificationVo = companyVerificationService.getVerificationInfo(userId);
         return ApiResult.ok(companyVerificationVo);
     }
@@ -71,6 +76,7 @@ public class VerificationApi extends BaseApi{
      */
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("verify-company-user")
+    @ApiDoc
     public ApiResult CompanyUser(@RequestBody StatusForm statusForm){
         if(statusForm.getStatus() == VerificationStatus.PASS.value){
             companyVerificationService.passVerification(statusForm.getUserId());

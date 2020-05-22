@@ -9,5 +9,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class MessageListForm extends PageForm{
-    private Byte readFlag;
+    private Byte readFlag; //已读标志
 }

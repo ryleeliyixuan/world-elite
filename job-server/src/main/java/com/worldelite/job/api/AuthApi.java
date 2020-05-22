@@ -12,6 +12,7 @@ import com.worldelite.job.service.UserService;
 import com.worldelite.job.util.ResponseUtils;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.UserVo;
+import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +23,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
 /**
+ * 用户验证接口
+ *
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/auth/")
 @Validated
 public class AuthApi extends BaseController {
 
@@ -41,16 +44,18 @@ public class AuthApi extends BaseController {
      * @return
      */
     @PostMapping("register")
-    public ApiResult register(@Valid @RequestBody RegisterForm registerForm){
+    @ApiDoc
+    public ApiResult<UserVo> register(@Valid @RequestBody RegisterForm registerForm){
         UserVo userVo = authService.register(registerForm);
         return ApiResult.ok(userVo);
     }
 
     /**
-     * 检查 email 是否已经被注册
-     * @param email
+     * 检查email注册
+     * @param email 邮箱
      * @return
      */
+    @ApiDoc
     @GetMapping("check-email")
     public ApiResult checkEmailExists(@Email String email){
         authService.checkRepeatEmail(email);
@@ -59,9 +64,11 @@ public class AuthApi extends BaseController {
 
     /**
      * 获取邮箱验证码
-     * @param email
+     *
+     * @param email 邮箱
      * @return
      */
+    @ApiDoc
     @GetMapping("get-email-code")
     public ApiResult activateEmail(@RequestParam @Email String email){
         authService.sendEmailValidCode(email);
@@ -71,6 +78,7 @@ public class AuthApi extends BaseController {
     /**
      * 获取图片验证码
      */
+    @ApiDoc
     @GetMapping("get-captcha")
     public void getKaptchaImage(HttpSession session, HttpServletResponse response){
         response.setDateHeader("Expires", 0);
@@ -89,8 +97,9 @@ public class AuthApi extends BaseController {
      * @param loginForm
      * @return
      */
+    @ApiDoc
     @PostMapping("email-login")
-    public ApiResult loginWithEmail(@Valid @RequestBody LoginForm loginForm){
+    public ApiResult<UserVo> loginWithEmail(@Valid @RequestBody LoginForm loginForm){
         UserVo loginUser = authService.emailLogin(loginForm);
         return ApiResult.ok(loginUser);
     }
@@ -100,6 +109,7 @@ public class AuthApi extends BaseController {
      *
      * @return
      */
+    @ApiDoc
     @PostMapping("reset-pwd")
     public ApiResult resetPassword(HttpSession session, @Valid @RequestBody ResetPwdForm resetPwdForm){
         final String captcha = (String)session.getAttribute(SessionKeys.KAPTCHA_SESSION_KEY);

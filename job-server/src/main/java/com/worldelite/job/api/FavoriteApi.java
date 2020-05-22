@@ -7,8 +7,10 @@ import com.worldelite.job.form.FavoriteForm;
 import com.worldelite.job.form.FavoriteListForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.service.FavoriteService;
+import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
+import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
+ * 收藏接口
+ *
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
-@RequestMapping("/api/favorite")
+@RequestMapping("/api/favorite/")
 public class FavoriteApi extends BaseApi{
 
     @Autowired
@@ -33,6 +37,7 @@ public class FavoriteApi extends BaseApi{
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("favorite")
+    @ApiDoc
     public ApiResult favorite(@RequestBody FavoriteForm favoriteForm){
         Boolean result = favoriteService.favorite(favoriteForm);
         return ApiResult.ok(result);
@@ -47,20 +52,22 @@ public class FavoriteApi extends BaseApi{
      */
     @RequireLogin(allow = UserType.GENERAL)
     @GetMapping("my-favorite-list")
+    @ApiDoc
     public ApiResult getFavoriteJobList(FavoriteListForm listForm){
         PageResult pageResult = favoriteService.getUserFavoriteList(listForm);
         return ApiResult.ok(pageResult);
     }
 
     /**
-     * 用户参与活动
+     * 当前用户参与活动列表
      *
      * @param pageForm
      * @return
      */
     @RequireLogin(allow = UserType.GENERAL)
     @GetMapping("my-favorite-activities")
-    public ApiResult getFavoriteActivityList(PageForm pageForm){
+    @ApiDoc
+    public ApiResult<PageResult<ActivityVo>> getFavoriteActivityList(PageForm pageForm){
         PageResult pageResult = favoriteService.getUserActivityList(curUser().getId(), pageForm);
         return ApiResult.ok(pageResult);
     }

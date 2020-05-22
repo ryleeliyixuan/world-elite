@@ -7,7 +7,7 @@ import lombok.Data;
  */
 @Data
 public class CompanyWikiForm {
-    private Long companyId;
-    private String summary;
-    private String content;
+    private Long companyId; //公司ID
+    private String summary; //摘要
+    private String content; //百科详情
 }

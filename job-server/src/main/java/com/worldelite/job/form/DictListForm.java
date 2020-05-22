@@ -9,6 +9,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class DictListForm extends PageForm{
-    private Integer type;
-    private String name;
+    private Integer type; //字典类型
+    private String name; //名称
 }

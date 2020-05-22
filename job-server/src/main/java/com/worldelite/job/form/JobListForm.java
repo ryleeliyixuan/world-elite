@@ -12,13 +12,13 @@ import org.apache.commons.codec.digest.DigestUtils;
 @Data
 public class JobListForm extends PageForm implements IExportable{
 
-    private Long jobId;
-    private Long creatorId;
-    private Long companyId;
-    private Integer jobType;
-    private String name;
-    private Integer cityId;
-    private Byte status;
+    private Long jobId; //职位ID
+    private Long creatorId; //创建人ID
+    private Long companyId; //公司ID
+    private Integer jobType; //职位类型
+    private String name; //名称
+    private Integer cityId; //城市ID
+    private Byte status; //职位状态
 
     @Override
     public String genExportExcelName() {

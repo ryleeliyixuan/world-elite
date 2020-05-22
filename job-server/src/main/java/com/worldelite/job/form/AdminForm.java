@@ -13,10 +13,10 @@ import javax.validation.constraints.Pattern;
 @Data
 public class AdminForm {
     @NotNull
-    private String name;
+    private String name; //名称
     @NotNull
     @Email(message = "{email.format.error}")
-    private String email;
+    private String email; //email
     @Pattern(regexp = Regexs.PASSWORD_REGEX, message = "{password.format.error}")
-    private String password;
+    private String password; //密码
 }

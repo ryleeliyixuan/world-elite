@@ -7,7 +7,7 @@ import lombok.Data;
  */
 @Data
 public class StatusForm {
-    private Long userId;
-    private Byte status;
-    private String reason;
+    private Long userId; //用户ID
+    private Byte status; //状态
+    private String reason; //原因
 }

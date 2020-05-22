@@ -13,9 +13,9 @@ import java.util.Map;
 @Data
 public class ApiResult<Vo> {
 
-    private int code = ApiCode.SUCCESS;
-    private String msg;
-    private Vo data;
+    private int code = ApiCode.SUCCESS; // 0为成功，其他错误码参考 ApiCode
+    private String msg; // 错误消息
+    private Vo data; //数据包
 
     private final static Map<Integer, String> MESSAGE = new HashMap<>();
     static{

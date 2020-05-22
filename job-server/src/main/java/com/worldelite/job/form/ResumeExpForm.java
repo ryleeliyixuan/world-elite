@@ -12,19 +12,19 @@ import java.util.Date;
  */
 @Data
 public class ResumeExpForm {
-    private Integer id;
-    private Long resumeId;
+    private Integer id; //工作经验ID
+    private Long resumeId; //简历ID
     @JSONField(format = "yyyy-MM")
-    private Date startTime;
+    private Date startTime; //开始时间
     @JSONField(format = "yyyy-MM")
-    private Date finishTime;
-    private Byte onWork;
+    private Date finishTime; //结束时间
+    private Byte onWork; //是否在职
     @NotBlank(message = "{edit.resume.exp.company.not.blank}")
-    private String company;
+    private String company; //公司
     @NotBlank(message = "{edit.resume.exp.depart.not.blank}")
-    private String depart;
+    private String depart; //部门
     @NotBlank(message = "{edit.resume.exp.post.not.blank}")
-    private String post;
+    private String post; //职位
     @NotBlank(message = "{edit.resume.exp.description.not.blank}")
-    private String description;
+    private String description; //描述
 }

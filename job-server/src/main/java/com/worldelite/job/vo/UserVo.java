@@ -14,19 +14,19 @@ import java.util.Date;
 public class UserVo implements VoConvertable<UserVo, User>{
 
     private Long id; //用于后端
-    private String userId; //字符串类型，用于前端
-    private String name;
-    private String avatar;
-    private Byte gender;
-    private Byte type;
-    private Byte status;
-    private String token;
-    private String phoneCode;
-    private String phone;
-    private String email;
+    private String userId; //字符串ID，用于前端
+    private String name; //名字
+    private String avatar; //头像
+    private Byte gender; //性别
+    private Byte type; //用户类型
+    private Byte status; //状态
+    private String token; //登录凭证
+    private String phoneCode; //电话区号
+    private String phone; //电话号码
+    private String email; //邮箱
     @JSONField(format = "yyyy-MM-dd")
-    private Date createTime;
-    private Byte subscribeFlag;
+    private Date createTime; //创建时间
+    private Byte subscribeFlag; //订阅标志
 
     @Override
     public UserVo asVo(User user) {

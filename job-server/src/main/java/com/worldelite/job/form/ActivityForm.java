@@ -17,23 +17,23 @@ import java.util.Date;
  */
 @Data
 public class ActivityForm {
-    private Integer id;
+    private Integer id; //活动ID
     @NotBlank
-    private String title;
+    private String title; //活动标题
     @NotBlank
-    private String thumbnail;
+    private String thumbnail; // 缩略图
     @NotBlank
-    private String summary;
+    private String summary; //摘要
     @NotNull
-    private Integer cityId;
+    private Integer cityId; //城市ID
     @NotBlank
-    private String description;
-    @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date startTime;
+    private String description; //活动详情
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date finishTime;
+    private Date startTime;  //开始时间
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private Date finishTime; //结束时间
     @NotBlank
-    private String address;
+    private String address; //活动地址
 }

@@ -14,17 +14,17 @@ import java.util.Date;
 @Data
 public class ResumeExpVo extends EditFlag implements VoConvertable<ResumeExpVo, ResumeExperience>{
 
-    private Integer id;
+    private Integer id; //工作经验ID
     @JSONField(format = "yyyy-MM")
-    private Date startTime;
+    private Date startTime; //开始时间
     @JSONField(format = "yyyy-MM")
-    private Date finishTime;
-    private String company;
-    private String depart;
-    private String post;
-    private String description;
-    private Integer position;
-    private Byte onWork;
+    private Date finishTime; //结束时间
+    private String company; //公司名
+    private String depart; //部门
+    private String post; //职位
+    private String description; //描述
+    private Integer position; //排序
+    private Byte onWork; //是在在职
 
     @Override
     public ResumeExpVo asVo(ResumeExperience resumeExp) {

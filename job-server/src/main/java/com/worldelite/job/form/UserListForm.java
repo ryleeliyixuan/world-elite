@@ -15,17 +15,17 @@ import java.util.Date;
 @Data
 public class UserListForm extends PageForm implements IExportable{
 
-    private Long id;
-    private String name;
-    private String email;
-    private Byte type;
-    private Byte status;
-    private Long companyId;
+    private Long id; //用户ID
+    private String name; //用户名
+    private String email; //邮箱
+    private Byte type; //用户类型
+    private Byte status; //用户状态
+    private Long companyId; //公司ID
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date beginTime;
+    private Date beginTime; //开始时间区间
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date endTime;
-    private Byte subscribeFlag;
+    private Date endTime;  //结束时间区间
+    private Byte subscribeFlag; //订阅标志
 
 
     @Override

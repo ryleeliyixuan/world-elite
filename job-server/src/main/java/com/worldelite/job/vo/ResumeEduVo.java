@@ -15,15 +15,15 @@ import java.util.Date;
 @Data
 public class ResumeEduVo extends EditFlag implements VoConvertable<ResumeEduVo, ResumeEdu>{
 
-    private Integer id;
-    private String schoolName;
-    private String majorName;
+    private Integer id; //学历ID
+    private String schoolName; //学校名
+    private String majorName; //专业
     @JSONField(format = "yyyy-MM")
-    private Date startTime;
+    private Date startTime; //开始时间
     @JSONField(format = "yyyy-MM")
-    private Date finishTime;
-    private DictVo degree;
-    private Double gpa;
+    private Date finishTime; //结束时间
+    private DictVo degree; //学历
+    private Double gpa; //gpa
 
     @Override
     public ResumeEduVo asVo(ResumeEdu resumeEdu) {

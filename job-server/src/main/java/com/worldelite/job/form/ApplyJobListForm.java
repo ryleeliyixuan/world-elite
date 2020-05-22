@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ApplyJobListForm extends PageForm{
-    private Byte status;
-    private Long userId;
-    private Long resumeId;
+    private Byte status; //状态
+    private Long userId; //用户ID
+    private Long resumeId; //简历ID
 }

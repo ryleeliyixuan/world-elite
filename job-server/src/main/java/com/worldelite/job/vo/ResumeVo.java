@@ -19,38 +19,37 @@ import java.util.List;
 @Data
 public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
 
-    private String id;
+    private String id; //简历ID
     @ResumeScore
-    private String avatar;
+    private String avatar; //头像
     @ResumeScore
-    private String name;
+    private String name; //名字
     @ResumeScore
-    private Byte gender;
+    private Byte gender; //性别
     @ResumeScore
-    private Integer age;
+    private Integer age; //年龄
     @ResumeScore
     @JSONField(format = "yyyy-MM-dd")
-    private Date birth;
-    private ResumeEduVo maxResumeEdu;
-    private Byte maritalStatus;
+    private Date birth; //生日
+    private ResumeEduVo maxResumeEdu; //学历
     @ResumeScore
     @JSONField(format = "yyyy-MM")
-    private Date returnTime;
+    private Date returnTime; //回国时间
     @ResumeScore
     @JSONField(format = "yyyy-MM")
-    private Date graduateTime;
+    private Date graduateTime; //毕业时间
     @ResumeScore
-    private String curPlace;
-    private String phoneCode;
+    private String curPlace; //现居地址
+    private String phoneCode; //号码区号
     @ResumeScore
-    private String phone;
-    private String email;
+    private String phone; //电话号码
+    private String email; //邮箱
     @ResumeScore(4)
-    private String introduction;
-    private String attachResume;
-    private Long userId;
+    private String introduction; //个人介绍
+    private String attachResume; //附件简历
+    private Long userId; //用户Id
 
-    private Integer resumeCompleteProgress;
+    private Integer resumeCompleteProgress; //简历完善进度
 
     @ResumeScore(4)
     private List<ResumeEduVo> resumeEduList;

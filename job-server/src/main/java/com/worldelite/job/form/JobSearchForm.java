@@ -10,19 +10,19 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class JobSearchForm extends PageForm{
-    private String keyword;
+    private String keyword; //关键词
     @Deprecated
-    private Integer salaryRangeId;
-    private Integer minSalary;
-    private Integer maxSalary;
+    private Integer salaryRangeId; //薪资范围
+    private Integer minSalary; //最低薪资
+    private Integer maxSalary; //最高信息
     @Deprecated
-    private Integer jobType;
-    private Integer[] salaryRangeIds;
-    private Integer[] jobTypes;
-    private Integer[] cityIds;
-    private Integer[] companyIndustryIds;
-    private Integer[] companyScaleIds;
-    private Integer[] companyStageIds;
-    private Integer[] degreeIds;
-    private Integer[] categoryIds;
+    private Integer jobType; //职位类型
+    private Integer[] salaryRangeIds; //薪资范围
+    private Integer[] jobTypes; //职位类型
+    private Integer[] cityIds; //城市ID
+    private Integer[] companyIndustryIds; //公司行业
+    private Integer[] companyScaleIds; //公司规模
+    private Integer[] companyStageIds; //公司阶段
+    private Integer[] degreeIds; //学历要求
+    private Integer[] categoryIds; //职位类型
 }

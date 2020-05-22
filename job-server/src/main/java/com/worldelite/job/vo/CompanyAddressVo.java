@@ -9,11 +9,11 @@ import lombok.Data;
 @Data
 public class CompanyAddressVo implements VoConvertable<CompanyAddressVo, CompanyAddress>{
 
-    private Integer id;
-    private Integer cityId;
-    private String address;
-    private Double latitude;
-    private Double longitude;
+    private Integer id; //地址ID
+    private Integer cityId; //城市ID
+    private String address; //地址
+    private Double latitude; //纬度
+    private Double longitude; //经度
 
     @Override
     public CompanyAddressVo asVo(CompanyAddress companyAddress) {

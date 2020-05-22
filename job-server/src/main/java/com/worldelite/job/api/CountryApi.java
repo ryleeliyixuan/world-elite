@@ -4,6 +4,7 @@ import com.worldelite.job.service.CountryService;
 import com.worldelite.job.util.RequestUtils;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.CountryVo;
+import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
+ * 国家数据接口
+ *
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
-@RequestMapping("/api/country")
+@RequestMapping("/api/country/")
 public class CountryApi {
 
     @Autowired
@@ -29,19 +32,20 @@ public class CountryApi {
      *
      * @return
      */
+    @ApiDoc
     @GetMapping("get-all")
-    public ApiResult getAllCountry(){
+    public ApiResult<List<CountryVo> > getAllCountry(){
         List<CountryVo> countryList = countryService.getAll();
         return ApiResult.ok(countryList);
     }
 
     /**
      * 获取当前IP所在的国家代码
-     * @param request
      * @return
      */
     @GetMapping("current")
-    public ApiResult getCurrentCountry(HttpServletRequest request){
+    @ApiDoc
+    public ApiResult<CountryVo> getCurrentCountry(HttpServletRequest request){
         CountryVo countryVo = countryService.getCountryByIp(RequestUtils.getClientIP(request));
         return ApiResult.ok(countryVo);
     }

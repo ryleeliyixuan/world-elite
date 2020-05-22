@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ApiResult</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface ApiResult : NSObject
+
+//0为成功，其他错误码参考 ApiCode
+@property (nonatomic, strong) NSInteger code;
+//错误消息
+@property (nonatomic, assign) NSString msg;
+//数据包
+@property (nonatomic, strong) CompanyVerificationVo data;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface CompanyVerificationVo : NSObject
+
+//名字
+@property (nonatomic, assign) NSString name;
+//身份证号
+@property (nonatomic, assign) NSString idCard;
+//身份证图片
+@property (nonatomic, assign) NSString idCardPic;
+//公司
+@property (nonatomic, assign) NSString company;
+//职位
+@property (nonatomic, assign) NSString post;
+//营业执照
+@property (nonatomic, assign) NSString companyLicensePic;
+//备注
+@property (nonatomic, assign) NSString remark;
+//状态
+@property (nonatomic, strong) int status;
+
+
+@end
+</xmp>
+</pre>
+
+
+</body>
+</html>

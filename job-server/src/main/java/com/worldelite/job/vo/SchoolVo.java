@@ -9,10 +9,10 @@ import lombok.Data;
 @Data
 public class SchoolVo implements VoConvertable<SchoolVo, School>{
 
-    private Integer id;
-    private String name;
-    private String siteLink;
-    private CountryVo country;
+    private Integer id; //学校ID
+    private String name; //学校名
+    private String siteLink; //主页
+    private CountryVo country; //所在国家
 
     @Override
     public SchoolVo asVo(School school) {

@@ -9,5 +9,5 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FavoriteListForm extends PageForm{
-    private Byte type;
+    private Byte type; //对象类型
 }

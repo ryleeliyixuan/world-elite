@@ -7,8 +7,8 @@ import lombok.Data;
  */
 @Data
 public class RecommendForm {
-    private Integer id;
-    private Long objectId;
-    private Integer position;
-    private Byte objectType;
+    private Integer id; //推荐ID
+    private Long objectId; //对象ID
+    private Integer position; //排序
+    private Byte objectType; //对象类型
 }

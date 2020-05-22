@@ -7,8 +7,8 @@ import lombok.Data;
  */
 @Data
 public class SchoolForm {
-    private Integer id;
-    private Integer countryId;
-    private String name;
-    private String siteLink;
+    private Integer id; //学校ID
+    private Integer countryId; //国家ID
+    private String name; //学校名
+    private String siteLink; //主页
 }

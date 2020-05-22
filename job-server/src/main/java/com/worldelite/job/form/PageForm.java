@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class PageForm {
 
-    private Integer page;
-    private Integer limit;
-    private String sort;
+    private Integer page; //页数
+    private Integer limit; //每页条数
+    private String sort; //排序
 
     public PageForm(){
         this(1);

@@ -258,7 +258,6 @@ public class ResumeService extends BaseService {
         resume.setGraduateTime(resumeForm.getGraduateTime());
         resume.setReturnTime(resumeForm.getReturnTime());
         resume.setMaxDegreeId(resumeForm.getMaxDegreeId());
-        resume.setMaritalStatus(resumeForm.getMaritalStatus());
         resume.setIntroduction(resumeForm.getIntroduction());
         if(StringUtils.isNotEmpty(resumeForm.getAttachResume())){
             resume.setAttachResume(AppUtils.getOssKey(resumeForm.getAttachResume()));

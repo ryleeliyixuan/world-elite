@@ -10,6 +10,7 @@ import com.worldelite.job.entity.User;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
+import io.github.yedaxia.apidocs.ApiDoc;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 企业接口
  * @author yeguozhong yedaxia.github.com
  */
 @RestController
-@RequestMapping("/api/company")
+@RequestMapping("/api/company/")
 @Validated
 public class CompanyApi extends BaseApi {
 
@@ -48,8 +50,9 @@ public class CompanyApi extends BaseApi {
      * @param companyListForm
      * @return
      */
+    @ApiDoc
     @GetMapping("search")
-    public ApiResult<CompanyVo> search(CompanyListForm companyListForm) {
+    public ApiResult<PageResult<CompanyVo>> search(CompanyListForm companyListForm) {
         PageResult pageResult = companyService.search(companyListForm);
         return ApiResult.ok(pageResult);
     }
@@ -59,8 +62,9 @@ public class CompanyApi extends BaseApi {
      *
      * @return
      */
+    @ApiDoc
     @GetMapping("wiki-list")
-    public ApiResult<CompanyVo> listCompanyWiki(CompanyWikiListForm listForm){
+    public ApiResult<PageResult<CompanyVo>> listCompanyWiki(CompanyWikiListForm listForm){
         PageResult pageResult;
         if(StringUtils.isNotEmpty(listForm.getKeyword())){
             pageResult = companyService.searchCompanyWiki(listForm);
@@ -82,34 +86,36 @@ public class CompanyApi extends BaseApi {
     }
 
     /**
-     * 获取公司列表
+     * 公司列表
      *
      * @param listForm
      * @return
      */
     @RequireLogin(allow = UserType.ADMIN)
     @GetMapping("list")
-    public ApiResult listCompany(CompanyListForm listForm){
+    @ApiDoc
+    public ApiResult<PageResult<CompanyVo>> listCompany(CompanyListForm listForm){
         PageResult pageResult = companyService.getCompanyList(listForm);
         return ApiResult.ok(pageResult);
     }
 
     /**
      * 获取公司信息
-     * @param id
+     * @param id 公司ID
      * @return
      */
-    @GetMapping("/company-home-data")
+    @GetMapping("company-home-data")
     public ApiResult<CompanyVo> getCompanyHomeData(@RequestParam Long id){
         CompanyVo companyVo = companyService.getCompanyHomeData(id);
         return ApiResult.ok(companyVo);
     }
 
     /**
-     * 获取用户公司详情
+     * 我的公司详情
      *
      * @return
      */
+    @ApiDoc
     @RequireLogin(allow = UserType.COMPANY)
     @GetMapping("my-company-info")
     public ApiResult<CompanyVo> getMyCompanyInfo() {
@@ -120,12 +126,13 @@ public class CompanyApi extends BaseApi {
     /**
      * 获取公司信息
      *
-     * @param id
+     * @param id 公司ID
      * @return
      */
     @RequireLogin(allow = UserType.ADMIN)
     @GetMapping("get-company-info")
-    public ApiResult getCompanyInfo(@RequestParam Long id){
+    @ApiDoc
+    public ApiResult<CompanyVo> getCompanyInfo(@RequestParam Long id){
         CompanyVo companyVo = companyService.getCompanyInfo(id);
         return ApiResult.ok(companyVo);
     }
@@ -137,6 +144,7 @@ public class CompanyApi extends BaseApi {
      */
     @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @PostMapping("save-company")
+    @ApiDoc
     public ApiResult saveCompany(@RequestBody CompanyForm companyForm) {
         Long companyId = companyService.saveCompany(companyForm);
         return ApiResult.ok(String.valueOf(companyId));
@@ -145,11 +153,12 @@ public class CompanyApi extends BaseApi {
     /**
      * 删除公司
      *
-     * @param id
+     * @param id 公司ID
      * @return
      */
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("del-company")
+    @ApiDoc
     public ApiResult delCompany(@RequestParam Long id){
         companyService.delCompany(id);
         return ApiResult.ok();
@@ -163,32 +172,35 @@ public class CompanyApi extends BaseApi {
      */
     @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @PostMapping("save-company-addr")
+    @ApiDoc
     public ApiResult saveCompanyAddress(@Valid @RequestBody CompanyAddressForm companyAddressForm) {
         companyAddressService.saveCompanyAddress(companyAddressForm);
         return ApiResult.ok();
     }
 
     /**
-     * 保存公司地址
+     * 删除公司地址
      *
-     * @param id
+     * @param id 地址ID
      * @return
      */
     @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @PostMapping("del-company-addr")
+    @ApiDoc
     public ApiResult delCompanyAddress(@RequestParam Integer id) {
         companyAddressService.delCompanyAddress(id);
         return ApiResult.ok();
     }
 
     /**
-     * 获取当前用户公司地址列表
+     * 获取当前公司地址列表
      *
      * @return
      */
     @GetMapping("list-my-company-addr")
     @RequireLogin(allow = UserType.COMPANY)
-    public ApiResult getCompanyAddressList(){
+    @ApiDoc
+    public ApiResult<List<CompanyAddressVo>> getCompanyAddressList(){
         CompanyUserVo companyUserVo = companyService.getCompanyUser(curUser().getId());
         Long companyId = Long.valueOf(companyUserVo.getCompany().getId());
         List<CompanyAddressVo> addressVoList = companyAddressService.getCompanyAddressList(companyId);
@@ -198,12 +210,13 @@ public class CompanyApi extends BaseApi {
 
     /**
      * 获取公司百科
-     * @param companyId
+     * @param companyId 公司ID
      * @return
      */
     @RequireLogin
     @GetMapping("get-company-wiki")
-    public ApiResult getCompanyWiki(@RequestParam Long companyId){
+    @ApiDoc
+    public ApiResult<CompanyWikiVo> getCompanyWiki(@RequestParam Long companyId){
         CompanyWikiVo companyWikiVo = companyWikiService.getCompanyWiki(companyId);
         return ApiResult.ok(companyWikiVo);
     }
@@ -216,6 +229,7 @@ public class CompanyApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("save-company-wiki")
+    @ApiDoc
     public ApiResult saveCompanyWiki(@RequestBody CompanyWikiForm  wikiForm){
         companyWikiService.saveCompanyWiki(wikiForm);
         return ApiResult.ok();

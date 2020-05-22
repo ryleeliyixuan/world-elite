@@ -10,15 +10,15 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class CompanyVerifyForm {
     @NotBlank(message = "{form.verify.name.not.blank}")
-    private String name;
+    private String name; //名字
     @NotBlank(message = "{form.verify.idCard.not.blank}")
-    private String idCard;
+    private String idCard; //身份证号
     @NotBlank(message = "{form.verify.idCardPic.not.blank}")
-    private String idCardPic;
+    private String idCardPic; //身份证图片
     @NotBlank(message = "{form.verify.company.not.blank}")
-    private String company;
+    private String company; //公司
     @NotBlank(message = "{form.verify.post.not.blank}")
-    private String post;
+    private String post; //职位
     @NotBlank(message = "{form.verify.companyLicensePic.not.blank}")
-    private String companyLicensePic;
+    private String companyLicensePic; //营业执照
 }

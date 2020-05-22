@@ -7,7 +7,7 @@ import lombok.Data;
  */
 @Data
 public class FavoriteForm {
-    private Long objectId;
-    private Byte type;
-    private Boolean favorite;
+    private Long objectId; //对象ID
+    private Byte type; //对象类型
+    private Boolean favorite; //是否已收藏
 }

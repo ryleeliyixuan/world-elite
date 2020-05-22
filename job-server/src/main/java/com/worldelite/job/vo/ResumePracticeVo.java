@@ -16,15 +16,15 @@ import java.util.Date;
 @Data
 public class ResumePracticeVo extends EditFlag implements VoConvertable<ResumePracticeVo, ResumePractice>{
 
-    private Integer id;
+    private Integer id; //实践ID
     @JSONField(format = "yyyy-MM")
-    private Date startTime;
+    private Date startTime; //开始时间
     @JSONField(format = "yyyy-MM")
-    private Date finishTime;
-    private String title;
-    private String description;
-    private String post;
-    private Byte onWork;
+    private Date finishTime; //结束时间
+    private String title; //标题
+    private String description; //描述
+    private String post; //职位
+    private Byte onWork; //是否实践中
 
     @Override
     public ResumePracticeVo asVo(ResumePractice resumePractice) {

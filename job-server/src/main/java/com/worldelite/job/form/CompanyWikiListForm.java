@@ -9,5 +9,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CompanyWikiListForm extends PageForm{
-    private String keyword;
+    private String keyword;//关键词
 }
