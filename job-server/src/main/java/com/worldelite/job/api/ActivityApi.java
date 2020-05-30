@@ -38,8 +38,8 @@ public class ActivityApi {
      * @return
      */
     @ApiDoc
-    @GetMapping("list")
-    public ApiResult<PageResult<ActivityVo>> getActivityList(ActivityListForm listForm) {
+    @PostMapping("list")
+    public ApiResult<PageResult<ActivityVo>> getActivityList(@RequestBody ActivityListForm listForm) {
         PageResult<ActivityVo> pageResult = activityService.getActivityList(listForm);
         return ApiResult.ok(pageResult);
     }

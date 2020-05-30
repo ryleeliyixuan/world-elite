@@ -2,9 +2,10 @@
   <div class="container">
     <div class="search-filter mt-2 mt-2">
       <el-select
-        v-model="listQuery.cityId"
+        v-model="listQuery.cityIds"
         filterable
         clearable
+        multiple
         placeholder="活动城市"
         @change="handleFilter"
         size="small"
@@ -82,10 +83,10 @@ export default {
   data() {
     return {
       listQuery: {
-        cityId: undefined,
+        cityIds: [],
         title: undefined,
         status: "2",
-        sort: "-id",
+        sort: "-start_time",
         page: 1,
         limit: 10
       },
@@ -117,9 +118,6 @@ export default {
     },
     getList() {
       parseListQuery(this.$route.query, this.listQuery);
-      if (this.listQuery.cityId) {
-        this.listQuery.cityId = parseInt(this.listQuery.cityId);
-      }
       getActivityList(this.listQuery).then(response => {
         this.list = response.data.list;
         this.total = response.data.total;

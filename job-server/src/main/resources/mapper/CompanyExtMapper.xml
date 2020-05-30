@@ -23,7 +23,7 @@
         <include refid="Base_Column_List"/>
         from t_company
         where
-        full_name like CONCAT('%', #{name},'%')
+        (full_name like CONCAT('%', #{name},'%') or name like CONCAT('%', #{name},'%'))
         and id in (select company_id from t_company_wiki)
         and del_flag = 0
     </select>

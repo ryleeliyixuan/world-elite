@@ -16,7 +16,7 @@
           :on-success="handleUploadSuccess"
           :before-upload="beforeUpload"
         >
-          <el-image
+          <img
             v-if="activityForm.thumbnail && activityForm.thumbnail !== ''"
             :src="activityForm.thumbnail"
             class="thumbnail"

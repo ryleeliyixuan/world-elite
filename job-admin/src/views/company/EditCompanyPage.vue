@@ -112,6 +112,15 @@
     <!--编辑基本信息-->
     <el-dialog title="编辑基本信息" :visible.sync="showBasicDialog" width="700px" top="10vh">
       <el-form ref="companyForm" :model="companyForm" :rules="companyFormRules" label-width="100px">
+        <el-form-item label="公司全名" prop="fullName">
+          <el-input
+            v-model="companyForm.fullName"
+            placeholder="请填写公司全名"
+            :maxlength="150"
+            show-word-limit
+            class="w-50"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="公司简称" prop="name">
           <el-input
             v-model="companyForm.name"
@@ -285,6 +294,7 @@ export default {
       company: {},
       companyForm: {
         id: undefined,
+        fullName: undefined,
         name: undefined,
         logo: undefined,
         scaleId: undefined,
@@ -296,6 +306,7 @@ export default {
         synopsis: undefined
       },
       companyFormRules: {
+        fullName: [{ required: true, message: "请输入公司全名", trigger: "blur" }],
         name: [{ required: true, message: "请输入公司简称", trigger: "blur" }],
         scaleId: [
           { required: true, message: "请选择公司规模", trigger: "change" }
@@ -417,6 +428,7 @@ export default {
       getCompanyInfo(companyId).then(response => {
         this.company = response.data;
         this.companyForm.id = this.company.id;
+        this.companyForm.fullName = this.company.fullName;
         this.companyForm.name = this.company.name;
         this.companyForm.logo = this.company.logo;
         this.companyForm.scaleId = this.company.scale

@@ -7,7 +7,7 @@
     from t_activity
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectAndList" resultMap="BaseResultMap" resultType="com.worldelite.job.entity.Activity">
+  <select id="selectAndList" resultMap="BaseResultMap" resultType="com.worldelite.job.entity.ActivityOptions">
     select
     <include refid="Base_Column_List" />
     from t_activity
@@ -20,6 +20,9 @@
       </if>
       <if test="cityId != null">
         and city_id = #{cityId,jdbcType=INTEGER}
+      </if>
+      <if test="cityIds != null and cityIds != ''">
+        and city_id in (${cityIds})
       </if>
       <if test="status != null">
         and status = #{status,jdbcType=TINYINT}

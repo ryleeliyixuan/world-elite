@@ -1,6 +1,7 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.Activity;
+import com.worldelite.job.entity.ActivityOptions;
 
 import java.util.List;
 
@@ -63,5 +64,5 @@ public interface ActivityMapper {
 
     Activity selectSimpleById(Integer id);
 
-    List<Activity> selectAndList(Activity options);
+    List<Activity> selectAndList(ActivityOptions options);
 }

@@ -145,6 +145,7 @@ export default {
 </script>
 <style lang="scss">
 .ql-snow .ql-editor {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   white-space: normal!important;
   p {
     font-size: 1rem;
@@ -179,7 +180,7 @@ export default {
   h5 {
     font-size: 1.25rem;
   }
-  h5 {
+  h6 {
     font-size: 1rem;
   }
   ol,

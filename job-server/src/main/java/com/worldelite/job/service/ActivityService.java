@@ -5,6 +5,7 @@ import com.github.pagehelper.Page;
 import com.worldelite.job.constants.ActivityStatus;
 import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.entity.Activity;
+import com.worldelite.job.entity.ActivityOptions;
 import com.worldelite.job.entity.Dict;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
@@ -13,6 +14,7 @@ import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.PageResult;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,8 +43,9 @@ public class ActivityService extends BaseService{
      * @return
      */
     public PageResult<ActivityVo> getActivityList(ActivityListForm listForm){
-        Activity options = new Activity();
+        ActivityOptions options = new ActivityOptions();
         BeanUtil.copyProperties(listForm, options);
+        options.setCityIds(StringUtils.join(listForm.getCityIds(), ","));
         AppUtils.setPage(listForm);
         Page<Activity> activityPage = (Page<Activity>) activityMapper.selectAndList(options);
         PageResult<ActivityVo> pageResult = new PageResult<>(activityPage);

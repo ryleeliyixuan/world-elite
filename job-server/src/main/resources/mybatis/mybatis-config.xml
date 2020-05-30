@@ -11,5 +11,5 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<!-- debug sql log -->
 		<setting name="logImpl"                  value="SLF4J" /> <!-- 指定 MyBatis 所用日志的具体实现 -->
 	</settings>
-	
+
 </configuration>
