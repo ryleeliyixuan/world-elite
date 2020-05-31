@@ -86,7 +86,7 @@ export default {
         cityIds: [],
         title: undefined,
         status: "2",
-        sort: "-start_time",
+        sort: "-id",
         page: 1,
         limit: 10
       },
