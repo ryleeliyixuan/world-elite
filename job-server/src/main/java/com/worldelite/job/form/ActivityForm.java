@@ -36,4 +36,6 @@ public class ActivityForm {
     private Date finishTime; //结束时间
     @NotBlank
     private String address; //活动地址
+    @NotBlank
+    private String organizer; //主办方
 }

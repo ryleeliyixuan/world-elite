@@ -32,6 +32,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity>{
     private Boolean joinFlag; //是否参加
     @JSONField(format = "yyyy-MM-dd HH:mm")
     private Date joinTime; //参加时间
+    private String organizer; //主办方
 
     @Override
     public ActivityVo asVo(Activity activity) {

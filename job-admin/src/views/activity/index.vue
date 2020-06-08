@@ -49,6 +49,7 @@
         <template slot-scope="{row}">{{`${row.startTime} ~ ${row.finishTime}`}}</template>
       </el-table-column>
       <el-table-column label="所在城市" prop="city.name"></el-table-column>
+      <el-table-column label="主办方" prop="organizer"></el-table-column>
       <el-table-column label="活动地点" prop="address"></el-table-column>
       <el-table-column label="活动详情" prop="url">
         <template slot-scope="{row}">

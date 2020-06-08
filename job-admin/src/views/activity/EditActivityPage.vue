@@ -27,6 +27,9 @@
       <el-form-item label="活动名称" prop="title">
         <el-input v-model="activityForm.title" placeholder="填写活动名称" maxlength="80" show-word-limit></el-input>
       </el-form-item>
+      <el-form-item label="主办方" prop="organizer">
+        <el-input v-model="activityForm.organizer" placeholder="填写主办方" maxlength="100" show-word-limit></el-input>
+      </el-form-item>
       <el-form-item label="活动城市" prop="cityId">
         <el-select v-model="activityForm.cityId" filterable clearable placeholder="所在城市">
           <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -98,7 +101,8 @@ export default {
         startTime: undefined,
         finishTime: undefined,
         timeRange: [],
-        address: undefined
+        address: undefined,
+        organizer: undefined
       },
       activityFormRules: {
         title: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
@@ -119,6 +123,9 @@ export default {
         ],
         address: [
           { required: true, message: "请输入活动地址", trigger: "blur" }
+        ],
+        organizer: [
+          { required: true, message: "请输入主办方", trigger: "blur" }
         ]
       },
       cityOptions: [],

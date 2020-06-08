@@ -11,6 +11,10 @@
       </template>
       <b-media-body>
         <h5 class="mt-0 mb-2">{{activity.title}}</h5>
+        <div class="text-label" v-if="activity.organizer && activity.organizer != ''">
+          <b>主办方：</b>
+          {{activity.organizer}}
+        </div>
         <div class="text-label">
           <b>活动城市：</b>
           {{activity.city.name}}

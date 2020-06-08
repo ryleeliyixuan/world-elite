@@ -79,7 +79,7 @@ public class ActivityService extends BaseService{
      * @param activityForm
      * @return
      */
-    public Integer saveActivity(ActivityForm activityForm){
+    public void saveActivity(ActivityForm activityForm){
         Activity activity = null;
         if(activityForm.getId() != null){
             activity = activityMapper.selectSimpleById(activityForm.getId());
@@ -97,7 +97,6 @@ public class ActivityService extends BaseService{
             activity.setUpdateTime(new Date());
             activityMapper.updateByPrimaryKeySelective(activity);
         }
-        return activity.getId();
     }
 
     /**

@@ -39,6 +39,10 @@
                   {{activity.title}}
                   <el-tag type="primary">{{activity.city.name}}</el-tag>
                 </h5>
+                <div class="text-label" v-if="activity.organizer && activity.organizer != ''">
+                  <b>主办方：</b>
+                  {{activity.organizer}}
+                </div>
                 <div class="text-label">
                   <b>活动地址：</b>
                   {{activity.address}}
@@ -84,7 +88,7 @@ export default {
     return {
       listQuery: {
         cityIds: [],
-        title: undefined,
+        keyword: undefined,
         status: "2",
         sort: "-id",
         page: 1,
@@ -103,7 +107,7 @@ export default {
       this.getList();
     },
     keyword() {
-      this.listQuery.title = this.keyword;
+      this.listQuery.keyword = this.keyword;
       this.handleRouteList();
     }
   },

@@ -82,3 +82,8 @@ ADD COLUMN `on_work` TINYINT(4) NULL DEFAULT 0 COMMENT '实践中' AFTER `update
 
 ALTER TABLE `db_worldelite`.`t_job`
 ADD COLUMN `address` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '工作地址' AFTER `address_id`;
+
+# 6.08
+
+ALTER TABLE `db_worldelite`.`t_activity`
+ADD COLUMN `organizer` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '主办方' AFTER `address`;

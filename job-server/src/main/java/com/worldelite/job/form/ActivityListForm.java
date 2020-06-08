@@ -13,4 +13,5 @@ public class ActivityListForm extends PageForm{
     private Integer[] cityIds; //城市ID
     private Byte status; //活动状态
     private String title; //活动标题
+    private String keyword; //搜索关键词
 }

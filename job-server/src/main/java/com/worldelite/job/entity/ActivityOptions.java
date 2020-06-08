@@ -10,4 +10,5 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ActivityOptions extends Activity{
     private String cityIds;
+    private String keyword;
 }

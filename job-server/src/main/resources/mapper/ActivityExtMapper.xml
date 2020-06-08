@@ -27,6 +27,9 @@
       <if test="status != null">
         and status = #{status,jdbcType=TINYINT}
       </if>
+      <if test="keyword != null and keyword != ''">
+        and (title like CONCAT('%', #{keyword},'%') or organizer like CONCAT('%', #{keyword},'%'))
+      </if>
     </where>
   </select>
 </mapper>

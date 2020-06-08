@@ -33,10 +33,8 @@ public class CompanyApi extends BaseApi {
     @Autowired
     private CompanyService companyService;
 
-
     @Autowired
     private CompanyAddressService companyAddressService;
-
 
     @Autowired
     private CompanyWikiService companyWikiService;
@@ -206,7 +204,6 @@ public class CompanyApi extends BaseApi {
         List<CompanyAddressVo> addressVoList = companyAddressService.getCompanyAddressList(companyId);
         return ApiResult.ok(addressVoList);
     }
-
 
     /**
      * 获取公司百科
