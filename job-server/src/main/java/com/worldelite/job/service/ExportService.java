@@ -67,8 +67,12 @@ public class ExportService extends BaseService {
         File resumePdfFile = null;
         try {
             resumePdfFile = fileService.getFile(UUID.randomUUID().toString() + ".pdf");
-            Runtime.getRuntime().exec(String.format("wkhtmltopdf %s %s", resumeTplUrl, resumePdfFile.getAbsolutePath()));
-            return resumePdfFile.getName();
+            Process process = Runtime.getRuntime().exec(String.format("wkhtmltopdf %s %s", resumeTplUrl, resumePdfFile.getAbsolutePath()));
+            if(process.waitFor(20, TimeUnit.SECONDS)){
+                return resumePdfFile.getName();
+            }else{
+                throw new ServiceException(message("export.resume.fail: exceed timeout"));
+            }
         } catch (Exception ex) {
             FileUtil.del(resumePdfFile);
             log.error("导出简历失败:" + resumeId, ex);
