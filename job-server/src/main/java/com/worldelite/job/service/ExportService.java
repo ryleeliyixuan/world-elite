@@ -67,7 +67,9 @@ public class ExportService extends BaseService {
         File resumePdfFile = null;
         try {
             resumePdfFile = fileService.getFile(UUID.randomUUID().toString() + ".pdf");
-            Process process = Runtime.getRuntime().exec(String.format("wkhtmltopdf %s %s", resumeTplUrl, resumePdfFile.getAbsolutePath()));
+            final String exportCommand = String.format("wkhtmltopdf %s %s", resumeTplUrl, resumePdfFile.getAbsolutePath());
+            Process process = Runtime.getRuntime().exec(exportCommand);
+            log.info("export resume: " + exportCommand);
             if(process.waitFor(20, TimeUnit.SECONDS)){
                 return resumePdfFile.getName();
             }else{
