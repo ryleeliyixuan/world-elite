@@ -191,6 +191,23 @@ public class AuthService extends BaseService {
         userMapper.updateByPrimaryKeySelective(user);
     }
 
+
+    /**
+     * 修改密码
+     *
+     * @param modifyPwdForm
+     */
+    @SysLog
+    public void modifyPassword(ModifyPwdForm modifyPwdForm){
+        User user = userMapper.selectByPrimaryKey(curUser().getId());
+        if(!StringUtils.equals(user.getPassword(), encodePassword(modifyPwdForm.getOldPassword(), user.getSalt()))){
+            throw new ServiceException(message("modify.old.pwd.error"));
+        }
+        setUserPassword(user, modifyPwdForm.getNewPassword());
+        user.setUpdateTime(new Date());
+        userMapper.updateByPrimaryKeySelective(user);
+    }
+
     /**
      * 第三方登录
      *

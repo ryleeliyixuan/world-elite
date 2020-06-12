@@ -48,6 +48,14 @@ export function resetPwd(data){
       })
 }
 
+export function modifyPwd(data){
+  return request({
+    url: '/auth/modify-pwd',
+    method: 'post',
+    data
+  })
+}
+
 export function logout(){
     return request({
       url: '/auth/logout',

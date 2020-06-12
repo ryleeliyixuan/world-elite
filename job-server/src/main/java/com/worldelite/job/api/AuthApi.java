@@ -122,6 +122,29 @@ public class AuthApi extends BaseController {
         return ApiResult.ok();
     }
 
+
+    /**
+     * 修改密码
+     * @param modifyPwdForm
+     * @return
+     */
+    @ApiDoc
+    @RequireLogin
+    @PostMapping("modify-pwd")
+    public ApiResult modifyPassword(HttpSession session, @Valid @RequestBody ModifyPwdForm modifyPwdForm){
+        final String captcha = (String)session.getAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
+        // 立即删除
+        session.removeAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
+        if(captcha == null || !captcha.equalsIgnoreCase(modifyPwdForm.getImgValidCode())){
+            return ApiResult.fail(message("imageValidCode.invalid"));
+        }
+        if(modifyPwdForm.getNewPassword().endsWith(modifyPwdForm.getOldPassword())){
+            return ApiResult.fail(message("modify.same.pwd.error"));
+        }
+        authService.modifyPassword(modifyPwdForm);
+        return ApiResult.ok();
+    }
+
     /**
      * 绑定第三方账号
      * @return

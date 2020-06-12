@@ -75,6 +75,11 @@ const constantRoutes = [
         name: 'job',
         component: () => import('@/views/JobPage'),
         meta: { title: '职位详情' }
+    },
+    {
+        path: '/modify-pwd',
+        component: () => import('@/views/ModifyPwdPage'),
+        meta: {title: '修改密码'}
     }
 ]
 

@@ -106,6 +106,11 @@ const constantRoutes = [
         path: '/regist-success',
         component: () => import('@/views/RegisterSuccessPage'),
         meta: {title: '注册成功'}
+    },
+    {
+        path: '/modify-pwd',
+        component: () => import('@/views/ModifyPwdPage'),
+        meta: {title: '修改密码'}
     }
 ]
 

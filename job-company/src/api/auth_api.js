@@ -46,3 +46,11 @@ export function logout(){
       method: 'post'
     })
   }
+
+  export function modifyPwd(data){
+    return request({
+      url: '/auth/modify-pwd',
+      method: 'post',
+      data
+    })
+  }

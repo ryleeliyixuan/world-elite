@@ -196,6 +196,7 @@ export default {
 
 .job-recommend-box {
   padding: 50px;
+  background: #f7fbfd;
 }
 
 .company-recommend-box {

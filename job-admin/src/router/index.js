@@ -65,6 +65,12 @@ export const constantRoutes = [
       path: 'admin',
       component: () => import('@/views/user/AdminUserList'),
       meta: { title: '管理员' }
+    },
+    {
+      path: 'modify-pwd',
+      component: () => import('@/views/user/ModifyPwdPage'),
+      hidden: true,
+      meta: { title: '修改密码' }
     }]
   },
   {

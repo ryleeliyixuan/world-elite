@@ -76,6 +76,9 @@
               <el-dropdown-item>
                 <el-link class="no-decoration" :underline="false" href="/edit-company" v-if="status !== 0">公司主页</el-link>
               </el-dropdown-item>
+              <el-dropdown-item>
+                <el-link class="no-decoration" :underline="false" href="/modify-pwd">修改密码</el-link>
+              </el-dropdown-item>
               <el-dropdown-item @click.native="handleLogout" class="text-danger">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
