@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>文件接口</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<div id="wmd-preview" class="wmd-preview">
+<h1><a href="../index.html">《首页</a> 文件接口:</h1>
+<div class="toc">
+    <ul>
+    <li><a href="#下载临时目录的文件">下载临时目录的文件</a></li>
+    </ul>
+</div>
+<hr>
+<h2 id="下载临时目录的文件">下载临时目录的文件</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/file/download/{fileKey}
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>fileKey</td><td>string</td><td>true</td><td>下载文件</td></tr><tr><td>fileName</td><td>string</td><td>true</td><td>文件命名</td></tr></table>
+
+<p>返回结果: <a href="#">Android Code</a> | <a href="#">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{}
+</pre>
+
+<hr>
+</div>
+</body>
+</html>

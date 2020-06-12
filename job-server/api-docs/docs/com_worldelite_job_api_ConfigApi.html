@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>配置接口</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<div id="wmd-preview" class="wmd-preview">
+<h1><a href="../index.html">《首页</a> 配置接口:</h1>
+<div class="toc">
+    <ul>
+    <li><a href="#保存首页文案配置">保存首页文案配置</a></li><li><a href="#获取首页文案配置">获取首页文案配置</a></li><li><a href="#用户协议">用户协议</a></li>
+    </ul>
+</div>
+<hr>
+<h2 id="保存首页文案配置">保存首页文案配置</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/config/save-home-config
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "configType": "int //配置类型",
+  "mainTitle": "string //主标题",
+  "subTitle": "string //副标题",
+  "picUrl": "string //图片"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ConfigApi_saveHomeConfig_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ConfigApi_saveHomeConfig_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="获取首页文案配置">获取首页文案配置</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/config/get-home-config
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>configType</td><td>int</td><td>true</td><td>配置类型</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ConfigApi_getHomeConfig_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ConfigApi_getHomeConfig_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "configType": "int //配置类型",
+    "mainTitle": "string //主标题",
+    "subTitle": "string //副标题",
+    "picUrl": "string //图片"
+  }
+}
+</pre>
+
+<hr><h2 id="用户协议">用户协议</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/config/user-protocol
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ConfigApi_getUserProtocol_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ConfigApi_getUserProtocol_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr>
+</div>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>用户验证接口</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<div id="wmd-preview" class="wmd-preview">
+<h1><a href="../index.html">《首页</a> 用户验证接口:</h1>
+<div class="toc">
+    <ul>
+    <li><a href="#邮箱注册">邮箱注册</a></li><li><a href="#检查email注册">检查email注册</a></li><li><a href="#获取邮箱验证码">获取邮箱验证码</a></li><li><a href="#获取图片验证码">获取图片验证码</a></li><li><a href="#通过邮箱登录">通过邮箱登录</a></li><li><a href="#重设密码">重设密码</a></li><li><a href="#修改密码">修改密码</a></li>
+    </ul>
+</div>
+<hr>
+<h2 id="邮箱注册">邮箱注册</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/auth/register
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AuthApi_register_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AuthApi_register_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "id": "long //用于后端",
+    "userId": "string //字符串ID，用于前端",
+    "name": "string //名字",
+    "avatar": "string //头像",
+    "gender": "byte //性别",
+    "type": "byte //用户类型",
+    "status": "byte //状态",
+    "token": "string //登录凭证",
+    "phoneCode": "string //电话区号",
+    "phone": "string //电话号码",
+    "email": "string //邮箱",
+    "createTime": "date //创建时间",
+    "subscribeFlag": "byte //订阅标志"
+  }
+}
+</pre>
+
+<hr><h2 id="检查email注册">检查email注册</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/auth/check-email
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>email</td><td>string</td><td>false</td><td>邮箱</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AuthApi_checkEmailExists_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AuthApi_checkEmailExists_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="获取邮箱验证码">获取邮箱验证码</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/auth/get-email-code
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>email</td><td>string</td><td>true</td><td>邮箱</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AuthApi_activateEmail_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AuthApi_activateEmail_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="获取图片验证码">获取图片验证码</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/auth/get-captcha
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="#">Android Code</a> | <a href="#">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{}
+</pre>
+
+<hr><h2 id="通过邮箱登录">通过邮箱登录</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/auth/email-login
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "email": "string //邮箱",
+  "password": "string //密码"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AuthApi_loginWithEmail_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AuthApi_loginWithEmail_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "id": "long //用于后端",
+    "userId": "string //字符串ID，用于前端",
+    "name": "string //名字",
+    "avatar": "string //头像",
+    "gender": "byte //性别",
+    "type": "byte //用户类型",
+    "status": "byte //状态",
+    "token": "string //登录凭证",
+    "phoneCode": "string //电话区号",
+    "phone": "string //电话号码",
+    "email": "string //邮箱",
+    "createTime": "date //创建时间",
+    "subscribeFlag": "byte //订阅标志"
+  }
+}
+</pre>
+
+<hr><h2 id="重设密码">重设密码</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/auth/reset-pwd
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AuthApi_resetPassword_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AuthApi_resetPassword_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="修改密码">修改密码</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/auth/modify-pwd
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "oldPassword": "string //旧密码",
+  "newPassword": "string //新密码",
+  "imgValidCode": "string //图片验证码"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AuthApi_modifyPassword_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AuthApi_modifyPassword_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr>
+</div>
+</body>
+</html>

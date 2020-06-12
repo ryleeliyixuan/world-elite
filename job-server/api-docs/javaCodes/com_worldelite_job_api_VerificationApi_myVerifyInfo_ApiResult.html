@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ApiResult</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class ApiResult implements Serializable{
+
+    private int code; //0为成功，其他错误码参考 ApiCode
+    private String msg; //错误消息
+    private CompanyVerificationVo data; //数据包
+
+    @JSONField(name="code")
+    public int getCode(){
+        return code;
+    }
+
+    @JSONField(name="code")
+    public void setCode(int code){
+        this.code = code;
+    }
+
+    @JSONField(name="msg")
+    public String getMsg(){
+        return msg;
+    }
+
+    @JSONField(name="msg")
+    public void setMsg(String msg){
+        this.msg = msg;
+    }
+
+    @JSONField(name="data")
+    public CompanyVerificationVo getData(){
+        return data;
+    }
+
+    @JSONField(name="data")
+    public void setData(CompanyVerificationVo data){
+        this.data = data;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class CompanyVerificationVo implements Serializable{
+
+    private String name; //名字
+    private String idCard; //身份证号
+    private String idCardPic; //身份证图片
+    private String company; //公司
+    private String post; //职位
+    private String companyLicensePic; //营业执照
+    private String remark; //备注
+    private byte status; //状态
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="idCard")
+    public String getIdCard(){
+        return idCard;
+    }
+
+    @JSONField(name="idCard")
+    public void setIdCard(String idCard){
+        this.idCard = idCard;
+    }
+
+    @JSONField(name="idCardPic")
+    public String getIdCardPic(){
+        return idCardPic;
+    }
+
+    @JSONField(name="idCardPic")
+    public void setIdCardPic(String idCardPic){
+        this.idCardPic = idCardPic;
+    }
+
+    @JSONField(name="company")
+    public String getCompany(){
+        return company;
+    }
+
+    @JSONField(name="company")
+    public void setCompany(String company){
+        this.company = company;
+    }
+
+    @JSONField(name="post")
+    public String getPost(){
+        return post;
+    }
+
+    @JSONField(name="post")
+    public void setPost(String post){
+        this.post = post;
+    }
+
+    @JSONField(name="companyLicensePic")
+    public String getCompanyLicensePic(){
+        return companyLicensePic;
+    }
+
+    @JSONField(name="companyLicensePic")
+    public void setCompanyLicensePic(String companyLicensePic){
+        this.companyLicensePic = companyLicensePic;
+    }
+
+    @JSONField(name="remark")
+    public String getRemark(){
+        return remark;
+    }
+
+    @JSONField(name="remark")
+    public void setRemark(String remark){
+        this.remark = remark;
+    }
+
+    @JSONField(name="status")
+    public byte getStatus(){
+        return status;
+    }
+
+    @JSONField(name="status")
+    public void setStatus(byte status){
+        this.status = status;
+    }
+
+}
+</pre>
+
+
+
+</body>
+</html>

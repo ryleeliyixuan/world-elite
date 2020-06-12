@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ApiResult</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface ApiResult : NSObject
+
+//0为成功，其他错误码参考 ApiCode
+@property (nonatomic, strong) NSInteger code;
+//错误消息
+@property (nonatomic, assign) NSString msg;
+//数据包
+@property (nonatomic, strong) JobVo data;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface JobVo : NSObject
+
+//职位ID
+@property (nonatomic, assign) NSString id;
+//职位类型
+@property (nonatomic, strong) DictVo jobType;
+//职位名称
+@property (nonatomic, assign) NSString name;
+//企业用户
+@property (nonatomic, strong) CompanyUserVo companyUser;
+//职位类型
+@property (nonatomic, strong) JobCategoryVo category;
+//部门
+@property (nonatomic, assign) NSString depart;
+//学历要求
+@property (nonatomic, strong) DictVo minDegree;
+//最低薪资
+@property (nonatomic, strong) NSInteger minSalary;
+//最高薪资
+@property (nonatomic, strong) NSInteger maxSalary;
+//发放月数
+@property (nonatomic, strong) NSInteger salaryMonths;
+//工作城市
+@property (nonatomic, strong) DictVo city;
+//职位状态
+@property (nonatomic, strong) int status;
+//职位描述
+@property (nonatomic, assign) NSString description;
+//创建人
+@property (nonatomic, strong) long creatorId;
+//工作地址
+@property (nonatomic, assign) NSString address;
+//发布时间
+@property (nonatomic, assign) NSString time;
+//是否已收藏
+@property (nonatomic, strong) int favoriteFlag;
+//收藏时间
+@property (nonatomic, assign) NSString favoriteTime;
+//是否已投递
+@property (nonatomic, strong) int applyFlag;
+//投递状态
+@property (nonatomic, strong) int applyStatus;
+//投递时间
+@property (nonatomic, assign) NSString applyTime;
+//投递人数
+@property (nonatomic, strong) NSInteger totalResumeCount;
+//新投递简历数
+@property (nonatomic, strong) NSInteger newResumeCount;
+//候选简历数
+@property (nonatomic, strong) NSInteger candidateResumeCount;
+//进入面试简历数
+@property (nonatomic, strong) NSInteger interviewResumeCount;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface DictVo : NSObject
+
+//字典ID
+@property (nonatomic, strong) NSInteger id;
+//字典名
+@property (nonatomic, assign) NSString name;
+//字典类型
+@property (nonatomic, strong) NSInteger type;
+//字典值
+@property (nonatomic, assign) NSString value;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface CompanyUserVo : NSObject
+
+//用于后端
+@property (nonatomic, strong) long id;
+//字符串ID，用于前端
+@property (nonatomic, assign) NSString userId;
+//名字
+@property (nonatomic, assign) NSString name;
+//头像
+@property (nonatomic, assign) NSString avatar;
+//性别
+@property (nonatomic, strong) int gender;
+//用户类型
+@property (nonatomic, strong) int type;
+//状态
+@property (nonatomic, strong) int status;
+//登录凭证
+@property (nonatomic, assign) NSString token;
+//电话区号
+@property (nonatomic, assign) NSString phoneCode;
+//电话号码
+@property (nonatomic, assign) NSString phone;
+//邮箱
+@property (nonatomic, assign) NSString email;
+//创建时间
+@property (nonatomic, assign) NSString createTime;
+//订阅标志
+@property (nonatomic, strong) int subscribeFlag;
+//公司
+@property (nonatomic, strong) CompanyVo company;
+//部门
+@property (nonatomic, assign) NSString depart;
+//职位
+@property (nonatomic, assign) NSString post;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface CompanyVo : NSObject
+
+//公司ID
+@property (nonatomic, assign) NSString id;
+//公司简称
+@property (nonatomic, assign) NSString name;
+//公司全称
+@property (nonatomic, assign) NSString fullName;
+//logo
+@property (nonatomic, assign) NSString logo;
+//主页
+@property (nonatomic, assign) NSString homepage;
+//公司介绍
+@property (nonatomic, assign) NSString introduction;
+//公司一句话介绍
+@property (nonatomic, assign) NSString synopsis;
+//公司规模
+@property (nonatomic, strong) DictVo scale;
+//公司阶段
+@property (nonatomic, strong) DictVo stage;
+//所属行业
+@property (nonatomic, strong) DictVo industry;
+//公司性质
+@property (nonatomic, strong) DictVo property;
+//公司地址
+@property (nonatomic, strong) CompanyAddressVo[] addressList;
+//完善进度
+@property (nonatomic, strong) NSInteger completeProgress;
+//百科摘要
+@property (nonatomic, assign) NSString wikiSummary;
+//公司百科
+@property (nonatomic, assign) NSString companyWiki;
+//收藏标志
+@property (nonatomic, strong) int favoriteFlag;
+//收藏时间
+@property (nonatomic, assign) NSString favoriteTime;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface DictVo : NSObject
+
+//字典ID
+@property (nonatomic, strong) NSInteger id;
+//字典名
+@property (nonatomic, assign) NSString name;
+//字典类型
+@property (nonatomic, strong) NSInteger type;
+//字典值
+@property (nonatomic, assign) NSString value;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface DictVo : NSObject
+
+//字典ID
+@property (nonatomic, strong) NSInteger id;
+//字典名
+@property (nonatomic, assign) NSString name;
+//字典类型
+@property (nonatomic, strong) NSInteger type;
+//字典值
+@property (nonatomic, assign) NSString value;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface DictVo : NSObject
+
+//字典ID
+@property (nonatomic, strong) NSInteger id;
+//字典名
+@property (nonatomic, assign) NSString name;
+//字典类型
+@property (nonatomic, strong) NSInteger type;
+//字典值
+@property (nonatomic, assign) NSString value;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface DictVo : NSObject
+
+//字典ID
+@property (nonatomic, strong) NSInteger id;
+//字典名
+@property (nonatomic, assign) NSString name;
+//字典类型
+@property (nonatomic, strong) NSInteger type;
+//字典值
+@property (nonatomic, assign) NSString value;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface CompanyAddressVo : NSObject
+
+//地址ID
+@property (nonatomic, strong) NSInteger id;
+//城市ID
+@property (nonatomic, strong) NSInteger cityId;
+//地址
+@property (nonatomic, assign) NSString address;
+//纬度
+@property (nonatomic, strong) double latitude;
+//经度
+@property (nonatomic, strong) double longitude;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface JobCategoryVo : NSObject
+
+//类型ID
+@property (nonatomic, strong) NSInteger id;
+//类型名
+@property (nonatomic, assign) NSString name;
+//父类型
+@property (nonatomic, strong) NSInteger parentId;
+//排序
+@property (nonatomic, strong) NSInteger position;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface DictVo : NSObject
+
+//字典ID
+@property (nonatomic, strong) NSInteger id;
+//字典名
+@property (nonatomic, assign) NSString name;
+//字典类型
+@property (nonatomic, strong) NSInteger type;
+//字典值
+@property (nonatomic, assign) NSString value;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface DictVo : NSObject
+
+//字典ID
+@property (nonatomic, strong) NSInteger id;
+//字典名
+@property (nonatomic, assign) NSString name;
+//字典类型
+@property (nonatomic, strong) NSInteger type;
+//字典值
+@property (nonatomic, assign) NSString value;
+
+
+@end
+</xmp>
+</pre>
+
+
+</body>
+</html>

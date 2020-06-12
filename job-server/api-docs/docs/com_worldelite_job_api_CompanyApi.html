@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>企业接口</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<div id="wmd-preview" class="wmd-preview">
+<h1><a href="../index.html">《首页</a> 企业接口:</h1>
+<div class="toc">
+    <ul>
+    <li><a href="#搜索公司">搜索公司</a></li><li><a href="#百科列表">百科列表</a></li><li><a href="#公司列表">公司列表</a></li><li><a href="#我的公司详情">我的公司详情</a></li><li><a href="#获取公司信息">获取公司信息</a></li><li><a href="#保存公司信息">保存公司信息</a></li><li><a href="#删除公司">删除公司</a></li><li><a href="#保存公司地址">保存公司地址</a></li><li><a href="#删除公司地址">删除公司地址</a></li><li><a href="#获取当前公司地址列表">获取当前公司地址列表</a></li><li><a href="#获取公司百科">获取公司百科</a></li><li><a href="#保存公司百科">保存公司百科</a></li>
+    </ul>
+</div>
+<hr>
+<h2 id="搜索公司">搜索公司</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/company/search
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>page</td><td>int</td><td>false</td><td>页数</td></tr><tr><td>limit</td><td>int</td><td>false</td><td>每页条数</td></tr><tr><td>sort</td><td>string</td><td>false</td><td>排序</td></tr><tr><td>name</td><td>string</td><td>false</td><td>公司简称</td></tr><tr><td>fullName</td><td>string</td><td>false</td><td>公司全称</td></tr><tr><td>industryId</td><td>int</td><td>false</td><td>行业ID</td></tr><tr><td>cityId</td><td>int</td><td>false</td><td>城市ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_search_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_search_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "total": "int //总记录数",
+    "pageCount": "int //页数",
+    "currentPage": "int //当前页",
+    "pageSize": "int //每页记录数",
+    "list": [
+      {
+        "id": "string //公司ID",
+        "name": "string //公司简称",
+        "fullName": "string //公司全称",
+        "logo": "string //logo",
+        "homepage": "string //主页",
+        "introduction": "string //公司介绍",
+        "synopsis": "string //公司一句话介绍",
+        "scale": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "stage": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "industry": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "property": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "addressList": [
+          {
+            "id": "int //地址ID",
+            "cityId": "int //城市ID",
+            "address": "string //地址",
+            "latitude": "double //纬度",
+            "longitude": "double //经度"
+          }
+        ],
+        "completeProgress": "int //完善进度",
+        "wikiSummary": "string //百科摘要",
+        "companyWiki": "string //公司百科",
+        "favoriteFlag": "byte //收藏标志",
+        "favoriteTime": "date //收藏时间"
+      }
+    ],
+    "hasMore": "boolean //是否还有更多"
+  }
+}
+</pre>
+
+<hr><h2 id="百科列表">百科列表</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/company/wiki-list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_listCompanyWiki_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_listCompanyWiki_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "total": "int //总记录数",
+    "pageCount": "int //页数",
+    "currentPage": "int //当前页",
+    "pageSize": "int //每页记录数",
+    "list": [
+      {
+        "id": "string //公司ID",
+        "name": "string //公司简称",
+        "fullName": "string //公司全称",
+        "logo": "string //logo",
+        "homepage": "string //主页",
+        "introduction": "string //公司介绍",
+        "synopsis": "string //公司一句话介绍",
+        "scale": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "stage": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "industry": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "property": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "addressList": [
+          {
+            "id": "int //地址ID",
+            "cityId": "int //城市ID",
+            "address": "string //地址",
+            "latitude": "double //纬度",
+            "longitude": "double //经度"
+          }
+        ],
+        "completeProgress": "int //完善进度",
+        "wikiSummary": "string //百科摘要",
+        "companyWiki": "string //公司百科",
+        "favoriteFlag": "byte //收藏标志",
+        "favoriteTime": "date //收藏时间"
+      }
+    ],
+    "hasMore": "boolean //是否还有更多"
+  }
+}
+</pre>
+
+<hr><h2 id="公司列表">公司列表</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/company/list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>page</td><td>int</td><td>false</td><td>页数</td></tr><tr><td>limit</td><td>int</td><td>false</td><td>每页条数</td></tr><tr><td>sort</td><td>string</td><td>false</td><td>排序</td></tr><tr><td>name</td><td>string</td><td>false</td><td>公司简称</td></tr><tr><td>fullName</td><td>string</td><td>false</td><td>公司全称</td></tr><tr><td>industryId</td><td>int</td><td>false</td><td>行业ID</td></tr><tr><td>cityId</td><td>int</td><td>false</td><td>城市ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_listCompany_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_listCompany_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "total": "int //总记录数",
+    "pageCount": "int //页数",
+    "currentPage": "int //当前页",
+    "pageSize": "int //每页记录数",
+    "list": [
+      {
+        "id": "string //公司ID",
+        "name": "string //公司简称",
+        "fullName": "string //公司全称",
+        "logo": "string //logo",
+        "homepage": "string //主页",
+        "introduction": "string //公司介绍",
+        "synopsis": "string //公司一句话介绍",
+        "scale": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "stage": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "industry": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "property": {
+          "id": "int //字典ID",
+          "name": "string //字典名",
+          "type": "int //字典类型",
+          "value": "string //字典值"
+        },
+        "addressList": [
+          {
+            "id": "int //地址ID",
+            "cityId": "int //城市ID",
+            "address": "string //地址",
+            "latitude": "double //纬度",
+            "longitude": "double //经度"
+          }
+        ],
+        "completeProgress": "int //完善进度",
+        "wikiSummary": "string //百科摘要",
+        "companyWiki": "string //公司百科",
+        "favoriteFlag": "byte //收藏标志",
+        "favoriteTime": "date //收藏时间"
+      }
+    ],
+    "hasMore": "boolean //是否还有更多"
+  }
+}
+</pre>
+
+<hr><h2 id="我的公司详情">我的公司详情</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/company/my-company-info
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_getMyCompanyInfo_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_getMyCompanyInfo_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "id": "string //公司ID",
+    "name": "string //公司简称",
+    "fullName": "string //公司全称",
+    "logo": "string //logo",
+    "homepage": "string //主页",
+    "introduction": "string //公司介绍",
+    "synopsis": "string //公司一句话介绍",
+    "scale": {
+      "id": "int //字典ID",
+      "name": "string //字典名",
+      "type": "int //字典类型",
+      "value": "string //字典值"
+    },
+    "stage": {
+      "id": "int //字典ID",
+      "name": "string //字典名",
+      "type": "int //字典类型",
+      "value": "string //字典值"
+    },
+    "industry": {
+      "id": "int //字典ID",
+      "name": "string //字典名",
+      "type": "int //字典类型",
+      "value": "string //字典值"
+    },
+    "property": {
+      "id": "int //字典ID",
+      "name": "string //字典名",
+      "type": "int //字典类型",
+      "value": "string //字典值"
+    },
+    "addressList": [
+      {
+        "id": "int //地址ID",
+        "cityId": "int //城市ID",
+        "address": "string //地址",
+        "latitude": "double //纬度",
+        "longitude": "double //经度"
+      }
+    ],
+    "completeProgress": "int //完善进度",
+    "wikiSummary": "string //百科摘要",
+    "companyWiki": "string //公司百科",
+    "favoriteFlag": "byte //收藏标志",
+    "favoriteTime": "date //收藏时间"
+  }
+}
+</pre>
+
+<hr><h2 id="获取公司信息">获取公司信息</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/company/get-company-info
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>id</td><td>long</td><td>true</td><td>公司ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_getCompanyInfo_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_getCompanyInfo_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "id": "string //公司ID",
+    "name": "string //公司简称",
+    "fullName": "string //公司全称",
+    "logo": "string //logo",
+    "homepage": "string //主页",
+    "introduction": "string //公司介绍",
+    "synopsis": "string //公司一句话介绍",
+    "scale": {
+      "id": "int //字典ID",
+      "name": "string //字典名",
+      "type": "int //字典类型",
+      "value": "string //字典值"
+    },
+    "stage": {
+      "id": "int //字典ID",
+      "name": "string //字典名",
+      "type": "int //字典类型",
+      "value": "string //字典值"
+    },
+    "industry": {
+      "id": "int //字典ID",
+      "name": "string //字典名",
+      "type": "int //字典类型",
+      "value": "string //字典值"
+    },
+    "property": {
+      "id": "int //字典ID",
+      "name": "string //字典名",
+      "type": "int //字典类型",
+      "value": "string //字典值"
+    },
+    "addressList": [
+      {
+        "id": "int //地址ID",
+        "cityId": "int //城市ID",
+        "address": "string //地址",
+        "latitude": "double //纬度",
+        "longitude": "double //经度"
+      }
+    ],
+    "completeProgress": "int //完善进度",
+    "wikiSummary": "string //百科摘要",
+    "companyWiki": "string //公司百科",
+    "favoriteFlag": "byte //收藏标志",
+    "favoriteTime": "date //收藏时间"
+  }
+}
+</pre>
+
+<hr><h2 id="保存公司信息">保存公司信息</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/company/save-company
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_saveCompany_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_saveCompany_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="删除公司">删除公司</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/company/del-company
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>id</td><td>long</td><td>true</td><td>公司ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_delCompany_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_delCompany_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="保存公司地址">保存公司地址</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/company/save-company-addr
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "id": "int //地址ID",
+  "companyId": "long //公司ID",
+  "city": "string //城市",
+  "address": "string //地址",
+  "latitude": "double //纬度",
+  "longitude": "double //经度"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_saveCompanyAddress_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_saveCompanyAddress_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="删除公司地址">删除公司地址</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/company/del-company-addr
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>id</td><td>int</td><td>true</td><td>地址ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_delCompanyAddress_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_delCompanyAddress_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="获取当前公司地址列表">获取当前公司地址列表</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/company/list-my-company-addr
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_getCompanyAddressList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_getCompanyAddressList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": [
+    {
+      "id": "int //地址ID",
+      "cityId": "int //城市ID",
+      "address": "string //地址",
+      "latitude": "double //纬度",
+      "longitude": "double //经度"
+    }
+  ]
+}
+</pre>
+
+<hr><h2 id="获取公司百科">获取公司百科</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/company/get-company-wiki
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>companyId</td><td>long</td><td>true</td><td>公司ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_getCompanyWiki_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_getCompanyWiki_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "company": {
+      "id": "string //公司ID",
+      "name": "string //公司简称",
+      "fullName": "string //公司全称",
+      "logo": "string //logo",
+      "homepage": "string //主页",
+      "introduction": "string //公司介绍",
+      "synopsis": "string //公司一句话介绍",
+      "scale": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "stage": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "industry": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "property": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "addressList": [
+        {
+          "id": "int //地址ID",
+          "cityId": "int //城市ID",
+          "address": "string //地址",
+          "latitude": "double //纬度",
+          "longitude": "double //经度"
+        }
+      ],
+      "completeProgress": "int //完善进度",
+      "wikiSummary": "string //百科摘要",
+      "companyWiki": "string //公司百科",
+      "favoriteFlag": "byte //收藏标志",
+      "favoriteTime": "date //收藏时间"
+    },
+    "summary": "string",
+    "content": "string"
+  }
+}
+</pre>
+
+<hr><h2 id="保存公司百科">保存公司百科</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/company/save-company-wiki
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "companyId": "long //公司ID",
+  "summary": "string //摘要",
+  "content": "string //百科详情"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_CompanyApi_saveCompanyWiki_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_CompanyApi_saveCompanyWiki_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr>
+</div>
+</body>
+</html>

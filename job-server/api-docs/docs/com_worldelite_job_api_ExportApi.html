@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>导出数据接口</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<div id="wmd-preview" class="wmd-preview">
+<h1><a href="../index.html">《首页</a> 导出数据接口:</h1>
+<div class="toc">
+    <ul>
+    <li><a href="#把简历导出PDF">把简历导出PDF</a></li><li><a href="#导出用户列表">导出用户列表</a></li><li><a href="#导出简历列表">导出简历列表</a></li><li><a href="#导出职位列表">导出职位列表</a></li>
+    </ul>
+</div>
+<hr>
+<h2 id="把简历导出PDF">把简历导出PDF</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/export/resume-to-pdf
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>resumeId</td><td>long</td><td>true</td><td>简历ID</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ExportApi_exportResumeToPdf_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ExportApi_exportResumeToPdf_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="导出用户列表">导出用户列表</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/export/export-user-list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "page": "int //页数",
+  "limit": "int //每页条数",
+  "sort": "string //排序",
+  "id": "long //用户ID",
+  "name": "string //用户名",
+  "email": "string //邮箱",
+  "type": "byte //用户类型",
+  "status": "byte //用户状态",
+  "companyId": "long //公司ID",
+  "beginTime": "date //开始时间区间",
+  "endTime": "date //结束时间区间",
+  "subscribeFlag": "byte //订阅标志"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ExportApi_exportUserList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ExportApi_exportUserList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="导出简历列表">导出简历列表</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/export/export-resume-list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "page": "int //页数",
+  "limit": "int //每页条数",
+  "sort": "string //排序",
+  "userId": "long //用户ID",
+  "name": "string //用户名",
+  "gender": "byte //性别",
+  "minAge": "int //最小年龄区间",
+  "maxAge": "int //最大年龄区间",
+  "degreeIds": "int[] //学历",
+  "schoolIds": "int[] //学校",
+  "categoryIds": "int[] //意向职位类型",
+  "cityIds": "int[] //意向城市",
+  "minGpa": "double //最小gpa区间",
+  "maxGpa": "double //最大gpa期间",
+  "gpaRangeId": "int //gpa范围ID",
+  "minSalary": "int //最低薪酬区间",
+  "maxSalary": "int //最高薪酬区间",
+  "salaryRangeId": "int //薪酬区间ID"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ExportApi_exportResumeList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ExportApi_exportResumeList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="导出职位列表">导出职位列表</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/export/export-job-list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "page": "int //页数",
+  "limit": "int //每页条数",
+  "sort": "string //排序",
+  "jobId": "long //职位ID",
+  "creatorId": "long //创建人ID",
+  "companyId": "long //公司ID",
+  "jobType": "int //职位类型",
+  "name": "string //名称",
+  "cityId": "int //城市ID",
+  "status": "byte //职位状态"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ExportApi_exportJobList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ExportApi_exportJobList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr>
+</div>
+</body>
+</html>

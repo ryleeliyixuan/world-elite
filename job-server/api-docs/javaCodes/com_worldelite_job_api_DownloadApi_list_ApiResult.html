@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ApiResult</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class ApiResult implements Serializable{
+
+    private int code; //0为成功，其他错误码参考 ApiCode
+    private String msg; //错误消息
+    private PageResult data; //数据包
+
+    @JSONField(name="code")
+    public int getCode(){
+        return code;
+    }
+
+    @JSONField(name="code")
+    public void setCode(int code){
+        this.code = code;
+    }
+
+    @JSONField(name="msg")
+    public String getMsg(){
+        return msg;
+    }
+
+    @JSONField(name="msg")
+    public void setMsg(String msg){
+        this.msg = msg;
+    }
+
+    @JSONField(name="data")
+    public PageResult getData(){
+        return data;
+    }
+
+    @JSONField(name="data")
+    public void setData(PageResult data){
+        this.data = data;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class PageResult implements Serializable{
+
+    private int total; //总记录数
+    private int pageCount; //页数
+    private int currentPage; //当前页
+    private int pageSize; //每页记录数
+    private Download[] list; //列表数据
+    private boolean hasMore; //是否还有更多
+
+    @JSONField(name="total")
+    public int getTotal(){
+        return total;
+    }
+
+    @JSONField(name="total")
+    public void setTotal(int total){
+        this.total = total;
+    }
+
+    @JSONField(name="pageCount")
+    public int getPageCount(){
+        return pageCount;
+    }
+
+    @JSONField(name="pageCount")
+    public void setPageCount(int pageCount){
+        this.pageCount = pageCount;
+    }
+
+    @JSONField(name="currentPage")
+    public int getCurrentPage(){
+        return currentPage;
+    }
+
+    @JSONField(name="currentPage")
+    public void setCurrentPage(int currentPage){
+        this.currentPage = currentPage;
+    }
+
+    @JSONField(name="pageSize")
+    public int getPageSize(){
+        return pageSize;
+    }
+
+    @JSONField(name="pageSize")
+    public void setPageSize(int pageSize){
+        this.pageSize = pageSize;
+    }
+
+    @JSONField(name="list")
+    public Download[] getList(){
+        return list;
+    }
+
+    @JSONField(name="list")
+    public void setList(Download[] list){
+        this.list = list;
+    }
+
+    @JSONField(name="hasMore")
+    public boolean getHasMore(){
+        return hasMore;
+    }
+
+    @JSONField(name="hasMore")
+    public void setHasMore(boolean hasMore){
+        this.hasMore = hasMore;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class Download implements Serializable{
+
+    private int id; //下载ID
+    private String name; //名称
+    private long userId; //用户ID
+    private String url; //下载链接
+    private int progress; //进度
+    private String createTime; //创建时间
+    private String updateTime; //更新时间
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="userId")
+    public long getUserId(){
+        return userId;
+    }
+
+    @JSONField(name="userId")
+    public void setUserId(long userId){
+        this.userId = userId;
+    }
+
+    @JSONField(name="url")
+    public String getUrl(){
+        return url;
+    }
+
+    @JSONField(name="url")
+    public void setUrl(String url){
+        this.url = url;
+    }
+
+    @JSONField(name="progress")
+    public int getProgress(){
+        return progress;
+    }
+
+    @JSONField(name="progress")
+    public void setProgress(int progress){
+        this.progress = progress;
+    }
+
+    @JSONField(name="createTime")
+    public String getCreateTime(){
+        return createTime;
+    }
+
+    @JSONField(name="createTime")
+    public void setCreateTime(String createTime){
+        this.createTime = createTime;
+    }
+
+    @JSONField(name="updateTime")
+    public String getUpdateTime(){
+        return updateTime;
+    }
+
+    @JSONField(name="updateTime")
+    public void setUpdateTime(String updateTime){
+        this.updateTime = updateTime;
+    }
+
+}
+</pre>
+
+
+
+</body>
+</html>

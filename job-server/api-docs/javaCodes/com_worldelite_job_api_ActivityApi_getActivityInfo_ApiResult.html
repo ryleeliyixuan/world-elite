@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ApiResult</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class ApiResult implements Serializable{
+
+    private int code; //0为成功，其他错误码参考 ApiCode
+    private String msg; //错误消息
+    private ActivityVo data; //数据包
+
+    @JSONField(name="code")
+    public int getCode(){
+        return code;
+    }
+
+    @JSONField(name="code")
+    public void setCode(int code){
+        this.code = code;
+    }
+
+    @JSONField(name="msg")
+    public String getMsg(){
+        return msg;
+    }
+
+    @JSONField(name="msg")
+    public void setMsg(String msg){
+        this.msg = msg;
+    }
+
+    @JSONField(name="data")
+    public ActivityVo getData(){
+        return data;
+    }
+
+    @JSONField(name="data")
+    public void setData(ActivityVo data){
+        this.data = data;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class ActivityVo implements Serializable{
+
+    private int id; //活动ID
+    private String title; //活动标题
+    private String thumbnail; //缩略图
+    private String summary; //摘要
+    private String url; //链接
+    private String description; //活动详情
+    private DictVo city; //活动城市
+    private String startTime; //开始时间
+    private String finishTime; //结束时间
+    private String address; //活动地址
+    private byte status; //状态
+    private boolean joinFlag; //是否参加
+    private String joinTime; //参加时间
+    private String organizer; //主办方
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="title")
+    public String getTitle(){
+        return title;
+    }
+
+    @JSONField(name="title")
+    public void setTitle(String title){
+        this.title = title;
+    }
+
+    @JSONField(name="thumbnail")
+    public String getThumbnail(){
+        return thumbnail;
+    }
+
+    @JSONField(name="thumbnail")
+    public void setThumbnail(String thumbnail){
+        this.thumbnail = thumbnail;
+    }
+
+    @JSONField(name="summary")
+    public String getSummary(){
+        return summary;
+    }
+
+    @JSONField(name="summary")
+    public void setSummary(String summary){
+        this.summary = summary;
+    }
+
+    @JSONField(name="url")
+    public String getUrl(){
+        return url;
+    }
+
+    @JSONField(name="url")
+    public void setUrl(String url){
+        this.url = url;
+    }
+
+    @JSONField(name="description")
+    public String getDescription(){
+        return description;
+    }
+
+    @JSONField(name="description")
+    public void setDescription(String description){
+        this.description = description;
+    }
+
+    @JSONField(name="city")
+    public DictVo getCity(){
+        return city;
+    }
+
+    @JSONField(name="city")
+    public void setCity(DictVo city){
+        this.city = city;
+    }
+
+    @JSONField(name="startTime")
+    public String getStartTime(){
+        return startTime;
+    }
+
+    @JSONField(name="startTime")
+    public void setStartTime(String startTime){
+        this.startTime = startTime;
+    }
+
+    @JSONField(name="finishTime")
+    public String getFinishTime(){
+        return finishTime;
+    }
+
+    @JSONField(name="finishTime")
+    public void setFinishTime(String finishTime){
+        this.finishTime = finishTime;
+    }
+
+    @JSONField(name="address")
+    public String getAddress(){
+        return address;
+    }
+
+    @JSONField(name="address")
+    public void setAddress(String address){
+        this.address = address;
+    }
+
+    @JSONField(name="status")
+    public byte getStatus(){
+        return status;
+    }
+
+    @JSONField(name="status")
+    public void setStatus(byte status){
+        this.status = status;
+    }
+
+    @JSONField(name="joinFlag")
+    public boolean getJoinFlag(){
+        return joinFlag;
+    }
+
+    @JSONField(name="joinFlag")
+    public void setJoinFlag(boolean joinFlag){
+        this.joinFlag = joinFlag;
+    }
+
+    @JSONField(name="joinTime")
+    public String getJoinTime(){
+        return joinTime;
+    }
+
+    @JSONField(name="joinTime")
+    public void setJoinTime(String joinTime){
+        this.joinTime = joinTime;
+    }
+
+    @JSONField(name="organizer")
+    public String getOrganizer(){
+        return organizer;
+    }
+
+    @JSONField(name="organizer")
+    public void setOrganizer(String organizer){
+        this.organizer = organizer;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class DictVo implements Serializable{
+
+    private int id; //字典ID
+    private String name; //字典名
+    private int type; //字典类型
+    private String value; //字典值
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="type")
+    public int getType(){
+        return type;
+    }
+
+    @JSONField(name="type")
+    public void setType(int type){
+        this.type = type;
+    }
+
+    @JSONField(name="value")
+    public String getValue(){
+        return value;
+    }
+
+    @JSONField(name="value")
+    public void setValue(String value){
+        this.value = value;
+    }
+
+}
+</pre>
+
+
+
+</body>
+</html>

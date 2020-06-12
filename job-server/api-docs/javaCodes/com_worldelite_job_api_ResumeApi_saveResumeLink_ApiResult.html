@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ApiResult</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class ApiResult implements Serializable{
+
+    private int code; //0为成功，其他错误码参考 ApiCode
+    private String msg; //错误消息
+    private ResumeLinkVo data; //数据包
+
+    @JSONField(name="code")
+    public int getCode(){
+        return code;
+    }
+
+    @JSONField(name="code")
+    public void setCode(int code){
+        this.code = code;
+    }
+
+    @JSONField(name="msg")
+    public String getMsg(){
+        return msg;
+    }
+
+    @JSONField(name="msg")
+    public void setMsg(String msg){
+        this.msg = msg;
+    }
+
+    @JSONField(name="data")
+    public ResumeLinkVo getData(){
+        return data;
+    }
+
+    @JSONField(name="data")
+    public void setData(ResumeLinkVo data){
+        this.data = data;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class ResumeLinkVo implements Serializable{
+
+    private byte showEditFlag; //
+    private int id; //链接ID
+    private String name; //名称
+    private String link; //链接url
+
+    @JSONField(name="showEditFlag")
+    public byte getShowEditFlag(){
+        return showEditFlag;
+    }
+
+    @JSONField(name="showEditFlag")
+    public void setShowEditFlag(byte showEditFlag){
+        this.showEditFlag = showEditFlag;
+    }
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="link")
+    public String getLink(){
+        return link;
+    }
+
+    @JSONField(name="link")
+    public void setLink(String link){
+        this.link = link;
+    }
+
+}
+</pre>
+
+
+
+</body>
+</html>
