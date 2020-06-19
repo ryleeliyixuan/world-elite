@@ -218,42 +218,37 @@ export default {
           let content = document.createElement("div");
           content.innerHTML = this.company.companyWiki;
 
-          // assign id
+          const url = this.company.homepage.startsWith("http") ? this.company.homepage : "http://" + this.company.homepage;
+
+          // crete table of contents
           let idIndex = 0;
           let h_list = content.querySelectorAll("h3, h4, h5, h6");
           for (let i = 0; i < h_list.length; i++){
             let h = h_list[i];
+            // get plain text
+            let text = h.innerText;
+            // assign id
             let idAtt = document.createAttribute("id");
             idAtt.value = "s" + idIndex++;
             h.setAttributeNode(idAtt);
+
+            // create list item and link
+            let item = document.createElement("li");
+            let link = document.createElement("a");
+            let hrefAtt = document.createAttribute("href");
+            hrefAtt.value = url + "/#" + h.id;
+
+            link.setAttributeNode(hrefAtt);
+            let num = parseInt(h.tagName.substring(1,2), 10)-2;
+            for (let j = 1; j < num; j++){
+              link.innerHTML += "&emsp;";
+            }
+            link.innerHTML += text;
+            // append
+            item.appendChild(link);
+            ulist.appendChild(item);
           }
           this.company.companyWiki = content.innerHTML;
-
-          // crete table of contents
-          for (let i = 0; i < h_list.length; i++){
-            let h = h_list[i];
-            // get plain text
-            let text = h.innerHTML;
-            text = text.replace(/<\/?[^>]+>/ig, "");
-            text = text.replace("<br>", "");
-            text = text.replace("&nbsp;", "");
-            if (text.length != 0){
-              // create list item and link
-              let item = document.createElement("li");
-              let link = document.createElement("a");
-              let hrefAtt = document.createAttribute("href");
-              hrefAtt.value = "#" + h.id;
-              link.setAttributeNode(hrefAtt);
-              let num = parseInt(h.tagName.substring(1,2), 10)-2;
-              for (let j = 1; j < num; j++){
-                link.innerHTML += "&emsp;";
-              }
-              link.innerHTML += text;
-              // append
-              item.appendChild(link);
-              ulist.appendChild(item);
-            }
-          }
           this.company.wikiSidebar = ulist.innerHTML;
         }
       });
@@ -267,8 +262,6 @@ export default {
         let element = h_list[i];
         let position = element.getBoundingClientRect();
         
-        
-
         let next_element = null;
         let next_position = null;
         if (i != h_list.length - 1){
@@ -282,7 +275,6 @@ export default {
               table[j].style.color = "#707070";
             }
             table[i].style.color = "#551A8B";
-
             break;
           }
           else if (position.bottom < 0){
@@ -290,7 +282,6 @@ export default {
               table[j].style.color = "#707070";
             }
             table[i].style.color = "#551A8B";
-            
             break;
           }
         }
@@ -300,7 +291,6 @@ export default {
               table[j].style.color = "#707070";
             }
             table[i].style.color = "#551A8B";
-
             break;
           }
           else if (position.top < 10 && next_position.top > 10){
@@ -308,7 +298,6 @@ export default {
               table[j].style.color = "#707070";
             }
             table[i].style.color = "#551A8B";
-
             break;
           }
           else if (position.bottom < 10 && next_position.top > 10){
@@ -371,7 +360,7 @@ export default {
 }
 .wiki_sidebar{
   position: sticky;
-  font-size: 18px;
+  font-size: 17px;
   top: 50px;
   width: 20%;
   float: left;
