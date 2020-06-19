@@ -37,6 +37,7 @@
     <el-menu :default-active="tabIndex" mode="horizontal" @select="handleSelectTab">
       <el-menu-item index="intro">公司介绍</el-menu-item>
       <el-menu-item index="job">招聘岗位</el-menu-item>
+      <el-menu-item index="activity">相关活动</el-menu-item>
     </el-menu>
     <div class="mt-4" v-if="company">
       <div class="intro-box" v-if="tabIndex == 'intro'">
@@ -99,7 +100,7 @@
           </div>
         </div>
       </div>
-      <div class="row job-box" v-else>
+      <div class="row job-box" v-else-if="tabIndex == 'job'">
         <div class="col-lg-8 col-md-10 col-sm-12">
           <el-card
             shadow="hover"
@@ -126,6 +127,9 @@
             @pagination="getCompanyJobList"
           />
         </div>
+      </div>
+      <div class="activity-box" v-else>
+      
       </div>
     </div>
   </div>
@@ -218,7 +222,8 @@ export default {
           let content = document.createElement("div");
           content.innerHTML = this.company.companyWiki;
 
-          const url = this.company.homepage.startsWith("http") ? this.company.homepage : "http://" + this.company.homepage;
+          const url = "/company/" + this.$route.params.id + "/";
+          console.log(this.$route);
 
           // crete table of contents
           let idIndex = 0;
@@ -236,7 +241,7 @@ export default {
             let item = document.createElement("li");
             let link = document.createElement("a");
             let hrefAtt = document.createAttribute("href");
-            hrefAtt.value = url + "/#" + h.id;
+            hrefAtt.value = url + "#" + h.id;
 
             link.setAttributeNode(hrefAtt);
             let num = parseInt(h.tagName.substring(1,2), 10)-2;
@@ -322,6 +327,9 @@ export default {
       if (tabIndex == "intro") {
         this.listQuery.page = 1;
         this.getCompanyJobList();
+      }
+      else if (tabIndex == "activity"){
+        // TODO
       }
     },
     handleFavorite() {
