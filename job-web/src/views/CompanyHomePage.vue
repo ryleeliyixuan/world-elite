@@ -223,7 +223,6 @@ export default {
           content.innerHTML = this.company.companyWiki;
 
           const url = "/company/" + this.$route.params.id + "/";
-          console.log(this.$route);
 
           // crete table of contents
           let idIndex = 0;
