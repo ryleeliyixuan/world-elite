@@ -9,7 +9,7 @@
     </div>
     <div class="text-center mt-4">
       <p>关注我们公众号</p>
-      <el-image src="http://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg" />
+      <el-image src="https://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg" />
     </div>
   </div>
 </template>

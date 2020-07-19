@@ -5,16 +5,16 @@
         <el-col :span="6">
           <h5 class="mb-3">友情链接</h5>
           <div>
-            <el-link class="link-text" href="http://www.myworldelite.com/">{{$t('app_name')}}</el-link>
+            <el-link class="link-text" href="https://www.myworldelite.com/">{{$t('app_name')}}</el-link>
           </div>
           <div>
-            <el-link class="link-text" href="http://company.myworldelite.com/">{{$t('app_name')}}企业端</el-link>
+            <el-link class="link-text" href="https://company.myworldelite.com/">{{$t('app_name')}}企业端</el-link>
           </div>
         </el-col>
         <el-col :span="6">
           <h5 class="mb-3">用户帮助</h5>
           <div>
-            <el-link class="link-text" href="http://www.myworldelite.com/user-protocol">用户协议以及隐私政策</el-link>
+            <el-link class="link-text" href="https://www.myworldelite.com/user-protocol">用户协议以及隐私政策</el-link>
           </div>
         </el-col>
         <el-col :span="6">
@@ -23,14 +23,14 @@
         </el-col>
         <el-col :span="6">
           <div class="link-text text-center">
-            <el-image class="img-qr-wechat" src="http://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg"></el-image>
+            <el-image class="img-qr-wechat" src="https://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg"></el-image>
             <div class="text-center">微信公众号</div>
           </div>
         </el-col>
       </el-row>
     </div>
     <div class="footer-copyright text-small text-center">
-        <span><a href="http://www.beian.miit.gov.cn/">蜀ICP备20009332</a></span>
+        <span><a href="https://www.beian.miit.gov.cn/">蜀ICP备20009332</a></span>
         <span class="ml-4">©2020 成都寰球菁英信息科技有限公司</span>
     </div>
   </div>

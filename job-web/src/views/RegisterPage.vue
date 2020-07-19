@@ -56,7 +56,7 @@
           <p class="mt-4 text-policy">
             点击“同意并加入”，即表示您同意遵守{{$t('app_name')}}的
             <a
-              href="http://www.myworldelite.com/user-protocol"
+              href="https://www.myworldelite.com/user-protocol"
               target="_blank"
             >《用户协议和隐私政策》</a>。
           </p>
