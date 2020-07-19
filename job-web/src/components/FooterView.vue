@@ -32,7 +32,6 @@
     <div class="footer-copyright text-small text-center">
         <span><a href="http://www.beian.miit.gov.cn/">蜀ICP备20009332</a></span>
         <span class="ml-4">©2020 成都寰球菁英信息科技有限公司</span>
-        <span span class="ml-4"><a href="http://nowait.xin">Agile Studio工作室</a>提供技术支持</span>
     </div>
   </div>
 </template>

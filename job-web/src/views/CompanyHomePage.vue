@@ -129,7 +129,7 @@
         </div>
       </div>
       <div class="activity-box" v-else>
-      
+
       </div>
     </div>
   </div>
@@ -222,7 +222,7 @@ export default {
           let content = document.createElement("div");
           content.innerHTML = this.company.companyWiki;
 
-          const url = "/company/" + this.$route.params.id + "/";
+          const url = "/company/" + this.$route.params.id;
 
           // crete table of contents
           let idIndex = 0;
@@ -265,7 +265,7 @@ export default {
       for (let i = 0; i < h_list.length; i++){
         let element = h_list[i];
         let position = element.getBoundingClientRect();
-        
+
         let next_element = null;
         let next_position = null;
         if (i != h_list.length - 1){
@@ -312,7 +312,7 @@ export default {
             break;
           }
         }
-        
+
       }
     },
     getCompanyJobList() {
