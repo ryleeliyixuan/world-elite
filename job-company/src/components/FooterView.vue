@@ -23,7 +23,7 @@
         </el-col>
         <el-col :span="6">
           <div class="link-text text-center">
-            <el-image class="img-qr-wechat" src="http://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg"></el-image>
+            <el-image class="img-qr-wechat" src="https://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg"></el-image>
             <div class="text-center">微信公众号</div>
           </div>
         </el-col>
