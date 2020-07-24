@@ -111,12 +111,17 @@ const constantRoutes = [
         path: '/modify-pwd',
         component: () => import('@/views/ModifyPwdPage'),
         meta: {title: '修改密码'}
+    },
+    {
+        path: '/mi',
+        component: () => import('@/views/MiPage'),
+        meta: {title: '小米内页'}
     }
 ]
 
 const createRouter = () => new Router({
     mode: 'history', // require service support
-    scrollBehavior: (to, from, savedPostion) => {
+    scrollBehavior: (to, from, savedPosition) => {
         if (to.hash)
             return {selector: to.hash}
     },
