@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.worldelite.job.mapper.AdminMapper">
+  <select id="selectByEmail" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_admin
+    where email = #{email,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAndList" resultMap="BaseResultMap" resultType="com.worldelite.job.entity.UserOptions">
+    select
+    <include refid="Base_Column_List" />
+    from t_admin
+    <where>
+      <if test="id != null">
+        and id  like CONCAT('%', #{id},'%')
+      </if>
+      <if test="name != null and name != ''">
+        and name like CONCAT('%', #{name},'%')
+      </if>
+      <if test="email != null and email != ''">
+        and email = #{email,jdbcType=VARCHAR}
+      </if>
+      <if test="phone != null">
+        and phone = #{phone,jdbcType=BIGINT}
+      </if>
+      <if test="gender != null">
+        and gender = #{gender,jdbcType=TINYINT}
+      </if>
+      <if test="type != null">
+        and type = #{type,jdbcType=TINYINT}
+      </if>
+      <if test="status != null">
+        and status = #{status,jdbcType=TINYINT}
+      </if>
+      <if test="subscribeFlag != null">
+        and subscribe_flag = #{subscribeFlag,jdbcType=TINYINT}
+      </if>
+      <if test="beginTime != null and endTime != null">
+        and (create_time between #{beginTime} and  #{endTime})
+      </if>
+      <if test="companyId != null">
+        and id in (select user_id from t_company_user where t_company_user.company_id = #{companyId,jdbcType=BIGINT})
+      </if>
+      <if test="verifyStatus != null">
+        and id in (select user_id from t_company_verification where t_company_verification.status = #{verifyStatus,jdbcType=TINYINT})
+      </if>
+    </where>
+  </select>
+</mapper>

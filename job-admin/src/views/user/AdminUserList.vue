@@ -61,7 +61,7 @@
 <script>
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import { getUserList, addAdmin, deleteAdmin } from "@/api/user_api";
+import { getAdminUserList, addAdmin, deleteAdmin } from "@/api/user_api";
 import { exportUserList } from "@/api/export_api";
 import { formatListQuery, parseListQuery } from "@/utils/common";
 import Toast from "@/utils/toast";
@@ -107,7 +107,7 @@ export default {
       this.listLoading = true;
       const query = this.$route.query;
       parseListQuery(query, this.listQuery);
-      getUserList(this.listQuery).then(response => {
+      getAdminUserList(this.listQuery).then(response => {
         const { total, list } = response.data;
         this.list = list;
         this.total = total;

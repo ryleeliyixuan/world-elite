@@ -152,7 +152,7 @@
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import VerificationView from "./VerificationView";
-import { getCompanyUserList, modifyUserStatus } from "@/api/user_api";
+import { getCompanyUserList, modifyCorporateStatus } from "@/api/user_api";
 import { verifyCompanyUser } from "@/api/verify_api";
 import { serachByCompanyName } from "@/api/company_api";
 import { exportUserList } from '@/api/export_api'
@@ -260,7 +260,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          modifyUserStatus(this.statusForm).then(response => {
+          modifyCorporateStatus(this.statusForm).then(response => {
             user.status = status;
             this.$message("操作成功");
           });
@@ -271,7 +271,7 @@ export default {
           cancelButtonText: "取消"
         }).then(({ value }) => {
           this.statusForm.reason = value;
-          modifyUserStatus(this.statusForm).then(response => {
+          modifyCorporateStatus(this.statusForm).then(response => {
             user.status = status;
             this.$message("操作成功");
           });

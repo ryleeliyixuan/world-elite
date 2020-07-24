@@ -47,7 +47,7 @@ public class ResumeService extends BaseService {
     private JobApplyMapper jobApplyMapper;
 
     @Autowired
-    private UserService userService;
+    private UserApplicantService userService;
 
     @Autowired
     private ResumeEduService resumeEduService;
@@ -91,7 +91,7 @@ public class ResumeService extends BaseService {
      */
     public ResumeVo getDefaultOrCreate(Long userId) {
         List<Resume> resumeList = resumeMapper.selectByUserId(userId);
-        UserVo userVo = userService.getUserInfo(userId);
+        UserApplicantVo userVo = userService.getUserInfo(userId);
         Resume defaultResume;
         if (CollectionUtils.isEmpty(resumeList)) {
             Resume resume = new Resume();
@@ -169,7 +169,7 @@ public class ResumeService extends BaseService {
                 resumeVo.setMaxResumeEdu(maxResumeEduVo);
             }
 
-            UserVo userVo = userService.getUserInfo(resume.getUserId());
+            UserApplicantVo userVo = userService.getUserInfo(resume.getUserId());
             if(userVo != null){
                 resumeVo.setEmail(userVo.getEmail());
                 resumeVo.setPhone(userVo.getPhone());
@@ -360,7 +360,7 @@ public class ResumeService extends BaseService {
         }
 
         // 发送站内和邮件消息
-        UserVo toUser = userService.getUserInfo(resume.getUserId());
+        UserApplicantVo toUser = userService.getUserInfo(resume.getUserId());
         final String jobPlaceholder = String.format("%s.%s", job.getCompanyUser().getCompany().getName(), job.getName());
         EmailForm emailForm = null;
         String messageContent = null;
@@ -417,7 +417,7 @@ public class ResumeService extends BaseService {
 
     private ResumeVo toResumeVo(Resume resume) {
         ResumeVo resumeVo = new ResumeVo().asVo(resume);
-        UserVo userVo = userService.getUserInfo(resume.getUserId());
+        UserApplicantVo userVo = userService.getUserInfo(resume.getUserId());
         if(userVo != null){
             resumeVo.setAvatar(AppUtils.absOssUrl(userVo.getAvatar()));
             resumeVo.setEmail(userVo.getEmail());

@@ -7,10 +7,7 @@ import com.worldelite.job.constants.ConfigType;
 import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.constants.VerificationStatus;
 import com.worldelite.job.context.RedisKeys;
-import com.worldelite.job.entity.Company;
-import com.worldelite.job.entity.CompanyUser;
-import com.worldelite.job.entity.CompanyVerification;
-import com.worldelite.job.entity.Message;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.CompanyVerifyForm;
 import com.worldelite.job.form.EmailForm;
@@ -21,6 +18,7 @@ import com.worldelite.job.mapper.CompanyVerificationMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ApiCode;
 import com.worldelite.job.vo.CompanyVerificationVo;
+import com.worldelite.job.vo.UserCorporateVo;
 import com.worldelite.job.vo.UserVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -49,7 +47,7 @@ public class CompanyVerificationService extends BaseService {
     private CompanyMapper companyMapper;
 
     @Autowired
-    private UserService userService;
+    private UserCorporateService userService;
 
     @Autowired
     private IEmailService emailService;
@@ -151,7 +149,7 @@ public class CompanyVerificationService extends BaseService {
         messageService.sendMessage(message);
 
         // 发送审核成功邮件
-        UserVo userVo = userService.getUserInfo(userId);
+        UserCorporateVo userVo = userService.getUserInfo(userId);
         sendVerificationPassEmail(userVo.getEmail());
     }
 
@@ -180,7 +178,7 @@ public class CompanyVerificationService extends BaseService {
         messageService.sendMessage(message);
 
         //发送审核失败邮件
-        UserVo userVo = userService.getUserInfo(userId);
+        UserCorporateVo userVo = userService.getUserInfo(userId);
         sendVerificationRejectEmail(userVo.getEmail(), reason);
     }
 

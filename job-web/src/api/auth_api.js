@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getEmailCode(email){
     return request({
-        url: '/user/get-email-code',
+        url: '/auth/get-email-code',
         method: 'get',
         params: {email: email} 
       })
@@ -10,7 +10,7 @@ export function getEmailCode(email){
 
 export function register(data) {
     return request({
-        url: '/auth/register',
+        url: '/userapplicant/register',
         method: 'post',
         data
       })
@@ -18,7 +18,7 @@ export function register(data) {
 
 export function checkEmailExists(email){
   return request({
-    url: '/auth/check-email',
+    url: '/userapplicant/check-email',
     method: 'get',
     params: {email: email}
   })
@@ -26,7 +26,7 @@ export function checkEmailExists(email){
 
 export function bindAccount(data){
   return request({
-    url: '/auth/bind-account',
+    url: '/userapplicant/bind-account',
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ export function bindAccount(data){
 
 export function login(data){
     return request({
-        url: '/auth/email-login',
+        url: '/userapplicant/email-login',
         method: 'post',
         data
       })
@@ -42,7 +42,7 @@ export function login(data){
 
 export function resetPwd(data){
     return request({
-        url: '/auth/reset-pwd',
+        url: '/userapplicant/reset-pwd',
         method: 'post',
         data
       })
@@ -50,7 +50,7 @@ export function resetPwd(data){
 
 export function modifyPwd(data){
   return request({
-    url: '/auth/modify-pwd',
+    url: '/userapplicant/modify-pwd',
     method: 'post',
     data
   })
@@ -58,7 +58,7 @@ export function modifyPwd(data){
 
 export function logout(){
     return request({
-      url: '/auth/logout',
+      url: '/userapplicant/logout',
       method: 'post'
     })
   }

@@ -8,17 +8,9 @@ export function getEmailCode(email) {
   })
 }
 
-export function register(data) {
-  return request({
-    url: '/user/register',
-    method: 'post',
-    data
-  })
-}
-
 export function login(data) {
   return request({
-    url: '/user/email-login',
+    url: '/admin/email-login',
     method: 'post',
     data
   })
@@ -26,37 +18,37 @@ export function login(data) {
 
 export function getMyInfo() {
   return request({
-    url: '/user/my-info',
+    url: '/admin/my-info',
     method: 'get'
-  })
-}
-
-export function saveUserExpectJob(data) {
-  return request({
-    url: '/user/save-expect-job',
-    method: 'post',
-    data
   })
 }
 
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: '/admin/logout',
     method: 'post'
   })
 }
 
 export function getUserList(data) {
   return request({
-    url: '/user/list',
+    url: '/admin/list',
     method: 'get',
     params: data
   })
 }
 
-export function modifyUserStatus(data) {
+export function modifyApplicantStatus(data) {
   return request({
-    url: '/user/modify-status',
+    url: '/admin/modify-applicant-status',
+    method: 'post',
+    data
+  })
+}
+
+export function modifyCorporateStatus(data) {
+  return request({
+    url: '/admin/modify-corporate-status',
     method: 'post',
     data
   })
@@ -64,7 +56,15 @@ export function modifyUserStatus(data) {
 
 export function getCompanyUserList(data) {
   return request({
-    url: '/user/company-user-list',
+    url: '/admin/company-user-list',
+    method: 'get',
+    params: data
+  })
+}
+
+export function getAdminUserList(data) {
+  return request({
+    url: '/admin/admin-list',
     method: 'get',
     params: data
   })
@@ -72,7 +72,7 @@ export function getCompanyUserList(data) {
 
 export function addAdmin(data){
   return request({
-    url: '/user/add-admin',
+    url: '/admin/add-admin',
     method: 'post',
     data
   })
@@ -80,7 +80,7 @@ export function addAdmin(data){
 
 export function deleteAdmin(userId){
   return request({
-    url: '/user/delete-admin',
+    url: '/admin/delete-admin',
     method: 'post',
     params: {userId: userId}
   })

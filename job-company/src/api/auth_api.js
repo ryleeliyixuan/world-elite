@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getEmailCode(email){
     return request({
-        url: '/user/get-email-code',
+        url: '/auth/get-email-code',
         method: 'get',
         params: {email: email} 
       })
@@ -10,7 +10,7 @@ export function getEmailCode(email){
 
 export function register(data) {
     return request({
-        url: '/auth/register',
+        url: '/usercorporate/register',
         method: 'post',
         data
       })
@@ -18,7 +18,7 @@ export function register(data) {
 
 export function checkEmailExists(email){
   return request({
-    url: '/auth/check-email',
+    url: '/usercorporate/check-email',
     method: 'get',
     params: {email: email}
   })
@@ -26,7 +26,7 @@ export function checkEmailExists(email){
 
 export function login(data){
     return request({
-        url: '/auth/email-login',
+        url: '/usercorporate/email-login',
         method: 'post',
         data
       })
@@ -34,7 +34,7 @@ export function login(data){
 
 export function resetPwd(data){
     return request({
-        url: '/auth/reset-pwd',
+        url: '/usercorporate/reset-pwd',
         method: 'post',
         data
       })
@@ -42,14 +42,14 @@ export function resetPwd(data){
 
 export function logout(){
     return request({
-      url: '/auth/logout',
+      url: '/usercorporate/logout',
       method: 'post'
     })
   }
 
   export function modifyPwd(data){
     return request({
-      url: '/auth/modify-pwd',
+      url: '/usercorporate/modify-pwd',
       method: 'post',
       data
     })
