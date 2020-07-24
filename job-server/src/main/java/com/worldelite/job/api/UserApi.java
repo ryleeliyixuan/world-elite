@@ -83,6 +83,7 @@ public class UserApi extends BaseController {
     @RequireLogin
     @GetMapping("my-info")
     @ApiDoc
+    @Deprecated
     public ApiResult<UserVo> myInfo(){
         UserVo loginUser = userService.getUserInfo(curUser().getId());
         return ApiResult.ok(loginUser);
@@ -96,6 +97,7 @@ public class UserApi extends BaseController {
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("save-expect-job")
     @ApiDoc
+    @Deprecated
     public ApiResult<UserExpectJobVo> saveUserExpectJob(@RequestBody UserExpectJobForm expectJobForm){
         UserExpectJobVo userExpectJobVo = userExpectJobService.saveUserExpectJob(expectJobForm);
         return ApiResult.ok(userExpectJobVo);

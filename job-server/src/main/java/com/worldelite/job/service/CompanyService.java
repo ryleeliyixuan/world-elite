@@ -9,10 +9,7 @@ import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
-import com.worldelite.job.mapper.CompanyMapper;
-import com.worldelite.job.mapper.CompanyUserMapper;
-import com.worldelite.job.mapper.CompanyVerificationMapper;
-import com.worldelite.job.mapper.UserMapper;
+import com.worldelite.job.mapper.*;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +36,9 @@ public class CompanyService extends BaseService{
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserCorporateMapper userCorporateMapper;
 
     @Autowired
     private DictService dictService;
@@ -115,6 +115,7 @@ public class CompanyService extends BaseService{
      * @param userId
      * @return
      */
+    @Deprecated
     public CompanyUserVo getCompanyUser(Long userId) {
         CompanyUser options = new CompanyUser();
         options.setUserId(userId);
@@ -130,6 +131,29 @@ public class CompanyService extends BaseService{
         companyUserVo.setPost(companyUser.getPost());
         return companyUserVo;
     }
+
+    /**
+     * 用户表分开后
+     * 企业用户数据从t_user_corporate表取
+     * @param userId
+     * @return
+     */
+    public CompanyUserVo getCompanyUser2(Long userId) {
+        CompanyUser options = new CompanyUser();
+        options.setUserId(userId);
+        List<CompanyUser> companyUserList = companyUserMapper.selectAndList(options);
+        if (CollectionUtils.isEmpty(companyUserList)) {
+            return null;
+        }
+        CompanyUser companyUser = companyUserList.get(0);
+        CompanyUserVo companyUserVo = new CompanyUserVo();
+        companyUserVo.asVo(userCorporateMapper.selectByPrimaryKey(userId));
+        companyUserVo.setCompany(getSimpleCompanyInfo(companyUser.getCompanyId()));
+        companyUserVo.setDepart(companyUser.getDepart());
+        companyUserVo.setPost(companyUser.getPost());
+        return companyUserVo;
+    }
+
 
     /**
      * 获取公司首页数据
