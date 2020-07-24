@@ -125,7 +125,7 @@
 <script>
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import { getUserList, modifyUserStatus } from "@/api/user_api";
+import { getUserList, modifyApplicantStatus } from "@/api/user_api";
 import { exportUserList } from "@/api/export_api";
 import { formatListQuery, parseListQuery } from "@/utils/common";
 import Toast from "@/utils/toast";
@@ -235,7 +235,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          modifyUserStatus(this.statusForm).then(response => {
+          modifyApplicantStatus(this.statusForm).then(response => {
             user.status = status;
             this.$message("操作成功");
           });
@@ -246,7 +246,7 @@ export default {
           cancelButtonText: "取消"
         }).then(({ value }) => {
           this.statusForm.reason = value;
-          modifyUserStatus(this.statusForm).then(response => {
+          modifyApplicantStatus(this.statusForm).then(response => {
             user.status = status;
             this.$message("操作成功");
           });
