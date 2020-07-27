@@ -27,7 +27,7 @@
 
                 <div class="section1-item">
                     <div class="qr-wechat">
-                        <el-image class="qr-wechat-img" src="http://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg"></el-image>
+                        <el-image class="qr-wechat-img" src="https://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg"></el-image>
                         <br/>
                         <div class="qr-wechat-text">微信公众号</div>
                     </div>
