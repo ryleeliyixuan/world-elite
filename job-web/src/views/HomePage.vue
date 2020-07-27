@@ -6,7 +6,7 @@
                 <div class="section1-tip">小米集团2021全球校园招聘</div>
                 <div class="section1-button-container">
                     <div class="section1-button-detail link-pointer" @click="onDetail">了解详情</div>
-                    <div class="section1-button-deliver link-pointer">马上投递</div>
+                    <div class="section1-button-deliver link-pointer" @click="onDelivery">马上投递</div>
                 </div>
             </div>
             <div class="section1-right">
@@ -117,6 +117,9 @@
             onDetail(){
                 this.$router.push("/mi");
             },
+            onDelivery(){
+                this.$router.push("/job-list");
+            }
         }
     };
 </script>
