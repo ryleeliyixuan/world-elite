@@ -7,14 +7,17 @@ import com.worldelite.job.context.RedisKeys;
 import com.worldelite.job.entity.Auth;
 import com.worldelite.job.entity.LoginLog;
 import com.worldelite.job.entity.User;
+import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.AuthMapper;
 import com.worldelite.job.mapper.LoginLogMapper;
+import com.worldelite.job.mapper.UserApplicantMapper;
 import com.worldelite.job.mapper.UserMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.RequestUtils;
 import com.worldelite.job.vo.ApiCode;
+import com.worldelite.job.vo.UserApplicantVo;
 import com.worldelite.job.vo.UserVo;
 import me.zhyd.oauth.enums.AuthUserGender;
 import me.zhyd.oauth.model.AuthUser;
@@ -53,7 +56,7 @@ public class AuthService extends BaseService {
     private LoginLogMapper loginLogMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserApplicantMapper userMapper;
 
     @Autowired
     private AuthMapper authMapper;
@@ -80,7 +83,7 @@ public class AuthService extends BaseService {
             throw new ServiceException(message("activate.email.expired"));
         }
         try {
-            User user = newUser(registerForm);
+            UserApplicant user = newUser(registerForm);
             saveUserToken(user);
             UserVo loginUser = new UserVo().asVo(user);
             loginUser.setToken(user.getToken());
@@ -121,7 +124,7 @@ public class AuthService extends BaseService {
             auth.setUpdateTime(new Date());
             authMapper.updateByPrimaryKeySelective(auth);
 
-            User user = userMapper.selectByEmail(registerForm.getEmail());
+            UserApplicant user = userMapper.selectByEmail(registerForm.getEmail());
             user.setEmail(registerForm.getEmail());
             user.setSubscribeFlag(registerForm.getSubscribeFlag());
             setUserPassword(user, registerForm.getPassword());
@@ -152,7 +155,7 @@ public class AuthService extends BaseService {
      * @return
      */
     public UserVo emailLogin(LoginForm loginForm) {
-        User user = userMapper.selectByEmail(loginForm.getEmail());
+        UserApplicant user = userMapper.selectByEmail(loginForm.getEmail());
         if (user == null) {
             throw new ServiceException(message("login.validate.fail"));
         }
@@ -177,7 +180,7 @@ public class AuthService extends BaseService {
      */
     @SysLog
     public void resetPassword(ResetPwdForm resetPwdForm) {
-        User user = userMapper.selectByEmail(resetPwdForm.getEmail());
+        UserApplicant user = userMapper.selectByEmail(resetPwdForm.getEmail());
         if (user == null) {
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
@@ -199,7 +202,7 @@ public class AuthService extends BaseService {
      */
     @SysLog
     public void modifyPassword(ModifyPwdForm modifyPwdForm){
-        User user = userMapper.selectByPrimaryKey(curUser().getId());
+        UserApplicant user = userMapper.selectByPrimaryKey(curUser().getId());
         if(!StringUtils.equals(user.getPassword(), encodePassword(modifyPwdForm.getOldPassword(), user.getSalt()))){
             throw new ServiceException(message("modify.old.pwd.error"));
         }
@@ -226,6 +229,8 @@ public class AuthService extends BaseService {
                 return handleWechatOpenLogin(authUser);
             } else if ("GOOGLE".equalsIgnoreCase(authUser.getSource())) {
                 return handleGoogleLogin(authUser);
+            } else if ("MYLINKEDIN".equalsIgnoreCase(authUser.getSource())) {
+                return handleLinkedInLogin(authUser);
             }
         } finally {
             stringRedisTemplate.delete(lockKey);
@@ -252,8 +257,8 @@ public class AuthService extends BaseService {
      * @param registerForm
      * @return
      */
-    private User newUser(RegisterForm registerForm) {
-        User user = new User();
+    private UserApplicant newUser(RegisterForm registerForm) {
+        UserApplicant user = new UserApplicant();
         user.setId(AppUtils.nextId());
         user.setEmail(registerForm.getEmail());
         user.setSubscribeFlag(registerForm.getSubscribeFlag());
@@ -316,7 +321,7 @@ public class AuthService extends BaseService {
      *
      * @param loginUser
      */
-    private void saveUserToken(User loginUser) {
+    private void saveUserToken(UserApplicant loginUser) {
         final String token = loginUser.getId() + RandomStringUtils.randomAlphanumeric(20);
         loginUser.setToken(token);
         stringRedisTemplate.opsForValue().set(token, JSON.toJSONString(loginUser), TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
@@ -343,7 +348,7 @@ public class AuthService extends BaseService {
         options.setAuthId(authUser.getToken().getUnionId());
         options.setOpenId(authUser.getToken().getOpenId());
         List<Auth> authList = authMapper.selectAndList(options);
-        User user;
+        UserApplicant user;
         if (CollectionUtils.isEmpty(authList)) {
             RegisterForm registerForm = new RegisterForm();
             // 一个临时的唯一email 和 无意义的密码
@@ -389,7 +394,7 @@ public class AuthService extends BaseService {
         options.setAuthType(AuthType.GOOGLE.value);
         options.setAuthId(authUser.getUuid());
         List<Auth> authList = authMapper.selectAndList(options);
-        User user;
+        UserApplicant user;
         if (CollectionUtils.isEmpty(authList)) {
             RegisterForm registerForm = new RegisterForm();
             registerForm.setUserType(UserType.GENERAL.value);
@@ -433,6 +438,63 @@ public class AuthService extends BaseService {
         saveUserToken(user);
 
         return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.GOOGLE.value));
+    }
+
+    /**
+     * 使用LinkedIn第三方账户登录
+     * @param authUser
+     * @return
+     */
+    private String handleLinkedInLogin(AuthUser authUser){
+        String redirectUrl = "";
+        Auth options = new Auth();
+        options.setAuthType(AuthType.LINKEDIN.value);
+        options.setAuthId(authUser.getUuid());
+        List<Auth> authList = authMapper.selectAndList(options);
+        UserApplicant user;
+        if (CollectionUtils.isEmpty(authList)) {
+            RegisterForm registerForm = new RegisterForm();
+            registerForm.setUserType(UserType.GENERAL.value);
+            registerForm.setName(authUser.getNickname());
+
+            if(StringUtils.isNotEmpty(authUser.getEmail())){
+                if(userMapper.selectByEmail(authUser.getEmail()) == null){
+                    registerForm.setEmail(authUser.getEmail());
+                }
+            }
+
+            if(StringUtils.isEmpty(registerForm.getEmail())){
+                registerForm.setEmail(UUID.randomUUID().toString() + "@myworldelite.com");
+            }
+
+            registerForm.setPassword(RandomStringUtils.random(20));
+            if(authUser.getGender() != null){
+                registerForm.setGender(authUser.getGender() == AuthUserGender.MALE ? Gender.MALE.value : Gender.FEMALE.value);
+            }
+            user = newUser(registerForm);
+
+            Auth auth = options;
+            auth.setOpenId(authUser.getUuid());
+            auth.setUserId(user.getId());
+            auth.setVerified(Bool.FALSE); //绑定邮箱后解除
+            authMapper.insertSelective(auth);
+
+            // 跳转绑定账号
+            redirectUrl = "bind-account";
+        } else {
+            Auth auth = authList.get(0);
+            user = userMapper.selectByPrimaryKey(auth.getUserId());
+
+            if (auth.getVerified() == Bool.FALSE) {
+                redirectUrl = "bind-account";
+            } else {
+                redirectUrl = "/";
+            }
+        }
+
+        saveUserToken(user);
+
+        return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.LINKEDIN.value));
     }
 
     /**

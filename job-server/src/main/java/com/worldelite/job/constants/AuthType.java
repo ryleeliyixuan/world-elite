@@ -6,8 +6,8 @@ package com.worldelite.job.constants;
 public enum AuthType {
 
     GOOGLE(1),
-    WECHAT_OPEN(2);
-
+    WECHAT_OPEN(2),
+    LINKEDIN(3);
     public final byte value;
 
     AuthType(int value) {
