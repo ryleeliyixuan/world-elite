@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.worldelite.job.service.AuthService;
+import com.worldelite.job.service.UserApplicantService;
 import com.xkcoding.justauth.AuthRequestFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class OauthController {
 
     private final AuthRequestFactory factory;
 
-    private final AuthService authService;
+    private final UserApplicantService userApplicantService;
 
     @GetMapping
     public List<String> list() {
@@ -55,7 +56,7 @@ public class OauthController {
         AuthResponse<AuthUser> authResponse = authRequest.login(callback);
         String redirectUrl = "";
         if(authResponse.ok()){
-            redirectUrl = authService.thirdPartLogin(authResponse.getData());
+            redirectUrl = userApplicantService.thirdPartLogin(authResponse.getData());
         }
         response.sendRedirect(redirectUrl);
     }

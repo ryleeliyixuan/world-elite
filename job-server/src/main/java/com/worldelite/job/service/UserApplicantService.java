@@ -17,6 +17,8 @@ import com.worldelite.job.service.sdk.AliEmailService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.RequestUtils;
 import com.worldelite.job.vo.*;
+import me.zhyd.oauth.enums.AuthUserGender;
+import me.zhyd.oauth.model.AuthUser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -256,6 +259,195 @@ public class UserApplicantService extends BaseService {
         } finally {
             stringRedisTemplate.delete(validCodeKey);
         }
+    }
+
+    /**
+     * 第三方登录处理
+     * @param authUser
+     * @return
+     */
+    @Transactional
+    public String thirdPartLogin(AuthUser authUser) {
+        final String lockKey = String.format("%s::%s", authUser.getSource(), authUser.getUuid());
+        final String lock = stringRedisTemplate.opsForValue().getAndSet(lockKey, "lock");
+        if (StringUtils.isNotEmpty(lock)) {
+            return null;
+        }
+
+        try {
+            if ("WECHAT_OPEN".equalsIgnoreCase(authUser.getSource())) {
+                return handleWechatOpenLogin(authUser);
+            } else if ("GOOGLE".equalsIgnoreCase(authUser.getSource())) {
+                return handleGoogleLogin(authUser);
+            } else if ("MYLINKEDIN".equalsIgnoreCase(authUser.getSource())) {
+                return handleLinkedInLogin(authUser);
+            }
+        } finally {
+            stringRedisTemplate.delete(lockKey);
+        }
+
+        return null;
+    }
+
+    /**
+     * 处理微信开放平台登录
+     * @param authUser
+     * @return
+     */
+    private String handleWechatOpenLogin(AuthUser authUser) {
+        String redirectUrl = "";
+        Auth options = new Auth();
+        options.setAuthType(AuthType.WECHAT_OPEN.value);
+        options.setAuthId(authUser.getToken().getUnionId());
+        options.setOpenId(authUser.getToken().getOpenId());
+        List<Auth> authList = authMapper.selectAndList(options);
+        UserApplicant user;
+        if (CollectionUtils.isEmpty(authList)) {
+            RegisterForm registerForm = new RegisterForm();
+            // 一个临时的唯一email 和 无意义的密码
+            registerForm.setEmail(UUID.randomUUID().toString() + "@myworldelite.com");
+            registerForm.setPassword(RandomStringUtils.random(20));
+            registerForm.setUserType(UserType.GENERAL.value);
+            registerForm.setName(authUser.getUsername());
+            registerForm.setGender(authUser.getGender() == AuthUserGender.MALE ? Gender.MALE.value : Gender.FEMALE.value);
+            user = newUser(registerForm);
+
+            Auth auth = options;
+            auth.setUserId(user.getId());
+            auth.setVerified(Bool.FALSE); //绑定邮箱后解除
+            authMapper.insertSelective(auth);
+
+            // 跳转绑定账号
+            redirectUrl = "bind-account";
+        } else {
+            Auth auth = authList.get(0);
+            user = userApplicantMapper.selectByPrimaryKey(auth.getUserId());
+
+            if (auth.getVerified() == Bool.FALSE) {
+                redirectUrl = "bind-account";
+            } else {
+                redirectUrl = "/";
+            }
+        }
+
+        saveUserToken(user);
+
+        return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.WECHAT_OPEN.value));
+    }
+
+    /**
+     * 处理谷歌登录
+     *
+     * @param authUser
+     * @return
+     */
+    private String handleGoogleLogin(AuthUser authUser){
+        String redirectUrl = "";
+        Auth options = new Auth();
+        options.setAuthType(AuthType.GOOGLE.value);
+        options.setAuthId(authUser.getUuid());
+        List<Auth> authList = authMapper.selectAndList(options);
+        UserApplicant user;
+        if (CollectionUtils.isEmpty(authList)) {
+            RegisterForm registerForm = new RegisterForm();
+            registerForm.setUserType(UserType.GENERAL.value);
+            registerForm.setName(authUser.getNickname());
+
+            if(StringUtils.isNotEmpty(authUser.getEmail())){
+                if(userApplicantMapper.selectByEmail(authUser.getEmail()) == null){
+                    registerForm.setEmail(authUser.getEmail());
+                }
+            }
+
+            if(StringUtils.isEmpty(registerForm.getEmail())){
+                registerForm.setEmail(UUID.randomUUID().toString() + "@myworldelite.com");
+            }
+
+            registerForm.setPassword(RandomStringUtils.random(20));
+            if(authUser.getGender() != null){
+                registerForm.setGender(authUser.getGender() == AuthUserGender.MALE ? Gender.MALE.value : Gender.FEMALE.value);
+            }
+            user = newUser(registerForm);
+
+            Auth auth = options;
+            auth.setOpenId(authUser.getUuid());
+            auth.setUserId(user.getId());
+            auth.setVerified(Bool.FALSE); //绑定邮箱后解除
+            authMapper.insertSelective(auth);
+
+            // 跳转绑定账号
+            redirectUrl = "bind-account";
+        } else {
+            Auth auth = authList.get(0);
+            user = userApplicantMapper.selectByPrimaryKey(auth.getUserId());
+
+            if (auth.getVerified() == Bool.FALSE) {
+                redirectUrl = "bind-account";
+            } else {
+                redirectUrl = "/";
+            }
+        }
+
+        saveUserToken(user);
+
+        return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.GOOGLE.value));
+    }
+
+    /**
+     * 使用LinkedIn第三方账户登录
+     * @param authUser
+     * @return
+     */
+    private String handleLinkedInLogin(AuthUser authUser){
+        String redirectUrl = "";
+        Auth options = new Auth();
+        options.setAuthType(AuthType.LINKEDIN.value);
+        options.setAuthId(authUser.getUuid());
+        List<Auth> authList = authMapper.selectAndList(options);
+        UserApplicant user;
+        if (CollectionUtils.isEmpty(authList)) {
+            RegisterForm registerForm = new RegisterForm();
+            registerForm.setUserType(UserType.GENERAL.value);
+            registerForm.setName(authUser.getNickname());
+
+            if(StringUtils.isNotEmpty(authUser.getEmail())){
+                if(userApplicantMapper.selectByEmail(authUser.getEmail()) == null){
+                    registerForm.setEmail(authUser.getEmail());
+                }
+            }
+
+            if(StringUtils.isEmpty(registerForm.getEmail())){
+                registerForm.setEmail(UUID.randomUUID().toString() + "@myworldelite.com");
+            }
+
+            registerForm.setPassword(RandomStringUtils.random(20));
+            if(authUser.getGender() != null){
+                registerForm.setGender(authUser.getGender() == AuthUserGender.MALE ? Gender.MALE.value : Gender.FEMALE.value);
+            }
+            user = newUser(registerForm);
+
+            Auth auth = options;
+            auth.setOpenId(authUser.getUuid());
+            auth.setUserId(user.getId());
+            auth.setVerified(Bool.FALSE); //绑定邮箱后解除
+            authMapper.insertSelective(auth);
+
+            // 跳转绑定账号
+            redirectUrl = "bind-account";
+        } else {
+            Auth auth = authList.get(0);
+            user = userApplicantMapper.selectByPrimaryKey(auth.getUserId());
+
+            if (auth.getVerified() == Bool.FALSE) {
+                redirectUrl = "bind-account";
+            } else {
+                redirectUrl = "/";
+            }
+        }
+
+        saveUserToken(user);
+
+        return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.LINKEDIN.value));
     }
 
     /**

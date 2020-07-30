@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +57,7 @@ public class AuthService extends BaseService {
     private LoginLogMapper loginLogMapper;
 
     @Autowired
-    private UserApplicantMapper userMapper;
+    private UserMapper userMapper;
 
     @Autowired
     private AuthMapper authMapper;
@@ -74,6 +75,7 @@ public class AuthService extends BaseService {
      * @return
      */
     @Transactional
+    @Deprecated
     public UserVo register(RegisterForm registerForm) {
         checkRepeatEmail(registerForm.getEmail());
 
@@ -83,7 +85,7 @@ public class AuthService extends BaseService {
             throw new ServiceException(message("activate.email.expired"));
         }
         try {
-            UserApplicant user = newUser(registerForm);
+            User user = newUser(registerForm);
             saveUserToken(user);
             UserVo loginUser = new UserVo().asVo(user);
             loginUser.setToken(user.getToken());
@@ -101,6 +103,7 @@ public class AuthService extends BaseService {
      * @return
      */
     @Transactional
+    @Deprecated
     public UserVo bindThirdAccount(BindAccountForm registerForm) {
         // 如果邮箱已经注册，则直接绑定该邮箱
         // checkRepeatEmail(registerForm.getEmail());
@@ -124,7 +127,7 @@ public class AuthService extends BaseService {
             auth.setUpdateTime(new Date());
             authMapper.updateByPrimaryKeySelective(auth);
 
-            UserApplicant user = userMapper.selectByEmail(registerForm.getEmail());
+            User user = userMapper.selectByEmail(registerForm.getEmail());
             user.setEmail(registerForm.getEmail());
             user.setSubscribeFlag(registerForm.getSubscribeFlag());
             setUserPassword(user, registerForm.getPassword());
@@ -154,8 +157,9 @@ public class AuthService extends BaseService {
      *
      * @return
      */
+    @Deprecated
     public UserVo emailLogin(LoginForm loginForm) {
-        UserApplicant user = userMapper.selectByEmail(loginForm.getEmail());
+        User user = userMapper.selectByEmail(loginForm.getEmail());
         if (user == null) {
             throw new ServiceException(message("login.validate.fail"));
         }
@@ -179,8 +183,9 @@ public class AuthService extends BaseService {
      * @param resetPwdForm
      */
     @SysLog
+    @Deprecated
     public void resetPassword(ResetPwdForm resetPwdForm) {
-        UserApplicant user = userMapper.selectByEmail(resetPwdForm.getEmail());
+        User user = userMapper.selectByEmail(resetPwdForm.getEmail());
         if (user == null) {
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
@@ -201,8 +206,9 @@ public class AuthService extends BaseService {
      * @param modifyPwdForm
      */
     @SysLog
+    @Deprecated
     public void modifyPassword(ModifyPwdForm modifyPwdForm){
-        UserApplicant user = userMapper.selectByPrimaryKey(curUser().getId());
+        User user = userMapper.selectByPrimaryKey(curUser().getId());
         if(!StringUtils.equals(user.getPassword(), encodePassword(modifyPwdForm.getOldPassword(), user.getSalt()))){
             throw new ServiceException(message("modify.old.pwd.error"));
         }
@@ -217,6 +223,7 @@ public class AuthService extends BaseService {
      * @return 返回跳转的链接
      */
     @Transactional
+    @Deprecated
     public String thirdPartLogin(AuthUser authUser) {
         final String lockKey = String.format("%s::%s", authUser.getSource(), authUser.getUuid());
         final String lock = stringRedisTemplate.opsForValue().getAndSet(lockKey, "lock");
@@ -242,6 +249,7 @@ public class AuthService extends BaseService {
     /**
      * 退出登录
      */
+    @Deprecated
     public void logout() {
         if (curUser() != null) {
             User user  = userMapper.selectByPrimaryKey(curUser().getId());
@@ -257,8 +265,9 @@ public class AuthService extends BaseService {
      * @param registerForm
      * @return
      */
-    private UserApplicant newUser(RegisterForm registerForm) {
-        UserApplicant user = new UserApplicant();
+    @Deprecated
+    private User newUser(RegisterForm registerForm) {
+        User user = new User();
         user.setId(AppUtils.nextId());
         user.setEmail(registerForm.getEmail());
         user.setSubscribeFlag(registerForm.getSubscribeFlag());
@@ -282,6 +291,7 @@ public class AuthService extends BaseService {
      * @param email
      * @return
      */
+    @Deprecated
     public void checkRepeatEmail(String email) {
         User user = userMapper.selectByEmail(email);
         if (user != null) {
@@ -293,6 +303,7 @@ public class AuthService extends BaseService {
      * 移除用户 token
      * @param userId
      */
+    @Deprecated
     public void removeUserToken(Long userId){
         User user = userMapper.selectByPrimaryKey(userId);
         if(user != null){
@@ -321,7 +332,7 @@ public class AuthService extends BaseService {
      *
      * @param loginUser
      */
-    private void saveUserToken(UserApplicant loginUser) {
+    private void saveUserToken(User loginUser) {
         final String token = loginUser.getId() + RandomStringUtils.randomAlphanumeric(20);
         loginUser.setToken(token);
         stringRedisTemplate.opsForValue().set(token, JSON.toJSONString(loginUser), TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
@@ -348,7 +359,7 @@ public class AuthService extends BaseService {
         options.setAuthId(authUser.getToken().getUnionId());
         options.setOpenId(authUser.getToken().getOpenId());
         List<Auth> authList = authMapper.selectAndList(options);
-        UserApplicant user;
+        User user;
         if (CollectionUtils.isEmpty(authList)) {
             RegisterForm registerForm = new RegisterForm();
             // 一个临时的唯一email 和 无意义的密码
@@ -394,7 +405,7 @@ public class AuthService extends BaseService {
         options.setAuthType(AuthType.GOOGLE.value);
         options.setAuthId(authUser.getUuid());
         List<Auth> authList = authMapper.selectAndList(options);
-        UserApplicant user;
+        User user;
         if (CollectionUtils.isEmpty(authList)) {
             RegisterForm registerForm = new RegisterForm();
             registerForm.setUserType(UserType.GENERAL.value);
@@ -451,7 +462,7 @@ public class AuthService extends BaseService {
         options.setAuthType(AuthType.LINKEDIN.value);
         options.setAuthId(authUser.getUuid());
         List<Auth> authList = authMapper.selectAndList(options);
-        UserApplicant user;
+        User user;
         if (CollectionUtils.isEmpty(authList)) {
             RegisterForm registerForm = new RegisterForm();
             registerForm.setUserType(UserType.GENERAL.value);
