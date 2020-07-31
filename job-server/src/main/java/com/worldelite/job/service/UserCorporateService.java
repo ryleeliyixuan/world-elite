@@ -125,6 +125,7 @@ public class UserCorporateService extends BaseService {
             user.setStatus(userForm.getStatus());
             user.setUpdateTime(new Date());
             userCorporateMapper.updateByPrimaryKeySelective(user);
+            user = userCorporateMapper.selectByPrimaryKey(user.getId());
             authService.updateLoginUserInfo(user);
         }
     }
