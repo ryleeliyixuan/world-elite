@@ -26,6 +26,7 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['X-Token'] = token
     }
+    console.log(config);
     return config
   },
   error => {
@@ -47,6 +48,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    console.log(response);
     const res = response.data
 
     if (res.code !== 0) {
