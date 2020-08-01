@@ -32,24 +32,24 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
-    disableHostCheck: true,
-    overlay: {
-      warnings: false,
-      errors: true
-    },
+    open: false,
+    host: '0.0.0.0',
+    https: false,
+    hotOnly: false,
     proxy: {
-      // change xxx-api/login => mock/login
-      // detail: https://cli.vuejs.org/config/#devserver-proxy
-      [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:${port}/mock`,
+      '/api': {
+        target: 'https://api.myworldelite.com/api/',
         changeOrigin: true,
+        ws: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          '^/api': ''
         }
       }
     },
-    after: require('./mock/mock-server.js')
+  },
+  // css相关配置
+  css: {
+    sourceMap: process.env.NODE_ENV === 'development',
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
