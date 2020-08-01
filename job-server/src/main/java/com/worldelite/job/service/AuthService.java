@@ -7,14 +7,17 @@ import com.worldelite.job.context.RedisKeys;
 import com.worldelite.job.entity.Auth;
 import com.worldelite.job.entity.LoginLog;
 import com.worldelite.job.entity.User;
+import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.AuthMapper;
 import com.worldelite.job.mapper.LoginLogMapper;
+import com.worldelite.job.mapper.UserApplicantMapper;
 import com.worldelite.job.mapper.UserMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.RequestUtils;
 import com.worldelite.job.vo.ApiCode;
+import com.worldelite.job.vo.UserApplicantVo;
 import com.worldelite.job.vo.UserVo;
 import me.zhyd.oauth.enums.AuthUserGender;
 import me.zhyd.oauth.model.AuthUser;
@@ -25,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +75,7 @@ public class AuthService extends BaseService {
      * @return
      */
     @Transactional
+    @Deprecated
     public UserVo register(RegisterForm registerForm) {
         checkRepeatEmail(registerForm.getEmail());
 
@@ -98,6 +103,7 @@ public class AuthService extends BaseService {
      * @return
      */
     @Transactional
+    @Deprecated
     public UserVo bindThirdAccount(BindAccountForm registerForm) {
         // 如果邮箱已经注册，则直接绑定该邮箱
         // checkRepeatEmail(registerForm.getEmail());
@@ -151,6 +157,7 @@ public class AuthService extends BaseService {
      *
      * @return
      */
+    @Deprecated
     public UserVo emailLogin(LoginForm loginForm) {
         User user = userMapper.selectByEmail(loginForm.getEmail());
         if (user == null) {
@@ -176,6 +183,7 @@ public class AuthService extends BaseService {
      * @param resetPwdForm
      */
     @SysLog
+    @Deprecated
     public void resetPassword(ResetPwdForm resetPwdForm) {
         User user = userMapper.selectByEmail(resetPwdForm.getEmail());
         if (user == null) {
@@ -198,6 +206,7 @@ public class AuthService extends BaseService {
      * @param modifyPwdForm
      */
     @SysLog
+    @Deprecated
     public void modifyPassword(ModifyPwdForm modifyPwdForm){
         User user = userMapper.selectByPrimaryKey(curUser().getId());
         if(!StringUtils.equals(user.getPassword(), encodePassword(modifyPwdForm.getOldPassword(), user.getSalt()))){
@@ -214,6 +223,7 @@ public class AuthService extends BaseService {
      * @return 返回跳转的链接
      */
     @Transactional
+    @Deprecated
     public String thirdPartLogin(AuthUser authUser) {
         final String lockKey = String.format("%s::%s", authUser.getSource(), authUser.getUuid());
         final String lock = stringRedisTemplate.opsForValue().getAndSet(lockKey, "lock");
@@ -226,6 +236,8 @@ public class AuthService extends BaseService {
                 return handleWechatOpenLogin(authUser);
             } else if ("GOOGLE".equalsIgnoreCase(authUser.getSource())) {
                 return handleGoogleLogin(authUser);
+            } else if ("MYLINKEDIN".equalsIgnoreCase(authUser.getSource())) {
+                return handleLinkedInLogin(authUser);
             }
         } finally {
             stringRedisTemplate.delete(lockKey);
@@ -237,6 +249,7 @@ public class AuthService extends BaseService {
     /**
      * 退出登录
      */
+    @Deprecated
     public void logout() {
         if (curUser() != null) {
             User user  = userMapper.selectByPrimaryKey(curUser().getId());
@@ -252,6 +265,7 @@ public class AuthService extends BaseService {
      * @param registerForm
      * @return
      */
+    @Deprecated
     private User newUser(RegisterForm registerForm) {
         User user = new User();
         user.setId(AppUtils.nextId());
@@ -277,6 +291,7 @@ public class AuthService extends BaseService {
      * @param email
      * @return
      */
+    @Deprecated
     public void checkRepeatEmail(String email) {
         User user = userMapper.selectByEmail(email);
         if (user != null) {
@@ -288,6 +303,7 @@ public class AuthService extends BaseService {
      * 移除用户 token
      * @param userId
      */
+    @Deprecated
     public void removeUserToken(Long userId){
         User user = userMapper.selectByPrimaryKey(userId);
         if(user != null){
@@ -433,6 +449,63 @@ public class AuthService extends BaseService {
         saveUserToken(user);
 
         return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.GOOGLE.value));
+    }
+
+    /**
+     * 使用LinkedIn第三方账户登录
+     * @param authUser
+     * @return
+     */
+    private String handleLinkedInLogin(AuthUser authUser){
+        String redirectUrl = "";
+        Auth options = new Auth();
+        options.setAuthType(AuthType.LINKEDIN.value);
+        options.setAuthId(authUser.getUuid());
+        List<Auth> authList = authMapper.selectAndList(options);
+        User user;
+        if (CollectionUtils.isEmpty(authList)) {
+            RegisterForm registerForm = new RegisterForm();
+            registerForm.setUserType(UserType.GENERAL.value);
+            registerForm.setName(authUser.getNickname());
+
+            if(StringUtils.isNotEmpty(authUser.getEmail())){
+                if(userMapper.selectByEmail(authUser.getEmail()) == null){
+                    registerForm.setEmail(authUser.getEmail());
+                }
+            }
+
+            if(StringUtils.isEmpty(registerForm.getEmail())){
+                registerForm.setEmail(UUID.randomUUID().toString() + "@myworldelite.com");
+            }
+
+            registerForm.setPassword(RandomStringUtils.random(20));
+            if(authUser.getGender() != null){
+                registerForm.setGender(authUser.getGender() == AuthUserGender.MALE ? Gender.MALE.value : Gender.FEMALE.value);
+            }
+            user = newUser(registerForm);
+
+            Auth auth = options;
+            auth.setOpenId(authUser.getUuid());
+            auth.setUserId(user.getId());
+            auth.setVerified(Bool.FALSE); //绑定邮箱后解除
+            authMapper.insertSelective(auth);
+
+            // 跳转绑定账号
+            redirectUrl = "bind-account";
+        } else {
+            Auth auth = authList.get(0);
+            user = userMapper.selectByPrimaryKey(auth.getUserId());
+
+            if (auth.getVerified() == Bool.FALSE) {
+                redirectUrl = "bind-account";
+            } else {
+                redirectUrl = "/";
+            }
+        }
+
+        saveUserToken(user);
+
+        return AppUtils.wholeWebUrl(String.format("%s?_token=%s&authType=%d", redirectUrl, user.getToken(), AuthType.LINKEDIN.value));
     }
 
     /**

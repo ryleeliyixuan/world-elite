@@ -125,7 +125,7 @@ public class CompanyService extends BaseService{
         }
         CompanyUser companyUser = companyUserList.get(0);
         CompanyUserVo companyUserVo = new CompanyUserVo();
-        companyUserVo.asVo(userMapper.selectByPrimaryKey(userId));
+        companyUserVo.asVo(userCorporateMapper.selectByPrimaryKey(userId));
         companyUserVo.setCompany(getSimpleCompanyInfo(companyUser.getCompanyId()));
         companyUserVo.setDepart(companyUser.getDepart());
         companyUserVo.setPost(companyUser.getPost());
