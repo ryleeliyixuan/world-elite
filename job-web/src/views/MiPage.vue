@@ -120,7 +120,7 @@
                     </div>
                 </div>
             </div>
-            <div class="section8-button" @click="onMorePosition">更多岗位详情</div>
+            <a class="section8-button" href="https://app.mokahr.com/m/campus_apply/xiaomi/26250#/jobs">更多岗位详情</a>
         </div>
         <div class="section9-container">
             <el-image class="section9-image" :src="footer1" lazy fit="cover"></el-image>
@@ -140,55 +140,55 @@
                 footer1,
                 footer2,
                 postList: [{
-                    name: '未来星-声学算法研究员-智能感知方向',
+                    name: '未来星-数据挖掘研究员',
                     address: '北京\\本科',
                     companyName: '小米',
                     tags: '互联网\\上市公司',
                     logo: 'https://oss.myworldelite.com/pic/38a859e47d1a4c1cb62a8d858fe9e1ed.png'
                 }, {
-                    name: '未来星-声学算法研究员-智能感知方向',
+                    name: '未来星-虚拟化工程师',
                     address: '北京\\本科',
                     companyName: '小米',
                     tags: '互联网\\上市公司',
                     logo: 'https://oss.myworldelite.com/pic/38a859e47d1a4c1cb62a8d858fe9e1ed.png'
                 }, {
-                    name: '未来星-声学算法研究员-智能感知方向',
+                    name: '未来星-声学仿真研究员',
                     address: '北京\\本科',
                     companyName: '小米',
                     tags: '互联网\\上市公司',
                     logo: 'https://oss.myworldelite.com/pic/38a859e47d1a4c1cb62a8d858fe9e1ed.png'
                 }, {
-                    name: '未来星-声学算法研究员-智能感知方向',
+                    name: '未来星-AIOPS工程师',
                     address: '北京\\本科',
                     companyName: '小米',
                     tags: '互联网\\上市公司',
                     logo: 'https://oss.myworldelite.com/pic/38a859e47d1a4c1cb62a8d858fe9e1ed.png'
                 }, {
-                    name: '未来星-声学算法研究员-智能感知方向',
+                    name: '未来星-芯片架构/规划研究员',
                     address: '北京\\本科',
                     companyName: '小米',
                     tags: '互联网\\上市公司',
                     logo: 'https://oss.myworldelite.com/pic/38a859e47d1a4c1cb62a8d858fe9e1ed.png'
                 }, {
-                    name: '未来星-声学算法研究员-智能感知方向',
+                    name: '未来星-ESD/EMC工程师',
                     address: '北京\\本科',
                     companyName: '小米',
                     tags: '互联网\\上市公司',
                     logo: 'https://oss.myworldelite.com/pic/38a859e47d1a4c1cb62a8d858fe9e1ed.png'
                 }, {
-                    name: '未来星-声学算法研究员-智能感知方向',
+                    name: '未来星-电磁兼容工程师',
                     address: '北京\\本科',
                     companyName: '小米',
                     tags: '互联网\\上市公司',
                     logo: 'https://oss.myworldelite.com/pic/38a859e47d1a4c1cb62a8d858fe9e1ed.png'
                 }, {
-                    name: '未来星-声学算法研究员-智能感知方向',
+                    name: '未来星-风控算法研究员',
                     address: '北京\\本科',
                     companyName: '小米',
                     tags: '互联网\\上市公司',
                     logo: 'https://oss.myworldelite.com/pic/38a859e47d1a4c1cb62a8d858fe9e1ed.png'
                 }, {
-                    name: '未来星-声学算法研究员-智能感知方向',
+                    name: '未来星-机器学习框架工程师',
                     address: '北京\\本科',
                     companyName: '小米',
                     tags: '互联网\\上市公司',
@@ -197,9 +197,9 @@
             }
         },
         methods: {
-            onMorePosition() {
-                this.$router.push("/job-list");
-            }
+            // onMorePosition() {
+            //     this.$router.push("/job-list");
+            // }
         }
     }
 </script>
