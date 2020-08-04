@@ -412,7 +412,7 @@ export default {
         : "http://" + this.company.homepage;
     },
     companyLinkName() {
-      return this.company.homepage.replace(/http(s)?:\/\//);
+      return this.company.homepage.replace(/http(s)?:\/\//,'');
     }
   },
   watch: {
