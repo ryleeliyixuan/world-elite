@@ -32,10 +32,10 @@
         <b-link to="/register">立即加入</b-link>
       </p>
       <el-divider>快捷登录</el-divider>
-      <div class="m-4 text-center">
+      <div class="m-4 text-center m-4-flex">
         <el-button type="success" circle class="btn-third-login" @click="goThridPartLoginUrl('wechat_open')" v-if="false"><svg-icon icon-class="wechat" /></el-button>
         <el-button type="danger" circle class="btn-third-login" @click="goThridPartLoginUrl('google')"><svg-icon icon-class="google" /></el-button>
-        <el-button type="danger" circle class="btn-third-login" @click="goThridPartLoginUrl('mylinkedin')"><svg-icon icon-class="linkedin" /></el-button>
+        <el-button type="danger" circle class="btn-third-login" style="background: #ffffff;border: none" @click="goThridPartLoginUrl('mylinkedin')"><svg-icon icon-class="linkedin" style="height: 50px;width: 50px" /></el-button>
      </div>
     </b-container>
   </div>
@@ -91,4 +91,9 @@ export default {
     text-align: center;
     padding: 0px;
 }
+  .m-4-flex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
