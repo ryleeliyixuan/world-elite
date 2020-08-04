@@ -16,7 +16,7 @@
            <b-input-group class="mt-4">
             <b-form-input size="lg" v-model="form.validCode" required :placeholder="$t('email_valid_code')"></b-form-input>
             <b-input-group-append>
-              <b-button size="lg" variant="info" v-on:click="recieveEmailCode">{{$t('get_valid_code')}}</b-button>
+              <b-button size="lg" variant="info" v-on:click="recieveEmailCode" :disabled="disabled">{{validButtonMessage}}</b-button>
             </b-input-group-append>
           </b-input-group>
           <el-alert class="mt-2" :title="$t('email_block_tip')" type="warning" v-if="showEmailBlockTip"></el-alert>
@@ -59,6 +59,8 @@ export default {
     return {
       showEmailBlockTip: false,
       showPasswordRuleTip: false,
+      validButtonMessage: this.$t('get_valid_code'),
+      disabled: false,
       form: {
         email: "",
         validCode: "",
@@ -81,6 +83,22 @@ export default {
         Toast.error("请先填写邮箱");
         return;
       }
+      var num = 30;
+      var that = this;
+      var message1 = this.$t('get_valid_code');
+      var message2 = this.$t('disable_valid_code');
+      this.disabled = true;
+      this.validButtonMessage = num + '秒后重新获取';
+      var timer = setInterval(function () {
+        num--;
+        that.validButtonMessage = num + message2;
+        if (num === 0) {
+          that.validButtonMessage = message1;
+          that.disabled = false;
+          that.showEmailBlockTip = false;
+          clearInterval(timer);
+        }
+      }, 1000);
       checkEmailExists(this.form.email).then(() => {
         getEmailCode(this.form.email).then(() => {
           Toast.success("已发送，请登录邮箱查看");

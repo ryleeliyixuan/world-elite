@@ -63,9 +63,9 @@ public class ExportService extends BaseService {
         if(resume == null){
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
-        UserApplicant loginUser = userMapper.selectByPrimaryKey(curUser().getId());
+        //UserApplicant loginUser = userMapper.selectByPrimaryKey(curUser().getId());
         final String resumeTplUrl = String.format("%s/resume/%s?_token=%s",
-                domainConfig.getLocalHost(), resumeId, loginUser.getToken());
+                domainConfig.getLocalHost(), resumeId, curUser().getToken());
         File resumePdfFile = null;
         try {
             resumePdfFile = fileService.getFile(UUID.randomUUID().toString() + ".pdf");
