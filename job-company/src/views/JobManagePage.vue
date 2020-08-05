@@ -96,7 +96,7 @@
               icon="el-icon-close"
               v-if="job.status == 3"
               onfirmButtonText="删除"
-              @click.stop="handleReopenJob(job.id)"
+              @click.stop="handleDeleteJob(job.id)"
               type="danger"
             >删除</el-button>
           </el-col>
