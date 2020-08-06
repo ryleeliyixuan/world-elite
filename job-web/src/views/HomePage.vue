@@ -309,7 +309,6 @@
             .section1-container {
                 flex-direction: column;
                 align-items: center;
-
                 .section1-left {
                     max-width: 400px;
                     display: flex;

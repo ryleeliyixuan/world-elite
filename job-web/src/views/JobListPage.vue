@@ -273,7 +273,6 @@
             }
         }
     }
-
     ::-webkit-scrollbar {
         display: none;
     }
