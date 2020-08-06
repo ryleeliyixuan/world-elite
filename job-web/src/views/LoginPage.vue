@@ -31,8 +31,7 @@
         </div>
         <el-divider>快捷登录</el-divider>
         <div class="m-4 text-center m-4-flex">
-            <el-button type="success" circle class="btn-third-login" @click="goThridPartLoginUrl('wechat_open')"
-                       v-if="false">
+            <el-button type="success" circle class="btn-third-login" @click="goThridPartLoginUrl('wechat_open')">
                 <svg-icon icon-class="wechat"/>
             </el-button>
             <el-button type="danger" circle class="btn-third-login" @click="goThridPartLoginUrl('google')">
