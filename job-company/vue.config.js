@@ -30,12 +30,20 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
-    disableHostCheck: true,
-    overlay: {
-      warnings: false,
-      errors: true
-    }
+    open: false,
+    host: '0.0.0.0',
+    https: false,
+    hotOnly: false,
+    proxy: {
+      '/api': {
+        target: 'https://api.myworldelite.com/api/',
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    },
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
