@@ -234,6 +234,15 @@ public class UserApplicantService extends BaseService {
             throw new ServiceException(message("activate.email.expired"));
         }
 
+        // 如果邮箱已经注册，则验证密码后，直接绑定该账号
+        UserApplicant user = userApplicantMapper.selectByEmail(registerForm.getEmail());
+        if (user != null) {
+            final String encodePass = encodePassword(registerForm.getPassword(), user.getSalt());
+            if (!org.apache.commons.lang3.StringUtils.equals(encodePass, user.getPassword())) {
+                throw new ServiceException(message("login.validate.fail"));
+            }
+        }
+
         try {
             Auth options = new Auth();
             options.setUserId(curUser().getId());
@@ -246,9 +255,17 @@ public class UserApplicantService extends BaseService {
             Auth auth = authList.get(0);
             auth.setVerified(Bool.TRUE);
             auth.setUpdateTime(new Date());
+
+            //如果邮箱已经注册，直接绑定注册邮箱对应的用户并返回
+            if(user != null) {
+                auth.setUserId(user.getId());
+                authMapper.updateByPrimaryKeySelective(auth);
+                return new UserApplicantVo().asVo(user);
+            }
+
             authMapper.updateByPrimaryKeySelective(auth);
 
-            UserApplicant user = userApplicantMapper.selectByEmail(registerForm.getEmail());
+            user = userApplicantMapper.selectByEmail(registerForm.getEmail());
             user.setEmail(registerForm.getEmail());
             user.setSubscribeFlag(registerForm.getSubscribeFlag());
             setUserPassword(user, registerForm.getPassword());
