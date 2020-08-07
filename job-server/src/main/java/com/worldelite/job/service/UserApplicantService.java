@@ -274,9 +274,9 @@ public class UserApplicantService extends BaseService {
 //            user.setUpdateTime(new Date());
 //            userApplicantMapper.updateByPrimaryKeySelective(user);
             //登录新绑定的账号
-            saveUserToken(user);
             UserApplicantVo loginUser = new UserApplicantVo().asVo(user);
-            loginUser.setToken(user.getToken());
+            stringRedisTemplate.opsForValue().set(curUser().getToken(), JSON.toJSONString(loginUser), TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
+            loginUser.setToken(curUser().getToken());
             return loginUser;
         } finally {
             stringRedisTemplate.delete(validCodeKey);
