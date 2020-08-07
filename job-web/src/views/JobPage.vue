@@ -134,7 +134,7 @@ export default {
         : "http://" + this.job.companyUser.company.homepage;
     },
     companyLinkName() {
-      return this.job.companyUser.company.homepage.replace(/http(s)?:\/\//);
+      return this.job.companyUser.company.homepage.replace(/http(s)?:\/\//,"");
     }
   },
   methods: {
