@@ -256,23 +256,28 @@ public class UserApplicantService extends BaseService {
             auth.setVerified(Bool.TRUE);
             auth.setUpdateTime(new Date());
 
-            //如果邮箱已经注册，直接绑定注册邮箱对应的用户并返回
-            if(user != null) {
-                auth.setUserId(user.getId());
-                authMapper.updateByPrimaryKeySelective(auth);
-                return new UserApplicantVo().asVo(user);
+            if(user == null) {
+                //如果邮箱没有注册，则注册新账号
+                user = newUser(registerForm);
             }
-
+            //绑定该账号
+            auth.setUserId(user.getId());
             authMapper.updateByPrimaryKeySelective(auth);
-
-            user = userApplicantMapper.selectByEmail(registerForm.getEmail());
-            user.setEmail(registerForm.getEmail());
-            user.setSubscribeFlag(registerForm.getSubscribeFlag());
-            setUserPassword(user, registerForm.getPassword());
-            user.setUpdateTime(new Date());
-            userApplicantMapper.updateByPrimaryKeySelective(user);
-
-            return new UserApplicantVo().asVo(user);
+            //删除临时账号
+            UserApplicant curUser = userApplicantMapper.selectByPrimaryKey(curUser().getId());
+            curUser.setDelFlag((byte) 1);
+            userApplicantMapper.updateByPrimaryKeySelective(curUser);
+//            user = userApplicantMapper.selectByEmail(registerForm.getEmail());
+//            user.setEmail(registerForm.getEmail());
+//            user.setSubscribeFlag(registerForm.getSubscribeFlag());
+//            setUserPassword(user, registerForm.getPassword());
+//            user.setUpdateTime(new Date());
+//            userApplicantMapper.updateByPrimaryKeySelective(user);
+            //登录新绑定的账号
+            saveUserToken(user);
+            UserApplicantVo loginUser = new UserApplicantVo().asVo(user);
+            loginUser.setToken(user.getToken());
+            return loginUser;
         } finally {
             stringRedisTemplate.delete(validCodeKey);
         }
