@@ -27,7 +27,7 @@
         </p>
         <div class="text-center m-4 join-container">
             没有帐号？
-            <el-link to="/register" type="primary">立即加入</el-link>
+            <el-link href="/register" type="primary">立即加入</el-link>
         </div>
         <el-divider>快捷登录</el-divider>
         <div class="m-4 text-center m-4-flex">
