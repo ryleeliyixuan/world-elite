@@ -43,7 +43,7 @@
       },
       menubar: {
         type: String,
-        default: 'file edit insert view format table'
+        default: 'file edit insert view format table' // tools help
       },
       height: {
         type: [Number, String],
@@ -74,7 +74,7 @@
       containerWidth() {
         const width = this.width
         if (/^[\d]+(\.[\d]+)?$/.test(width)) { // matches `100`, `'100'`
-          return `${width}px`
+          return `${width}pt`
         }
         return width
       }
@@ -117,23 +117,59 @@
         window.tinymce.init({
           selector: `#${this.tinymceId}`,
           language: this.languageTypeList['zh'],
-          height: this.height,
-          body_class: 'panel-body ',
-          object_resizing: false,
-          toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
-          menubar: this.menubar,
-          plugins: plugins,
-          end_container_on_empty_block: true,
+
+          // UI界面配置
+          statusbar: false, // 状态栏指的是编辑器最底下、左侧显示dom信息、右侧显示Tiny版权链接和调整大小的那一条。
+          branding: false, // 显示右下角技术支持
+          elementpath: false, // 显示底栏的元素路径
+          height: this.height, // 高度
+          min_height: 400, // 最小高度400px
+          resize: true, // true 调整高度  false 完全不动, 'both' 宽高都能改变
+          menubar: this.menubar, // 菜单栏
+          toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar, // 工具栏
+          // skin: 'oxide-dark', 5.0主题
+
+          // 内容外观配置
+          // body_class: 'panel-body',
+          color_cols: 4,
+
+          // 格式化配置
+          fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt 56pt 72pt',
+          font_formats: '微软雅黑=Microsoft YaHei,Helvetica Neue,PingFang SC,sans-serif;苹果苹方=PingFang SC,Microsoft YaHei,sans-serif;宋体=simsun,serif;仿宋体=FangSong,serif;黑体=SimHei,sans-serif;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;',
+
+          // 其他配置
+          custom_undo_redo_levels: 10, // 撤销次数
+          end_container_on_empty_block: true, // 空元素回车将其拆分
+          nowrap: false, // 文本水平不换行
+          object_resizing: false, // 调整大小控件开关
+          typeahead_urls: true, // 键入网址判断
+
+          // 插件 - advlist 高级列表插件
+          advlist_bullet_styles: 'default,circle,disc,square',
+          advlist_number_styles: 'default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman',
+
+          // 指定编辑器body初始化时底边距，也就是加一个margin-bottom。
+          autoresize_bottom_margin: 50,
+
           powerpaste_word_import: 'clean',
           code_dialog_height: 450,
           code_dialog_width: 1000,
-          advlist_bullet_styles: 'square',
-          advlist_number_styles: 'default',
           imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
           default_link_target: '_blank',
           link_title: false,
           nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
-          init_instance_callback: editor => {
+          autosave_ask_before_unload: true,
+
+          // 集成配置
+          auto_focus: true, // 自动获得焦点
+          cache_suffix: '?v=5.0.0', // 缓存请求后缀
+          plugins: plugins, // 指定需加载的插件
+          setup(editor) { // 初始化前执行
+            editor.on('FullscreenStateChanged', (e) => {
+              _this.fullscreen = e.state
+            })
+          },
+          init_instance_callback: editor => { // 初始化结束后执行
             if (_this.value) {
               editor.setContent(_this.value)
             }
@@ -141,11 +177,6 @@
             editor.on('NodeChange Change KeyUp SetContent', () => {
               this.hasChange = true
               this.$emit('input', editor.getContent())
-            })
-          },
-          setup(editor) {
-            editor.on('FullscreenStateChanged', (e) => {
-              _this.fullscreen = e.state
             })
           }
         })
@@ -190,8 +221,8 @@
 
   .editor-custom-btn-container {
     position: absolute;
-    right: 4px;
-    top: 4px;
+    right: 4pt;
+    top: 4pt;
     /*z-index: 2005;*/
   }
 
