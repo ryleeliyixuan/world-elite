@@ -130,7 +130,7 @@
           // skin: 'oxide-dark', 5.0主题
 
           // 内容外观配置
-          // body_class: 'panel-body',
+          body_class: 'panel-body',
           color_cols: 4,
 
           // 格式化配置
@@ -233,5 +233,9 @@
 
   .editor-upload-btn {
     display: inline-block;
+  }
+
+  .panel-body {
+    overflow-y: scroll;
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container wiki-container">
     <h3 v-if="company">{{company.fullName}} - 企业百科</h3>
-    <tinymce v-loading="loading" v-model="wikiForm.content" :height="800" :width="800"></tinymce>
+    <tinymce v-loading="loading" v-model="wikiForm.content" :height="800" :width="'100%'"></tinymce>
     <el-input
       class="input"
       type="textarea"
