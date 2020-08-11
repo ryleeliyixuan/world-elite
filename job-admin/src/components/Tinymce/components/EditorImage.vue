@@ -60,7 +60,7 @@
       },
       handleEditorUploadSuccess() {
         this.fullscreenLoading = false;
-        this.$emit('successCBK', { url: this.uploadPicOptions.localUrl })
+        this.$emit('successCBK', { url: this.uploadPicOptions.fileUrl })
       },
       handleEditorUploadError() {
         this.$message.error("图片上传失败")

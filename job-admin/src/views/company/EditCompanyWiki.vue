@@ -1,7 +1,7 @@
 <template>
   <div class="app-container wiki-container">
     <h3 v-if="company">{{company.fullName}} - 企业百科</h3>
-    <tinymce v-loading="loading" v-model="wikiForm.content" :height="800" :width="'100%'"></tinymce>
+    <tinymce v-loading="loading" v-model="wikiForm.content"  :width="'100%'"></tinymce>
     <el-input
       class="input"
       type="textarea"
@@ -52,6 +52,7 @@
           this.wikiForm.content = data.content
           this.wikiForm.summary = data.summary
           this.loading = false
+          console.log(this.wikiForm.content)
         })
       },
       handleSave() {
