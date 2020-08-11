@@ -81,6 +81,7 @@
     },
     watch: {
       value(val) {
+        console.log(val)
         if (!this.hasChange && this.hasInit) {
           this.$nextTick(() =>
             window.tinymce.get(this.tinymceId).setContent(val || ''))
@@ -161,8 +162,8 @@
           autosave_ask_before_unload: true,
 
           // 集成配置
-          auto_focus: true, // 自动获得焦点
-          cache_suffix: '?v=5.0.0', // 缓存请求后缀
+          // auto_focus: true, // 自动获得焦点
+          // cache_suffix: '?v=5.0.0', // 缓存请求后缀
           plugins: plugins, // 指定需加载的插件
           setup(editor) { // 初始化前执行
             editor.on('FullscreenStateChanged', (e) => {
