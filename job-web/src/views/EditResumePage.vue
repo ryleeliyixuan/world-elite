@@ -95,7 +95,8 @@
                         class="ml-3 time-text"
                       >{{resumeEdu.startTime}}到{{resumeEdu.finishTime}}</span>
                     </h6>
-                    <p>{{resumeEdu.degree.name}} / {{resumeEdu.majorName}} / GPA {{resumeEdu.gpa}}</p>
+                    <p v-if = "resumeEdu.gpa > 0"> {{resumeEdu.degree.name}} / {{resumeEdu.majorName}} / GPA {{resumeEdu.gpa}}</p>
+                    <p v-else>{{resumeEdu.degree.name}} / {{resumeEdu.majorName}} </p>
                     <div class="edit-item-box" v-show="resumeEdu.showEditFlag == 1">
                       <a
                         class="p-2 edit-text"
