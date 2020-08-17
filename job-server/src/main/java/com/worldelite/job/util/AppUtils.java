@@ -1,24 +1,20 @@
 package com.worldelite.job.util;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.worldelite.job.anatation.ResumeScore;
-import com.worldelite.job.context.AppContext;
+import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.context.MessageResource;
 import com.worldelite.job.context.config.AliConfig;
 import com.worldelite.job.context.config.DomainConfig;
 import com.worldelite.job.form.PageForm;
-import com.worldelite.job.vo.ResumeVo;
 import com.worldelite.job.vo.VoConvertable;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -122,7 +118,7 @@ public class AppUtils {
      * @return
      */
     public static <T> T getBean(Class<T> clazz){
-        return AppContext.getApplicationContext().getBean(clazz);
+        return SpringContextHolder.getApplicationContext().getBean(clazz);
     }
 
     /**
