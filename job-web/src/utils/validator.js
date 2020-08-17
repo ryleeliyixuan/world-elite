@@ -1,24 +1,4 @@
-import auth_api from '@/api/auth_api'
-
 const checkEmail = (rule, value, callback) => {
-
-    const mailReg = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/;
-    if (!value) {
-        return callback(new Error('邮箱不能为空'))
-    }
-    setTimeout(() => {
-        if (checkEmailExists(mailReg)) {
-            callback(new Error('账号已经存在，请登录'))
-        } else {
-            if (mailReg.test(value)) {
-                callback()
-            } else {
-                callback(new Error('请输入正确的邮箱格式'))
-            }
-        }
-    }, 100)
-}
-/*const checkEmail = (rule, value, callback) => {
     
     const mailReg = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/;
     if (!value) {
@@ -31,7 +11,7 @@ const checkEmail = (rule, value, callback) => {
             callback(new Error('请输入正确的邮箱格式'))
         }
     }, 100)
-}*/
+}
 
 const checkPassword = (rule, value, callback) => {
     if(!value){
