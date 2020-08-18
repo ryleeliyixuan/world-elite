@@ -60,7 +60,7 @@ public class UserApplicantCommentApi {
      * @return
      */
     @RequireLogin(allow = UserType.COMPANY)
-    @GetMapping("delete-comment")
+    @PostMapping("delete-comment")
     @ApiDoc
     public ApiResult deleteComment(@RequestBody long userApplicantCommentId){
         userApplicantCommentService.deleteCommentById(userApplicantCommentId);
