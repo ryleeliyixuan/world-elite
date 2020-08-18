@@ -97,9 +97,11 @@
           >{{jobType.name}}</el-radio>
         </el-radio-group>
       </el-form-item>
+
       <el-form-item label="职位描述" prop="description">
         <quill-editor v-model="jobForm.description" :options="descriptionEditorOption"></quill-editor>
       </el-form-item>
+
       <el-form-item>
         <el-button type="primary" :loading="posting" @click="onSubmit">{{pubButtonText}}</el-button>
       </el-form-item>

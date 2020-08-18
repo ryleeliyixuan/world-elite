@@ -109,10 +109,11 @@
           // 格式化配置
           fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt 56pt 72pt',
           font_formats: '微软雅黑=Microsoft YaHei,Helvetica Neue,PingFang SC,sans-serif;苹果苹方=PingFang SC,Microsoft YaHei,sans-serif;宋体=simsun,serif;仿宋体=FangSong,serif;黑体=SimHei,sans-serif;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;',
+          // block_formats: 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;',
 
           // 其他配置
           custom_undo_redo_levels: 10, // 撤销次数
-          end_container_on_empty_block: true, // 空元素回车将其拆分
+          end_container_on_empty_block: false, // 空元素回车将其拆分
           nowrap: false, // 文本水平不换行
           object_resizing: false, // 调整大小控件开关
           typeahead_urls: true, // 键入网址判断
