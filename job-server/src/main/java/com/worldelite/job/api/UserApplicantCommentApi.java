@@ -17,7 +17,7 @@ import java.util.List;
  * @author 王星瀚
  */
 @RestController
-@RequestMapping("/api/usercorporate/")
+@RequestMapping("/api/usercorporate/comment/")
 public class UserApplicantCommentApi {
 
     @Autowired
@@ -29,7 +29,7 @@ public class UserApplicantCommentApi {
      * @return
      */
     @RequireLogin(allow = UserType.COMPANY)
-    @PostMapping("save-comment")
+    @PostMapping("save")
     @ApiDoc
     public ApiResult saveComment(@RequestBody UserApplicantCommentForm userApplicantCommentForm){
         userApplicantCommentService.saveComment(userApplicantCommentForm);
@@ -39,16 +39,13 @@ public class UserApplicantCommentApi {
     /**
      * 获取某用户的所有笔记
      *
-     * @param userApplicantCommentForm
-     * @return
      */
     @RequireLogin(allow = UserType.COMPANY)
-    @GetMapping("list-user-comments")
+    @GetMapping("list")
     @ApiDoc
-    public ApiResult<List<UserApplicantCommentVo>> getCommentList(
-            @RequestBody UserApplicantCommentForm userApplicantCommentForm){
+    public ApiResult<List<UserApplicantCommentVo>> getCommentList(@RequestParam long userId, @RequestParam long corporateId) {
         final List<UserApplicantCommentVo> userApplicantCommentVos = userApplicantCommentService
-                .getCommentsByUserIdAndCompanyId(userApplicantCommentForm);
+                .getCommentsByUserIdAndCompanyId(userId, corporateId);
 
         return ApiResult.ok(userApplicantCommentVos);
     }
@@ -60,7 +57,7 @@ public class UserApplicantCommentApi {
      * @return
      */
     @RequireLogin(allow = UserType.COMPANY)
-    @PostMapping("delete-comment")
+    @PostMapping("delete")
     @ApiDoc
     public ApiResult deleteComment(@RequestBody long userApplicantCommentId){
         userApplicantCommentService.deleteCommentById(userApplicantCommentId);

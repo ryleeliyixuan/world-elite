@@ -49,7 +49,7 @@ public class UserApplicantCommentServiceTests {
         userApplicantCommentService.saveComment(form2);
 
         //retrieving user comments, expecting 2 total comments.
-        final List<UserApplicantCommentVo> comments = userApplicantCommentService.getCommentsByUserIdAndCompanyId(form1);
+        final List<UserApplicantCommentVo> comments = userApplicantCommentService.getCommentsByUserIdAndCompanyId(TEST_USER_ID, TEST_COMAPNY_ID);
         Assert.assertTrue(comments.size() == TEST_NUM_COMMENTS);
 
         //delete ALL user comments created in this test.
@@ -57,7 +57,7 @@ public class UserApplicantCommentServiceTests {
         userApplicantCommentService.deleteCommentById(comments.get(1).getId());
 
         //retrieving user comments, expecting 0 total comment.
-        final List<UserApplicantCommentVo> commentsAfterDeletion = userApplicantCommentService.getCommentsByUserIdAndCompanyId(form1);
+        final List<UserApplicantCommentVo> commentsAfterDeletion = userApplicantCommentService.getCommentsByUserIdAndCompanyId(TEST_USER_ID, TEST_COMAPNY_ID);
         Assert.assertTrue(commentsAfterDeletion.size() == 0);
     }
 }

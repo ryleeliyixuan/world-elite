@@ -43,24 +43,19 @@ public class UserApplicantCommentService {
 
     /**
      * 根据用户id取得用户笔记
+     *
      * @param userId
      * @return
      */
-    public List<UserApplicantCommentVo> getCommentsByUserIdAndCompanyId(
-            final @NonNull UserApplicantCommentForm userApplicantCommentForm) {
+    public List<UserApplicantCommentVo> getCommentsByUserIdAndCompanyId(long userId, long corporateId) {
 
         final List<UserApplicantComment> userApplicantComments;
-        final long companyId = userApplicantCommentForm.getCompanyId();
-        final long userApplicantId = userApplicantCommentForm.getUserApplicantId();
+        userApplicantComments = userApplicantCommentMapper.selectByUserIdAndCompanyId(userId, corporateId);
 
-        if (Objects.nonNull(companyId) && Objects.nonNull(userApplicantId)) {
-            userApplicantComments  = userApplicantCommentMapper.selectByUserIdAndCompanyId(userApplicantId, companyId);
-
-            if (Objects.nonNull(userApplicantComments)) {
-                return userApplicantComments.stream()
-                        .map(userApplicantComment -> new UserApplicantCommentVo().asVo(userApplicantComment))
-                        .collect(Collectors.toList());
-            }
+        if (Objects.nonNull(userApplicantComments)) {
+            return userApplicantComments.stream()
+                    .map(userApplicantComment -> new UserApplicantCommentVo().asVo(userApplicantComment))
+                    .collect(Collectors.toList());
         }
 
         return Collections.emptyList();
