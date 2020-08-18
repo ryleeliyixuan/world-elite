@@ -18,7 +18,7 @@ import java.util.List;
  * @author 熊文剑
  */
 @RestController
-@RequestMapping("/api/usercorporate-tag/")
+@RequestMapping("/api/usercorporate/tag/")
 public class UserCorporateTagApi {
 
     @Autowired
@@ -30,7 +30,7 @@ public class UserCorporateTagApi {
      * @return
      */
     @RequireLogin(allow = UserType.COMPANY)
-    @PostMapping("savetag")
+    @PostMapping("save")
     @ApiDoc
     public ApiResult saveTag(@RequestBody UserCorporateTagForm userCorporateTagForm){
         userCorporateTagService.saveTag(userCorporateTagForm);
@@ -44,9 +44,9 @@ public class UserCorporateTagApi {
      * @return
      */
     @RequireLogin(allow = UserType.COMPANY)
-    @GetMapping("list-tags")
+    @GetMapping("list")
     @ApiDoc
-    public ApiResult<List<UserCorporateTagVo>> getTagList(@RequestBody long userId,@RequestBody long corporateId){
+    public ApiResult<List<UserCorporateTagVo>> getTagList(@RequestParam long userId,@RequestParam long corporateId){
         final List<UserCorporateTagVo> userCorporateTagVos = userCorporateTagService
                 .getTagsByUserIdCorporateId(userId,corporateId);
 
@@ -60,9 +60,9 @@ public class UserCorporateTagApi {
      * @return
      */
     @RequireLogin(allow = UserType.COMPANY)
-    @PostMapping("del-tag")
+    @PostMapping("del")
     @ApiDoc
-    public ApiResult deleteTag(@RequestParam Long id) {
+    public ApiResult deleteTag(@RequestBody Long id) {
         userCorporateTagService.delTag(id);
         return ApiResult.ok();
     }
