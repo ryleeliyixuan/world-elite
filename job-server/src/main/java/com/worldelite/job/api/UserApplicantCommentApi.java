@@ -17,7 +17,7 @@ import java.util.List;
  * @author 王星瀚
  */
 @RestController
-@RequestMapping("/api/userapplicant-comment/")
+@RequestMapping("/api/usercorporate/")
 public class UserApplicantCommentApi {
 
     @Autowired
