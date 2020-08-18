@@ -1,10 +1,13 @@
 package com.worldelite.job.service.read.impl;
 
+import com.worldelite.job.constants.FileType;
 import com.worldelite.job.service.read.ResumeFileRead;
 import com.worldelite.job.util.FileDownloadUtil;
+import com.worldelite.job.util.FileTypeJudge;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.io.*;
 import java.net.URL;
@@ -48,8 +51,8 @@ public class ResumePdfFileRead implements ResumeFileRead {
         //使用BufferedInputStream以便支持mark/reset
         BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
 
-        //FileType fileType = FileTypeJudge.getType(bufferedInputStream);
-        //Assert.isTrue(FileType.PDF == fileType, "不是有效的PDF文件");
+        FileType fileType = FileTypeJudge.getType(bufferedInputStream);
+        Assert.isTrue(FileType.PDF == fileType, "不是有效的PDF文件");
 
         try (PDDocument document = PDDocument.load(bufferedInputStream)) {
             PDFTextStripper stripper = new PDFTextStripper();

@@ -10,6 +10,7 @@ import com.worldelite.job.vo.ResumeExpVo;
 import com.worldelite.job.vo.ResumePracticeVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,6 +26,7 @@ public class ResumePracticeService extends BaseService{
     private ResumePracticeMapper practiceMapper;
 
     @Autowired
+    @Lazy
     private ResumeService resumeService;
 
     /**

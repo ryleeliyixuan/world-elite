@@ -24,6 +24,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -49,6 +50,7 @@ public class LuceneIndexService implements IndexService {
     private JobService jobService;
 
     @Autowired
+    @Lazy
     private ResumeService resumeService;
 
     @Autowired

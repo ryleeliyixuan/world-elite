@@ -6,6 +6,7 @@ import com.worldelite.job.mapper.ResumeLinkMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ResumeLinkVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class ResumeLinkService {
     private ResumeLinkMapper resumeLinkMapper;
 
     @Autowired
+    @Lazy
     private ResumeService resumeService;
 
     /**

@@ -26,6 +26,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -54,6 +55,7 @@ public class LuceneSearchService implements SearchService {
     private JobService jobService;
 
     @Autowired
+    @Lazy
     private ResumeService resumeService;
 
     @Autowired

@@ -1,34 +1,36 @@
 package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
-import com.worldelite.job.constants.ConfigType;
-import com.worldelite.job.constants.JobApplyStatus;
-import com.worldelite.job.constants.UserType;
+import com.worldelite.job.constants.*;
+import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.JobApplyMapper;
-import com.worldelite.job.mapper.JobMapper;
-import com.worldelite.job.mapper.MessageMapper;
+import com.worldelite.job.mapper.ResumeAttachMapper;
 import com.worldelite.job.mapper.ResumeMapper;
-import com.worldelite.job.service.search.IndexService;
+import com.worldelite.job.service.read.ResumeFileRead;
+import com.worldelite.job.service.read.ResumeFileReadFactory;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.FormUtils;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
+import org.apache.lucene.document.Document;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,6 +84,20 @@ public class ResumeService extends BaseService {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private ResumeFileService resumeFileService;
+
+    @Autowired
+    private ResumeFileReadFactory resumeFileReadFactory;
+
+    @Autowired
+    private ResumeAttachMapper resumeAttachMapper;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Resource(name = "luceneIndexCmdFanoutExchange")
+    private FanoutExchange exchange;
 
     /**
      * 获取我的默认简历，如果没有就创建一个空简历
@@ -259,8 +275,13 @@ public class ResumeService extends BaseService {
         resume.setReturnTime(resumeForm.getReturnTime());
         resume.setMaxDegreeId(resumeForm.getMaxDegreeId());
         resume.setIntroduction(resumeForm.getIntroduction());
-        if(StringUtils.isNotEmpty(resumeForm.getAttachResume())){
-            resume.setAttachResume(AppUtils.getOssKey(resumeForm.getAttachResume()));
+
+        boolean updateFlag = false;
+        if (StringUtils.isNotEmpty(resumeForm.getAttachResume())) {
+            String newAttachResume = AppUtils.getOssKey(resumeForm.getAttachResume());
+            //简历变更时更新索引
+            if (!newAttachResume.equals(resume.getAttachResume())) updateFlag = true;
+            resume.setAttachResume(newAttachResume);
         }
         if (resume.getId() == null) {
             resume.setId(AppUtils.nextId());
@@ -269,6 +290,8 @@ public class ResumeService extends BaseService {
             resume.setUpdateTime(new Date());
             resumeMapper.updateByPrimaryKeySelective(resume);
         }
+
+        if (updateFlag) addOrUpdateResumeIndex(resume.getId(), resume.getUserId(), resumeForm.getAttachResume());
 
         UserForm userForm = new UserForm();
         userForm.setId(curUser().getId());
@@ -290,10 +313,13 @@ public class ResumeService extends BaseService {
      */
     public void delResumeAttachment(Long resumeId){
         Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
-        if(resume != null){
+        if (resume != null) {
             checkResumeCreator(resume);
             resume.setAttachResume("");
             resumeMapper.updateByPrimaryKey(resume);
+
+            //简历索引删除
+            deleteResumeIndex(resumeId);
         }
     }
 
@@ -439,5 +465,67 @@ public class ResumeService extends BaseService {
         if (resume != null && resume.getUserId() != null && !resume.getUserId().equals(curUser().getId())) {
             throw new ServiceException(ApiCode.PERMISSION_DENIED);
         }
+    }
+
+    /**
+     * 添加或更新附件简历索引
+     *
+     * @param resumeId     简历id
+     * @param attachResume 附件文件路径. 当前为阿里云oss http链接
+     */
+    @Async
+    public void addOrUpdateResumeIndex(Long resumeId, Long userId, String attachResume) {
+        try {
+            //region 读取附件简历内容
+            String suffix = attachResume.substring(attachResume.lastIndexOf(".") + 1);
+            ResumeFileRead fileRead = resumeFileReadFactory.getFileRead(suffix);
+            String attachContent = fileRead.read(new URL(attachResume));
+            if (StringUtils.isBlank(attachContent)) return;
+            //endregion
+
+            //region 附件简历内容保存到数据库
+            ResumeAttach resumeAttach = resumeAttachMapper.selectByResumeId(resumeId);
+            if (resumeAttach != null) {
+                resumeAttach.setUpdateTime(new Date());
+                resumeAttach.setAttachContent(attachContent);
+
+                resumeAttachMapper.updateByPrimaryKeyWithBLOBs(resumeAttach);
+            } else {
+                resumeAttach = new ResumeAttach();
+                resumeAttach.setResumeId(resumeId);
+                resumeAttach.setUserId(userId);
+                resumeAttach.setAttachContent(attachContent);
+
+                resumeAttachMapper.insert(resumeAttach);
+            }
+            //endregion
+
+            //TODO 索引更新
+            Document document = new Document();
+
+            //MQ广播索引更新指令
+            rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.CreateOrUpdate, BusinessType.AttachResume));
+
+        } catch (Exception e) {
+            log.error("添加或更新附件简历索引时异常", e);
+        }
+    }
+
+    /**
+     * 删除简历附件索引
+     *
+     * @param resumeId 简历id
+     */
+    @Async
+    public void deleteResumeIndex(Long resumeId) {
+
+        ResumeAttach resumeAttach = resumeAttachMapper.selectByResumeId(resumeId);
+        if (resumeAttach != null) resumeAttachMapper.deleteByPrimaryKey(resumeAttach.getId());
+
+        //TODO 索引删除
+        Document document = new Document();
+
+        //MQ广播索引更新指令
+        rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.Delete, BusinessType.AttachResume));
     }
 }

@@ -79,12 +79,17 @@ public enum FileType {
      */
     DOCX("504b0304140006000800", "docx"),
     /**
+     * Visio 绘图
+     */
+    VSD("d0cf11e0a1b11ae10000", "vsd"),
+    /**
      * MSAccess(mdb)
      */
     MDB("5374616E64617264204A", "mdb"),
     PS("252150532D41646F6265", "ps"),
     /**
-     * AdobeAcrobat(pdf)
+     * AdobeAcrobat(pdf) 255044462d312e350d0a
+     * 经过其他格式转换成的pdf 255044462d312e340a25/255044462d312e330a25等很多种
      */
     PDF("255044462d312e", "pdf"),
     /**

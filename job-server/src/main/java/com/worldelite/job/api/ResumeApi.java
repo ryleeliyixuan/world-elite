@@ -7,6 +7,7 @@ import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ import java.util.List;
 public class ResumeApi extends BaseApi {
 
     @Autowired
+    @Lazy
     private ResumeService resumeService;
 
     @Autowired
