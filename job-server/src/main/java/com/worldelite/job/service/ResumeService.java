@@ -85,7 +85,7 @@ public class ResumeService extends BaseService {
     private MessageService messageService;
 
     @Autowired
-    private ResumeFileService resumeFileService;
+    private ResumeAttachService resumeAttachService;
 
     @Autowired
     private ResumeFileReadFactory resumeFileReadFactory;
