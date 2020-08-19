@@ -1,9 +1,11 @@
 package com.worldelite.job.service;
 
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
+import com.worldelite.job.constants.ResumeIndexFields;
 import com.worldelite.job.entity.ResumeAttach;
-import com.worldelite.job.entity.ResumeFile;
+import com.worldelite.job.mapper.ResumeAttachMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
@@ -13,13 +15,12 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.lionsoul.jcseg.ISegment;
 import org.lionsoul.jcseg.IWord;
-import org.lionsoul.jcseg.dic.ADictionary;
-import org.lionsoul.jcseg.dic.DictionaryFactory;
-import org.lionsoul.jcseg.segmenter.SegmenterConfig;
+import org.lionsoul.jcseg.analyzer.JcsegAnalyzer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -42,6 +43,9 @@ public class ResumeAttachService extends BaseService{
     @Autowired
     private Analyzer analyzer;
 
+    @Autowired
+    private ResumeAttachMapper resumeAttacheMapper;
+
     private boolean switchFolder = false;
 
     /**
@@ -51,13 +55,8 @@ public class ResumeAttachService extends BaseService{
      * @throws IOException
      */
     public String[] analysis(String keyword) throws IOException {
-        SegmenterConfig config = new SegmenterConfig();
-        config.setAppendCJKSyn(true);
-        ADictionary dictionary = DictionaryFactory.createDefaultDictionary(config);
-        dictionary.loadDirectory(resumeIndexFolder);
-        dictionary.resetSynonymsNet();
 
-        ISegment seg = ISegment.COMPLEX.factory.create(config, dictionary);
+        ISegment seg = ISegment.COMPLEX.factory.create(((JcsegAnalyzer)analyzer).getConfig(), ((JcsegAnalyzer)analyzer).getDict());
 
         seg.reset(new StringReader(keyword));
 
@@ -67,42 +66,6 @@ public class ResumeAttachService extends BaseService{
             wordList.add(word.getValue());
         }
         return wordList.toArray(new String[wordList.size()]);
-    }
-
-    /**
-     * 通过关键字搜索简历文件
-     * @param keywords
-     * @return
-     * @throws IOException
-     */
-    public List<ResumeFile> searchByKeyWords(String[] keywords) throws IOException {
-        //创建一个Directory对象，指定索引库存放的路径
-        Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
-        //创建IndexReader对象，需要指定Directory对象
-        IndexReader indexReader = DirectoryReader.open(directory);
-        //根据索引位置建立IndexSearch
-        IndexSearcher searcher = new IndexSearcher(indexReader);
-
-        BooleanQuery.Builder builder = new BooleanQuery.Builder();
-        for(String keyword : keywords){
-            Term term = new Term(ResumeAttachmentIndexFields.CONTENT,keyword);
-            Query query = new TermQuery(term);
-            builder.add(query, BooleanClause.Occur.MUST);
-        }
-        BooleanQuery query = builder.build();
-
-        TopDocs hits = searcher.search(query, 10);
-        List<ResumeFile> resumeFiles = new ArrayList<ResumeFile>();
-
-        for(ScoreDoc scoreDoc : hits.scoreDocs){
-            Document document = searcher.doc(scoreDoc.doc);
-            ResumeFile resumeFile = new ResumeFile();
-            resumeFile.setResumeId(Long.parseLong(document.get(ResumeAttachmentIndexFields.RESUME_ID)));
-            resumeFile.setContent(document.get(ResumeAttachmentIndexFields.CONTENT));
-            resumeFiles.add(resumeFile);
-        }
-
-        return resumeFiles;
     }
 
     /**
@@ -124,23 +87,23 @@ public class ResumeAttachService extends BaseService{
     /**
      * 新建或者重新生成所有的附件简历索引文件
      * 注意：此方法会覆盖旧的索引文件
-     * @param resumeFile
+     * @param resumeAttacheList
      * @throws IOException
      */
-    public void buildIndex(ResumeFile resumeFile) throws IOException {
-        Directory directory = FSDirectory.open(new File(getBuildFolder()).toPath());
-        IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-        IndexWriter writer = new IndexWriter(directory,config);
-
+    public void buildIndex(List<ResumeAttach> resumeAttacheList) {
+        IndexWriter writer = null;
         try {
-            //构造Document
-            Document document = new Document();
-            document.add(new LongPoint(ResumeAttachmentIndexFields.RESUME_ID,resumeFile.getResumeId(),resumeFile.getResumeId()));
-            document.add(new StringField(ResumeAttachmentIndexFields.RESUME_ID_STR,Long.toString(resumeFile.getResumeId()), Field.Store.YES));
-            document.add(new TextField(ResumeAttachmentIndexFields.CONTENT,resumeFile.getContent(), Field.Store.NO));
-            //生成索引文件
-            writer.addDocument(document);
+            Directory directory = FSDirectory.open(new File(getBuildFolder()).toPath());
+            IndexWriterConfig config = new IndexWriterConfig(analyzer);
+            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+            writer = new IndexWriter(directory,config);
+            for(ResumeAttach resumeAttach:resumeAttacheList) {
+                Document document = new Document();
+                document.add(new LongPoint(ResumeAttachmentIndexFields.RESUME_ID, resumeAttach.getResumeId()));
+                document.add(new StringField(ResumeAttachmentIndexFields.RESUME_ID_STR, Long.toString(resumeAttach.getResumeId()), Field.Store.YES));
+                document.add(new TextField(ResumeAttachmentIndexFields.CONTENT, resumeAttach.getAttachContent(), Field.Store.NO));
+                writer.addDocument(document);
+            }
             writer.commit();
         } catch (IOException e) {
             log.error("create index error", e);
@@ -150,18 +113,27 @@ public class ResumeAttachService extends BaseService{
     }
 
     /**
+     * 直接读取数据库重建索引
+     */
+    public void buildIndex() {
+        IndexWriter writer = null;
+        List<ResumeAttach> resumeAttacheList = resumeAttacheMapper.listAll();
+        buildIndex(resumeAttacheList);
+    }
+
+    /**
      * 添加索引文件
      * @param document
      * @return
      * @throws IOException
      */
-    public Document appendIndex(Document document) throws IOException {
-        Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
-        IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-        IndexWriter writer = new IndexWriter(directory,config);
-
+    public Document appendIndex(Document document) {
+        IndexWriter writer = null;
         try {
+            Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
+            IndexWriterConfig config = new IndexWriterConfig(analyzer);
+            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+            writer = new IndexWriter(directory,config);
             writer.addDocument(document);
             writer.commit();
         } catch (IOException e) {
@@ -175,23 +147,26 @@ public class ResumeAttachService extends BaseService{
     public Document appendIndex(ResumeAttach resumeAttach) {
         IndexWriter writer = null;
         Document document = new Document();
-        try {
-            Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
-            IndexWriterConfig config = new IndexWriterConfig(analyzer);
-            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-            writer = new IndexWriter(directory,config);
-            document.add(new LongPoint(ResumeAttachmentIndexFields.RESUME_ID,resumeAttach.getResumeId()));
-            document.add(new StringField(ResumeAttachmentIndexFields.RESUME_ID_STR,Long.toString(resumeAttach.getResumeId()), Field.Store.YES));
-            document.add(new TextField(ResumeAttachmentIndexFields.CONTENT,resumeAttach.getAttachContent(), Field.Store.NO));
+        document.add(new LongPoint(ResumeAttachmentIndexFields.RESUME_ID,resumeAttach.getResumeId()));
+        document.add(new StringField(ResumeAttachmentIndexFields.RESUME_ID_STR,Long.toString(resumeAttach.getResumeId()), Field.Store.YES));
+        document.add(new TextField(ResumeAttachmentIndexFields.CONTENT,resumeAttach.getAttachContent(), Field.Store.NO));
+        return appendIndex(document);
+    }
 
-            writer.addDocument(document);
-            writer.commit();
-        } catch (IOException e) {
-            log.error("append index error", e);
-        } finally {
-            IOUtils.closeQuietly(writer);
-        }
-        return document;
+    /**
+     * 更新索引
+     * 先删除再添加
+     * @param resumeAttach
+     * @return
+     */
+    public Document updateIndex(ResumeAttach resumeAttach){
+        deleteIndex(resumeAttach.getResumeId());
+        return appendIndex(resumeAttach);
+    }
+
+    public Document updateIndex(Document document){
+        deleteIndex(document);
+        return appendIndex(document);
     }
 
     /**
@@ -199,9 +174,11 @@ public class ResumeAttachService extends BaseService{
      * @param resumeId
      * @throws IOException
      */
-    public void deleteIndex(Long resumeId) {
+    public Document deleteIndex(Long resumeId) {
         IndexWriter writer = null;
+        Document document = new Document();
         try {
+            document = getDocumentByResumeId(resumeId);
             Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
             config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
@@ -213,6 +190,13 @@ public class ResumeAttachService extends BaseService{
         } finally {
             IOUtils.closeQuietly(writer);
         }
+        return document;
+    }
+
+    public Document deleteIndex(Document document) {
+        Long resumeId = NumberUtils.toLong(document.get(ResumeAttachmentIndexFields.RESUME_ID_STR));
+        deleteIndex(resumeId);
+        return document;
     }
 
     /**

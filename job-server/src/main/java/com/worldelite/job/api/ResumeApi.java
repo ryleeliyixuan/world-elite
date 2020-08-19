@@ -328,7 +328,7 @@ public class ResumeApi extends BaseApi {
      */
     @PostMapping("rebuild-attachment-index")
     public ApiResult rebuildAttachmentIndex(){
-        //TODO 这里要对接数据库，先返回成功
+        resumeAttachService.buildIndex();
         return ApiResult.ok();
     }
 
