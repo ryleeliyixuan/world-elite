@@ -3,8 +3,8 @@ package com.worldelite.job.form;
 import lombok.Data;
 
 @Data
-public class UserApplicantCommentForm {
-    private long userApplicantId;
+public class UserCorporateCommentForm {
+    private long userId;
     private long companyId;
     private String comment;
 }

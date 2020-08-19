@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.worldelite.job.mapper.UserApplicantCommentMapper">
+<mapper namespace="com.worldelite.job.mapper.UserCorporateCommentMapper">
     <select id="selectByUserIdAndCompanyId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from t_user_applicant_comment
+        from t_user_corporate_comment
         <where>
-            <if test="userApplicantId != null">
-                and user_applicant_id = #{userApplicantId,jdbcType=BIGINT}
+            <if test="userId != null">
+                and user_id = #{userId,jdbcType=BIGINT}
             </if>
             <if test="companyId != null">
                 and company_id = #{companyId,jdbcType=BIGINT}
