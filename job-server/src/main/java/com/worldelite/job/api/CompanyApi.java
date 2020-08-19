@@ -199,8 +199,7 @@ public class CompanyApi extends BaseApi {
     @RequireLogin(allow = UserType.COMPANY)
     @ApiDoc
     public ApiResult<List<CompanyAddressVo>> getCompanyAddressList(){
-        //CompanyUserVo companyUserVo = companyService.getCompanyUser(curUser().getId());
-        CompanyUserVo companyUserVo = companyService.getCompanyUser2(curUser().getId());
+        CompanyUserVo companyUserVo = companyService.getCompanyUser(curUser().getId());
         Long companyId = Long.valueOf(companyUserVo.getCompany().getId());
         List<CompanyAddressVo> addressVoList = companyAddressService.getCompanyAddressList(companyId);
         return ApiResult.ok(addressVoList);

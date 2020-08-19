@@ -475,6 +475,7 @@ public class ResumeService extends BaseService {
      */
     @Async
     public void addOrUpdateResumeIndex(Long resumeId, Long userId, String attachResume) {
+        Document document = null;
         try {
             //region 读取附件简历内容
             String suffix = attachResume.substring(attachResume.lastIndexOf(".") + 1);
@@ -490,6 +491,7 @@ public class ResumeService extends BaseService {
                 resumeAttach.setAttachContent(attachContent);
 
                 resumeAttachMapper.updateByPrimaryKeyWithBLOBs(resumeAttach);
+                document = resumeAttachService.updateIndex(resumeAttach);
             } else {
                 resumeAttach = new ResumeAttach();
                 resumeAttach.setResumeId(resumeId);
@@ -497,11 +499,12 @@ public class ResumeService extends BaseService {
                 resumeAttach.setAttachContent(attachContent);
 
                 resumeAttachMapper.insert(resumeAttach);
+                document = resumeAttachService.appendIndex(resumeAttach);
             }
             //endregion
 
             //TODO 索引更新
-            Document document = new Document();
+            //document = new Document();
 
             //MQ广播索引更新指令
             rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.CreateOrUpdate, BusinessType.AttachResume));
@@ -519,11 +522,15 @@ public class ResumeService extends BaseService {
     @Async
     public void deleteResumeIndex(Long resumeId) {
 
+        Document document = null;
         ResumeAttach resumeAttach = resumeAttachMapper.selectByResumeId(resumeId);
-        if (resumeAttach != null) resumeAttachMapper.deleteByPrimaryKey(resumeAttach.getId());
+        if (resumeAttach != null) {
+            resumeAttachMapper.deleteByPrimaryKey(resumeAttach.getId());
+            document = resumeAttachService.deleteIndex(resumeAttach.getResumeId());
+        }
 
         //TODO 索引删除
-        Document document = new Document();
+        //document = new Document();
 
         //MQ广播索引更新指令
         rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.Delete, BusinessType.AttachResume));

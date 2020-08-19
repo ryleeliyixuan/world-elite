@@ -8,13 +8,13 @@ import com.worldelite.job.entity.Job;
 import com.worldelite.job.entity.JobOptions;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeOptions;
-import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
@@ -112,25 +112,36 @@ public class LuceneIndexService implements IndexService {
     }
 
     @Override
-    public void saveJobItem(Long jobId) {
+    public Document saveJobItem(Long jobId) {
         IndexWriter indexWriter = null;
+        Document document = null;
         try {
             indexWriter = createIndexWriter(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             //先删除，再添加
             indexWriter.deleteDocuments(LongPoint.newExactQuery(JobIndexFields.JOB_ID_INDEX, jobId));
-            indexWriter.addDocument(createJobDoc(jobId));
+            document = createJobDoc(jobId);
+            indexWriter.addDocument(document);
             indexWriter.commit();
         } catch (IOException e) {
             log.error("saveJobItem error ", e);
         } finally {
             IOUtils.closeQuietly(indexWriter);
         }
+        return document;
     }
 
     @Override
-    public void deleteJobItem(Long jobId) {
+    public Document saveJobItem(Document document) {
+        Long jobId = NumberUtils.toLong(document.get(JobIndexFields.JOB_ID));
+        return saveJobItem(jobId);
+    }
+
+    @Override
+    public Document deleteJobItem(Long jobId) {
         IndexWriter indexWriter = null;
+        Document document = null;
         try {
+            document = createJobDoc(jobId);
             indexWriter = createIndexWriter(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             indexWriter.deleteDocuments(LongPoint.newExactQuery(JobIndexFields.JOB_ID_INDEX, jobId));
             indexWriter.commit();
@@ -139,6 +150,13 @@ public class LuceneIndexService implements IndexService {
         } finally {
             IOUtils.closeQuietly(indexWriter);
         }
+        return document;
+    }
+
+    @Override
+    public Document deleteJobItem(Document document) {
+        Long jobId = NumberUtils.toLong(document.get(JobIndexFields.JOB_ID));
+        return deleteJobItem(jobId);
     }
 
     private Document createJobDoc(Long jobId) {

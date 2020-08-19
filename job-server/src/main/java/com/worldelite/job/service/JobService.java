@@ -3,6 +3,7 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
+import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
@@ -20,11 +21,15 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.document.Document;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,6 +76,13 @@ public class JobService extends BaseService {
 
     @Autowired
     private MessageTaskHandler messageTaskHandler;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Resource(name = "luceneIndexCmdFanoutExchange")
+    private FanoutExchange exchange;
+
 
     /**
      * 获取职位信息: 适用列表
@@ -153,7 +165,9 @@ public class JobService extends BaseService {
         }
 
         //增加索引
-        indexService.saveJobItem(job.getId());
+        Document document = indexService.saveJobItem(job.getId());
+
+        rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.CreateOrUpdate, BusinessType.Job));
     }
 
     /**
@@ -351,7 +365,10 @@ public class JobService extends BaseService {
         job.setUpdateTime(new Date());
 
         //从索引中删除
-        indexService.deleteJobItem(jobId);
+        Document document = indexService.deleteJobItem(jobId);
+
+        //MQ广播索引更新指令
+        rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.Delete, BusinessType.Job));
 
         // 被系统或者管理员强制下架，记录原因，并发送消息
         if (force || curUser().getType() == UserType.ADMIN.value) {
