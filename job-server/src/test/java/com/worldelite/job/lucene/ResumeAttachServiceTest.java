@@ -29,16 +29,40 @@ public class ResumeAttachServiceTest {
      * 新建/重建索引测试
      */
     @Test
-    public void testBuildIndex(){
+    public void testBuildIndex() throws InterruptedException {
         //构建三个测试用简历文件实体对象
-        List<ResumeAttach> resumeAttachList = new ArrayList<ResumeAttach>();
+        List<ResumeAttach> resumeAttachList1 = new ArrayList<ResumeAttach>();
+        List<ResumeAttach> resumeAttachList2 = new ArrayList<ResumeAttach>();
         ResumeAttach resumeAttach1 = createResumeAttach(0L,"后台工程师");
         ResumeAttach resumeAttach2 = createResumeAttach(1L,"测试文本2");
         ResumeAttach resumeAttach3 = createResumeAttach(2L,"测试文本3");
-        resumeAttachList.add(resumeAttach1);
-        resumeAttachList.add(resumeAttach2);
-        resumeAttachList.add(resumeAttach3);
-        resumeAttachService.buildIndex(resumeAttachList);
+        resumeAttachList1.add(resumeAttach1);
+        resumeAttachList1.add(resumeAttach2);
+        resumeAttachList2.add(resumeAttach3);
+        //开三个线程，一个线程写入resumeAttachList1，一个写入resumeAttachList2
+        //另外一个线程进行查询
+        new Thread(){
+            @Override
+            public void run() {
+                resumeAttachService.buildIndex(resumeAttachList1);
+            }
+        }.start();
+        new Thread(){
+            @Override
+            public void run() {
+                resumeAttachService.buildIndex(resumeAttachList2);
+            }
+        }.start();
+        Thread.sleep(600);
+        new Thread(){
+            @Override
+            public void run() {
+                Document document = resumeAttachService.getDocumentByResumeId(1L);
+                System.out.println("搜索完成");
+            }
+        }.start();
+        //睡眠一段时间，等待三个线程执行完成
+        Thread.sleep(3000);
     }
 
     private ResumeAttach createResumeAttach(Long id,String content){

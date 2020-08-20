@@ -121,7 +121,7 @@ const constantRoutes = [
         path: '/company/:id',
         name: 'company',
         component: () => import('@/views/CompanyHomePage2'),
-        meta: {title: '小米内页'}
+        meta: {title: '公司页面'}
     }
 ]
 

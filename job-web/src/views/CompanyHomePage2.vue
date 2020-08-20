@@ -130,8 +130,8 @@
       </div>
       <!-- Activity START-->
       <div class="activity-box" v-else>
-        <ul class="timeline">
-          <li class="event" 
+        <ul class="timeline" v-if="activityPage.list.length>0">
+          <li class="event"
             v-for="activity in activityPage.list"
             :key="activity.id"
             :data-date="activity.startTime"
@@ -275,7 +275,7 @@ export default {
         }
       });
       this.getCompanyJobList();
-      
+
     },
     handleScroll(event){
       if (this.tabIndex == "intro") {
@@ -285,7 +285,7 @@ export default {
         for (let i = 0; i < h_list.length; i++){
           let element = h_list[i];
           let position = element.getBoundingClientRect();
-          
+
           let next_element = null;
           let next_position = null;
           if (i != h_list.length - 1){
@@ -448,33 +448,33 @@ export default {
   border-left: 4px solid gray;
   border-bottom-right-radius: 4px;
   border-top-right-radius: 4px;
-  margin: 50px 50px 50px 200px;  
-  letter-spacing: 0.5px;   
+  margin: 50px 50px 50px 200px;
+  letter-spacing: 0.5px;
   position: relative;
   font-size: 18px;
-  padding: 50px; 
+  padding: 50px;
   list-style: none;
   text-align: left;
   font-weight: 100;
-  max-width: 70%; 
+  max-width: 70%;
 }
-  
+
 .timeline h3 {
   letter-spacing: 1.5px;
   font-weight: 500;
   font-size: 25px;
 }
-  
+
 .timeline .event {
   padding-bottom: 25px;
-  margin-bottom: 50px;  
+  margin-bottom: 50px;
   position: relative;
 }
 
-.timeline .event:last-of-type { 
+.timeline .event:last-of-type {
   padding-bottom: 0;
-  margin-bottom: 0; 
-  border: none;      
+  margin-bottom: 0;
+  border: none;
 }
 
 .timeline .event:before, .timeline .event:after {
@@ -488,15 +488,15 @@ export default {
   color: gray;
   content: attr(data-date);
   text-align: right;
-  font-weight: 100;    
+  font-weight: 100;
   font-size: 16px;
   min-width: 120px;
 }
 
 .timeline .event:after {
   box-shadow: 0 0 0 4px gray;
-  left: -58px;        
-  background: white;    
+  left: -58px;
+  background: white;
   border-radius: 50%;
   height: 11px;
   width: 11px;
