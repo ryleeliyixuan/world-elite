@@ -93,10 +93,7 @@ public class ResumeAttachService extends BaseService{
     public void buildIndex(List<ResumeAttach> resumeAttacheList) {
         IndexWriter writer = null;
         try {
-            Directory directory = FSDirectory.open(new File(getBuildFolder()).toPath());
-            IndexWriterConfig config = new IndexWriterConfig(analyzer);
-            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-            writer = new IndexWriter(directory,config);
+            writer = getIndexWriter(getSearchFolder(),IndexWriterConfig.OpenMode.CREATE);
             for(ResumeAttach resumeAttach:resumeAttacheList) {
                 Document document = new Document();
                 document.add(new LongPoint(ResumeAttachmentIndexFields.RESUME_ID, resumeAttach.getResumeId()));
@@ -105,7 +102,7 @@ public class ResumeAttachService extends BaseService{
                 writer.addDocument(document);
             }
             writer.commit();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             log.error("create index error", e);
         } finally {
             IOUtils.closeQuietly(writer);
@@ -116,7 +113,6 @@ public class ResumeAttachService extends BaseService{
      * 直接读取数据库重建索引
      */
     public void buildIndex() {
-        IndexWriter writer = null;
         List<ResumeAttach> resumeAttacheList = resumeAttacheMapper.listAll();
         buildIndex(resumeAttacheList);
     }
@@ -130,13 +126,10 @@ public class ResumeAttachService extends BaseService{
     public Document appendIndex(Document document) {
         IndexWriter writer = null;
         try {
-            Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
-            IndexWriterConfig config = new IndexWriterConfig(analyzer);
-            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-            writer = new IndexWriter(directory,config);
+            writer = getIndexWriter(getSearchFolder(),IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             writer.addDocument(document);
             writer.commit();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             log.error("append index error", e);
         } finally {
             IOUtils.closeQuietly(writer);
@@ -145,7 +138,6 @@ public class ResumeAttachService extends BaseService{
     }
 
     public Document appendIndex(ResumeAttach resumeAttach) {
-        IndexWriter writer = null;
         Document document = new Document();
         document.add(new LongPoint(ResumeAttachmentIndexFields.RESUME_ID,resumeAttach.getResumeId()));
         document.add(new StringField(ResumeAttachmentIndexFields.RESUME_ID_STR,Long.toString(resumeAttach.getResumeId()), Field.Store.YES));
@@ -178,14 +170,10 @@ public class ResumeAttachService extends BaseService{
         IndexWriter writer = null;
         Document document = new Document();
         try {
-            document = getDocumentByResumeId(resumeId);
-            Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
-            IndexWriterConfig config = new IndexWriterConfig(analyzer);
-            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-            writer = new IndexWriter(directory,config);
+            writer = getIndexWriter(getSearchFolder(),IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             writer.deleteDocuments(LongPoint.newExactQuery(ResumeAttachmentIndexFields.RESUME_ID,resumeId));
             writer.commit();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             log.error("delete index error", e);
         } finally {
             IOUtils.closeQuietly(writer);
@@ -205,22 +193,61 @@ public class ResumeAttachService extends BaseService{
      * @return
      * @throws IOException
      */
-    public Document getDocumentByResumeId(Long resumeId) throws IOException {
-        //创建一个Directory对象，指定索引库存放的路径
-        Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
-        //创建IndexReader对象，需要指定Directory对象
-        IndexReader indexReader = DirectoryReader.open(directory);
-        //根据索引位置建立IndexSearch
-        IndexSearcher searcher = new IndexSearcher(indexReader);
-
-        TopDocs hits = searcher.search(LongPoint.newExactQuery(ResumeAttachmentIndexFields.RESUME_ID,resumeId), 10);
+    public Document getDocumentByResumeId(Long resumeId) {
         Document document = null;
+        IndexSearcher searcher = null;
+        try {
+            //创建一个Directory对象，指定索引库存放的路径
+            Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
+            //创建IndexReader对象，需要指定Directory对象
+            IndexReader indexReader = DirectoryReader.open(directory);
+            //根据索引位置建立IndexSearch
+            searcher = new IndexSearcher(indexReader);
 
-        //搜索有结果，理论上只会有一条记录，为了兼容意外情况，如果有多条记录，则取第一条
-        if(hits.totalHits>=0){
-            document = searcher.doc(hits.scoreDocs[0].doc);
+            TopDocs hits = searcher.search(LongPoint.newExactQuery(ResumeAttachmentIndexFields.RESUME_ID, resumeId), 10);
+
+            //搜索有结果，理论上只会有一条记录，为了兼容意外情况，如果有多条记录，则取第一条
+            if (hits.totalHits > 0) {
+                document = searcher.doc(hits.scoreDocs[0].doc);
+            }
+        }catch (IOException e) {
+            log.error("search index error", e);
         }
-
         return document;
+    }
+
+    /**
+     * 阻塞式获取IndexWriter实例
+     * 当目标索引文件夹被锁住时
+     * 该方法会不断尝试直到锁被释放
+     *
+     * TODO 是否需要加入超时时间，超时则放弃本次写入？
+     *
+     * @param path
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    private IndexWriter getIndexWriter(String path, IndexWriterConfig.OpenMode mode) throws IOException, InterruptedException {
+        IndexWriter writer = null;
+        IndexWriterConfig config = null;
+        Directory directory = FSDirectory.open(new File(getSearchFolder()).toPath());
+        //阻塞线程，直到锁被释放，获得IndexWriter对象
+        Long timestramp = System.currentTimeMillis();
+        while(true){
+            try {
+                System.out.println("获取IndexWriter"+timestramp);
+                config = new IndexWriterConfig(analyzer);
+                config.setOpenMode(mode);
+                writer = new IndexWriter(directory, config);
+                System.out.println("IndexWriter获取成功"+timestramp);
+                break;
+            }catch (IOException e){
+                System.out.println("IndexWriter获取失败"+timestramp);
+                Thread.sleep(500);
+                continue;
+            }
+        }
+        return writer;
     }
 }
