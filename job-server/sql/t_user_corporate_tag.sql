@@ -23,8 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `t_user_corporate_tag`;
 CREATE TABLE `t_user_corporate_tag`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `user_id` bigint NOT NULL,
-  `corporate_id` bigint NOT NULL,
+  `job_apply_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '职位申请ID',
   `tag_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
   `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),

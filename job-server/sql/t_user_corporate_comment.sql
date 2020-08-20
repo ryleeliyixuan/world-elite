@@ -2,8 +2,7 @@ DROP TABLE IF EXISTS `t_user_corporate_comment`;
 
 CREATE TABLE `t_user_corporate_comment` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `company_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '公司ID',
+  `job_apply_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '职位申请ID',
   `comment` varchar(100) NOT NULL DEFAULT '' COMMENT '笔记',
   `del_flag` tinyint NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

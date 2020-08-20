@@ -21,8 +21,7 @@ import java.util.List;
 @SpringBootTest(classes = JobApplication.class)
 @WebAppConfiguration
 public class UserCorporateCommentServiceTests {
-    private static final Long TEST_USER_ID = (long) 123456667;
-    private static final Long TEST_COMAPNY_ID = (long) 123456668;
+    private static final Long TEST_JOB_APPLY_ID = (long) 123456667;
     private static final String TEST_COMMENT_1 = "test comment 1";
     private static final String TEST_COMMENT_2 = "test comment 2";
     private static final int TEST_NUM_COMMENTS = 2;
@@ -38,18 +37,18 @@ public class UserCorporateCommentServiceTests {
         //saving user comments.
         final UserCorporateCommentForm form1 = new UserCorporateCommentForm();
         final UserCorporateCommentForm form2 = new UserCorporateCommentForm();
+        form1.setJobApplyId(TEST_JOB_APPLY_ID);
         form1.setComment(TEST_COMMENT_1);
-        form1.setUserId(TEST_USER_ID);
-        form1.setCompanyId(TEST_COMAPNY_ID);
+
+        form2.setJobApplyId(TEST_JOB_APPLY_ID);
         form2.setComment(TEST_COMMENT_2);
-        form2.setUserId(TEST_USER_ID);
-        form2.setCompanyId(TEST_COMAPNY_ID);
 
         userCorporateCommentService.saveComment(form1);
         userCorporateCommentService.saveComment(form2);
 
         //retrieving user comments, expecting 2 total comments.
-        final List<UserCorporateCommentVo> comments = userCorporateCommentService.getCommentsByUserIdAndCompanyId(TEST_USER_ID, TEST_COMAPNY_ID);
+        final List<UserCorporateCommentVo> comments = userCorporateCommentService.getCommentsByJobApplyId(TEST_JOB_APPLY_ID);
+        System.out.println(comments);
         Assert.assertTrue(comments.size() == TEST_NUM_COMMENTS);
 
         //delete ALL user comments created in this test.
@@ -57,7 +56,7 @@ public class UserCorporateCommentServiceTests {
         userCorporateCommentService.deleteCommentById(comments.get(1).getId());
 
         //retrieving user comments, expecting 0 total comment.
-        final List<UserCorporateCommentVo> commentsAfterDeletion = userCorporateCommentService.getCommentsByUserIdAndCompanyId(TEST_USER_ID, TEST_COMAPNY_ID);
+        final List<UserCorporateCommentVo> commentsAfterDeletion = userCorporateCommentService.getCommentsByJobApplyId(TEST_JOB_APPLY_ID);
         Assert.assertTrue(commentsAfterDeletion.size() == 0);
     }
 }

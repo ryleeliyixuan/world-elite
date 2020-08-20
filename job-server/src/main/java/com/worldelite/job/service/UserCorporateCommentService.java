@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,28 +30,39 @@ public class UserCorporateCommentService {
      * @return
      */
     public void saveComment(final @NonNull UserCorporateCommentForm userCorporateCommentForm) {
-        final UserCorporateComment userCorporateComment = new UserCorporateComment();
+
+        boolean isUpdate = false;
+        UserCorporateComment userCorporateComment;
+        if (userCorporateCommentForm.getId() == null) {
+            userCorporateComment = new UserCorporateComment();
+            userCorporateComment.setJobApplyId(userCorporateCommentForm.getJobApplyId());
+        } else {
+            isUpdate = true;
+            userCorporateComment = userCorporateCommentMapper.selectByPrimaryKey(userCorporateCommentForm.getId());
+            userCorporateComment.setUpdateTime(new Date());
+        }
 
         if (StringUtils.isNotEmpty(userCorporateCommentForm.getComment())) {
             userCorporateComment.setComment(userCorporateCommentForm.getComment());
         }
 
-        userCorporateComment.setUserId(userCorporateCommentForm.getUserId());
-        userCorporateComment.setCompanyId(userCorporateCommentForm.getCompanyId());
-
-        userCorporateCommentMapper.insertSelective(userCorporateComment);
+        if (isUpdate) {
+            userCorporateCommentMapper.updateByPrimaryKey(userCorporateComment);
+        } else {
+            userCorporateCommentMapper.insertSelective(userCorporateComment);
+        }
     }
 
     /**
      * 根据用户id取得用户笔记
      *
-     * @param userId
+     * @param jobApplyId
      * @return
      */
-    public List<UserCorporateCommentVo> getCommentsByUserIdAndCompanyId(long userId, long corporateId) {
+    public List<UserCorporateCommentVo> getCommentsByJobApplyId(long jobApplyId) {
 
         final List<UserCorporateComment> userCorporateComments;
-        userCorporateComments = userCorporateCommentMapper.selectByUserIdAndCompanyId(userId, corporateId);
+        userCorporateComments = userCorporateCommentMapper.selectByJobApplyId(jobApplyId);
 
         if (Objects.nonNull(userCorporateComments)) {
             return userCorporateComments.stream()
