@@ -6,13 +6,14 @@ import com.worldelite.job.form.JobCategorySkillForm;
 import com.worldelite.job.form.JobSkillForm;
 import com.worldelite.job.mapper.JobCategorySkillMapper;
 import com.worldelite.job.mapper.JobSkillMapper;
+import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.JobSkillVo;
 import lombok.NonNull;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,16 +30,32 @@ public class JobCategorySkillService {
     private JobSkillMapper jobSkillMapper;
 
     /**
+     * 获取全部职位技能
+     *
+     * @return
+     */
+    public List<JobSkillVo> getJobSkillList() {
+        final List<JobSkill> jobSkills = jobSkillMapper.selectJobSkillList();
+        if (Objects.nonNull(jobSkills)) {
+            return jobSkills.stream()
+                    .map(jobSkill -> new JobSkillVo().asVo(jobSkill))
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
+    }
+
+    /**
      * 根据工作种类获得相关职位技能
+     *
      * @param jobCategoryId
      * @return List<JobSkillVo>
      */
     public List<JobSkillVo> getJobSkillByJobCategoryId(final @NonNull long jobCategoryId) {
-        final List<JobCategorySkill> jobCategorySkills = jobCategorySkillMapper.selectByJobCategoryId(jobCategoryId);
+        final List<JobSkill> jobSkills = jobSkillMapper.selectByJobCategoryId(jobCategoryId);
 
-        if (Objects.nonNull(jobCategorySkills)) {
-            return jobCategorySkills.stream()
-                    .map(jobCategorySkill -> jobSkillMapper.selectByPrimaryKey(jobCategorySkill.getSkillId()))
+        if (Objects.nonNull(jobSkills)) {
+            return jobSkills.stream()
                     .map(jobSkill -> new JobSkillVo().asVo(jobSkill))
                     .collect(Collectors.toList());
         }
@@ -51,10 +68,15 @@ public class JobCategorySkillService {
      * @param jobSkillForm
      */
     public void saveJobSkill(final @NonNull JobSkillForm jobSkillForm) {
-        if (StringUtils.isNotEmpty(jobSkillForm.getName())) {
-            final JobSkill jobSkill = new JobSkill();
+        JobSkill jobSkill;
+        if (jobSkillForm.getId() == null || (jobSkill = jobSkillMapper.selectByPrimaryKey(jobSkillForm.getId())) == null) {
+            jobSkill = new JobSkill();
             jobSkill.setName(jobSkillForm.getName());
             jobSkillMapper.insertSelective(jobSkill);
+        } else {
+            jobSkill.setName(jobSkillForm.getName());
+            jobSkill.setUpdateTime(new Date());
+            jobSkillMapper.updateByPrimaryKey(jobSkill);
         }
     }
 
@@ -71,11 +93,18 @@ public class JobCategorySkillService {
      * @param jobCategorySkillForm
      */
     public void saveJobCategorySkill (final @NonNull JobCategorySkillForm jobCategorySkillForm) {
-        final JobCategorySkill jobCategorySkill = new JobCategorySkill();
-        jobCategorySkill.setSkillId(jobCategorySkillForm.getSkillId());
-        jobCategorySkill.setCategoryId(jobCategorySkillForm.getCategoryId());
 
-        jobCategorySkillMapper.insertSelective(jobCategorySkill);
+        JobCategorySkill jobCategorySkill;
+        if (jobCategorySkillForm.getId() == null || (jobCategorySkill = jobCategorySkillMapper.selectByPrimaryKey(jobCategorySkillForm.getId())) == null) {
+            jobCategorySkill = new JobCategorySkill();
+            jobCategorySkill.setSkillId(jobCategorySkillForm.getSkillId());
+            jobCategorySkill.setCategoryId(jobCategorySkillForm.getCategoryId());
+            jobCategorySkillMapper.insertSelective(jobCategorySkill);
+        } else {
+            jobCategorySkill.setSkillId(jobCategorySkillForm.getSkillId());
+            jobCategorySkill.setCategoryId(jobCategorySkillForm.getCategoryId());
+            jobCategorySkillMapper.updateByPrimaryKey(jobCategorySkill);
+        }
     }
 
     /**
@@ -85,4 +114,6 @@ public class JobCategorySkillService {
     public void deleteJobCategorySkillById(final long jobCategorySkillId) {
         jobCategorySkillMapper.deleteByPrimaryKey(jobCategorySkillId);
     }
+
+
 }
