@@ -28,7 +28,7 @@ public class JobDescExampleService {
         final JobDescExample jobDescExample = new JobDescExample();
 
         if(StringUtils.isNotEmpty(jobDescExampleForm.getDescription())) {
-            jobDescExampleForm.setDescription(jobDescExampleForm.getDescription());
+            jobDescExample.setDescription(jobDescExampleForm.getDescription());
         }
         jobDescExample.setId(jobDescExampleForm.getId());
         jobDescExample.setCategoryId(jobDescExampleForm.getCategoryId());
