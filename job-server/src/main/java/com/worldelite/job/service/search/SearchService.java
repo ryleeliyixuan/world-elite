@@ -2,6 +2,7 @@ package com.worldelite.job.service.search;
 
 import com.worldelite.job.form.JobSearchForm;
 import com.worldelite.job.form.PageForm;
+import com.worldelite.job.form.ResumeAttachmentForm;
 import com.worldelite.job.vo.JobVo;
 import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.ResumeVo;
@@ -27,4 +28,11 @@ public interface SearchService {
      * @return
      */
     PageResult<ResumeVo> getJobRecommendResumes(Long jobId, PageForm pageForm);
+
+    /**
+     * 从简历附件中检索简历
+     * @param searchForm
+     * @return
+     */
+    PageResult<ResumeVo> searchResumeAttachment(ResumeAttachmentForm searchForm);
 }

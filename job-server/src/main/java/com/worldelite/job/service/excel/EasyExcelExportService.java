@@ -18,6 +18,7 @@ import com.worldelite.job.vo.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -39,6 +40,7 @@ public class EasyExcelExportService implements IExportExcelService {
     private UserService userService;
 
     @Autowired
+    @Lazy
     private ResumeService resumeService;
 
     @Autowired

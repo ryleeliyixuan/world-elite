@@ -1,9 +1,11 @@
 package com.worldelite.job.service.search;
 
 import com.worldelite.job.constants.JobIndexFields;
+import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.constants.ResumeIndexFields;
 import com.worldelite.job.form.JobSearchForm;
 import com.worldelite.job.form.PageForm;
+import com.worldelite.job.form.ResumeAttachmentForm;
 import com.worldelite.job.service.DictService;
 import com.worldelite.job.service.JobCategoryService;
 import com.worldelite.job.service.JobService;
@@ -11,21 +13,21 @@ import com.worldelite.job.service.ResumeService;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.SetUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -47,6 +49,12 @@ public class LuceneSearchService implements SearchService {
     @Value("${search.index.path}")
     private String searchIndexPath;
 
+    @Value("${search.index.resumeindex1}")
+    private String resumeAttachmentPath1;
+
+    @Value("${search.index.resumeindex2}")
+    private String resumeAttachmentPath2;
+
     @Autowired
     private Analyzer analyzer;
 
@@ -54,6 +62,7 @@ public class LuceneSearchService implements SearchService {
     private JobService jobService;
 
     @Autowired
+    @Lazy
     private ResumeService resumeService;
 
     @Autowired
@@ -63,6 +72,8 @@ public class LuceneSearchService implements SearchService {
     private JobCategoryService categoryService;
 
     private static IndexReader sIndexReader;
+
+    private boolean switchFolder = false;
 
     @Override
     public PageResult<JobVo> searchJob(JobSearchForm searchForm) {
@@ -151,6 +162,45 @@ public class LuceneSearchService implements SearchService {
             queryBuilder.add(categoryBuilder.build(), BooleanClause.Occur.MUST);
         }
         return searchResumeByQuery(queryBuilder.build(), pageForm);
+    }
+
+    @Override
+    public PageResult<ResumeVo> searchResumeAttachment(ResumeAttachmentForm searchForm) {
+        //附件简历索引文件夹有两个，搜索时需要使用搜索索引文件夹
+        IndexSearcher indexSearcher = getIndexSearcher(getSearchFolder());
+        //构造搜索请求
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+        for(String keyword : searchForm.getKeywords()){
+            //目标简历附件必须包含所有关键词
+            Term term = new Term(ResumeAttachmentIndexFields.CONTENT,keyword);
+            Query query = new TermQuery(term);
+            builder.add(query, BooleanClause.Occur.MUST);
+        }
+        BooleanQuery query = builder.build();
+
+        try {
+            ScoreDoc lastScoreDoc = getLastScoreDoc(searchForm, query, indexSearcher);
+            TopDocs topDocs = indexSearcher.searchAfter(lastScoreDoc, query, searchForm.getLimit());
+            PageResult<ResumeVo> pageResult = new PageResult<>();
+            pageResult.setTotal(topDocs.totalHits);
+            pageResult.setCurrentPage(searchForm.getPage());
+            pageResult.setPageSize(searchForm.getLimit());
+            List<ResumeVo> resumeVoList = new ArrayList<>();
+
+            for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+                Document hitDoc = indexSearcher.doc(scoreDoc.doc);
+                Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeAttachmentIndexFields.RESUME_ID_STR));
+                ResumeVo resumeVo = resumeService.getResumeInfo(resumeId);
+                resumeVoList.add(resumeVo);
+            }
+
+            pageResult.setList(resumeVoList);
+            pageResult.calPageCountAndHasMore(resumeVoList);
+            return pageResult;
+        } catch (IOException ex) {
+            log.error("searchResumeByQuery error, query: " + query.toString() + ", page: " + searchForm.toString(), ex);
+            return PageResult.emptyResult();
+        }
     }
 
     private Query addMultiShouldQuery(Integer[] ids, String indexField) {
@@ -248,5 +298,43 @@ public class LuceneSearchService implements SearchService {
             log.error("get index searcher error", ex);
             return null;
         }
+    }
+
+    private IndexSearcher getIndexSearcher(String path) {
+        try {
+            if (sIndexReader == null) {
+                synchronized (this) {
+                    if (sIndexReader == null) {
+                        sIndexReader = DirectoryReader.open(FSDirectory.open(Paths.get(path)));
+                    }
+                }
+            } else {
+                IndexReader indexReader = DirectoryReader.openIfChanged((DirectoryReader) sIndexReader);
+                if (indexReader != null) {
+                    sIndexReader.close();
+                    sIndexReader = indexReader;
+                }
+            }
+            return new IndexSearcher(sIndexReader);
+        } catch (IOException ex) {
+            log.error("get index searcher error", ex);
+            return null;
+        }
+    }
+
+    /**
+     * 获取当前索引文件重建目录
+     * @return
+     */
+    private String getBuildFolder(){
+        return switchFolder?resumeAttachmentPath1:resumeAttachmentPath2;
+    }
+
+    /**
+     * 获取当前索引文件搜索目录
+     * @return
+     */
+    private String getSearchFolder(){
+        return switchFolder?resumeAttachmentPath2:resumeAttachmentPath1;
     }
 }

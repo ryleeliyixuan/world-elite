@@ -113,7 +113,7 @@ public class AdminService extends BaseService {
                     companyUserVo.setCompany(companyVo);
                 }
             }else{
-                companyUserVo = companyService.getCompanyUser2(user.getId());
+                companyUserVo = companyService.getCompanyUser(user.getId());
             }
 
             if(companyUserVo != null){

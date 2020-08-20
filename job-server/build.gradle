@@ -71,8 +71,7 @@ dependencies {
 	implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '4.1.2'
 
 	implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.20'
-
-
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
 }
 
 test {

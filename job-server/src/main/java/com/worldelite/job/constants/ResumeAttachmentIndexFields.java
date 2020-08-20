@@ -1,10 +1,10 @@
 package com.worldelite.job.constants;
 
-public interface ResumeFileIndexFields {
+public interface ResumeAttachmentIndexFields {
 
     String RESUME_ID = "resume_file_id";
 
-    String FILE_NAME = "resume_file_name";
+    String RESUME_ID_STR= "resume_file_id_str";
 
     String CONTENT = "resume_file_content";
 
