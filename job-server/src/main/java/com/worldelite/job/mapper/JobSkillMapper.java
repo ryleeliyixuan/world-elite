@@ -1,6 +1,9 @@
 package com.worldelite.job.mapper;
 
+import com.worldelite.job.entity.JobCategorySkill;
 import com.worldelite.job.entity.JobSkill;
+
+import java.util.List;
 
 public interface JobSkillMapper {
     /**
@@ -50,4 +53,8 @@ public interface JobSkillMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(JobSkill record);
+
+    List<JobSkill> selectJobSkillList();
+
+    List<JobSkill> selectByJobCategoryId(long jobCategoryId);
 }

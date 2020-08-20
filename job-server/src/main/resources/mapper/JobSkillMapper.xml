@@ -121,5 +121,22 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
+
+
   </update>
+    <select id="selectJobSkillList" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List"/>
+  from t_job_skill
+    </select>
+    <select id="selectByJobCategoryId" resultType="com.worldelite.job.entity.JobSkill">
+
+      select
+      t_job_skill.id, t_job_skill.name, t_job_skill.del_flag, t_job_skill.create_time, t_job_skill.update_time
+  from 	t_job_skill
+	INNER JOIN t_job_category_skill ON t_job_category_skill.skill_id = t_job_skill.id
+	INNER JOIN t_job_category ON t_job_category.id = t_job_category_skill.category_id
+	where t_job_category.id = #{jobCategoryId,jdbcType=BIGINT}
+
+    </select>
 </mapper>
