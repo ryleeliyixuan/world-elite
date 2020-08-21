@@ -99,6 +99,10 @@ public class ResumeService extends BaseService {
     @Resource(name = "luceneIndexCmdFanoutExchange")
     private FanoutExchange exchange;
 
+    @Autowired
+    private UserCorporateCommentService corporateCommentService;
+    @Autowired
+    private UserCorporateTagService corporateTagService;
     /**
      * 获取我的默认简历，如果没有就创建一个空简历
      *
@@ -351,6 +355,8 @@ public class ResumeService extends BaseService {
             applyResumeVo.setId(jobApply.getId());
             applyResumeVo.setApplyStatus(jobApply.getStatus());
             applyResumeVo.setJob(jobService.getJobInfo(jobApply.getJobId(), false));
+            applyResumeVo.setCommentVos(corporateCommentService.getCommentsByJobApplyId(jobApply.getId()));
+            applyResumeVo.setTagVos(corporateTagService.getTagsByJobApplyId(jobApply.getId()));
             applyResumeVo.setResume(getResumeInfo(jobApply.getResumeId()));
             applyResumeVo.setTime(jobApply.getCreateTime());
             applyResumeVoList.add(applyResumeVo);
