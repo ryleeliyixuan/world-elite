@@ -52,6 +52,4 @@ public interface JobCategorySkillMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(JobCategorySkill record);
-
-    List<JobCategorySkill> selectByJobCategoryId(Long jobCategoryId);
 }
