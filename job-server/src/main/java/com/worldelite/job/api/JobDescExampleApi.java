@@ -29,7 +29,7 @@ public class JobDescExampleApi {
      * @param jobDescExampleForm
      * @return
      */
-    //@RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("save")
     @ApiDoc
     public ApiResult saveExample(@RequestBody JobDescExampleForm jobDescExampleForm){
@@ -44,7 +44,7 @@ public class JobDescExampleApi {
      * @param categoryId
      * @return
      */
-    //@RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = UserType.COMPANY)
     @GetMapping("list")
     @ApiDoc
     public ApiResult<List<JobDescExampleVo>> getExampleList(@RequestParam long categoryId){
@@ -60,7 +60,7 @@ public class JobDescExampleApi {
      * @param id
      * @return
      */
-    //@RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("del")
     @ApiDoc
     public ApiResult deleteExample(@RequestParam Long id) {
