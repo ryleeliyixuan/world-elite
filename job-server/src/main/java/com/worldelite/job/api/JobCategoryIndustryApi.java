@@ -46,7 +46,7 @@ public class JobCategoryIndustryApi {
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("delete")
     @ApiDoc
-    public ApiResult deleteJobIndustry(@RequestBody long jobIndustryId){
+    public ApiResult deleteJobIndustry(@RequestParam long jobIndustryId){
         jobCategoryIndustryService.deleteJobIndustryById(jobIndustryId);
 
         return ApiResult.ok();
@@ -88,7 +88,7 @@ public class JobCategoryIndustryApi {
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("category/delete")
     @ApiDoc
-    public ApiResult deleteJobCategoryIndustry(@RequestBody long jobCategoryIndustryId){
+    public ApiResult deleteJobCategoryIndustry(@RequestParam long jobCategoryIndustryId){
         jobCategoryIndustryService.deleteJobCategoryIndustryById(jobCategoryIndustryId);
 
         return ApiResult.ok();
