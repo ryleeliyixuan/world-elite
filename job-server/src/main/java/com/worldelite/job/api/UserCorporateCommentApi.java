@@ -59,7 +59,7 @@ public class UserCorporateCommentApi extends BaseController {
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("delete")
     @ApiDoc
-    public ApiResult deleteComment(@RequestBody long userCorporateCommentId){
+    public ApiResult deleteComment(@RequestParam long userCorporateCommentId){
         userCorporateCommentService.deleteCommentById(userCorporateCommentId);
 
         return ApiResult.ok();

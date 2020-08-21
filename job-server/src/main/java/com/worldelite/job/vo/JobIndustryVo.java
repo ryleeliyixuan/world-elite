@@ -1,5 +1,6 @@
 package com.worldelite.job.vo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.entity.JobIndustry;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 public class JobIndustryVo implements VoConvertable<JobIndustryVo,JobIndustry> {
     private Long id; //职位行业领域ID
     private String name; //职位行业领域
+    @JSONField(format = "yyyy-MM-dd")
     private Date createTime; //创建时间
 
     @Override

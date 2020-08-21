@@ -61,7 +61,7 @@ public class UserCorporateTagApi extends BaseController {
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("delete")
     @ApiDoc
-    public ApiResult deleteTag(@RequestBody Long id) {
+    public ApiResult deleteTag(@RequestParam Long id) {
         userCorporateTagService.delTag(id);
         return ApiResult.ok();
     }

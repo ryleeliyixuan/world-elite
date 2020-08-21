@@ -29,7 +29,7 @@ public class JobCategoryIndustryApi {
      * @param jobIndustryForm
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("save")
     @ApiDoc
     public ApiResult saveJobIndustry(@RequestBody JobIndustryForm jobIndustryForm){
@@ -43,7 +43,7 @@ public class JobCategoryIndustryApi {
      * @param jobIndustryId
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("delete")
     @ApiDoc
     public ApiResult deleteJobIndustry(@RequestParam long jobIndustryId){
@@ -57,7 +57,7 @@ public class JobCategoryIndustryApi {
      * @param jobCategoryId
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @GetMapping("list")
     @ApiDoc
     public ApiResult<List<JobIndustryVo>> getJobIndustryList(@RequestParam long jobCategoryId) {
@@ -71,7 +71,7 @@ public class JobCategoryIndustryApi {
      * @param jobCategoryIndustryForm
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("category/save")
     @ApiDoc
     public ApiResult saveJobCategoryIndustry(@RequestBody JobCategoryIndustryForm jobCategoryIndustryForm){
@@ -85,7 +85,7 @@ public class JobCategoryIndustryApi {
      * @param jobCategoryIndustryId
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("category/delete")
     @ApiDoc
     public ApiResult deleteJobCategoryIndustry(@RequestParam long jobCategoryIndustryId){

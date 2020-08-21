@@ -4,7 +4,6 @@ import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.form.JobDescExampleForm;
 import com.worldelite.job.service.JobDescExampleService;
-import com.worldelite.job.entity.JobDescExample;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.JobDescExampleVo;
 import io.github.yedaxia.apidocs.ApiDoc;
@@ -29,7 +28,7 @@ public class JobDescExampleApi {
      * @param jobDescExampleForm
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("save")
     @ApiDoc
     public ApiResult saveExample(@RequestBody JobDescExampleForm jobDescExampleForm){
@@ -44,7 +43,7 @@ public class JobDescExampleApi {
      * @param categoryId
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @GetMapping("list")
     @ApiDoc
     public ApiResult<List<JobDescExampleVo>> getExampleList(@RequestParam long categoryId){
@@ -60,7 +59,7 @@ public class JobDescExampleApi {
      * @param id
      * @return
      */
-    @RequireLogin(allow = UserType.COMPANY)
+    @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("del")
     @ApiDoc
     public ApiResult deleteExample(@RequestParam Long id) {
