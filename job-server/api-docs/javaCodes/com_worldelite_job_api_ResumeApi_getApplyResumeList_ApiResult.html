@@ -129,6 +129,8 @@ public class ApplyResumeVo implements Serializable{
     private int id; //
     private ResumeVo resume; //简历
     private JobVo job; //职位
+    private UserCorporateCommentVo[] commentVos; //
+    private UserCorporateTagVo[] tagVos; //
     private byte applyStatus; //状态
     private String time; //申请时间
 
@@ -160,6 +162,26 @@ public class ApplyResumeVo implements Serializable{
     @JSONField(name="job")
     public void setJob(JobVo job){
         this.job = job;
+    }
+
+    @JSONField(name="commentVos")
+    public UserCorporateCommentVo[] getCommentVos(){
+        return commentVos;
+    }
+
+    @JSONField(name="commentVos")
+    public void setCommentVos(UserCorporateCommentVo[] commentVos){
+        this.commentVos = commentVos;
+    }
+
+    @JSONField(name="tagVos")
+    public UserCorporateTagVo[] getTagVos(){
+        return tagVos;
+    }
+
+    @JSONField(name="tagVos")
+    public void setTagVos(UserCorporateTagVo[] tagVos){
+        this.tagVos = tagVos;
     }
 
     @JSONField(name="applyStatus")
@@ -2396,6 +2418,110 @@ public class DictVo implements Serializable{
     @JSONField(name="value")
     public void setValue(String value){
         this.value = value;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class UserCorporateCommentVo implements Serializable{
+
+    private long id; //笔记Id， Primary Key
+    private long jobApplyId; //职位Id
+    private String comment; //用户笔记
+    private String createTime; //创建时间
+
+    @JSONField(name="id")
+    public long getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(long id){
+        this.id = id;
+    }
+
+    @JSONField(name="jobApplyId")
+    public long getJobApplyId(){
+        return jobApplyId;
+    }
+
+    @JSONField(name="jobApplyId")
+    public void setJobApplyId(long jobApplyId){
+        this.jobApplyId = jobApplyId;
+    }
+
+    @JSONField(name="comment")
+    public String getComment(){
+        return comment;
+    }
+
+    @JSONField(name="comment")
+    public void setComment(String comment){
+        this.comment = comment;
+    }
+
+    @JSONField(name="createTime")
+    public String getCreateTime(){
+        return createTime;
+    }
+
+    @JSONField(name="createTime")
+    public void setCreateTime(String createTime){
+        this.createTime = createTime;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class UserCorporateTagVo implements Serializable{
+
+    private long id; //标签ID
+    private long jobApplyId; //职位申请ID
+    private String tagName; //企业给个人用户设置的标签
+    private String createTime; //标签创建时间
+
+    @JSONField(name="id")
+    public long getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(long id){
+        this.id = id;
+    }
+
+    @JSONField(name="jobApplyId")
+    public long getJobApplyId(){
+        return jobApplyId;
+    }
+
+    @JSONField(name="jobApplyId")
+    public void setJobApplyId(long jobApplyId){
+        this.jobApplyId = jobApplyId;
+    }
+
+    @JSONField(name="tagName")
+    public String getTagName(){
+        return tagName;
+    }
+
+    @JSONField(name="tagName")
+    public void setTagName(String tagName){
+        this.tagName = tagName;
+    }
+
+    @JSONField(name="createTime")
+    public String getCreateTime(){
+        return createTime;
+    }
+
+    @JSONField(name="createTime")
+    public void setCreateTime(String createTime){
+        this.createTime = createTime;
     }
 
 }

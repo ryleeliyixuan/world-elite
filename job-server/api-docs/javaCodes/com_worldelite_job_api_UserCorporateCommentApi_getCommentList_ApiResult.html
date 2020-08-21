@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ApiResult</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class ApiResult implements Serializable{
+
+    private int code; //0为成功，其他错误码参考 ApiCode
+    private String msg; //错误消息
+    private UserCorporateCommentVo[] data; //数据包
+
+    @JSONField(name="code")
+    public int getCode(){
+        return code;
+    }
+
+    @JSONField(name="code")
+    public void setCode(int code){
+        this.code = code;
+    }
+
+    @JSONField(name="msg")
+    public String getMsg(){
+        return msg;
+    }
+
+    @JSONField(name="msg")
+    public void setMsg(String msg){
+        this.msg = msg;
+    }
+
+    @JSONField(name="data")
+    public UserCorporateCommentVo[] getData(){
+        return data;
+    }
+
+    @JSONField(name="data")
+    public void setData(UserCorporateCommentVo[] data){
+        this.data = data;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class UserCorporateCommentVo implements Serializable{
+
+    private long id; //笔记Id， Primary Key
+    private long jobApplyId; //职位Id
+    private String comment; //用户笔记
+    private String createTime; //创建时间
+
+    @JSONField(name="id")
+    public long getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(long id){
+        this.id = id;
+    }
+
+    @JSONField(name="jobApplyId")
+    public long getJobApplyId(){
+        return jobApplyId;
+    }
+
+    @JSONField(name="jobApplyId")
+    public void setJobApplyId(long jobApplyId){
+        this.jobApplyId = jobApplyId;
+    }
+
+    @JSONField(name="comment")
+    public String getComment(){
+        return comment;
+    }
+
+    @JSONField(name="comment")
+    public void setComment(String comment){
+        this.comment = comment;
+    }
+
+    @JSONField(name="createTime")
+    public String getCreateTime(){
+        return createTime;
+    }
+
+    @JSONField(name="createTime")
+    public void setCreateTime(String createTime){
+        this.createTime = createTime;
+    }
+
+}
+</pre>
+
+
+
+</body>
+</html>

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ApiResult</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class ApiResult implements Serializable{
+
+    private int code; //0为成功，其他错误码参考 ApiCode
+    private String msg; //错误消息
+    private PageResult data; //数据包
+
+    @JSONField(name="code")
+    public int getCode(){
+        return code;
+    }
+
+    @JSONField(name="code")
+    public void setCode(int code){
+        this.code = code;
+    }
+
+    @JSONField(name="msg")
+    public String getMsg(){
+        return msg;
+    }
+
+    @JSONField(name="msg")
+    public void setMsg(String msg){
+        this.msg = msg;
+    }
+
+    @JSONField(name="data")
+    public PageResult getData(){
+        return data;
+    }
+
+    @JSONField(name="data")
+    public void setData(PageResult data){
+        this.data = data;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class PageResult implements Serializable{
+
+    private int total; //总记录数
+    private int pageCount; //页数
+    private int currentPage; //当前页
+    private int pageSize; //每页记录数
+    private CompanyUserVo[] list; //列表数据
+    private boolean hasMore; //是否还有更多
+
+    @JSONField(name="total")
+    public int getTotal(){
+        return total;
+    }
+
+    @JSONField(name="total")
+    public void setTotal(int total){
+        this.total = total;
+    }
+
+    @JSONField(name="pageCount")
+    public int getPageCount(){
+        return pageCount;
+    }
+
+    @JSONField(name="pageCount")
+    public void setPageCount(int pageCount){
+        this.pageCount = pageCount;
+    }
+
+    @JSONField(name="currentPage")
+    public int getCurrentPage(){
+        return currentPage;
+    }
+
+    @JSONField(name="currentPage")
+    public void setCurrentPage(int currentPage){
+        this.currentPage = currentPage;
+    }
+
+    @JSONField(name="pageSize")
+    public int getPageSize(){
+        return pageSize;
+    }
+
+    @JSONField(name="pageSize")
+    public void setPageSize(int pageSize){
+        this.pageSize = pageSize;
+    }
+
+    @JSONField(name="list")
+    public CompanyUserVo[] getList(){
+        return list;
+    }
+
+    @JSONField(name="list")
+    public void setList(CompanyUserVo[] list){
+        this.list = list;
+    }
+
+    @JSONField(name="hasMore")
+    public boolean getHasMore(){
+        return hasMore;
+    }
+
+    @JSONField(name="hasMore")
+    public void setHasMore(boolean hasMore){
+        this.hasMore = hasMore;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class CompanyUserVo implements Serializable{
+
+    private long id; //用于后端
+    private String userId; //字符串ID，用于前端
+    private String name; //名字
+    private String avatar; //头像
+    private byte gender; //性别
+    private byte type; //用户类型
+    private byte status; //状态
+    private String token; //登录凭证
+    private String phoneCode; //电话区号
+    private String phone; //电话号码
+    private String email; //邮箱
+    private String createTime; //创建时间
+    private byte subscribeFlag; //订阅标志
+    private CompanyVo company; //公司
+    private String depart; //部门
+    private String post; //职位
+
+    @JSONField(name="id")
+    public long getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(long id){
+        this.id = id;
+    }
+
+    @JSONField(name="userId")
+    public String getUserId(){
+        return userId;
+    }
+
+    @JSONField(name="userId")
+    public void setUserId(String userId){
+        this.userId = userId;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="avatar")
+    public String getAvatar(){
+        return avatar;
+    }
+
+    @JSONField(name="avatar")
+    public void setAvatar(String avatar){
+        this.avatar = avatar;
+    }
+
+    @JSONField(name="gender")
+    public byte getGender(){
+        return gender;
+    }
+
+    @JSONField(name="gender")
+    public void setGender(byte gender){
+        this.gender = gender;
+    }
+
+    @JSONField(name="type")
+    public byte getType(){
+        return type;
+    }
+
+    @JSONField(name="type")
+    public void setType(byte type){
+        this.type = type;
+    }
+
+    @JSONField(name="status")
+    public byte getStatus(){
+        return status;
+    }
+
+    @JSONField(name="status")
+    public void setStatus(byte status){
+        this.status = status;
+    }
+
+    @JSONField(name="token")
+    public String getToken(){
+        return token;
+    }
+
+    @JSONField(name="token")
+    public void setToken(String token){
+        this.token = token;
+    }
+
+    @JSONField(name="phoneCode")
+    public String getPhoneCode(){
+        return phoneCode;
+    }
+
+    @JSONField(name="phoneCode")
+    public void setPhoneCode(String phoneCode){
+        this.phoneCode = phoneCode;
+    }
+
+    @JSONField(name="phone")
+    public String getPhone(){
+        return phone;
+    }
+
+    @JSONField(name="phone")
+    public void setPhone(String phone){
+        this.phone = phone;
+    }
+
+    @JSONField(name="email")
+    public String getEmail(){
+        return email;
+    }
+
+    @JSONField(name="email")
+    public void setEmail(String email){
+        this.email = email;
+    }
+
+    @JSONField(name="createTime")
+    public String getCreateTime(){
+        return createTime;
+    }
+
+    @JSONField(name="createTime")
+    public void setCreateTime(String createTime){
+        this.createTime = createTime;
+    }
+
+    @JSONField(name="subscribeFlag")
+    public byte getSubscribeFlag(){
+        return subscribeFlag;
+    }
+
+    @JSONField(name="subscribeFlag")
+    public void setSubscribeFlag(byte subscribeFlag){
+        this.subscribeFlag = subscribeFlag;
+    }
+
+    @JSONField(name="company")
+    public CompanyVo getCompany(){
+        return company;
+    }
+
+    @JSONField(name="company")
+    public void setCompany(CompanyVo company){
+        this.company = company;
+    }
+
+    @JSONField(name="depart")
+    public String getDepart(){
+        return depart;
+    }
+
+    @JSONField(name="depart")
+    public void setDepart(String depart){
+        this.depart = depart;
+    }
+
+    @JSONField(name="post")
+    public String getPost(){
+        return post;
+    }
+
+    @JSONField(name="post")
+    public void setPost(String post){
+        this.post = post;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class CompanyVo implements Serializable{
+
+    private String id; //公司ID
+    private String name; //公司简称
+    private String fullName; //公司全称
+    private String logo; //logo
+    private String homepage; //主页
+    private String introduction; //公司介绍
+    private String synopsis; //公司一句话介绍
+    private DictVo scale; //公司规模
+    private DictVo stage; //公司阶段
+    private DictVo industry; //所属行业
+    private DictVo property; //公司性质
+    private CompanyAddressVo[] addressList; //公司地址
+    private int completeProgress; //完善进度
+    private String wikiSummary; //百科摘要
+    private String companyWiki; //公司百科
+    private byte favoriteFlag; //收藏标志
+    private String favoriteTime; //收藏时间
+
+    @JSONField(name="id")
+    public String getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(String id){
+        this.id = id;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="fullName")
+    public String getFullName(){
+        return fullName;
+    }
+
+    @JSONField(name="fullName")
+    public void setFullName(String fullName){
+        this.fullName = fullName;
+    }
+
+    @JSONField(name="logo")
+    public String getLogo(){
+        return logo;
+    }
+
+    @JSONField(name="logo")
+    public void setLogo(String logo){
+        this.logo = logo;
+    }
+
+    @JSONField(name="homepage")
+    public String getHomepage(){
+        return homepage;
+    }
+
+    @JSONField(name="homepage")
+    public void setHomepage(String homepage){
+        this.homepage = homepage;
+    }
+
+    @JSONField(name="introduction")
+    public String getIntroduction(){
+        return introduction;
+    }
+
+    @JSONField(name="introduction")
+    public void setIntroduction(String introduction){
+        this.introduction = introduction;
+    }
+
+    @JSONField(name="synopsis")
+    public String getSynopsis(){
+        return synopsis;
+    }
+
+    @JSONField(name="synopsis")
+    public void setSynopsis(String synopsis){
+        this.synopsis = synopsis;
+    }
+
+    @JSONField(name="scale")
+    public DictVo getScale(){
+        return scale;
+    }
+
+    @JSONField(name="scale")
+    public void setScale(DictVo scale){
+        this.scale = scale;
+    }
+
+    @JSONField(name="stage")
+    public DictVo getStage(){
+        return stage;
+    }
+
+    @JSONField(name="stage")
+    public void setStage(DictVo stage){
+        this.stage = stage;
+    }
+
+    @JSONField(name="industry")
+    public DictVo getIndustry(){
+        return industry;
+    }
+
+    @JSONField(name="industry")
+    public void setIndustry(DictVo industry){
+        this.industry = industry;
+    }
+
+    @JSONField(name="property")
+    public DictVo getProperty(){
+        return property;
+    }
+
+    @JSONField(name="property")
+    public void setProperty(DictVo property){
+        this.property = property;
+    }
+
+    @JSONField(name="addressList")
+    public CompanyAddressVo[] getAddressList(){
+        return addressList;
+    }
+
+    @JSONField(name="addressList")
+    public void setAddressList(CompanyAddressVo[] addressList){
+        this.addressList = addressList;
+    }
+
+    @JSONField(name="completeProgress")
+    public int getCompleteProgress(){
+        return completeProgress;
+    }
+
+    @JSONField(name="completeProgress")
+    public void setCompleteProgress(int completeProgress){
+        this.completeProgress = completeProgress;
+    }
+
+    @JSONField(name="wikiSummary")
+    public String getWikiSummary(){
+        return wikiSummary;
+    }
+
+    @JSONField(name="wikiSummary")
+    public void setWikiSummary(String wikiSummary){
+        this.wikiSummary = wikiSummary;
+    }
+
+    @JSONField(name="companyWiki")
+    public String getCompanyWiki(){
+        return companyWiki;
+    }
+
+    @JSONField(name="companyWiki")
+    public void setCompanyWiki(String companyWiki){
+        this.companyWiki = companyWiki;
+    }
+
+    @JSONField(name="favoriteFlag")
+    public byte getFavoriteFlag(){
+        return favoriteFlag;
+    }
+
+    @JSONField(name="favoriteFlag")
+    public void setFavoriteFlag(byte favoriteFlag){
+        this.favoriteFlag = favoriteFlag;
+    }
+
+    @JSONField(name="favoriteTime")
+    public String getFavoriteTime(){
+        return favoriteTime;
+    }
+
+    @JSONField(name="favoriteTime")
+    public void setFavoriteTime(String favoriteTime){
+        this.favoriteTime = favoriteTime;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class DictVo implements Serializable{
+
+    private int id; //字典ID
+    private String name; //字典名
+    private int type; //字典类型
+    private String value; //字典值
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="type")
+    public int getType(){
+        return type;
+    }
+
+    @JSONField(name="type")
+    public void setType(int type){
+        this.type = type;
+    }
+
+    @JSONField(name="value")
+    public String getValue(){
+        return value;
+    }
+
+    @JSONField(name="value")
+    public void setValue(String value){
+        this.value = value;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class DictVo implements Serializable{
+
+    private int id; //字典ID
+    private String name; //字典名
+    private int type; //字典类型
+    private String value; //字典值
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="type")
+    public int getType(){
+        return type;
+    }
+
+    @JSONField(name="type")
+    public void setType(int type){
+        this.type = type;
+    }
+
+    @JSONField(name="value")
+    public String getValue(){
+        return value;
+    }
+
+    @JSONField(name="value")
+    public void setValue(String value){
+        this.value = value;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class DictVo implements Serializable{
+
+    private int id; //字典ID
+    private String name; //字典名
+    private int type; //字典类型
+    private String value; //字典值
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="type")
+    public int getType(){
+        return type;
+    }
+
+    @JSONField(name="type")
+    public void setType(int type){
+        this.type = type;
+    }
+
+    @JSONField(name="value")
+    public String getValue(){
+        return value;
+    }
+
+    @JSONField(name="value")
+    public void setValue(String value){
+        this.value = value;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class DictVo implements Serializable{
+
+    private int id; //字典ID
+    private String name; //字典名
+    private int type; //字典类型
+    private String value; //字典值
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="type")
+    public int getType(){
+        return type;
+    }
+
+    @JSONField(name="type")
+    public void setType(int type){
+        this.type = type;
+    }
+
+    @JSONField(name="value")
+    public String getValue(){
+        return value;
+    }
+
+    @JSONField(name="value")
+    public void setValue(String value){
+        this.value = value;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class CompanyAddressVo implements Serializable{
+
+    private int id; //地址ID
+    private int cityId; //城市ID
+    private String address; //地址
+    private double latitude; //纬度
+    private double longitude; //经度
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="cityId")
+    public int getCityId(){
+        return cityId;
+    }
+
+    @JSONField(name="cityId")
+    public void setCityId(int cityId){
+        this.cityId = cityId;
+    }
+
+    @JSONField(name="address")
+    public String getAddress(){
+        return address;
+    }
+
+    @JSONField(name="address")
+    public void setAddress(String address){
+        this.address = address;
+    }
+
+    @JSONField(name="latitude")
+    public double getLatitude(){
+        return latitude;
+    }
+
+    @JSONField(name="latitude")
+    public void setLatitude(double latitude){
+        this.latitude = latitude;
+    }
+
+    @JSONField(name="longitude")
+    public double getLongitude(){
+        return longitude;
+    }
+
+    @JSONField(name="longitude")
+    public void setLongitude(double longitude){
+        this.longitude = longitude;
+    }
+
+}
+</pre>
+
+
+
+</body>
+</html>

@@ -62,6 +62,10 @@
 @property (nonatomic, strong) ResumeVo resume;
 //职位
 @property (nonatomic, strong) JobVo job;
+//
+@property (nonatomic, strong) UserCorporateCommentVo[] commentVos;
+//
+@property (nonatomic, strong) UserCorporateTagVo[] tagVos;
 //状态
 @property (nonatomic, strong) int applyStatus;
 //申请时间
@@ -722,6 +726,46 @@
 @property (nonatomic, strong) NSInteger type;
 //字典值
 @property (nonatomic, assign) NSString value;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface UserCorporateCommentVo : NSObject
+
+//笔记Id， Primary Key
+@property (nonatomic, strong) long id;
+//职位Id
+@property (nonatomic, strong) long jobApplyId;
+//用户笔记
+@property (nonatomic, assign) NSString comment;
+//创建时间
+@property (nonatomic, assign) NSString createTime;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface UserCorporateTagVo : NSObject
+
+//标签ID
+@property (nonatomic, strong) long id;
+//职位申请ID
+@property (nonatomic, strong) long jobApplyId;
+//企业给个人用户设置的标签
+@property (nonatomic, assign) NSString tagName;
+//标签创建时间
+@property (nonatomic, assign) NSString createTime;
 
 
 @end
