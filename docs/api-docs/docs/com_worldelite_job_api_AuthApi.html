@@ -12,11 +12,11 @@
 <h1><a href="../index.html">《首页</a> 用户验证接口:</h1>
 <div class="toc">
     <ul>
-    <li><a href="#邮箱注册">邮箱注册</a></li><li><a href="#检查email注册">检查email注册</a></li><li><a href="#获取邮箱验证码">获取邮箱验证码</a></li><li><a href="#获取图片验证码">获取图片验证码</a></li><li><a href="#通过邮箱登录">通过邮箱登录</a></li><li><a href="#重设密码">重设密码</a></li>
+    <li><a href="#邮箱注册"><STRIKE>邮箱注册</STRIKE></a></li><li><a href="#检查email注册"><STRIKE>检查email注册</STRIKE></a></li><li><a href="#获取邮箱验证码">获取邮箱验证码</a></li><li><a href="#获取图片验证码">获取图片验证码</a></li><li><a href="#通过邮箱登录"><STRIKE>通过邮箱登录</STRIKE></a></li><li><a href="#重设密码"><STRIKE>重设密码</STRIKE></a></li><li><a href="#修改密码"><STRIKE>修改密码</STRIKE></a></li>
     </ul>
 </div>
 <hr>
-<h2 id="邮箱注册">邮箱注册</h2>
+<h2 id="<STRIKE>邮箱注册</STRIKE>"><STRIKE>邮箱注册</STRIKE></h2>
 
 <pre class="prettyprint lang-json">
 method：POST
@@ -51,7 +51,7 @@ url: /api/auth/register
 }
 </pre>
 
-<hr><h2 id="检查email注册">检查email注册</h2>
+<hr><h2 id="<STRIKE>检查email注册</STRIKE>"><STRIKE>检查email注册</STRIKE></h2>
 
 <pre class="prettyprint lang-json">
 method：GET
@@ -110,7 +110,7 @@ url: /api/auth/get-captcha
 {}
 </pre>
 
-<hr><h2 id="通过邮箱登录">通过邮箱登录</h2>
+<hr><h2 id="<STRIKE>通过邮箱登录</STRIKE>"><STRIKE>通过邮箱登录</STRIKE></h2>
 
 <pre class="prettyprint lang-json">
 method：POST
@@ -150,7 +150,7 @@ url: /api/auth/email-login
 }
 </pre>
 
-<hr><h2 id="重设密码">重设密码</h2>
+<hr><h2 id="<STRIKE>重设密码</STRIKE>"><STRIKE>重设密码</STRIKE></h2>
 
 <pre class="prettyprint lang-json">
 method：POST
@@ -162,6 +162,33 @@ url: /api/auth/reset-pwd
 <table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
 
 <p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AuthApi_resetPassword_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AuthApi_resetPassword_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="<STRIKE>修改密码</STRIKE>"><STRIKE>修改密码</STRIKE></h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/auth/modify-pwd
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "oldPassword": "string //旧密码",
+  "newPassword": "string //新密码",
+  "imgValidCode": "string //图片验证码"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AuthApi_modifyPassword_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AuthApi_modifyPassword_ApiResult.html">IOS Code</a></p>
 
 <pre class="prettyprint lang-json">
 {

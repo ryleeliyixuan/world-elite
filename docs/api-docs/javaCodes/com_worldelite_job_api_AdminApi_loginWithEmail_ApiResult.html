@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ApiResult</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class ApiResult implements Serializable{
+
+    private int code; //0为成功，其他错误码参考 ApiCode
+    private String msg; //错误消息
+    private AdminVo data; //数据包
+
+    @JSONField(name="code")
+    public int getCode(){
+        return code;
+    }
+
+    @JSONField(name="code")
+    public void setCode(int code){
+        this.code = code;
+    }
+
+    @JSONField(name="msg")
+    public String getMsg(){
+        return msg;
+    }
+
+    @JSONField(name="msg")
+    public void setMsg(String msg){
+        this.msg = msg;
+    }
+
+    @JSONField(name="data")
+    public AdminVo getData(){
+        return data;
+    }
+
+    @JSONField(name="data")
+    public void setData(AdminVo data){
+        this.data = data;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class AdminVo implements Serializable{
+
+    private long id; //用于后端
+    private String userId; //字符串ID，用于前端
+    private String name; //名字
+    private String avatar; //头像
+    private byte gender; //性别
+    private byte type; //用户类型
+    private byte status; //状态
+    private String token; //登录凭证
+    private String phoneCode; //电话区号
+    private String phone; //电话号码
+    private String email; //邮箱
+    private String createTime; //创建时间
+    private byte subscribeFlag; //订阅标志
+
+    @JSONField(name="id")
+    public long getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(long id){
+        this.id = id;
+    }
+
+    @JSONField(name="userId")
+    public String getUserId(){
+        return userId;
+    }
+
+    @JSONField(name="userId")
+    public void setUserId(String userId){
+        this.userId = userId;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="avatar")
+    public String getAvatar(){
+        return avatar;
+    }
+
+    @JSONField(name="avatar")
+    public void setAvatar(String avatar){
+        this.avatar = avatar;
+    }
+
+    @JSONField(name="gender")
+    public byte getGender(){
+        return gender;
+    }
+
+    @JSONField(name="gender")
+    public void setGender(byte gender){
+        this.gender = gender;
+    }
+
+    @JSONField(name="type")
+    public byte getType(){
+        return type;
+    }
+
+    @JSONField(name="type")
+    public void setType(byte type){
+        this.type = type;
+    }
+
+    @JSONField(name="status")
+    public byte getStatus(){
+        return status;
+    }
+
+    @JSONField(name="status")
+    public void setStatus(byte status){
+        this.status = status;
+    }
+
+    @JSONField(name="token")
+    public String getToken(){
+        return token;
+    }
+
+    @JSONField(name="token")
+    public void setToken(String token){
+        this.token = token;
+    }
+
+    @JSONField(name="phoneCode")
+    public String getPhoneCode(){
+        return phoneCode;
+    }
+
+    @JSONField(name="phoneCode")
+    public void setPhoneCode(String phoneCode){
+        this.phoneCode = phoneCode;
+    }
+
+    @JSONField(name="phone")
+    public String getPhone(){
+        return phone;
+    }
+
+    @JSONField(name="phone")
+    public void setPhone(String phone){
+        this.phone = phone;
+    }
+
+    @JSONField(name="email")
+    public String getEmail(){
+        return email;
+    }
+
+    @JSONField(name="email")
+    public void setEmail(String email){
+        this.email = email;
+    }
+
+    @JSONField(name="createTime")
+    public String getCreateTime(){
+        return createTime;
+    }
+
+    @JSONField(name="createTime")
+    public void setCreateTime(String createTime){
+        this.createTime = createTime;
+    }
+
+    @JSONField(name="subscribeFlag")
+    public byte getSubscribeFlag(){
+        return subscribeFlag;
+    }
+
+    @JSONField(name="subscribeFlag")
+    public void setSubscribeFlag(byte subscribeFlag){
+        this.subscribeFlag = subscribeFlag;
+    }
+
+}
+</pre>
+
+
+
+</body>
+</html>

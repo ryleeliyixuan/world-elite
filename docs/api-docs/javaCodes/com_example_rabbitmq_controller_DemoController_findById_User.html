@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>User</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class User implements Serializable{
+
+    private String name; //名字
+    private int age; //年龄
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="age")
+    public int getAge(){
+        return age;
+    }
+
+    @JSONField(name="age")
+    public void setAge(int age){
+        this.age = age;
+    }
+
+}
+</pre>
+
+
+
+</body>
+</html>

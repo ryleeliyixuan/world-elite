@@ -19,13 +19,24 @@
 <h2 id="活动列表">活动列表</h2>
 
 <pre class="prettyprint lang-json">
-method：GET
+method：POST
 url: /api/activity/list
 </pre>
 
 <p><strong>参数列表</strong></p>
 
-<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>page</td><td>int</td><td>false</td><td>页数</td></tr><tr><td>limit</td><td>int</td><td>false</td><td>每页条数</td></tr><tr><td>sort</td><td>string</td><td>false</td><td>排序</td></tr><tr><td>cityId</td><td>int</td><td>false</td><td>城市ID</td></tr><tr><td>status</td><td>byte</td><td>false</td><td>活动状态</td></tr><tr><td>title</td><td>string</td><td>false</td><td>活动标题</td></tr></table>
+<pre class="prettyprint lang-json">
+{
+  "page": "int //页数",
+  "limit": "int //每页条数",
+  "sort": "string //排序",
+  "cityId": "int //所在城市",
+  "cityIds": "int[] //城市ID",
+  "status": "byte //活动状态",
+  "title": "string //活动标题",
+  "keyword": "string //搜索关键词"
+}
+</pre>
 
 <p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ActivityApi_getActivityList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ActivityApi_getActivityList_ApiResult.html">IOS Code</a></p>
 
@@ -57,7 +68,8 @@ url: /api/activity/list
         "address": "string //活动地址",
         "status": "byte //状态",
         "joinFlag": "boolean //是否参加",
-        "joinTime": "date //参加时间"
+        "joinTime": "date //参加时间",
+        "organizer": "string //主办方"
       }
     ],
     "hasMore": "boolean //是否还有更多"
@@ -100,7 +112,8 @@ url: /api/activity/activity-info
     "address": "string //活动地址",
     "status": "byte //状态",
     "joinFlag": "boolean //是否参加",
-    "joinTime": "date //参加时间"
+    "joinTime": "date //参加时间",
+    "organizer": "string //主办方"
   }
 }
 </pre>
@@ -124,7 +137,8 @@ url: /api/activity/save
   "description": "string //活动详情",
   "startTime": "date //开始时间",
   "finishTime": "date //结束时间",
-  "address": "string //活动地址"
+  "address": "string //活动地址",
+  "organizer": "string //主办方"
 }
 </pre>
 

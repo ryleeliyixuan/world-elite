@@ -12,7 +12,7 @@
 <h1><a href="../index.html">《首页</a> 简历接口:</h1>
 <div class="toc">
     <ul>
-    <li><a href="#我的简历信息">我的简历信息</a></li><li><a href="#获取简历列表">获取简历列表</a></li><li><a href="#查看简历详情">查看简历详情</a></li><li><a href="#保存基本信息">保存基本信息</a></li><li><a href="#删除附件简历">删除附件简历</a></li><li><a href="#保存教育经历">保存教育经历</a></li><li><a href="#保存工作经验">保存工作经验</a></li><li><a href="#删除工作经验">删除工作经验</a></li><li><a href="#保存实践经验">保存实践经验</a></li><li><a href="#删除实践经验">删除实践经验</a></li><li><a href="#保存擅长技能">保存擅长技能</a></li><li><a href="#保存简历链接">保存简历链接</a></li><li><a href="#删除简历链接">删除简历链接</a></li><li><a href="#获取当前企业用户需要处理的简历列表">获取当前企业用户需要处理的简历列表</a></li><li><a href="#获取申请的简历列表">获取申请的简历列表</a></li><li><a href="#处理简历">处理简历</a></li>
+    <li><a href="#我的简历信息">我的简历信息</a></li><li><a href="#查看简历详情">查看简历详情</a></li><li><a href="#保存基本信息">保存基本信息</a></li><li><a href="#删除附件简历">删除附件简历</a></li><li><a href="#保存教育经历">保存教育经历</a></li><li><a href="#保存工作经验">保存工作经验</a></li><li><a href="#删除工作经验">删除工作经验</a></li><li><a href="#保存实践经验">保存实践经验</a></li><li><a href="#删除实践经验">删除实践经验</a></li><li><a href="#保存擅长技能">保存擅长技能</a></li><li><a href="#保存简历链接">保存简历链接</a></li><li><a href="#删除简历链接">删除简历链接</a></li><li><a href="#获取当前企业用户需要处理的简历列表">获取当前企业用户需要处理的简历列表</a></li><li><a href="#获取申请的简历列表">获取申请的简历列表</a></li><li><a href="#处理简历">处理简历</a></li>
     </ul>
 </div>
 <hr>
@@ -152,7 +152,7 @@ url: /api/resume/my-resume
 }
 </pre>
 
-<hr><h2 id="获取简历列表">获取简历列表</h2>
+<hr><h2 id="${ACTION_DESCRIPTION}">${ACTION_DESCRIPTION}</h2>
 
 <pre class="prettyprint lang-json">
 method：POST
@@ -161,28 +161,7 @@ url: /api/resume/list
 
 <p><strong>参数列表</strong></p>
 
-<pre class="prettyprint lang-json">
-{
-  "page": "int //页数",
-  "limit": "int //每页条数",
-  "sort": "string //排序",
-  "userId": "long //用户ID",
-  "name": "string //用户名",
-  "gender": "byte //性别",
-  "minAge": "int //最小年龄区间",
-  "maxAge": "int //最大年龄区间",
-  "degreeIds": "int[] //学历",
-  "schoolIds": "int[] //学校",
-  "categoryIds": "int[] //意向职位类型",
-  "cityIds": "int[] //意向城市",
-  "minGpa": "double //最小gpa区间",
-  "maxGpa": "double //最大gpa期间",
-  "gpaRangeId": "int //gpa范围ID",
-  "minSalary": "int //最低薪酬区间",
-  "maxSalary": "int //最高薪酬区间",
-  "salaryRangeId": "int //薪酬区间ID"
-}
-</pre>
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
 
 <p>返回结果: <a href="../javaCodes/com_worldelite_job_api_ResumeApi_getResumeList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_ResumeApi_getResumeList_ApiResult.html">IOS Code</a></p>
 
@@ -1149,6 +1128,22 @@ url: /api/resume/my-apply-resume-list
           "candidateResumeCount": "int //候选简历数",
           "interviewResumeCount": "int //进入面试简历数"
         },
+        "commentVos": [
+          {
+            "id": "long //笔记Id， Primary Key",
+            "jobApplyId": "long //职位Id",
+            "comment": "string //用户笔记",
+            "createTime": "date //创建时间"
+          }
+        ],
+        "tagVos": [
+          {
+            "id": "long //标签ID",
+            "jobApplyId": "long //职位申请ID",
+            "tagName": "string //企业给个人用户设置的标签",
+            "createTime": "date //标签创建时间"
+          }
+        ],
         "applyStatus": "byte //状态",
         "time": "date //申请时间"
       }
@@ -1420,6 +1415,22 @@ url: /api/resume/apply-resume-list
           "candidateResumeCount": "int //候选简历数",
           "interviewResumeCount": "int //进入面试简历数"
         },
+        "commentVos": [
+          {
+            "id": "long //笔记Id， Primary Key",
+            "jobApplyId": "long //职位Id",
+            "comment": "string //用户笔记",
+            "createTime": "date //创建时间"
+          }
+        ],
+        "tagVos": [
+          {
+            "id": "long //标签ID",
+            "jobApplyId": "long //职位申请ID",
+            "tagName": "string //企业给个人用户设置的标签",
+            "createTime": "date //标签创建时间"
+          }
+        ],
         "applyStatus": "byte //状态",
         "time": "date //申请时间"
       }

@@ -139,6 +139,7 @@ public class ActivityVo implements Serializable{
     private byte status; //状态
     private boolean joinFlag; //是否参加
     private String joinTime; //参加时间
+    private String organizer; //主办方
 
     @JSONField(name="id")
     public int getId(){
@@ -268,6 +269,16 @@ public class ActivityVo implements Serializable{
     @JSONField(name="joinTime")
     public void setJoinTime(String joinTime){
         this.joinTime = joinTime;
+    }
+
+    @JSONField(name="organizer")
+    public String getOrganizer(){
+        return organizer;
+    }
+
+    @JSONField(name="organizer")
+    public void setOrganizer(String organizer){
+        this.organizer = organizer;
     }
 
 }
