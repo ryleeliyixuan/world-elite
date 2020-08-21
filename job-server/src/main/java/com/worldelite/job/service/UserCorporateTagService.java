@@ -5,7 +5,6 @@ import com.worldelite.job.form.UserCorporateTagForm;
 import com.worldelite.job.mapper.UserCorporateTagMapper;
 import com.worldelite.job.vo.UserCorporateTagVo;
 import lombok.NonNull;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,24 +25,17 @@ public class UserCorporateTagService {
      * @return
      */
     public void saveTag(final @NonNull UserCorporateTagForm userCorporateTagForm) {
-        boolean isUpdate = false;
+
         UserCorporateTag userCorporateTag;
-        if (userCorporateTagForm.getId() == null) {
+        if (userCorporateTagForm.getId() == null || (userCorporateTag = userCorporateTagMapper.selectByPrimaryKey(userCorporateTagForm.getId())) == null) {
             userCorporateTag = new UserCorporateTag();
             userCorporateTag.setJobApplyId(userCorporateTagForm.getJobApplyId());
-        } else {
-            userCorporateTag = userCorporateTagMapper.selectByPrimaryKey(userCorporateTagForm.getId());
-            userCorporateTag.setUpdateTime(new Date());
-        }
-
-        if (StringUtils.isNotEmpty(userCorporateTagForm.getTagName())) {
             userCorporateTag.setTagName(userCorporateTagForm.getTagName());
-        }
-
-        if (isUpdate) {
-            userCorporateTagMapper.updateByPrimaryKey(userCorporateTag);
-        } else {
             userCorporateTagMapper.insertSelective(userCorporateTag);
+        } else {
+            userCorporateTag.setTagName(userCorporateTagForm.getTagName());
+            userCorporateTag.setUpdateTime(new Date());
+            userCorporateTagMapper.updateByPrimaryKey(userCorporateTag);
         }
     }
 

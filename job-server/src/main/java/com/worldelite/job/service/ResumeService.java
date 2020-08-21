@@ -509,9 +509,6 @@ public class ResumeService extends BaseService {
             }
             //endregion
 
-            //TODO 索引更新
-            //document = new Document();
-
             //MQ广播索引更新指令
             rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.CreateOrUpdate, BusinessType.AttachResume));
 
@@ -534,9 +531,6 @@ public class ResumeService extends BaseService {
             resumeAttachMapper.deleteByPrimaryKey(resumeAttach.getId());
             document = resumeAttachService.deleteIndex(resumeAttach.getResumeId());
         }
-
-        //TODO 索引删除
-        //document = new Document();
 
         //MQ广播索引更新指令
         rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.Delete, BusinessType.AttachResume));

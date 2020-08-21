@@ -5,7 +5,6 @@ import com.worldelite.job.form.UserCorporateCommentForm;
 import com.worldelite.job.mapper.UserCorporateCommentMapper;
 import com.worldelite.job.vo.UserCorporateCommentVo;
 import lombok.NonNull;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,25 +30,16 @@ public class UserCorporateCommentService {
      */
     public void saveComment(final @NonNull UserCorporateCommentForm userCorporateCommentForm) {
 
-        boolean isUpdate = false;
         UserCorporateComment userCorporateComment;
-        if (userCorporateCommentForm.getId() == null) {
+        if (userCorporateCommentForm.getId() == null || (userCorporateComment = userCorporateCommentMapper.selectByPrimaryKey(userCorporateCommentForm.getId())) == null) {
             userCorporateComment = new UserCorporateComment();
             userCorporateComment.setJobApplyId(userCorporateCommentForm.getJobApplyId());
-        } else {
-            isUpdate = true;
-            userCorporateComment = userCorporateCommentMapper.selectByPrimaryKey(userCorporateCommentForm.getId());
-            userCorporateComment.setUpdateTime(new Date());
-        }
-
-        if (StringUtils.isNotEmpty(userCorporateCommentForm.getComment())) {
             userCorporateComment.setComment(userCorporateCommentForm.getComment());
-        }
-
-        if (isUpdate) {
-            userCorporateCommentMapper.updateByPrimaryKey(userCorporateComment);
-        } else {
             userCorporateCommentMapper.insertSelective(userCorporateComment);
+        } else {
+            userCorporateComment.setUpdateTime(new Date());
+            userCorporateComment.setComment(userCorporateCommentForm.getComment());
+            userCorporateCommentMapper.updateByPrimaryKey(userCorporateComment);
         }
     }
 
