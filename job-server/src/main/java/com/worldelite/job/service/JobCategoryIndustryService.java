@@ -1,5 +1,6 @@
 package com.worldelite.job.service;
 
+import com.worldelite.job.entity.Job;
 import com.worldelite.job.entity.JobCategoryIndustry;
 import com.worldelite.job.entity.JobIndustry;
 import com.worldelite.job.form.JobCategoryIndustryForm;
@@ -11,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +45,20 @@ public class JobCategoryIndustryService {
         }
 
         return Collections.emptyList();
+    }
+
+    /**
+     * 获取全部行业领域
+     * @return
+     */
+    public List<JobIndustryVo> getAllJobIndustry() {
+        List<JobIndustry> jobIndustryList = jobIndustryMapper.listAll();
+        List<JobIndustryVo> jobIndustryVoList = new ArrayList<JobIndustryVo>();
+        for(JobIndustry jobIndustry:jobIndustryList){
+            jobIndustryVoList.add(new JobIndustryVo().asVo(jobIndustry));
+        }
+
+        return jobIndustryVoList;
     }
 
     /**

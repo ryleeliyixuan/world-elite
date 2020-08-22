@@ -58,10 +58,19 @@ public class JobCategoryIndustryApi {
      * @return
      */
     @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
-    @GetMapping("list")
+    @GetMapping("list-by-category")
     @ApiDoc
     public ApiResult<List<JobIndustryVo>> getJobIndustryList(@RequestParam long jobCategoryId) {
         final List<JobIndustryVo> jobIndustryVos = jobCategoryIndustryService.getJobIndustryByJobCategoryId(jobCategoryId);
+
+        return ApiResult.ok(jobIndustryVos);
+    }
+
+    @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
+    @GetMapping("list")
+    @ApiDoc
+    public ApiResult<List<JobIndustryVo>> getAllJobIndustryList() {
+        final List<JobIndustryVo> jobIndustryVos = jobCategoryIndustryService.getAllJobIndustry();
 
         return ApiResult.ok(jobIndustryVos);
     }
