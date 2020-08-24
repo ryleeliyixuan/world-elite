@@ -94,11 +94,13 @@ public class ResumeAttachService extends BaseService{
         IndexWriter writer = null;
         try {
             writer = getIndexWriter(getSearchFolder(),IndexWriterConfig.OpenMode.CREATE);
+            int i = 1;
             for(ResumeAttach resumeAttach:resumeAttacheList) {
                 Document document = new Document();
                 document.add(new LongPoint(ResumeAttachmentIndexFields.RESUME_ID, resumeAttach.getResumeId()));
                 document.add(new StringField(ResumeAttachmentIndexFields.RESUME_ID_STR, Long.toString(resumeAttach.getResumeId()), Field.Store.YES));
                 document.add(new TextField(ResumeAttachmentIndexFields.CONTENT, resumeAttach.getAttachContent(), Field.Store.NO));
+                System.out.println((i++)+":"+resumeAttach.getAttachContent());
                 writer.addDocument(document);
             }
             writer.commit();

@@ -65,6 +65,14 @@ public class ResumeAttachServiceTest {
         Thread.sleep(3000);
     }
 
+    /**
+     * 从数据库重建所有索引
+     */
+    @Test
+    public void buildAll(){
+        resumeAttachService.buildIndex();
+    }
+
     private ResumeAttach createResumeAttach(Long id,String content){
         ResumeAttach resumeAttach = new ResumeAttach();
         resumeAttach.setResumeId(id);
