@@ -42,6 +42,14 @@ public class SchoolApi {
         return ApiResult.ok(pageResult);
     }
 
+//    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("list-by-ids")
+    @ApiDoc
+    public ApiResult<List<SchoolVo>> getSchoolListByIds(SchoolListForm schoolListForm) {
+        List<SchoolVo> schoolVoList = schoolService.getSchoolListByIds(schoolListForm);
+        return ApiResult.ok(schoolVoList);
+    }
+
     /**
      * 保存学校
      * @param schoolForm
