@@ -41,16 +41,14 @@ public class JobDescExampleService {
      * @param categoryId
      * @return
      */
-    public List<JobDescExampleVo> getExamplesByCategoryId(final @NonNull Long categoryId) {
+    public JobDescExampleVo getExamplesByCategoryId(final @NonNull Long categoryId) {
         final List<JobDescExample> jobDescExamples = jobDescExampleMapper.selectByCategoryId(categoryId);
 
-        if (Objects.nonNull(jobDescExamples)) {
-            return jobDescExamples.stream()
-                    .map(jobDescExample -> new JobDescExampleVo().asVo(jobDescExample))
-                    .collect(Collectors.toList());
+        if(jobDescExamples.size()>0){
+            return new JobDescExampleVo().asVo(jobDescExamples.get(0));
         }
 
-        return Collections.emptyList();
+        return null;
     }
 
     /**

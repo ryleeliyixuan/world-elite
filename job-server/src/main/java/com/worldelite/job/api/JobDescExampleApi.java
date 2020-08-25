@@ -46,11 +46,11 @@ public class JobDescExampleApi {
     @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
     @GetMapping("list")
     @ApiDoc
-    public ApiResult<List<JobDescExampleVo>> getExampleList(@RequestParam long categoryId){
-        final List<JobDescExampleVo> jobDescExampleVos = jobDescExampleService
+    public ApiResult<JobDescExampleVo> getExampleList(@RequestParam long categoryId){
+        final JobDescExampleVo jobDescExampleVo = jobDescExampleService
                 .getExamplesByCategoryId(categoryId);
 
-        return ApiResult.ok(jobDescExampleVos);
+        return ApiResult.ok(jobDescExampleVo);
     }
 
     /**
