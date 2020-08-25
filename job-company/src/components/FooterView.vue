@@ -19,7 +19,7 @@
         </el-col>
         <el-col :span="6">
           <h5 class="mb-3">联系我们</h5>
-          <div class="link-text">邮箱：wenjiad@myworldelite.com</div>
+          <a class="link-text" href="mailto:career@myworldelite.com">邮箱：career@myworldelite.com</a>
         </el-col>
         <el-col :span="6">
           <div class="link-text text-center">

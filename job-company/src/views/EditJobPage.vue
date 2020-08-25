@@ -272,51 +272,53 @@
                 this.jobForm.salary = this.jobForm.minSalary && this.jobForm.maxSalary ? 1 : undefined;
             },
             "jobForm.categoryId": function () {
-                let p1 = this.$axios.get('/jobskill/list', {
-                    params: {jobCategoryId: this.jobForm.categoryId}
-                });
-                let p2 = this.$axios.get('/jobindustry/list', { // TODO : url待替换   /jobindustry/list
-                    params: {jobCategoryId: this.jobForm.categoryId}
-                });
-                Promise.all([p1, p2]).then((result) => {
-                    // TODO： 测试待删除 begin
-                    // result[0].data = [{name: '标签一'},
-                    //     {name: '标签二', id: 1},
-                    //     {name: '标签三', id: 2},
-                    //     {name: '标签四', id: 3},
-                    //     {name: '标签五', id: 4}];
-                    // result[1].data = [{name: '标签1'},
-                    //     {name: '标签2', id: 1},
-                    //     {name: '标签3', id: 2},
-                    //     {name: '标签4', id: 3},
-                    //     {name: '标签5', id: 4}];
-                    // TODO： 测试待删除 end
+                if(this.jobForm.categoryId) {
+                    let p1 = this.$axios.get('/jobskill/list', {
+                        params: {jobCategoryId: this.jobForm.categoryId}
+                    });
+                    let p2 = this.$axios.get('/jobindustry/list', { // TODO : url待替换   /jobindustry/list
+                        params: {jobCategoryId: this.jobForm.categoryId}
+                    });
+                    Promise.all([p1, p2]).then((result) => {
+                        // TODO： 测试待删除 begin
+                        // result[0].data = [{name: '标签一'},
+                        //     {name: '标签二', id: 1},
+                        //     {name: '标签三', id: 2},
+                        //     {name: '标签四', id: 3},
+                        //     {name: '标签五', id: 4}];
+                        // result[1].data = [{name: '标签1'},
+                        //     {name: '标签2', id: 1},
+                        //     {name: '标签3', id: 2},
+                        //     {name: '标签4', id: 3},
+                        //     {name: '标签5', id: 4}];
+                        // TODO： 测试待删除 end
 
-                    if (result[0].data.length > 0 || result[1].data.length > 0) {
-                        this.jobFormRules.keywords = [{required: true, message: "请选择关键词", trigger: "blur"}];
-                    } else {
-                        delete this.jobFormRules.keywords;
-                    }
-                    if (result[0].data.length > 0) {
-                        this.skillList = result[0].data.map(item => {
-                            item.selected = false;
-                            return item;
-                        });
-                    }
-                    if (result[1].data.length > 0) {
-                        this.industryList = result[1].data.map(item => {
-                            item.selected = false;
-                            return item;
-                        });
-                    }
-                })
-                // TODO 以下一行测试待删除
-                // this.jobDescription = "<span style='color:red'>我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述</span>";
-                this.$axios.get('/jobdescexample/list', {
-                    params: {categoryId: this.jobForm.categoryId}
-                }).then(data => {
-                    this.jobDescription = data.data;
-                })
+                        if (result[0].data.length > 0 || result[1].data.length > 0) {
+                            this.jobFormRules.keywords = [{required: true, message: "请选择关键词", trigger: "blur"}];
+                        } else {
+                            delete this.jobFormRules.keywords;
+                        }
+                        if (result[0].data.length > 0) {
+                            this.skillList = result[0].data.map(item => {
+                                item.selected = false;
+                                return item;
+                            });
+                        }
+                        if (result[1].data.length > 0) {
+                            this.industryList = result[1].data.map(item => {
+                                item.selected = false;
+                                return item;
+                            });
+                        }
+                    })
+                    // TODO 以下一行测试待删除
+                    // this.jobDescription = "<span style='color:red'>我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述</span>";
+                    this.$axios.get('/jobdescexample/list', {
+                        params: {categoryId: this.jobForm.categoryId}
+                    }).then(data => {
+                        this.jobDescription = data.data;
+                    })
+                }
             },
             jobForm: {
                 handler() {

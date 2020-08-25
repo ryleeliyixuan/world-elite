@@ -62,7 +62,7 @@
         </div>
         <div class="resume-list mt-3">
             <el-card class="box-card mb-3" v-for="applyResume in pageResult.list" :key="applyResume.id">
-                <div slot="header" class="clearfix text-small" style="line-height: 40px;">
+                <div slot="header" class="clearfix text-small" style="line-height: 40px;padding-top: 10px">
                     <el-popover
                             v-if="applyResume.tagVos && applyResume.tagVos[0] && applyResume.tagVos[0].tagName"
                             class="popover"
@@ -366,7 +366,9 @@
             handleNote(item) {
                 this.dialogVisible = true;
                 this.jobApplyItem = item;
-                this.$axios.get('/usercorporate/comment/list', {
+                this.$axios.request({
+                    url: '/usercorporate/comment/list',
+                    method: 'get',
                     params: {jobApplyId: item.id}
                 }).then(data => {
                     this.noteList = data.data
@@ -380,9 +382,13 @@
             },
 
             onNoteSave() {
-                this.$axios.post('/usercorporate/comment/save', {
-                    jobApplyId: this.jobApplyItem.id,
-                    comment: this.comment
+                this.$axios.request({
+                    url: '/usercorporate/comment/save',
+                    method: "post",
+                    data: {
+                        jobApplyId: this.jobApplyItem.id,
+                        comment: this.comment
+                    }
                 }).then(() => {
                     this.comment = '';
                     this.getNoteList(this.jobApplyItem.id);
@@ -419,6 +425,9 @@
                 let tag = this.jobApplyItem.tagVos && this.jobApplyItem.tagVos[0];
                 if (tag) {
                     tag.tagName = this.tag;
+                } else {
+                    this.jobApplyItem.tagVos = [];
+                    this.jobApplyItem.tagVos.push(this.tag);
                 }
                 this.$axios.post('/usercorporate/tag/save', {
                     jobApplyId: this.jobApplyItem.id,
