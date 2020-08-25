@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Vue from 'vue'
 import store from '@/store'
 import router from '@/router'
 import { getToken } from '@/utils/auth'
@@ -24,6 +25,7 @@ service.interceptors.request.use(
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
       config.headers['X-Token'] = getToken()
+      console.log(config);
     }
     return config
   },
@@ -46,6 +48,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    console.log(response);
     const res = response.data
 
     if (res.code !== 0) {
@@ -70,5 +73,7 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+Vue.prototype.$axios = service;
 
 export default service

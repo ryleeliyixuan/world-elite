@@ -27,9 +27,9 @@
                     <b>立即加入</b>
                 </el-link>
                 <el-button type="primary" @click="$router.push('/login')" size="small">登录</el-button>
-                <el-link :underline="false" class="icon-company" :href="companyHomeUrl" target="_blank">
-                    <svg-icon icon-class="company"/>
-                </el-link>
+<!--                <el-link :underline="false" class="icon-company" :href="companyHomeUrl" target="_blank">-->
+<!--                    <svg-icon icon-class="company"/>-->
+<!--                </el-link>-->
             </div>
             <!-- 已登录 -->
             <div class="user_container" v-else>

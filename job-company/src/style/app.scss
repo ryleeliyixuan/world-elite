@@ -13,15 +13,15 @@
 // 兼容编辑器
 .ql-editor {
     white-space: normal!important;
-    
+
     .ql-align-center {
         text-align: center;
     }
-    
+
     .ql-align-justify {
         text-align: justify;
     }
-    
+
     .ql-align-right {
         text-align: right;
     }
@@ -141,4 +141,10 @@
        li.ql-indent-9.ql-direction-rtl.ql-align-right {
         padding-right: 28.5em;
       }
+}
+
+
+button:focus {
+  outline: 0;
+  // outline: 5px auto -webkit-focus-ring-color;
 }
