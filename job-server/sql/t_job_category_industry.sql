@@ -27,7 +27,7 @@ CREATE TABLE `t_job_category_industry`  (
   `industry_id` bigint NOT NULL DEFAULT 0 COMMENT '行业领域ID',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `industry_id`(`industry_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '职位类型-行业对应表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '职位类型-行业对应表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_job_category_industry
