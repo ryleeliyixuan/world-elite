@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class UserCorporateCommentForm {
-    private long userId;
-    private long companyId;
+    private Long id;
+    private Long jobApplyId;
     private String comment;
 }

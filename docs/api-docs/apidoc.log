@@ -1,358 +1,538 @@
-五月 22, 2020 1:15:49 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find java src paths:  [/Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/]
-五月 22, 2020 1:15:49 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:33 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find java src paths:  [C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\]
+八月 21, 2020 7:30:33 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: project type not set, try to figure out...
-五月 22, 2020 1:15:50 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start find controllers in path : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : ResumeController.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : OauthController.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:33 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start find controllers in path : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: find controller file : ActivityApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : UploadApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : MessageApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : ResumeApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : FileApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : DownloadApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : VerificationApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : UserApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : AdminApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: find controller file : AuthApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : DictApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : SchoolApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : CountryApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : JobCategoryApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : ConfigApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : ExportApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : FavoriteApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : JobApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: find controller file : CompanyApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: find controller file : SearchApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : ConfigApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : CountryApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : DictApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : DownloadApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : ExportApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : FavoriteApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : FileApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : JobApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : JobCategoryApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : JobCategoryIndustryApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : JobCategorySkillApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : JobDescExampleApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : MessageApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: find controller file : RecommendApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : ResumeApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : SchoolApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : SearchApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : UploadApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : UserApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : UserApplicantApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : UserCorporateApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : UserCorporateCommentApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : UserCorporateTagApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : VerificationApi.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : OauthController.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : ResumeController.java
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: generate api docs start...
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : ResumeController.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : OauthController.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: start to parse controller file : ActivityApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:35 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: start to generate docs for controller file : ActivityApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: success to generate docs for controller file : ActivityApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : UploadApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : UploadApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : UploadApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : MessageApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : AdminApi.java
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : MessageApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : MessageApi.java
-五月 22, 2020 1:15:51 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : ResumeApi.java
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:52 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : ResumeApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : ResumeApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : FileApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : FileApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : FileApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : DownloadApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : DownloadApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : DownloadApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : VerificationApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : VerificationApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : VerificationApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : UserApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : UserApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : UserApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : AdminApi.java
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : AdminApi.java
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: start to parse controller file : AuthApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:36 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: start to generate docs for controller file : AuthApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: success to generate docs for controller file : AuthApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : DictApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : DictApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : DictApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : SchoolApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : SchoolApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : SchoolApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : CountryApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : CountryApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : CountryApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : JobCategoryApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : JobCategoryApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : JobCategoryApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : ConfigApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : ConfigApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : ConfigApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : ExportApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : ExportApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : ExportApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : FavoriteApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : FavoriteApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : FavoriteApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : JobApi.java
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:53 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to generate docs for controller file : JobApi.java
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: success to generate docs for controller file : JobApi.java
-五月 22, 2020 1:15:54 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: start to parse controller file : CompanyApi.java
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:37 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: start to generate docs for controller file : CompanyApi.java
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: success to generate docs for controller file : CompanyApi.java
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
-信息: info: start to parse controller file : SearchApi.java
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : ConfigApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : ConfigApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : ConfigApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : CountryApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : CountryApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : CountryApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : DictApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : DictApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : DictApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : DownloadApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : DownloadApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : DownloadApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : ExportApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : ExportApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : ExportApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : FavoriteApi.java
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:38 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : FavoriteApi.java
+八月 21, 2020 7:30:39 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : FavoriteApi.java
+八月 21, 2020 7:30:39 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : FileApi.java
+八月 21, 2020 7:30:39 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : FileApi.java
+八月 21, 2020 7:30:39 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : FileApi.java
+八月 21, 2020 7:30:39 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : JobApi.java
+八月 21, 2020 7:30:39 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:39 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:39 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:39 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:40 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:40 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:40 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:40 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:40 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:40 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:40 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:40 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : JobApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : JobApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : JobCategoryApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : JobCategoryApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : JobCategoryApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : JobCategoryIndustryApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : JobCategoryIndustryApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : JobCategoryIndustryApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : JobCategorySkillApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : JobCategorySkillApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : JobCategorySkillApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : JobDescExampleApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : JobDescExampleApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : JobDescExampleApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : MessageApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : MessageApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : MessageApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: start to parse controller file : RecommendApi.java
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think Vo should not be an enum type
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: we think T should not be an enum type
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils warn
-警告: warning!! Cannot find java file , in java file : /Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/src/main/java/com/worldelite/job/vo/RecommendVo.java, className : T, we cannot found more information of it, you've better to make it a JavaBean
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\RecommendVo.java, className : T, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: start to generate docs for controller file : RecommendApi.java
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: success to generate docs for controller file : RecommendApi.java
-五月 22, 2020 1:15:55 下午 io.github.yedaxia.apidocs.LogUtils info
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : ResumeApi.java
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:41 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : ResumeApi.java
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : ResumeApi.java
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : SchoolApi.java
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : SchoolApi.java
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : SchoolApi.java
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : SearchApi.java
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : UploadApi.java
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : UploadApi.java
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : UploadApi.java
+八月 21, 2020 7:30:42 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : UserApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : UserApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : UserApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : UserApplicantApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : UserApplicantApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : UserApplicantApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : UserCorporateApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : UserCorporateApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : UserCorporateApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : UserCorporateCommentApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : UserCorporateCommentApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : UserCorporateCommentApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : UserCorporateTagApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : UserCorporateTagApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : UserCorporateTagApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : VerificationApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: we think Vo should not be an enum type
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils warn
+警告: warning!! Cannot find java file , in java file : C:\SoftWare\idea_workspace\world-elite\job-server\src\main\java\com\worldelite\job\vo\ApiResult.java, className : Vo, we cannot found more information of it, you've better to make it a JavaBean
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : VerificationApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : VerificationApi.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : OauthController.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : ResumeController.java
+八月 21, 2020 7:30:43 下午 io.github.yedaxia.apidocs.LogUtils info
 信息: info: generate api docs done !!!

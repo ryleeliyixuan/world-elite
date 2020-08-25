@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>管理员接口
+从之前统一的用户接口中分离出来
+实现了管理员的保存、删除和修改普通用户及企业用户的状态
+实现了管理员的邮箱登录和退出</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<div id="wmd-preview" class="wmd-preview">
+<h1><a href="../index.html">《首页</a> 管理员接口
+从之前统一的用户接口中分离出来
+实现了管理员的保存、删除和修改普通用户及企业用户的状态
+实现了管理员的邮箱登录和退出:</h1>
+<div class="toc">
+    <ul>
+    <li><a href="#获取普通用户列表">获取普通用户列表</a></li><li><a href="#获取企业用户列表">获取企业用户列表</a></li><li><a href="#获取管理员用户列表">获取管理员用户列表</a></li><li><a href="#保存管理员">保存管理员</a></li><li><a href="#删除管理员">删除管理员</a></li><li><a href="#修改普通用户状态">修改普通用户状态</a></li><li><a href="#修改企业用户状态">修改企业用户状态</a></li><li><a href="#管理员邮箱登录">管理员邮箱登录</a></li><li><a href="#获取管理员信息">获取管理员信息</a></li><li><a href="#修改邮件">修改邮件</a></li><li><a href="#修改密码"><STRIKE>修改密码</STRIKE></a></li>
+    </ul>
+</div>
+<hr>
+<h2 id="获取普通用户列表">获取普通用户列表</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/admin/list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>page</td><td>int</td><td>false</td><td>页数</td></tr><tr><td>limit</td><td>int</td><td>false</td><td>每页条数</td></tr><tr><td>sort</td><td>string</td><td>false</td><td>排序</td></tr><tr><td>id</td><td>long</td><td>false</td><td>用户ID</td></tr><tr><td>name</td><td>string</td><td>false</td><td>用户名</td></tr><tr><td>email</td><td>string</td><td>false</td><td>邮箱</td></tr><tr><td>type</td><td>byte</td><td>false</td><td>用户类型</td></tr><tr><td>status</td><td>byte</td><td>false</td><td>用户状态</td></tr><tr><td>companyId</td><td>long</td><td>false</td><td>公司ID</td></tr><tr><td>beginTime</td><td>date</td><td>false</td><td>开始时间区间</td></tr><tr><td>endTime</td><td>date</td><td>false</td><td>结束时间区间</td></tr><tr><td>subscribeFlag</td><td>byte</td><td>false</td><td>订阅标志</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_getUserList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_getUserList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "total": "int //总记录数",
+    "pageCount": "int //页数",
+    "currentPage": "int //当前页",
+    "pageSize": "int //每页记录数",
+    "list": [
+      {
+        "id": "long //用于后端",
+        "userId": "string //字符串ID，用于前端",
+        "name": "string //名字",
+        "avatar": "string //头像",
+        "gender": "byte //性别",
+        "type": "byte //用户类型",
+        "status": "byte //状态",
+        "token": "string //登录凭证",
+        "phoneCode": "string //电话区号",
+        "phone": "string //电话号码",
+        "email": "string //邮箱",
+        "createTime": "date //创建时间",
+        "subscribeFlag": "byte //订阅标志"
+      }
+    ],
+    "hasMore": "boolean //是否还有更多"
+  }
+}
+</pre>
+
+<hr><h2 id="获取企业用户列表">获取企业用户列表</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/admin/company-user-list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>page</td><td>int</td><td>false</td><td>页数</td></tr><tr><td>limit</td><td>int</td><td>false</td><td>每页条数</td></tr><tr><td>sort</td><td>string</td><td>false</td><td>排序</td></tr><tr><td>id</td><td>long</td><td>false</td><td>用户ID</td></tr><tr><td>name</td><td>string</td><td>false</td><td>用户名</td></tr><tr><td>email</td><td>string</td><td>false</td><td>邮箱</td></tr><tr><td>type</td><td>byte</td><td>false</td><td>用户类型</td></tr><tr><td>status</td><td>byte</td><td>false</td><td>用户状态</td></tr><tr><td>companyId</td><td>long</td><td>false</td><td>公司ID</td></tr><tr><td>beginTime</td><td>date</td><td>false</td><td>开始时间区间</td></tr><tr><td>endTime</td><td>date</td><td>false</td><td>结束时间区间</td></tr><tr><td>subscribeFlag</td><td>byte</td><td>false</td><td>订阅标志</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_listCompanyUser_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_listCompanyUser_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "total": "int //总记录数",
+    "pageCount": "int //页数",
+    "currentPage": "int //当前页",
+    "pageSize": "int //每页记录数",
+    "list": [
+      {
+        "id": "long //用于后端",
+        "userId": "string //字符串ID，用于前端",
+        "name": "string //名字",
+        "avatar": "string //头像",
+        "gender": "byte //性别",
+        "type": "byte //用户类型",
+        "status": "byte //状态",
+        "token": "string //登录凭证",
+        "phoneCode": "string //电话区号",
+        "phone": "string //电话号码",
+        "email": "string //邮箱",
+        "createTime": "date //创建时间",
+        "subscribeFlag": "byte //订阅标志",
+        "company": {
+          "id": "string //公司ID",
+          "name": "string //公司简称",
+          "fullName": "string //公司全称",
+          "logo": "string //logo",
+          "homepage": "string //主页",
+          "introduction": "string //公司介绍",
+          "synopsis": "string //公司一句话介绍",
+          "scale": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "stage": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "industry": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "property": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "addressList": [
+            {
+              "id": "int //地址ID",
+              "cityId": "int //城市ID",
+              "address": "string //地址",
+              "latitude": "double //纬度",
+              "longitude": "double //经度"
+            }
+          ],
+          "completeProgress": "int //完善进度",
+          "wikiSummary": "string //百科摘要",
+          "companyWiki": "string //公司百科",
+          "favoriteFlag": "byte //收藏标志",
+          "favoriteTime": "date //收藏时间"
+        },
+        "depart": "string //部门",
+        "post": "string //职位"
+      }
+    ],
+    "hasMore": "boolean //是否还有更多"
+  }
+}
+</pre>
+
+<hr><h2 id="获取管理员用户列表">获取管理员用户列表</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/admin/admin-list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>page</td><td>int</td><td>false</td><td>页数</td></tr><tr><td>limit</td><td>int</td><td>false</td><td>每页条数</td></tr><tr><td>sort</td><td>string</td><td>false</td><td>排序</td></tr><tr><td>id</td><td>long</td><td>false</td><td>用户ID</td></tr><tr><td>name</td><td>string</td><td>false</td><td>用户名</td></tr><tr><td>email</td><td>string</td><td>false</td><td>邮箱</td></tr><tr><td>type</td><td>byte</td><td>false</td><td>用户类型</td></tr><tr><td>status</td><td>byte</td><td>false</td><td>用户状态</td></tr><tr><td>companyId</td><td>long</td><td>false</td><td>公司ID</td></tr><tr><td>beginTime</td><td>date</td><td>false</td><td>开始时间区间</td></tr><tr><td>endTime</td><td>date</td><td>false</td><td>结束时间区间</td></tr><tr><td>subscribeFlag</td><td>byte</td><td>false</td><td>订阅标志</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_listAdminUser_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_listAdminUser_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "total": "int //总记录数",
+    "pageCount": "int //页数",
+    "currentPage": "int //当前页",
+    "pageSize": "int //每页记录数",
+    "list": [
+      {
+        "id": "long //用于后端",
+        "userId": "string //字符串ID，用于前端",
+        "name": "string //名字",
+        "avatar": "string //头像",
+        "gender": "byte //性别",
+        "type": "byte //用户类型",
+        "status": "byte //状态",
+        "token": "string //登录凭证",
+        "phoneCode": "string //电话区号",
+        "phone": "string //电话号码",
+        "email": "string //邮箱",
+        "createTime": "date //创建时间",
+        "subscribeFlag": "byte //订阅标志"
+      }
+    ],
+    "hasMore": "boolean //是否还有更多"
+  }
+}
+</pre>
+
+<hr><h2 id="保存管理员">保存管理员</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/admin/add-admin
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_addAdmin_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_addAdmin_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="删除管理员">删除管理员</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/admin/delete-admin
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>userId</td><td>long</td><td>true</td><td>用户Id</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_deleteAdmin_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_deleteAdmin_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="修改普通用户状态">修改普通用户状态</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/admin/modify-applicant-status
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_modifyUserApplicantStatus_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_modifyUserApplicantStatus_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="修改企业用户状态">修改企业用户状态</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/admin/modify-corporate-status
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "userId": "long //用户ID",
+  "status": "byte //状态",
+  "reason": "string //原因"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_modifyUserCorporateStatus_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_modifyUserCorporateStatus_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="管理员邮箱登录">管理员邮箱登录</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/admin/email-login
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "email": "string //邮箱",
+  "password": "string //密码"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_loginWithEmail_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_loginWithEmail_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "id": "long //用于后端",
+    "userId": "string //字符串ID，用于前端",
+    "name": "string //名字",
+    "avatar": "string //头像",
+    "gender": "byte //性别",
+    "type": "byte //用户类型",
+    "status": "byte //状态",
+    "token": "string //登录凭证",
+    "phoneCode": "string //电话区号",
+    "phone": "string //电话号码",
+    "email": "string //邮箱",
+    "createTime": "date //创建时间",
+    "subscribeFlag": "byte //订阅标志"
+  }
+}
+</pre>
+
+<hr><h2 id="获取管理员信息">获取管理员信息</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/admin/my-info
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_myInfo_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_myInfo_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {
+    "id": "long //用于后端",
+    "userId": "string //字符串ID，用于前端",
+    "name": "string //名字",
+    "avatar": "string //头像",
+    "gender": "byte //性别",
+    "type": "byte //用户类型",
+    "status": "byte //状态",
+    "token": "string //登录凭证",
+    "phoneCode": "string //电话区号",
+    "phone": "string //电话号码",
+    "email": "string //邮箱",
+    "createTime": "date //创建时间",
+    "subscribeFlag": "byte //订阅标志"
+  }
+}
+</pre>
+
+<hr><h2 id="修改邮件">修改邮件</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/admin/modify-email
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "password": "string //密码",
+  "newEmail": "string //新邮箱",
+  "validCode": "string //新邮箱验证码",
+  "imgValidCode": "string //图片验证码"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_modifyEmail_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_modifyEmail_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="<STRIKE>修改密码</STRIKE>"><STRIKE>修改密码</STRIKE></h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/admin/modify-pwd
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "oldPassword": "string //旧密码",
+  "newPassword": "string //新密码",
+  "imgValidCode": "string //图片验证码"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_AdminApi_modifyPassword_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_AdminApi_modifyPassword_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr>
+</div>
+</body>
+</html>

@@ -53,7 +53,5 @@ public interface UserCorporateTagMapper {
      */
     int updateByPrimaryKey(UserCorporateTag record);
 
-    List<UserCorporateTag> selectByUserCorporateId(Long userId,Long corporateId);
-
-    void deleteByUserCorporateId(Long userApplicantId);
+    List<UserCorporateTag> selectByJobApplyId(Long jobApplyId);
 }

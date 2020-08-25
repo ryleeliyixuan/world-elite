@@ -51,6 +51,24 @@ public class SchoolService {
     }
 
     /**
+     * 通过ids获取学校
+     * @param schoolListForm
+     * @return
+     */
+    public List<SchoolVo> getSchoolListByIds(SchoolListForm schoolListForm){
+        List<SchoolVo> schoolVoList = new ArrayList<SchoolVo>();
+        if(schoolListForm.getSchoolIds()!=null){
+            for(Integer schoolId:schoolListForm.getSchoolIds()){
+                School school = schoolMapper.selectByPrimaryKey(schoolId);
+                if(school != null){
+                    schoolVoList.add(new SchoolVo().asVo(school));
+                }
+            }
+        }
+        return schoolVoList;
+    }
+
+    /**
      * 保存学校
      *
      * @param schoolForm

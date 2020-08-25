@@ -54,5 +54,5 @@ public interface UserCorporateCommentMapper {
      */
     int updateByPrimaryKey(UserCorporateComment record);
 
-    List<UserCorporateComment> selectByUserIdAndCompanyId(@Param("userId") Long userId, @Param("companyId") Long companyId);
+    List<UserCorporateComment> selectByJobApplyId(@Param("jobApplyId") Long jobApplyId);
 }

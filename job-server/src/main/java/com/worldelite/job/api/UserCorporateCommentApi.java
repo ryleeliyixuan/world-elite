@@ -2,6 +2,7 @@ package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.controller.BaseController;
 import com.worldelite.job.form.UserCorporateCommentForm;
 import com.worldelite.job.service.UserCorporateCommentService;
 import com.worldelite.job.vo.ApiResult;
@@ -19,13 +20,14 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/usercorporate/comment/")
-public class UserCorporateCommentApi {
+public class UserCorporateCommentApi extends BaseController {
 
     @Autowired
     private UserCorporateCommentService userCorporateCommentService;
 
     /**
      * 保存用户笔记
+     *
      * @param userCorporateCommentForm
      * @return
      */
@@ -39,15 +41,12 @@ public class UserCorporateCommentApi {
 
     /**
      * 获取某用户的所有笔记
-     *
      */
     @RequireLogin(allow = UserType.COMPANY)
     @GetMapping("list")
     @ApiDoc
-    public ApiResult<List<UserCorporateCommentVo>> getCommentList(@RequestParam long userId, @RequestParam long corporateId) {
-        final List<UserCorporateCommentVo> userCorporateCommentVos = userCorporateCommentService
-                .getCommentsByUserIdAndCompanyId(userId, corporateId);
-
+    public ApiResult<List<UserCorporateCommentVo>> getCommentList(@RequestParam long jobApplyId) {
+        final List<UserCorporateCommentVo> userCorporateCommentVos = userCorporateCommentService.getCommentsByJobApplyId(jobApplyId);
         return ApiResult.ok(userCorporateCommentVos);
     }
 
@@ -60,7 +59,7 @@ public class UserCorporateCommentApi {
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("delete")
     @ApiDoc
-    public ApiResult deleteComment(@RequestBody long userCorporateCommentId){
+    public ApiResult deleteComment(@RequestParam long userCorporateCommentId){
         userCorporateCommentService.deleteCommentById(userCorporateCommentId);
 
         return ApiResult.ok();

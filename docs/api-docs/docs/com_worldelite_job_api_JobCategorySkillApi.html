@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>职位技能操作接口</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<div id="wmd-preview" class="wmd-preview">
+<h1><a href="../index.html">《首页</a> 职位技能操作接口:</h1>
+<div class="toc">
+    <ul>
+    <li><a href="#保存职位技能">保存职位技能</a></li><li><a href="#删除职位技能">删除职位技能</a></li><li><a href="#获取全部职位技能">获取全部职位技能</a></li><li><a href="#根据职位类别Id获取对应的职位技能">根据职位类别Id获取对应的职位技能</a></li><li><a href="#保存职位技能-职位类别映射">保存职位技能-职位类别映射</a></li><li><a href="#删除职位技能-职位类别映射">删除职位技能-职位类别映射</a></li>
+    </ul>
+</div>
+<hr>
+<h2 id="保存职位技能">保存职位技能</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/jobskill/save
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "id": "long //职位技能id",
+  "name": "string //职位技能名"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_JobCategorySkillApi_saveJobSkill_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_JobCategorySkillApi_saveJobSkill_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="删除职位技能">删除职位技能</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/jobskill/delete
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>jobSkillId</td><td>long</td><td>true</td><td></td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_JobCategorySkillApi_deleteJobSkill_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_JobCategorySkillApi_deleteJobSkill_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="获取全部职位技能">获取全部职位技能</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/jobskill/list-all
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_JobCategorySkillApi_getJobSkillListAll_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_JobCategorySkillApi_getJobSkillListAll_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": [
+    {
+      "id": "long //职位技能ID",
+      "name": "string //职位技能名",
+      "createTime": "date //创建时间"
+    }
+  ]
+}
+</pre>
+
+<hr><h2 id="根据职位类别Id获取对应的职位技能">根据职位类别Id获取对应的职位技能</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/jobskill/list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>jobCategoryId</td><td>long</td><td>true</td><td>职位类别id</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_JobCategorySkillApi_getJobSkillList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_JobCategorySkillApi_getJobSkillList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": [
+    {
+      "id": "long //职位技能ID",
+      "name": "string //职位技能名",
+      "createTime": "date //创建时间"
+    }
+  ]
+}
+</pre>
+
+<hr><h2 id="保存职位技能-职位类别映射">保存职位技能-职位类别映射</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/jobskill/category/save
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<pre class="prettyprint lang-json">
+{
+  "id": "long //职位类别技能关系表id",
+  "categoryId": "long //职位类别Id",
+  "skillId": "long //职位技能Id"
+}
+</pre>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_JobCategorySkillApi_saveJobCategorySkill_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_JobCategorySkillApi_saveJobCategorySkill_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr><h2 id="删除职位技能-职位类别映射">删除职位技能-职位类别映射</h2>
+
+<pre class="prettyprint lang-json">
+method：POST
+url: /api/jobskill/category/delete
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>jobCategorySkillId</td><td>long</td><td>true</td><td></td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_JobCategorySkillApi_deleteComment_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_JobCategorySkillApi_deleteComment_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": {}
+}
+</pre>
+
+<hr>
+</div>
+</body>
+</html>

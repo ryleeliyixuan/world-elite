@@ -172,7 +172,7 @@
     where resume_id = #{resumeId,jdbcType=BIGINT}
 </select>
 
-  <select id="listAll" resultMap="BaseResultMap">
+  <select id="listAll" resultMap="ResultMapWithBLOBs">
     select
     <include refid="Base_Column_List" />
     ,
