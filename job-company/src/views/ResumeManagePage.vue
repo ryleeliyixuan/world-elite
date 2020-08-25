@@ -417,7 +417,9 @@
             },
             onTagSave() {
                 let tag = this.jobApplyItem.tagVos && this.jobApplyItem.tagVos[0];
-                tag.tagName = this.tag;
+                if (tag) {
+                    tag.tagName = this.tag;
+                }
                 this.$axios.post('/usercorporate/tag/save', {
                     jobApplyId: this.jobApplyItem.id,
                     tagName: this.tag,
