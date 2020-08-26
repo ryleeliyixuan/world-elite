@@ -37,9 +37,6 @@ public class ResumeAttachService extends BaseService{
     @Value("${search.index.resumeindex2}")
     private String indexFolder2;
 
-    @Value("${search.index.resumepath}")
-    private String resumeIndexFolder;
-
     @Autowired
     private Analyzer analyzer;
 
