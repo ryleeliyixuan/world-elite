@@ -126,7 +126,7 @@
                 <div v-if="jobDescriptionShow" v-html="jobDescription" class="job-description"></div>
             </div>
             <el-form-item>
-                <el-button type="primary" :loading="posting" @click="onSubmit">{{pubButtonText}}</el-button>
+                <el-button type="primary" size="mini" style="padding: 0 12px;line-height: 30px"  :loading="posting" @click="onSubmit" >{{pubButtonText}}</el-button>
             </el-form-item>
         </el-form>
 
