@@ -205,7 +205,7 @@
                                    :loading="resumeExporting"
                                    icon="el-icon-download"
                                    @click="onDownloadResumeClick(activeApplyResume)">
-                            下载简历
+                            生成简历
                         </el-button>
                     </el-col>
                     <el-col :span="6" class="text-right">
@@ -464,7 +464,7 @@
             },
             onDownloadResumeClick(applyResume) {
                 this.resumeExporting = true;
-                let fileName = `${applyResume.job.name}_${applyResume.resume.name}`;
+                let fileName = `${applyResume.resume.name}_${applyResume.job.name}`;
                 if (applyResume.resume.maxResumeEdu) {
                     fileName += `_${applyResume.resume.maxResumeEdu.schoolName}_${applyResume.resume.maxResumeEdu.majorName}`;
                 }
