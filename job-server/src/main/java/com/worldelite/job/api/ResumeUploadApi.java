@@ -24,7 +24,7 @@ public class ResumeUploadApi extends BaseApi {
     ResumeUploadService resumeUploadService;
 
     /**
-     * 读取简历内容
+     * 读取简历内容后发送邀请注册邮件到用户邮箱
      *
      * @param urls 简历url
      * @return
@@ -32,47 +32,11 @@ public class ResumeUploadApi extends BaseApi {
     @RequireLogin(allow = UserType.ADMIN)
     @GetMapping("details")
     @ApiDoc
-    public ApiResult getResumesDetail(@RequestParam String[] urls) {
+    public ApiResult sendInviteLink(@RequestParam String[] urls) {
         List<String> resumes = resumeUploadService.getResumesDetail(urls);
-        return ApiResult.ok();
-    }
-
-    /**
-     * 获取邮箱
-     *
-     * @param resumes 简历
-     * @return
-     */
-    @RequireLogin(allow = UserType.ADMIN)
-    @GetMapping("emails")
-    @ApiDoc
-    public ApiResult getResumesEmail(@RequestParam List<String> resumes) {
         List<String> emails = resumeUploadService.getResumesEmail(resumes);
-        return ApiResult.ok();
-    }
-
-    /**
-     * 获取电话
-     *
-     * @param resumes 简历
-     * @return
-     */
-    @RequireLogin(allow = UserType.ADMIN)
-    @GetMapping("phones")
-    @ApiDoc
-    public ApiResult getResumesPhone(@RequestParam List<String> resumes) {
-        List<String> phones = resumeUploadService.getResumesPhone(resumes);
-        return ApiResult.ok();
-    }
-
-    /**
-     * 发送邀请注册邮件到用户邮箱
-     *
-     * @param emails 邮箱
-     * @return
-     */
-    public ApiResult sendInviteLink(@RequestBody List<String> emails) {
         resumeUploadService.sendInviteLink(emails);
         return ApiResult.ok();
     }
+
 }
