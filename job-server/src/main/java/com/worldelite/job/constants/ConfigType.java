@@ -14,7 +14,8 @@ public enum ConfigType {
     EMAIL_JOB_APPLY_ABANDON(7), //简历不合适邮件通知
     USER_HOME_CONFIG(8), //用户首页配置
     COMPANY_HOME_CONFIG(9), //企业首页配置
-    USER_PROTOCOL(10) // 用户协议
+    USER_PROTOCOL(10), // 用户协议
+    EMAIL_INVITE_LINK(11) //邮件邀请用户注册
     ;
 
     public final int value;
