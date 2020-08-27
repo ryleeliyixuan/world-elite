@@ -205,7 +205,7 @@
                                    :loading="resumeExporting"
                                    icon="el-icon-download"
                                    @click="onDownloadResumeClick(activeApplyResume)">
-                            下载简历
+                            生成简历
                         </el-button>
                     </el-col>
                     <el-col :span="6" class="text-right">
@@ -229,13 +229,17 @@
             <el-timeline class="dialog-content-container">
                 <el-timeline-item v-for="item in noteList" :timestamp="item.createTime" placement="top" :key="item.id">
                     <el-card>
-                        <p class="note-text">{{item.comment}}</p>
-                        <i class="el-icon-close" @click="onNoteDelete(item.id)"></i>
+                        <el-input class="note-text" v-if="item.edit" v-model="updateComment" size="small" type="textarea" autosize/>
+                        <p class="note-text" v-else>{{item.comment}}</p>
+                        <i class="el-icon-circle-check note-icon" v-if="item.edit" @click="onNoteUpdate(item)"></i>
+                        <i class="el-icon-circle-close note-icon" v-if="item.edit" @click="onNoteCancel(item)"></i>
+                        <i :class="['el-icon-edit','note-icon',{'note-icon-hidden':!item.edit}]" @click="onNoteEdit(item)"></i>
+                        <i :class="['el-icon-close','note-icon',{'note-icon-hidden':!item.edit}]" @click="onNoteDelete(item)"></i>
                     </el-card>
                 </el-timeline-item>
             </el-timeline>
             <div class="dialog-input-container">
-                <el-input class="dialog-input" v-model="comment" placeholder="请输入您的笔记" autofocus></el-input>
+                <el-input class="dialog-input" v-model="comment" placeholder="请输入您的笔记" @keyup.enter.native="onNoteSave" autofocus></el-input>
                 <el-button class="dialog-button" type="primary" :round=true @click="onNoteSave">保存
                 </el-button>
             </div>
@@ -304,6 +308,8 @@
                 dialogVisible: false,
                 dialogVisible2: false,
                 comment: "",
+                updateComment: '',
+                lastEditComment: undefined,
                 noteList: [],
                 jobApplyItem: undefined,
                 tag: '',//标签
@@ -366,13 +372,7 @@
             handleNote(item) {
                 this.dialogVisible = true;
                 this.jobApplyItem = item;
-                this.$axios.request({
-                    url: '/usercorporate/comment/list',
-                    method: 'get',
-                    params: {jobApplyId: item.id}
-                }).then(data => {
-                    this.noteList = data.data
-                })
+                this.getNoteList(item.id);
             },
 
             handleTag(item) {
@@ -394,8 +394,7 @@
                     this.getNoteList(this.jobApplyItem.id);
                 })
             },
-            onNoteDelete(id) {
-                console.log(id);
+            onNoteDelete(item) {
                 this.$confirm("确认删除吗？", "提示", {
                     confirmButtonText: "继续",
                     cancelButtonText: "取消",
@@ -404,21 +403,52 @@
                     this.$axios.request({
                         url: '/usercorporate/comment/delete',
                         method: 'post',
-                        params: {userCorporateCommentId: id}
+                        params: {userCorporateCommentId: item.id}
                     }).then(() => {
                         this.getNoteList(this.jobApplyItem.id);
                     })
-                    // deleteNote(id).then(() => {
-                    //     this.getNoteList(this.jobApplyId);
-                    // })
                 });
+            },
+
+            onNoteEdit(item) {
+                if (this.lastEditComment) {
+                    this.onNoteCancel(this.lastEditComment);
+                }
+                this.lastEditComment = item;
+                this.updateComment = item.comment;
+                item.edit = true;
+
+            },
+
+            onNoteCancel(item) {
+                item.edit = false;
+                this.updateComment = '';
+            },
+
+            onNoteUpdate(item) {
+                item.comment = this.updateComment;
+                this.$axios.request({
+                    url: '/usercorporate/comment/save',
+                    method: "post",
+                    data: {
+                        jobApplyId: this.jobApplyItem.id,
+                        comment: item.comment,
+                        id: item.id
+                    }
+                }).then(() => {
+                    this.comment = '';
+                    this.getNoteList(this.jobApplyItem.id);
+                })
             },
 
             getNoteList(jobApplyId) {
                 this.$axios.get('/usercorporate/comment/list', {
                     params: {jobApplyId}
                 }).then(data => {
-                    this.noteList = data.data
+                    this.noteList = data.data.map(item => {
+                        item.edit = false;
+                        return item;
+                    })
                 })
             },
             onTagSave() {
@@ -464,7 +494,7 @@
             },
             onDownloadResumeClick(applyResume) {
                 this.resumeExporting = true;
-                let fileName = `${applyResume.job.name}_${applyResume.resume.name}`;
+                let fileName = `${applyResume.resume.name}_${applyResume.job.name}`;
                 if (applyResume.resume.maxResumeEdu) {
                     fileName += `_${applyResume.resume.maxResumeEdu.schoolName}_${applyResume.resume.maxResumeEdu.majorName}`;
                 }
@@ -577,16 +607,24 @@
             align-items: flex-start;
 
             .note-text {
-                width: calc(100% - 30px);
+                font-size: 16px;
+                line-height: 32px;
+                flex: 1;
+                max-width: calc(100% - 50px);
             }
 
-            .el-icon-close {
-                margin-bottom: 16px;
+            .note-icon {
+                font-size: 16px;
+                /*margin-bottom: 16px;*/
+                line-height: 24px;
                 padding: 4px;
+            }
+
+            .note-icon-hidden {
                 display: none;
             }
 
-            &:hover .el-icon-close {
+            &:hover .note-icon {
                 display: inline-block;
                 cursor: pointer;
             }

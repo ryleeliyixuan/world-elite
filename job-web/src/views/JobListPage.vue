@@ -73,12 +73,12 @@
                         <span class="section3-city-degree text-gray text-small">{{`${job.city? job.city.name : ''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
                     </div>
                 </div>
-                <div class="section3-right-container" v-show="job.companyUser && job.companyUser.company">
+                <div class="section3-right-container" v-if="job.companyUser && job.companyUser.company">
                     <div class="section3-company-info-container">
                         <h6 class="section3-company-name">{{job.companyUser.company.name}}</h6>
                         <div class="text-gray text-small">
-                            {{job.companyUser.company.industry?job.companyUser.company.industry.name:''}} /
-                            {{job.companyUser.company.stage?job.companyUser.company.stage.name:''}} /
+                            {{job.companyUser.company.industry?job.companyUser.company.industry.name + ' / ':''}}
+                            {{job.companyUser.company.stage?job.companyUser.company.stage.name + ' / ':''}}
                             {{job.companyUser.company.scale?job.companyUser.company.scale.name:''}}
                         </div>
                     </div>

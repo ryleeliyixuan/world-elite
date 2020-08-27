@@ -110,7 +110,6 @@
                     </span>
                 </div>
             </el-form-item>
-
             <el-form-item label="职位描述" prop="description">
                 <quill-editor v-model="jobForm.description" :options="descriptionEditorOption"></quill-editor>
             </el-form-item>
