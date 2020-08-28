@@ -119,7 +119,7 @@
                 this.$router.push("/mi");
             },
             onDelivery(){
-                this.$router.push("/job-list");
+                window.open('https://app.mokahr.com/campus_apply/xiaomi/26250#/jobs')
             }
         }
     };

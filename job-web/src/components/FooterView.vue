@@ -22,7 +22,7 @@
 
                 <div class="section1-item">
                     <h5 class="section1-text">联系我们</h5>
-                    <div class="link-text">邮箱：wenjiad@myworldelite.com</div>
+                    <a class="link-text" href="mailto:career@myworldelite.com">邮箱：career@myworldelite.com</a>
                 </div>
 
                 <div class="section1-item">
