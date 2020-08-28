@@ -81,6 +81,10 @@
                 }
             };
         },
+        created() {
+            this.$emit("complete");
+            console.log(123)
+        },
         methods: {
             refreshCaptcha() {
                 this.captchaUrl = this.captchaUrl + "?" + new Date().getTime();

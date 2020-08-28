@@ -61,6 +61,7 @@ export default {
               this.setMessageCount(0)
           });
         }
+        this.$emit("complete");
       });
     },
     handleDeleteMessage(id){
