@@ -349,7 +349,7 @@
                 this.experienceOptions = [{id: 1, name: "不限"}, {id: 2, name: "1年以下"}, {id: 3, name: "1-3年"},
                     {id: 4, name: "3-5年"}, {id: 5, name: "5-10年"}, {id: 6, name: "10年以上"}, {id: 7, name: "在读"}];
                 this.minSalaryOptions = this.generateSalaryOptions(0, 250);
-                this.salaryMonthOptions = this.generateSalaryMonthOptions(11, 13);
+                this.salaryMonthOptions = this.generateSalaryMonthOptions(0, 24);
                 if (jobId) {
                     getJobInfo(jobId).then(response => {
                         const {data} = response;

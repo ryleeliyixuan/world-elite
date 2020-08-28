@@ -103,6 +103,9 @@
                 }
             };
         },
+        created() {
+            this.$emit("complete");
+        },
         methods: {
             onSubmit(evt) {
                 evt.preventDefault();
@@ -162,6 +165,7 @@
             .register-form {
                 width: 400px;
             }
+
             .item-container {
                 width: 100%;
                 height: 44px;
@@ -172,6 +176,7 @@
                     line-height: 44px;
                 }
             }
+
             .item2-container {
                 display: flex;
                 align-items: center;
@@ -197,12 +202,15 @@
     @media screen and (max-width: 850px) {
         .app-container {
             padding: 20px 20px 0;
-            .text-center{
+
+            .text-center {
                 font-size: 18px;
             }
+
             .register-form {
-               width: 300px;
-                .item-container{
+                width: 300px;
+
+                .item-container {
                     margin-top: 20px;
                 }
             }

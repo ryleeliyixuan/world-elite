@@ -196,6 +196,9 @@
                 }]
             }
         },
+        created() {
+            this.$emit("complete");
+        },
         methods: {
             // onMorePosition() {
             //     this.$router.push("/job-list");
