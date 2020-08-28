@@ -86,7 +86,6 @@ export default {
       getFavoriteActivityList(this.listQuery).then(response => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
-        this.$emit("complete");
       });
     },
     openActivityDetail(id) {

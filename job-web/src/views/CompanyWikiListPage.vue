@@ -88,7 +88,6 @@
                 getCompanyWikiList(this.listQuery).then(response => {
                     this.list = response.data.list;
                     this.total = response.data.total;
-                    this.$emit("complete");
                 });
             },
             handleRouteList() {

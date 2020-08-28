@@ -79,9 +79,6 @@ export default {
       }
     };
   },
-  created() {
-    this.$emit("complete");
-  },
   methods: {
     refreshCaptcha() {
       this.captchaUrl = this.captchaUrl + "?" + new Date().getTime();

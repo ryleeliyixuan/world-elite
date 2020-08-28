@@ -66,9 +66,6 @@
                 immediate: true
             }
         },
-        created() {
-            this.$emit("complete");
-        },
         methods: {
             onSubmit(evt) {
                 evt.preventDefault();

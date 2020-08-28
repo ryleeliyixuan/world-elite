@@ -128,9 +128,22 @@
           />
         </div>
       </div>
+      <!-- Activity START-->
       <div class="activity-box" v-else>
-
+        <ul class="timeline" v-if="activityPage.list.length>0">
+          <li class="event"
+            v-for="activity in activityPage.list"
+            :key="activity.id"
+            :data-date="activity.startTime"
+          >
+            <h3><a :href="activity.link" target="_blank">
+              {{activity.title}}
+            </a></h3>
+            <p>{{activity.summary}}</p>
+          </li>
+        </ul>
       </div>
+      <!-- Activity END -->
     </div>
   </div>
 </template>
@@ -143,6 +156,9 @@ import Pagination from "@/components/Pagination";
 
 import { getCompanyInfo } from "@/api/company_api";
 import { getCompanyJobList } from "@/api/job_api";
+// Activity START
+import { getActivityList } from "@/api/activity_api";
+// Activity END
 import { setPageTitle } from "@/utils/setting";
 import { doFavorite } from "@/api/favorite_api";
 import { mapGetters } from "vuex";
@@ -163,6 +179,7 @@ export default {
       company: undefined,
       total: 0,
       jobPage: {},
+      activityPage: {},
       tabIndex: "intro",
       activeAddress: 0,
       mapZoom: 14,
@@ -197,9 +214,6 @@ export default {
       this.initData();
     }
   },
-  mounted: {
-
-  },
   methods: {
     initData() {
       this.companyId = this.$route.params.id;
@@ -217,12 +231,15 @@ export default {
           }
         }
       }).then(response => {
+        // Activity START
+        this.getActivityList();
+        // Activity END
         if (this.company != null && this.company.companyWiki != null){
           let ulist = document.createElement("div");
           let content = document.createElement("div");
           content.innerHTML = this.company.companyWiki;
 
-          const url = "/company/" + this.$route.params.id;
+          // const url = "/company/" + this.$route.params.id + "/";
 
           // crete table of contents
           let idIndex = 0;
@@ -240,7 +257,8 @@ export default {
             let item = document.createElement("li");
             let link = document.createElement("a");
             let hrefAtt = document.createAttribute("href");
-            hrefAtt.value = url + "#" + h.id;
+            // hrefAtt.value = url + "#" + h.id;
+            hrefAtt.value = "#" + h.id;
 
             link.setAttributeNode(hrefAtt);
             let num = parseInt(h.tagName.substring(1,2), 10)-2;
@@ -257,62 +275,64 @@ export default {
         }
       });
       this.getCompanyJobList();
+
     },
     handleScroll(event){
-      let h_list = document.getElementsByClassName("wiki_content")[0].querySelectorAll("h3, h4, h5, h6");
-      let table = document.getElementsByClassName("wiki_sidebar")[0].getElementsByTagName("a");
+      if (this.tabIndex == "intro") {
+        let h_list = document.getElementsByClassName("wiki_content")[0].querySelectorAll("h3, h4, h5, h6");
+        let table = document.getElementsByClassName("wiki_sidebar")[0].getElementsByTagName("a");
 
-      for (let i = 0; i < h_list.length; i++){
-        let element = h_list[i];
-        let position = element.getBoundingClientRect();
+        for (let i = 0; i < h_list.length; i++){
+          let element = h_list[i];
+          let position = element.getBoundingClientRect();
 
-        let next_element = null;
-        let next_position = null;
-        if (i != h_list.length - 1){
-          next_element = h_list[i+1];
-          next_position = next_element.getBoundingClientRect();
+          let next_element = null;
+          let next_position = null;
+          if (i != h_list.length - 1){
+            next_element = h_list[i+1];
+            next_position = next_element.getBoundingClientRect();
+          }
+
+          if (next_element == null){
+            if (position.top <= 10){
+              for (let j = 0; j < table.length; j++){
+                table[j].style.color = "#707070";
+              }
+              table[i].style.color = "#551A8B";
+              break;
+            }
+            else if (position.bottom < 0){
+              for (let j = 0; j < table.length; j++){
+                table[j].style.color = "#707070";
+              }
+              table[i].style.color = "#551A8B";
+              break;
+            }
+          }
+          else {
+            if (position.top >= 0 && position.top <= 10){
+              for (let j = 0; j < table.length; j++){
+                table[j].style.color = "#707070";
+              }
+              table[i].style.color = "#551A8B";
+              break;
+            }
+            else if (position.top < 10 && next_position.top > 10){
+              for (let j = 0; j < table.length; j++){
+                table[j].style.color = "#707070";
+              }
+              table[i].style.color = "#551A8B";
+              break;
+            }
+            else if (position.bottom < 10 && next_position.top > 10){
+              for (let j = 0; j < table.length; j++){
+                table[j].style.color = "#707070";
+              }
+              table[i].style.color = "#551A8B";
+              break;
+            }
+          }
         }
-
-        if (next_element == null){
-          if (position.top <= 10){
-            for (let j = 0; j < table.length; j++){
-              table[j].style.color = "#707070";
-            }
-            table[i].style.color = "#551A8B";
-            break;
-          }
-          else if (position.bottom < 0){
-            for (let j = 0; j < table.length; j++){
-              table[j].style.color = "#707070";
-            }
-            table[i].style.color = "#551A8B";
-            break;
-          }
-        }
-        else {
-          if (position.top >= 0 && position.top <= 10){
-            for (let j = 0; j < table.length; j++){
-              table[j].style.color = "#707070";
-            }
-            table[i].style.color = "#551A8B";
-            break;
-          }
-          else if (position.top < 10 && next_position.top > 10){
-            for (let j = 0; j < table.length; j++){
-              table[j].style.color = "#707070";
-            }
-            table[i].style.color = "#551A8B";
-            break;
-          }
-          else if (position.bottom < 10 && next_position.top > 10){
-            for (let j = 0; j < table.length; j++){
-              table[j].style.color = "#707070";
-            }
-            table[i].style.color = "#551A8B";
-            break;
-          }
-        }
-
       }
     },
     getCompanyJobList() {
@@ -321,14 +341,57 @@ export default {
         this.total = response.data.total;
       });
     },
+    // Activity START
+    getActivityList() {
+      let data = {
+        cityIds: [],
+        keyword: undefined,
+        status: "2",
+        sort: "-id",
+        page: 1,
+        limit: 10
+      };
+      getActivityList(data).then(response => {
+        let temp_list = response.data.list;
+        let actual_list = [];
+        let today = new Date();
+        let today_year = today.getFullYear();
+        let today_month = '' + today.getMonth()+1;
+        let today_date = '' + today.getDate();
+        if (today_month.length < 2) {
+          today_month = '0' + today_month;
+        }
+        if (today_date.length < 2) {
+          today_date = '0' + today_date;
+        }
+        for (let i = 0; i < temp_list.length; i++){
+          let activity = temp_list[i];
+          if (activity.organizer == this.company.name){
+            let activity_year = activity.startTime.substring(0, 4);
+            let activity_month = activity.startTime.substring(5, 7);
+            let activity_date = activity.startTime.substring(8, 10);
+            if (activity_year == today_year){
+              activity.startTime = activity.startTime.substring(0, 10);
+              activity.link = "/activity/" + activity.id;
+              actual_list.push(activity);
+            }
+          }
+        }
+        actual_list.sort(function(a, b){
+          let aa = a.startTime.split('-').join();
+          let bb = b.startTime.split('-').join();
+          return aa < bb ? -1 : (aa > bb ? 1 : 0);
+        });
+        this.activityPage = response.data;
+        this.activityPage.list = actual_list;
+      });
+    },
+    // Activity END
     handleSelectTab(tabIndex) {
       this.tabIndex = tabIndex;
       if (tabIndex == "intro") {
         this.listQuery.page = 1;
         this.getCompanyJobList();
-      }
-      else if (tabIndex == "activity"){
-        // TODO
       }
     },
     handleFavorite() {
@@ -379,6 +442,66 @@ export default {
 .wiki_content{
   width: 75%;
   float: right;
+}
+
+.timeline {
+  border-left: 4px solid gray;
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+  margin: 50px 50px 50px 200px;
+  letter-spacing: 0.5px;
+  position: relative;
+  font-size: 18px;
+  padding: 50px;
+  list-style: none;
+  text-align: left;
+  font-weight: 100;
+  max-width: 70%;
+}
+
+.timeline h3 {
+  letter-spacing: 1.5px;
+  font-weight: 500;
+  font-size: 25px;
+}
+
+.timeline .event {
+  padding-bottom: 25px;
+  margin-bottom: 50px;
+  position: relative;
+}
+
+.timeline .event:last-of-type {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border: none;
+}
+
+.timeline .event:before, .timeline .event:after {
+  position: absolute;
+  display: block;
+  top: 0;
+}
+
+.timeline .event:before {
+  left: -218px;
+  color: gray;
+  content: attr(data-date);
+  text-align: right;
+  font-weight: 100;
+  font-size: 16px;
+  min-width: 120px;
+}
+
+.timeline .event:after {
+  box-shadow: 0 0 0 4px gray;
+  left: -58px;
+  background: white;
+  border-radius: 50%;
+  height: 11px;
+  width: 11px;
+  content: "";
+  top: 5px;
 }
 </style>
 

@@ -1,33 +1,39 @@
 <template>
     <div class="app-container">
         <div class="section1-container">
-            <el-select v-model="listQuery.cityIds"
-                       filterable
-                       clearable
-                       multiple
-                       placeholder="活动城市"
-                       @change="handleFilter"
-                       size="small"
-                       class="section1-select">
+            <el-select
+                    v-model="listQuery.cityIds"
+                    filterable
+                    clearable
+                    multiple
+                    placeholder="活动城市"
+                    @change="handleFilter"
+                    size="small"
+                    class="section1-select"
+            >
                 <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
         </div>
 
         <div class="section2-container">
-            <pagination v-show="total"
-                        :total="total"
-                        :page.sync="listQuery.page"
-                        :limit.sync="listQuery.limit"
-                        @pagination="handleRouteList"/>
+            <pagination
+                    v-show="total"
+                    :total="total"
+                    :page.sync="listQuery.page"
+                    :limit.sync="listQuery.limit"
+                    @pagination="handleRouteList"
+            />
         </div>
 
         <div class="section3-container">
             <div class="activity-list" v-if="list.length !== 0">
-                <el-card shadow="hover"
-                         v-for="activity in list"
-                         :key="activity.id"
-                         class="mb-2 link-pointer"
-                         @click.native="openActivity(activity)">
+                <el-card
+                        shadow="hover"
+                        v-for="activity in list"
+                        :key="activity.id"
+                        class="mb-2 link-pointer"
+                        @click.native="openActivity(activity)"
+                >
                     <div class="section3-inner-container">
                         <div class="section3-image-container">
                             <el-image :src="activity.thumbnail" class="section-image"></el-image>
@@ -125,7 +131,6 @@
                 getActivityList(this.listQuery).then(response => {
                     this.list = response.data.list;
                     this.total = response.data.total;
-                    this.$emit("complete");
                 });
             },
             handleRouteList() {
@@ -166,34 +171,28 @@
 
         .section3-container {
             .section3-inner-container {
-                display: flex;
+              display: flex;
                 align-items: center;
-
                 .section3-image-container {
                     width: 109px;
                     height: 109px;
-
-                    .section-image {
+                    .section-image{
                         width: 109px;
                         height: 109px;
                     }
                 }
-
-                .section3-right-container {
+                .section3-right-container{
                     margin-left: 30px;
-
                     .text-label {
                         color: #555;
                         font-size: 15px;
                     }
-
                     .text-desc {
                         font-size: 15px;
                         color: #888;
                     }
-
-                    .section3-tag {
-                        height: 20px;
+                    .section3-tag{
+                     height: 20px;
                         line-height: 20px;
                     }
                 }
@@ -201,7 +200,6 @@
         }
 
     }
-
     ::-webkit-scrollbar {
         display: none;
     }
@@ -210,16 +208,14 @@
         .app-container {
             .section3-container {
                 .section3-inner-container {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-
-                    .section3-image-container {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                    .section3-image-container{
                         margin-bottom: 20px;
 
                     }
-
-                    .section3-right-container {
+                    .section3-right-container{
                         margin: 0;
                     }
 

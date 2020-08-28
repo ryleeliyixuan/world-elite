@@ -30,7 +30,6 @@ export default {
   },
   created() {
     this.resumeId = this.$route.params.id;
-    this.$emit("complete");
   },
   methods: {
     exportPdf() {

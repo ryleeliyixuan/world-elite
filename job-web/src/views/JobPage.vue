@@ -158,7 +158,6 @@
                     this.shareConfig.description = this.job.description;
                     this.favoriteForm.objectId = this.job.id;
                     this.favoriteForm.favorite = this.job.favoriteFlag == 1;
-                    this.$emit("complete");
                 });
             },
             handleFavorite() {

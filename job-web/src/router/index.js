@@ -24,12 +24,12 @@ const constantRoutes = [
         component: () => import('@/views/EditResumePage'),
         meta: {title: '编辑简历'}
     },
-    {
-        path: '/company/:id',
-        name: 'company',
-        component: () => import('@/views/CompanyHomePage'),
-        meta: {title: '公司页面'}
-    },
+    // {
+    //     path: '/company/:id',
+    //     name: 'company',
+    //     component: () => import('@/views/CompanyHomePage'),
+    //     meta: {title: '公司主页'}
+    // },
     {
         path: '/job/:id',
         name: 'job',
@@ -116,6 +116,12 @@ const constantRoutes = [
         path: '/mi',
         component: () => import('@/views/MiPage'),
         meta: {title: '小米内页'}
+    },
+    {
+        path: '/company/:id',
+        name: 'company',
+        component: () => import('@/views/CompanyHomePage2'),
+        meta: {title: '公司页面'}
     }
 ]
 

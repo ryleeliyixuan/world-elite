@@ -181,12 +181,10 @@
                 searchJob(this.listQuery).then(response => {
                     this.pageResult = response.data;
                     this.total = this.pageResult.total;
-                    this.$emit("complete");
                 });
             },
 
             handleRouteList() {
-                console.log(123)
                 this.$router.replace({
                     path: this.$route.path,
                     query: formatListQuery(this.listQuery)

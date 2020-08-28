@@ -101,7 +101,6 @@
                     sort: "+position"
                 }).then(response => {
                     this.recommendCompanyList = response.data.list;
-                    this.$emit("complete");
                 });
                 getRecommendList({
                     objectType: 1, // 职位
