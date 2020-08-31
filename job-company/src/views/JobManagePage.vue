@@ -19,6 +19,7 @@
         <el-button type="primary" icon="el-icon-edit" @click="handleNewJobClick">发布新职位</el-button>
       </div>
     </div>
+
     <div class="job-list">
       <el-card
         class="job-item mt-4 link-pointer"
@@ -174,13 +175,13 @@ export default {
         });
       });
     },
-    handleDeleteJob(job) {
+    handleDeleteJob(id) {
       this.$confirm("此操作将删除该职位, 是否继续?", "提示", {
         confirmButtonText: "删除",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        deleteJob({ id: job.id }).then(() => {
+        deleteJob({ id: id }).then(() => {
           this.$message({
             type: "success",
             message: "操作成功!"

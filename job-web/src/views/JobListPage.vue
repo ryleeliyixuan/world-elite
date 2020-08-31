@@ -186,7 +186,6 @@
             },
 
             handleRouteList() {
-                console.log(123)
                 this.$router.replace({
                     path: this.$route.path,
                     query: formatListQuery(this.listQuery)

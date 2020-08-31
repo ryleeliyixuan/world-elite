@@ -1,9 +1,9 @@
 <template>
-    <div id="app" v-show="show">
+    <div id="app" >
         <MainNavBar/>
         <router-view @complete="onComplete"/>
-        <FooterView/>
-        <el-backtop></el-backtop>
+        <FooterView v-show="show"/>
+        <el-backtop ></el-backtop>
     </div>
 </template>
 

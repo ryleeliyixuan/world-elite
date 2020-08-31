@@ -1,39 +1,36 @@
 <template>
     <div class="app-container container">
-        <b-media class="mt-4" vertical-align="center" v-if="company">
-            <template v-slot:aside>
-                <b-img :src="company.logo" class="company-logo" :alt="company.fullName" v-if="company.logo"></b-img>
-                <b-img blank blank-color="#ccc" class="company-logo" v-else></b-img>
-            </template>
-            <b-media-body>
-                <b-row align-v="center">
-                    <b-col>
-                        <h5 class="mt-0">{{company.name}}</h5>
-                        <p class="mb-0">
-                            <span v-if="company.stage">{{company.stage.name}} .</span>
-                            <span v-if="company.property">{{company.property.name}} .</span>
-                            <span v-if="company.industry">{{company.industry.name}} .</span>
-                            <span v-if="company.scale">{{company.scale.name}}</span>
-                        </p>
-                        <div class="mt-2 mb-0" v-if="company.homepage">
-                            <el-link :href="companyLink" target="_blank" :underline="false">
-                                公司官网
-                                <i class="el-icon-position el-icon--right"></i>
-                            </el-link>
-                        </div>
-                    </b-col>
-                    <b-col cols="4">
-                        <el-button type="primary"
-                                   :icon="company.favoriteFlag == 1? 'el-icon-star-on' : 'el-icon-star-off'"
-                                   plain
-                                   :loading="favoriteLoading"
-                                   @click="handleFavorite">
-                            {{company.favoriteFlag == 1? '已收藏': '收藏企业'}}
-                        </el-button>
-                    </b-col>
-                </b-row>
-            </b-media-body>
-        </b-media>
+        <div v-if="company" class="company-top-container">
+            <div class="company-info-container">
+                <el-image :src="company.logo" class="company-logo" :alt="company.fullName">
+                    <div slot="error" style="text-align: center; line-height: 100px; font-size: 40px;">
+                        <i class="el-icon-picture-outline"></i>
+                    </div>
+                </el-image>
+                <div class="company-info">
+                    <h5 class="mt-0">{{company.name}}</h5>
+                    <p class="mb-0">
+                        <span v-if="company.stage">{{company.stage.name}} .</span>
+                        <span v-if="company.property">{{company.property.name}} .</span>
+                        <span v-if="company.industry">{{company.industry.name}} .</span>
+                        <span v-if="company.scale">{{company.scale.name}}</span>
+                    </p>
+                    <div class="mt-2 mb-0" v-if="company.homepage">
+                        <el-link :href="companyLink" target="_blank" :underline="false">
+                            公司官网
+                            <i class="el-icon-position el-icon--right"></i>
+                        </el-link>
+                    </div>
+                </div>
+            </div>
+            <el-button type="primary"
+                       :icon="company.favoriteFlag === 1? 'el-icon-star-on' : 'el-icon-star-off'"
+                       plain
+                       :loading="favoriteLoading"
+                       @click="handleFavorite">
+                {{company.favoriteFlag === 1? '已收藏': '收藏企业'}}
+            </el-button>
+        </div>
         <el-menu :default-active="tabIndex" mode="horizontal" @select="handleSelectTab">
             <el-menu-item index="intro">公司介绍</el-menu-item>
             <el-menu-item index="job">招聘岗位</el-menu-item>
@@ -411,6 +408,14 @@
         height: 100px;
     }
 
+    .company-logo-error {
+        width: 100px;
+        height: 100px;
+        text-align: center;
+        line-height: 100px;
+        font-size: 40px;
+    }
+
     .map-box {
         height: 200px;
     }
@@ -494,6 +499,54 @@
         width: 11px;
         content: "";
         top: 5px;
+    }
+
+    .company-top-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .company-info-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .company-info {
+        display: flex;
+        flex-direction: column;
+        margin: 0 15px;
+    }
+    @media screen and (max-width: 850px) {
+        .wiki_sidebar {
+            display: none;
+        }
+
+        .wiki_content {
+            width: 100%;
+            float: none;
+        }
+
+
+
+        .company-info-container {
+            flex-direction: column;
+        }
+
+        .company-info {
+            margin: 0;
+        }
+    }
+
+    @media screen and (max-width: 410px) {
+        .company-top-container {
+            flex-direction: column;
+        }
+
+        .company-info-container {
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
     }
 </style>
 

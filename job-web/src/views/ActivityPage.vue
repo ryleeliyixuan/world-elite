@@ -1,13 +1,10 @@
 <template>
     <div class="app-container container">
-        <b-media class="mt-4" vertical-align="center" v-if="activity">
-            <template v-slot:aside>
-                <b-img :src="activity.thumbnail"
-                       class="img-cover"
-                       :alt="activity.title"
-                       v-if="activity.thumbnail">
-                </b-img>
-            </template>
+        <div class="activity-container" v-if="activity">
+            <el-image :src="activity.thumbnail"
+                      class="img-cover"
+                      :alt="activity.title">
+            </el-image>
             <b-media-body>
                 <h5 class="mt-0 mb-2">{{activity.title}}</h5>
                 <div class="text-label" v-if="activity.organizer && activity.organizer != ''">
@@ -30,7 +27,7 @@
                     <el-button type="primary" @click="onJoinClick">{{activity.joinFlag?'已关注':'关注'}}</el-button>
                 </div>
             </b-media-body>
-        </b-media>
+        </div>
         <div class="introdution mt-4 ql-editor" v-html="activity.description" v-if="activity"></div>
     </div>
 </template>
@@ -72,9 +69,27 @@
     };
 </script>
 
-<style scoped>
-    .img-cover {
-        width: 150px;
-        height: 150px;
+<style scoped lang="scss">
+
+
+    .activity-container {
+        display: flex;
+
+        .img-cover {
+            width: 150px;
+            height: 150px;
+            margin: 0 15px 0 0;
+        }
+    }
+
+    @media screen and (max-width: 850px) {
+        .activity-container {
+            flex-direction: column;
+            align-items: center;
+
+            .img-cover {
+               margin: 0 0 15px 0;
+            }
+        }
     }
 </style>

@@ -6,31 +6,35 @@
                     :page.sync="listQuery.page"
                     :limit.sync="listQuery.limit"
                     @pagination="handleRouteList"/>
-        <div class="job-list w-75" v-if="pageResult.list && pageResult.list.length !== 0">
+        <div class="job-list" v-if="pageResult.list && pageResult.list.length !== 0">
             <el-card shadow="hover"
                      v-for="job in pageResult.list"
                      :key="job.id"
-                     class="mb-2"
+                     class="item-card"
                      @click.native="openJobDetail(job.id)">
-                <b-media right-align vertical-align="center">
-                    <p class="text-small text-gray">{{job.companyUser.company.name}} <span class="float-right">{{job.applyTime}}</span></p>
-                    <h6 class="mt-0 mb-1">{{job.name}}</h6>
-                    <div class>
-                        <b class="text-danger">{{`${job.minSalary} - ${job.maxSalary}K`}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
-                        <span class="ml-3 text-gray text-small">{{`${job.city?job.city.name:''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
+                <div class="item-container">
+                    <div class="item-company-container">
+                        <div class="text-small text-gray item-company-name">
+                            <span>{{job.companyUser.company.name}}</span>
+                            <span>{{job.applyTime}}</span>
+                        </div>
+                        <h6 class="mt-0 mb-1">{{job.name}}</h6>
+                        <div class>
+                            <b class="text-danger">{{`${job.minSalary} - ${job.maxSalary}K`}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
+                            <span class="ml-3 text-gray text-small">{{`${job.city?job.city.name:''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
+                        </div>
                     </div>
-                    <template v-slot:aside>
+                    <div>
                         <el-tag>{{ job.applyStatus | statusFilter }}</el-tag>
-                    </template>
-                </b-media>
+                    </div>
+                </div>
             </el-card>
         </div>
-        <pagination
-                v-show="total"
-                :total="total"
-                :page.sync="listQuery.page"
-                :limit.sync="listQuery.limit"
-                @pagination="handleRouteList"/>
+        <pagination v-show="total"
+                    :total="total"
+                    :page.sync="listQuery.page"
+                    :limit.sync="listQuery.limit"
+                    @pagination="handleRouteList"/>
     </div>
 </template>
 
@@ -100,7 +104,43 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
     .app-container {
-        width: 1000px;
+        max-width: 1000px;
         margin: 20px auto;
+
+        .job-list {
+            width: 75%;
+
+            .item-card {
+                margin-bottom: 10px;
+
+                .item-container {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .item-company-container {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+
+                        .item-company-name {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 850px) {
+        .app-container {
+            margin: 20px;
+
+            .job-list {
+                width: 100%;
+            }
+        }
     }
 </style>

@@ -48,7 +48,7 @@ import { modifyEmail } from "@/api/user_api";
 import Validator from "@/utils/validator";
 import Toast from "@/utils/toast";
 export default {
-  name: "ForgetPwdPage",
+  name: "ModifyEmailPage",
   data() {
     return {
       captchaUrl: process.env.VUE_APP_BASE_API + "/auth/get-captcha",

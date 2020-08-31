@@ -83,7 +83,6 @@
         },
         created() {
             this.$emit("complete");
-            console.log(123)
         },
         methods: {
             refreshCaptcha() {

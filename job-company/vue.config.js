@@ -36,7 +36,7 @@ module.exports = {
     hotOnly: false,
     proxy: {
       '/api': {
-        target: 'http://www.kaers.top:8888/api',
+        target: 'http://api.test.myworldelite.com/api',
         changeOrigin: true,
         ws: true,
         pathRewrite: {

@@ -86,7 +86,7 @@
     import {formatListQuery, parseListQuery} from "@/utils/common";
 
     export default {
-        name: "JobListPage",
+        name: "FavoriteListPage",
         components: {Pagination},
         data() {
             return {
