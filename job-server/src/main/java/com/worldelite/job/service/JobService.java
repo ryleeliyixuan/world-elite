@@ -351,7 +351,7 @@ public class JobService extends BaseService {
             checkJobCreator(job);
         }
 
-        job.setDelFlag(Bool.FALSE);
+        job.setDelFlag(Bool.TRUE);
         job.setUpdateTime(new Date());
         jobMapper.updateByPrimaryKeySelective(job);
     }
