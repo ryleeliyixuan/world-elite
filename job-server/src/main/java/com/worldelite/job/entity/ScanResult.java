@@ -2,11 +2,13 @@ package com.worldelite.job.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author yeguozhong yedaxia.github.com
  */
 @Data
-public class ScanResult {
+public class ScanResult implements Serializable {
 
     public static final int CODE_BlOCK = 2;
     public static final int CODE_PASS = 1;

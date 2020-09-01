@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.CompanyMapper">
+<cache-ref namespace="com.worldelite.job.mapper.CompanyMapper"/>
     <select id="selectAndList" resultMap="BaseResultMap" parameterType="com.worldelite.job.entity.Company">
         select
         <include refid="Base_Column_List"/>
