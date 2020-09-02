@@ -1,13 +1,11 @@
 package com.worldelite.job.service;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
-import com.worldelite.job.mapper.CompanyUserMapper;
 import com.worldelite.job.mapper.JobApplyMapper;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mq.JobMessage;
@@ -17,8 +15,6 @@ import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.document.Document;
@@ -176,17 +172,11 @@ public class JobService extends BaseService {
      * @return
      */
     public PageResult<JobVo> getUserRecommendJobList(JobSearchForm jobSearchForm) {
-
         // 没有登录并且没有检索条件
-        if (curUser() == null && isEmptySearch(jobSearchForm)) {
+        if (curUser() == null) {
             return getNewestJobList(jobSearchForm);
-        }
-
-        // 是否已附带检索条件
-        boolean noRecommend = isEmptySearch(jobSearchForm);
-
-        //已登录用户组合相关条件
-        if (curUser() != null) {
+        } else {
+            //已登录用户组合相关条件
             ResumeVo resumeVo = resumeService.getDefaultOrCreate(curUser().getId());
             if (resumeVo.getUserExpectJob() != null) {
                 UserExpectJobVo expectJobVo = resumeVo.getUserExpectJob();
@@ -199,7 +189,6 @@ public class JobService extends BaseService {
                         categoryIds[i] = categoryList.get(i).getId();
                     }
                     jobSearchForm.setCategoryIds(categoryIds);
-                    noRecommend = false;
                 }
 
                 if (ArrayUtils.isEmpty(jobSearchForm.getCityIds())) {
@@ -210,7 +199,6 @@ public class JobService extends BaseService {
                             cityIds[i] = cityList.get(i).getId();
                         }
                         jobSearchForm.setCityIds(cityIds);
-                        noRecommend = false;
                     }
                 }
 
@@ -222,26 +210,17 @@ public class JobService extends BaseService {
                 }
 
                 jobSearchForm.setKeyword(keywordBuilder.toString());
-
-                noRecommend = false;
             }
+            PageResult<JobVo> jobPageResult = searchService.searchJob(jobSearchForm);
+            //如果根据简历中的求职意向匹配不到相关职位时 就把全部职位返回
+            if (jobPageResult == null || CollectionUtils.isEmpty(jobPageResult.getList())) {
+                jobPageResult = getNewestJobList(jobSearchForm);
+            }
+            return jobPageResult;
         }
-
-        PageResult<JobVo> jobPageResult = null;
-
-        if (!noRecommend) {
-            jobPageResult = searchService.searchJob(jobSearchForm);
-        }
-
-        // 如果没有推荐结果，就返回最新职位
-        if (jobPageResult == null || CollectionUtils.isEmpty(jobPageResult.getList())) {
-            jobPageResult = getNewestJobList(jobSearchForm);
-        }
-
-        return jobPageResult;
     }
 
-    private Boolean isEmptySearch(JobSearchForm jobSearchForm) {
+    public Boolean isEmptySearch(JobSearchForm jobSearchForm) {
         return org.apache.commons.lang.StringUtils.isEmpty(jobSearchForm.getKeyword())
                 && jobSearchForm.getSalaryRangeId() == null
                 && jobSearchForm.getJobType() == null
