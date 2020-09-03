@@ -43,57 +43,57 @@ export const constantRoutes = [
     children: [{
       path: 'dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '管理面板', icon: 'dashboard' }
+      meta: { title: '寰球菁英-管理面板', icon: 'dashboard' }
     }]
   },
   {
     path: '/user',
     component: Layout,
     redirect: '/user/company',
-    meta: { title: '用户管理', icon: 'user' },
+    meta: { title: '寰球菁英-用户管理', icon: 'user' },
     children: [{
       path: 'company',
       component: () => import('@/views/user/CompanyUserList'),
-      meta: { title: '企业用户' }
+      meta: { title: '寰球菁英-企业用户' }
     },
     {
       path: 'general',
       component: () => import('@/views/user/index'),
-      meta: { title: '普通用户' }
+      meta: { title: '寰球菁英-普通用户' }
     },
     {
       path: 'admin',
       component: () => import('@/views/user/AdminUserList'),
-      meta: { title: '管理员' }
+      meta: { title: '寰球菁英-管理员' }
     },
     {
       path: 'modify-pwd',
       component: () => import('@/views/user/ModifyPwdPage'),
       hidden: true,
-      meta: { title: '修改密码' }
+      meta: { title: '寰球菁英-修改密码' }
     }]
   },
   {
     path: '/company',
     component: Layout,
     redirect: '/company/list',
-    meta: { title: '企业管理', icon: 'company' },
+    meta: { title: '寰球菁英-企业管理', icon: 'company' },
     children: [{
       path: 'list',
       component: () => import('@/views/company/index'),
-      meta: { title: '企业列表' }
+      meta: { title: '寰球菁英-企业列表' }
     },
     {
       path: 'edit',
       hidden: true,
       component: () => import('@/views/company/EditCompanyPage'),
-      meta: { title: '编辑企业' }
+      meta: { title: '寰球菁英-编辑企业' }
     },
     {
       path: 'edit-wiki',
       hidden: true,
       component: () => import('@/views/company/EditCompanyWiki'),
-      meta: { title: '企业百科' }
+      meta: { title: '寰球菁英-企业百科' }
     }]
   },
   {
@@ -103,7 +103,7 @@ export const constantRoutes = [
     children: [{
       path: 'list',
       component: () => import('@/views/resume/index'),
-      meta: { title: '简历管理', icon: 'resume' }
+      meta: { title: '寰球菁英-简历管理', icon: 'resume' }
     }]
   },
   {
@@ -113,23 +113,23 @@ export const constantRoutes = [
     children: [{
       path: 'list',
       component: () => import('@/views/job/index'),
-      meta: { title: '职位管理', icon: 'job' }
+      meta: { title: '寰球菁英-职位管理', icon: 'job' }
     }]
   },
   {
     path: '/activity',
     component: Layout,
     redirect: '/activity/list',
-    meta: { title: '活动管理', icon: 'activity' },
+    meta: { title: '寰球菁英-活动管理', icon: 'activity' },
     children: [{
       path: 'list',
       component: () => import('@/views/activity/index'),
-      meta: { title: '活动列表' }
+      meta: { title: '寰球菁英-活动列表' }
     },
     {
       path: 'edit',
       component: () => import('@/views/activity/EditActivityPage'),
-      meta: { title: '活动编辑' },
+      meta: { title: '寰球菁英-活动编辑' },
       hidden: true
     }]
   },
@@ -140,7 +140,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        meta: { title: '字典管理', icon: 'dict' },
+        meta: { title: '寰球菁英-字典管理', icon: 'dict' },
         component: () => import('@/views/dict/index')
       }
     ]
@@ -152,7 +152,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        meta: { title: '学校管理', icon: 'school' },
+        meta: { title: '寰球菁英-学校管理', icon: 'school' },
         component: () => import('@/views/school/index')
       }
     ]
@@ -164,7 +164,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        meta: { title: '下载管理', icon: 'download' },
+        meta: { title: '寰球菁英-下载管理', icon: 'download' },
         component: () => import('@/views/download/index')
       }
     ]
@@ -172,26 +172,26 @@ export const constantRoutes = [
   {
     path: '/config',
     component: Layout,
-    meta: { title: '首页设置', icon: 'setting' },
+    meta: { title: '寰球菁英-首页设置', icon: 'setting' },
     children: [
       {
         path: 'index',
-        meta: { title: '文案配置' },
+        meta: { title: '寰球菁英-文案配置' },
         component: () => import('@/views/config/ConfigIndexPage')
       },
       {
         path: 'recommend-job',
-        meta: { title: '推荐职位' },
+        meta: { title: '寰球菁英-推荐职位' },
         component: () => import('@/views/config/RecommendJobPage')
       },
       {
         path: 'recommend-company',
-        meta: { title: '推荐企业' },
+        meta: { title: '寰球菁英-推荐企业' },
         component: () => import('@/views/config/RecommendCompanyPage')
       },
       {
         path: 'recommend-wiki',
-        meta: { title: '推荐百科' },
+        meta: { title: '寰球菁英-推荐百科' },
         component: () => import('@/views/config/RecommendCompanyWikiPage')
       }
     ]
