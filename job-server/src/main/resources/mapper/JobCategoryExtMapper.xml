@@ -16,4 +16,10 @@
       and del_flag = 0
     </where>
   </select>
+  <select id="selectSmartTips" resultMap="BaseResultMap" parameterType="String">
+    select
+    <include refid="Base_Column_List" />
+    from t_job_category
+    where name like CONCAT('%',#{name},'%') limit 10
+  </select>
 </mapper>

@@ -66,7 +66,7 @@ url: /api/jobindustry/delete
 
 <pre class="prettyprint lang-json">
 method：GET
-url: /api/jobindustry/list
+url: /api/jobindustry/list-by-category
 </pre>
 
 <p><strong>参数列表</strong></p>
@@ -74,6 +74,33 @@ url: /api/jobindustry/list
 <table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>jobCategoryId</td><td>long</td><td>true</td><td></td></tr></table>
 
 <p>返回结果: <a href="../javaCodes/com_worldelite_job_api_JobCategoryIndustryApi_getJobIndustryList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_JobCategoryIndustryApi_getJobIndustryList_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": [
+    {
+      "id": "long //职位行业领域ID",
+      "name": "string //职位行业领域",
+      "createTime": "date //创建时间"
+    }
+  ]
+}
+</pre>
+
+<hr><h2 id="${ACTION_DESCRIPTION}">${ACTION_DESCRIPTION}</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/jobindustry/list
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_JobCategoryIndustryApi_getAllJobIndustryList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_JobCategoryIndustryApi_getAllJobIndustryList_ApiResult.html">IOS Code</a></p>
 
 <pre class="prettyprint lang-json">
 {

@@ -12,8 +12,8 @@ public class ApiDocsTest {
     @Test
     public void genApiDocs(){
         DocsConfig docsConfig = new DocsConfig();
-        docsConfig.setProjectPath("/Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server");
-        docsConfig.setDocsPath("/Users/yeguozhong/Desktop/gitLibrary/wolrd-elite/job-server/api-docs");
+        docsConfig.setProjectPath("./");
+        docsConfig.setDocsPath("./api-docs");
         Docs.buildHtmlDocs(docsConfig);
     }
 

@@ -39,6 +39,8 @@ public interface ResumeAttachMapper {
 
     ResumeAttach selectByResumeId(Long resumeId);
 
+    ResumeAttach selectByResumeIdWithBLOBs(Long resumeId);
+
     List<ResumeAttach> listAll();
 
     /**

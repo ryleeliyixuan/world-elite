@@ -19,9 +19,6 @@ import java.util.prefs.BackingStoreException;
 
 /**
  * 管理员接口
- * 从之前统一的用户接口中分离出来
- * 实现了管理员的保存、删除和修改普通用户及企业用户的状态
- * 实现了管理员的邮箱登录和退出
  * @author 邓集阶
  */
 @RestController

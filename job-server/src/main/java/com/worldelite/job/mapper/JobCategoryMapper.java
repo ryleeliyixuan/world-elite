@@ -54,4 +54,11 @@ public interface JobCategoryMapper {
     int updateByPrimaryKey(JobCategory record);
 
     List<JobCategory> selectAndList(JobCategory options);
+
+    /**
+     * 职位类型模糊搜索
+     * @param name
+     * @return
+     */
+    List<JobCategory> selectSmartTips(String name);
 }

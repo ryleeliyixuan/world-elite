@@ -19,7 +19,7 @@
 //错误消息
 @property (nonatomic, assign) NSString msg;
 //数据包
-@property (nonatomic, strong) JobDescExampleVo data;
+@property (nonatomic, strong) JobIndustryVo[] data;
 
 
 @end
@@ -30,14 +30,12 @@
 <xmp>
 #import <Foundation/Foundation>;
 
-@interface JobDescExampleVo : NSObject
+@interface JobIndustryVo : NSObject
 
-//主键Id
+//职位行业领域ID
 @property (nonatomic, strong) long id;
-//职位类型Id
-@property (nonatomic, strong) long categoryId;
-//职位描述
-@property (nonatomic, assign) NSString description;
+//职位行业领域
+@property (nonatomic, assign) NSString name;
 //创建时间
 @property (nonatomic, assign) NSString createTime;
 

@@ -2,121 +2,36 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>ApiResult</title>
+<title>SearchJobTipsVo</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
 <link href="../style.css" rel="stylesheet" />
 </head>
 <body onload="PR.prettyPrint()">
 <pre class="prettyprint lang-java">
-public class ApiResult implements Serializable{
+public class SearchJobTipsVo implements Serializable{
 
-    private int code; //0为成功，其他错误码参考 ApiCode
-    private String msg; //错误消息
-    private PageResult data; //数据包
+    private JobVo[] jobList; //职位名称提示
+    private JobCategoryVo[] jobCategoryVoList; //职位类型提示
 
-    @JSONField(name="code")
-    public int getCode(){
-        return code;
+    @JSONField(name="jobList")
+    public JobVo[] getJobList(){
+        return jobList;
     }
 
-    @JSONField(name="code")
-    public void setCode(int code){
-        this.code = code;
+    @JSONField(name="jobList")
+    public void setJobList(JobVo[] jobList){
+        this.jobList = jobList;
     }
 
-    @JSONField(name="msg")
-    public String getMsg(){
-        return msg;
+    @JSONField(name="jobCategoryVoList")
+    public JobCategoryVo[] getJobCategoryVoList(){
+        return jobCategoryVoList;
     }
 
-    @JSONField(name="msg")
-    public void setMsg(String msg){
-        this.msg = msg;
-    }
-
-    @JSONField(name="data")
-    public PageResult getData(){
-        return data;
-    }
-
-    @JSONField(name="data")
-    public void setData(PageResult data){
-        this.data = data;
-    }
-
-}
-</pre>
-
-
-<pre class="prettyprint lang-java">
-public class PageResult implements Serializable{
-
-    private int total; //总记录数
-    private int pageCount; //页数
-    private int currentPage; //当前页
-    private int pageSize; //每页记录数
-    private JobVo[] list; //列表数据
-    private boolean hasMore; //是否还有更多
-
-    @JSONField(name="total")
-    public int getTotal(){
-        return total;
-    }
-
-    @JSONField(name="total")
-    public void setTotal(int total){
-        this.total = total;
-    }
-
-    @JSONField(name="pageCount")
-    public int getPageCount(){
-        return pageCount;
-    }
-
-    @JSONField(name="pageCount")
-    public void setPageCount(int pageCount){
-        this.pageCount = pageCount;
-    }
-
-    @JSONField(name="currentPage")
-    public int getCurrentPage(){
-        return currentPage;
-    }
-
-    @JSONField(name="currentPage")
-    public void setCurrentPage(int currentPage){
-        this.currentPage = currentPage;
-    }
-
-    @JSONField(name="pageSize")
-    public int getPageSize(){
-        return pageSize;
-    }
-
-    @JSONField(name="pageSize")
-    public void setPageSize(int pageSize){
-        this.pageSize = pageSize;
-    }
-
-    @JSONField(name="list")
-    public JobVo[] getList(){
-        return list;
-    }
-
-    @JSONField(name="list")
-    public void setList(JobVo[] list){
-        this.list = list;
-    }
-
-    @JSONField(name="hasMore")
-    public boolean getHasMore(){
-        return hasMore;
-    }
-
-    @JSONField(name="hasMore")
-    public void setHasMore(boolean hasMore){
-        this.hasMore = hasMore;
+    @JSONField(name="jobCategoryVoList")
+    public void setJobCategoryVoList(JobCategoryVo[] jobCategoryVoList){
+        this.jobCategoryVoList = jobCategoryVoList;
     }
 
 }
@@ -1291,6 +1206,58 @@ public class DictVo implements Serializable{
     @JSONField(name="value")
     public void setValue(String value){
         this.value = value;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class JobCategoryVo implements Serializable{
+
+    private int id; //类型ID
+    private String name; //类型名
+    private int parentId; //父类型
+    private int position; //排序
+
+    @JSONField(name="id")
+    public int getId(){
+        return id;
+    }
+
+    @JSONField(name="id")
+    public void setId(int id){
+        this.id = id;
+    }
+
+    @JSONField(name="name")
+    public String getName(){
+        return name;
+    }
+
+    @JSONField(name="name")
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JSONField(name="parentId")
+    public int getParentId(){
+        return parentId;
+    }
+
+    @JSONField(name="parentId")
+    public void setParentId(int parentId){
+        this.parentId = parentId;
+    }
+
+    @JSONField(name="position")
+    public int getPosition(){
+        return position;
+    }
+
+    @JSONField(name="position")
+    public void setPosition(int position){
+        this.position = position;
     }
 
 }

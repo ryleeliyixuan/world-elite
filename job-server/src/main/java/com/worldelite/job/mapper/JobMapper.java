@@ -65,4 +65,11 @@ public interface JobMapper {
     List<Job> selectAndList(JobOptions options);
 
     Job selectSimpleById(Long id);
+
+    /**
+     * 智能搜索职位名称
+     * @param name
+     * @return
+     */
+    List<Job> selectSmartTips(String name);
 }

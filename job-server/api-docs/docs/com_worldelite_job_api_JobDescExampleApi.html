@@ -60,14 +60,12 @@ url: /api/jobdescexample/list
 {
   "code": "int //0为成功，其他错误码参考 ApiCode",
   "msg": "string //错误消息",
-  "data": [
-    {
-      "id": "long //主键Id",
-      "categoryId": "long //职位类型Id",
-      "description": "string //职位描述",
-      "createTime": "date //创建时间"
-    }
-  ]
+  "data": {
+    "id": "long //主键Id",
+    "categoryId": "long //职位类型Id",
+    "description": "string //职位描述",
+    "createTime": "date //创建时间"
+  }
 }
 </pre>
 

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>ApiResult</title>
+<title>SearchJobTipsVo</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
 <link href="../style.css" rel="stylesheet" />
@@ -12,38 +12,12 @@
 <xmp>
 #import <Foundation/Foundation>;
 
-@interface ApiResult : NSObject
+@interface SearchJobTipsVo : NSObject
 
-//0为成功，其他错误码参考 ApiCode
-@property (nonatomic, strong) NSInteger code;
-//错误消息
-@property (nonatomic, assign) NSString msg;
-//数据包
-@property (nonatomic, strong) PageResult data;
-
-
-@end
-</xmp>
-</pre>
-
-<pre class="prettyprint">
-<xmp>
-#import <Foundation/Foundation>;
-
-@interface PageResult : NSObject
-
-//总记录数
-@property (nonatomic, strong) NSInteger total;
-//页数
-@property (nonatomic, strong) NSInteger pageCount;
-//当前页
-@property (nonatomic, strong) NSInteger currentPage;
-//每页记录数
-@property (nonatomic, strong) NSInteger pageSize;
-//列表数据
-@property (nonatomic, strong) JobVo[] list;
-//是否还有更多
-@property (nonatomic, strong) BOOL hasMore;
+//职位名称提示
+@property (nonatomic, strong) JobVo[] jobList;
+//职位类型提示
+@property (nonatomic, strong) JobCategoryVo[] jobCategoryVoList;
 
 
 @end
@@ -384,6 +358,26 @@
 @property (nonatomic, strong) NSInteger type;
 //字典值
 @property (nonatomic, assign) NSString value;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface JobCategoryVo : NSObject
+
+//类型ID
+@property (nonatomic, strong) NSInteger id;
+//类型名
+@property (nonatomic, assign) NSString name;
+//父类型
+@property (nonatomic, strong) NSInteger parentId;
+//排序
+@property (nonatomic, strong) NSInteger position;
 
 
 @end

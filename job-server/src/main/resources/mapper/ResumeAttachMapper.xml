@@ -172,6 +172,15 @@
     where resume_id = #{resumeId,jdbcType=BIGINT}
 </select>
 
+  <select id="selectByResumeIdWithBLOBs" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_resume_attach
+    where resume_id = #{resumeId,jdbcType=BIGINT}
+  </select>
+
   <select id="listAll" resultMap="ResultMapWithBLOBs">
     select
     <include refid="Base_Column_List" />

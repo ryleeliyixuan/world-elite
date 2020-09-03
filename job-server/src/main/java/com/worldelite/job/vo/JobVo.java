@@ -44,6 +44,10 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private Integer candidateResumeCount; // 候选简历数
     private Integer interviewResumeCount; //进入面试简历数
 
+    private Integer experience; //工作经验
+    private String industryTags; //行业领域
+    private String skillTags; //技能标签
+
     @Override
     public JobVo asVo(Job job) {
         setId(String.valueOf(job.getId()));
@@ -57,6 +61,9 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setDescription(job.getDescription());
         setTime(job.getPubTime());
         setAddress(job.getAddress());
+        setExperience(job.getExperience());
+        setIndustryTags(job.getIndustryTags());
+        setSkillTags(job.getSkillTags());
         return this;
     }
 }

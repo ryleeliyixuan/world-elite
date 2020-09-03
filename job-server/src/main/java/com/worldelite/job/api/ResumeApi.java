@@ -73,7 +73,7 @@ public class ResumeApi extends BaseApi {
      * @param listForm
      * @return
      */
-    //@RequireLogin(allow = UserType.ADMIN)
+    @RequireLogin(allow = UserType.ADMIN)
     @PostMapping("list")
     @ApiDoc
     public ApiResult<PageResult<ResumeVo>> getResumeList(@RequestBody ResumeListForm listForm){
@@ -81,9 +81,27 @@ public class ResumeApi extends BaseApi {
         return ApiResult.ok(pageResult);
     }
 
+    /**
+     * 搜索附件简历返回在线简历
+     * @param listForm
+     * @return
+     */
     @PostMapping("list-by-attachment")
+    @ApiDoc
     public ApiResult<PageResult<ResumeVo>> getResumeListByAttachment(@RequestBody ResumeAttachmentForm listForm){
         PageResult pageResult = searchService.searchResumeAttachment(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 搜索附件简历返回附件文本
+     * @param listForm
+     * @return
+     */
+    @PostMapping("list-attachment")
+    @ApiDoc
+    public ApiResult<PageResult<ResumeAttachVo>> getResumeAttachmentList(@RequestBody ResumeAttachmentForm listForm){
+        PageResult pageResult = searchService.searchResumeAttachment2(listForm);
         return ApiResult.ok(pageResult);
     }
 

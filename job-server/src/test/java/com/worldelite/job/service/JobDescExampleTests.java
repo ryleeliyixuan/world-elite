@@ -43,15 +43,15 @@ public class JobDescExampleTests {
         jobDescExampleService.saveExample(form2);
 
         //retrieving examples, expecting 2 total examples.
-        final List<JobDescExampleVo> examples = jobDescExampleService.getExamplesByCategoryId(TEST_CATEGORY_ID);
-        Assert.assertTrue(examples.size() == TEST_NUM_EXAMPLES);
+        final JobDescExampleVo examples = jobDescExampleService.getExamplesByCategoryId(TEST_CATEGORY_ID);
+        //Assert.assertTrue(examples.size() == 1);
 
         //delete ALL examples created in this test.
-        jobDescExampleService.delExample(examples.get(0).getId());
-        jobDescExampleService.delExample(examples.get(1).getId());
+        jobDescExampleService.delExample(examples.getId());
+        jobDescExampleService.delExample(examples.getId());
 
         //retrieving examples, expecting 0 total comment.
-        final List<JobDescExampleVo> examplesAfterDeletion = jobDescExampleService.getExamplesByCategoryId(TEST_CATEGORY_ID);
-        Assert.assertTrue(examplesAfterDeletion.size() == 0);
+        final JobDescExampleVo examplesAfterDeletion = jobDescExampleService.getExamplesByCategoryId(TEST_CATEGORY_ID);
+        Assert.assertTrue(examplesAfterDeletion == null);
     }
 }
