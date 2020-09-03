@@ -14,13 +14,13 @@
     from t_job
     <where>
       <if test="id != null">
-        and id = #{id,jdbcType=BIGINT}
+        and id like CONCAT('%', #{id},'%')
       </if>
       <if test="companyId != null">
-        and company_id = #{companyId,jdbcType=BIGINT}
+        and company_id like CONCAT('%', #{companyId},'%')
       </if>
       <if test="creatorId != null">
-        and creator_id = #{creatorId,jdbcType=BIGINT}
+        and creator_id like CONCAT('%', #{creatorId},'%')
       </if>
       <if test="jobType != null">
         and job_type = #{jobType,jdbcType=TINYINT}
