@@ -30,4 +30,5 @@ out/
 
 ### VS Code ###
 .vscode/
-/src/main/java/javax/servlet/http/
+
+/api-docs/apidoc.log
