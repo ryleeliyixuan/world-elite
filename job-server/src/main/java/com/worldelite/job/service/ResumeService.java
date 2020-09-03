@@ -232,19 +232,19 @@ public class ResumeService extends BaseService {
      */
     public ResumeVo getResumeDetail(Long resumeId){
         // 检查权限
-        if(curUser() != null){
-            if(curUser().getType() == UserType.COMPANY.value) {
-                JobApplyOptions options = new JobApplyOptions();
-                options.setCreatorId(curUser().getId());
-                options.setResumeId(resumeId);
-                final int count = jobApplyMapper.countJobApply(options);
-                if (count == 0) {
-                    throw new ServiceException(ApiCode.PERMISSION_DENIED);
-                }
-            }else if(curUser().getType() == UserType.GENERAL.value){
-                checkResumeCreator(resumeId);
-            }
-        }
+//        if(curUser() != null){
+//            if(curUser().getType() == UserType.COMPANY.value) {
+//                JobApplyOptions options = new JobApplyOptions();
+//                options.setCreatorId(curUser().getId());
+//                options.setResumeId(resumeId);
+//                final int count = jobApplyMapper.countJobApply(options);
+//                if (count == 0) {
+//                    throw new ServiceException(ApiCode.PERMISSION_DENIED);
+//                }
+//            }else if(curUser().getType() == UserType.GENERAL.value){
+//                checkResumeCreator(resumeId);
+//            }
+//        }
         ResumeVo resumeVo = getResumeInfo(resumeId);
         resumeVo.setResumePracticeList(resumePracticeService.getResumePracticeList(resumeId));
         resumeVo.setResumeLinkList(resumeLinkService.getResumeLinkList(resumeId));
