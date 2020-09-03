@@ -73,7 +73,7 @@ public class ResumeApi extends BaseApi {
      * @param listForm
      * @return
      */
-    @RequireLogin(allow = UserType.ADMIN)
+    @RequireLogin
     @PostMapping("list")
     @ApiDoc
     public ApiResult<PageResult<ResumeVo>> getResumeList(@RequestBody ResumeListForm listForm){
@@ -86,6 +86,7 @@ public class ResumeApi extends BaseApi {
      * @param listForm
      * @return
      */
+    @RequireLogin
     @PostMapping("list-by-attachment")
     @ApiDoc
     public ApiResult<PageResult<ResumeVo>> getResumeListByAttachment(@RequestBody ResumeAttachmentForm listForm){
@@ -98,6 +99,7 @@ public class ResumeApi extends BaseApi {
      * @param listForm
      * @return
      */
+    @RequireLogin
     @PostMapping("list-attachment")
     @ApiDoc
     public ApiResult<PageResult<ResumeAttachVo>> getResumeAttachmentList(@RequestBody ResumeAttachmentForm listForm){
