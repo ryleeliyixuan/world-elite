@@ -180,7 +180,9 @@ public class ResumeService extends BaseService {
         PageResult<ResumeVo> pageResult = new PageResult<>(resumePage);
         List<ResumeVo> resumeVoList = new ArrayList<>(resumePage.size());
         for(Resume resume: resumePage){
-            ResumeVo resumeVo = new ResumeVo().asVo(resume);
+            //ResumeVo resumeVo = new ResumeVo().asVo(resume);
+            //返回更详细的简历信息
+            ResumeVo resumeVo = getResumeInfo(resume.getId());
             List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduList(resume.getId());
             resumeVo.setResumeEduList(resumeEduVoList);
             if (CollectionUtils.isNotEmpty(resumeEduVoList)) {
