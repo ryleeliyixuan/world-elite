@@ -74,8 +74,7 @@ const constantRoutes = [
         path: '/job/:id',
         name: 'job',
         component: () => import('@/views/JobPage'),
-        meta: { title: '职位详情' }
-        meta: { title: '职位详情' }        meta: { title: '寰球菁英-职位详情' }
+        meta: { title: '寰球菁英-职位详情' }
     },
     {
         path: '/modify-pwd',
