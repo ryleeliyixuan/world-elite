@@ -116,11 +116,6 @@ const constantRoutes = [
         path: '/mi',
         component: () => import('@/views/MiPage'),
         meta: {title: '寰球菁英-小米内页'}
-    },
-    {
-        path: '/manage-search',
-        component: () => import('@/views/ResumeSearchPage'),
-        meta: { title: '简历搜索' }
     }
 ]
 
