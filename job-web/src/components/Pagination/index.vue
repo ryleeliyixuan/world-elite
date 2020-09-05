@@ -84,7 +84,7 @@
                 this.background = !small;
                 this.hideOnSinglePage = small;
                 this.small = small;
-                this.layout = "prev, pager, next";
+                this.layout = small ? "prev, pager, next" : 'total, sizes, prev, pager, next, jumper';
             },
             handleSizeChange(val) {
                 this.$emit('pagination', {page: this.currentPage, limit: val})

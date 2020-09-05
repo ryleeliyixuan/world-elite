@@ -1,7 +1,7 @@
 <template>
   <div class="resume-container" v-if="resume">
     <div class="el-row--flex">
-      <el-image :src="resume.avatar" class="avatar" />
+      <el-image :src="resume.avatar" class="avatar" fit="cover" />
       <div class="ml-2">
         <h5>
           {{resume.name}}
@@ -94,7 +94,7 @@
         >{{resumeLink.name}}</el-link>
       </div>
       <div class="mt-3" v-if="resume.attachResume">
-        <el-link :underline="false" type="primary" :href="resume.attachResume">
+        <el-link :underline="false" type="primary" :href="resume.attachResume" target="view_window">
           <b class="el-icon-link">附件简历</b>
         </el-link>
       </div>

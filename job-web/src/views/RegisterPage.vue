@@ -202,7 +202,6 @@
     @media screen and (max-width: 850px) {
         .app-container {
             padding: 20px 20px 0;
-
             .text-center {
                 font-size: 18px;
             }

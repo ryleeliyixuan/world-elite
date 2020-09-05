@@ -18,22 +18,19 @@
                     ></el-input>
                 </el-col>
                 <el-col :span="6">
-                    <el-select
-                            v-model="listQuery.jobIds"
-                            placeholder="职位"
-                            multiple
-                            clearable
-                            filterable
-                            size="small"
-                            class="w-100"
-                            @change="handleFilter"
-                    >
+                    <el-select v-model="listQuery.jobIds"
+                               placeholder="职位"
+                               multiple
+                               clearable
+                               filterable
+                               size="small"
+                               class="w-100"
+                               @change="handleFilter">
                         <el-option
                                 v-for="item in jobOptions"
                                 :key="item.id"
                                 :label="item.name"
-                                :value="item.id"
-                        >
+                                :value="item.id">
                             <span style="float: left">{{ item.name }}</span>
                             <span style="float: right; color: #8492a6; font-size: 13px">{{ item.city? item.city.name: '' }}</span>
                         </el-option>
@@ -48,14 +45,13 @@
                             filterable
                             size="small"
                             class="w-100"
-                            @change="handleFilter"
-                    >
+                            @change="handleFilter">
                         <el-option
                                 v-for="item in degreeOptions"
                                 :key="item.id"
                                 :label="item.name"
-                                :value="item.id"
-                        ></el-option>
+                                :value="item.id">
+                        </el-option>
                     </el-select>
                 </el-col>
             </el-row>
@@ -175,11 +171,11 @@
                 :page.sync="listQuery.page"
                 :limit.sync="listQuery.limit"
                 @pagination="handleListPageRoute"/>
-
+        <transition name="slide-fade">
         <div class="resume-drawer" v-if="reviewDrawerVisible && activeApplyResume">
             <div class="resume-drawer-header">
                 <el-row type="flex" class="row-bg" justify="space-between">
-                    <el-col :span="12" class="mt-4 ml-4">
+                    <el-col class="mt-4 ml-4">
                         <el-button type="primary"
                                    @click="handleApplyResume(3, activeApplyResume.id)"
                                    v-if="activeApplyResume.applyStatus == 1 || activeApplyResume.applyStatus == 2">
@@ -220,6 +216,7 @@
                 <ResumeView :resumeId="activeApplyResume.resume.id" class="mt-3"></ResumeView>
             </div>
         </div>
+        </transition>
 
         <el-dialog :visible.sync="dialogVisible"
                    class="dialog-container"
@@ -651,5 +648,17 @@
             /*height: 60px;*/
             /*border-radius: 30px;*/
         }
+    }
+
+    .slide-fade-enter-active {
+        transition: all .5s ease;
+    }
+    .slide-fade-leave-active {
+        transition: all .5s ease;
+    }
+    .slide-fade-enter, .slide-fade-leave-to
+        /* .slide-fade-leave-active for below version 2.1.8 */ {
+        transform: translateX(50%);
+        opacity: 0;
     }
 </style>
