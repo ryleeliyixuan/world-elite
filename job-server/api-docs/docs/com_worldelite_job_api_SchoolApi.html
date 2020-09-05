@@ -25,7 +25,7 @@ url: /api/school/list
 
 <p><strong>参数列表</strong></p>
 
-<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>page</td><td>int</td><td>false</td><td>页数</td></tr><tr><td>limit</td><td>int</td><td>false</td><td>每页条数</td></tr><tr><td>sort</td><td>string</td><td>false</td><td>排序</td></tr><tr><td>name</td><td>string</td><td>false</td><td>学校名</td></tr></table>
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>page</td><td>int</td><td>false</td><td>页数</td></tr><tr><td>limit</td><td>int</td><td>false</td><td>每页条数</td></tr><tr><td>sort</td><td>string</td><td>false</td><td>排序</td></tr><tr><td>name</td><td>string</td><td>false</td><td>学校</td></tr><tr><td>schoolIds</td><td>int[]</td><td>false</td><td>学校ID列表</td></tr></table>
 
 <p>返回结果: <a href="../javaCodes/com_worldelite_job_api_SchoolApi_getSchoolList_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_SchoolApi_getSchoolList_ApiResult.html">IOS Code</a></p>
 
@@ -54,6 +54,40 @@ url: /api/school/list
     ],
     "hasMore": "boolean //是否还有更多"
   }
+}
+</pre>
+
+<hr><h2 id="${ACTION_DESCRIPTION}">${ACTION_DESCRIPTION}</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/school/list-by-ids
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_SchoolApi_getSchoolListByIds_ApiResult.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_SchoolApi_getSchoolListByIds_ApiResult.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "code": "int //0为成功，其他错误码参考 ApiCode",
+  "msg": "string //错误消息",
+  "data": [
+    {
+      "id": "int //学校ID",
+      "name": "string //学校名",
+      "siteLink": "string //主页",
+      "country": {
+        "id": "int //ID",
+        "phoneCode": "string //电话区号",
+        "countryCode": "string //国家代号",
+        "chineseName": "string //中文名",
+        "englishName": "string //英文名"
+      }
+    }
+  ]
 }
 </pre>
 

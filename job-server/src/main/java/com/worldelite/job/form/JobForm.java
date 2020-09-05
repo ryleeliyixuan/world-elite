@@ -32,6 +32,12 @@ public class JobForm {
     private String description; //职位描述
     @NotNull(message = "{edit.job.city.not.blank}")
     private Integer cityId; //所在城市
+    @NotNull(message = "{edit.job.experience.not.null}")
+    private Integer experience; //工作经验
+    @NotNull(message = "{edit.job.industrytags.not.null}")
+    private String industryTags; //行业领域
+    @NotNull(message = "{edit.job.skilltags.not.null}")
+    private String skillTags; //技能标签
 
     public String getName() {
         return FormUtils.removeAllHtmlTag(name);

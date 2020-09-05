@@ -51,7 +51,7 @@ public class JobCategorySkillService {
      * @param jobCategoryId
      * @return List<JobSkillVo>
      */
-    public List<JobSkillVo> getJobSkillByJobCategoryId(final @NonNull long jobCategoryId) {
+    public List<JobSkillVo> getJobSkillByJobCategoryId(final long jobCategoryId) {
         final List<JobSkill> jobSkills = jobSkillMapper.selectByJobCategoryId(jobCategoryId);
 
         if (Objects.nonNull(jobSkills)) {

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>各搜索框智能提示接口</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<div id="wmd-preview" class="wmd-preview">
+<h1><a href="../index.html">《首页</a> 各搜索框智能提示接口:</h1>
+<div class="toc">
+    <ul>
+    <li><a href="#职位搜索框智能提示">职位搜索框智能提示</a></li>
+    </ul>
+</div>
+<hr>
+<h2 id="职位搜索框智能提示">职位搜索框智能提示</h2>
+
+<pre class="prettyprint lang-json">
+method：GET
+url: /api/smarttips/search-job-tips
+</pre>
+
+<p><strong>参数列表</strong></p>
+
+<table><tr><th>参数名</th><th>类型</th><th>必需</th><th>描述</th></tr><tr><td>keyword</td><td>string</td><td>true</td><td>用户在搜索框输入的关键字</td></tr></table>
+
+<p>返回结果: <a href="../javaCodes/com_worldelite_job_api_SmartTipsApi_searchJobTips_SearchJobTipsVo.html">Android Code</a> | <a href="../iosCodes/com_worldelite_job_api_SmartTipsApi_searchJobTips_SearchJobTipsVo.html">IOS Code</a></p>
+
+<pre class="prettyprint lang-json">
+{
+  "jobList": [
+    {
+      "id": "string //职位ID",
+      "jobType": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "name": "string //职位名称",
+      "companyUser": {
+        "id": "long //用于后端",
+        "userId": "string //字符串ID，用于前端",
+        "name": "string //名字",
+        "avatar": "string //头像",
+        "gender": "byte //性别",
+        "type": "byte //用户类型",
+        "status": "byte //状态",
+        "token": "string //登录凭证",
+        "phoneCode": "string //电话区号",
+        "phone": "string //电话号码",
+        "email": "string //邮箱",
+        "createTime": "date //创建时间",
+        "subscribeFlag": "byte //订阅标志",
+        "company": {
+          "id": "string //公司ID",
+          "name": "string //公司简称",
+          "fullName": "string //公司全称",
+          "logo": "string //logo",
+          "homepage": "string //主页",
+          "introduction": "string //公司介绍",
+          "synopsis": "string //公司一句话介绍",
+          "scale": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "stage": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "industry": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "property": {
+            "id": "int //字典ID",
+            "name": "string //字典名",
+            "type": "int //字典类型",
+            "value": "string //字典值"
+          },
+          "addressList": [
+            {
+              "id": "int //地址ID",
+              "cityId": "int //城市ID",
+              "address": "string //地址",
+              "latitude": "double //纬度",
+              "longitude": "double //经度"
+            }
+          ],
+          "completeProgress": "int //完善进度",
+          "wikiSummary": "string //百科摘要",
+          "companyWiki": "string //公司百科",
+          "favoriteFlag": "byte //收藏标志",
+          "favoriteTime": "date //收藏时间"
+        },
+        "depart": "string //部门",
+        "post": "string //职位"
+      },
+      "category": {
+        "id": "int //类型ID",
+        "name": "string //类型名",
+        "parentId": "int //父类型",
+        "position": "int //排序"
+      },
+      "depart": "string //部门",
+      "minDegree": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "minSalary": "int //最低薪资",
+      "maxSalary": "int //最高薪资",
+      "salaryMonths": "int //发放月数",
+      "city": {
+        "id": "int //字典ID",
+        "name": "string //字典名",
+        "type": "int //字典类型",
+        "value": "string //字典值"
+      },
+      "status": "byte //职位状态",
+      "description": "string //职位描述",
+      "creatorId": "long //创建人",
+      "address": "string //工作地址",
+      "time": "date //发布时间",
+      "favoriteFlag": "byte //是否已收藏",
+      "favoriteTime": "date //收藏时间",
+      "applyFlag": "byte //是否已投递",
+      "applyStatus": "byte //投递状态",
+      "applyTime": "date //投递时间",
+      "totalResumeCount": "int //投递人数",
+      "newResumeCount": "int //新投递简历数",
+      "candidateResumeCount": "int //候选简历数",
+      "interviewResumeCount": "int //进入面试简历数",
+      "experience": "int //工作经验",
+      "industryTags": "string //行业领域",
+      "skillTags": "string //技能标签"
+    }
+  ],
+  "jobCategoryVoList": [
+    {
+      "id": "int //类型ID",
+      "name": "string //类型名",
+      "parentId": "int //父类型",
+      "position": "int //排序"
+    }
+  ]
+}
+</pre>
+
+<hr>
+</div>
+</body>
+</html>

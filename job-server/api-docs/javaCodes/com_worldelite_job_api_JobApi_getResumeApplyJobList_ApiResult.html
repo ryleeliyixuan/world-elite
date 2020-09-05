@@ -151,6 +151,9 @@ public class JobVo implements Serializable{
     private int newResumeCount; //新投递简历数
     private int candidateResumeCount; //候选简历数
     private int interviewResumeCount; //进入面试简历数
+    private int experience; //工作经验
+    private String industryTags; //行业领域
+    private String skillTags; //技能标签
 
     @JSONField(name="id")
     public String getId(){
@@ -400,6 +403,36 @@ public class JobVo implements Serializable{
     @JSONField(name="interviewResumeCount")
     public void setInterviewResumeCount(int interviewResumeCount){
         this.interviewResumeCount = interviewResumeCount;
+    }
+
+    @JSONField(name="experience")
+    public int getExperience(){
+        return experience;
+    }
+
+    @JSONField(name="experience")
+    public void setExperience(int experience){
+        this.experience = experience;
+    }
+
+    @JSONField(name="industryTags")
+    public String getIndustryTags(){
+        return industryTags;
+    }
+
+    @JSONField(name="industryTags")
+    public void setIndustryTags(String industryTags){
+        this.industryTags = industryTags;
+    }
+
+    @JSONField(name="skillTags")
+    public String getSkillTags(){
+        return skillTags;
+    }
+
+    @JSONField(name="skillTags")
+    public void setSkillTags(String skillTags){
+        this.skillTags = skillTags;
     }
 
 }

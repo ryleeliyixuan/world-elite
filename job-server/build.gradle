@@ -77,3 +77,8 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+
+task(generateApiDoc, dependsOn: 'classes', type: JavaExec) {
+	main = 'com.worldelite.job.doc.GenerateApiDoc'
+	classpath = sourceSets.main.runtimeClasspath
+}

@@ -45,7 +45,7 @@ public class UserCorporateTagService {
      * @param jobApplyId
      * @return
      */
-    public List<UserCorporateTagVo> getTagsByJobApplyId(final @NonNull long jobApplyId) {
+    public List<UserCorporateTagVo> getTagsByJobApplyId(final long jobApplyId) {
         final List<UserCorporateTag> userCorporateTags = userCorporateTagMapper.selectByJobApplyId(jobApplyId);
 
         if (Objects.nonNull(userCorporateTags)) {

@@ -34,7 +34,7 @@ public class JobCategoryIndustryService {
      * @param jobCategoryId
      * @return List<JobIndustryVo>
      */
-    public List<JobIndustryVo> getJobIndustryByJobCategoryId(final @NonNull long jobCategoryId) {
+    public List<JobIndustryVo> getJobIndustryByJobCategoryId(final long jobCategoryId) {
         final List<JobCategoryIndustry> jobCategoryIndustries = jobCategoryIndustryMapper.selectByJobCategoryId(jobCategoryId);
 
         if (Objects.nonNull(jobCategoryIndustries)) {

@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,13 @@ public class ResumeAttachServiceTest {
     @Test
     public void buildAll(){
         resumeAttachService.buildIndex();
+    }
+
+    @Test
+    public void documentTest(){
+        Document document = new Document();
+        document.add(new StringField("aaa","bbb", Field.Store.NO));
+        System.out.println(document.get("aaa"));
     }
 
     private ResumeAttach createResumeAttach(Long id,String content){

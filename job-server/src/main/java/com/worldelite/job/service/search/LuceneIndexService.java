@@ -141,7 +141,8 @@ public class LuceneIndexService implements IndexService {
         IndexWriter indexWriter = null;
         Document document = null;
         try {
-            document = createJobDoc(jobId);
+            document = new Document();
+            document.add(new StoredField(JobIndexFields.JOB_ID, jobId));
             indexWriter = createIndexWriter(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             indexWriter.deleteDocuments(LongPoint.newExactQuery(JobIndexFields.JOB_ID_INDEX, jobId));
             indexWriter.commit();

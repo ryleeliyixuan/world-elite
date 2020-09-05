@@ -27,7 +27,7 @@
       <el-table-column label="名称" prop="name" align="center"></el-table-column>
       <el-table-column label="主页链接" prop="siteLink" align="center">
         <template slot-scope="{row}">
-          <el-link :href="row.siteLink" target="_blank">{{row.siteLink}}</el-link>
+          <el-link :href="siteLink(row.siteLink)" target="_blank">{{siteLinkName(row.siteLink)}}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="所在国家" prop="country.chineseName" align="center"></el-table-column>
@@ -176,6 +176,14 @@ export default {
         Toast.success("保存成功");
         this.getList();
       });
+    },
+    siteLink(siteLink) {
+      return siteLink.startsWith("http")
+        ? siteLink
+        : "http://" + siteLink;
+    },
+    siteLinkName(siteLink) {
+      return siteLink.replace(/http(s)?:\/\//,'');
     }
   }
 };
