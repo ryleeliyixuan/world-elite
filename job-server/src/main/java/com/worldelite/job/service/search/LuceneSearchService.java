@@ -3,11 +3,13 @@ package com.worldelite.job.service.search;
 import com.worldelite.job.constants.JobIndexFields;
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.constants.ResumeIndexFields;
+import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeAttach;
 import com.worldelite.job.form.JobSearchForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.form.ResumeAttachmentForm;
 import com.worldelite.job.mapper.ResumeAttachMapper;
+import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.DictService;
 import com.worldelite.job.service.JobCategoryService;
 import com.worldelite.job.service.JobService;
@@ -57,6 +59,9 @@ public class LuceneSearchService implements SearchService {
     @Value("${search.index.resumeindex2}")
     private String resumeAttachmentPath2;
 
+    @Value("${domain.oss}")
+    private String ossDomain;
+
     @Autowired
     private Analyzer analyzer;
 
@@ -66,6 +71,9 @@ public class LuceneSearchService implements SearchService {
     @Autowired
     @Lazy
     private ResumeService resumeService;
+
+    @Autowired
+    private ResumeMapper resumeMapper;
 
     @Autowired
     private ResumeAttachMapper resumeAttachMapper;
@@ -235,6 +243,8 @@ public class LuceneSearchService implements SearchService {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeAttachmentIndexFields.RESUME_ID_STR));
                 ResumeAttach resumeAttach = resumeAttachMapper.selectByResumeIdWithBLOBs(resumeId);
+                Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
+                resumeAttach.setDocPath(ossDomain+resume.getAttachResume());
                 resumeVoList.add(new ResumeAttachVo().asVo(resumeAttach));
             }
 

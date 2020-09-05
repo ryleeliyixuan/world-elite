@@ -174,6 +174,7 @@ public class ResumeApi extends BaseApi {
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("del-resume-edu")
+    @ApiDoc
     public ApiResult deleteResumeEdu(@RequestParam Integer id) {
         resumeEduService.deleteResumeEdu(id);
         return ApiResult.ok();
