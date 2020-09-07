@@ -99,7 +99,7 @@ public class ResumeApi extends BaseApi {
      * @param listForm
      * @return
      */
-    @RequireLogin
+   // @RequireLogin
     @PostMapping("list-attachment")
     @ApiDoc
     public ApiResult<PageResult<ResumeAttachVo>> getResumeAttachmentList(@RequestBody ResumeAttachmentForm listForm){
@@ -350,6 +350,17 @@ public class ResumeApi extends BaseApi {
     @PostMapping("rebuild-attachment-index")
     public ApiResult rebuildAttachmentIndex(){
         resumeAttachService.buildIndex();
+        return ApiResult.ok();
+    }
+
+    /**
+     * 从简历数据库重建所有索引文件
+     * @return
+     */
+    @PostMapping("rebuild-resume-index")
+    @ApiDoc
+    public ApiResult rebuildIndexFromResume(){
+        resumeAttachService.buildResumeIndex();
         return ApiResult.ok();
     }
 

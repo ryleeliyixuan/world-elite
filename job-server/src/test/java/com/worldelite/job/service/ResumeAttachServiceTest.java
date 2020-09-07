@@ -1,4 +1,4 @@
-package com.worldelite.job.lucene;
+package com.worldelite.job.service;
 
 import com.worldelite.job.JobApplication;
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
@@ -67,11 +67,20 @@ public class ResumeAttachServiceTest {
     }
 
     /**
-     * 从数据库重建所有索引
+     * 从附件简历数据库重建所有索引
      */
     @Test
     public void buildAll(){
         resumeAttachService.buildIndex();
+    }
+
+    /**
+     * 从简历数据库重建所有索引文件
+     */
+    @Test
+    public void buildResumeIndex() throws InterruptedException {
+        resumeAttachService.buildResumeIndex();
+        Thread.currentThread().join();
     }
 
     @Test
