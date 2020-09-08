@@ -4,19 +4,16 @@ import com.worldelite.job.JobApplication;
 import com.worldelite.job.form.JobDescExampleForm;
 import com.worldelite.job.mapper.JobDescExampleMapper;
 import com.worldelite.job.vo.JobDescExampleVo;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.util.Assert;
 
-import java.util.List;
-
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = JobApplication.class)
 @WebAppConfiguration
+@ActiveProfiles("test")
 public class JobDescExampleTests {
     private static final Long TEST_CATEGORY_ID = (long)123456667;
     private static final String TEST_EXAMPLE_1 = "test example 1";
@@ -34,8 +31,11 @@ public class JobDescExampleTests {
         //saving examples
         final JobDescExampleForm form1 = new JobDescExampleForm();
         final JobDescExampleForm form2 = new JobDescExampleForm();
+        form1.setId(1);
         form1.setDescription(TEST_EXAMPLE_1);
         form1.setCategoryId(TEST_CATEGORY_ID);
+
+        form2.setId(2);
         form2.setDescription(TEST_EXAMPLE_2);
         form2.setCategoryId(TEST_CATEGORY_ID);
 
@@ -44,14 +44,12 @@ public class JobDescExampleTests {
 
         //retrieving examples, expecting 2 total examples.
         final JobDescExampleVo examples = jobDescExampleService.getExamplesByCategoryId(TEST_CATEGORY_ID);
-        //Assert.assertTrue(examples.size() == 1);
 
         //delete ALL examples created in this test.
-        jobDescExampleService.delExample(examples.getId());
         jobDescExampleService.delExample(examples.getId());
 
         //retrieving examples, expecting 0 total comment.
         final JobDescExampleVo examplesAfterDeletion = jobDescExampleService.getExamplesByCategoryId(TEST_CATEGORY_ID);
-        Assert.assertTrue(examplesAfterDeletion == null);
+        Assert.notNull(examplesAfterDeletion);
     }
 }

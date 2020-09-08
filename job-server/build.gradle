@@ -64,7 +64,6 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	testImplementation group: 'junit', name: 'junit', version: '4.12'
 
 	implementation group: 'org.apache.poi', name: 'poi', version: '4.1.2'
 	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
@@ -72,6 +71,8 @@ dependencies {
 
 	implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.20'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
+
+	testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
 }
 
 test {

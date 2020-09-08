@@ -3,7 +3,10 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
-import com.worldelite.job.constants.*;
+import com.worldelite.job.constants.BusinessType;
+import com.worldelite.job.constants.ConfigType;
+import com.worldelite.job.constants.JobApplyStatus;
+import com.worldelite.job.constants.OperationType;
 import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
@@ -26,6 +29,7 @@ import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +38,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -482,14 +487,14 @@ public class ResumeService extends BaseService {
      * @param attachResume 附件文件路径. 当前为阿里云oss http链接
      */
     @Async
-    public void addOrUpdateResumeIndex(Long resumeId, Long userId, String attachResume) {
+    public Future<Boolean> addOrUpdateResumeIndex(Long resumeId, Long userId, String attachResume) {
         Document document = null;
         try {
             //region 读取附件简历内容
             String suffix = attachResume.substring(attachResume.lastIndexOf(".") + 1);
             ResumeFileRead fileRead = resumeFileReadFactory.getFileRead(suffix);
             String attachContent = fileRead.read(new URL(attachResume));
-            if (StringUtils.isBlank(attachContent)) return;
+            if (StringUtils.isBlank(attachContent)) return new AsyncResult<>(false);
             //endregion
 
             //region 附件简历内容保存到数据库
@@ -516,7 +521,10 @@ public class ResumeService extends BaseService {
 
         } catch (Exception e) {
             log.error("添加或更新附件简历索引时异常", e);
+            return new AsyncResult<>(false);
         }
+
+        return new AsyncResult<>(true);
     }
 
     /**
@@ -525,7 +533,7 @@ public class ResumeService extends BaseService {
      * @param resumeId 简历id
      */
     @Async
-    public void deleteResumeIndex(Long resumeId) {
+    public Future<Boolean> deleteResumeIndex(Long resumeId) {
 
         Document document = null;
         ResumeAttach resumeAttach = resumeAttachMapper.selectByResumeId(resumeId);
@@ -536,5 +544,6 @@ public class ResumeService extends BaseService {
 
         //MQ广播索引更新指令
         rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.Delete, BusinessType.AttachResume));
+        return new AsyncResult<>(true);
     }
 }

@@ -4,22 +4,21 @@ import com.worldelite.job.JobApplication;
 import com.worldelite.job.form.UserCorporateCommentForm;
 import com.worldelite.job.mapper.UserCorporateCommentMapper;
 import com.worldelite.job.vo.UserCorporateCommentVo;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
 /**
  * @author 王星瀚
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = JobApplication.class)
 @WebAppConfiguration
+@ActiveProfiles("test")
 public class UserCorporateCommentServiceTests {
     private static final Long TEST_JOB_APPLY_ID = (long) 123456667;
     private static final String TEST_COMMENT_1 = "test comment 1";
@@ -49,7 +48,7 @@ public class UserCorporateCommentServiceTests {
         //retrieving user comments, expecting 2 total comments.
         final List<UserCorporateCommentVo> comments = userCorporateCommentService.getCommentsByJobApplyId(TEST_JOB_APPLY_ID);
         System.out.println(comments);
-        Assert.assertTrue(comments.size() == TEST_NUM_COMMENTS);
+        Assert.isTrue(comments.size() == TEST_NUM_COMMENTS);
 
         //delete ALL user comments created in this test.
         userCorporateCommentService.deleteCommentById(comments.get(0).getId());
@@ -57,6 +56,6 @@ public class UserCorporateCommentServiceTests {
 
         //retrieving user comments, expecting 0 total comment.
         final List<UserCorporateCommentVo> commentsAfterDeletion = userCorporateCommentService.getCommentsByJobApplyId(TEST_JOB_APPLY_ID);
-        Assert.assertTrue(commentsAfterDeletion.size() == 0);
+        Assert.isTrue(commentsAfterDeletion.size() == 0);
     }
 }
