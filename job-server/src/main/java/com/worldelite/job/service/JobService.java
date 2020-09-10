@@ -238,6 +238,7 @@ public class JobService extends BaseService {
         JobListForm listForm = new JobListForm();
         // 防止网络爬虫
         listForm.setPage(Math.min(30, pageForm.getPage()));
+        listForm.setLimit(Math.min(100, pageForm.getLimit()));
         listForm.setStatus(JobStatus.PUBLISH.value);
         listForm.setSort("-pub_time");
         return getJobList(listForm);
