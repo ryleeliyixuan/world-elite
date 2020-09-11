@@ -149,12 +149,7 @@
             };
         },
         watch: {
-            $route: "getList",
-            loading: function (newVal) {
-                if (!newVal) {
-                    this.$emit("complete");
-                }
-            }
+            $route: "getList"
         },
         created() {
             this.getList();
@@ -172,6 +167,7 @@
                     this.pageResult = response.data;
                     this.total = response.data.total;
                     this.loading = false;
+                    this.$emit("complete");
                 });
             },
             handleTakeOffJob(id) {

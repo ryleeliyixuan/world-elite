@@ -324,11 +324,6 @@
         },
         watch: {
             $route: "getList",
-            loading: function (newVal) {
-                if (!newVal) {
-                    this.$emit("complete");
-                }
-            }
         },
         created() {
             this.initData();
@@ -361,6 +356,7 @@
                     this.pageResult = response.data;
                     this.total = this.pageResult.total;
                     this.loading = false;
+                    this.$emit("complete");
                 });
             },
             handleListPageRoute() {

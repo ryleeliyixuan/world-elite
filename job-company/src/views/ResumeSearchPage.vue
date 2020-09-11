@@ -406,11 +406,6 @@
                     })
                     Toast.error("搜索职位不能超过3个");
                 }
-            },
-            loading: function (newVal) {
-                if (!newVal) {
-                    this.$emit("complete");
-                }
             }
         },
         methods: {
@@ -485,6 +480,7 @@
                 }).then(data => {
                     this.pageResult = data.data;
                     this.loading = false;
+                    this.$emit("complete");
                 })
             },
             getAttachList() {
@@ -515,6 +511,7 @@
                     });
                     this.attachPageResult = data.data;
                     this.loading = false;
+                    this.$emit("complete");
                 })
             },
             onAttachResume(resume) {
