@@ -13,14 +13,16 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import i18n from '@/i18n'
 import '@/permission'
 import '@/icons' // icon
+import Loading from "@/components/Loading";
 
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
 Vue.use(BootstrapVue)
+Vue.use(Loading)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
-console.log(process.env)
+Vue.$
 const _vm = new Vue({
   router,
   store,

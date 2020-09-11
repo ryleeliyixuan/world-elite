@@ -1,260 +1,261 @@
 <template>
-    <div class="app-container">
-        <el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelectMenu">
-            <el-menu-item index="1,2">新简历</el-menu-item>
-            <el-menu-item index="3">初筛</el-menu-item>
-            <el-menu-item index="4">面试</el-menu-item>
-            <el-menu-item index="5">录用</el-menu-item>
-        </el-menu>
-        <div class="mt-3">
-            <el-row :gutter="10">
-                <el-col :span="6">
-                    <el-input
-                            v-model="listQuery.name"
-                            @change.native="handleFilter"
-                            class="w-100"
-                            placeholder="应聘者名称"
-                            size="small"
-                    ></el-input>
-                </el-col>
-                <el-col :span="6">
-                    <el-select v-model="listQuery.jobIds"
-                               placeholder="职位"
-                               multiple
-                               clearable
-                               filterable
-                               size="small"
-                               class="w-100"
-                               @change="handleFilter">
-                        <el-option
-                                v-for="item in jobOptions"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
-                            <span style="float: left">{{ item.name }}</span>
-                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.city? item.city.name: '' }}</span>
-                        </el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="6">
-                    <el-select
-                            v-model="listQuery.degreeIds"
-                            placeholder="学历"
-                            multiple
-                            clearable
-                            filterable
-                            size="small"
-                            class="w-100"
-                            @change="handleFilter">
-                        <el-option
-                                v-for="item in degreeOptions"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-col>
-            </el-row>
-        </div>
-        <div class="resume-list mt-3">
-            <el-card class="box-card mb-3" v-for="applyResume in pageResult.list" :key="applyResume.id">
-                <div slot="header" class="clearfix text-small" style="line-height: 40px;padding-top: 10px">
-                    <el-popover
-                            v-if="applyResume.tagVos && applyResume.tagVos[0] && applyResume.tagVos[0].tagName"
-                            class="popover"
-                            placement="top-start"
-                            width="200"
-                            trigger="hover"
-                            :content="applyResume.tagVos[0].tagName">
-                        <el-button type="success" plain slot="reference">{{applyResume.tagVos[0].tagName}}</el-button>
-                    </el-popover>
-                    <span>应聘岗位：{{applyResume.job.name}}</span>
-                    <span class="ml-4">应聘时间：{{applyResume.time}}</span>
-                    <div class="float-right">
-                        <el-button type="primary"
+    <loading :loading="loading">
+        <div class="app-container">
+            <el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelectMenu">
+                <el-menu-item index="1,2">新简历</el-menu-item>
+                <el-menu-item index="3">初筛</el-menu-item>
+                <el-menu-item index="4">面试</el-menu-item>
+                <el-menu-item index="5">录用</el-menu-item>
+            </el-menu>
+            <div class="mt-3">
+                <el-row :gutter="10">
+                    <el-col :span="6">
+                        <el-input
+                                v-model="listQuery.name"
+                                @change.native="handleFilter"
+                                class="w-100"
+                                placeholder="应聘者名称"
+                                size="small"
+                        ></el-input>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-select v-model="listQuery.jobIds"
+                                   placeholder="职位"
+                                   multiple
+                                   clearable
+                                   filterable
                                    size="small"
-                                   plain
-                                   @click="handleNote(applyResume)"
-                                   v-if="applyResume.applyStatus !== 5">
-                            添加笔记
-                        </el-button>
-                        <el-button type="primary"
-                                   size="small"
-                                   plain
-                                   @click="handleTag(applyResume)"
-                                   v-if="applyResume.applyStatus !== 5">
-                            添加标签
-                        </el-button>
-                        <el-button type="success"
-                                   size="small"
-                                   @click="handleApplyResume(3, applyResume.id)"
-                                   v-if="applyResume.applyStatus === 1 || applyResume.applyStatus === 2">
-                            通过初筛
-                        </el-button>
-                        <el-button type="success"
-                                   size="small"
-                                   @click="handleApplyResume(4, applyResume.id)"
-                                   v-if="applyResume.applyStatus === 3">
-                            进入面试
-                        </el-button>
-                        <el-button type="success"
-                                   size="small"
-                                   @click="handleApplyResume(5, applyResume.id)"
-                                   v-if="applyResume.applyStatus === 4">
-                            录用
-                        </el-button>
-                        <el-button type="danger"
-                                   plain
-                                   size="small"
-                                   @click="handleApplyResume(6, applyResume.id)"
-                                   v-if="applyResume.applyStatus !== 5">
-                            不合适
-                        </el-button>
+                                   class="w-100"
+                                   @change="handleFilter">
+                            <el-option
+                                    v-for="item in jobOptions"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                                <span style="float: left">{{ item.name }}</span>
+                                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.city? item.city.name: '' }}</span>
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-select
+                                v-model="listQuery.degreeIds"
+                                placeholder="学历"
+                                multiple
+                                clearable
+                                filterable
+                                size="small"
+                                class="w-100"
+                                @change="handleFilter">
+                            <el-option
+                                    v-for="item in degreeOptions"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+            </div>
+            <div class="resume-list mt-3">
+                <el-card class="box-card mb-3" v-for="applyResume in pageResult.list" :key="applyResume.id">
+                    <div slot="header" class="clearfix text-small" style="line-height: 40px;padding-top: 10px">
+                        <el-popover
+                                v-if="applyResume.tagVos && applyResume.tagVos[0] && applyResume.tagVos[0].tagName"
+                                class="popover"
+                                placement="top-start"
+                                width="200"
+                                trigger="hover"
+                                :content="applyResume.tagVos[0].tagName">
+                            <el-button type="success" plain slot="reference">{{applyResume.tagVos[0].tagName}}</el-button>
+                        </el-popover>
+                        <span>应聘岗位：{{applyResume.job.name}}</span>
+                        <span class="ml-4">应聘时间：{{applyResume.time}}</span>
+                        <div class="float-right">
+                            <el-button type="primary"
+                                       size="small"
+                                       plain
+                                       @click="handleNote(applyResume)"
+                                       v-if="applyResume.applyStatus !== 5">
+                                添加笔记
+                            </el-button>
+                            <el-button type="primary"
+                                       size="small"
+                                       plain
+                                       @click="handleTag(applyResume)"
+                                       v-if="applyResume.applyStatus !== 5">
+                                添加标签
+                            </el-button>
+                            <el-button type="success"
+                                       size="small"
+                                       @click="handleApplyResume(3, applyResume.id)"
+                                       v-if="applyResume.applyStatus === 1 || applyResume.applyStatus === 2">
+                                通过初筛
+                            </el-button>
+                            <el-button type="success"
+                                       size="small"
+                                       @click="handleApplyResume(4, applyResume.id)"
+                                       v-if="applyResume.applyStatus === 3">
+                                进入面试
+                            </el-button>
+                            <el-button type="success"
+                                       size="small"
+                                       @click="handleApplyResume(5, applyResume.id)"
+                                       v-if="applyResume.applyStatus === 4">
+                                录用
+                            </el-button>
+                            <el-button type="danger"
+                                       plain
+                                       size="small"
+                                       @click="handleApplyResume(6, applyResume.id)"
+                                       v-if="applyResume.applyStatus !== 5">
+                                不合适
+                            </el-button>
+                        </div>
                     </div>
-                </div>
-                <b-media @click="handleShowResume(applyResume)" style="cursor: pointer;">
-                    <template v-slot:aside>
-                        <el-badge is-dot class="item" :hidden="applyResume.applyStatus !== 1">
-                            <el-avatar :src="applyResume.resume.avatar"></el-avatar>
-                        </el-badge>
-                    </template>
-                    <b-media-body>
-                        <h6>
-                            {{applyResume.resume.name}}
-                            <span class="ml-4 text-muted text-small">
+                    <b-media @click="handleShowResume(applyResume)" style="cursor: pointer;">
+                        <template v-slot:aside>
+                            <el-badge is-dot class="item" :hidden="applyResume.applyStatus !== 1">
+                                <el-avatar :src="applyResume.resume.avatar"></el-avatar>
+                            </el-badge>
+                        </template>
+                        <b-media-body>
+                            <h6>
+                                {{applyResume.resume.name}}
+                                <span class="ml-4 text-muted text-small">
                 <span
                         v-if="applyResume.resume.maxResumeEdu"
                 >{{applyResume.resume.maxResumeEdu.degree.name}} /</span>
                 {{applyResume.resume.age}}岁 / {{applyResume.resume.curPlace}}
               </span>
-                        </h6>
-                        <div class="tag-group"
-                             v-if="applyResume.resume.resumeSkillList && applyResume.resume.resumeSkillList.length !== 0">
-                            <el-tag size="small"
-                                    effect="plain"
-                                    type="info"
-                                    class="mr-1"
-                                    v-for="skill in applyResume.resume.resumeSkillList"
-                                    :key="skill.id">
-                                {{skill.name}}
-                            </el-tag>
-                        </div>
-                        <el-row :gutter="12" class="mt-4">
-                            <el-col :span="12"
-                                    v-if="applyResume.resume.resumeEduList && applyResume.resume.resumeEduList.length !== 0">
-                                <h6>教育经历</h6>
-                                <div class="text-small mt-2"
-                                     v-for="edu in applyResume.resume.resumeEduList"
-                                     :key="edu.id">
-                                    <span>{{ edu.schoolName }} / {{ edu.majorName }}.{{edu.degree.name}}</span>
-                                    <span v-if="edu.gpa">/ GPA {{edu.gpa}}</span>
-                                </div>
+                            </h6>
+                            <div class="tag-group"
+                                 v-if="applyResume.resume.resumeSkillList && applyResume.resume.resumeSkillList.length !== 0">
+                                <el-tag size="small"
+                                        effect="plain"
+                                        type="info"
+                                        class="mr-1"
+                                        v-for="skill in applyResume.resume.resumeSkillList"
+                                        :key="skill.id">
+                                    {{skill.name}}
+                                </el-tag>
+                            </div>
+                            <el-row :gutter="12" class="mt-4">
+                                <el-col :span="12"
+                                        v-if="applyResume.resume.resumeEduList && applyResume.resume.resumeEduList.length !== 0">
+                                    <h6>教育经历</h6>
+                                    <div class="text-small mt-2"
+                                         v-for="edu in applyResume.resume.resumeEduList"
+                                         :key="edu.id">
+                                        <span>{{ edu.schoolName }} / {{ edu.majorName }}.{{edu.degree.name}}</span>
+                                        <span v-if="edu.gpa">/ GPA {{edu.gpa}}</span>
+                                    </div>
+                                </el-col>
+                                <el-col :span="12"
+                                        v-if="applyResume.resume.resumeExpList && applyResume.resume.resumeExpList.length !== 0">
+                                    <h6>工作经历</h6>
+                                    <div :gutter="12"
+                                         class="text-small mt-2"
+                                         v-for="exp in applyResume.resume.resumeExpList"
+                                         :key="exp.id">
+                                        <span>{{exp.company}} / {{exp.post}} / {{exp.startTime}} - {{exp.finishTime}}</span>
+                                    </div>
+                                </el-col>
+                            </el-row>
+                        </b-media-body>
+                    </b-media>
+                </el-card>
+            </div>
+            <pagination
+                    v-show="total"
+                    :total="total"
+                    :page.sync="listQuery.page"
+                    :limit.sync="listQuery.limit"
+                    @pagination="handleListPageRoute"/>
+            <transition name="slide-fade">
+                <div class="resume-drawer" v-if="reviewDrawerVisible && activeApplyResume">
+                    <div class="resume-drawer-header">
+                        <el-row type="flex" class="row-bg" justify="space-between">
+                            <el-col class="mt-4 ml-4">
+                                <el-button type="primary"
+                                           @click="handleApplyResume(3, activeApplyResume.id)"
+                                           v-if="activeApplyResume.applyStatus == 1 || activeApplyResume.applyStatus == 2">
+                                    通过初筛
+                                </el-button>
+                                <el-button type="primary"
+                                           @click="handleApplyResume(4, activeApplyResume.id)"
+                                           v-if="activeApplyResume.applyStatus == 3">
+                                    进入面试
+                                </el-button>
+                                <el-button type="primary"
+                                           @click="handleApplyResume(5, activeApplyResume.id)"
+                                           v-if="activeApplyResume.applyStatus == 4">
+                                    录用
+                                </el-button>
+                                <el-button type="danger"
+                                           plain
+                                           @click="handleApplyResume(6, activeApplyResume.id)"
+                                           v-if="activeApplyResume.applyStatus != 5">
+                                    不合适
+                                </el-button>
+                                <el-button type="primary"
+                                           :loading="resumeExporting"
+                                           icon="el-icon-download"
+                                           @click="onDownloadResumeClick(activeApplyResume)">
+                                    生成简历
+                                </el-button>
                             </el-col>
-                            <el-col :span="12"
-                                    v-if="applyResume.resume.resumeExpList && applyResume.resume.resumeExpList.length !== 0">
-                                <h6>工作经历</h6>
-                                <div :gutter="12"
-                                     class="text-small mt-2"
-                                     v-for="exp in applyResume.resume.resumeExpList"
-                                     :key="exp.id">
-                                    <span>{{exp.company}} / {{exp.post}} / {{exp.startTime}} - {{exp.finishTime}}</span>
-                                </div>
+                            <el-col :span="6" class="text-right">
+                                <el-button type="text"
+                                           class="el-icon-close text-muted close-text p-4"
+                                           @click="reviewDrawerVisible=false">
+                                </el-button>
                             </el-col>
                         </el-row>
-                    </b-media-body>
-                </b-media>
-            </el-card>
+                    </div>
+                    <div class="resume-drawer-body pl-4 pr-4 pb-4">
+                        <ResumeView :resumeId="activeApplyResume.resume.id" class="mt-3"></ResumeView>
+                    </div>
+                </div>
+            </transition>
+
+            <el-dialog :visible.sync="dialogVisible"
+                       class="dialog-container"
+                       width="800px"
+                       title="笔记">
+                <div style="height: 1px; margin: 5px; background: #cccccc"></div>
+                <el-timeline class="dialog-content-container">
+                    <el-timeline-item v-for="item in noteList" :timestamp="item.createTime" placement="top" :key="item.id">
+                        <el-card>
+                            <el-input class="note-text" v-if="item.edit" v-model="updateComment" size="small" type="textarea" autosize/>
+                            <p class="note-text" v-else>{{item.comment}}</p>
+                            <i class="el-icon-circle-check note-icon" v-if="item.edit" @click="onNoteUpdate(item)"></i>
+                            <i class="el-icon-circle-close note-icon" v-if="item.edit" @click="onNoteCancel(item)"></i>
+                            <i :class="['el-icon-edit','note-icon',{'note-icon-hidden':!item.edit}]" @click="onNoteEdit(item)"></i>
+                            <i :class="['el-icon-close','note-icon',{'note-icon-hidden':!item.edit}]" @click="onNoteDelete(item)"></i>
+                        </el-card>
+                    </el-timeline-item>
+                </el-timeline>
+                <div class="dialog-input-container">
+                    <el-input class="dialog-input" v-model="comment" placeholder="请输入您的笔记" @keyup.enter.native="onNoteSave" autofocus></el-input>
+                    <el-button class="dialog-button" type="primary" :round=true @click="onNoteSave">保存
+                    </el-button>
+                </div>
+            </el-dialog>
+
+            <el-dialog :visible.sync="dialogVisible2"
+                       class="dialog-container"
+                       width="800px"
+                       title="标签">
+                <div style="height: 1px; margin: 5px; background: #cccccc"></div>
+                <div class="dialog-input-container" style="margin-top: 30px">
+                    <el-input class="dialog-input" v-model="tag" placeholder="请输入您的标签" autofocus></el-input>
+                    <el-button class="dialog-button" type="primary" :round=true @click="onTagSave">保存
+                    </el-button>
+                </div>
+            </el-dialog>
         </div>
-        <pagination
-                v-show="total"
-                :total="total"
-                :page.sync="listQuery.page"
-                :limit.sync="listQuery.limit"
-                @pagination="handleListPageRoute"/>
-        <transition name="slide-fade">
-        <div class="resume-drawer" v-if="reviewDrawerVisible && activeApplyResume">
-            <div class="resume-drawer-header">
-                <el-row type="flex" class="row-bg" justify="space-between">
-                    <el-col class="mt-4 ml-4">
-                        <el-button type="primary"
-                                   @click="handleApplyResume(3, activeApplyResume.id)"
-                                   v-if="activeApplyResume.applyStatus == 1 || activeApplyResume.applyStatus == 2">
-                            通过初筛
-                        </el-button>
-                        <el-button type="primary"
-                                   @click="handleApplyResume(4, activeApplyResume.id)"
-                                   v-if="activeApplyResume.applyStatus == 3">
-                            进入面试
-                        </el-button>
-                        <el-button type="primary"
-                                   @click="handleApplyResume(5, activeApplyResume.id)"
-                                   v-if="activeApplyResume.applyStatus == 4">
-                            录用
-                        </el-button>
-                        <el-button type="danger"
-                                   plain
-                                   @click="handleApplyResume(6, activeApplyResume.id)"
-                                   v-if="activeApplyResume.applyStatus != 5">
-                            不合适
-                        </el-button>
-                        <el-button type="primary"
-                                   :loading="resumeExporting"
-                                   icon="el-icon-download"
-                                   @click="onDownloadResumeClick(activeApplyResume)">
-                            生成简历
-                        </el-button>
-                    </el-col>
-                    <el-col :span="6" class="text-right">
-                        <el-button type="text"
-                                   class="el-icon-close text-muted close-text p-4"
-                                   @click="reviewDrawerVisible=false">
-                        </el-button>
-                    </el-col>
-                </el-row>
-            </div>
-            <div class="resume-drawer-body pl-4 pr-4 pb-4">
-                <ResumeView :resumeId="activeApplyResume.resume.id" class="mt-3"></ResumeView>
-            </div>
-        </div>
-        </transition>
-
-        <el-dialog :visible.sync="dialogVisible"
-                   class="dialog-container"
-                   width="800px"
-                   title="笔记">
-            <div style="height: 1px; margin: 5px; background: #cccccc"></div>
-            <el-timeline class="dialog-content-container">
-                <el-timeline-item v-for="item in noteList" :timestamp="item.createTime" placement="top" :key="item.id">
-                    <el-card>
-                        <el-input class="note-text" v-if="item.edit" v-model="updateComment" size="small" type="textarea" autosize/>
-                        <p class="note-text" v-else>{{item.comment}}</p>
-                        <i class="el-icon-circle-check note-icon" v-if="item.edit" @click="onNoteUpdate(item)"></i>
-                        <i class="el-icon-circle-close note-icon" v-if="item.edit" @click="onNoteCancel(item)"></i>
-                        <i :class="['el-icon-edit','note-icon',{'note-icon-hidden':!item.edit}]" @click="onNoteEdit(item)"></i>
-                        <i :class="['el-icon-close','note-icon',{'note-icon-hidden':!item.edit}]" @click="onNoteDelete(item)"></i>
-                    </el-card>
-                </el-timeline-item>
-            </el-timeline>
-            <div class="dialog-input-container">
-                <el-input class="dialog-input" v-model="comment" placeholder="请输入您的笔记" @keyup.enter.native="onNoteSave" autofocus></el-input>
-                <el-button class="dialog-button" type="primary" :round=true @click="onNoteSave">保存
-                </el-button>
-            </div>
-        </el-dialog>
-
-        <el-dialog :visible.sync="dialogVisible2"
-                   class="dialog-container"
-                   width="800px"
-                   title="标签">
-            <div style="height: 1px; margin: 5px; background: #cccccc"></div>
-            <div class="dialog-input-container" style="margin-top: 30px">
-                <el-input class="dialog-input" v-model="tag" placeholder="请输入您的标签" autofocus></el-input>
-                <el-button class="dialog-button" type="primary" :round=true @click="onTagSave">保存
-                </el-button>
-            </div>
-        </el-dialog>
-
-    </div>
+    </loading>
 </template>
 
 <script>
@@ -318,10 +319,16 @@
                     emitPath: false,
                     children: "children"
                 },
+                loading: true
             };
         },
         watch: {
-            $route: "getList"
+            $route: "getList",
+            loading: function (newVal) {
+                if (!newVal) {
+                    this.$emit("complete");
+                }
+            }
         },
         created() {
             this.initData();
@@ -353,6 +360,7 @@
                 applyResumeList(this.listQuery).then(response => {
                     this.pageResult = response.data;
                     this.total = this.pageResult.total;
+                    this.loading = false;
                 });
             },
             handleListPageRoute() {
@@ -653,11 +661,14 @@
     .slide-fade-enter-active {
         transition: all .5s ease;
     }
+
     .slide-fade-leave-active {
         transition: all .5s ease;
     }
+
     .slide-fade-enter, .slide-fade-leave-to
-        /* .slide-fade-leave-active for below version 2.1.8 */ {
+        /* .slide-fade-leave-active for below version 2.1.8 */
+    {
         transform: translateX(50%);
         opacity: 0;
     }

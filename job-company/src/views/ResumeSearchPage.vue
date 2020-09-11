@@ -1,148 +1,11 @@
 <template>
-    <div class="app-container" v-if="resumeType===1">
-        <div class="mt-3">
-            <el-row :gutter="10">
-                <el-col :span="6">
-                    <el-select v-model="resumeType" placeholder="简历类型" @change="handleResumeType" class="w-100" size="small">
-                        <el-option v-for="item in resumeTypeOptions"
-                                   :key="item.value"
-                                   :label="item.name"
-                                   :value="item.value"
-                                   class="w-100"
-                                   size="small">
-                        </el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="6">
-                    <el-input v-model="listQuery.name"
-                              clearable
-                              @change="handleFilter"
-                              class="w-100"
-                              placeholder="名字"
-                              size="small">
-                    </el-input>
-                </el-col>
-
-                <el-col :span="6">
-                    <el-select
-                            v-model="listQuery.degreeIds"
-                            clearable
-                            multiple
-                            placeholder="学历"
-                            @change="handleFilter"
-                            class="w-100"
-                            size="small">
-                        <el-option v-for="item in degreeOptions"
-                                   :key="item.id"
-                                   :label="item.name"
-                                   :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="6">
-                    <el-select
-                            v-model="listQuery.cityIds"
-                            multiple
-                            clearable
-                            filterable
-                            placeholder="意向城市"
-                            @change="handleFilter"
-                            class="w-100"
-                            size="small">
-                        <el-option
-                                v-for="item in cityOptions"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-col>
-            </el-row>
-        </div>
-        <div class="mt-3">
-            <el-cascader
-                    placeholder="意向职位"
-                    :show-all-levels="false"
-                    :options="jobCategoryOptions"
-                    :props="jobCategoryProps"
-                    filterable
-                    clearable
-                    v-model="listQuery.categoryIds"
-                    @change="handleFilter"
-                    class="w-100"
-                    size="small">
-            </el-cascader>
-        </div>
-
-        <el-input @focus="moreCondition=true"
-                  class="w-25 mt-3"
-                  placeholder="更多细化搜索"
-                  size="small"
-                  v-if="!moreCondition">
-        </el-input>
-        <transition name="el-zoom-in-top">
-            <div class="mt-3" v-if="moreCondition">
+    <loading :loading="loading">
+        <div :class="['app-container',{'vh-100':loading}]" v-if="resumeType===1">
+            <div class="mt-3">
                 <el-row :gutter="10">
                     <el-col :span="6">
-                        <el-select
-                                v-model="listQuery.schoolIds"
-                                multiple
-                                filterable
-                                remote
-                                reserve-keyword
-                                :loading="loadingSchoolOptions"
-                                :remote-method="searchSchoolOptions"
-                                placeholder="学校"
-                                @change="handleFilter"
-                                class="w-100"
-                                size="small">
-                            <el-option
-                                    v-for="item in schoolOptions"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </el-col>
-
-
-                    <el-col :span="6">
-                        <el-select
-                                v-model="listQuery.salaryRangeId"
-                                filterable
-                                clearable
-                                placeholder="薪资范围"
-                                @change="handleFilter"
-                                class="w-100"
-                                size="small">
-                            <el-option
-                                    v-for="item in salaryRangeOptions"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-select
-                                v-model="listQuery.gpaRangeId"
-                                filterable
-                                clearable
-                                placeholder="GPA范围"
-                                @change="handleFilter"
-                                class="w-100"
-                                size="small">
-                            <el-option
-                                    v-for="item in gpaRangeOptions"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-select v-model="listQuery.gender" clearable placeholder="性别" @change="handleFilter" class="w-100" size="small">
-                            <el-option v-for="item in genderOptions"
+                        <el-select v-model="resumeType" placeholder="简历类型" @change="handleResumeType" class="w-100" size="small">
+                            <el-option v-for="item in resumeTypeOptions"
                                        :key="item.value"
                                        :label="item.name"
                                        :value="item.value"
@@ -151,125 +14,277 @@
                             </el-option>
                         </el-select>
                     </el-col>
+                    <el-col :span="6">
+                        <el-input v-model="listQuery.name"
+                                  clearable
+                                  @change="handleFilter"
+                                  class="w-100"
+                                  placeholder="名字"
+                                  size="small">
+                        </el-input>
+                    </el-col>
 
+                    <el-col :span="6">
+                        <el-select
+                                v-model="listQuery.degreeIds"
+                                clearable
+                                multiple
+                                placeholder="学历"
+                                @change="handleFilter"
+                                class="w-100"
+                                size="small">
+                            <el-option v-for="item in degreeOptions"
+                                       :key="item.id"
+                                       :label="item.name"
+                                       :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-select
+                                v-model="listQuery.cityIds"
+                                multiple
+                                clearable
+                                filterable
+                                placeholder="意向城市"
+                                @change="handleFilter"
+                                class="w-100"
+                                size="small">
+                            <el-option
+                                    v-for="item in cityOptions"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-col>
                 </el-row>
             </div>
-        </transition>
-        <pagination
-                v-show="pageResult.total"
-                :total="pageResult.total"
-                :page.sync="listQuery.page"
-                :limit.sync="listQuery.limit"
-                @pagination="handleRouteList"/>
-        <el-card class="box-card mb-3" v-for="resume in pageResult.list" :key="resume.id">
-            <b-media @click="handleShowResume(resume)" style="cursor: pointer;">
-                <template v-slot:aside>
-                    <el-badge class="item">
-                        <el-avatar :src="resume.avatar"></el-avatar>
-                    </el-badge>
-                </template>
-                <b-media-body>
-                    <h6>
-                        {{resume.name || ""}}
-                        <span class="ml-4 text-muted text-small">
+            <div class="mt-3">
+                <el-row :gutter="10">
+                    <el-col :span="6">
+                        <el-cascader
+                                placeholder="意向职位"
+                                :show-all-levels="false"
+                                :options="jobCategoryOptions"
+                                :props="jobCategoryProps"
+                                filterable
+                                clearable
+                                v-model="listQuery.categoryIds"
+                                @change="handleFilter"
+                                class="w-100"
+                                size="small">
+                        </el-cascader>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-input @focus="moreCondition=true"
+                                  class="w-100"
+                                  placeholder="更多细化搜索"
+                                  size="small"
+                                  v-if="!moreCondition">
+                        </el-input>
+                    </el-col>
+                    <transition name="el-zoom-in-top">
+                        <el-col :span="6" v-if="moreCondition">
+                            <el-select v-model="listQuery.schoolIds"
+                                       multiple
+                                       filterable
+                                       remote
+                                       reserve-keyword
+                                       :loading="loadingSchoolOptions"
+                                       :remote-method="searchSchoolOptions"
+                                       placeholder="学校"
+                                       @change="handleFilter"
+                                       class="w-100"
+                                       size="small">
+                                <el-option v-for="item in schoolOptions"
+                                           :key="item.id"
+                                           :label="item.name"
+                                           :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </transition>
+                    <transition name="el-zoom-in-top">
+                        <el-col :span="6" v-if="moreCondition">
+                            <el-select
+                                    v-model="listQuery.salaryRangeId"
+                                    filterable
+                                    clearable
+                                    placeholder="薪资范围"
+                                    @change="handleFilter"
+                                    class="w-100"
+                                    size="small">
+                                <el-option
+                                        v-for="item in salaryRangeOptions"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </transition>
+                    <transition name="el-zoom-in-top">
+                        <el-col :span="6" v-if="moreCondition">
+                            <el-select
+                                    v-model="listQuery.gpaRangeId"
+                                    filterable
+                                    clearable
+                                    placeholder="GPA范围"
+                                    @change="handleFilter"
+                                    class="w-100"
+                                    size="small">
+                                <el-option
+                                        v-for="item in gpaRangeOptions"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </transition>
+                </el-row>
+            </div>
+
+            <transition name="el-zoom-in-top">
+                <div class="mt-3" v-if="moreCondition">
+                    <el-row :gutter="10">
+                        <el-col :span="6">
+                            <el-select v-model="listQuery.gender" clearable placeholder="性别" @change="handleFilter" class="w-100" size="small">
+                                <el-option v-for="item in genderOptions"
+                                           :key="item.value"
+                                           :label="item.name"
+                                           :value="item.value"
+                                           class="w-100"
+                                           size="small">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+
+                    </el-row>
+                </div>
+            </transition>
+            <pagination
+                    v-show="pageResult.total"
+                    :total="pageResult.total"
+                    :page.sync="listQuery.page"
+                    :limit.sync="listQuery.limit"
+                    @pagination="handleRouteList"/>
+            <el-card class="box-card mb-3" v-for="resume in pageResult.list" :key="resume.id">
+                <b-media @click="handleShowResume(resume)" style="cursor: pointer;">
+                    <template v-slot:aside>
+                        <el-badge class="item">
+                            <el-avatar :src="resume.avatar"></el-avatar>
+                        </el-badge>
+                    </template>
+                    <b-media-body>
+                        <h6>
+                            {{resume.name || ""}}
+                            <span class="ml-4 text-muted text-small">
                             <span v-if="resume.maxResumeEdu">{{resume.maxResumeEdu.degree.name}} /</span>
                             {{resume.age}}岁 / {{resume.curPlace}}
                         </span>
-                    </h6>
-                    <div class="tag-group" v-if="resume.resumeSkillList && resume.resumeSkillList.length !== 0">
-                        <el-tag size="small"
-                                effect="plain"
-                                type="info"
-                                class="mr-1"
-                                v-for="skill in resume.resumeSkillList"
-                                :key="skill.id">
-                            {{skill.name}}
-                        </el-tag>
+                        </h6>
+                        <div class="tag-group" v-if="resume.resumeSkillList && resume.resumeSkillList.length !== 0">
+                            <el-tag size="small"
+                                    effect="plain"
+                                    type="info"
+                                    class="mr-1"
+                                    v-for="skill in resume.resumeSkillList"
+                                    :key="skill.id">
+                                {{skill.name}}
+                            </el-tag>
+                        </div>
+                        <el-row :gutter="12" class="mt-4">
+                            <el-col :span="12" v-if="resume.resumeEduList && resume.resumeEduList.length !== 0">
+                                <h6>教育经历</h6>
+                                <div class="text-small mt-2"
+                                     v-for="edu in resume.resumeEduList"
+                                     :key="edu.id">
+                                    <span>{{ edu.schoolName }} / {{ edu.majorName }}.{{edu.degree.name}}</span>
+                                    <span v-if="edu.gpa">/ GPA {{edu.gpa}}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="12"
+                                    v-if="resume.resumeExpList && resume.resumeExpList.length !== 0">
+                                <h6>工作经历</h6>
+                                <div :gutter="12"
+                                     class="text-small mt-2"
+                                     v-for="exp in resume.resumeExpList"
+                                     :key="exp.id">
+                                    <span>{{exp.company}} / {{exp.post}} / {{exp.startTime}} - {{exp.finishTime}}</span>
+                                </div>
+                            </el-col>
+                        </el-row>
+                    </b-media-body>
+                </b-media>
+            </el-card>
+
+            <transition name="slide-fade">
+                <div class="resume-drawer" v-if="resumeSelect">
+                    <div class="resume-drawer-body pl-4 pr-4 pb-4">
+                        <el-button type="text"
+                                   class="el-icon-close button-close"
+                                   @click="resumeSelect = undefined">
+                        </el-button>
+                        <ResumeView :resumeId="resumeSelect.id" class="mt-3"></ResumeView>
                     </div>
-                    <el-row :gutter="12" class="mt-4">
-                        <el-col :span="12" v-if="resume.resumeEduList && resume.resumeEduList.length !== 0">
-                            <h6>教育经历</h6>
-                            <div class="text-small mt-2"
-                                 v-for="edu in resume.resumeEduList"
-                                 :key="edu.id">
-                                <span>{{ edu.schoolName }} / {{ edu.majorName }}.{{edu.degree.name}}</span>
-                                <span v-if="edu.gpa">/ GPA {{edu.gpa}}</span>
-                            </div>
-                        </el-col>
-                        <el-col :span="12"
-                                v-if="resume.resumeExpList && resume.resumeExpList.length !== 0">
-                            <h6>工作经历</h6>
-                            <div :gutter="12"
-                                 class="text-small mt-2"
-                                 v-for="exp in resume.resumeExpList"
-                                 :key="exp.id">
-                                <span>{{exp.company}} / {{exp.post}} / {{exp.startTime}} - {{exp.finishTime}}</span>
-                            </div>
-                        </el-col>
-                    </el-row>
-                </b-media-body>
-            </b-media>
-        </el-card>
-
-        <transition name="slide-fade">
-            <div class="resume-drawer" v-if="resumeSelect">
-                <div class="resume-drawer-body pl-4 pr-4 pb-4">
-                    <el-button type="text"
-                               class="el-icon-close button-close"
-                               @click="resumeSelect = undefined">
-                    </el-button>
-                    <ResumeView :resumeId="resumeSelect.id" class="mt-3"></ResumeView>
                 </div>
+            </transition>
+            <pagination
+                    v-show="pageResult.total"
+                    :total="pageResult.total"
+                    :page.sync="listQuery.page"
+                    :limit.sync="listQuery.limit"
+                    @pagination="handleRouteList"/>
+        </div>
+        <div class="app-container" v-else>
+            <div class="mt-3">
+                <el-row :gutter="10">
+                    <el-col :span="6">
+                        <el-select v-model="resumeType" placeholder="简历类型" @change="handleResumeType" class="w-100" size="small">
+                            <el-option v-for="item in resumeTypeOptions"
+                                       :key="item.value"
+                                       :label="item.name"
+                                       :value="item.value"
+                                       class="w-100"
+                                       size="small">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-input v-model="listAttachQuery.keywords"
+                                  clearable
+                                  @change="handleAttachFilter"
+                                  class="w-100"
+                                  placeholder="关键词"
+                                  size="small">
+                        </el-input>
+                    </el-col>
+                </el-row>
             </div>
-        </transition>
-        <pagination
-                v-show="pageResult.total"
-                :total="pageResult.total"
-                :page.sync="listQuery.page"
-                :limit.sync="listQuery.limit"
-                @pagination="handleRouteList"/>
-    </div>
-    <div class="app-container" v-else>
-        <div class="mt-3">
-            <el-row :gutter="10">
-                <el-col :span="6">
-                    <el-select v-model="resumeType" placeholder="简历类型" @change="handleResumeType" class="w-100" size="small">
-                        <el-option v-for="item in resumeTypeOptions"
-                                   :key="item.value"
-                                   :label="item.name"
-                                   :value="item.value"
-                                   class="w-100"
-                                   size="small">
-                        </el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="6">
-                    <el-input v-model="listAttachQuery.keywords"
-                              clearable
-                              @change="handleAttachFilter"
-                              class="w-100"
-                              placeholder="关键词"
-                              size="small">
-                    </el-input>
-                </el-col>
-            </el-row>
-        </div>
-        <el-card class="box-card mt-3" v-for="resume in attachPageResult.list" :key="resume.id">
-            <div v-html="resume.email" class="mb-2"></div>
-            <div v-html="resume.attachContent" @click="onAttachResume(resume)" class="attach-content"></div>
-        </el-card>
-        <pagination
-                v-show="attachPageResult.total"
-                :total="attachPageResult.total"
-                :page.sync="listAttachQuery.page"
-                :limit.sync="listAttachQuery.limit"
-                @pagination="handleRouteList"/>
+            <pagination
+                    v-show="attachPageResult.total"
+                    :total="attachPageResult.total"
+                    :page.sync="listAttachQuery.page"
+                    :limit.sync="listAttachQuery.limit"
+                    @pagination="handleAttachRouteList"/>
+            <el-card class="box-card mt-3" v-for="resume in attachPageResult.list" :key="resume.id">
+                <div v-html="resume.email" class="mb-2"></div>
+                <div v-html="resume.attachContent" @click="onAttachResume(resume)" class="attach-content"></div>
+            </el-card>
+            <pagination
+                    v-show="attachPageResult.total"
+                    :total="attachPageResult.total"
+                    :page.sync="listAttachQuery.page"
+                    :limit.sync="listAttachQuery.limit"
+                    @pagination="handleAttachRouteList"/>
 
-        <div v-if="showPDF" class="pdf-mask" @click="showPDF=false;">
-            <div ref="pdf" class="pdf-container"></div>
+            <div v-if="showPDF" class="pdf-mask" @click="showPDF=false;">
+                <div ref="pdf" class="pdf-container"></div>
+            </div>
         </div>
-
-    </div>
+    </loading>
 </template>
 
 <script>
@@ -279,7 +294,7 @@
     import {listByType} from "@/api/dict_api";
     import {searchSchool} from "@/api/school_api";
     import {getCategoryTree} from "@/api/category_api";
-    import {downloadFile, formatListQuery, parseListQuery} from "@/utils/common";
+    import {formatListQuery, parseListQuery} from "@/utils/common";
     import ResumeView from "@/components/ResumeView";
     import Toast from "@/utils/toast";
 
@@ -345,7 +360,8 @@
                 attachPageResult: {
                     total: 0
                 },
-                showPDF: false
+                showPDF: false,
+                loading: true
             }
         },
         created() {
@@ -391,6 +407,11 @@
                     Toast.error("搜索职位不能超过3个");
                 }
             },
+            loading: function (newVal) {
+                if (!newVal) {
+                    this.$emit("complete");
+                }
+            }
         },
         methods: {
             handleResumeType() {
@@ -404,16 +425,19 @@
                     query: formatListQuery(this.listQuery)
                 });
             },
+            handleAttachRouteList() {
+                this.$router.push({
+                    path: this.$route.path,
+                    query: formatListQuery(this.listAttachQuery)
+                });
+            },
             handleFilter() {
                 this.listQuery.page = 1;
                 this.handleRouteList();
             },
             handleAttachFilter() {
                 this.listAttachQuery.page = 1;
-                this.$router.push({
-                    path: this.$route.path,
-                    query: formatListQuery(this.listAttachQuery)
-                });
+                this.handleAttachRouteList();
             },
             searchSchoolOptions(query) {
                 if (query !== "") {
@@ -460,6 +484,7 @@
                     data: this.listQuery
                 }).then(data => {
                     this.pageResult = data.data;
+                    this.loading = false;
                 })
             },
             getAttachList() {
@@ -489,6 +514,7 @@
                         return item;
                     });
                     this.attachPageResult = data.data;
+                    this.loading = false;
                 })
             },
             onAttachResume(resume) {
