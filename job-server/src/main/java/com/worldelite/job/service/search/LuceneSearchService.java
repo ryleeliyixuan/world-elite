@@ -10,10 +10,7 @@ import com.worldelite.job.form.PageForm;
 import com.worldelite.job.form.ResumeAttachmentForm;
 import com.worldelite.job.mapper.ResumeAttachMapper;
 import com.worldelite.job.mapper.ResumeMapper;
-import com.worldelite.job.service.DictService;
-import com.worldelite.job.service.JobCategoryService;
-import com.worldelite.job.service.JobService;
-import com.worldelite.job.service.ResumeService;
+import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -77,6 +74,9 @@ public class LuceneSearchService implements SearchService {
 
     @Autowired
     private ResumeAttachMapper resumeAttachMapper;
+
+    @Autowired
+    private ResumeAttachService resumeAttachService;
 
     @Autowired
     private DictService dictService;
@@ -222,7 +222,20 @@ public class LuceneSearchService implements SearchService {
         IndexSearcher indexSearcher = getIndexSearcher(getSearchFolder());
         //构造搜索请求
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
+        //预处理关键词，用与生成索引文件一样的分词器将关键词分词
+        List<String> keywordList = new ArrayList<String>();
         for(String keyword : searchForm.getKeywords()){
+            String[] tempKeywords = new String[]{};
+            try {
+                tempKeywords = resumeAttachService.analysis(keyword);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for(String tempKeyword:tempKeywords){
+                keywordList.add(tempKeyword);
+            }
+        }
+        for(String keyword : keywordList){
             //目标简历附件必须包含所有关键词
             Term term = new Term(ResumeAttachmentIndexFields.CONTENT,keyword);
             Query query = new TermQuery(term);

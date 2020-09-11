@@ -1,14 +1,10 @@
 package com.worldelite.job;
 
-import cn.hutool.http.HTMLFilter;
-import cn.hutool.http.HtmlUtil;
 import cn.hutool.http.HttpUtil;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;

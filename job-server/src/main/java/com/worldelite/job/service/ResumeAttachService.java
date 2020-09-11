@@ -2,9 +2,15 @@ package com.worldelite.job.service;
 
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.constants.ResumeIndexFields;
+import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeAttach;
+import com.worldelite.job.entity.ResumeOptions;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.mapper.ResumeAttachMapper;
+import com.worldelite.job.mapper.ResumeMapper;
+import com.worldelite.job.vo.ApiCode;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
@@ -26,6 +32,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -37,11 +44,20 @@ public class ResumeAttachService extends BaseService{
     @Value("${search.index.resumeindex2}")
     private String indexFolder2;
 
+    @Value("${domain.oss}")
+    private String ossDomain;
+
     @Autowired
     private Analyzer analyzer;
 
     @Autowired
+    private ResumeMapper resumeMapper;
+
+    @Autowired
     private ResumeAttachMapper resumeAttacheMapper;
+
+    @Autowired
+    private ResumeService resumeService;
 
     private boolean switchFolder = false;
 
@@ -248,5 +264,30 @@ public class ResumeAttachService extends BaseService{
             }
         }
         return writer;
+    }
+
+    /**
+     * 从简历表构建搜索
+     */
+    public void buildResumeIndex() {
+        //获取所有的简历数据
+        List<Resume> resumeList = resumeMapper.selectAndList(new ResumeOptions());
+        for(Resume resume:resumeList){
+            String attachResume = resume.getAttachResume();
+            //判断简历文件是否存在
+            if(StringUtils.isNotEmpty(attachResume) && attachResume.startsWith("attachment")){
+                //解析简历文件，解析结果插入附件简历表
+                resumeService.addOrUpdateResumeIndex(resume.getId(),resume.getUserId(),ossDomain+resume.getAttachResume());
+            }
+        }
+        //解析方法为异步方法，需要解析完成才能继续建索引
+        try {
+            Thread.currentThread().join();
+            //从附件简历表重建索引文件
+            buildIndex();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new ServiceException("索引解析出错", ApiCode.FAIL);
+        }
     }
 }

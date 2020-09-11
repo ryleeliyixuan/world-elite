@@ -1,13 +1,13 @@
 package com.worldelite.job.service;
 
-import com.alibaba.fastjson.JSON;
 import com.worldelite.job.anatation.SysLog;
-import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.ConfigType;
 import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.constants.VerificationStatus;
-import com.worldelite.job.context.RedisKeys;
-import com.worldelite.job.entity.*;
+import com.worldelite.job.entity.Company;
+import com.worldelite.job.entity.CompanyUser;
+import com.worldelite.job.entity.CompanyVerification;
+import com.worldelite.job.entity.Message;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.CompanyVerifyForm;
 import com.worldelite.job.form.EmailForm;
@@ -19,17 +19,11 @@ import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ApiCode;
 import com.worldelite.job.vo.CompanyVerificationVo;
 import com.worldelite.job.vo.UserCorporateVo;
-import com.worldelite.job.vo.UserVo;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.rowset.serial.SerialException;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -183,14 +177,14 @@ public class CompanyVerificationService extends BaseService {
     }
 
 
-    private void sendVerificationPassEmail(String email) {
+    public void sendVerificationPassEmail(String email) {
         EmailForm emailForm = configService.getEmailForm(ConfigType.EMAIL_VERIFICATION_PASS);
         emailForm.setAddress(email);
         emailService.sendEmail(emailForm);
     }
 
 
-    private void sendVerificationRejectEmail(String email, String reason) {
+    public void sendVerificationRejectEmail(String email, String reason) {
         EmailForm emailForm = configService.getEmailForm(ConfigType.EMAIL_VERIFICATION_REJECT);
         emailForm.setAddress(email);
         emailForm.setEmailBody(emailForm.getEmailBody().replace("${REASON}", reason));

@@ -1,24 +1,18 @@
-package com.worldelite.job.lucene;
+package com.worldelite.job.service;
 
 import com.worldelite.job.JobApplication;
-import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.entity.ResumeAttach;
-import com.worldelite.job.service.ResumeAttachService;
-import org.apache.lucene.document.*;
-import org.junit.Assert;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import javax.print.Doc;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = JobApplication.class)
 @WebAppConfiguration
 public class ResumeAttachServiceTest {
@@ -67,11 +61,20 @@ public class ResumeAttachServiceTest {
     }
 
     /**
-     * 从数据库重建所有索引
+     * 从附件简历数据库重建所有索引
      */
     @Test
     public void buildAll(){
         resumeAttachService.buildIndex();
+    }
+
+    /**
+     * 从简历数据库重建所有索引文件
+     */
+    @Test
+    public void buildResumeIndex() throws InterruptedException {
+        resumeAttachService.buildResumeIndex();
+        Thread.currentThread().join();
     }
 
     @Test
