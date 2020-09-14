@@ -13,6 +13,9 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 企业简历库接口
+ */
 @RestController
 @RequestMapping("/api/resume-repository/")
 public class ResumeRepositoryApi extends BaseApi{
