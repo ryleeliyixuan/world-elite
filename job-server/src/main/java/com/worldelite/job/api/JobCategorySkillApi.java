@@ -68,7 +68,7 @@ public class JobCategorySkillApi {
     
     /**
      * 根据职位类别Id获取对应的职位技能
-     * @param jobCategoryId 职位类别id
+     * @param jobCategoryId 第二级职位类别id
      * @return
      */
     @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
