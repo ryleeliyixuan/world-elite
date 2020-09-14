@@ -2,13 +2,11 @@ package com.worldelite.job.service;
 
 import com.worldelite.job.JobApplication;
 import com.worldelite.job.form.SchoolListForm;
-import com.worldelite.job.service.sched.ScheduleService;
 import com.worldelite.job.vo.SchoolVo;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
@@ -16,9 +14,9 @@ import java.util.List;
 /**
  * @author yeguozhong yedaxia.github.com
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = JobApplication.class)
 @WebAppConfiguration
+@ActiveProfiles("test")
 public class SchoolServiceTests {
 
     @Autowired

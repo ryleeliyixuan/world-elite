@@ -1,7 +1,11 @@
 <template>
     <div class="nav_container">
         <div class="nav_left_container">
-            <el-link class="logo" type="primary" href="/" :underline="false">{{$t('app_name')}}</el-link>
+
+            <el-link class="logo-image" type="primary" href="/" :underline="false" >
+                <img style="width: 100%;" src="../assets/logo.jpg"/>
+            </el-link>
+<!--            <el-link class="logo" type="primary" href="/" :underline="false" >{{$t('app_name')}}</el-link>-->
             <el-menu :router="true"
                      mode="horizontal"
                      :default-active="activeIndex"
@@ -27,9 +31,9 @@
                     <b>立即加入</b>
                 </el-link>
                 <el-button type="primary" @click="$router.push('/login')" size="small">登录</el-button>
-<!--                <el-link :underline="false" class="icon-company" :href="companyHomeUrl" target="_blank">-->
-<!--                    <svg-icon icon-class="company"/>-->
-<!--                </el-link>-->
+                <!--                <el-link :underline="false" class="icon-company" :href="companyHomeUrl" target="_blank">-->
+                <!--                    <svg-icon icon-class="company"/>-->
+                <!--                </el-link>-->
             </div>
             <!-- 已登录 -->
             <div class="user_container" v-else>
@@ -185,6 +189,7 @@
     .el-link--inner {
         white-space: nowrap;
     }
+
 </style>
 <style scoped lang="scss">
     .message-text {
@@ -210,15 +215,21 @@
                 font-size: 30px;
             }
 
+            .logo-image {
+                width: 28%;
+                height: auto;
+
+            }
             .menu-container {
                 display: flex;
                 align-items: center;
                 justify-content: space-around;
                 flex: 1;
-                margin: 0 2%;
+                margin: 0 6%;
+
 
                 .nav-item {
-                    font-size: 22px;
+                    font-size: 18px;
                 }
             }
         }
@@ -246,17 +257,6 @@
                     margin-left: 14px;
                 }
 
-                .message-list {
-
-                    .message-item {
-                        padding: 10px 5px;
-                        border-bottom: 1px solid #eee;
-                        line-height: 1.5em;
-                        font-size: 15px;
-                        color: #888;
-                    }
-                }
-
                 .nav-message {
                     font-size: 22px;
                     padding: 0 16px;
@@ -274,17 +274,30 @@
     @media screen and (max-width: 410px) {
         .nav_container {
             flex-direction: column-reverse;
+
             .nav_left_container {
 
                 .logo {
                     font-size: 22px;
                 }
+
                 .menu-container {
                     .nav-item {
                         font-size: 16px;
                     }
                 }
             }
+        }
+    }
+
+    .message-list {
+
+        .message-item {
+            padding: 10px 5px;
+            border-bottom: 1px solid #eee;
+            line-height: 1.5em;
+            font-size: 14px;
+            color: #888;
         }
     }
 

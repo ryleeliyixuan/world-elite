@@ -22,7 +22,7 @@
         </div>
 
         <div class="section3-container">
-            <div class="activity-list" v-if="list.length !== 0">
+            <div v-if="list.length !== 0">
                 <el-card shadow="hover"
                          v-for="activity in list"
                          :key="activity.id"
@@ -56,6 +56,9 @@
                         </div>
                     </div>
                 </el-card>
+            </div>
+            <div v-else class="activity-none">
+                暂无活动
             </div>
         </div>
 
@@ -197,6 +200,11 @@
                         line-height: 20px;
                     }
                 }
+            }
+
+            .activity-none {
+                text-align: center;
+                line-height: 80px;
             }
         }
 

@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="row job-box" v-else-if="tabIndex == 'job'">
-                <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="col-lg-8 col-md-10 col-sm-12" v-if="jobPage.list.length>0">
                     <el-card shadow="hover"
                              v-for="job in jobPage.list"
                              :key="job.id"
@@ -117,6 +117,9 @@
                                 :limit.sync="listQuery.limit"
                                 @pagination="getCompanyJobList"/>
                 </div>
+                <div style="line-height: 80px; text-align: center; padding-bottom: 20px; width: 100%;" v-else>
+                    暂无岗位
+                </div>
             </div>
             <!-- Activity START-->
             <div class="activity-box" v-else>
@@ -131,6 +134,9 @@
                         <p>{{activity.summary}}</p>
                     </li>
                 </ul>
+                <div style="line-height: 80px; text-align: center; padding-bottom: 20px; width: 100%;" v-else>
+                    暂无活动
+                </div>
             </div>
             <!-- Activity END -->
         </div>

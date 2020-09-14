@@ -177,7 +177,7 @@
                                      v-on:mouseover="resumeLink.showEditFlag = 1"
                                      v-on:mouseout="resumeLink.showEditFlag = 0">
                                     <b>{{resumeLink.name}}：</b>
-                                    <b-link :href="resumeLink.link" target="_blank">{{resumeLink.link}}</b-link>
+                                    <b-link :href="getWholeLink(resumeLink.link)" target="_blank">{{resumeLink.link}}</b-link>
                                     <div class="edit-item-box" v-show="resumeLink.showEditFlag == 1">
                                         <a class="p-2 edit-text" v-on:click="handleEditResumeLink('update', resumeLink)">
                                             <font-awesome-icon :icon="['fa', 'pencil-alt']"/>
@@ -576,13 +576,16 @@
                               placeholder="请填写社交平台"
                               class="w-50"
                               :maxlength="20"
-                              show-word-limit></el-input>
+                              show-word-limit>
+                    </el-input>
                 </el-form-item>
                 <el-form-item label="主页链接" prop="link">
                     <el-input v-model="resumeLinkForm.link"
                               placeholder="请填写主页链接"
                               :maxlength="100"
-                              show-word-limit></el-input>
+                              show-word-limit>
+                        <template slot="prepend">http://</template>
+                    </el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -619,6 +622,7 @@
     import {saveUserExpectJob} from "@/api/user_api";
     import {getUploadPicToken, getUploadAttachmentToken} from "@/api/upload_api";
 
+    import {wholeLink} from "@/utils/common";
     import "quill/dist/quill.core.css";
     import "quill/dist/quill.snow.css";
     import "quill/dist/quill.bubble.css";
@@ -946,6 +950,9 @@
                             });
                     }
                 });
+            },
+            getWholeLink(link) {
+                return wholeLink(link);
             },
             handleUploadAttachmengSuccess() {
                 this.resumeForm.attachResume = this.uploadAttachmentOptions.fileUrl;
