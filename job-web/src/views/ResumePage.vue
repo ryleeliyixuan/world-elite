@@ -30,7 +30,6 @@ export default {
   },
   created() {
     this.resumeId = this.$route.params.id;
-    this.$emit("complete");
   },
   methods: {
     exportPdf() {
@@ -63,8 +62,23 @@ export default {
   padding: 20px;
   position: fixed;
   bottom: 20px;
-  left: calc((100% - 900px) * 0.5 + 920px);
+  left: 70%;
   background: #fff;
   border: 1px solid #eee;
+}
+
+@media screen and (max-width: 440px) {
+  .app-container {
+    width: 95%;
+    margin: auto;
+  }
+
+  .resume-page {
+    width: 100%;
+  }
+
+  .operate-box {
+    left: 55%;
+  }
 }
 </style>
