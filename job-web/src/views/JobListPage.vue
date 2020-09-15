@@ -52,6 +52,9 @@
                 <el-option v-for="item in jobTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
         </div>
+        <div v-if="showNoResult" style="text-align: center; line-height: 40px;">
+            暂无搜索结果，显示推荐职位
+        </div>
         <div class="section2-container">
             <pagination v-show="total"
                         :total="total"
@@ -110,6 +113,7 @@
     import {mapGetters} from "vuex";
 
     import {formatListQuery, parseListQuery} from "@/utils/common";
+    import {getRecommendList} from "@/api/recommend_api";
 
     export default {
         name: "JobListPage",
@@ -133,12 +137,13 @@
                     limit: 10
                 },
                 total: 0,
-                pageResult: 0,
+                pageResult: {},
                 cityOptions: [],
                 salaryRangeOptions: [],
                 companyScaleOptions: [],
                 companyIndustryOptions: [],
-                jobTypeOptions: []
+                jobTypeOptions: [],
+                showNoResult: false
             };
         },
         created() {
@@ -177,11 +182,28 @@
                 this.handleRouteList();
             },
             getList() {
+                this.showNoResult = false;
                 parseListQuery(this.$route.query, this.listQuery);
                 searchJob(this.listQuery).then(response => {
-                    this.pageResult = response.data;
-                    this.total = this.pageResult.total;
-                    this.$emit("complete");
+                    if (!response.data.list || response.data.list.length === 0) {
+                        this.showNoResult = true;
+                        this.total = 10;
+                        getRecommendList({
+                            objectType: 1, // 职位
+                            page: 1,
+                            limit: 10,
+                            sort: "+position"
+                        }).then(response => {
+                            this.pageResult.list = response.data.list.map(item => item.object);
+                            this.total = response.data.total;
+                            this.$emit("complete");
+
+                        });
+                    } else {
+                        this.pageResult = response.data;
+                        this.total = this.pageResult.total;
+                        this.$emit("complete");
+                    }
                 });
             },
 
@@ -224,6 +246,7 @@
 
         .section3-container {
             min-width: 335px;
+
             .section3-item-container {
                 margin-bottom: 10px;
                 cursor: pointer;
@@ -274,6 +297,7 @@
             }
         }
     }
+
     ::-webkit-scrollbar {
         display: none;
     }

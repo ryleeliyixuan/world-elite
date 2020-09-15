@@ -27,7 +27,7 @@
                 background: false,
                 layout: 'total, sizes, prev, pager, next, jumper',
                 small: false,
-                hideOnSinglePage: false
+                hideOnSinglePage: true
             }
         },
         props: {
@@ -82,7 +82,6 @@
         methods: {
             handleWidthChange(small) {
                 this.background = !small;
-                this.hideOnSinglePage = small;
                 this.small = small;
                 this.layout = small ? "prev, pager, next" : 'total, sizes, prev, pager, next, jumper';
             },

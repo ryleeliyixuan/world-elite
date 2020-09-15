@@ -65,13 +65,12 @@
                     <el-col :span="6">
                         <el-cascader
                                 placeholder="意向职位"
-                                :show-all-levels="false"
+                                :show-all-levels="true"
                                 :options="jobCategoryOptions"
                                 :props="jobCategoryProps"
                                 filterable
                                 clearable
-                                v-model="listQuery.categoryIds"
-                                @change="handleFilter"
+                                v-model="categoryIds"
                                 class="w-100"
                                 size="small">
                         </el-cascader>
@@ -350,8 +349,9 @@
                     expandTrigger: "hover",
                     value: "id",
                     label: "name",
-                    emitPath: false,
-                    children: "children"
+                    emitPath: true,
+                    children: "children",
+                    checkStrictly: true
                 },
 
                 pageResult: {
@@ -361,7 +361,8 @@
                     total: 0
                 },
                 showPDF: false,
-                loading: true
+                loading: true,
+                categoryIds: [],// 临时保存
             }
         },
         created() {
@@ -398,13 +399,49 @@
                     Toast.error("搜索城市不能超过3个");
                 }
             },
-            "listQuery.categoryIds": function (newVal, oldVal) {
+            categoryIds: function (newVal, oldVal) {
                 if (newVal.length > 3) {
                     this.$nextTick(() => {
-                        this.listQuery.categoryIds = oldVal;
-                        this.handleRouteList();
+                        this.categoryIds = oldVal
                     })
                     Toast.error("搜索职位不能超过3个");
+                } else {
+                    this.listQuery.page = 1;
+                    // console.log(this.jobCategoryOptions);
+                    let categoryIds = [];
+                    newVal.forEach(item => {
+                        if (item.length === 1) {
+                            // console.log("选中了第一级，id为：" + item[0]);
+                            this.jobCategoryOptions.forEach(first => {
+                                if (first.id === item[0]) {
+                                    first.children.forEach(second => {
+                                        second.children.forEach(third => {
+                                            categoryIds.push(third.id);
+                                        })
+                                    })
+                                }
+                            })
+                        } else if (item.length === 2) {
+                            // console.log("选中了第二级，id为：" + item[1]);
+                            this.jobCategoryOptions.forEach(first => {
+                                if (first.id === item[0]) {
+                                    first.children.forEach(second => {
+                                        if(second.id === item[1]) {
+                                            second.children.forEach(third => {
+                                                categoryIds.push(third.id);
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                        } else if (item.length === 3) {
+                            // console.log("选中了第三级，id为：" + item[2]);
+                            categoryIds.push(item[2]);
+                        }
+                    })
+                    // console.log(categoryIds);
+                    this.listQuery.categoryIds = categoryIds;
+                    this.handleRouteList();
                 }
             }
         },
@@ -515,7 +552,7 @@
                 })
             },
             onAttachResume(resume) {
-                console.log(resume);
+                // console.log(resume);
                 this.showPDF = true;
                 this.$nextTick(() => {
                     PDFObject.embed(resume.docPath, this.$refs.pdf);

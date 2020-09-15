@@ -1,7 +1,9 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
-var webpack = require('webpack');
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const webpack = require('webpack')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -28,8 +30,8 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
-  productionSourceMap: false,
+  lintOnSave: false,
+  productionSourceMap: process.env.NODE_ENV === 'development',
   devServer: {
     port: port,
     open: false,
@@ -45,11 +47,7 @@ module.exports = {
           '^/api': ''
         }
       }
-    },
-  },
-  // css相关配置
-  css: {
-    sourceMap: process.env.NODE_ENV === 'development',
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
@@ -65,7 +63,24 @@ module.exports = {
         'window.Quill': 'quill/dist/quill.js',
         'Quill': 'quill/dist/quill.js'
       }),
+      new OptimizeCSSPlugin(),
+      new CompressionWebpackPlugin({
+        algorithm: 'gzip', // 算法 gzip
+        test: new RegExp( // 压缩文件匹配
+          '\\.(js|css)$'
+        ),
+        threshold: 10240, // 文件大小于10K的不进行压缩
+        // deleteOriginalAssets:true, //删除源文件，不建议
+        minRatio: 0.8 // 最小压缩比例，压缩比大于0.8的不进行压缩
+      })
     ]
+  },
+  // css相关配置
+  css: {
+    // 是否使用css分离插件 MiniCssExtractPlugin。Default: 生产环境下是 true，开发环境下是 false
+    extract: process.env.NODE_ENV !== 'development',
+    // 默认为false。是否为 CSS 开启 source map。设置为 true 之后可能会影响构建的性能。
+    sourceMap: process.env.NODE_ENV === 'development'
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
@@ -100,7 +115,7 @@ module.exports = {
       .end()
 
     config
-    // https://webpack.js.org/configuration/devtool/#development
+      // https://webpack.js.org/configuration/devtool/#development
       .when(process.env.NODE_ENV === 'development',
         config => config.devtool('cheap-source-map')
       )
@@ -112,35 +127,40 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
           config
             .optimization.splitChunks({
-              chunks: 'all',
-              cacheGroups: {
-                libs: {
-                  name: 'chunk-libs',
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: 10,
-                  chunks: 'initial' // only package third parties that are initially dependent
-                },
-                elementUI: {
-                  name: 'chunk-elementUI', // split elementUI into a single package
-                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-                },
-                commons: {
-                  name: 'chunk-commons',
-                  test: resolve('src/components'), // can customize your rules
-                  minChunks: 3, //  minimum common number
-                  priority: 5,
-                  reuseExistingChunk: true
-                }
+            chunks: 'all',
+            cacheGroups: {
+              libs: {
+                name: 'chunk-libs',
+                test: /[\\/]node_modules[\\/]/,
+                priority: 10,
+                chunks: 'initial' // only package third parties that are initially dependent
+              },
+              elementUI: {
+                name: 'chunk-elementUI', // split elementUI into a single package
+                priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+              },
+              commons: {
+                name: 'chunk-commons',
+                test: resolve('src/components'), // can customize your rules
+                minChunks: 3, //  minimum common number
+                priority: 5,
+                reuseExistingChunk: true
               }
-            })
+            }
+          })
           config.optimization.runtimeChunk('single')
+          config.optimization.minimizer('terser').tap((args) => {
+            args[0].terserOptions.compress.drop_debugger = true
+            args[0].terserOptions.compress.drop_console = true
+            return args
+          })
         }
       )
   }

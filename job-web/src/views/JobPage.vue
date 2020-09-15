@@ -28,7 +28,7 @@
             </div>
         </div>
         <el-divider/>
-        <div class="session2-container">
+        <div class="session2-container" v-if="job">
             <div class="session2-container-bottom">
                 <el-button type="primary"
                            :icon="job.favoriteFlag === 1? 'el-icon-star-on' : 'el-icon-star-off'"
