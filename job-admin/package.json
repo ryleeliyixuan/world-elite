@@ -1,8 +1,8 @@
 {
-  "name": "vue-admin-template",
-  "version": "4.2.1",
-  "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
-  "author": "Pan <panfree23@gmail.com>",
+  "name": "worldElite",
+  "version": "0.1.0",
+  "description": "a",
+  "author": "a",
   "license": "MIT",
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -17,6 +17,7 @@
     "axios": "^0.19.2",
     "bootstrap": "4.4.1",
     "bootstrap-vue": "2.3.0",
+    "core-js": "^3.4.4",
     "element-ui": "2.13.0",
     "file-saver": "2.0.1",
     "js-cookie": "^2.2.1",
