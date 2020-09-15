@@ -90,6 +90,28 @@ public class CompanyService extends BaseService{
     }
 
     /**
+     * 通过关键字和行业ID搜索公司百科
+     * @param listForm
+     * @return
+     */
+    public PageResult<CompanyVo> searchCompanyWikiWithIndustry(CompanyWikiListForm listForm){
+        AppUtils.setPage(listForm);
+        CompanyOptions companyOptions = new CompanyOptions();
+        companyOptions.setName(listForm.getKeyword());
+        companyOptions.setIndustryId(listForm.getIndustryId());
+        Page<Company> companyPage = (Page<Company>) companyMapper.searchWiki(companyOptions);
+        PageResult<CompanyVo> pageResult = new PageResult<>(companyPage);
+        List<CompanyVo> companyVoList = new ArrayList<>(companyPage.size());
+        for(Company company: companyPage){
+            CompanyVo companyVo = toCompanyVo(company);
+            companyVo.setWikiSummary(companyWikiService.getCompanyWikiSummary(company.getId()));
+            companyVoList.add(companyVo);
+        }
+        pageResult.setList(companyVoList);
+        return pageResult;
+    }
+
+    /**
      * 获取公司列表
      *
      * @param listForm
