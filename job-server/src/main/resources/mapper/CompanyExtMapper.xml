@@ -21,6 +21,21 @@
             and del_flag = 0
         </where>
     </select>
+    <select id="searchWiki" resultMap="BaseResultMap" parameterType="com.worldelite.job.entity.Company">
+        select
+        <include refid="Base_Column_List"/>
+        from t_company
+        <where>
+            <if test="fullName != null or name != null">
+                and (full_name like CONCAT('%', #{name},'%') or name like CONCAT('%', #{name},'%'))
+            </if>
+            <if test="industryId != null">
+                and industry_id = #{industryId,jdbcType=INTEGER}
+            </if>
+            and id in (select company_id from t_company_wiki)
+            and del_flag = 0
+        </where>
+    </select>
     <select id="searchWikiByName" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
