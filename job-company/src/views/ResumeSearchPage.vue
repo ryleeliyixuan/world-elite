@@ -76,13 +76,12 @@
           <el-col :span="6">
             <el-cascader
               placeholder="意向职位"
-              :show-all-levels="false"
+              :show-all-levels="true"
               :options="jobCategoryOptions"
               :props="jobCategoryProps"
               filterable
               clearable
-              v-model="listQuery.categoryIds"
-              @change="handleFilter"
+              v-model="categoryIds"
               class="w-100"
               size="small"
             ></el-cascader>
@@ -288,7 +287,7 @@
               ></el-option>
             </el-select>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-select
               v-model="listQuery.buzzWordId"
               filterable
@@ -307,7 +306,7 @@
               ></el-option>
             </el-select>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="3">
             <el-input
               v-model="listAttachQuery.keywords"
               clearable
@@ -400,7 +399,6 @@ export default {
       cityOptions: [],
       salaryRangeOptions: [],
       gpaRangeOptions: [],
-      buzzWordOptions: [],
       loadingSchoolOptions: false,
 
       jobCategoryProps: {
@@ -408,8 +406,9 @@ export default {
         expandTrigger: "hover",
         value: "id",
         label: "name",
-        emitPath: false,
+        emitPath: true,
         children: "children",
+        checkStrictly: true,
       },
 
       pageResult: {
@@ -420,6 +419,7 @@ export default {
       },
       showPDF: false,
       loading: true,
+      categoryIds: [], // 临时保存
     };
   },
   created() {
@@ -456,59 +456,58 @@ export default {
         Toast.error("搜索城市不能超过3个");
       }
     },
-    categoryIds: function (newVal, oldVal) {
-      if (newVal.length > 3) {
-        this.$nextTick(() => {
-          this.listQuery.categoryIds = oldVal;
-          this.handleRouteList();
-        });
-        Toast.error("搜索职位不能超过3个");
-      } else {
-        this.listQuery.page = 1;
- 	+                    // console.log(this.jobCategoryOptions);
- 	+                    let categoryIds = [];
- 	+                    newVal.forEach(item => {
- 	+                        if (item.length === 1) {
- 	+                            // console.log("选中了第一级，id为：" + item[0]);
- 	+                            this.jobCategoryOptions.forEach(first => {
- 	+                                if (first.id === item[0]) {
- 	+                                    first.children.forEach(second => {
- 	+                                        second.children.forEach(third => {
- 	+                                            categoryIds.push(third.id);
- 	+                                        })
- 	+                                    })
- 	+                                }
- 	+                            })
- 	+                        } else if (item.length === 2) {
- 	+                            // console.log("选中了第二级，id为：" + item[1]);
- 	+                            this.jobCategoryOptions.forEach(first => {
- 	+                                if (first.id === item[0]) {
- 	+                                    first.children.forEach(second => {
- 	+                                        if(second.id === item[1]) {
- 	+                                            second.children.forEach(third => {
- 	+                                                categoryIds.push(third.id);
- 	+                                            })
- 	+                                        }
- 	+                                    })
- 	+                                }
- 	+                            })
- 	+                        } else if (item.length === 3) {
- 	+                            // console.log("选中了第三级，id为：" + item[2]);
- 	+                            categoryIds.push(item[2]);
- 	+                        }
- 	+                    })
- 	+                    // console.log(categoryIds);
- 	+                    this.listQuery.categoryIds = categoryIds;
- 	+                    this.handleRouteList();
-      }
-    },
     "listQuery.buzzWordId": function (newVal, oldVal) {
       if (newVal.length > 11) {
         this.$nextTick(() => {
           this.listQuery.buzzWordId = oldVal;
           this.handleRouteList();
         });
-        Toast.error("热搜关键词不能超过10个");
+        Toast.error("搜索热门关键词不能超过10个");
+      }
+    },
+    categoryIds: function (newVal, oldVal) {
+      if (newVal.length > 3) {
+        this.$nextTick(() => {
+          this.categoryIds = oldVal;
+        });
+        Toast.error("搜索职位不能超过3个");
+      } else {
+        this.listQuery.page = 1;
+        // console.log(this.jobCategoryOptions);
+        let categoryIds = [];
+        newVal.forEach((item) => {
+          if (item.length === 1) {
+            // console.log("选中了第一级，id为：" + item[0]);
+            this.jobCategoryOptions.forEach((first) => {
+              if (first.id === item[0]) {
+                first.children.forEach((second) => {
+                  second.children.forEach((third) => {
+                    categoryIds.push(third.id);
+                  });
+                });
+              }
+            });
+          } else if (item.length === 2) {
+            // console.log("选中了第二级，id为：" + item[1]);
+            this.jobCategoryOptions.forEach((first) => {
+              if (first.id === item[0]) {
+                first.children.forEach((second) => {
+                  if (second.id === item[1]) {
+                    second.children.forEach((third) => {
+                      categoryIds.push(third.id);
+                    });
+                  }
+                });
+              }
+            });
+          } else if (item.length === 3) {
+            // console.log("选中了第三级，id为：" + item[2]);
+            categoryIds.push(item[2]);
+          }
+        });
+        // console.log(categoryIds);
+        this.listQuery.categoryIds = categoryIds;
+        this.handleRouteList();
       }
     },
   },
@@ -541,7 +540,6 @@ export default {
       // console.log(this.listQuery.buzzWordId)
       this.handleFilter();
     },
-
     searchSchoolOptions(query) {
       if (query !== "") {
         this.loadingSchoolOptions = true;
@@ -563,13 +561,12 @@ export default {
       listByType(10).then(
         (response) => (this.gpaRangeOptions = response.data.list)
       );
-      listByType(11).then(
+       listByType(11).then(
         (response) => (this.buzzWordOptions = response.data.list)
       );
       getCategoryTree().then(
         (response) => (this.jobCategoryOptions = response.data)
       );
-
       if (this.resumeType === 1) {
         this.getList();
       } else {
@@ -608,7 +605,6 @@ export default {
     getAttachList() {
       parseListQuery(this.$route.query, this.listAttachQuery);
       let keywords = [];
-
       if (this.$route.query.buzzWordId) {
         this.listAttachQuery.buzzWordId = this.$route.query.buzzWordId.split(
           ","
@@ -650,219 +646,6 @@ export default {
             if (index > 150) {
               item.attachContent =
                 "..." + item.attachContent.substring(index - 150);
-                jobCategoryProps: {
-                    multiple: true,
-                    expandTrigger: "hover",
-                    value: "id",
-                    label: "name",
-                    emitPath: true,
-                    children: "children",
-                    checkStrictly: true
-                },
-
-                pageResult: {
-                    total: 0
-                },
-                attachPageResult: {
-                    total: 0
-                },
-                showPDF: false,
-                loading: true,
-                categoryIds: [],// 临时保存
-            }
-        },
-        created() {
-            this.initData();
-        },
-        watch: {
-            $route() {
-                this.resumeSelect = undefined;
-                if (this.resumeType === 1) {
-                    this.getList();
-                } else if (this.resumeType === 2) {
-                    this.getAttachList();
-                }
-            },
-            resumeType() {
-                this.resumeSelect = undefined;
-                if (this.resumeType === 1) {
-                    this.getList();
-                } else if (this.resumeType === 2) {
-                    this.getAttachList();
-                }
-            },
-            "listQuery.degreeIds": function (newVal, oldVal) {
-                if (newVal.length > 3) {
-                    this.listQuery.degreeIds = oldVal;
-                    this.handleRouteList();
-                    Toast.error("搜索学历不能超过3个");
-                }
-            },
-            "listQuery.cityIds": function (newVal, oldVal) {
-                if (newVal.length > 3) {
-                    this.listQuery.cityIds = oldVal;
-                    this.handleRouteList();
-                    Toast.error("搜索城市不能超过3个");
-                }
-            },
-            categoryIds: function (newVal, oldVal) {
-                if (newVal.length > 3) {
-                    this.$nextTick(() => {
-                        this.categoryIds = oldVal
-                    })
-                    Toast.error("搜索职位不能超过3个");
-                } else {
-                    this.listQuery.page = 1;
-                    // console.log(this.jobCategoryOptions);
-                    let categoryIds = [];
-                    newVal.forEach(item => {
-                        if (item.length === 1) {
-                            // console.log("选中了第一级，id为：" + item[0]);
-                            this.jobCategoryOptions.forEach(first => {
-                                if (first.id === item[0]) {
-                                    first.children.forEach(second => {
-                                        second.children.forEach(third => {
-                                            categoryIds.push(third.id);
-                                        })
-                                    })
-                                }
-                            })
-                        } else if (item.length === 2) {
-                            // console.log("选中了第二级，id为：" + item[1]);
-                            this.jobCategoryOptions.forEach(first => {
-                                if (first.id === item[0]) {
-                                    first.children.forEach(second => {
-                                        if(second.id === item[1]) {
-                                            second.children.forEach(third => {
-                                                categoryIds.push(third.id);
-                                            })
-                                        }
-                                    })
-                                }
-                            })
-                        } else if (item.length === 3) {
-                            // console.log("选中了第三级，id为：" + item[2]);
-                            categoryIds.push(item[2]);
-                        }
-                    })
-                    // console.log(categoryIds);
-                    this.listQuery.categoryIds = categoryIds;
-                    this.handleRouteList();
-                }
-            }
-        },
-        methods: {
-            handleResumeType() {
-            },
-            handleShowResume(resume) {
-                this.resumeSelect = resume;
-            },
-            handleRouteList() {
-                this.$router.push({
-                    path: this.$route.path,
-                    query: formatListQuery(this.listQuery)
-                });
-            },
-            handleAttachRouteList() {
-                this.$router.push({
-                    path: this.$route.path,
-                    query: formatListQuery(this.listAttachQuery)
-                });
-            },
-            handleFilter() {
-                this.listQuery.page = 1;
-                this.handleRouteList();
-            },
-            handleAttachFilter() {
-                this.listAttachQuery.page = 1;
-                this.handleAttachRouteList();
-            },
-            searchSchoolOptions(query) {
-                if (query !== "") {
-                    this.loadingSchoolOptions = true;
-                    searchSchool(query)
-                        .then(response => (this.schoolOptions = response.data))
-                        .finally(() => (this.loadingSchoolOptions = false));
-                } else {
-                    this.schoolOptions = [];
-                }
-            },
-            initData() {
-                listByType(1).then(response => (this.degreeOptions = response.data.list));
-                listByType(2).then(response => (this.cityOptions = response.data.list));
-                listByType(9).then(
-                    response => (this.salaryRangeOptions = response.data.list)
-                );
-                listByType(10).then(
-                    response => (this.gpaRangeOptions = response.data.list)
-                );
-                getCategoryTree().then(
-                    response => (this.jobCategoryOptions = response.data)
-                );
-                if (this.resumeType === 1) {
-                    this.getList();
-                } else {
-                    this.getAttachList();
-                }
-            },
-            getList() {
-                parseListQuery(this.$route.query, this.listQuery);
-                if (this.$route.query.degreeIds) {
-                    this.listQuery.degreeIds = this.$route.query.degreeIds.split(",").map(id => parseInt(id));
-                }
-                if (this.$route.query.cityIds) {
-                    this.listQuery.cityIds = this.$route.query.cityIds.split(",").map(id => parseInt(id));
-                }
-                if (this.$route.query.categoryIds) {
-                    this.listQuery.categoryIds = this.$route.query.categoryIds.split(",").map(id => parseInt(id));
-                }
-                this.$axios.request({
-                    url: "/resume/list",
-                    method: "post",
-                    data: this.listQuery
-                }).then(data => {
-                    this.pageResult = data.data;
-                    this.loading = false;
-                    this.$emit("complete");
-                })
-            },
-            getAttachList() {
-                parseListQuery(this.$route.query, this.listAttachQuery);
-                let keywords = [];
-                if (this.listAttachQuery.keywords) {
-                    keywords = this.listAttachQuery.keywords.replace("，", ",").split(",");
-                }
-                this.$axios.request({
-                    url: "/resume/list-attachment",
-                    method: "post",
-                    data: {...this.listAttachQuery, keywords}
-                }).then(data => {
-                    data.data.list = data.data.list.map(item => {
-                        let emails = item.attachContent.match(/\w+@[a-zA-Z0-9]{2,10}(?:\.[a-z]{2,4}){1,3}/);
-                        item.email = emails && emails.length > 0 ? "邮箱：" + item.attachContent.match(/\w+@[a-zA-Z0-9]{2,10}(?:\.[a-z]{2,4}){1,3}/)[0] : "暂无邮箱";
-                        let index = item.attachContent.indexOf(keywords[0]);
-                        if (index > item.attachContent.length - 140) {
-                            index = item.attachContent.length - 140
-                        }
-                        if (index > 150) {
-                            item.attachContent = "..." + item.attachContent.substring(index - 150);
-                        }
-                        keywords.forEach(keyword => {
-                            item.attachContent = item.attachContent.replace(eval("/" + keyword + "/g"), "<span style='background: yellow;'>" + keyword + "</span>");
-                        })
-                        return item;
-                    });
-                    this.attachPageResult = data.data;
-                    this.loading = false;
-                    this.$emit("complete");
-                })
-            },
-            onAttachResume(resume) {
-                // console.log(resume);
-                this.showPDF = true;
-                this.$nextTick(() => {
-                    PDFObject.embed(resume.docPath, this.$refs.pdf);
-                })
             }
             keywords.forEach((keyword) => {
               item.attachContent = item.attachContent.replace(
