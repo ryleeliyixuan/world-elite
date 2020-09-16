@@ -2,10 +2,13 @@
     <div class="nav_container">
         <div class="nav_left_container">
 
-            <el-link class="logo-image" type="primary" href="/" :underline="false" >
+            <router-link class="logo-image" to="/">
                 <img style="width: 100%;" src="../assets/logo.jpg"/>
-            </el-link>
-<!--            <el-link class="logo" type="primary" href="/" :underline="false" >{{$t('app_name')}}</el-link>-->
+            </router-link>
+            <!-- <el-link class="logo-image" type="primary" href="/" :underline="false" >-->
+            <!--    <img style="width: 100%;" src="../assets/logo.jpg"/>   -->
+            <!-- </el-link>-->
+            <!-- <el-link class="logo" type="primary" href="/" :underline="false" >{{$t('app_name')}}</el-link>-->
             <el-menu :router="true"
                      mode="horizontal"
                      :default-active="activeIndex"
@@ -220,6 +223,7 @@
                 height: auto;
 
             }
+
             .menu-container {
                 display: flex;
                 align-items: center;

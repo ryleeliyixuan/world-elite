@@ -1,5 +1,7 @@
 'use strict'
 const path = require('path')
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -27,7 +29,7 @@ module.exports = {
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
-  productionSourceMap: false,
+  productionSourceMap: process.env.NODE_ENV === 'development',
   devServer: {
     port: port,
     open: false,
@@ -57,7 +59,20 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    plugins: [
+      new OptimizeCSSPlugin(),
+      new CompressionWebpackPlugin({
+        algorithm: 'gzip', // 算法 gzip
+        test: new RegExp( // 压缩文件匹配
+            '\\.(js|css)$'
+        ),
+        threshold: 10240, // 文件大小于10K的不进行压缩
+        // deleteOriginalAssets:true, //删除源文件，不建议
+        minRatio: 0.8 // 最小压缩比例，压缩比大于0.8的不进行压缩
+      }),
+      // new BundleAnalyzerPlugin()
+    ]
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
@@ -133,6 +148,11 @@ module.exports = {
               }
             })
           config.optimization.runtimeChunk('single')
+          config.optimization.minimizer('terser').tap((args) => {
+            args[0].terserOptions.compress.drop_debugger = true;
+            args[0].terserOptions.compress.drop_console = true;
+            return args
+          });
         }
       )
   }

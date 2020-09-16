@@ -14,7 +14,7 @@ let showTimeOutToast = false;
 const service = axios.create({
     baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
     // withCredentials: true, // send cookies when cross-domain requests
-    timeout: 2000 // request timeout
+    timeout: 20000 // request timeout
 })
 
 // request interceptor

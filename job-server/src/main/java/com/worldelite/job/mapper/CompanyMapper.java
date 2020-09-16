@@ -67,6 +67,13 @@ public interface CompanyMapper {
 
     List<Company> searchWikiByName(@Param("name") String name);
 
+    /**
+     * 支持公司名和行业的筛选
+     * @param options
+     * @return
+     */
+    List<Company> searchWiki(CompanyOptions options);
+
     Company selectSimpleById(Long id);
 
     Company selectByFullName(String fullName);

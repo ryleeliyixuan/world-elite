@@ -24,6 +24,7 @@
                              filterable
                              clearable
                              v-model="jobForm.categoryId"
+                             @change="onJobCategoryChange"
                              :disabled="isModify"></el-cascader>
             </el-form-item>
 
@@ -47,14 +48,14 @@
                                :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
-<!--            <el-form-item label="经验要求" prop="experienceId">-->
-<!--                <el-select v-model="jobForm.experienceId" filterable clearable placeholder="请选择经验要求">-->
-<!--                    <el-option v-for="item in experienceOptions"-->
-<!--                               :key="item.id"-->
-<!--                               :label="item.name"-->
-<!--                               :value="item.id"></el-option>-->
-<!--                </el-select>-->
-<!--            </el-form-item>-->
+            <!--            <el-form-item label="经验要求" prop="experienceId">-->
+            <!--                <el-select v-model="jobForm.experienceId" filterable clearable placeholder="请选择经验要求">-->
+            <!--                    <el-option v-for="item in experienceOptions"-->
+            <!--                               :key="item.id"-->
+            <!--                               :label="item.name"-->
+            <!--                               :value="item.id"></el-option>-->
+            <!--                </el-select>-->
+            <!--            </el-form-item>-->
             <el-form-item label="薪资待遇" prop="salary">
                 <el-select v-model="jobForm.minSalary" placeholder="最低" class="salary-option">
                     <el-option v-for="item in minSalaryOptions"
@@ -125,7 +126,8 @@
                 <div v-if="jobDescriptionShow" v-html="jobDescription" class="job-description"></div>
             </div>
             <el-form-item>
-                <el-button type="primary" size="mini" style="padding: 0 12px;line-height: 30px"  :loading="posting" @click="onSubmit" >{{pubButtonText}}</el-button>
+                <el-button type="primary" size="mini" style="padding: 0 12px;line-height: 30px" :loading="posting" @click="onSubmit">{{pubButtonText}}
+                </el-button>
             </el-form-item>
         </el-form>
 
@@ -150,6 +152,7 @@
                     </el-tag>
                 </div>
             </div>
+
             <div class="industry-container" v-if="industryList.length">
                 <div class="title-container">行业领域<span class="title-tips">(最多可选2个行业)</span></div>
                 <div class="industry-tag-container">
@@ -234,7 +237,7 @@
                     expandTrigger: "hover",
                     value: "id",
                     label: "name",
-                    emitPath: false,
+                    emitPath: true,
                     children: "children"
                 },
                 cityOptions: [],
@@ -269,55 +272,6 @@
             },
             "jobForm.maxSalary": function () {
                 this.jobForm.salary = this.jobForm.minSalary && this.jobForm.maxSalary ? 1 : undefined;
-            },
-            "jobForm.categoryId": function () {
-                if(this.jobForm.categoryId) {
-                    let p1 = this.$axios.get('/jobskill/list', {
-                        params: {jobCategoryId: this.jobForm.categoryId}
-                    });
-                    let p2 = this.$axios.get('/jobindustry/list', { // TODO : url待替换   /jobindustry/list
-                        params: {jobCategoryId: this.jobForm.categoryId}
-                    });
-                    Promise.all([p1, p2]).then((result) => {
-                        // TODO： 测试待删除 begin
-                        // result[0].data = [{name: '标签一'},
-                        //     {name: '标签二', id: 1},
-                        //     {name: '标签三', id: 2},
-                        //     {name: '标签四', id: 3},
-                        //     {name: '标签五', id: 4}];
-                        // result[1].data = [{name: '标签1'},
-                        //     {name: '标签2', id: 1},
-                        //     {name: '标签3', id: 2},
-                        //     {name: '标签4', id: 3},
-                        //     {name: '标签5', id: 4}];
-                        // TODO： 测试待删除 end
-
-                        if (result[0].data.length > 0 || result[1].data.length > 0) {
-                            this.jobFormRules.keywords = [{required: true, message: "请选择关键词", trigger: "blur"}];
-                        } else {
-                            delete this.jobFormRules.keywords;
-                        }
-                        if (result[0].data.length > 0) {
-                            this.skillList = result[0].data.map(item => {
-                                item.selected = false;
-                                return item;
-                            });
-                        }
-                        if (result[1].data.length > 0) {
-                            this.industryList = result[1].data.map(item => {
-                                item.selected = false;
-                                return item;
-                            });
-                        }
-                    })
-                    // TODO 以下一行测试待删除
-                    // this.jobDescription = "<span style='color:red'>我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述</span>";
-                    this.$axios.get('/jobdescexample/list', {
-                        params: {categoryId: this.jobForm.categoryId}
-                    }).then(data => {
-                        this.jobDescription = data.data;
-                    })
-                }
             },
             jobForm: {
                 handler() {
@@ -457,6 +411,59 @@
                 tag.selected = false;
             },
 
+            // 选择职位分类，获取标签
+            onJobCategoryChange() {
+                console.log(this.jobForm.categoryId);
+                if (this.jobForm.categoryId && this.jobForm.categoryId.length === 3) {
+                    console.log(11111111111);
+                    let p1 = this.$axios.get('/jobskill/list', {
+                        params: {jobCategoryId: this.jobForm.categoryId[1]} // 取选中标签的父级id
+                    });
+                    let p2 = this.$axios.get('/jobindustry/list', {
+                        params: {jobCategoryId: this.jobForm.categoryId[2]}
+                    });
+                    Promise.all([p1, p2]).then((result) => {
+                        // TODO： 测试待删除 begin
+                        // result[0].data = [{name: '标签一'},
+                        //     {name: '标签二', id: 1},
+                        //     {name: '标签三', id: 2},
+                        //     {name: '标签四', id: 3},
+                        //     {name: '标签五', id: 4}];
+                        // result[1].data = [{name: '标签1'},
+                        //     {name: '标签2', id: 1},
+                        //     {name: '标签3', id: 2},
+                        //     {name: '标签4', id: 3},
+                        //     {name: '标签5', id: 4}];
+                        // TODO： 测试待删除 end
+
+                        if (result[0].data.length > 0 || result[1].data.length > 0) {
+                            this.jobFormRules.keywords = [{required: true, message: "请选择关键词", trigger: "blur"}];
+                        } else {
+                            delete this.jobFormRules.keywords;
+                        }
+                        if (result[0].data.length > 0) {
+                            this.skillList = result[0].data.map(item => {
+                                item.selected = false;
+                                return item;
+                            });
+                        }
+                        if (result[1].data.length > 0) {
+                            this.industryList = result[1].data.map(item => {
+                                item.selected = false;
+                                return item;
+                            });
+                        }
+                    })
+                    // TODO 以下一行测试待删除
+                    // this.jobDescription = "<span style='color:red'>我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述我是一段描述</span>";
+                    this.$axios.get('/jobdescexample/list', {
+                        params: {categoryId: this.jobForm.categoryId[2]}
+                    }).then(data => {
+                        this.jobDescription = data.data && data.data.description;
+                    })
+                    this.jobForm.categoryId = this.jobForm.categoryId[2];
+                }
+            }
         }
     };
 </script>
@@ -511,6 +518,7 @@
                 align-items: center;
                 padding-bottom: 20px;
                 border-bottom: 1px solid #E4E7ED;
+                height: 50px;
 
                 .selected-right {
                     width: calc(100% - 70px);
@@ -575,6 +583,10 @@
                             background-color: #409EFF;
                         }
 
+                    }
+
+                    .skill-style {
+                        margin-bottom: 10px;
                     }
 
                     .skill-style-select {

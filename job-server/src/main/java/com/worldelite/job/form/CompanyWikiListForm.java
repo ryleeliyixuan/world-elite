@@ -10,4 +10,5 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CompanyWikiListForm extends PageForm{
     private String keyword;//关键词
+    private Integer industryId;//行业ID
 }

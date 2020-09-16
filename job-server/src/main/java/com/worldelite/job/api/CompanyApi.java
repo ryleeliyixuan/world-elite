@@ -84,6 +84,18 @@ public class CompanyApi extends BaseApi {
     }
 
     /**
+     * 根据行业分组的百科列表
+     *
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-wiki-by-industry")
+    public ApiResult<PageResult<CompanyVo>> listGroupCompanyWiki(CompanyWikiListForm listForm){
+        PageResult pageResult = companyService.searchCompanyWikiWithIndustry(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
      * 公司列表
      *
      * @param listForm
