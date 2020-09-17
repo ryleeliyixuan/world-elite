@@ -167,7 +167,7 @@
                 doFavorite(this.favoriteForm)
                     .then(() => {
                         this.job.favoriteFlag = this.favoriteForm.favorite ? 1 : 0;
-                        this.$message("操作成功");
+                        this.$message("收藏成功");
                     })
                     .finally(() => {
                         this.favoriteLoading = false;
