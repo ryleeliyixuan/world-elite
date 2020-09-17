@@ -14,7 +14,7 @@
                 <el-col :span="6">
                     <h5 class="mb-3">用户帮助</h5>
                     <div>
-                        <el-link class="link-text" href="http://www.myworldelite.com/user-protocol">用户协议以及隐私政策</el-link>
+                        <el-link class="link-text" href="http://company.myworldelite.com/user-protocol">用户协议以及隐私政策</el-link>
                     </div>
                 </el-col>
                 <el-col :span="6">

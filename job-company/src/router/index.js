@@ -85,6 +85,11 @@ const constantRoutes = [
         path: '/manage-search',
         component: () => import('@/views/ResumeSearchPage'),
         meta: { title: '简历搜索' }
+    },
+    {
+        path: '/user-protocol',
+        component: () => import('@/views/UserProtocolPage'),
+        meta: {title: '寰球菁英-用户协议'}
     }
 ]
 
