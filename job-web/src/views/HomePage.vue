@@ -2,7 +2,7 @@
     <div class="app-container">
         <div class="section1-container">
             <div class="section1-left">
-                <h1 class="section1-name">小米未来星</h1>
+                <h1 class="section1-name link-pointer" @click="onDetail">小米未来星</h1>
                 <div class="section1-tip">小米集团2021全球校园招聘</div>
                 <div class="section1-button-container">
                     <div class="section1-button-detail link-pointer" @click="onDetail">了解详情</div>
@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div class="section1-right">
-                <img class="section1-image" src="../assets/item1.jpg"/>
+                <img class="section1-image link-pointer"  src="../assets/item1.jpg" @click="onDetail"/>
             </div>
         </div>
         <div class="company-recommend-box">
