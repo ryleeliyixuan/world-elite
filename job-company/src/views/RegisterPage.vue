@@ -31,7 +31,7 @@
             ></b-form-input>
           </b-input-group>
           <el-alert class="mt-2" :title="$t('password_rule')" type="warning" v-if="showPasswordRuleTip"></el-alert>
-          <p class="mt-4 mb-4 text-policy">点击“同意并加入”，即表示您同意遵守{{$t('app_name')}}的<a href="http://www.myworldelite.com/user-protocol" target="_blank">《用户协议和隐私政策》</a>。</p>
+          <p class="mt-4 mb-4 text-policy">点击“同意并加入”，即表示您同意遵守{{$t('app_name')}}的<a href="http://company.myworldelite.com/user-protocol" target="_blank">《用户协议和隐私政策》</a>。</p>
           <b-button
             block
             size="lg"

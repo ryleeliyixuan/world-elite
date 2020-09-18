@@ -54,7 +54,7 @@ public class ScheduleService {
     /**
      * 下架过期职位，每天凌晨触发
      */
-    @Scheduled(cron = "0 0 0 * * *")
+    //@Scheduled(cron = "0 0 0 * * *")
     public void takeOffExpiredJobs(){
         JobOptions jobOptions = new JobOptions();
         jobOptions.setStatus(JobStatus.PUBLISH.value);
