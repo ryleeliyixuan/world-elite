@@ -220,3 +220,11 @@ a:hover {
   opacity: 0;
   transform: translateX(30px);
 }
+
+html, body {
+  min-height: 100%;
+}
+.el-backtop{
+  width: 50px !important;
+  height: 50px !important;
+}

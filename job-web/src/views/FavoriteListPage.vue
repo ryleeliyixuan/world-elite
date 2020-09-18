@@ -10,7 +10,7 @@
                     :limit.sync="listQuery.limit"
                     @pagination="handleRouteList"/>
         <div class="w-75" v-if="list.length !== 0">
-            <div class="job-list" v-if="this.listQuery.type == 1">
+            <div class="job-list" v-if="this.listQuery.type === 1">
                 <el-card shadow="hover"
                          v-for="job in list"
                          :key="job.id"
@@ -18,7 +18,7 @@
                          @click.native="openJobDetail(job.id)">
                     <b-media right-align vertical-align="center">
                         <p class="text-small text-gray">
-                            {{job.companyUser.company.name}}
+                            {{job.companyUser && job.companyUser.company && job.companyUser.company.name}}
                             <span class="float-right">{{job.favoriteTime}}</span>
                         </p>
                         <h6 class="mt-0 mb-1">{{job.name}}</h6>

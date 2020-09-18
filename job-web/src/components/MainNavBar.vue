@@ -15,7 +15,7 @@
                      @select="handleSelect"
                      class="menu-container">
                 <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
-                <el-menu-item class="nav-item" index="/wiki-list">百科</el-menu-item>
+                <el-menu-item class="nav-item" index="/wiki-card">百科</el-menu-item>
                 <el-menu-item class="nav-item" index="/activity-list">活动</el-menu-item>
             </el-menu>
         </div>
@@ -108,7 +108,7 @@
             searchPlaceHolder() {
                 if (this.activeIndex === "/activity-list") {
                     return "搜索活动";
-                } else if (this.activeIndex === "/wiki-list") {
+                } else if (this.activeIndex === "/wiki-card") {
                     return "搜索百科";
                 } else {
                     return "搜索职位";
@@ -129,7 +129,7 @@
         },
         watch: {
             $route() {
-                this.activeIndex = this.$route.path;
+                this.activeIndex = this.$route.path === "/wiki-list" ? "/wiki-card" : this.$route.path;
                 this.getUnReadMessageCount();
                 if (this.isHomeListPage()) {
                     this.keyword = this.$route.query.keyword;
@@ -162,7 +162,7 @@
             },
             isHomeListPage() {
                 const cur_path = this.$route.path;
-                return cur_path === "/job-list" || cur_path === "/activity-list" || cur_path === "/wiki-list";
+                return cur_path === "/job-list" || cur_path === "/activity-list" || cur_path === "/wiki-card" || cur_path === "/wiki-list";
             },
             handleSelect() {
                 this.keyword = "";

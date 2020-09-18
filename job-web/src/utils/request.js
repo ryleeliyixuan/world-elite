@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Vue from 'vue'
 import store from '@/store'
 import router from '@/router'
 import { getToken } from '@/utils/auth'
@@ -71,5 +72,7 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+Vue.prototype.$axios = service;
 
 export default service

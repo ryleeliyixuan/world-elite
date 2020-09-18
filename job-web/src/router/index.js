@@ -93,6 +93,11 @@ const constantRoutes = [
         meta: {title: '寰球菁英-用户协议'}
     },
     {
+        path: '/wiki-card',
+        component: () => import('@/views/CompanyWikiCardPage'),
+        meta: {title: '寰球菁英-百科'}
+    },
+    {
         path: '/wiki-list',
         component: () => import('@/views/CompanyWikiListPage'),
         meta: {title: '寰球菁英-百科'}

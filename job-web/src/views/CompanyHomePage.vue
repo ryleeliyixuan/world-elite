@@ -273,8 +273,8 @@
             },
             handleScroll(event) {
                 if (this.tabIndex == "intro") {
-                    let h_list = document.getElementsByClassName("wiki_content")[0].querySelectorAll("h3, h4, h5, h6");
-                    let table = document.getElementsByClassName("wiki_sidebar")[0].getElementsByTagName("a");
+                    let h_list = document.getElementsByClassName("wiki_content").length>0 ? document.getElementsByClassName("wiki_content")[0].querySelectorAll("h3, h4, h5, h6") : [];
+                    let table = document.getElementsByClassName("wiki_sidebar").length>0 ? document.getElementsByClassName("wiki_sidebar")[0].getElementsByTagName("a") : [];
 
                     for (let i = 0; i < h_list.length; i++) {
                         let element = h_list[i];
@@ -523,6 +523,7 @@
         flex-direction: column;
         margin: 0 15px;
     }
+
     @media screen and (max-width: 850px) {
         .wiki_sidebar {
             display: none;
@@ -532,7 +533,6 @@
             width: 100%;
             float: none;
         }
-
 
 
         .company-info-container {

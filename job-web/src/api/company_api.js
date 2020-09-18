@@ -18,7 +18,8 @@ export function getCompanyInfo(id){
 
 export function getCompanyWikiList(data){
   return request({
-    url: '/company/wiki-list',
+    // url: '/company/wiki-list',
+    url: '/company/list-wiki-by-industry',
     method: 'get',
     params: data
   })
