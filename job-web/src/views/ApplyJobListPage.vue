@@ -112,7 +112,7 @@ export default {
       parseListQuery(this.$route.query, this.listQuery);
       myApplyJobList(this.listQuery).then((response) => {
         this.pageResult = response.data;
-        this.total = this.pageResult.total; 
+        this.total = this.pageResult.total;
         this.$emit("complete");
       });
     },
@@ -139,6 +139,7 @@ export default {
 .app-container {
   max-width: 1000px;
   margin: 20px auto;
+  min-height: calc(100vh - 477px);
 
   .job-list {
     width: 75%;

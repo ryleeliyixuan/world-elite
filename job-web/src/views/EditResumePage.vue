@@ -1527,6 +1527,7 @@ $border-style: 1px solid #eee;
 
 .app-container {
   margin: 20px auto;
+  min-height: calc(100vh - 477px);
 }
 
 .resume-body {

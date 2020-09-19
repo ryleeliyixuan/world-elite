@@ -71,6 +71,7 @@ export default {
   .app-container {
     width: 95%;
     margin: auto;
+    min-height: calc(100vh - 477px);
   }
 
   .resume-page {

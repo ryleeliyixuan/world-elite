@@ -119,6 +119,7 @@ export default {
 .app-container {
   width: 1000px;
   margin: 20px auto;
+  min-height: calc(100vh - 477px);
 }
 
 .text-label {

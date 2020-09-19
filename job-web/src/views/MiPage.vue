@@ -210,6 +210,7 @@
 <style scoped lang="scss">
     .app-container {
         min-width: 375px;
+        min-height: calc(100vh - 477px);
 
         .section1-container {
             max-width: 1440px;

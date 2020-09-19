@@ -71,24 +71,30 @@
 
 <style scoped lang="scss">
 
+    .app-container {
+        min-height: calc(100vh - 477px);
 
-    .activity-container {
-        display: flex;
+        .activity-container {
+            display: flex;
 
-        .img-cover {
-            width: 150px;
-            height: 150px;
-            margin: 0 15px 0 0;
+            .img-cover {
+                width: 150px;
+                height: 150px;
+                margin: 0 15px 0 0;
+            }
         }
     }
 
-    @media screen and (max-width: 850px) {
-        .activity-container {
-            flex-direction: column;
-            align-items: center;
 
-            .img-cover {
-               margin: 0 0 15px 0;
+    @media screen and (max-width: 850px) {
+        .app-container {
+            .activity-container {
+                flex-direction: column;
+                align-items: center;
+
+                .img-cover {
+                    margin: 0 0 15px 0;
+                }
             }
         }
     }

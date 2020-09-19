@@ -99,5 +99,6 @@
     .app-container {
         margin: 40px auto;
         width: 400px;
+        min-height: calc(100vh - 477px);
     }
 </style>

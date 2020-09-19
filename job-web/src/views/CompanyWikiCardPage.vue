@@ -26,15 +26,16 @@
                         <div class="company-name" :ref="item.name">{{item.name}}</div>
                         <el-link :underline="false"
                                  type="primary"
-                                 v-if="companyList[item.id].length > 4"
+                                 v-if="companyList[item.id].length > companyCount"
                                  @click="onMore(item.id)">更多
                         </el-link>
                     </div>
                     <div class="company-item-container" v-if="companyList[item.id] && companyList[item.id].length > 0">
-                        <el-card shadow="hover" class="item-container"
+                        <el-card shadow="hover"
+                                 :class="['item-container',{'item-container-4':companyCount===4},{'item-container-3':companyCount===3},{'item-container-2':companyCount===2},{'item-container-1':companyCount===1}]"
                                  v-for="(company, index) in companyList[item.id]"
                                  :key="company.id"
-                                 v-if="index<4"
+                                 v-if="index<companyCount"
                                  @click.native="openCompanyDetail(company)">
                             <el-image class="item-logo" :src="company.logo" fit="contain"></el-image>
                             <div>
@@ -67,6 +68,7 @@
                 exporting: false,
                 industryList: [],//行业列表
                 companyList: {}, // 公司列表
+                companyCount: 4, // 显示公司数
                 timer: undefined,
             };
         },
@@ -88,6 +90,11 @@
             this.initData();
         },
         mounted() {
+            this.handleWidthChange(window.innerWidth);
+            window.onresize = () => {
+                this.handleWidthChange(window.innerWidth);
+            }
+
             this.$refs.scrollbar.wrap.onscroll = () => {
                 if (!this.timer) { // 自动滚动时不处理
                     this.industryList.map(item => {
@@ -151,6 +158,7 @@
                 this.industryList.forEach(item => {
                     this.getItem(item.id)
                 })
+                this.$emit("complete");
             },
 
             getItem(id) {
@@ -168,6 +176,18 @@
             onMore(industryId) {
                 let keywordParam = this.keyword ? "&keyword=" + this.keyword : "";
                 this.$router.push("/wiki-list?industryId=" + industryId + keywordParam);
+            },
+
+            handleWidthChange(width) {
+                if (width > 1140) {
+                    this.companyCount = 4;
+                } else if (width > 866) {
+                    this.companyCount = 3;
+                } else if (width > 590) {
+                    this.companyCount = 2;
+                } else {
+                    this.companyCount = 1;
+                }
             }
         }
     };
@@ -176,15 +196,16 @@
 
 <style scoped lang="scss">
     .app-container {
-        width: 1140px;
+        max-width: 1140px;
         margin: 0 auto;
         padding: 20px;
+        min-height: calc(100vh - 477px);
 
         .left-container {
             position: absolute;
             top: 200px;
             left: 30px;
-            height: calc(100% - 300px);
+            height: calc(100% - 238px);
             overflow-y: auto;
 
             .left-scrollbar {
@@ -199,7 +220,7 @@
         }
 
         .main-container {
-            height: calc(100vh - 300px);
+            height: calc(100vh - 238px);
             overflow-y: auto;
 
             .main-scrollbar {
@@ -212,6 +233,7 @@
             .company-name-container {
                 display: flex;
                 justify-content: space-between;
+                padding-right: 16px;
 
                 .company-name {
                     font-size: 18px;
@@ -226,7 +248,6 @@
                 margin: 10px 0 20px;
 
                 .item-container {
-                    width: 262px;
                     margin-right: 10px;
                     display: flex;
                     flex-direction: column;
@@ -234,6 +255,7 @@
 
                     .item-logo {
                         height: 100px;
+                        max-width: 250px;
                         width: 100%;
                     }
 
@@ -245,9 +267,48 @@
                 .item-container:last-of-type {
                     margin-right: 0;
                 }
+
+                .item-container-4 {
+                    width: 24%;
+                }
+
+                .item-container-3 {
+                    width: 32%;
+                }
+
+                .item-container-2 {
+                    width: 49%;
+                }
+
+                .item-container-1 {
+                    width: 100%;
+                }
             }
         }
     }
 
+    @media screen and (max-width: 1400px) {
+        .app-container {
+            .left-container {
+                display: none;
+            }
+        }
+    }
+
+    @media screen and (max-width: 850px) {
+
+    }
+
+    @media screen and (max-width: 410px) {
+        .app-container {
+            .main-container {
+                height: calc(100vh - 200px);
+
+                /deep/ .el-scrollbar__wrap {
+                    padding-right: 0 !important;
+                }
+            }
+        }
+    }
 
 </style>

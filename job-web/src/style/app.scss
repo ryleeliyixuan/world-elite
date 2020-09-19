@@ -221,9 +221,14 @@ a:hover {
   transform: translateX(30px);
 }
 
-html, body {
+html {
   min-height: 100%;
 }
+
+body {
+  min-height: 100vh;
+}
+
 .el-backtop{
   width: 50px !important;
   height: 50px !important;

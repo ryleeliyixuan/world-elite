@@ -28,6 +28,7 @@ export default {
 .app-container {
   width: 100%;
   padding: 5%;
+  min-height: calc(100vh - 477px);
 }
 
 @media screen and (max-width: 440px) {

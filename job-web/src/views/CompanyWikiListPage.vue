@@ -126,6 +126,7 @@
         margin: 0 auto;
         padding: 0 20px;
         min-width: 375px;
+        min-height: calc(100vh - 477px);
 
         .section1-container {
             width: 100%;

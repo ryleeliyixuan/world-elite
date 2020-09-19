@@ -112,6 +112,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        min-height: calc(100vh - 477px);
     }
     @media screen and (max-width: 440px) {
         .app-container {

@@ -150,6 +150,7 @@
         max-width: 1140px;
         margin: 0 auto;
         padding: 0 20px;
+        min-height: calc(100vh - 477px);
 
         .section1-container {
             min-width: 335px;

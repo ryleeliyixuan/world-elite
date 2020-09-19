@@ -75,9 +75,9 @@
         },
         created() {
             this.handleWidthChange(window.innerWidth < 410);
-            // window.onresize = () => {
-            //     this.handleWidthChange(window.innerWidth < 410);
-            // }
+            window.onresize = () => {
+                this.handleWidthChange(window.innerWidth < 410);
+            }
         },
         methods: {
             handleWidthChange(small) {
