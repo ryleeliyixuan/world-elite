@@ -101,4 +101,12 @@
         width: 400px;
         min-height: calc(100vh - 477px);
     }
+    @media screen and (max-width: 850px) {
+        .app-container {
+            width: 100%;
+            max-width: 1000px;
+            
+
+        }
+    }
 </style>
