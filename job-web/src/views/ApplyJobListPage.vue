@@ -1,15 +1,14 @@
 <template>
   <div class="app-container">
     <h5>我的投递</h5>
-      <!-- v-show="total" -->
+    <!-- v-show="total" -->
     <pagination
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       @pagination="handleRouteList"
     />
-    <!-- v-if="pageResult.list && pageResult.list.length !== 0" -->
-    <div class="job-list" >
+    <div class="job-list">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="待查看" name="1"></el-tab-pane>
         <el-tab-pane label="已查看" name="2"></el-tab-pane>
@@ -19,6 +18,7 @@
         <el-tab-pane label="不合适" name="6"></el-tab-pane>
         <el-tab-pane label="已过期" name="7"></el-tab-pane>
       </el-tabs>
+      <template v-if="pageResult.list && pageResult.list.length !== 0">
       <el-card
         shadow="hover"
         v-for="job in pageResult.list"
@@ -42,18 +42,20 @@
               >{{`${job.city?job.city.name:''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
             </div>
           </div>
-          <div>
-            <el-tag>{{ job.status | statusFilter }}</el-tag>
-          </div>
+          <!-- <div>
+            <el-tag>{{ job.applyStatus | statusFilter }}</el-tag>
+          </div> -->
         </div>
       </el-card>
+      </template>
+      <template v-else>
       <el-card
         shadow="hover"
         class="item-card"
-        v-if="!pageResult.list || !pageResult.list.length"
       >
         您没有状态为“{{ activeName | statusFilter }}”的投递
       </el-card>
+      </template>
     </div>
     <pagination
       :total="total"
@@ -79,7 +81,7 @@ export default {
         page: 1,
         limit: 10,
         sort: "-id",
-        status: 1,
+        status: '',
       },
       total: 0,
       pageResult: 0,
@@ -113,6 +115,7 @@ export default {
       myApplyJobList(this.listQuery).then((response) => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
+        this.status = response.data;
         this.$emit("complete");
       });
     },
