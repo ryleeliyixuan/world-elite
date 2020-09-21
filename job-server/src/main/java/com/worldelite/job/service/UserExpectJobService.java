@@ -99,40 +99,41 @@ public class UserExpectJobService extends BaseService{
      */
     @Transactional
     public UserExpectJobVo saveUserExpectJob(UserExpectJobForm userExpectJobForm){
-        expectPlaceMapper.deleteByUserId(curUser().getId());
+        Long userId = userExpectJobForm.getUserId();
+        expectPlaceMapper.deleteByUserId(userId);
         if(ArrayUtils.isNotEmpty(userExpectJobForm.getCityIds())){
             for(Integer cityId: userExpectJobForm.getCityIds()){
                 UserExpectPlace userExpectPlace = new UserExpectPlace();
-                userExpectPlace.setUserId(curUser().getId());
+                userExpectPlace.setUserId(userId);
                 userExpectPlace.setCityId(cityId);
                 expectPlaceMapper.insertSelective(userExpectPlace);
             }
         }
-        expectJobMapper.deleteByUserId(curUser().getId());
+        expectJobMapper.deleteByUserId(userId);
         if(ArrayUtils.isNotEmpty(userExpectJobForm.getCategoryIds())){
             for(Integer categoryId: userExpectJobForm.getCategoryIds()){
                UserExpectJob userExpectJob = new UserExpectJob();
-               userExpectJob.setUserId(curUser().getId());
+               userExpectJob.setUserId(userId);
                userExpectJob.setCategoryId(categoryId);
                expectJobMapper.insertSelective(userExpectJob);
             }
         }
-        expectSalaryMapper.deleteByUserId(curUser().getId());
+        expectSalaryMapper.deleteByUserId(userId);
         if(userExpectJobForm.getMinSalary() != null && userExpectJobForm.getMaxSalary() != null){
             UserExpectSalary userExpectSalary = new UserExpectSalary();
-            userExpectSalary.setUserId(curUser().getId());
+            userExpectSalary.setUserId(userId);
             userExpectSalary.setMinValue(userExpectJobForm.getMinSalary());
             userExpectSalary.setMaxValue(userExpectJobForm.getMaxSalary());
             expectSalaryMapper.insertSelective(userExpectSalary);
         }
 
-        ResumeVo resumeVo = resumeService.getDefaultOrCreate(curUser().getId());
+        ResumeVo resumeVo = resumeService.getDefaultOrCreate(userId);
         Long resumeId = NumberUtils.toLong(resumeVo.getId());
         if(ArrayUtils.isEmpty(userExpectJobForm.getCityIds()) && ArrayUtils.isEmpty(userExpectJobForm.getCategoryIds())){
             indexService.deleteResumeItem(resumeId);
         }else {
             indexService.saveResumeItem(resumeId);
         }
-        return getUserExpectJob(curUser().getId());
+        return getUserExpectJob(userId);
     }
 }

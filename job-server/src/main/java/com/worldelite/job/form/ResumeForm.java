@@ -36,6 +36,7 @@ public class ResumeForm {
     private String introduction; //个人接受
     private String phoneCode; //电话区号
     private Long phone; //电话号码
+    private String email; //邮箱
     private String avatar; //头像
     private String attachResume; //附件简历
 

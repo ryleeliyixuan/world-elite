@@ -1,18 +1,19 @@
 package com.worldelite.job.api;
 
 import com.alibaba.excel.util.StringUtils;
+import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.ResumeRepository;
-import com.worldelite.job.form.ResumeRepositoryForm;
-import com.worldelite.job.form.ResumeRepositoryListForm;
-import com.worldelite.job.service.ResumeRepositoryService;
-import com.worldelite.job.vo.ApiResult;
-import com.worldelite.job.vo.PageResult;
-import com.worldelite.job.vo.ResumeRepositoryVo;
-import com.worldelite.job.vo.ResumeVo;
+import com.worldelite.job.form.*;
+import com.worldelite.job.service.*;
+import com.worldelite.job.vo.*;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 企业简历库接口
@@ -23,6 +24,24 @@ public class ResumeRepositoryApi extends BaseApi{
 
     @Autowired
     private ResumeRepositoryService resumeRepositoryService;
+
+    @Autowired
+    private ResumeEduService resumeEduService;
+
+    @Autowired
+    private ResumeExpService resumeExpService;
+
+    @Autowired
+    private ResumePracticeService resumePracticeService;
+
+    @Autowired
+    private ResumeSkillService resumeSkillService;
+
+    @Autowired
+    private ResumeLinkService resumeLinkService;
+
+    @Autowired
+    private UserExpectJobService userExpectJobService;
 
     /**
      * 通过解析附件简历新增简历库数据
@@ -96,12 +115,12 @@ public class ResumeRepositoryApi extends BaseApi{
 
     /**
      * 搜索简历库
-     * @param resumeRepositoryListForm 过滤条件
+     * @param listForm 过滤条件
      * @return
      */
     @ApiDoc
     @PostMapping("search")
-    public ApiResult<PageResult<ResumeVo>> search(@RequestBody ResumeRepositoryListForm resumeRepositoryListForm){
+    public ApiResult<PageResult<ResumeVo>> search(@RequestBody ResumeListForm listForm){
 //        if(StringUtils.isEmpty(resumeRepositoryListForm.getKeyword())){
 //            PageResult<ResumeRepositoryVo> pageResult = resumeRepositoryService.search(resumeRepositoryListForm);
 //            return ApiResult.ok(pageResult);
@@ -110,7 +129,7 @@ public class ResumeRepositoryApi extends BaseApi{
 //            return ApiResult.ok(pageResult);
 //        }
 
-        PageResult<ResumeVo> pageResult = resumeRepositoryService.search(resumeRepositoryListForm);
+        PageResult<ResumeVo> pageResult = resumeRepositoryService.getResumeList(listForm);
         return ApiResult.ok(pageResult);
     }
 
@@ -120,5 +139,190 @@ public class ResumeRepositoryApi extends BaseApi{
 
     public void delete(){
 
+    }
+
+    /***************** 新简历库逻辑 *********************/
+
+    /**
+     * 通过简历ID获取简历
+     * @param resumeId 简历ID
+     * @return
+     */
+    @RequireLogin
+    @GetMapping("resume")
+    @ApiDoc
+    public ApiResult<ResumeVo> resume(@RequestParam Long resumeId) {
+        ResumeVo resumeVo = resumeRepositoryService.getResumeVo(resumeId);
+        return ApiResult.ok(resumeVo);
+    }
+
+    /**
+     * 保存基本信息
+     *
+     * @param resumeForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("save-resume-basic")
+    @ApiDoc
+    public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm) {
+        ResumeVo resumeVo = resumeRepositoryService.saveBasic(resumeForm);
+        return ApiResult.ok(resumeVo);
+    }
+
+    /**
+     * 删除附件简历
+     *
+     * @param resumeId 简历ID
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("del-resume-attachment")
+    @ApiDoc
+    public ApiResult delResumeAttachment(@RequestParam Long resumeId){
+        resumeRepositoryService.delResumeAttachment(resumeId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 保存教育经历
+     *
+     * @param resumeEduForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("save-resume-edu")
+    @ApiDoc
+    public ApiResult<ResumeEduVo> saveResumeEdu(@Valid @RequestBody ResumeEduForm resumeEduForm) {
+        if(resumeEduForm.getGpa() != null && resumeEduForm.getGpa() < 0){
+            return ApiResult.fail(ApiCode.INVALID_PARAM, message("edit.resume.edu.gpa.below.zero"));
+        }
+        ResumeEduVo resumeEduVo = resumeEduService.saveResumeEdu(resumeEduForm);
+        return ApiResult.ok(resumeEduVo);
+    }
+
+    /**
+     * 删除教育经历
+     *
+     * @param id 教育经历ID
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("del-resume-edu")
+    @ApiDoc
+    public ApiResult deleteResumeEdu(@RequestParam Integer id) {
+        resumeEduService.deleteResumeEdu(id);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 保存工作经验
+     *
+     * @param resumeExpForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("save-resume-exp")
+    @ApiDoc
+    public ApiResult<ResumeExpVo> saveResumeExp(@Valid @RequestBody ResumeExpForm resumeExpForm) {
+        ResumeExpVo resumeExpVo = resumeExpService.saveResumeExp(resumeExpForm);
+        return ApiResult.ok(resumeExpVo);
+    }
+
+    /**
+     * 删除工作经验
+     *
+     * @param id 工作经验ID
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("del-resume-exp")
+    @ApiDoc
+    public ApiResult deleteResumeEpx(@RequestParam Integer id) {
+        resumeExpService.deleteResumeExp(id);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 保存实践经验
+     *
+     * @param practiceForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("save-resume-practice")
+    @ApiDoc
+    public ApiResult<ResumePracticeVo> saveResumePractice(@RequestBody ResumePracticeForm practiceForm) {
+        ResumePracticeVo resumePracticeVo = resumePracticeService.saveResumePractice(practiceForm);
+        return ApiResult.ok(resumePracticeVo);
+    }
+
+    /**
+     * 删除实践经验
+     *
+     * @param id 实践ID
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("del-resume-practice")
+    @ApiDoc
+    public ApiResult deleteResumePractice(@RequestParam Integer id) {
+        resumePracticeService.deleteResumePractice(id);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 保存擅长技能
+     *
+     * @param resumeSkillForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("save-resume-skills")
+    @ApiDoc
+    public ApiResult<List<ResumeSkillVo>> saveResumeSkills(@RequestBody ResumeSkillForm resumeSkillForm) {
+        List<ResumeSkillVo> resumeSkillVoList = resumeSkillService.saveResumeSkill(resumeSkillForm);
+        return ApiResult.ok(resumeSkillVoList);
+    }
+
+    /**
+     * 保存简历链接
+     *
+     * @param resumeLinkForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("save-resume-link")
+    @ApiDoc
+    public ApiResult<ResumeLinkVo> saveResumeLink(@RequestBody ResumeLinkForm resumeLinkForm) {
+        ResumeLinkVo resumeLinkVo = resumeLinkService.saveResumeLink(resumeLinkForm);
+        return ApiResult.ok(resumeLinkVo);
+    }
+
+    /**
+     * 删除简历链接
+     *
+     * @param id 链接ID
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("del-resume-link")
+    @ApiDoc
+    public ApiResult delResumeLink(@RequestParam Integer id) {
+        resumeLinkService.deleteResumeLink(id);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 保存用户求职意向
+     * @param expectJobForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("save-expect-job")
+    @ApiDoc
+    public ApiResult<UserExpectJobVo> saveUserExpectJob(@RequestBody UserExpectJobForm expectJobForm){
+        UserExpectJobVo userExpectJobVo = userExpectJobService.saveUserExpectJob(expectJobForm);
+        return ApiResult.ok(userExpectJobVo);
     }
 }
