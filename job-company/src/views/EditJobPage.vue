@@ -48,14 +48,14 @@
                                :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
-            <!--            <el-form-item label="经验要求" prop="experienceId">-->
-            <!--                <el-select v-model="jobForm.experienceId" filterable clearable placeholder="请选择经验要求">-->
-            <!--                    <el-option v-for="item in experienceOptions"-->
-            <!--                               :key="item.id"-->
-            <!--                               :label="item.name"-->
-            <!--                               :value="item.id"></el-option>-->
-            <!--                </el-select>-->
-            <!--            </el-form-item>-->
+            <el-form-item label="经验要求" prop="experienceId">
+                <el-select v-model="jobForm.experienceId" filterable clearable placeholder="请选择经验要求">
+                    <el-option v-for="item in experienceOptions"
+                               :key="item.id"
+                               :label="item.name"
+                               :value="item.id"></el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="薪资待遇" prop="salary">
                 <el-select v-model="jobForm.minSalary" placeholder="最低" class="salary-option">
                     <el-option v-for="item in minSalaryOptions"
@@ -230,7 +230,7 @@
                     jobType: [{required: true, message: "请选择工作类型", trigger: "change"}],
                     description: [{required: true, message: "请输入职位描述", trigger: "blur"}],
                     salary: [{required: true, message: "请选择薪资范围", trigger: "blur"}],
-                    // experienceId: [{required: true, message: "请选择经验要求", trigger: "change"}]
+                    experienceId: [{required: true, message: "请选择经验要求", trigger: "change"}]
                 },
                 jobCategoryOptions: [],
                 jobCategoryProps: {
@@ -331,6 +331,9 @@
                     if (valid) {
                         this.$store.commit("setting/JOB_DRAFT", undefined);
                         this.posting = true;
+                        this.jobForm.industryTags = this.industryList.filter(item => item.selected).map(item => item.name);
+                        this.jobForm.skillTags = this.skillList.filter(item => item.selected).map(item => item.name);
+                        this.jobForm.experience=this.jobForm.experienceId
                         saveJob(this.jobForm)
                             .then(() => {
                                 Toast.success(this.isModify ? "保存成功" : "发布成功");
