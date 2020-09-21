@@ -17,7 +17,7 @@ export function curRelativePath() {
 
 /**
  * 是否是外链
- * 
+ *
  * @param {string} path
  * @returns {Boolean}
  */
@@ -43,7 +43,7 @@ export function wholeLink(link){
  * 格式化查询条件，用于列表查询条件
  */
 export function formatListQuery(listQuery){
-   const newQuery = {}; 
+   const newQuery = {};
    Object.keys(listQuery).forEach(key => {
          if(listQuery[key]){
             if(listQuery[key] instanceof Array){
@@ -87,6 +87,17 @@ export function checkPicSize(file){
     const overSize =  file.size / 1024 / 1024 > 2;
     if(overSize){
         Toast.error('图片大小不能超过2Mb')
+    }
+    return overSize;
+}
+
+/**
+ * PDF大小是否在2Mb内
+ */
+export function checkPDFSize(file){
+    const overSize =  file.size / 1024 / 1024 > 2;
+    if(overSize){
+        Toast.error('附件简历大小不能超过2Mb')
     }
     return overSize;
 }

@@ -7,3 +7,11 @@ export function getUploadPicToken(fileName) {
       params: { fileName: fileName }
     })
   }
+
+export function getUploadAttachmentToken(fileName) {
+    return request({
+        url: '/upload/attachment-token',
+        method: 'get',
+        params: { fileName: fileName }
+    })
+}

@@ -287,7 +287,7 @@
         }
     }
 
-    @media screen and (max-width: 1400px) {
+    @media screen and (max-width: 1200px) {
         .app-container {
             .left-container {
                 display: none;
