@@ -8,6 +8,12 @@
     from t_activity
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectSimpleByIdAndStatus" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_activity
+    where ${where}
+  </select>
   <select id="selectAndList" resultMap="BaseResultMap" resultType="com.worldelite.job.entity.ActivityOptions">
     select
     <include refid="Base_Column_List" />

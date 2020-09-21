@@ -33,11 +33,14 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity>{
     @JSONField(format = "yyyy-MM-dd HH:mm")
     private Date joinTime; //参加时间
     private String organizer; //主办方
+    @JSONField(format = "yyyy-MM-dd HH:mm")
+    private Date curTime; //系统服务器当前时间
 
     @Override
     public ActivityVo asVo(Activity activity) {
         BeanUtil.copyProperties(activity, this);
         setThumbnail(AppUtils.absOssUrl(activity.getThumbnail()));
+        setCurTime(new Date());
         return this;
     }
 }

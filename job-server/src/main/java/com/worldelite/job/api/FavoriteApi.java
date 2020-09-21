@@ -3,19 +3,19 @@ package com.worldelite.job.api;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.UserType;
-import com.worldelite.job.form.FavoriteForm;
-import com.worldelite.job.form.FavoriteListForm;
-import com.worldelite.job.form.PageForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.service.FavoriteService;
 import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
 import io.github.yedaxia.apidocs.ApiDoc;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 
 /**
  * 收藏接口
@@ -67,7 +67,11 @@ public class FavoriteApi extends BaseApi{
     @RequireLogin(allow = UserType.GENERAL)
     @GetMapping("my-favorite-activities")
     @ApiDoc
-    public ApiResult<PageResult<ActivityVo>> getFavoriteActivityList(PageForm pageForm){
+    public ApiResult<PageResult<ActivityVo>> getFavoriteActivityList(ActivityListForm pageForm){
+        if(pageForm.getStatus() != null){
+            PageResult pageResult = favoriteService.getUserActivityListByStatus(curUser().getId(), pageForm);
+            return ApiResult.ok(pageResult);
+        }
         PageResult pageResult = favoriteService.getUserActivityList(curUser().getId(), pageForm);
         return ApiResult.ok(pageResult);
     }
