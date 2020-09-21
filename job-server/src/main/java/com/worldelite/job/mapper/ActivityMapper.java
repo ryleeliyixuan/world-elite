@@ -65,4 +65,6 @@ public interface ActivityMapper {
     Activity selectSimpleById(Integer id);
 
     List<Activity> selectAndList(ActivityOptions options);
+
+    List<Activity> selectSimpleByIdAndStatus(String where);
 }

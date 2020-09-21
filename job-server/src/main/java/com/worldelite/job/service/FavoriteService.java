@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.entity.Favorite;
+import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.FavoriteForm;
 import com.worldelite.job.form.FavoriteListForm;
 import com.worldelite.job.form.PageForm;
@@ -147,6 +148,15 @@ public class FavoriteService extends BaseService{
         }
         pageResult.setList(activityVoList);
         return pageResult;
+    }
+
+    /**
+     * 获取用户指定状态的活动列表
+     * @param pageForm
+     * @return
+     */
+    public PageResult<ActivityVo> getUserActivityListByStatus(Long userId, ActivityListForm pageForm){
+        return activityService.getSimpleActivityByStatus(userId,pageForm);
     }
 
     /**
