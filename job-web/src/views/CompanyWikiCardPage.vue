@@ -39,7 +39,7 @@
                                  @click.native="openCompanyDetail(company)">
                             <el-image class="item-logo" :src="company.logo" fit="contain"></el-image>
                             <div>
-                                <div class="text-small text-gray">{{company.name}}</div>
+                                <div class="text-small text-gray" style="margin-bottom: 4px">{{company.name}}</div>
                                 <div class="text-small text-gray" style="min-height: 42px">
                                     <span v-if="company.stage">{{company.stage.name}} .</span>
                                     <span v-if="company.property">{{company.property.name}} .</span>

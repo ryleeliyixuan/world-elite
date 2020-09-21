@@ -79,6 +79,7 @@
                                     width="200"
                                     trigger="hover"
                                     :content="applyResume.tagVos[0].tagName">
+<!--                                <el-button type="success" plain slot="reference">{{applyResume.tagVos[0].tagName}}</el-button>-->
                                 <el-button type="success" plain slot="reference">{{applyResume.tagVos[0].tagName}}</el-button>
                             </el-popover>
                             <span>应聘岗位：{{applyResume.job.name}}</span>

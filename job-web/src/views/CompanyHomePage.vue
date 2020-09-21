@@ -391,7 +391,13 @@
                 doFavorite(this.favoriteForm)
                     .then(() => {
                         this.company.favoriteFlag = this.favoriteForm.favorite ? 1 : 0;
-                        this.$message("收藏成功");
+                        if(this.company.favoriteFlag==1){
+                            this.$message("收藏成功");
+                        }
+                        else {
+                            this.$message("取消收藏");
+                        }
+
                     })
                     .finally(() => {
                         this.favoriteLoading = false;
