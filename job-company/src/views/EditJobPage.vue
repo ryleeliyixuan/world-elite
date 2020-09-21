@@ -48,8 +48,8 @@
                                :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="经验要求" prop="experienceId">
-                <el-select v-model="jobForm.experienceId" filterable clearable placeholder="请选择经验要求">
+            <el-form-item label="经验要求" prop="experience">
+                <el-select v-model="jobForm.experience" filterable clearable placeholder="请选择经验要求">
                     <el-option v-for="item in experienceOptions"
                                :key="item.id"
                                :label="item.name"
@@ -219,7 +219,7 @@
                     description: undefined,
                     salary: undefined,
                     keywords: undefined,
-                    experienceId: undefined
+                    experience: undefined
                 },
                 jobFormRules: {
                     name: [{required: true, message: "请输入职位名称", trigger: "blur"}],
@@ -230,7 +230,7 @@
                     jobType: [{required: true, message: "请选择工作类型", trigger: "change"}],
                     description: [{required: true, message: "请输入职位描述", trigger: "blur"}],
                     salary: [{required: true, message: "请选择薪资范围", trigger: "blur"}],
-                    experienceId: [{required: true, message: "请选择经验要求", trigger: "change"}]
+                    experience: [{required: true, message: "请选择经验要求", trigger: "change"}]
                 },
                 jobCategoryOptions: [],
                 jobCategoryProps: {
@@ -333,7 +333,6 @@
                         this.posting = true;
                         this.jobForm.industryTags = this.industryList.filter(item => item.selected).map(item => item.name);
                         this.jobForm.skillTags = this.skillList.filter(item => item.selected).map(item => item.name);
-                        this.jobForm.experience=this.jobForm.experienceId
                         saveJob(this.jobForm)
                             .then(() => {
                                 Toast.success(this.isModify ? "保存成功" : "发布成功");
