@@ -36,6 +36,6 @@ export function myApplyJobList(data){
     return request({
         url: '/job/my-apply-jobs',
         method: 'get',
-        data
+        params: data
     })
 }

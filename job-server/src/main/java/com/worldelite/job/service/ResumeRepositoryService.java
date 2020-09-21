@@ -3,6 +3,7 @@ package com.worldelite.job.service;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
+import com.worldelite.job.constants.JobApplyStatus;
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.context.LuceneContext;
 import com.worldelite.job.entity.*;
@@ -16,6 +17,8 @@ import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.mapper.ResumeRepositoryMapper;
 import com.worldelite.job.mapper.UserApplicantMapper;
 import com.worldelite.job.service.sdk.ResumeSDK;
+import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.JobVo;
 import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.ResumeRepositoryVo;
 import com.worldelite.job.vo.ResumeVo;
@@ -176,57 +179,82 @@ public class ResumeRepositoryService extends BaseService{
         resumeRepositoryMapper.insertSelective(resumeRepository);
     }
 
-    public PageResult<ResumeRepositoryVo> search(ResumeRepositoryListForm resumeRepositoryListForm){
-        ResumeRepository resumeRepository = new ResumeRepository();
-        Page<ResumeRepository> resumeRepositoryPage = (Page<ResumeRepository>) resumeRepositoryMapper.selectAndList(resumeRepository);
-        PageResult<ResumeRepositoryVo> pageResult = new PageResult<ResumeRepositoryVo>(resumeRepositoryPage);
+    public PageResult<ResumeVo> search(ResumeRepositoryListForm listForm){
+        if(listForm.getCompanyId() == null || listForm.getCompanyId() == 0){
+            listForm.setCompanyId(getCompanyId());
+        }
+        AppUtils.setPage(listForm);
+        ResumeRepository resumeRepositoryTemp = new ResumeRepository();
+        resumeRepositoryTemp.setCompanyId(listForm.getCompanyId());
+        resumeRepositoryTemp.setEmail(listForm.getEmail());
+        resumeRepositoryTemp.setName(listForm.getName());
+        resumeRepositoryTemp.setPhone(listForm.getPhone());
+        Page<ResumeRepository> page = (Page<ResumeRepository>) resumeRepositoryMapper.selectAndList(resumeRepositoryTemp);
+        PageResult<ResumeVo> pageResult = new PageResult<>(page);
+        List<ResumeVo> voList = new ArrayList<>(page.size());
+        for (ResumeRepository resumeRepository : page) {
+            ResumeVo resumeVo = new ResumeVo();
+            resumeVo.setName(resumeRepository.getName());
+            resumeVo.setEmail(resumeRepository.getEmail());
+            resumeVo.setPhone(resumeRepository.getPhone());
+            resumeVo.setIntroduction(resumeRepository.getIntroduction());
+            voList.add(resumeVo);
+        }
+        pageResult.setList(voList);
         return pageResult;
     }
 
-    public PageResult<ResumeRepositoryVo> searchByKeyword(ResumeRepositoryListForm form) {
-        return search(form,getCompanyId());
-    }
-
-    public PageResult<ResumeRepositoryVo> search(ResumeRepositoryListForm form, Long companyId){
-        IndexSearcher indexSearcher = luceneContext.getIndexSearcher(indexFolder2);
-        //构造搜索请求
-        BooleanQuery.Builder builder = new BooleanQuery.Builder();
-        String[] keywords = luceneContext.analysis(form.getKeyword());
-        //只在给定企业ID中搜索
-        Query companyQuery = LongPoint.newExactQuery(ResumeAttachmentIndexFields.COMPANY_ID_INDEX,companyId);
-        builder.add(companyQuery, BooleanClause.Occur.MUST);
-        for(String word : keywords){
-            //目标简历附件必须包含所有关键词
-            Term contentTerm = new Term(ResumeAttachmentIndexFields.CONTENT,word);
-            Query contentQuery = new TermQuery(contentTerm);
-            builder.add(contentQuery, BooleanClause.Occur.MUST);
-        }
-        BooleanQuery query = builder.build();
-
-        try {
-            ScoreDoc lastScoreDoc = getLastScoreDoc(form, query, indexSearcher);
-            TopDocs topDocs = indexSearcher.searchAfter(lastScoreDoc, query, form.getLimit());
-            PageResult<ResumeRepositoryVo> pageResult = new PageResult<>();
-            pageResult.setTotal(topDocs.totalHits);
-            pageResult.setCurrentPage(form.getPage());
-            pageResult.setPageSize(form.getLimit());
-            List<ResumeRepositoryVo> resumeRepositoryVoList = new ArrayList<>();
-
-            for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-                Document hitDoc = indexSearcher.doc(scoreDoc.doc);
-                Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeAttachmentIndexFields.RESUME_ID));
-                ResumeRepositoryVo resumeRepositoryVo = new ResumeRepositoryVo().asVo(resumeRepositoryMapper.selectByPrimaryKey(resumeId));
-                resumeRepositoryVoList.add(resumeRepositoryVo);
-            }
-
-            pageResult.setList(resumeRepositoryVoList);
-            pageResult.calPageCountAndHasMore(resumeRepositoryVoList);
-            return pageResult;
-        } catch (IOException ex) {
-            log.error("searchResumeByQuery error, query: " + query.toString() + ", page: " + form.toString(), ex);
-            return PageResult.emptyResult();
-        }
-    }
+//    public PageResult<ResumeRepositoryVo> search(ResumeRepositoryListForm resumeRepositoryListForm){
+//        ResumeRepository resumeRepository = new ResumeRepository();
+//        Page<ResumeRepository> resumeRepositoryPage = (Page<ResumeRepository>) resumeRepositoryMapper.selectAndList(resumeRepository);
+//        PageResult<ResumeRepositoryVo> pageResult = new PageResult<ResumeRepositoryVo>(resumeRepositoryPage);
+//        return pageResult;
+//    }
+//
+//    public PageResult<ResumeRepositoryVo> searchByKeyword(ResumeRepositoryListForm form) {
+//        return search(form,getCompanyId());
+//    }
+//
+//    public PageResult<ResumeRepositoryVo> search(ResumeRepositoryListForm form){
+//        IndexSearcher indexSearcher = luceneContext.getIndexSearcher(indexFolder2);
+//        //构造搜索请求
+//        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+//        String[] keywords = luceneContext.analysis(form.getKeyword());
+//        //只在给定企业ID中搜索
+//        Query companyQuery = LongPoint.newExactQuery(ResumeAttachmentIndexFields.COMPANY_ID_INDEX,companyId);
+//        builder.add(companyQuery, BooleanClause.Occur.MUST);
+//        for(String word : keywords){
+//            //目标简历附件必须包含所有关键词
+//            Term contentTerm = new Term(ResumeAttachmentIndexFields.CONTENT,word);
+//            Query contentQuery = new TermQuery(contentTerm);
+//            builder.add(contentQuery, BooleanClause.Occur.MUST);
+//        }
+//        BooleanQuery query = builder.build();
+//
+//        try {
+//            ScoreDoc lastScoreDoc = getLastScoreDoc(form, query, indexSearcher);
+//            TopDocs topDocs = indexSearcher.searchAfter(lastScoreDoc, query, form.getLimit());
+//            PageResult<ResumeRepositoryVo> pageResult = new PageResult<>();
+//            pageResult.setTotal(topDocs.totalHits);
+//            pageResult.setCurrentPage(form.getPage());
+//            pageResult.setPageSize(form.getLimit());
+//            List<ResumeRepositoryVo> resumeRepositoryVoList = new ArrayList<>();
+//
+//            for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+//                Document hitDoc = indexSearcher.doc(scoreDoc.doc);
+//                Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeAttachmentIndexFields.RESUME_ID));
+//                ResumeRepositoryVo resumeRepositoryVo = new ResumeRepositoryVo().asVo(resumeRepositoryMapper.selectByPrimaryKey(resumeId));
+//                resumeRepositoryVoList.add(resumeRepositoryVo);
+//            }
+//
+//            pageResult.setList(resumeRepositoryVoList);
+//            pageResult.calPageCountAndHasMore(resumeRepositoryVoList);
+//            return pageResult;
+//        } catch (IOException ex) {
+//            log.error("searchResumeByQuery error, query: " + query.toString() + ", page: " + form.toString(), ex);
+//            return PageResult.emptyResult();
+//        }
+//    }
 
     /**
      * 全文检索Document

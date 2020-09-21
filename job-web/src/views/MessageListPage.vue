@@ -93,4 +93,10 @@ export default {
 .border-bottom{
    border-bottom: #EEE 1px solid
 }
+@media screen and (max-width: 850px) {
+        .app-container {
+            width: 75%;
+            max-width: 1000px;
+        }
+    }
 </style>

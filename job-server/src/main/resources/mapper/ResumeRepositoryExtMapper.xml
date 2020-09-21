@@ -23,40 +23,40 @@
     from t_resume_repository
     <where>
       <if test="id != null">
-        id = #{id,jdbcType=BIGINT},
+        and id = #{id,jdbcType=BIGINT}
       </if>
       <if test="companyId != null">
-        company_id = #{companyId,jdbcType=BIGINT},
+        and company_id = #{companyId,jdbcType=BIGINT}
       </if>
       <if test="parserId != null">
-        parser_id = #{parserId,jdbcType=BIGINT},
+        and parser_id = #{parserId,jdbcType=BIGINT}
       </if>
       <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+        and name = #{name,jdbcType=VARCHAR}
       </if>
       <if test="birth != null">
-        birth = #{birth,jdbcType=VARCHAR},
+        and birth = #{birth,jdbcType=VARCHAR}
       </if>
       <if test="email != null">
-        email = #{email,jdbcType=VARCHAR},
+        and email = #{email,jdbcType=VARCHAR}
       </if>
       <if test="phone != null">
-        phone = #{phone,jdbcType=VARCHAR},
+        and phone = #{phone,jdbcType=VARCHAR}
       </if>
       <if test="attachResume != null">
-        attach_resume = #{attachResume,jdbcType=VARCHAR},
+        and attach_resume = #{attachResume,jdbcType=VARCHAR}
       </if>
       <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
       </if>
       <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
       </if>
       <if test="delFlag != null">
-        del_flag = #{delFlag,jdbcType=TINYINT},
+        and del_flag = #{delFlag,jdbcType=TINYINT}
       </if>
       <if test="introduction != null">
-        introduction = #{introduction,jdbcType=LONGVARCHAR},
+        and introduction = #{introduction,jdbcType=LONGVARCHAR}
       </if>
     </where>
   </select>

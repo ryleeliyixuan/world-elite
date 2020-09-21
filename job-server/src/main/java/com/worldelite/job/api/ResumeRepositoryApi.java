@@ -8,6 +8,7 @@ import com.worldelite.job.service.ResumeRepositoryService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.ResumeRepositoryVo;
+import com.worldelite.job.vo.ResumeVo;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,14 +101,17 @@ public class ResumeRepositoryApi extends BaseApi{
      */
     @ApiDoc
     @PostMapping("search")
-    public ApiResult<PageResult<ResumeRepositoryVo>> search(@RequestBody ResumeRepositoryListForm resumeRepositoryListForm){
-        if(StringUtils.isEmpty(resumeRepositoryListForm.getKeyword())){
-            PageResult<ResumeRepositoryVo> pageResult = resumeRepositoryService.search(resumeRepositoryListForm);
-            return ApiResult.ok(pageResult);
-        }else{
-            PageResult<ResumeRepositoryVo> pageResult = resumeRepositoryService.searchByKeyword(resumeRepositoryListForm);
-            return ApiResult.ok(pageResult);
-        }
+    public ApiResult<PageResult<ResumeVo>> search(@RequestBody ResumeRepositoryListForm resumeRepositoryListForm){
+//        if(StringUtils.isEmpty(resumeRepositoryListForm.getKeyword())){
+//            PageResult<ResumeRepositoryVo> pageResult = resumeRepositoryService.search(resumeRepositoryListForm);
+//            return ApiResult.ok(pageResult);
+//        }else{
+//            PageResult<ResumeRepositoryVo> pageResult = resumeRepositoryService.searchByKeyword(resumeRepositoryListForm);
+//            return ApiResult.ok(pageResult);
+//        }
+
+        PageResult<ResumeVo> pageResult = resumeRepositoryService.search(resumeRepositoryListForm);
+        return ApiResult.ok(pageResult);
     }
 
     public void suggest(){

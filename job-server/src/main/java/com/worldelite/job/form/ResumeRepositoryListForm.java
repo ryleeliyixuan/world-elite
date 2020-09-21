@@ -14,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class ResumeRepositoryListForm extends PageForm implements IExportable{
     private Long id; //简历ID
+    private Long companyId;//企业ID
     @NotBlank(message = "{edit.resume.name.not.blank}")
     private String name; //名称
     private String birth; //生日

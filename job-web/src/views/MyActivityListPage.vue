@@ -117,13 +117,36 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .app-container {
-  width: 1000px;
+  max-width: 1000px;
   margin: 20px auto;
   min-height: calc(100vh - 477px);
-}
+      
+      .activity-list {
+            width: 100%;
 
-.text-label {
-  color: #555;
-  font-size: 15px;
-}
+          .mb-2 link-pointer{
+              margin-bottom: 10px;
+
+          }
+
+          }
+    }
+
+    .text-label {
+        color: #555;
+        font-size: 15px;
+    }
+
+    @media screen and (max-width: 850px) {
+        .app-container {
+            width: 100%;
+            max-width: 1000px;
+            
+
+            .activity-list{
+                width: 100%;
+            }
+        }
+    }
+
 </style>
