@@ -1,10 +1,13 @@
 package com.worldelite.job.service.sdk;
 
 import com.alibaba.fastjson.JSONObject;
+import com.worldelite.job.constants.Gender;
 import com.worldelite.job.entity.AttachmentParser;
+import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeRepository;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.mapper.AttachmentParserMapper;
+import com.worldelite.job.service.BaseService;
 import com.worldelite.job.util.FileDownloadUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
@@ -22,10 +25,13 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Component
-public class ResumeSDK {
+public class ResumeSDK extends BaseService {
 
 
     @Autowired
@@ -90,6 +96,17 @@ public class ResumeSDK {
         }
     }
 
+    public Resume getResume(JSONObject result) {
+        Resume resume = new Resume();
+        resume.setName(result.getString("name"));
+        resume.setBirth(getDate(result.getString("birthday")));
+        resume.setGender(getGender(result.getString("gender")));
+        resume.setGraduateTime(getDate(result.getString("grad_time")));
+        resume.setCurPlace(result.getString("living_address_norm"));
+        resume.setIntroduction(result.getString("cont_my_desc"));
+        return resume;
+    }
+
     /**
      * 从OSS上读取文件
      * 并转码base64字符串
@@ -109,5 +126,43 @@ public class ResumeSDK {
         out.close();
         byte[] bytes = out.toByteArray();
         return new String(Base64.encodeBase64(bytes), Consts.UTF_8);
+    }
+
+    /**
+     * ResumeSDK返回的日期为字符串类型，且可能为2019.10.01或者2019.10两种类型中的一个
+     * @param date
+     * @return
+     */
+    private Date getDate(String date){
+        if(date==null) return null;
+        try {
+            if(date.matches("\\d+\\.\\d+\\.\\d+")){
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+                return dateFormat.parse(date);
+            }
+            if(date.matches("\\d+\\.\\d+")){
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM");
+                return dateFormat.parse(date);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //其它情况视为转换失败，默认返回null
+        return null;
+    }
+
+    /**
+     * 将获取到的性别信息转化为系统性别的枚举类型
+     * @param gender
+     * @return
+     */
+    private Byte getGender(String gender){
+        if("男".equals(gender) || "male".equals(gender)){
+            return Gender.MALE.value;
+        }
+        if("女".equals(gender) || "female".equals(gender)){
+            return Gender.FEMALE.value;
+        }
+        return 0;
     }
 }

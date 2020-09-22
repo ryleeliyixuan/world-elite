@@ -1,32 +1,30 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.IdUtil;
 import com.alibaba.excel.util.StringUtils;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.oss.internal.OSSCallbackErrorResponseHandler;
+import com.aliyun.oss.internal.OSSUtils;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.JobApplyStatus;
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.context.LuceneContext;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
-import com.worldelite.job.form.PageForm;
-import com.worldelite.job.form.ResumeLinkForm;
-import com.worldelite.job.form.ResumeRepositoryForm;
-import com.worldelite.job.form.ResumeRepositoryListForm;
-import com.worldelite.job.mapper.CompanyUserMapper;
-import com.worldelite.job.mapper.ResumeMapper;
-import com.worldelite.job.mapper.ResumeRepositoryMapper;
-import com.worldelite.job.mapper.UserApplicantMapper;
+import com.worldelite.job.form.*;
+import com.worldelite.job.mapper.*;
 import com.worldelite.job.service.sdk.ResumeSDK;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.JobVo;
-import com.worldelite.job.vo.PageResult;
-import com.worldelite.job.vo.ResumeRepositoryVo;
-import com.worldelite.job.vo.ResumeVo;
+import com.worldelite.job.util.FormUtils;
+import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
@@ -35,16 +33,20 @@ import org.apache.lucene.search.*;
 import org.lionsoul.jcseg.ISegment;
 import org.lionsoul.jcseg.IWord;
 import org.lionsoul.jcseg.analyzer.JcsegAnalyzer;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,6 +76,36 @@ public class ResumeRepositoryService extends BaseService{
     @Autowired
     private UserApplicantMapper userApplicantMapper;
 
+    @Autowired
+    private ResumeEduMapper resumeEduMapper;
+
+    @Autowired
+    private SchoolMapper schoolMapper;
+
+    @Autowired
+    private ResumeExperienceMapper resumeExpMapper;
+
+    @Autowired
+    private DictService dictService;
+
+    @Autowired
+    private ResumeEduService resumeEduService;
+
+    @Autowired
+    private ResumeExpService resumeExpService;
+
+    @Autowired
+    private ResumePracticeService resumePracticeService;
+
+    @Autowired
+    private ResumeSkillService resumeSkillService;
+
+    @Autowired
+    private ResumeLinkService resumeLinkService;
+
+    @Autowired
+    private UserExpectJobService userExpectJobService;
+
     public void saveAttachment(String attachmentName) {
         //调用ResumeSDK解析简历文件
         AttachmentParser attachmentParser = resumeSDK.parse(attachmentName);
@@ -86,23 +118,35 @@ public class ResumeRepositoryService extends BaseService{
         ResumeRepository resumeRepository = new ResumeRepository();
         resumeRepository.setEmail(email);
         resumeRepository.setCompanyId(companyId);
-        List<ResumeRepository> resumeRepositoryList = resumeRepositoryMapper.selectByEmail(resumeRepository);
-        if(CollectionUtils.isEmpty(resumeRepositoryList)){
+//        List<ResumeRepository> resumeRepositoryList = resumeRepositoryMapper.selectByEmail(resumeRepository);
+//        if(CollectionUtils.isEmpty(resumeRepositoryList)){
+            Resume resume = resumeSDK.getResume(result);
+            resume.setId(AppUtils.nextId());
+            resume.setUserId(curUser().getId());
+            resume.setAttachResume(AppUtils.getOssKey(attachmentName));
+            resumeMapper.insertSelective(resume);
             resumeRepository = getResumeRepository(resumeRepository,result);
             resumeRepository.setCompanyId(companyId);
+            resumeRepository.setUserId(curUser().getId());
+            resumeRepository.setResumeId(resume.getId());
             resumeRepository.setParserId(attachmentParser.getId());
+            resumeRepository.setAttachResume(AppUtils.getOssKey(attachmentName));
             resumeRepositoryMapper.insertSelective(resumeRepository);
-        }else{
-            resumeRepository = resumeRepositoryList.get(0);
-            resumeRepository = getResumeRepository(resumeRepository,result);
-            resumeRepository.setCompanyId(companyId);
-            resumeRepository.setParserId(attachmentParser.getId());
-            resumeRepositoryMapper.updateByPrimaryKeySelective(resumeRepository);
-        }
+//        }else{
+//            resumeRepository = resumeRepositoryList.get(0);
+//            Resume resume = resumeSDK.getResume(result);
+//            resume.setId(resumeRepository.getResumeId());
+//            resume.setUserId(curUser().getId());
+//            resumeMapper.updateByPrimaryKeySelective(resume);
+//            resumeRepository = getResumeRepository(resumeRepository,result);
+//            resumeRepository.setCompanyId(companyId);
+//            resumeRepository.setParserId(attachmentParser.getId());
+//            resumeRepositoryMapper.updateByPrimaryKeySelective(resumeRepository);
+//        }
 
         //生成索引文件
-        Document document = getDocument(resumeRepository);
-        addIndex(document);
+        //Document document = getDocument(resumeRepository);
+        //addIndex(document);
     }
 
     public void addAttachment(Long id, String attachmentName) {
@@ -140,6 +184,193 @@ public class ResumeRepositoryService extends BaseService{
             resumeRepository.setParserId(0L);
             resumeRepositoryMapper.updateByPrimaryKeySelective(resumeRepository);
         }
+    }
+
+    /**
+     * 简历录入-基本信息
+     * @param resumeForm
+     * @return
+     */
+    @Transactional
+    public ResumeVo saveBasic(ResumeForm resumeForm) {
+        //如果简历已经存在，从数据库取旧简历信息
+        Resume resume = null;
+        if (resumeForm.getId() != null) {
+            resume = resumeMapper.selectByPrimaryKey(resumeForm.getId());
+        }
+        if (resume == null) {
+            resume = new Resume();
+        }
+        //这里用户为企业用户
+        //设置这个字段暂时没有用
+        //留给后续扩展用
+        resume.setUserId(curUser().getId());
+        resume.setName(resumeForm.getName());
+        resume.setBirth(resumeForm.getBirth());
+        resume.setGender(resumeForm.getGender());
+        resume.setCountryId(resumeForm.getCountryId());
+        resume.setCurPlace(resumeForm.getCurPlace());
+        resume.setGraduateTime(resumeForm.getGraduateTime());
+        resume.setReturnTime(resumeForm.getReturnTime());
+        resume.setMaxDegreeId(resumeForm.getMaxDegreeId());
+        resume.setIntroduction(resumeForm.getIntroduction());
+        if (org.apache.commons.lang3.StringUtils.isNotEmpty(resumeForm.getAttachResume())) {
+            String newAttachResume = AppUtils.getOssKey(resumeForm.getAttachResume());
+            resume.setAttachResume(newAttachResume);
+        }
+        if (resume.getId() == null) {
+            resume.setId(AppUtils.nextId());
+            resumeMapper.insertSelective(resume);
+
+            //信息插入到简历库
+            ResumeRepository resumeRepository = new ResumeRepository();
+            resumeRepository.setCompanyId(getCompanyId());
+            resumeRepository.setResumeId(resume.getId());
+            resumeRepository.setUserId(resume.getUserId());
+            if(resumeForm.getPhone()!=null){
+                resumeRepository.setPhone(resumeForm.getPhone().toString());
+            }
+            resumeRepository.setEmail(resumeForm.getEmail());
+            resumeRepositoryMapper.insertSelective(resumeRepository);
+        } else {
+            resume.setUpdateTime(new Date());
+            resumeMapper.updateByPrimaryKeySelective(resume);
+        }
+        return new ResumeVo().asVo(resume);
+    }
+
+    /**
+     * 删除附件简历
+     * @param resumeId
+     */
+    public void delResumeAttachment(Long resumeId){
+        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
+        if (resume != null) {
+            resume.setAttachResume("");
+            resumeMapper.updateByPrimaryKey(resume);
+        }
+    }
+
+    /**
+     * 获取我的默认简历，如果没有就创建一个空简历
+     *
+     * @param resumeId
+     * @return
+     */
+    public ResumeVo getResumeVo(Long resumeId) {
+        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
+        ResumeVo resumeVo = new ResumeVo().asVo(resume);
+        ResumeRepository resumeRepository = new ResumeRepository();
+        resumeRepository.setCompanyId(getCompanyId());
+        resumeRepository.setResumeId(resume.getId());
+        List<ResumeRepository> resumeRepositoryList = resumeRepositoryMapper.selectAndList(resumeRepository);
+        if(CollectionUtils.isNotEmpty(resumeRepositoryList)){
+            resumeRepository = resumeRepositoryList.get(0);
+            resumeVo.setEmail(resumeRepository.getEmail());
+            resumeVo.setPhone(resumeRepository.getPhone());
+        }
+        resumeVo.setResumeEduList(resumeEduService.getResumeEduList(resume.getId()));
+        resumeVo.setResumeExpList(resumeExpService.getResumeExpList(resume.getId()));
+        resumeVo.setResumePracticeList(resumePracticeService.getResumePracticeList(resume.getId()));
+        resumeVo.setUserExpectJob(userExpectJobService.getUserExpectJob(resume.getUserId()));
+        resumeVo.setResumeSkillList(resumeSkillService.getResumeSkillList(resume.getId()));
+        resumeVo.setResumeLinkList(resumeLinkService.getResumeLinkList(resume.getId()));
+        resumeVo.setResumeCompleteProgress(AppUtils.calCompleteProgress(resumeVo));
+        return resumeVo;
+    }
+
+    /**
+     * 获取简历列表
+     *
+     * @param listForm
+     * @return
+     */
+    public PageResult<ResumeVo> getResumeList(ResumeListForm listForm){
+
+        if(listForm.getSalaryRangeId() != null){
+            DictVo salaryRange =  dictService.getById(listForm.getSalaryRangeId());
+            if(salaryRange != null){
+                String[] values =  salaryRange.getValue().split("-");
+                if(values.length == 2){
+                    listForm.setMinSalary(org.apache.commons.lang.math.NumberUtils.toInt(values[0]));
+                    listForm.setMaxSalary(org.apache.commons.lang.math.NumberUtils.toInt(values[1]));
+                }
+            }
+        }
+
+        if(listForm.getGpaRangeId() != null){
+            DictVo gpaRange =  dictService.getById(listForm.getGpaRangeId());
+            if(gpaRange != null){
+                String[] values =  gpaRange.getValue().split("-");
+                if(values.length == 2){
+                    listForm.setMinGpa(org.apache.commons.lang.math.NumberUtils.toDouble(values[0]));
+                    listForm.setMaxGpa(NumberUtils.toDouble(values[1]));
+                }
+            }
+        }
+
+        ResumeOptions resumeOptions = new ResumeOptions();
+        BeanUtil.copyProperties(listForm, resumeOptions);
+        resumeOptions.setCategoryIds(FormUtils.joinWhereIds(listForm.getCategoryIds()));
+        resumeOptions.setCityIds(FormUtils.joinWhereIds(listForm.getCityIds()));
+        resumeOptions.setDegreeIds(FormUtils.joinWhereIds(listForm.getDegreeIds()));
+        resumeOptions.setSchoolIds(FormUtils.joinWhereIds(listForm.getSchoolIds()));
+        resumeOptions.setCompanyId(getCompanyId());
+        AppUtils.setPage(listForm);
+        Page<Resume> resumePage = (Page<Resume>) resumeMapper.selectAndList(resumeOptions);
+        PageResult<ResumeVo> pageResult = new PageResult<>(resumePage);
+        List<ResumeVo> resumeVoList = new ArrayList<>(resumePage.size());
+        for(Resume resume: resumePage){
+            //ResumeVo resumeVo = new ResumeVo().asVo(resume);
+            //返回更详细的简历信息
+            ResumeVo resumeVo = getResumeInfo(resume.getId());
+            List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduList(resume.getId());
+            resumeVo.setResumeEduList(resumeEduVoList);
+            if (CollectionUtils.isNotEmpty(resumeEduVoList)) {
+                ResumeEduVo maxResumeEduVo = new ResumeEduVo();
+                BeanUtil.copyProperties(resumeEduVoList.get(0), maxResumeEduVo);
+                resumeVo.setMaxResumeEdu(maxResumeEduVo);
+            }
+
+            ResumeRepository resumeRepository = new ResumeRepository();
+            resumeRepository.setCompanyId(getCompanyId());
+            resumeRepository.setResumeId(resume.getId());
+            List<ResumeRepository> resumeRepositoryList = resumeRepositoryMapper.selectAndList(resumeRepository);
+            if(CollectionUtils.isNotEmpty(resumeRepositoryList)){
+                resumeRepository = resumeRepositoryList.get(0);
+                resumeVo.setEmail(resumeRepository.getEmail());
+                resumeVo.setPhone(resumeRepository.getPhone());
+            }
+
+            resumeVo.setUserExpectJob(userExpectJobService.getUserExpectJob(resume.getUserId()));
+            resumeVoList.add(resumeVo);
+        }
+        pageResult.setList(resumeVoList);
+        return pageResult;
+    }
+
+    /**
+     * 获取简历信息
+     *
+     * @param resumeId
+     * @return
+     */
+    public ResumeVo getResumeInfo(Long resumeId) {
+        Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
+        return toResumeVo(resume);
+    }
+
+    private ResumeVo toResumeVo(Resume resume) {
+        ResumeVo resumeVo = new ResumeVo().asVo(resume);
+        List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduList(resume.getId());
+        resumeVo.setResumeEduList(resumeEduVoList);
+        resumeVo.setResumeSkillList(resumeSkillService.getResumeSkillList(resume.getId()));
+        resumeVo.setResumeExpList(resumeExpService.getResumeExpList(resume.getId()));
+        if (CollectionUtils.isNotEmpty(resumeEduVoList)) {
+            ResumeEduVo maxResumeEduVo = JSON.parseObject(JSON.toJSONString(resumeEduVoList.get(0)), ResumeEduVo.class);
+            resumeVo.setMaxResumeEdu(maxResumeEduVo);
+        }
+        return resumeVo;
     }
 
     /**
@@ -400,12 +631,11 @@ public class ResumeRepositoryService extends BaseService{
      * @return
      */
     public Long getCompanyId() {
-//        CompanyUser companyUser = companyUserMapper.selectByUserId(curUser().getId());
-//        if(companyUser==null || companyUser.getCompanyId()==0){
-//            throw new ServiceException("登录用户未关联公司");
-//        }
-//        return companyUser.getCompanyId();
-        return 1225689601449799680L;
+        CompanyUser companyUser = companyUserMapper.selectByUserId(curUser().getId());
+        if(companyUser==null || companyUser.getCompanyId()==0){
+            throw new ServiceException("登录用户未关联公司");
+        }
+        return companyUser.getCompanyId();
     }
 
     private void addIndex(Document document) {

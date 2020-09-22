@@ -50,6 +50,10 @@
                 and user_id in (select user_id from t_user_expect_salary
                 where min_value &lt;= #{maxSalary} and max_value &gt;= #{minSalary})
             </if>
+            <if test="companyId != null">
+                and id in (select resume_id from t_resume_repository where
+                t_resume_repository.resume_id = t_resume.id and t_resume_repository.company_id = #{companyId})
+            </if>
         </where>
     </select>
 </mapper>

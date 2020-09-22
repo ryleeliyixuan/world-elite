@@ -28,6 +28,12 @@
       <if test="companyId != null">
         and company_id = #{companyId,jdbcType=BIGINT}
       </if>
+      <if test="resumeId != null">
+        and resume_id = #{resumeId,jdbcType=BIGINT}
+      </if>
+      <if test="userId != null">
+        and user_id = #{userId,jdbcType=BIGINT}
+      </if>
       <if test="parserId != null">
         and parser_id = #{parserId,jdbcType=BIGINT}
       </if>

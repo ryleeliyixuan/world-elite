@@ -19,4 +19,5 @@ public class ResumeOptions extends Resume{
     private Double maxGpa;
     private Integer minSalary;
     private Integer maxSalary;
+    private Long companyId;
 }

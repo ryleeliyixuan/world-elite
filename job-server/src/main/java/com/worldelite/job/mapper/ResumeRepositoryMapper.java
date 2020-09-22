@@ -63,7 +63,7 @@ public interface ResumeRepositoryMapper {
 
     /**
      * 通过邮箱搜索
-     * @param email
+     * @param resumeRepository
      * @return
      */
     List<ResumeRepository> selectByEmail(ResumeRepository resumeRepository);
