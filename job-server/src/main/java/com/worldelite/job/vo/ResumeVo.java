@@ -48,6 +48,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     private String introduction; //个人介绍
     private String attachResume; //附件简历
     private String userId; //用户Id
+    private Long userIdIndex; //Long类型用户ID，系统内部使用
 
     private Integer resumeCompleteProgress; //简历完善进度
 
@@ -85,6 +86,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
         setName(resume.getName());
         setGender(resume.getGender());
         setUserId(String.valueOf(resume.getUserId()));
+        setUserIdIndex(resume.getUserId());
         setBirth(resume.getBirth());
         setAttachResume(AppUtils.absOssUrl(resume.getAttachResume()));
         if(resume.getBirth() != null){
