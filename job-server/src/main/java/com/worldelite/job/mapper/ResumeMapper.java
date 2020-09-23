@@ -1,9 +1,6 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.Resume;
-import com.worldelite.job.entity.ResumeOptions;
-
-import java.util.List;
 
 public interface ResumeMapper {
     /**
@@ -61,9 +58,4 @@ public interface ResumeMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Resume record);
-
-
-    List<Resume> selectByUserId(Long userId);
-
-    List<Resume> selectAndList(ResumeOptions options);
 }
