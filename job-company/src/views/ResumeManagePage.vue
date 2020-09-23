@@ -12,7 +12,7 @@
                 </el-menu>
                 <div>
                     <el-button size="small" @click="dialogVisible3=true" type="primary">上传简历</el-button>
-                    <el-button size="small" @click="dialogVisible4=true" type="primary">手动录入</el-button>
+                    <el-button size="small" @click="entryResume" type="primary">手动录入</el-button>
                 </div>
             </div>
             <div v-if="activeIndex==='7'">
@@ -595,6 +595,9 @@
 
             handlerRemove(file) {
                 console.log(file);
+            },
+            entryResume(){
+                this.$router.push("/entry-resume");
             }
         }
     };

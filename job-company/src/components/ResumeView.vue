@@ -11,7 +11,7 @@
           ></i>
         </h5>
         <div>
-          <span v-if="resume.returnTime">{{resume.maxResumeEdu.degree.name}}&nbsp;/&nbsp;</span>
+          <span v-if="resume.returnTime">{{resume.maxResumeEdu && resume.maxResumeEdu.degree.name}}&nbsp;/&nbsp;</span>
           <span v-if="resume.graduateTime">{{resume.graduateTime}}毕业&nbsp;/&nbsp;</span>
           <span v-if="resume.curPlace">{{resume.curPlace}}&nbsp;/&nbsp;</span>
           <span v-if="resume.age">{{resume.age}}岁&nbsp;/&nbsp;</span>

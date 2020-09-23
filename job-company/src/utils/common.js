@@ -92,6 +92,17 @@ export function checkPicSize(file){
 }
 
 /**
+ * 附件大小是否在5Mb内
+ */
+export function checkAttachmentSize(file) {
+    const overSize = file.size / 1024 / 1024 > 5;
+    if (overSize) {
+        Toast.error('附件大小不能超过2Mb')
+    }
+    return overSize;
+}
+
+/**
  * PDF大小是否在2Mb内
  */
 export function checkPDFSize(file){

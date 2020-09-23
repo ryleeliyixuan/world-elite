@@ -50,10 +50,16 @@ const constantRoutes = [
         meta: { title: '寰球菁英-简历管理' }
     },
     {
-        path: '/resume',
-        component: () => import('@/views/ResumePage'),
-        meta: { title: '寰球菁英-简历' }
+        path: '/resume/:id',
+        name: 'resume',
+        component: () => import('@/views/ResumePreviewPage'),
+        meta: {title: '寰球菁英-简历预览'}
     },
+    // {
+    //     path: '/resume',
+    //     component: () => import('@/views/ResumePage'),
+    //     meta: { title: '寰球菁英-简历' }
+    // },
     {
         path: '/forget-pwd',
         component: () => import('@/views/ForgetPwdPage'),
@@ -90,7 +96,13 @@ const constantRoutes = [
         path: '/user-protocol',
         component: () => import('@/views/UserProtocolPage'),
         meta: {title: '寰球菁英-用户协议'}
-    }
+    },
+    {
+        path: '/entry-resume',
+        component: () => import('@/views/EntryResume'),
+        meta: {title: '寰球菁英-手动录入'}
+    },
+
 ]
 
 const createRouter = () => new Router({
