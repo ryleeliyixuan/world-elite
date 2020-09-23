@@ -10,6 +10,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.poi.ss.formula.functions.Index;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.lionsoul.jcseg.ISegment;
 import org.lionsoul.jcseg.IWord;
 import org.lionsoul.jcseg.analyzer.JcsegAnalyzer;
@@ -38,26 +39,10 @@ public class LuceneContext {
 
     //IndexWriter Map，文件夹名做为key，同一个文件夹将返回同一个IndexWriter实例
     //使用了线程安全的ConcurrentHashMap
-    private final ConcurrentHashMap<String, IndexWriter> indexWriterMap = new ConcurrentHashMap<String,IndexWriter>();
+    private final ConcurrentHashMap<String, IndexWriter> indexWriterMap = new ConcurrentHashMap<>();
 
     //IndexReader Map
-    private final ConcurrentHashMap<String, IndexReader> indexReaderMap = new ConcurrentHashMap<String,IndexReader>();
-
-    @Value("${search.index.resumeindex2}")
-    private String indexFolder2;
-
-
-    @PostConstruct
-    public void initMap() throws IOException {
-        IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-        IndexWriter indexWriter = new IndexWriter(FSDirectory.open(Paths.get(indexFolder2)), config);
-        indexWriterMap.put(indexFolder2,indexWriter);
-
-        IndexReader indexReader = DirectoryReader.open(FSDirectory.open(Paths.get(indexFolder2)));
-        indexReaderMap.put(indexFolder2,indexReader);
-    }
-
+    private final ConcurrentHashMap<String, IndexSearcher> indexSearcherMap = new ConcurrentHashMap<>();
 
     /**
      * 获取IndexWriter对象实例
@@ -66,7 +51,22 @@ public class LuceneContext {
      * @throws IOException
      */
     public IndexWriter getIndexWriter(String folder) {
-        return indexWriterMap.get(folder);
+        IndexWriter indexWriter = indexWriterMap.get(folder);
+        if(indexWriter != null){
+            return indexWriter;
+        }
+        //如果目录下不存在IndexWriter实例，或者已经被关闭，则新建实例
+        try {
+            IndexWriterConfig config = new IndexWriterConfig(analyzer);
+            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+            indexWriter = new IndexWriter(FSDirectory.open(Paths.get(folder)), config);
+            indexWriterMap.put(folder,indexWriter);
+            return indexWriter;
+        } catch (IOException e) {
+            closeIndexWriter(folder);
+            e.printStackTrace();
+            throw new ServiceException("打开索引目录失败");
+        }
     }
 
     /**
@@ -75,14 +75,30 @@ public class LuceneContext {
      * @return
      */
     public IndexSearcher getIndexSearcher(String folder){
-        IndexReader indexReader = null;
+        IndexSearcher indexSearcher = indexSearcherMap.get(folder);
+        if(indexSearcher != null){
+            return indexSearcher;
+        }
         try {
-            indexReader = DirectoryReader.openIfChanged((DirectoryReader) indexReaderMap.get(folder));
-            return new IndexSearcher(indexReader);
+            IndexReader indexReader = DirectoryReader.open(FSDirectory.open(Paths.get(folder)));
+            indexSearcher = new IndexSearcher(indexReader);
+            indexSearcherMap.put(folder,indexSearcher);
+            return indexSearcher;
         } catch (IOException e) {
+            indexSearcherMap.remove(folder);
             e.printStackTrace();
             throw new ServiceException("搜索时打开索引文件失败");
         }
+    }
+
+    /**
+     * 关闭IndexWriter
+     * @param folder
+     */
+    public void closeIndexWriter(String folder){
+        IndexWriter indexWriter = indexWriterMap.get(folder);
+        IOUtils.closeQuietly(indexWriter);
+        indexWriterMap.remove(folder);
     }
 
     /**

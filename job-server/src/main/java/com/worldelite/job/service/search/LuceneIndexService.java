@@ -255,7 +255,7 @@ public class LuceneIndexService implements IndexService {
         final Document doc = new Document();
         doc.add(new StoredField(ResumeIndexFields.RESUME_ID, resumeId));
         doc.add(new LongPoint(ResumeIndexFields.RESUME_ID_INDEX, resumeId));
-        UserExpectJobVo expectJobVo = userExpectJobService.getUserExpectJob(resumeVo.getUserId());
+        UserExpectJobVo expectJobVo = userExpectJobService.getUserExpectJob(resumeVo.getUserIdIndex());
 
         if (expectJobVo != null) {
             if (CollectionUtils.isNotEmpty(expectJobVo.getCityList())) {

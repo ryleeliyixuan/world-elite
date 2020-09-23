@@ -326,11 +326,8 @@
               icon="el-icon-document"
             >预览简历</el-button>
           </div>
-          <!-- v-sticky="{stickyTop: 2"}" -->
-          <div class="resume-nav-container">
-            <b-navbar class="fixed-bottom" toggleable="sm" type="bright" variant="light">
-              <b-collapse id="navbar-toggle-collapse" is-nav>
-                <b-navbar-nav class="navbar">
+          <div class="resume-nav-container resume-right-box" v-sticky="{stickyTop: 2}">
+            <b-nav vertical>
                   <b-nav-item @click="goAnchor('#Resume-Basic')">基本信息</b-nav-item>
                   <b-nav-item @click="goAnchor('#Resume-Introduction')">自我介绍</b-nav-item>
                   <b-nav-item @click="goAnchor('#Resume-Education')">教育经历</b-nav-item>
@@ -338,17 +335,7 @@
                   <b-nav-item @click="goAnchor('#Resume-Practice')">实践经验</b-nav-item>
                   <b-nav-item @click="goAnchor('#Resume-Skill')">能力标签</b-nav-item>
                   <b-nav-item @click="goAnchor('#Resume-Link')">社交链接</b-nav-item>
-                </b-navbar-nav>
-              </b-collapse>
-
-              <b-navbar-brand href="#">简历导航</b-navbar-brand>
-              <b-navbar-toggle target="navbar-toggle-collapse">
-                <template v-slot:default="{ expanded }">
-                  <font-awesome-icon :icon="['fa', 'chevron-down']" v-if="expanded" />
-                  <font-awesome-icon :icon="['fa', 'chevron-up']" v-else />
-                </template>
-              </b-navbar-toggle>
-            </b-navbar>
+            </b-nav>
           </div>
         </b-col>
       </b-row>
@@ -787,8 +774,6 @@ import {
   faPlusSquare,
   faPencilAlt,
   faTrashAlt,
-  faChevronUp,
-  faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -800,8 +785,6 @@ library.add(
   faPlusSquare,
   faPencilAlt,
   faTrashAlt,
-  faChevronUp,
-  faChevronDown
 );
 
 export default {
@@ -1620,6 +1603,10 @@ $border-style: 1px solid #eee;
   /deep/.el-date-range-picker {
     position: relative;
     display: flex;
+  }
+  
+  .resume-nav-container {
+    display: none;
   }
 }
 </style>

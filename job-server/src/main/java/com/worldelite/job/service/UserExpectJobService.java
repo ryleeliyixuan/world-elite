@@ -127,13 +127,13 @@ public class UserExpectJobService extends BaseService{
             expectSalaryMapper.insertSelective(userExpectSalary);
         }
 
-        ResumeVo resumeVo = resumeService.getDefaultOrCreate(userId);
-        Long resumeId = NumberUtils.toLong(resumeVo.getId());
-        if(ArrayUtils.isEmpty(userExpectJobForm.getCityIds()) && ArrayUtils.isEmpty(userExpectJobForm.getCategoryIds())){
-            indexService.deleteResumeItem(resumeId);
-        }else {
-            indexService.saveResumeItem(resumeId);
-        }
+//        ResumeVo resumeVo = resumeService.getDefaultOrCreate(userId);
+//        Long resumeId = NumberUtils.toLong(resumeVo.getId());
+//        if(ArrayUtils.isEmpty(userExpectJobForm.getCityIds()) && ArrayUtils.isEmpty(userExpectJobForm.getCategoryIds())){
+//            indexService.deleteResumeItem(resumeId);
+//        }else {
+//            indexService.saveResumeItem(resumeId);
+//        }
         return getUserExpectJob(userId);
     }
 }
