@@ -328,6 +328,8 @@ public class ResumeRepositoryService extends BaseService{
         resumeEduForm.setSchoolName(resumeEduVo.getSchoolName());
         resumeEduForm.setMajorName(resumeEduVo.getMajorName());
         resumeEduForm.setGpa(resumeEduVo.getGpa());
+        //Todo 学历怎么解析
+        resumeEduForm.setDegreeId(2);
         return resumeEduForm;
     }
 }
