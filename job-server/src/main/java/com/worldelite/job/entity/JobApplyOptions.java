@@ -6,6 +6,7 @@ package com.worldelite.job.entity;
 public class JobApplyOptions extends JobApply{
 
     private Long creatorId;
+    private Long companyId;
     private String jobIds;
     private String name;
     private String degreeIds;
@@ -49,5 +50,13 @@ public class JobApplyOptions extends JobApply{
 
     public void setStatuses(String statuses) {
         this.statuses = statuses;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 }

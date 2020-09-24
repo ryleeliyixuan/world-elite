@@ -19,5 +19,5 @@ public class ResumeOptions extends Resume{
     private Double maxGpa;
     private Integer minSalary;
     private Integer maxSalary;
-    private Long companyId;
+    private String extQuery; //额外查询条件
 }

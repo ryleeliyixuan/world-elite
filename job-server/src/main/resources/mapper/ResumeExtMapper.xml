@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.ResumeMapper">
-    <select id="selectByUserId" resultMap="ResultMapWithBLOBs">
-        select
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        from t_resume
-        where user_id = #{userId,jdbcType=BIGINT}
-    </select>
     <select id="selectAndList" resultMap="BaseResultMap" parameterType="com.worldelite.job.entity.Resume">
         select
         <include refid="Base_Column_List"/>
         from t_resume
         <where>
-            <if test="userId != null">
-                and user_id like CONCAT('%', #{userId},'%')
-            </if>
             <if test="name != null and name != ''">
                 and name like CONCAT('%', #{name},'%')
             </if>
@@ -40,19 +29,8 @@
                 </if>
                 )
             </if>
-            <if test="categoryIds != null and categoryIds != ''">
-                and user_id in (select user_id from t_user_expect_job where category_id in (${categoryIds}))
-            </if>
-            <if test="cityIds != null and cityIds != ''">
-                and user_id in (select user_id from t_user_expect_place where city_id in (${cityIds}))
-            </if>
-            <if test="minSalary != null and maxSalary != null">
-                and user_id in (select user_id from t_user_expect_salary
-                where min_value &lt;= #{maxSalary} and max_value &gt;= #{minSalary})
-            </if>
-            <if test="companyId != null">
-                and id in (select resume_id from t_resume_repository where
-                t_resume_repository.resume_id = t_resume.id and t_resume_repository.company_id = #{companyId})
+            <if test="extQuery != null">
+                and ${extQuery}
             </if>
         </where>
     </select>

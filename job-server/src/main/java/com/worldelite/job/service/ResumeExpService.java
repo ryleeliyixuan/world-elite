@@ -37,7 +37,7 @@ public class ResumeExpService extends BaseService{
      * @return
      */
     public ResumeExpVo saveResumeExp(ResumeExpForm resumeExpForm){
-        resumeService.checkResumeCreator(resumeExpForm.getResumeId());
+//        resumeService.checkResumeCreator(resumeExpForm.getResumeId());
 
         ResumeExperience resumeExp = null;
         if(resumeExpForm.getId() != null){
@@ -69,7 +69,7 @@ public class ResumeExpService extends BaseService{
     public void deleteResumeExp(Integer id){
         ResumeExperience resumeExp = resumeExpMapper.selectByPrimaryKey(id);
         if(resumeExp != null){
-            resumeService.checkResumeCreator(resumeExp.getResumeId());
+//            resumeService.checkResumeCreator(resumeExp.getResumeId());
             resumeExpMapper.deleteByPrimaryKey(resumeExp.getId());
         }
     }

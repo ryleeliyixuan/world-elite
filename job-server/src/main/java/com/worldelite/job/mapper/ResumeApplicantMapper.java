@@ -3,6 +3,7 @@ package com.worldelite.job.mapper;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeApplicant;
 import com.worldelite.job.entity.ResumeOptions;
+import com.worldelite.job.entity.ResumeRepository;
 
 import java.util.List;
 
@@ -56,16 +57,18 @@ public interface ResumeApplicantMapper {
     int updateByPrimaryKey(ResumeApplicant record);
 
     /**
-     * 通过用户ID获取简历
+     * 通过用户ID获取用户简历
+     * 注意一个用户只能有一份简历
      * @param userId
      * @return
      */
-    List<Resume> selectByUserId(Long userId);
+    ResumeApplicant selectByUserId(Long userId);
 
     /**
-     * 通过条件筛选简历
-     * @param options
+     * 通过简历ID获取用户简历
+     * 注意一个用户只能有一份简历
+     * @param resumeId
      * @return
      */
-    List<Resume> selectAndList(ResumeOptions options);
+    ResumeApplicant selectByResumeId(Long resumeId);
 }

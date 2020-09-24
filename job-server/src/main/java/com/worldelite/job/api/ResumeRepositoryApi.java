@@ -64,7 +64,7 @@ public class ResumeRepositoryApi extends BaseApi{
     @ApiDoc
     @PostMapping("add-attachment")
     public ApiResult addAttachment(@RequestParam Long id,@RequestParam String attachmentName){
-        resumeRepositoryService.addAttachment(id,attachmentName);
+        //resumeRepositoryService.addAttachment(id,attachmentName);
         return ApiResult.ok();
     }
 
@@ -76,19 +76,21 @@ public class ResumeRepositoryApi extends BaseApi{
     @ApiDoc
     @PostMapping("add-from-form")
     public ApiResult addResume(@RequestBody ResumeRepositoryForm resumeRepositoryForm){
-        resumeRepositoryService.addResume(resumeRepositoryForm);
+        //resumeRepositoryService.addResume(resumeRepositoryForm);
         return ApiResult.ok();
     }
 
     /**
-     * 将用户简历添加到当前企业简历库
-     * @param resumeId 用户简历ID
+     * 将简历库简历添加到职位申请
+     * @param resumeId 简历ID
+     * @param jobId 职位ID
+     * @param status 申请状态，2为已查看，6为不合适
      * @return
      */
     @ApiDoc
     @PostMapping("add-from-user")
-    public ApiResult addResume(Long resumeId){
-        resumeRepositoryService.addResume(resumeId);
+    public ApiResult addResume(@RequestParam Long resumeId,@RequestParam Long jobId,@RequestParam Byte status){
+        resumeRepositoryService.addToJobApply(resumeId,jobId,status);
         return ApiResult.ok();
     }
 
@@ -104,10 +106,10 @@ public class ResumeRepositoryApi extends BaseApi{
     public ApiResult addResume(Long originId,Long companyId,int type){
         switch (type){
             case 2:
-                resumeRepositoryService.addFromRepository(originId,companyId);
+                //resumeRepositoryService.addFromRepository(originId,companyId);
                 break;
             default:
-                resumeRepositoryService.addFromUserResume(originId,companyId);
+                //resumeRepositoryService.addFromUserResume(originId,companyId);
                 break;
         }
         return ApiResult.ok();
@@ -152,7 +154,7 @@ public class ResumeRepositoryApi extends BaseApi{
     @GetMapping("resume")
     @ApiDoc
     public ApiResult<ResumeVo> resume(@RequestParam Long resumeId) {
-        ResumeVo resumeVo = resumeRepositoryService.getResumeVo(resumeId);
+        ResumeVo resumeVo = resumeRepositoryService.getResumeDetail(resumeId);
         return ApiResult.ok(resumeVo);
     }
 

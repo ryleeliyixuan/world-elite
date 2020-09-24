@@ -43,7 +43,7 @@ public class ResumeLinkService {
      * @return
      */
     public ResumeLinkVo saveResumeLink(ResumeLinkForm resumeLinkForm){
-        resumeService.checkResumeCreator(resumeLinkForm.getResumeId());
+//        resumeService.checkResumeCreator(resumeLinkForm.getResumeId());
 
         ResumeLink resumeLink = null;
         if(resumeLinkForm.getId() != null){
@@ -75,7 +75,7 @@ public class ResumeLinkService {
     public void deleteResumeLink(Integer id){
         ResumeLink resumeLink = resumeLinkMapper.selectByPrimaryKey(id);
         if(resumeLink != null){
-            resumeService.checkResumeCreator(resumeLink.getResumeId());
+//            resumeService.checkResumeCreator(resumeLink.getResumeId());
             resumeLinkMapper.deleteByPrimaryKey(id);
         }
     }

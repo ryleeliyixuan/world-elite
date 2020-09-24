@@ -32,18 +32,18 @@ public class ResumeRepositoryVo implements VoConvertable<ResumeRepositoryVo, Res
 
     @Override
     public ResumeRepositoryVo asVo(ResumeRepository resumeRepository) {
-        setId(resumeRepository.getId());
+        //setId(resumeRepository.getId());
         setCompanyId(resumeRepository.getCompanyId());
-        setParserId(resumeRepository.getParserId());
-        setName(resumeRepository.getName());
-        setBirth(resumeRepository.getBirth());
-        setEmail(resumeRepository.getEmail());
-        setParserId(resumeRepository.getParserId());
-        setAttachResume(resumeRepository.getAttachResume());
-        setCreateTime(resumeRepository.getCreateTime());
-        setUpdateTime(resumeRepository.getUpdateTime());
-        setIntroduction(resumeRepository.getIntroduction());
-        setDelFlag(resumeRepository.getDelFlag());
+//        setParserId(resumeRepository.getParserId());
+//        setName(resumeRepository.getName());
+//        setBirth(resumeRepository.getBirth());
+//        setEmail(resumeRepository.getEmail());
+//        setParserId(resumeRepository.getParserId());
+//        setAttachResume(resumeRepository.getAttachResume());
+//        setCreateTime(resumeRepository.getCreateTime());
+//        setUpdateTime(resumeRepository.getUpdateTime());
+//        setIntroduction(resumeRepository.getIntroduction());
+//        setDelFlag(resumeRepository.getDelFlag());
         return this;
     }
 }

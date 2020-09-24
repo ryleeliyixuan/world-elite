@@ -1,14 +1,19 @@
 package com.worldelite.job.service.sdk;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.worldelite.job.constants.Gender;
 import com.worldelite.job.entity.AttachmentParser;
 import com.worldelite.job.entity.Resume;
+import com.worldelite.job.entity.ResumeEdu;
 import com.worldelite.job.entity.ResumeRepository;
 import com.worldelite.job.exception.ServiceException;
+import com.worldelite.job.form.ResumeForm;
 import com.worldelite.job.mapper.AttachmentParserMapper;
 import com.worldelite.job.service.BaseService;
 import com.worldelite.job.util.FileDownloadUtil;
+import com.worldelite.job.vo.ResumeEduVo;
+import com.worldelite.job.vo.ResumeVo;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -27,6 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +53,7 @@ public class ResumeSDK extends BaseService {
      * @param url
      * @throws Exception
      */
-    public AttachmentParser parse(String url) {
+    public ResumeVo parse(String url) {
     	// 设置头字段
         HttpPost httpPost = new HttpPost(api);
         httpPost.addHeader("content-type", "application/json");
@@ -61,6 +67,7 @@ public class ResumeSDK extends BaseService {
             json.put("pwd", pwd);            // 用户密码
             json.put("file_name", url);    // 文件名
             json.put("file_cont", data);    // 经base64编码过的文件内容
+            json.put("need_avatar",1); //是否需要头像
             StringEntity params = new StringEntity(json.toString(), Consts.UTF_8);
             httpPost.setEntity(params);
             // 发送请求
@@ -79,24 +86,39 @@ public class ResumeSDK extends BaseService {
         }
         else {
         	JSONObject result = res.getJSONObject("result");
-            // 解析内容保存到数据库
-            //按邮箱判断，存在就更新，不存在就新增
-            //List<AttachmentParser> attachmentParserList = attachmentParserMapper.selectByEmail(result.getString("email"));
-            AttachmentParser attachmentParser = new AttachmentParser();
-            //if(CollectionUtils.isEmpty(attachmentParserList)){
-                attachmentParser.setEmail(result.getString("email"));
-                attachmentParser.setAttachContent(result.toString());
-                attachmentParserMapper.insertSelective(attachmentParser);
-            //}else{
-            //    attachmentParser = attachmentParserList.get(0);
-            //    attachmentParser.setAttachContent(result.toString());
-            //    attachmentParserMapper.updateByPrimaryKeySelective(attachmentParser);
-            //}
-            return attachmentParser;
+        	AttachmentParser attachmentParser = new AttachmentParser();
+            attachmentParser.setEmail(result.getString("email"));
+            attachmentParser.setAttachContent(result.toString());
+            attachmentParserMapper.insertSelective(attachmentParser);
+            Resume resume = getResume(result);
+            ResumeVo resumeVo = new ResumeVo().asVo(resume);
+            resumeVo.setEmail(result.getString("email"));
+            resumeVo.setPhone(result.getString("phone"));
+            resumeVo.setAvatar(result.getString("avatar_url"));
+            resumeVo.setResumeEduList(getResumeEduList(result));
+            return resumeVo;
         }
     }
 
-    public Resume getResume(JSONObject result) {
+    private ResumeForm getResume1(JSONObject result) {
+        ResumeForm resumeForm = new ResumeForm();
+        resumeForm.setName(result.getString("name"));
+        resumeForm.setBirth(getDate(result.getString("birthday")));
+        resumeForm.setGender(getGender(result.getString("gender")));
+        resumeForm.setGraduateTime(getDate(result.getString("grad_time")));
+        resumeForm.setCurPlace(result.getString("living_address_norm"));
+        resumeForm.setIntroduction(result.getString("cont_my_desc"));
+        resumeForm.setEmail(result.getString("email"));
+        try {
+            resumeForm.setPhone(Long.parseLong(result.getString("phone")));
+        }catch (Exception e){
+
+        }
+        resumeForm.setAvatar(result.getString("avatar_url"));
+        return resumeForm;
+    }
+
+    private Resume getResume(JSONObject result) {
         Resume resume = new Resume();
         resume.setName(result.getString("name"));
         resume.setBirth(getDate(result.getString("birthday")));
@@ -105,6 +127,28 @@ public class ResumeSDK extends BaseService {
         resume.setCurPlace(result.getString("living_address_norm"));
         resume.setIntroduction(result.getString("cont_my_desc"));
         return resume;
+    }
+
+    public List<ResumeEduVo> getResumeEduList(JSONObject result){
+        JSONArray eduList = result.getJSONArray("education_objs");
+        List<ResumeEduVo> resumeEduList = new ArrayList<>();
+        for(int i=0;i<eduList.size();i++){
+            ResumeEdu resumeEdu = new ResumeEdu();
+            JSONObject edu = eduList.getJSONObject(i);
+            resumeEdu.setStartTime(getDate(edu.getString("start_date")));
+            resumeEdu.setFinishTime(getDate(edu.getString("end_date")));
+            resumeEdu.setSchoolName(edu.getString("edu_college"));
+            resumeEdu.setMajorName(edu.getString("edu_major"));
+            //Todo 解析degree
+            resumeEdu.setDegreeId(2);
+            try{
+                resumeEdu.setGpa(Double.parseDouble(edu.getString("edu_gpa")));
+            }catch (Exception e){
+
+            }
+            resumeEduList.add(new ResumeEduVo().asVo(resumeEdu));
+        }
+        return resumeEduList;
     }
 
     /**

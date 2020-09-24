@@ -42,7 +42,7 @@ public class ResumeEduService extends BaseService{
      * @return
      */
     public ResumeEduVo saveResumeEdu(ResumeEduForm resumeEduForm){
-        resumeService.checkResumeCreator(resumeEduForm.getResumeId());
+//        resumeService.checkResumeCreator(resumeEduForm.getResumeId());
 
         ResumeEdu resumeEdu = null;
         if(resumeEduForm.getId() != null){
@@ -52,7 +52,11 @@ public class ResumeEduService extends BaseService{
         if(resumeEdu == null){
             resumeEdu = new ResumeEdu();
             resumeEdu.setResumeId(resumeEduForm.getResumeId());
-            resumeEdu.setUserId(curUser().getId());
+            if(resumeEduForm.getUserId() != null){
+                resumeEdu.setUserId(resumeEduForm.getUserId());
+            }else{
+                resumeEdu.setUserId(curUser().getId());
+            }
         }
 
         if(StringUtils.isNotEmpty(resumeEduForm.getSchoolName())){
@@ -87,7 +91,7 @@ public class ResumeEduService extends BaseService{
     public void deleteResumeEdu(Integer id){
         ResumeEdu resumeEdu = resumeEduMapper.selectByPrimaryKey(id);
         if(resumeEdu != null){
-            resumeService.checkResumeCreator(resumeEdu.getResumeId());
+//            resumeService.checkResumeCreator(resumeEdu.getResumeId());
             resumeEduMapper.deleteByPrimaryKey(resumeEdu.getId());
         }
     }

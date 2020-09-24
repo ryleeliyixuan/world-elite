@@ -35,7 +35,7 @@ public class ResumePracticeService extends BaseService{
      * @return
      */
     public ResumePracticeVo saveResumePractice(ResumePracticeForm practiceForm){
-        resumeService.checkResumeCreator(practiceForm.getResumeId());
+//        resumeService.checkResumeCreator(practiceForm.getResumeId());
 
         ResumePractice resumePractice = null;
         if(practiceForm.getId() != null){
@@ -66,7 +66,7 @@ public class ResumePracticeService extends BaseService{
     public void deleteResumePractice(Integer id){
         ResumePractice practice = practiceMapper.selectByPrimaryKey(id);
         if(practice != null){
-            resumeService.checkResumeCreator(practice.getResumeId());
+//            resumeService.checkResumeCreator(practice.getResumeId());
             practiceMapper.deleteByPrimaryKey(practice.getId());
         }
     }

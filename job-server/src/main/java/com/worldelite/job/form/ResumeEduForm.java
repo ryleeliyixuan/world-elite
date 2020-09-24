@@ -15,6 +15,7 @@ import java.util.Date;
 public class ResumeEduForm {
     private Integer id; //教育经历ID
     private Long resumeId; //简历ID
+    private Long userId; //简历用户ID
     @NotBlank(message = "{edit.resume.edu.school.name.not.blank}")
     private String schoolName; //学校
     @NotBlank(message = "{edit.resume.edu.major.not.blank}")
