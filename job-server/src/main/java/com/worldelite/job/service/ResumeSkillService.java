@@ -35,7 +35,7 @@ public class ResumeSkillService extends BaseService{
      * @return
      */
     public List<ResumeSkillVo> saveResumeSkill(ResumeSkillForm resumeSkillForm){
-        resumeService.checkResumeCreator(resumeSkillForm.getResumeId());
+//        resumeService.checkResumeCreator(resumeSkillForm.getResumeId());
         resumeSkillMapper.deleteByResumeId(resumeSkillForm.getResumeId());
         if(ArrayUtils.isNotEmpty(resumeSkillForm.getTagList())){
             for(String skillTag: resumeSkillForm.getTagList()){

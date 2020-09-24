@@ -21,4 +21,5 @@ public class ApplyResumeVo {
     private Byte applyStatus; //状态
     @JSONField(format = "yyyy-MM-dd")
     private Date time; //申请时间
+    private Byte type; //简历类型：1.用户,2.企业
 }

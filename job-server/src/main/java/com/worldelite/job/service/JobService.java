@@ -177,7 +177,7 @@ public class JobService extends BaseService {
             return getNewestJobList(jobSearchForm);
         } else {
             //已登录用户组合相关条件
-            ResumeVo resumeVo = resumeService.getDefaultOrCreate(curUser().getId());
+            ResumeVo resumeVo = null;
             if (resumeVo.getUserExpectJob() != null) {
                 UserExpectJobVo expectJobVo = resumeVo.getUserExpectJob();
 
@@ -401,7 +401,7 @@ public class JobService extends BaseService {
             throw new ServiceException(ApiCode.INVALID_OPERATION);
         }
 
-        ResumeVo resumeVo = resumeService.getDefaultOrCreate(curUser().getId());
+        ResumeVo resumeVo = null;
         if (resumeVo == null) {
             throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
         }
@@ -416,6 +416,7 @@ public class JobService extends BaseService {
         newJobApply.setJobId(jobId);
         newJobApply.setUserId(curUser().getId());
         newJobApply.setStatus(JobApplyStatus.APPLY.value);
+        newJobApply.setType(JobApplyType.APPLICANT.value);
         newJobApply.setResumeId(Long.valueOf(resumeVo.getId()));
         jobApplyMapper.insertSelective(newJobApply);
 

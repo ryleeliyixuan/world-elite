@@ -128,6 +128,15 @@ public class UserApplicantService extends BaseService {
     }
 
     /**
+     * 通过用户ID获取用户数据
+     * @param id
+     * @return
+     */
+    public UserApplicant selectByPrimaryKey(Long id) {
+        return userApplicantMapper.selectByPrimaryKey(id);
+    }
+
+    /**
      * 修改用户信息
      * @param userForm
      */

@@ -123,7 +123,7 @@ public class EasyExcelExportService implements IExportExcelService {
         long exportRecordCount = 0;
 
         do {
-            pageResult = resumeService.getResumeList(listForm);
+            pageResult = null;
             for (ResumeVo resumeVo : pageResult.getList()) {
                 excelData.add(toResumeExcel(resumeVo));
                 exportRecordCount++;

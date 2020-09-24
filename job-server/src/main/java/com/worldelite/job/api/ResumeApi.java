@@ -3,6 +3,7 @@ package com.worldelite.job.api;
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.entity.ResumeApplicant;
 import com.worldelite.job.entity.ResumeAttach;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.*;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,6 +56,12 @@ public class ResumeApi extends BaseApi {
     @Autowired
     private ResumeAttachService resumeAttachService;
 
+    @Autowired
+    private ResumeApplicantService resumeApplicantService;
+
+    @Autowired
+    private JobApplyService jobApplyService;
+
     /**
      * 我的简历信息
      *
@@ -63,7 +71,7 @@ public class ResumeApi extends BaseApi {
     @GetMapping("my-resume")
     @ApiDoc
     public ApiResult<ResumeVo> myResume() {
-        ResumeVo resumeVo = resumeService.getDefaultOrCreate(curUser().getId());
+        ResumeVo resumeVo = resumeApplicantService.getDefaultOrCreate();
         return ApiResult.ok(resumeVo);
     }
 
@@ -77,33 +85,7 @@ public class ResumeApi extends BaseApi {
     @PostMapping("list")
     @ApiDoc
     public ApiResult<PageResult<ResumeVo>> getResumeList(@RequestBody ResumeListForm listForm){
-        PageResult pageResult = resumeService.getResumeList(listForm);
-        return ApiResult.ok(pageResult);
-    }
-
-    /**
-     * 搜索附件简历返回在线简历
-     * @param listForm
-     * @return
-     */
-    @RequireLogin
-    @PostMapping("list-by-attachment")
-    @ApiDoc
-    public ApiResult<PageResult<ResumeVo>> getResumeListByAttachment(@RequestBody ResumeAttachmentForm listForm){
-        PageResult pageResult = searchService.searchResumeAttachment(listForm);
-        return ApiResult.ok(pageResult);
-    }
-
-    /**
-     * 搜索附件简历返回附件文本
-     * @param listForm
-     * @return
-     */
-   // @RequireLogin
-    @PostMapping("list-attachment")
-    @ApiDoc
-    public ApiResult<PageResult<ResumeAttachVo>> getResumeAttachmentList(@RequestBody ResumeAttachmentForm listForm){
-        PageResult pageResult = searchService.searchResumeAttachment2(listForm);
+        PageResult pageResult = resumeApplicantService.getResumeList(listForm);
         return ApiResult.ok(pageResult);
     }
 
@@ -117,7 +99,7 @@ public class ResumeApi extends BaseApi {
     @GetMapping("resume-detail")
     @ApiDoc
     public ApiResult<ResumeVo> getResumeDetail(@RequestParam Long id) {
-        ResumeVo resumeVo = resumeService.getResumeDetail(id);
+        ResumeVo resumeVo = resumeApplicantService.getResumeDetail(id);
         return ApiResult.ok(resumeVo);
     }
 
@@ -131,7 +113,7 @@ public class ResumeApi extends BaseApi {
     @PostMapping("save-resume-basic")
     @ApiDoc
     public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm) {
-        ResumeVo resumeVo = resumeService.saveBasic(resumeForm);
+        ResumeVo resumeVo = resumeApplicantService.saveBasic(resumeForm);
         return ApiResult.ok(resumeVo);
     }
 
@@ -145,7 +127,7 @@ public class ResumeApi extends BaseApi {
     @PostMapping("del-resume-attachment")
     @ApiDoc
     public ApiResult delResumeAttachment(@RequestParam Long resumeId){
-        resumeService.delResumeAttachment(resumeId);
+        resumeApplicantService.delResumeAttachment(resumeId);
         return ApiResult.ok();
     }
 
@@ -278,7 +260,6 @@ public class ResumeApi extends BaseApi {
         return ApiResult.ok();
     }
 
-
     /**
      * 获取当前企业用户需要处理的简历列表
      *
@@ -290,7 +271,7 @@ public class ResumeApi extends BaseApi {
     @ApiDoc
     public ApiResult<PageResult<ApplyResumeVo>> getUserApplyResumeList(@RequestBody ApplyResumeListForm listForm) {
         listForm.setCreatorId(curUser().getId());
-        PageResult pageResult = resumeService.getApplyResumeList(listForm);
+        PageResult pageResult = jobApplyService.getApplyResumeList(listForm);
         return ApiResult.ok(pageResult);
     }
 
@@ -304,7 +285,7 @@ public class ResumeApi extends BaseApi {
     @RequireLogin(allow = UserType.ADMIN)
     @ApiDoc
     public ApiResult<PageResult<ApplyResumeVo>> getApplyResumeList(@RequestBody ApplyResumeListForm listForm) {
-        PageResult<ApplyResumeVo> pageResult = resumeService.getApplyResumeList(listForm);
+        PageResult<ApplyResumeVo> pageResult = jobApplyService.getApplyResumeList(listForm);
         return ApiResult.ok(pageResult);
     }
 
@@ -317,51 +298,77 @@ public class ResumeApi extends BaseApi {
     @PostMapping("handle-apply-resume")
     @ApiDoc
     public ApiResult handleApplyResume(@RequestBody JobApplyForm applyResumeForm) {
-        resumeService.handleApplyResume(applyResumeForm);
+        jobApplyService.handleApplyResume(applyResumeForm);
         return ApiResult.ok();
     }
 
-    /**
-     * 添加指定索引
-     * @param resumeAttach
-     * @return
-     */
-    @PostMapping("append-attachment-index")
-    public ApiResult appendAttachmentIndex(@RequestBody ResumeAttach resumeAttach){
-        resumeAttachService.appendIndex(resumeAttach);
-        return ApiResult.ok();
-    }
+//    /**
+//     * 添加指定索引
+//     * @param resumeAttach
+//     * @return
+//     */
+//    @PostMapping("append-attachment-index")
+//    public ApiResult appendAttachmentIndex(@RequestBody ResumeAttach resumeAttach){
+//        resumeAttachService.appendIndex(resumeAttach);
+//        return ApiResult.ok();
+//    }
+//
+//    /**
+//     * 删除指定索引
+//     * @param resumeId
+//     * @return
+//     */
+//    @PostMapping("del-attachment-index")
+//    public ApiResult delAttachmentIndex(Long resumeId){
+//        resumeAttachService.deleteIndex(resumeId);
+//        return ApiResult.ok();
+//    }
+//
+//    /**
+//     * 重建全部索引
+//     * @return
+//     */
+//    @PostMapping("rebuild-attachment-index")
+//    public ApiResult rebuildAttachmentIndex(){
+//        resumeAttachService.buildIndex();
+//        return ApiResult.ok();
+//    }
+//
+//    /**
+//     * 从简历数据库重建所有索引文件
+//     * @return
+//     */
+//    @PostMapping("rebuild-resume-index")
+//    @ApiDoc
+//    public ApiResult rebuildIndexFromResume(){
+//        resumeAttachService.buildResumeIndex();
+//        return ApiResult.ok();
+//    }
 
+    //Todo 待前端更新后删除
     /**
-     * 删除指定索引
-     * @param resumeId
+     * 搜索附件简历返回在线简历
+     * @param listForm
      * @return
      */
-    @PostMapping("del-attachment-index")
-    public ApiResult delAttachmentIndex(Long resumeId){
-        resumeAttachService.deleteIndex(resumeId);
-        return ApiResult.ok();
-    }
-
-    /**
-     * 重建全部索引
-     * @return
-     */
-    @PostMapping("rebuild-attachment-index")
-    public ApiResult rebuildAttachmentIndex(){
-        resumeAttachService.buildIndex();
-        return ApiResult.ok();
-    }
-
-    /**
-     * 从简历数据库重建所有索引文件
-     * @return
-     */
-    @PostMapping("rebuild-resume-index")
+    @RequireLogin
+    @PostMapping("list-by-attachment")
     @ApiDoc
-    public ApiResult rebuildIndexFromResume(){
-        resumeAttachService.buildResumeIndex();
-        return ApiResult.ok();
+    public ApiResult<PageResult<ResumeVo>> getResumeListByAttachment(@RequestBody ResumeAttachmentForm listForm){
+        PageResult pageResult = searchService.searchResumeAttachment(listForm);
+        return ApiResult.ok(pageResult);
     }
 
+    /**
+     * 搜索附件简历返回附件文本
+     * @param listForm
+     * @return
+     */
+    // @RequireLogin
+    @PostMapping("list-attachment")
+    @ApiDoc
+    public ApiResult<PageResult<ResumeAttachVo>> getResumeAttachmentList(@RequestBody ResumeAttachmentForm listForm){
+        PageResult pageResult = searchService.searchResumeAttachment2(listForm);
+        return ApiResult.ok(pageResult);
+    }
 }

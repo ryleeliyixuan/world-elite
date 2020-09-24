@@ -2,7 +2,6 @@ package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.JobApply;
 import com.worldelite.job.entity.JobApplyOptions;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

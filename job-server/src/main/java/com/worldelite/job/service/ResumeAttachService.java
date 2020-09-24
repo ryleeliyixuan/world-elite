@@ -277,7 +277,7 @@ public class ResumeAttachService extends BaseService{
             //判断简历文件是否存在
             if(StringUtils.isNotEmpty(attachResume) && attachResume.startsWith("attachment")){
                 //解析简历文件，解析结果插入附件简历表
-                resumeService.addOrUpdateResumeIndex(resume.getId(),resume.getUserId(),ossDomain+resume.getAttachResume());
+//                resumeService.addOrUpdateResumeIndex(resume.getId(),resume.getUserId(),ossDomain+resume.getAttachResume());
             }
         }
         //解析方法为异步方法，需要解析完成才能继续建索引
