@@ -129,13 +129,13 @@ export function applyResumeList(data) {
 //     })
 // }
 //
-// export function handleApplyResume(data) {
-//     return request({
-//         url: '/resume/handle-apply-resume',
-//         method: 'post',
-//         data
-//     })
-// }
+export function handleApplyResume(data) {
+    return request({
+        url: '/resume/handle-apply-resume',
+        method: 'post',
+        data
+    })
+}
 //
 // export function getResumeDetail(id) {
 //     return request({
