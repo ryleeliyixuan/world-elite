@@ -10,7 +10,7 @@
                              :underline="false"
                              v-for="item in industryList" :key="item.id"
                              @click="onLink(item)">
-                        {{item.name}}
+                        {{item.name + "   " + item.count}}
                     </el-link>
                 </div>
             </el-scrollbar>
@@ -23,12 +23,12 @@
                           ref="scrollbar">
                 <div class="company-list-container" v-for="item in industryList" :key="item.id">
                     <div class="company-name-container" v-if="companyList[item.id] && companyList[item.id].length > 0">
-                        <div class="company-name" :ref="item.name">{{item.name}}</div>
-                        <el-link :underline="false"
-                                 type="primary"
-                                 v-if="companyList[item.id].length > companyCount"
-                                 @click="onMore(item.id)">更多
-                        </el-link>
+                        <div class="company-name" :ref="item.name">{{item.name}} <span class="company-count">{{"共" + companyList[item.id].length + "家企业"}}</span></div>
+                        <el-button :underline="false"
+                                   type="primary"
+                                   v-if="companyList[item.id].length > companyCount"
+                                   @click="onMore(item.id)">更多
+                        </el-button>
                     </div>
                     <div class="company-item-container" v-if="companyList[item.id] && companyList[item.id].length > 0">
                         <el-card shadow="hover"
@@ -156,16 +156,17 @@
 
             getCompanyList() {
                 this.industryList.forEach(item => {
-                    this.getItem(item.id)
+                    this.getItem(item)
                 })
                 this.$emit("complete");
             },
 
-            getItem(id) {
+            getItem(item) {
                 this.$axios.get('/company/list-wiki-by-industry', {
-                    params: {industryId: id, keyword: this.keyword}
+                    params: {industryId: item.id, keyword: this.keyword}
                 }).then(data => {
-                    this.$set(this.companyList, id, data.data.list)
+                    this.$set(this.companyList, item.id, data.data.list);
+                    this.$set(item, "count", data.data.list.length);
                 })
             },
 
@@ -239,6 +240,12 @@
                     font-size: 18px;
                     font-weight: bold;;
                     color: #000;
+                }
+
+                .company-count {
+                    margin-left: 8px;
+                    font-size: 12px;
+                    color: #cccccc;
                 }
             }
 

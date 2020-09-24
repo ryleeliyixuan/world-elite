@@ -22,12 +22,15 @@
                                                :on-success="handleAvatarSuccess"
                                                :before-upload="beforeAvatarUpload"
                                                v-loading="avatarLoading">
-                                        <img v-if="resumeForm.avatar && resumeForm.avatar !== ''"
+                                        <img v-if="localAvatarURL"
+                                             :src="localAvatarURL"
+                                             class="avatar"/>
+                                        <img v-else-if="resumeForm.avatar && resumeForm.avatar !== ''"
                                              :src="resumeForm.avatar"
                                              class="avatar"/>
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                        <div slot="tip" class="el-upload__tip">建议大小：500 x 500</div>
                                     </el-upload>
+                                    <div class="el-upload__tip">建议大小：500 x 500</div>
                                 </div>
 
                                 <div class="resume-info col-lg-8 col-md-12 col-sm-12 col-xs-12">
@@ -436,7 +439,7 @@
                                     :key="country.id"
                             >
                                 <span style="float: left">{{ country.chineseName }}</span>
-                                <span style="float: right; color: #8492a6; font-size: 13px">+{{ country.phoneCode }}</span>
+                                <span style="float: right; color: #8492a6; font-size: 13px; width: 300px;">+{{ country.phoneCode }}</span>
                             </el-option>
                         </el-select>
                     </el-input>
@@ -1008,7 +1011,8 @@
                     },
                 },
                 resumeId: undefined, // 简历id，保存基本信息后赋值
-                avatarLoading: false
+                avatarLoading: false,
+                localAvatarURL: undefined
             };
         },
         watch: {
@@ -1088,9 +1092,11 @@
                                 this.uploadPicOptions.action = data.host;
                                 this.uploadPicOptions.params = data;
                                 this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                                this.localAvatarURL = URL.createObjectURL(file);
                                 resolve(data);
                             })
                             .catch((error) => {
+                                this.localAvatarURL = undefined;
                                 this.avatarLoading = false;
                                 reject(error);
                             });
@@ -1252,16 +1258,19 @@
             },
             handleEditExpectJob() {
                 this.showExpectJobDialog = true;
-                this.expectJobForm.cityIds = this.resume.userExpectJob.cityList.map(
-                    (city) => {
-                        return city.id;
-                    }
-                );
-                this.expectJobForm.categoryIds = this.resume.userExpectJob.categoryList.map(
-                    (category) => {
-                        return category.id;
-                    }
-                );
+                if(this.resume.userExpectJob) {
+                    this.expectJobForm.cityIds = this.resume.userExpectJob.cityList.map(
+                        (city) => {
+                            return city.id;
+                        }
+                    );
+                    this.expectJobForm.categoryIds = this.resume.userExpectJob.categoryList.map(
+                        (category) => {
+                            return category.id;
+                        }
+                    );
+                }
+
                 this.expectJobForm.minSalary = this.resume.userExpectJob.minSalary;
                 this.expectJobForm.maxSalary = this.resume.userExpectJob.maxSalary;
                 this.$nextTick(() => {
@@ -1693,6 +1702,13 @@
         font-size: 15px;
     }
 
+    $avatarSize: 100px;
+
+    .avatar-uploader {
+        width: $avatarSize;
+        height: $avatarSize;
+    }
+
     .avatar-uploader .el-upload {
         cursor: pointer;
         position: relative;
@@ -1702,8 +1718,6 @@
     .avatar-uploader .el-upload:hover {
         border-color: $info;
     }
-
-    $avatarSize: 100px;
 
     .avatar-uploader .avatar-uploader-icon {
         border: 1px dashed #d9d9d9;

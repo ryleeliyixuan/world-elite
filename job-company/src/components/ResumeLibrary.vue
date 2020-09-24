@@ -3,7 +3,7 @@
         <div :class="['app-container',{'vh-100':loading}]" v-if="resumeType===1">
             <div class="mt-3">
                 <el-row :gutter="10">
-                    <el-col :span="6">
+                    <el-col :span="6" v-if="false">
                         <el-select
                                 v-model="resumeType"
                                 placeholder="简历类型"
@@ -69,10 +69,6 @@
                             ></el-option>
                         </el-select>
                     </el-col>
-                </el-row>
-            </div>
-            <div class="mt-3">
-                <el-row :gutter="10">
                     <el-col :span="6">
                         <el-cascader
                                 placeholder="意向职位"
@@ -86,6 +82,11 @@
                                 size="small"
                         ></el-cascader>
                     </el-col>
+                </el-row>
+            </div>
+            <div class="mt-3">
+                <el-row :gutter="10">
+
                     <el-col :span="6">
                         <el-input
                                 @focus="moreCondition=true"
@@ -159,13 +160,8 @@
                             </el-select>
                         </el-col>
                     </transition>
-                </el-row>
-            </div>
-
-            <transition name="el-zoom-in-top">
-                <div class="mt-3" v-if="moreCondition">
-                    <el-row :gutter="10">
-                        <el-col :span="6">
+                    <transition name="el-zoom-in-top">
+                        <el-col :span="6" v-if="moreCondition">
                             <el-select
                                     v-model="listQuery.gender"
                                     clearable
@@ -184,9 +180,10 @@
                                 ></el-option>
                             </el-select>
                         </el-col>
-                    </el-row>
-                </div>
-            </transition>
+                    </transition>
+                </el-row>
+            </div>
+
             <pagination
                     v-show="pageResult.total"
                     :total="pageResult.total"
@@ -687,7 +684,7 @@
                     this.$axios.request({
                         url: "/resume-repository/add-from-user",
                         method: "post",
-                        params: {"resumeId": resume.id},
+                        params: {"resumeId": resume.id, status: 1, jobId: 0},
                     }).then(data => {
                         console.log(data);
                     })
@@ -701,7 +698,7 @@
                     cancelButtonText: "取消",
                     type: "warning"
                 }).then(() => {
-                    console.log( {id: parseInt(resume.id), status: 6})
+                    console.log({id: parseInt(resume.id), status: 6})
                     handleApplyResume({id: parseInt(resume.id), status: 6}).then(() => {
                         this.$message("操作成功");
                         this.reviewDrawerVisible = false;
