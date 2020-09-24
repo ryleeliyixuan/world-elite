@@ -204,7 +204,6 @@
                                @click="handleUselessResume(resume)"
                                small>不合适
                     </el-button>
-                    <!--            @click="handleApplyResume(6, activeApplyResume.id)"-->
                 </div>
                 <b-media @click="handleShowResume(resume)" style="cursor: pointer; width: calc(100% - 95px)">
                     <template v-slot:aside>
@@ -365,7 +364,6 @@
     import {formatListQuery, parseListQuery} from "@/utils/common";
     import ResumeView from "@/components/ResumeView";
     import Toast from "@/utils/toast";
-    import {handleApplyResume} from "@/api/resume_api";
 
     export default {
         name: "ResumeSearchPage",
@@ -691,19 +689,21 @@
                 })
             },
             handleUselessResume(resume) {
-                console.log("不合适");
-                console.log(resume);
                 this.$confirm("此操作将把该简历标识为不合适，是否继续？", "提示", { // 并通知应聘者，
                     confirmButtonText: "继续",
                     cancelButtonText: "取消",
                     type: "warning"
                 }).then(() => {
-                    console.log({id: parseInt(resume.id), status: 6})
-                    handleApplyResume({id: parseInt(resume.id), status: 6}).then(() => {
+                    this.$axios.request({
+                        url: "/resume-repository/add-from-user",
+                        method: "post",
+                        params: {"resumeId": resume.id, status: 6, jobId: 0},
+                    }).then(data => {
                         this.$message("操作成功");
                         this.reviewDrawerVisible = false;
                         this.getList();
-                    });
+                        console.log(data);
+                    })
                 });
 
             }
