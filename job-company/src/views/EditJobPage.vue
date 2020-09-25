@@ -112,7 +112,7 @@
                 </div>
             </el-form-item>
             <el-form-item label="职位描述" prop="description">
-                <quill-editor v-model="jobForm.description" :options="descriptionEditorOption" style="min-height: 200px"></quill-editor>
+                <quill-editor v-model="jobForm.description" :options="descriptionEditorOption" style="min-height: 200px;"></quill-editor>
             </el-form-item>
             <div class="job-description-container">
                 <div class="job-description-show">
