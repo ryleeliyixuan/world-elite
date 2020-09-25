@@ -285,7 +285,10 @@ public class ResumeRepositoryService extends BaseService{
 
     @Transactional
     public void saveAttachment(String attachmentName) {
-        ResumeVo resumeVo = resumeSDK.parse(attachmentName);
+        //获取文件路径，因为此处解析用，所以使用带cdn的域名
+        String filePath = AppUtils.absOssUrl(AppUtils.getOssKey(attachmentName));
+        System.out.println(filePath);
+        ResumeVo resumeVo = resumeSDK.parse(filePath);
         resumeVo.setAttachResume(AppUtils.getOssKey(attachmentName));
         //保存基本信息
         ResumeForm resumeForm = getResumeForm(resumeVo);
