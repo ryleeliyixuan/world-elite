@@ -69,7 +69,7 @@
                         </el-col>
                     </el-row>
                 </div>
-                <div class="resume-list mt-3">
+                <div class="resume-list mt-3" v-if="total>0">
                     <el-card class="box-card mb-3" v-for="applyResume in pageResult.list" :key="applyResume.id">
                         <div slot="header" class="clearfix text-small" style="line-height: 40px;padding-top: 10px">
                             <el-popover
@@ -179,6 +179,7 @@
                         </b-media>
                     </el-card>
                 </div>
+                <div v-else class="text-center" style="line-height: 200px;">暂无简历</div>
                 <pagination
                         v-show="total"
                         :total="total"

@@ -183,7 +183,7 @@
                     </transition>
                 </el-row>
             </div>
-
+            <div v-if="pageResult.total==0" class="text-center" style="line-height: 200px;">暂无简历</div>
             <pagination
                     v-show="pageResult.total"
                     :total="pageResult.total"

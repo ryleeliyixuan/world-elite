@@ -21,7 +21,8 @@
                 </div>
             </div>
 
-            <div class="job-list">
+            <div ></div>
+            <div class="job-list" v-if="total > 0">
                 <el-card
                         class="job-item mt-4 link-pointer"
                         shadow="hover"
@@ -110,6 +111,8 @@
                     </el-row>
                 </el-card>
             </div>
+            <div v-else class="text-center" style="line-height: 200px;">暂无职位</div>
+
             <pagination
                     v-show="total"
                     :total="total"
