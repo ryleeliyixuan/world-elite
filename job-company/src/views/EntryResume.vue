@@ -1665,7 +1665,7 @@
     }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
     @import "bootstrap/scss/bootstrap.scss";
 
     .ql-container .ql-editor {

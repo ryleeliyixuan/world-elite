@@ -16,8 +16,8 @@
                           :disabled="isModify"></el-input>
             </el-form-item>
 
-            <el-form-item label="职位类型" prop="categoryId">
-                <el-cascader placeholder="选择职位类型"
+            <el-form-item label="职位类别" prop="categoryId">
+                <el-cascader placeholder="选择职位类别"
                              :show-all-levels="false"
                              :options="jobCategoryOptions"
                              :props="jobCategoryProps"
@@ -33,12 +33,12 @@
                     <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="工作地点" prop="address">
+            <el-form-item label="工作地址" prop="address">
                 <el-input v-model="jobForm.address"
                           maxlength="250"
                           class="text-input-width"
                           show-word-limit
-                          placeholder="请填写工作地点"></el-input>
+                          placeholder="请填写工作地址"></el-input>
             </el-form-item>
             <el-form-item label="学历要求" prop="minDegreeId">
                 <el-select v-model="jobForm.minDegreeId" filterable clearable placeholder="请选择最低学历">
@@ -57,11 +57,12 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="薪资待遇" prop="salary">
-                <el-select v-model="jobForm.minSalary" placeholder="最低" class="salary-option">
+                <el-select v-model="jobForm.minSalary" placeholder="薪资范围" class="salary-option">
                     <el-option v-for="item in minSalaryOptions"
                                :key="item.value"
                                :label="item.label"
-                               :value="item.value"></el-option>
+                               :value="item.value"
+                    ></el-option>
                 </el-select>
                 <el-select v-model="jobForm.maxSalary" placeholder="最高" class="ml-2 salary-option">
                     <el-option v-for="item in maxSalaryOptions"
@@ -112,7 +113,14 @@
                 </div>
             </el-form-item>
             <el-form-item label="职位描述" prop="description">
-                <quill-editor v-model="jobForm.description" :options="descriptionEditorOption" style="min-height: 200px;"></quill-editor>
+                <quill-editor v-model="jobForm.description"
+                              :options="descriptionEditorOption"
+                              style="min-height: 200px;"
+                              @change="onEditorChange($event)">
+                </quill-editor>
+                <div style="bottom: 0; text-align: right; position: absolute; right: 12px;">
+                    {{contentLength}}/300
+                </div>
             </el-form-item>
             <div class="job-description-container">
                 <div class="job-description-show">
@@ -204,6 +212,7 @@
         data() {
             return {
                 dialogVisible: false,
+                Salary: '',
                 jobForm: {
                     id: undefined,
                     name: undefined,
@@ -248,7 +257,7 @@
                 jobTypeOptions: [],
                 descriptionEditorOption: {
                     theme: "snow",
-                    placeholder: "岗位职责，任职要求等",
+                    placeholder: "1.岗位职责 2.任职要求 3.相应技能",
                     modules: {
                         toolbar: [["bold"], [{list: "ordered"}, {list: "bullet"}]]
                     }
@@ -259,6 +268,7 @@
                 industryList: [],//行业列表
                 jobDescription: undefined, // 职位描述
                 jobDescriptionShow: false, // 职位描述开关
+                contentLength: 0, // 字数统计
             };
         },
         created() {
@@ -300,8 +310,8 @@
                 listByType(8).then(response => (this.jobTypeOptions = response.data.list));
                 listByType(2).then(response => (this.cityOptions = response.data.list));
                 // listByType(9).then(response => (this.experienceOptions = response.data.list)); // TODO ： experienceOptions需要网络获取
-                this.experienceOptions = [{id: 1, name: "不限"}, {id: 2, name: "1年以下"}, {id: 3, name: "1-3年"},
-                    {id: 4, name: "3-5年"}, {id: 5, name: "5-10年"}, {id: 6, name: "10年以上"}, {id: 7, name: "在读"}];
+                this.experienceOptions = [{id: 1, name: "在读"}, {id: 2, name: "1年以下"}, {id: 3, name: "1-3年"},
+                    {id: 4, name: "3-5年"}, {id: 5, name: "5-10年"}, {id: 6, name: "10年以上"}, {id: 7, name: "不限"}];
                 this.minSalaryOptions = this.generateSalaryOptions(0, 250);
                 this.salaryMonthOptions = this.generateSalaryMonthOptions(0, 24);
                 if (jobId) {
@@ -349,7 +359,7 @@
                 let step;
 
                 if (minVal < 30) {
-                    step = 1;
+                    step = 5;
                 } else if (minVal < 50) {
                     step = 2;
                 } else if (minVal < 80) {
@@ -357,6 +367,7 @@
                 } else {
                     step = 10;
                 }
+
                 for (let i = 0; i !== length; i++) {
                     minVal = minVal + step;
                     salaryOptions.push({
@@ -465,7 +476,12 @@
                     })
                     this.jobForm.categoryId = this.jobForm.categoryId[2];
                 }
-            }
+            },
+
+            onEditorChange(event) {
+                event.quill.deleteText(300, 1);
+                this.contentLength = event.quill.getLength() - 1
+            },
         }
     };
 </script>
@@ -474,6 +490,10 @@
     .app-container {
         margin: 0 auto;
         width: 1200px;
+    }
+
+    /deep/ .el-select-dropdown__wrap {
+        max-width: 200px !important;
     }
 
     .text-input-width {
@@ -610,7 +630,7 @@
 
 
         .ql-container .ql-editor {
-            min-height: 200px!important;
+            min-height: 200px !important;
             font-size: 15px;
         }
 

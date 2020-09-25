@@ -4,6 +4,7 @@
       <ResumeView :resumeId="resumeId"></ResumeView>
     </div>
     <div class="operate-box">
+
       <el-button
         type="primary"
         icon="el-icon-document"
@@ -47,6 +48,7 @@ export default {
           this.exporting = false;
         });
     }
+
   }
 };
 </script>
