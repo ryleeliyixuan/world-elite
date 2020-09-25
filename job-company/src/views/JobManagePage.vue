@@ -250,6 +250,7 @@
     .app-container {
         margin: 0 auto;
         width: 1000px;
+        min-height: calc(100vh - 430px);
     }
 
     .text-gray {

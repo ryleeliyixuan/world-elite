@@ -10,7 +10,7 @@
                              :underline="false"
                              v-for="item in industryList" :key="item.id"
                              @click="onLink(item)">
-                        {{item.name + "   " + item.count}}
+                        {{item.name + " " + item.count}}
                     </el-link>
                 </div>
             </el-scrollbar>
@@ -23,7 +23,8 @@
                           ref="scrollbar">
                 <div class="company-list-container" v-for="item in industryList" :key="item.id">
                     <div class="company-name-container" v-if="companyList[item.id] && companyList[item.id].length > 0">
-                        <div class="company-name" :ref="item.name">{{item.name}} <span class="company-count">{{"共" + companyList[item.id].length + "家企业"}}</span></div>
+                        <div class="company-name" :ref="item.name">{{item.name}} <span
+                                class="company-count">{{"共" + companyList[item.id].length + "家企业"}}</span></div>
                         <el-button :underline="false"
                                    type="primary"
                                    v-if="companyList[item.id].length > companyCount"
@@ -212,10 +213,15 @@
             .left-scrollbar {
                 height: 100%;
 
+                /deep/ .el-scrollbar__view {
+                    height: 100%;
+                }
+
                 .left-item {
                     display: block;
                     font-size: 14px;
                     margin-bottom: 20px;
+                    line-height: 16px;
                 }
             }
         }
@@ -226,6 +232,11 @@
 
             .main-scrollbar {
                 height: 100%;
+
+                /deep/ .el-scrollbar__view {
+                    height: 100%;
+                }
+
             }
         }
 

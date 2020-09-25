@@ -79,7 +79,7 @@
                                     width="200"
                                     trigger="hover"
                                     :content="applyResume.tagVos[0].tagName">
-<!--                                <el-button type="success" plain slot="reference">{{applyResume.tagVos[0].tagName}}</el-button>-->
+                                <!--                                <el-button type="success" plain slot="reference">{{applyResume.tagVos[0].tagName}}</el-button>-->
                                 <el-button type="success" plain slot="reference">{{applyResume.tagVos[0].tagName}}</el-button>
                             </el-popover>
                             <span>应聘岗位：{{applyResume.job.name}}</span>
@@ -372,6 +372,14 @@
         created() {
             this.initData();
         },
+        mounted() {
+            window.onbeforeunload = function () {
+                return "a";
+            };
+        },
+        beforeDestroy() {
+            window.onbeforeunload = undefined;
+        },
         methods: {
             initData() {
                 listByType(1).then(response => (this.degreeOptions = response.data.list));
@@ -582,8 +590,6 @@
                 });
             },
             handleSuccess(response, file, fileList) {
-                console.log(file.name + "  " + file.raw.url);
-                console.log(fileList);
                 this.$axios.request({
                     url: "/resume-repository/save-attachment",
                     method: "post",
@@ -596,7 +602,7 @@
             handlerRemove(file) {
                 console.log(file);
             },
-            entryResume(){
+            entryResume() {
                 this.$router.push("/entry-resume");
             }
         }

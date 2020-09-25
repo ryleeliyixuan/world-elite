@@ -22,12 +22,14 @@
                                                :on-success="handleAvatarSuccess"
                                                :before-upload="beforeAvatarUpload"
                                                v-loading="avatarLoading">
-                                        <img v-if="localAvatarURL"
-                                             :src="localAvatarURL"
-                                             class="avatar"/>
-                                        <img v-else-if="resumeForm.avatar && resumeForm.avatar !== ''"
-                                             :src="resumeForm.avatar"
-                                             class="avatar"/>
+                                        <el-image v-if="localAvatarURL"
+                                                  :src="localAvatarURL"
+                                                  fit="cover"
+                                                  class="avatar"></el-image>
+                                        <el-image v-else-if="resume.avatar && resume.avatar !== ''"
+                                                  :src="resume.avatar"
+                                                  fit="cover"
+                                                  class="avatar"></el-image>
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                     <div class="el-upload__tip">建议大小：500 x 500</div>
@@ -1258,7 +1260,7 @@
             },
             handleEditExpectJob() {
                 this.showExpectJobDialog = true;
-                if(this.resume.userExpectJob) {
+                if (this.resume.userExpectJob) {
                     this.expectJobForm.cityIds = this.resume.userExpectJob.cityList.map(
                         (city) => {
                             return city.id;

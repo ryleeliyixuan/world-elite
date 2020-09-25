@@ -208,7 +208,7 @@
                 <b-media @click="handleShowResume(resume)" style="cursor: pointer; width: calc(100% - 95px)">
                     <template v-slot:aside>
                         <el-badge class="item">
-                            <el-avatar :src="resume.avatar"></el-avatar>
+                            <el-image :src="resume.avatar" fit="cover" style="width: 40px; height: 40px; border-radius: 20px; overflow: hidden;"></el-image>
                         </el-badge>
                     </template>
                     <b-media-body>

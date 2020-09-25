@@ -472,8 +472,8 @@
 
 <style scoped>
     .app-container {
-        margin: 0px 100px;
-        width: 800px;
+        margin: 0 auto;
+        width: 1200px;
     }
 
     .text-input-width {
@@ -650,7 +650,7 @@
             }
 
             .job-description {
-                width: 700px;
+                width: 1098px;
                 border: 1px solid #c0c4cc;
                 padding: 15px;
                 margin-bottom: 30px;
