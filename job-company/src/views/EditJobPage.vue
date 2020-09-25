@@ -610,7 +610,7 @@
 
 
         .ql-container .ql-editor {
-            min-height: 200px;
+            min-height: 200px!important;
             font-size: 15px;
         }
 
