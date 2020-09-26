@@ -44,7 +44,7 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private Integer candidateResumeCount; // 候选简历数
     private Integer interviewResumeCount; //进入面试简历数
 
-    private DictVo experienceId; //工作经验
+    private DictVo experience; //工作经验
     private String[] industryTags; //行业领域
     private String[] skillTags; //技能标签
 

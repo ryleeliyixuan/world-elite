@@ -504,7 +504,7 @@ public class JobService extends BaseService {
         jobVo.setJobType(dictService.getById(job.getJobType()));
         jobVo.setRecruitType(dictService.getById(job.getRecruitType()));
         jobVo.setSalary(dictService.getById(job.getSalaryId()));
-        jobVo.setExperienceId(dictService.getById(job.getExperienceId()));
+        jobVo.setExperience(dictService.getById(job.getExperienceId()));
         if (includeCompany) {
             jobVo.setCompanyUser(companyService.getCompanyUser(job.getCreatorId()));
         }
