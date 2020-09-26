@@ -139,10 +139,23 @@ public class JobService extends BaseService {
 
         job.setDescription(jobForm.getDescription());
         job.setJobType(jobForm.getJobType());
+        job.setRecruitType(jobForm.getRecruitType());
         job.setMinDegreeId(jobForm.getMinDegreeId());
-        job.setMinSalary(jobForm.getMinSalary());
-        job.setMaxSalary(jobForm.getMaxSalary());
+        job.setSalaryId(jobForm.getSalaryId());
+        DictVo salary = dictService.getById(jobForm.getSalaryId());
+        String salaryStr = salary.getValue()==null?"":salary.getValue();
+        String[] salarys = salaryStr.split("-");
+        if(salarys.length==2){
+            job.setMinSalary(Integer.valueOf(salarys[0]));
+            job.setMaxSalary(Integer.valueOf(salarys[1]));
+        }else{
+            job.setMinSalary(0);
+            job.setMaxSalary(0);
+        }
         job.setSalaryMonths(jobForm.getSalaryMonths());
+        job.setExperienceId(jobForm.getExperienceId());
+        job.setSkillTags(jobForm.getSkillTags());
+        job.setIndustryTags(jobForm.getIndustryTags());
 
         if (job.getId() == null) {
             job.setCreatorId(curUser().getId());
@@ -489,6 +502,8 @@ public class JobService extends BaseService {
         jobVo.setMinDegree(dictService.getById(job.getMinDegreeId()));
         jobVo.setCity(dictService.getById(job.getCityId()));
         jobVo.setJobType(dictService.getById(job.getJobType()));
+        jobVo.setSalary(dictService.getById(job.getSalaryId()));
+        jobVo.setExperienceId(dictService.getById(job.getExperienceId()));
         if (includeCompany) {
             jobVo.setCompanyUser(companyService.getCompanyUser(job.getCreatorId()));
         }

@@ -100,4 +100,8 @@ public class JobCategoryIndustryService {
     public void deleteJobCategoryIndustryById(final long jobCategoryIndustryId) {
         jobCategoryIndustryMapper.deleteByPrimaryKey(jobCategoryIndustryId);
     }
+
+    public String[] getJobIndustryByName(String name) {
+        return jobIndustryMapper.selectByName(name);
+    }
 }

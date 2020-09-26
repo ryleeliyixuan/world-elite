@@ -19,8 +19,8 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private JobCategoryVo category; //职位类型
     private String depart; //部门
     private DictVo minDegree; // 学历要求
-    private Integer minSalary; //最低薪资
-    private Integer maxSalary;//最高薪资
+    private DictVo salary; //薪资范围ID
+    private Integer recruitType; //招聘类型
     private Integer salaryMonths; //发放月数
     private DictVo city; //工作城市
     private Byte status; //职位状态
@@ -44,9 +44,9 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private Integer candidateResumeCount; // 候选简历数
     private Integer interviewResumeCount; //进入面试简历数
 
-    private Integer experience; //工作经验
-    private String industryTags; //行业领域
-    private String skillTags; //技能标签
+    private DictVo experienceId; //工作经验
+    private String[] industryTags; //行业领域
+    private String[] skillTags; //技能标签
 
     @Override
     public JobVo asVo(Job job) {
@@ -54,16 +54,13 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setName(job.getName());
         setDepart(job.getDepart());
         setCreatorId(job.getCreatorId());
-        setMinSalary(job.getMinSalary());
-        setMaxSalary(job.getMaxSalary());
         setSalaryMonths(job.getSalaryMonths());
         setStatus(job.getStatus());
         setDescription(job.getDescription());
         setTime(job.getPubTime());
         setAddress(job.getAddress());
-        setExperience(job.getExperience());
-        setIndustryTags(job.getIndustryTags());
-        setSkillTags(job.getSkillTags());
+        setIndustryTags(job.getIndustryTags().split(","));
+        setSkillTags(job.getSkillTags().split(","));
         return this;
     }
 }

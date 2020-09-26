@@ -57,4 +57,6 @@ public interface JobSkillMapper {
     List<JobSkill> selectJobSkillList();
 
     List<JobSkill> selectByJobCategoryId(long jobCategoryId);
+
+    String[] selectByCategoryIdAndName(JobSkill jobSkill);
 }
