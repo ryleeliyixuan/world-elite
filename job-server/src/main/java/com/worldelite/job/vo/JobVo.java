@@ -14,13 +14,13 @@ public class JobVo implements VoConvertable<JobVo, Job>{
 
     private String id; //职位ID
     private DictVo jobType; //职位类型
+    private DictVo recruitType; //招聘类型
     private String name; //职位名称
     private CompanyUserVo companyUser; //企业用户
     private JobCategoryVo category; //职位类型
     private String depart; //部门
     private DictVo minDegree; // 学历要求
     private DictVo salary; //薪资范围ID
-    private Integer recruitType; //招聘类型
     private Integer salaryMonths; //发放月数
     private DictVo city; //工作城市
     private Byte status; //职位状态
