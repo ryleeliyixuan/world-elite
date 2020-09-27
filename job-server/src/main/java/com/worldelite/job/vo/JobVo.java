@@ -3,6 +3,7 @@ package com.worldelite.job.vo;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.entity.Job;
 import lombok.Data;
+import me.zhyd.oauth.utils.StringUtils;
 
 import java.util.Date;
 
@@ -59,8 +60,16 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setDescription(job.getDescription());
         setTime(job.getPubTime());
         setAddress(job.getAddress());
-        setIndustryTags(job.getIndustryTags().split(","));
-        setSkillTags(job.getSkillTags().split(","));
+        if(StringUtils.isNotEmpty(job.getIndustryTags())) {
+            setIndustryTags(job.getIndustryTags().split(","));
+        }else{
+            setIndustryTags(new String[]{});
+        }
+        if(StringUtils.isNotEmpty(job.getSkillTags())) {
+            setSkillTags(job.getSkillTags().split(","));
+        }else{
+            setSkillTags(new String[]{});
+        }
         return this;
     }
 }
