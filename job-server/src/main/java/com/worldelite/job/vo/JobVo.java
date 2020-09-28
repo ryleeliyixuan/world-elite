@@ -3,6 +3,7 @@ package com.worldelite.job.vo;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.entity.Job;
 import lombok.Data;
+import me.zhyd.oauth.utils.StringUtils;
 
 import java.util.Date;
 
@@ -14,13 +15,13 @@ public class JobVo implements VoConvertable<JobVo, Job>{
 
     private String id; //职位ID
     private DictVo jobType; //职位类型
+    private DictVo recruitType; //招聘类型
     private String name; //职位名称
     private CompanyUserVo companyUser; //企业用户
     private JobCategoryVo category; //职位类型
     private String depart; //部门
     private DictVo minDegree; // 学历要求
-    private Integer minSalary; //最低薪资
-    private Integer maxSalary;//最高薪资
+    private DictVo salary; //薪资范围ID
     private Integer salaryMonths; //发放月数
     private DictVo city; //工作城市
     private Byte status; //职位状态
@@ -44,9 +45,9 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private Integer candidateResumeCount; // 候选简历数
     private Integer interviewResumeCount; //进入面试简历数
 
-    private Integer experience; //工作经验
-    private String industryTags; //行业领域
-    private String skillTags; //技能标签
+    private DictVo experience; //工作经验
+    private String[] industryTags; //行业领域
+    private String[] skillTags; //技能标签
 
     @Override
     public JobVo asVo(Job job) {
@@ -54,16 +55,21 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setName(job.getName());
         setDepart(job.getDepart());
         setCreatorId(job.getCreatorId());
-        setMinSalary(job.getMinSalary());
-        setMaxSalary(job.getMaxSalary());
         setSalaryMonths(job.getSalaryMonths());
         setStatus(job.getStatus());
         setDescription(job.getDescription());
         setTime(job.getPubTime());
         setAddress(job.getAddress());
-        setExperience(job.getExperience());
-        setIndustryTags(job.getIndustryTags());
-        setSkillTags(job.getSkillTags());
+        if(StringUtils.isNotEmpty(job.getIndustryTags())) {
+            setIndustryTags(job.getIndustryTags().split(","));
+        }else{
+            setIndustryTags(new String[]{});
+        }
+        if(StringUtils.isNotEmpty(job.getSkillTags())) {
+            setSkillTags(job.getSkillTags().split(","));
+        }else{
+            setSkillTags(new String[]{});
+        }
         return this;
     }
 }

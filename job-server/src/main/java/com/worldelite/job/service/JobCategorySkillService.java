@@ -2,6 +2,7 @@ package com.worldelite.job.service;
 
 import com.worldelite.job.entity.JobCategorySkill;
 import com.worldelite.job.entity.JobSkill;
+import com.worldelite.job.entity.JobSkillOptions;
 import com.worldelite.job.form.JobCategorySkillForm;
 import com.worldelite.job.form.JobSkillForm;
 import com.worldelite.job.mapper.JobCategorySkillMapper;
@@ -43,6 +44,13 @@ public class JobCategorySkillService {
         }
 
         return Collections.emptyList();
+    }
+
+    public String[] getJobSkillByName(Integer categoryId,String name){
+        JobSkillOptions jobSkillOptions = new JobSkillOptions();
+        jobSkillOptions.setCategoryId(categoryId);
+        jobSkillOptions.setName(name);
+        return jobSkillMapper.selectByCategoryIdAndName(jobSkillOptions);
     }
 
     /**

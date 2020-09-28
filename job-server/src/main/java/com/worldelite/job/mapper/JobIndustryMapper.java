@@ -54,4 +54,6 @@ public interface JobIndustryMapper {
     int updateByPrimaryKey(JobIndustry record);
 
     List<JobIndustry> listAll();
+
+    String[] selectByName(String name);
 }

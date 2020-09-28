@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.worldelite.job.mapper.JobSkillMapper">
+  <select id="selectByCategoryIdAndName" parameterType="com.worldelite.job.entity.JobSkill" resultType="java.lang.String">
+    select
+    name
+    from t_job_skill
+    <where>
+      <if test="name != null">
+        and name like concat('%',#{name,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="categoryId != null">
+        and id in (select skill_id from t_job_category_skill where category_id = #{categoryId,jdbcType=BIGINT})
+      </if>
+    </where>
+    limit 5
+  </select>
+</mapper>
+
