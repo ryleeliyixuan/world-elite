@@ -139,5 +139,6 @@ export default {
 .app-container {
   width: 400px;
   margin: 20px auto;
+  min-height: calc(100vh - 430px);
 }
 </style>

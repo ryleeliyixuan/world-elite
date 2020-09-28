@@ -142,6 +142,7 @@ export default {
 <style scoped>
 .app-container {
   margin: 30px auto;
+  min-height: calc(100vh - 430px);
 }
 .salary-text {
   font-size: 20px;

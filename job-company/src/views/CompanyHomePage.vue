@@ -211,6 +211,9 @@ export default {
 </script>
 
 <style scoped>
+  .app-container{
+    min-height: calc(100vh - 430px);
+  }
 .company-logo {
   width: 100px;
   height: 100px;
