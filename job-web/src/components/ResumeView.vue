@@ -52,7 +52,8 @@
             class="ml-3 time-text"
           >{{resumeEdu.startTime}}到{{resumeEdu.finishTime}}</span>
         </h6>
-        <p>{{resumeEdu.degree.name}} / {{resumeEdu.majorName}} / GPA {{resumeEdu.gpa}}</p>
+          <span>{{resumeEdu.degree.name}} / {{resumeEdu.majorName}}</span>
+          <span v-if="resumeEdu.gpa > 0 && resumeEdu.gpa!==''"> / GPA {{resumeEdu.gpa}} </span>
       </div>
     </div>
     <div
