@@ -272,7 +272,8 @@
             <el-dialog :visible.sync="dialogVisible3"
                        class="dialog-container"
                        width="800px"
-                       title="简历上传">
+                       title="简历上传"
+                       :before-close="onDialogFileUpdateClose">
                 <div style="height: 1px; margin: 5px; background: #cccccc"></div>
                 <el-upload
                         class="upload-pdf"
@@ -286,7 +287,17 @@
                         :before-upload="beforeFileUpload">
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <div class="el-upload__tip" slot="tip">只能上传pdf文件，且不超过2Mb</div>
+                    <div class="el-upload__tip" slot="tip">
+                        只能上传pdf文件，且不超过2Mb
+                        <div class="d-flex align-items-center">
+                            <el-progress :percentage="fileUpdateStatus.progress" :show-text="false" class="flex-grow-1 m-2"></el-progress>
+                            <span>简历上传{{fileUpdateStatus.current}} / {{fileUpdateStatus.total}}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <el-progress :percentage="fileParseStatus.progress" :show-text="false" class="flex-grow-1 m-2"></el-progress>
+                            <span>简历解析{{fileParseStatus.current}} / {{fileParseStatus.total}}</span>
+                        </div>
+                    </div>
                 </el-upload>
             </el-dialog>
         </div>
@@ -364,6 +375,16 @@
                     params: {},
                     fileUrl: "",
                     acceptFileType: ".pdf"
+                },
+                fileUpdateStatus: {
+                    progress: 0,
+                    total: 0,
+                    current: 0
+                },
+                fileParseStatus: {
+                    progress: 0,
+                    total: 0,
+                    current: 0
                 }
             };
         },
@@ -374,13 +395,15 @@
             this.initData();
         },
         mounted() {
-            window.onbeforeunload = function () {
+            window.onbeforeunload = () => {
                 return "a";
             };
         },
+
         beforeDestroy() {
             window.onbeforeunload = undefined;
         },
+
         methods: {
             initData() {
                 listByType(1).then(response => (this.degreeOptions = response.data.list));
@@ -476,7 +499,6 @@
                 this.lastEditComment = item;
                 this.updateComment = item.comment;
                 item.edit = true;
-
             },
 
             onNoteCancel(item) {
@@ -591,11 +613,27 @@
                 });
             },
             handleSuccess(response, file, fileList) {
+                this.fileUpdateStatus.total = fileList.length;
+                this.fileUpdateStatus.current = fileList.filter(file => file.status === "success").length;
+                this.fileUpdateStatus.progress = parseInt((this.fileUpdateStatus.current * 100 / this.fileUpdateStatus.total).toFixed(0));
+
+                this.fileParseStatus.total = this.fileUpdateStatus.total;
+
                 this.$axios.request({
                     url: "/resume-repository/save-attachment",
                     method: "post",
                     params: {"attachmentName": file.raw.url},
                 }).then(data => {
+                    this.fileParseStatus.current++;
+                    this.fileParseStatus.progress = parseInt((this.fileParseStatus.current * 100 / this.fileParseStatus.total).toFixed(0));
+                    if(!this.dialogVisible3 && this.fileParseStatus.current === this.fileParseStatus.total) {
+                        this.$notify({
+                            title: '成功',
+                            message: '简历已全部上传并解析成功',
+                            type: 'success'
+                        });
+                    }
+                    window.onbeforeunload = undefined;
                     console.log(data);
                 })
             },
@@ -605,6 +643,18 @@
             },
             entryResume() {
                 this.$router.push("/entry-resume");
+            },
+
+            onDialogFileUpdateClose(done) {
+                this.$confirm('若您关闭此弹窗，简历上传及解析将在后台进行，完成后将以notification/email提醒，届时请刷新简历库页面', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    done();
+                }).catch(() => {
+
+                });
             }
         }
     };

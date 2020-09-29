@@ -4,7 +4,7 @@
             <div class="session1-left">
                 <div class="text-gray text-small" v-if="job.companyUser && job.companyUser.company">{{job.companyUser.company.name}}招聘</div>
                 <div class="session1-job-name">{{job.name}}
-                    <span class="salary-text">{{`${job.minSalary}K - ${job.maxSalary}K`}}{{job.salaryMonths? ` × ${job.salaryMonths}个月` : ''}}</span>
+                    <span class="salary-text">{{job.salary.name}}{{job.salaryMonths? ` × ${job.salaryMonths}个月` : ''}}</span>
                 </div>
                 <div class="mt-2">{{job.city? job.city.name: ''}} / {{job.minDegree? job.minDegree.name: ''}} / {{job.jobType? job.jobType.name: ''}}</div>
                 <div class="mt-2 text-gray text-small">{{job.time}}</div>

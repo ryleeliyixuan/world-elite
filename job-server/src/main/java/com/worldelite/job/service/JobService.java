@@ -414,7 +414,7 @@ public class JobService extends BaseService {
             throw new ServiceException(ApiCode.INVALID_OPERATION);
         }
 
-        ResumeVo resumeVo = null;
+        ResumeVo resumeVo = resumeService.getDefaultOrCreate();;
         if (resumeVo == null) {
             throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
         }
