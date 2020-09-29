@@ -56,7 +56,7 @@ public class JobService extends BaseService {
 
     @Autowired
     @Lazy
-    private ResumeService resumeService;
+    private ResumeApplicantService resumeService;
 
     @Autowired
     private FavoriteService favoriteService;
@@ -190,7 +190,7 @@ public class JobService extends BaseService {
             return getNewestJobList(jobSearchForm);
         } else {
             //已登录用户组合相关条件
-            ResumeVo resumeVo = null;
+            ResumeVo resumeVo = resumeService.getDefaultOrCreate();;
             if (resumeVo.getUserExpectJob() != null) {
                 UserExpectJobVo expectJobVo = resumeVo.getUserExpectJob();
 
@@ -414,7 +414,7 @@ public class JobService extends BaseService {
             throw new ServiceException(ApiCode.INVALID_OPERATION);
         }
 
-        ResumeVo resumeVo = null;
+        ResumeVo resumeVo = resumeService.getDefaultOrCreate();;
         if (resumeVo == null) {
             throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
         }
@@ -481,7 +481,7 @@ public class JobService extends BaseService {
         if(job == null){
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
-        ResumeVo resumeVo = resumeService.getResumeInfo(resumeId);
+        ResumeVo resumeVo = resumeService.getResumeDetail(resumeId);
         if(resumeVo == null){
             throw new ServiceException("简历不存在，请检查输入的简历ID", ApiCode.OBJECT_NOT_FOUND);
         }
