@@ -481,7 +481,7 @@ public class JobService extends BaseService {
         if(job == null){
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
-        ResumeVo resumeVo = resumeService.getResumeInfo(resumeId);
+        ResumeVo resumeVo = resumeService.getResumeDetail(resumeId);
         if(resumeVo == null){
             throw new ServiceException("简历不存在，请检查输入的简历ID", ApiCode.OBJECT_NOT_FOUND);
         }
