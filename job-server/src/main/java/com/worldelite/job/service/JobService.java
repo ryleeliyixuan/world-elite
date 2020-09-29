@@ -56,7 +56,7 @@ public class JobService extends BaseService {
 
     @Autowired
     @Lazy
-    private ResumeService resumeService;
+    private ResumeApplicantService resumeService;
 
     @Autowired
     private FavoriteService favoriteService;
@@ -190,7 +190,7 @@ public class JobService extends BaseService {
             return getNewestJobList(jobSearchForm);
         } else {
             //已登录用户组合相关条件
-            ResumeVo resumeVo = null;
+            ResumeVo resumeVo = resumeService.getDefaultOrCreate();;
             if (resumeVo.getUserExpectJob() != null) {
                 UserExpectJobVo expectJobVo = resumeVo.getUserExpectJob();
 
