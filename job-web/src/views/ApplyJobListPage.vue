@@ -36,7 +36,7 @@
             <div class>
               <b
                 class="text-danger"
-              >{{`${job.minSalary} - ${job.maxSalary}K`}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
+              >{{job.salary.name}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
               <span
                 class="ml-3 text-gray text-small"
               >{{`${job.city?job.city.name:''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
