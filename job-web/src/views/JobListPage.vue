@@ -72,7 +72,7 @@
                 <div class="section3-left-container">
                     <h6 class="section3-job-name">{{job.name}}</h6>
                     <div>
-                        <b class="section3-salary">{{`${job.minSalary} - ${job.maxSalary}K`}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
+                        <b class="section3-salary">{{job.salary.name}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
                         <span class="section3-city-degree text-gray text-small">{{`${job.city? job.city.name : ''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
                     </div>
                 </div>
@@ -195,11 +195,15 @@
                             sort: "+position"
                         }).then(response => {
                             this.pageResult.list = response.data.list.map(item => item.object);
+                            console.log(1111111);
+                            console.log(this.pageResult.list)
                             this.total = response.data.total;
                             this.$emit("complete");
 
                         });
                     } else {
+                        console.log(2222222);
+                        console.log(this.pageResult.list);
                         this.pageResult = response.data;
                         this.total = this.pageResult.total;
                         this.$emit("complete");
