@@ -19,7 +19,7 @@
          <p>
           <el-link href="/login" type="primary" :underline="false">重新登录</el-link>
         </p>
-      </div>  
+      </div>
     </div>
     <div v-else>
         <p>你还没有提交资料，请先提交提交申请资料</p>
@@ -53,5 +53,6 @@ export default {
 .app-container {
   width: 900px;
   margin: 30px auto;
+    min-height: calc(100vh - 430px);
 }
 </style>
