@@ -323,27 +323,27 @@ public class ResumeApi extends BaseApi {
 //        resumeAttachService.deleteIndex(resumeId);
 //        return ApiResult.ok();
 //    }
-//
-//    /**
-//     * 重建全部索引
-//     * @return
-//     */
-//    @PostMapping("rebuild-attachment-index")
-//    public ApiResult rebuildAttachmentIndex(){
-//        resumeAttachService.buildIndex();
-//        return ApiResult.ok();
-//    }
-//
-//    /**
-//     * 从简历数据库重建所有索引文件
-//     * @return
-//     */
-//    @PostMapping("rebuild-resume-index")
-//    @ApiDoc
-//    public ApiResult rebuildIndexFromResume(){
-//        resumeAttachService.buildResumeIndex();
-//        return ApiResult.ok();
-//    }
+
+    /**
+     * 重建全部索引
+     * @return
+     */
+    @PostMapping("rebuild-attachment-index")
+    public ApiResult rebuildAttachmentIndex(){
+        resumeAttachService.buildIndex();
+        return ApiResult.ok();
+    }
+
+    /**
+     * 从简历数据库重建所有索引文件
+     * @return
+     */
+    @PostMapping("rebuild-resume-index")
+    @ApiDoc
+    public ApiResult rebuildIndexFromResume(){
+        resumeAttachService.buildResumeIndex();
+        return ApiResult.ok();
+    }
 
     //Todo 待前端更新后删除
     /**
