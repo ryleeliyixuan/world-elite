@@ -1,13 +1,19 @@
 package com.worldelite.job.api;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.entity.AdditionSkill;
+import com.worldelite.job.entity.JobSkill;
 import com.worldelite.job.form.JobCategorySkillForm;
 import com.worldelite.job.form.JobSkillForm;
+import com.worldelite.job.mapper.AdditionSkillMapper;
+import com.worldelite.job.service.AdditionSkillService;
 import com.worldelite.job.service.JobCategorySkillService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.JobSkillVo;
 import io.github.yedaxia.apidocs.ApiDoc;
+import me.zhyd.oauth.request.AuthPinterestRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +25,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/jobskill/")
-public class JobCategorySkillApi {
+public class JobCategorySkillApi extends BaseApi {
 
     @Autowired
     private JobCategorySkillService jobCategorySkillService;
+
+    @Autowired
+    private AdditionSkillService additionSkillService;
 
     /**
      * 保存职位技能
@@ -105,6 +114,48 @@ public class JobCategorySkillApi {
     public ApiResult deleteComment(@RequestParam long jobCategorySkillId){
         jobCategorySkillService.deleteJobCategorySkillById(jobCategorySkillId);
 
+        return ApiResult.ok();
+    }
+
+    /**
+     * 获取自定义技能标签
+     * @param categoryId 职位类别ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-addition")
+    public ApiResult<List<JobSkillVo>> listAdditionSkill(@RequestParam Long categoryId){
+        List<JobSkillVo> jobSkillVoList = additionSkillService.listByCreatorId(categoryId,curUser().getId());
+        return ApiResult.ok(jobSkillVoList);
+    }
+
+    /**
+     * 保存自定义技能标签
+     * @param form 自定义技能表单
+     * @return
+     */
+    @ApiDoc
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("save-addition")
+    public ApiResult saveAdditionSkill(@RequestBody JobCategorySkillForm form){
+        AdditionSkill additionSkill = new AdditionSkill();
+        additionSkill.setCategoryId(form.getCategoryId());
+        additionSkill.setName(form.getName());
+        additionSkill.setCreatorId(curUser().getId());
+        additionSkillService.save(additionSkill);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 删除自定义技能标签
+     * @param id 标签ID
+     * @return
+     */
+    @ApiDoc
+    @RequireLogin(allow = UserType.COMPANY)
+    @PostMapping("delete-addition")
+    public ApiResult deleteAdditionSkill(@RequestParam Integer id){
+        additionSkillService.delete(id);
         return ApiResult.ok();
     }
 }
