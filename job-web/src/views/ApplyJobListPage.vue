@@ -142,7 +142,7 @@ export default {
 .app-container {
   max-width: 1000px;
   margin: 20px auto;
-  min-height: calc(100vh - 477px);
+  min-height: calc(100vh - 517px);
 
   .job-list {
     width: 75%;

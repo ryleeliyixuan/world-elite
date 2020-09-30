@@ -108,6 +108,18 @@
                             @close="onDeleteTag(tag)">
                         {{tag.name}}
                     </el-tag>
+                    <el-tag v-for="tag in industryAdditionList" v-if="tag.selected"
+                            :key="tag.name"
+                            closable
+                            @close="onDeleteTag(tag)">
+                        {{tag.name}}
+                    </el-tag>
+                    <el-tag v-for="tag in skillAdditionList" v-if="tag.selected"
+                            :key="tag.name"
+                            closable
+                            @close="onDeleteTag(tag)">
+                        {{tag.name}}
+                    </el-tag>
                     <span class="position-world" @click="onKeywords">
                         <i class="el-icon-plus position-icon"></i>
                     </span>
@@ -164,6 +176,18 @@
                             @close="onDeleteTag(tag)">
                         {{tag.name}}
                     </el-tag>
+                    <el-tag v-for="tag in industryAdditionList" v-if="tag.selected"
+                            :key="tag.name"
+                            closable
+                            @close="onDeleteTag(tag)">
+                        {{tag.name}}
+                    </el-tag>
+                    <el-tag v-for="tag in skillAdditionList" v-if="tag.selected"
+                            :key="tag.name"
+                            closable
+                            @close="onDeleteTag(tag)">
+                        {{tag.name}}
+                    </el-tag>
                 </div>
             </div>
 
@@ -192,18 +216,28 @@
                         {{tag.name}}
                     </el-tag>
                 </div>
-<!--                <div class="skill-keywords">-->
-<!--                    <el-input type="text"-->
-<!--                              placeholder="添加关键词"-->
-<!--                              v-model="skillKeywords"-->
-<!--                              maxlength="7"-->
-<!--                              show-word-limit-->
-<!--                              size="small"-->
-<!--                              @focus="showSkillAddButton = true"-->
-<!--                              @blur="onSkillKeywordsBlue">-->
-<!--                    </el-input>-->
-<!--                    <el-link type="primary" v-show="showSkillAddButton" @click="addSkillKeywords" class="ml-4" style="color:#409eff;">添加</el-link>-->
-<!--                </div>-->
+                <div class="industry-tag-container">
+                    <el-tag v-for="tag in industryAdditionList"
+                            :key="tag.name"
+                            closable
+                            @close="onDeleteIndustryAddition(tag)"
+                            :class="['skill-style', {'skill-style-select':tag.selected}]"
+                            @click="onIndustrySelect(tag)">
+                        {{tag.name}}
+                    </el-tag>
+                </div>
+                <div class="skill-keywords">
+                    <el-input type="text"
+                              placeholder="添加关键词"
+                              v-model="industryKeywords"
+                              maxlength="7"
+                              show-word-limit
+                              size="small"
+                              @focus="showIndustryAddButton = true"
+                              @blur="onIndustryKeywordsBlue">
+                    </el-input>
+                    <el-link type="primary" v-show="showIndustryAddButton" @click="addIndustryKeywords" class="ml-4" style="color:#409eff;">添加</el-link>
+                </div>
             </div>
 
             <div class="industry-container" v-if="skillList.length">
@@ -215,6 +249,28 @@
                             @click="onSkillSelect(tag)">
                         {{tag.name}}
                     </el-tag>
+                </div>
+                <div class="industry-tag-container">
+                    <el-tag v-for="tag in skillAdditionList"
+                            :key="tag.name"
+                            closable
+                            @close="onDeleteSkillAddition(tag)"
+                            :class="['skill-style', {'skill-style-select':tag.selected}]"
+                            @click="onSkillSelect(tag)">
+                        {{tag.name}}
+                    </el-tag>
+                </div>
+                <div class="skill-keywords">
+                    <el-input type="text"
+                              placeholder="添加关键词"
+                              v-model="skillKeywords"
+                              maxlength="7"
+                              show-word-limit
+                              size="small"
+                              @focus="showSkillAddButton = true"
+                              @blur="onSkillKeywordsBlue">
+                    </el-input>
+                    <el-link type="primary" v-show="showSkillAddButton" @click="addSkillKeywords" class="ml-4" style="color:#409eff;">添加</el-link>
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -286,6 +342,7 @@
                 previewJobType: '',//预览工作类型
                 previewRecruitType: '',
                 previewMinDegree: '',
+                industryKeywords: '',//新增技能关键词
                 skillKeywords: '',//新增技能关键词
                 jobForm: {
                     id: undefined,
@@ -303,7 +360,9 @@
                     keywords: undefined,
                     experienceId: undefined,
                     skillTags: [],
-                    industryTags: []
+                    industryTags: [],
+                    industryAdditionTags: [],
+                    skillAdditionTags: []
                 },
                 jobFormRules: {
                     name: [{required: true, message: "请输入职位名称", trigger: "blur"}],
@@ -341,14 +400,18 @@
                 posting: false,
                 experienceOptions: [], // 经验要求
                 skillList: [],//技能列表
+                skillAdditionList: [], // 用户添加的技能列表
                 industryList: [],//行业列表
+                industryAdditionList: [], // 用户添加的行业列表
                 jobDescription: undefined, // 职位描述
                 jobDescriptionShow: false, // 职位描述开关
                 contentLength: 0, // 字数统计
                 searchTagLoading: false,
                 searchTag: undefined,
                 searchTagOptions: [],
-                showSkillAddButton: false
+                showIndustryAddButton: false,
+                showSkillAddButton: false,
+                secondCategoryId: undefined, // 选中的二级职位id
             };
         },
         created() {
@@ -487,12 +550,14 @@
                 this.dialogVisible = false;
                 let industry = this.industryList.filter(item => item.selected).map(item => item.name);
                 let skill = this.skillList.filter(item => item.selected).map(item => item.name);
-                this.jobForm.keywords = industry.concat(skill).toString();
+                let industryAddition = this.industryAdditionList.filter(item => item.selected).map(item => item.name);
+                let skillAddition = this.skillAdditionList.filter(item => item.selected).map(item => item.name);
+                this.jobForm.keywords = industry.concat(skill).concat(industryAddition).concat(skillAddition).toString();
             },
 
             // 技能选择
             onSkillSelect(tag) {
-                if (tag.selected === true || this.skillList.filter(item => item.selected).length < 4) {
+                if (tag.selected === true || (this.skillAdditionList.filter(item => item.selected).length + this.skillList.filter(item => item.selected).length) < 4) {
                     tag.selected = !tag.selected;
                 } else {
                     this.$message.warning("最多选择4个技能");
@@ -501,11 +566,34 @@
 
             // 行业选择
             onIndustrySelect(tag) {
-                if (tag.selected === true || this.industryList.filter(item => item.selected).length < 2) {
+                if (tag.selected === true || (this.industryAdditionList.filter(item => item.selected).length + this.industryList.filter(item => item.selected).length) < 2) {
                     tag.selected = !tag.selected;
                 } else {
                     this.$message.warning("最多选择2个行业");
                 }
+            },
+
+            // 删除用户自定义的行业标签
+            onDeleteIndustryAddition(tag) {
+                this.$axios.request({
+                    url: "/jobindustry/delete-addition",
+                    method: "post",
+                    params: {id: tag.id}
+                }).then(() => {
+                    this.industryAdditionList = this.industryAdditionList.filter(item => item.id !== tag.id);
+                })
+            },
+
+            // 删除用户自定义的技能标签
+            onDeleteSkillAddition(tag) {
+                console.log(tag);
+                this.$axios.request({
+                    url: "/jobskill/delete-addition",
+                    method: "post",
+                    params: {id: tag.id}
+                }).then(() => {
+                    this.skillAdditionList = this.skillAdditionList.filter(item => item.id !== tag.id);
+                })
             },
 
             // 删除关键词
@@ -516,13 +604,17 @@
             // 选择职位分类，获取标签
             onJobCategoryChange() {
                 if (this.jobForm.categoryId && this.jobForm.categoryId.length === 3) {
+                    console.log(this.jobForm.categoryId[1]);
+                    this.secondCategoryId = this.jobForm.categoryId[1];
                     let p1 = this.$axios.get('/jobskill/list', {
-                        params: {jobCategoryId: this.jobForm.categoryId[1]} // 取选中标签的父级id
+                        params: {jobCategoryId: this.secondCategoryId} // 取选中标签的父级id
                     });
-                    let p2 = this.$axios.get('/jobindustry/list', {
-                        params: {jobCategoryId: this.jobForm.categoryId[2]}
+                    let p2 = this.$axios.get('/jobindustry/list', {});
+                    let p3 = this.$axios.get('/jobindustry/list-addition', {});
+                    let p4 = this.$axios.get('/jobskill/list-addition', {
+                        params: {categoryId: this.secondCategoryId}
                     });
-                    Promise.all([p1, p2]).then((result) => {
+                    Promise.all([p1, p2, p3, p4]).then((result) => {
                         if (result[0].data.length > 0 || result[1].data.length > 0) {
                             this.jobFormRules.keywords = [{required: true, message: "请选择关键词", trigger: "blur"}];
                         } else {
@@ -537,6 +629,18 @@
                         if (result[1].data.length > 0) {
                             this.industryList = result[1].data.map(item => {
                                 item.selected = this.jobForm.industryTags && this.jobForm.industryTags.includes(item.name);
+                                return item;
+                            });
+                        }
+                        if (result[2].data.length > 0) {
+                            this.industryAdditionList = result[2].data.map(item => {
+                                item.selected = this.jobForm.industryAdditionTags && this.jobForm.industryAdditionTags.includes(item.name);
+                                return item;
+                            });
+                        }
+                        if (result[3].data.length > 0) {
+                            this.skillAdditionList = result[3].data.map(item => {
+                                item.selected = this.jobForm.skillAdditionTags && this.jobForm.skillAdditionTags.includes(item.name);
                                 return item;
                             });
                         }
@@ -611,23 +715,54 @@
                 }
             },
 
+            onIndustryKeywordsBlue() {
+                setTimeout(() => {
+                    this.showIndustryAddButton = false;
+                }, 200);
+            },
+
             onSkillKeywordsBlue() {
                 setTimeout(() => {
                     this.showSkillAddButton = false;
                 }, 200);
             },
 
-            addSkillKeywords() {
-                console.log(this.skillKeywords);
-                this.$axios.request({
-                    url: '/jobskill/save',
-                    data: {name: this.skillKeywords}, // body
-                    // params: {name: this.skillKeywords}, // url
-                    method: 'post'
-                }).then(data => {
-                    console.log(data);
-                })
+            addIndustryKeywords() {
+                if ((this.industryAdditionList.filter(item => item.selected).length + this.industryList.filter(item => item.selected).length) < 2) {
+                    this.$axios.request({
+                        url: '/jobindustry/save-addition',
+                        data: {name: this.industryKeywords},
+                        method: 'post'
+                    }).then(data => {
+                        this.industryAdditionList.push({
+                            id: data.data.id,
+                            name: data.data.name,
+                            selected: true
+                        });
+                        this.industryKeywords = "";
+                    })
+                } else {
+                    this.$message.warning("最多选择2个行业");
+                }
+            },
 
+            addSkillKeywords() {
+                if ((this.skillAdditionList.filter(item => item.selected).length + this.skillList.filter(item => item.selected).length) < 4) {
+                    this.$axios.request({
+                        url: '/jobskill/save-addition',
+                        data: {name: this.skillKeywords, categoryId: this.secondCategoryId},
+                        method: 'post'
+                    }).then(data => {
+                        this.skillAdditionList.push({
+                            id: data.data.id,
+                            name: data.data.name,
+                            selected: true
+                        });
+                        this.skillKeywords = "";
+                    })
+                } else {
+                    this.$message.warning("最多选择4个技能");
+                }
             }
         }
     };
