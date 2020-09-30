@@ -73,8 +73,9 @@ public class AdditionSkillService extends BaseService {
      * 保存自定义技能关键词
      * @param additionSkill 自定义技能关键词对象
      */
-    public void save(AdditionSkill additionSkill){
+    public JobSkillVo save(AdditionSkill additionSkill){
         additionSkillMapper.insertSelective(additionSkill);
+        return toJobSkillVo(additionSkill);
     }
 
     /**
