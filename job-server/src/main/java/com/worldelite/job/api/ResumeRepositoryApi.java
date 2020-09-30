@@ -20,7 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/resume-repository/")
-public class ResumeRepositoryApi extends BaseApi{
+public class ResumeRepositoryApi extends BaseApi {
 
     @Autowired
     private ResumeRepositoryService resumeRepositoryService;
@@ -45,66 +45,71 @@ public class ResumeRepositoryApi extends BaseApi{
 
     /**
      * 通过解析附件简历新增简历库数据
+     *
      * @param attachmentName 简历文件路径
      * @return
      */
     @ApiDoc
     @PostMapping("save-attachment")
-    public ApiResult saveAttachment(@RequestParam String attachmentName){
+    public ApiResult saveAttachment(@RequestParam String attachmentName) {
         resumeRepositoryService.saveAttachment(attachmentName);
         return ApiResult.ok();
     }
 
     /**
      * 给简历库数据添加简历附件
-     * @param id 简历库中简历ID
+     *
+     * @param id             简历库中简历ID
      * @param attachmentName 附件文件路径
      * @return
      */
     @ApiDoc
     @PostMapping("add-attachment")
-    public ApiResult addAttachment(@RequestParam Long id,@RequestParam String attachmentName){
+    public ApiResult addAttachment(@RequestParam Long id, @RequestParam String attachmentName) {
         //resumeRepositoryService.addAttachment(id,attachmentName);
         return ApiResult.ok();
     }
 
     /**
      * 保存简历
+     *
      * @param resumeRepositoryForm 简历信息
      * @return
      */
     @ApiDoc
     @PostMapping("add-from-form")
-    public ApiResult addResume(@RequestBody ResumeRepositoryForm resumeRepositoryForm){
+    public ApiResult addResume(@RequestBody ResumeRepositoryForm resumeRepositoryForm) {
         //resumeRepositoryService.addResume(resumeRepositoryForm);
         return ApiResult.ok();
     }
 
     /**
      * 将简历库简历添加到职位申请
+     *
      * @param resumeId 简历ID
-     * @param jobId 职位ID
-     * @param status 申请状态，2为已查看，6为不合适
+     * @param jobId    职位ID
+     * @param status   申请状态，2为已查看，6为不合适
      * @return
      */
     @ApiDoc
     @PostMapping("add-from-user")
-    public ApiResult addResume(@RequestParam Long resumeId,@RequestParam Long jobId,@RequestParam Byte status){
-        resumeRepositoryService.addToJobApply(resumeId,jobId,status);
+    public ApiResult addResume(@RequestParam Long resumeId, @RequestParam Long jobId, @RequestParam Byte status) {
+        resumeRepositoryService.addToJobApply(resumeId, jobId, status);
         return ApiResult.ok();
     }
 
     /**
      * 将简历添加到指定企业简历库
-     * @param originId 源简历
+     *
+     * @param originId  源简历
      * @param companyId 目标企业
-     * @param type 添加类型：1、从用户简历添加（默认）；2、从企业简历库添加
+     * @param type      添加类型：1、从用户简历添加（默认）；2、从企业简历库添加
      * @return
      */
     @ApiDoc
     @PostMapping("add-resume")
-    public ApiResult addResume(Long originId,Long companyId,int type){
-        switch (type){
+    public ApiResult addResume(Long originId, Long companyId, int type) {
+        switch (type) {
             case 2:
                 //resumeRepositoryService.addFromRepository(originId,companyId);
                 break;
@@ -117,12 +122,13 @@ public class ResumeRepositoryApi extends BaseApi{
 
     /**
      * 搜索简历库
+     *
      * @param listForm 过滤条件
      * @return
      */
     @ApiDoc
     @PostMapping("search")
-    public ApiResult<PageResult<ResumeVo>> search(@RequestBody ResumeListForm listForm){
+    public ApiResult<PageResult<ResumeVo>> search(@RequestBody ResumeListForm listForm) {
 //        if(StringUtils.isEmpty(resumeRepositoryListForm.getKeyword())){
 //            PageResult<ResumeRepositoryVo> pageResult = resumeRepositoryService.search(resumeRepositoryListForm);
 //            return ApiResult.ok(pageResult);
@@ -135,11 +141,11 @@ public class ResumeRepositoryApi extends BaseApi{
         return ApiResult.ok(pageResult);
     }
 
-    public void suggest(){
+    public void suggest() {
 
     }
 
-    public void delete(){
+    public void delete() {
 
     }
 
@@ -147,6 +153,7 @@ public class ResumeRepositoryApi extends BaseApi{
 
     /**
      * 通过简历ID获取简历
+     *
      * @param resumeId 简历ID
      * @return
      */
@@ -181,7 +188,7 @@ public class ResumeRepositoryApi extends BaseApi{
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("del-resume-attachment")
     @ApiDoc
-    public ApiResult delResumeAttachment(@RequestParam Long resumeId){
+    public ApiResult delResumeAttachment(@RequestParam Long resumeId) {
         resumeRepositoryService.delResumeAttachment(resumeId);
         return ApiResult.ok();
     }
@@ -196,8 +203,9 @@ public class ResumeRepositoryApi extends BaseApi{
     @PostMapping("save-resume-edu")
     @ApiDoc
     public ApiResult<ResumeEduVo> saveResumeEdu(@Valid @RequestBody ResumeEduForm resumeEduForm) {
-        if(resumeEduForm.getGpa() != null && resumeEduForm.getGpa() < 0){
-            return ApiResult.fail(ApiCode.INVALID_PARAM, message("edit.resume.edu.gpa.below.zero"));
+        if (resumeEduForm.getGpa() != null &&
+                (resumeEduForm.getGpa() < 0 || resumeEduForm.getGpa() > 4)) {
+            return ApiResult.fail(ApiCode.INVALID_PARAM, message("edit.resume.edu.gpa.range.error"));
         }
         ResumeEduVo resumeEduVo = resumeEduService.saveResumeEdu(resumeEduForm);
         return ApiResult.ok(resumeEduVo);
@@ -317,13 +325,14 @@ public class ResumeRepositoryApi extends BaseApi{
 
     /**
      * 保存用户求职意向
+     *
      * @param expectJobForm
      * @return
      */
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("save-expect-job")
     @ApiDoc
-    public ApiResult<UserExpectJobVo> saveUserExpectJob(@RequestBody UserExpectJobForm expectJobForm){
+    public ApiResult<UserExpectJobVo> saveUserExpectJob(@RequestBody UserExpectJobForm expectJobForm) {
         UserExpectJobVo userExpectJobVo = userExpectJobService.saveUserExpectJob(expectJobForm);
         return ApiResult.ok(userExpectJobVo);
     }

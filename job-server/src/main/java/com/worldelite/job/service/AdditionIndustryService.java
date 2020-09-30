@@ -91,8 +91,9 @@ public class AdditionIndustryService extends BaseService {
      * 保存行业领域关键词
      * @param additionIndustry 行业领域关键词对象
      */
-    public void save(AdditionIndustry additionIndustry){
+    public JobIndustryVo save(AdditionIndustry additionIndustry){
         additionIndustryMapper.insertSelective(additionIndustry);
+        return toJobIndustryVo(additionIndustry);
     }
 
     /**

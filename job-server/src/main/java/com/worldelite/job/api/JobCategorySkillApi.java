@@ -137,13 +137,13 @@ public class JobCategorySkillApi extends BaseApi {
     @ApiDoc
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("save-addition")
-    public ApiResult saveAdditionSkill(@RequestBody JobCategorySkillForm form){
+    public ApiResult<JobSkillVo> saveAdditionSkill(@RequestBody JobCategorySkillForm form){
         AdditionSkill additionSkill = new AdditionSkill();
         additionSkill.setCategoryId(form.getCategoryId());
         additionSkill.setName(form.getName());
         additionSkill.setCreatorId(curUser().getId());
-        additionSkillService.save(additionSkill);
-        return ApiResult.ok();
+        JobSkillVo jobSkillVo = additionSkillService.save(additionSkill);
+        return ApiResult.ok(jobSkillVo);
     }
 
     /**

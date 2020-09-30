@@ -130,12 +130,12 @@ public class JobCategoryIndustryApi extends BaseApi{
     @ApiDoc
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("save-addition")
-    public ApiResult saveAdditionIndustry(@RequestBody JobIndustryForm form){
+    public ApiResult<JobIndustryVo> saveAdditionIndustry(@RequestBody JobIndustryForm form){
         AdditionIndustry additionIndustry = new AdditionIndustry();
         additionIndustry.setName(form.getName());
         additionIndustry.setCreatorId(curUser().getId());
-        additionIndustryService.save(additionIndustry);
-        return ApiResult.ok();
+        JobIndustryVo jobIndustryVo = additionIndustryService.save(additionIndustry);
+        return ApiResult.ok(jobIndustryVo);
     }
 
     /**
