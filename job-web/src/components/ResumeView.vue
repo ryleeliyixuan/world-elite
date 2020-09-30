@@ -53,7 +53,7 @@
           >{{resumeEdu.startTime}}到{{resumeEdu.finishTime}}</span>
         </h6>
           <span>{{resumeEdu.degree.name}} / {{resumeEdu.majorName}}</span>
-          <span v-if="resumeEdu.gpa > 0 && resumeEdu.gpa!==''"> / GPA {{resumeEdu.gpa}} </span>
+        <span v-if="resumeEdu.gpa > 0 && resumeEdu.gpa!==''"> / GPA <span v-if="resumeEdu.gpa != 0">{{resumeEdu.gpa}}</span> </span>
       </div>
     </div>
     <div

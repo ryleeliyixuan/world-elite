@@ -53,7 +53,7 @@
                 form: {
                     email: "",
                     password: "",
-                    rememberFlag: 1
+                    rememberFlag: ""
                 },
                 redirect: undefined
             };
