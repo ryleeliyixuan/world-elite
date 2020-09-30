@@ -263,18 +263,21 @@
                        width="800px"
                        title="标签">
                 <div style="height: 1px; margin: 5px; background: #cccccc"></div>
+
                 <div class="dialog-input-container" style="margin-top: 30px">
                     <el-input class="dialog-input" v-model="tag" placeholder="请输入您的标签" autofocus></el-input>
                     <el-button class="dialog-button" type="primary" :round=true @click="onTagSave">保存
                     </el-button>
                 </div>
             </el-dialog>
+
             <el-dialog :visible.sync="dialogVisible3"
                        class="dialog-container"
                        width="800px"
                        title="简历上传"
                        :before-close="onDialogFileUpdateClose">
                 <div style="height: 1px; margin: 5px; background: #cccccc"></div>
+                <div class="title_container">简历上传完成前请勿关闭或刷新本网站（网站内页面仍可继续浏览使用），上传解析完成后将以notification/email提醒</div>
                 <el-upload
                         class="upload-pdf"
                         drag
@@ -300,6 +303,20 @@
                     </div>
                 </el-upload>
             </el-dialog>
+
+            <el-dialog
+                    title="提示"
+                    :visible.sync="dialogVisible5"
+                    width="40%">
+                <div>若您关闭此弹窗，简历上传及解析将在后台进行，完成后将以notification/email提醒，届时请刷新简历库页面</div>
+                <el-checkbox v-model="checked" style="margin-top: 10px">不再提示</el-checkbox>
+                <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible5 = false">取 消</el-button>
+    <el-button type="primary" @click="getConfirm5">确 定</el-button>
+  </span>
+            </el-dialog>
+
+
         </div>
     </loading>
 </template>
@@ -355,6 +372,8 @@
                 dialogVisible2: false,
                 dialogVisible3: false,
                 dialogVisible4: false,
+                dialogVisible5: false,
+                checked: false,
                 comment: "",
                 updateComment: '',
                 lastEditComment: undefined,
@@ -410,6 +429,7 @@
                 getUserJobOptions().then(response => (this.jobOptions = response.data));
                 this.getList();
             },
+
             handleSelectMenu(index) {
                 this.activeIndex = index;
                 this.$nextTick(() => {
@@ -418,6 +438,13 @@
                         query: {statuses: index}
                     });
                 });
+            },
+
+            getConfirm5() {
+                this.dialogVisible5 = false;
+                let we = JSON.parse( localStorage.getItem('we') || "{}");
+                we.checked = this.checked;
+                window.localStorage.setItem('we', JSON.stringify(we));
             },
             getList() {
                 if (this.$route.query.statuses) {
@@ -626,7 +653,7 @@
                 }).then(data => {
                     this.fileParseStatus.current++;
                     this.fileParseStatus.progress = parseInt((this.fileParseStatus.current * 100 / this.fileParseStatus.total).toFixed(0));
-                    if(!this.dialogVisible3 && this.fileParseStatus.current === this.fileParseStatus.total) {
+                    if (!this.dialogVisible3 && this.fileParseStatus.current === this.fileParseStatus.total) {
                         this.$notify({
                             title: '成功',
                             message: '简历已全部上传并解析成功',
@@ -646,16 +673,14 @@
             },
 
             onDialogFileUpdateClose(done) {
-                this.$confirm('若您关闭此弹窗，简历上传及解析将在后台进行，完成后将以notification/email提醒，届时请刷新简历库页面', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    done();
-                }).catch(() => {
-
-                });
+                let we = JSON.parse(localStorage.getItem('we') || "{}");
+                if (!we.checked) {
+                    this.dialogVisible5 = true
+                }else {
+                    this.dialogVisible3=false
+                }
             }
+
         }
     };
 </script>
@@ -804,6 +829,14 @@
             /*height: 60px;*/
             /*border-radius: 30px;*/
         }
+    }
+
+    .title_container {
+        width: 100%;
+        text-align: center;
+        line-height: 40px;
+        font-size: 14px;
+        color: #606266;
     }
 
     .upload-pdf {

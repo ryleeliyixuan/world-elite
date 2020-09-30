@@ -48,7 +48,7 @@
                                :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="经验要求" prop="experience">
+            <el-form-item label="经验要求" prop="experienceId">
                 <el-select v-model="jobForm.experienceId" filterable clearable placeholder="请选择经验要求">
                     <el-option v-for="item in experienceOptions"
                                :key="item.id"
@@ -56,7 +56,7 @@
                                :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="薪资待遇" prop="salary">
+            <el-form-item label="薪资待遇" prop="salaryId">
                 <el-select v-model="jobForm.salaryId" placeholder="薪资范围" class="salary-option">
                     <el-option v-for="item in SalaryOptions"
                                :key="item.id"
@@ -81,18 +81,17 @@
                     <el-option v-for="item in jobTypeOptions2"
                                :key="item.id"
                                :label="item.name"
-                               :value="item.id"
-                    ></el-option>
+                               :value="item.id">
+                    </el-option>
                 </el-select>
 
                 <el-select v-model="jobForm.recruitType" placeholder="全职" class="salary-option" style="margin-left: 20px">
                     <el-option v-for="item in jobTypeOptions1"
                                :key="item.id"
                                :label="item.name"
-                               :value="item.id"
-                    ></el-option>
+                               :value="item.id">
+                    </el-option>
                 </el-select>
-
             </el-form-item>
 
             <el-form-item label="职位关键词" prop="keywords" v-if="skillList.length">
@@ -114,6 +113,7 @@
                     </span>
                 </div>
             </el-form-item>
+
             <el-form-item label="职位描述" prop="description">
                 <quill-editor v-model="jobForm.description"
                               :options="descriptionEditorOption"
@@ -124,19 +124,23 @@
                     {{contentLength}}/300
                 </div>
             </el-form-item>
+
             <div class="job-description-container">
                 <div class="job-description-show">
-                    <el-button v-if="jobDescriptionShow" @click="jobForm.description=jobDescription" type="text">
+                    <el-button v-if="jobDescriptionShow" @click="jobForm.description=jobDescription" type="text" style="font-weight: bold;font-size: 15px">
                         复制样例
                     </el-button>
-                    <el-button v-if="jobDescription" @click="jobDescriptionShow=!jobDescriptionShow" type="text">
+                    <el-button v-if="jobDescription" @click="jobDescriptionShow=!jobDescriptionShow" type="text" style="font-weight: bold;font-size: 15px">
                         {{jobDescriptionShow?'关闭样例':'查看样例'}}
                     </el-button>
                 </div>
                 <div v-if="jobDescriptionShow" v-html="jobDescription" class="job-description"></div>
             </div>
             <el-form-item>
-                <el-button type="primary" size="mini" style="padding: 0 12px;line-height: 30px" :loading="posting" @click="onSubmit">{{pubButtonText}}
+                <el-button type="primary" size="mini" style="padding: 0 12px;line-height: 30px;margin-top: 60px" :loading="posting" @click="onPreview">预览
+                </el-button>
+                <el-button type="primary" size="mini" style="padding: 0 12px;line-height: 30px;margin-top: 60px;margin-left: 30px" :loading="posting"
+                           @click="onSubmit">{{pubButtonText}}
                 </el-button>
             </el-form-item>
         </el-form>
@@ -164,33 +168,42 @@
             </div>
 
             <div class="industry-container" v-if="industryList.length">
-                <el-select
-                        class="mb-4"
-                        v-model="searchTag"
-                        filterable
-                        remote
-                        reserve-keyword
-                        placeholder="请输入关键词"
-                        :remote-method="remoteMethod"
-                        @change="onSearchTagChange"
-                        :loading="searchTagLoading">
-                    <el-option
-                            v-for="item in searchTagOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                <el-select class="mb-4"
+                           v-model="searchTag"
+                           filterable
+                           remote
+                           reserve-keyword
+                           placeholder="请输入关键词"
+                           :remote-method="remoteMethod"
+                           @change="onSearchTagChange"
+                           :loading="searchTagLoading">
+                    <el-option v-for="item in searchTagOptions"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value">
                     </el-option>
                 </el-select>
                 <div class="title-container">行业领域<span class="title-tips">(最多可选2个行业)</span></div>
                 <div class="industry-tag-container">
-                    <el-tag
-                            v-for="tag in industryList"
+                    <el-tag v-for="tag in industryList"
                             :key="tag.name"
                             :class="['skill-style', {'skill-style-select':tag.selected}]"
                             @click="onIndustrySelect(tag)">
                         {{tag.name}}
                     </el-tag>
                 </div>
+<!--                <div class="skill-keywords">-->
+<!--                    <el-input type="text"-->
+<!--                              placeholder="添加关键词"-->
+<!--                              v-model="skillKeywords"-->
+<!--                              maxlength="7"-->
+<!--                              show-word-limit-->
+<!--                              size="small"-->
+<!--                              @focus="showSkillAddButton = true"-->
+<!--                              @blur="onSkillKeywordsBlue">-->
+<!--                    </el-input>-->
+<!--                    <el-link type="primary" v-show="showSkillAddButton" @click="addSkillKeywords" class="ml-4" style="color:#409eff;">添加</el-link>-->
+<!--                </div>-->
             </div>
 
             <div class="industry-container" v-if="skillList.length">
@@ -209,6 +222,39 @@
                 <el-button type="primary" size="small" @click="onConfirm">确 定</el-button>
             </span>
         </el-dialog>
+
+        <!-- 预览功能 -->
+        <el-dialog title="预览"
+                   :visible.sync="dialogVisible2"
+                   width="70%">
+            <div class="container">
+                <b-row align-v="center" v-if="jobForm">
+                    <b-col>
+                        <h2 class="mt-3">
+                            {{jobForm.name}}
+                            <span class="text-danger ml-4 salary-text">{{previewSalary}}{{jobForm.salaryMonths? ` × ${jobForm.salaryMonths}个月` : ''}}</span>
+                        </h2>
+                        <div class="mt-2">{{previewCity}} / {{previewMinDegree}} / {{previewJobType}}/{{previewRecruitType}}
+                        </div>
+                        <div class="mt-2 text-gray text-small">{{nowDate}}</div>
+                    </b-col>
+                    <b-col cols="4"></b-col>
+                </b-row>
+                <el-divider/>
+                <b-row>
+                    <b-col v-if="jobForm">
+                        <div v-html="jobForm.description"></div>
+                        <div v-if="jobForm.address" class="mt-4">
+                            <h5 class="mt-4 mb-4">工作地址</h5>
+                            <p>{{jobForm.address}}</p>
+                        </div>
+                    </b-col>
+                </b-row>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="dialogVisible2 = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -217,12 +263,12 @@
     import {listByType} from "@/api/dict_api";
     import {saveJob, getJobInfo} from "@/api/job_api";
     import Toast from "@/utils/toast";
+    import {getNowDate} from "@/utils/dateUtil"
 
     import "quill/dist/quill.core.css";
     import "quill/dist/quill.snow.css";
     import "quill/dist/quill.bubble.css";
     import {quillEditor} from "vue-quill-editor";
-    import {delCompanyAddr} from "@/api/company_api";
 
     export default {
         name: "NewJobPage",
@@ -232,7 +278,15 @@
         data() {
             return {
                 dialogVisible: false,
+                dialogVisible2: false,//预览弹框
                 Salary: '',
+                nowDate: '',//当前时间
+                previewSalary: '',//薪资
+                previewCity: '',//预览城市
+                previewJobType: '',//预览工作类型
+                previewRecruitType: '',
+                previewMinDegree: '',
+                skillKeywords: '',//新增技能关键词
                 jobForm: {
                     id: undefined,
                     name: undefined,
@@ -250,7 +304,6 @@
                     experienceId: undefined,
                     skillTags: [],
                     industryTags: []
-
                 },
                 jobFormRules: {
                     name: [{required: true, message: "请输入职位名称", trigger: "blur"}],
@@ -280,7 +333,7 @@
                 SalaryOptions: [],//薪资范围
                 descriptionEditorOption: {
                     theme: "snow",
-                    placeholder: "1.岗位职责 2.任职要求 3.相应技能",
+                    placeholder: "1.岗位职责 2.任职要求等",
                     modules: {
                         toolbar: [["bold"], [{list: "ordered"}, {list: "bullet"}]]
                     }
@@ -294,7 +347,8 @@
                 contentLength: 0, // 字数统计
                 searchTagLoading: false,
                 searchTag: undefined,
-                searchTagOptions: []
+                searchTagOptions: [],
+                showSkillAddButton: false
             };
         },
         created() {
@@ -354,6 +408,7 @@
                         this.jobForm.experienceId = data.experience ? data.experience.id : undefined
                         this.jobForm.skillTags = data.skillTags;
                         this.jobForm.industryTags = data.industryTags;
+                        this.jobForm.keywords = data.skillTags.concat(data.industryTags);
 
                         getCategoryTree().then(response => {
                             this.jobCategoryOptions = response.data
@@ -386,14 +441,26 @@
                         this.posting = true;
                         this.jobForm.industryTags = this.industryList.filter(item => item.selected).map(item => item.name);
                         this.jobForm.skillTags = this.skillList.filter(item => item.selected).map(item => item.name);
-                        saveJob(this.jobForm)
-                            .then(() => {
-                                Toast.success(this.isModify ? "保存成功" : "发布成功");
-                                this.$router.go(-1);
-                            })
-                            .finally(() => {
-                                this.posting = false;
-                            });
+                        saveJob(this.jobForm).then(() => {
+                            Toast.success(this.isModify ? "保存成功" : "发布成功");
+                            this.$router.go(-1);
+                        }).finally(() => {
+                            this.posting = false;
+                        });
+                    }
+                });
+            },
+
+            onPreview() {
+                this.$refs["jobForm"].validate(valid => {
+                    if (valid) {
+                        this.nowDate = getNowDate()
+                        this.previewSalary = this.SalaryOptions.find(option => option.id === this.jobForm.salaryId).name;
+                        this.previewCity = this.cityOptions.find(option => option.id === this.jobForm.cityId).name;
+                        this.previewJobType = this.jobTypeOptions1.find(option => option.id === this.jobForm.recruitType).name;
+                        this.previewRecruitType = this.jobTypeOptions2.find(option => option.id === this.jobForm.jobType).name;
+                        this.previewMinDegree = this.degreeOptions.find(option => option.id === this.jobForm.minDegreeId).name;
+                        this.dialogVisible2 = true;
                     }
                 });
             },
@@ -422,6 +489,7 @@
                 let skill = this.skillList.filter(item => item.selected).map(item => item.name);
                 this.jobForm.keywords = industry.concat(skill).toString();
             },
+
             // 技能选择
             onSkillSelect(tag) {
                 if (tag.selected === true || this.skillList.filter(item => item.selected).length < 4) {
@@ -541,6 +609,25 @@
                         this.$message.warning("最多选择2个技能");
                     }
                 }
+            },
+
+            onSkillKeywordsBlue() {
+                setTimeout(() => {
+                    this.showSkillAddButton = false;
+                }, 200);
+            },
+
+            addSkillKeywords() {
+                console.log(this.skillKeywords);
+                this.$axios.request({
+                    url: '/jobskill/save',
+                    data: {name: this.skillKeywords}, // body
+                    // params: {name: this.skillKeywords}, // url
+                    method: 'post'
+                }).then(data => {
+                    console.log(data);
+                })
+
             }
         }
     };
@@ -562,6 +649,14 @@
 
     .salary-option {
         width: 120px;
+    }
+
+    .salary-text {
+        font-size: 20px;
+    }
+
+    /deep/ .el-dialog__body {
+        padding: 0 20px !important;
     }
 </style>
 
@@ -681,6 +776,7 @@
                     }
                 }
 
+
             }
 
             .submit-container {
@@ -725,6 +821,7 @@
             align-items: flex-end;
 
             .job-description-show {
+                width: 1098px;
                 display: flex;
                 align-items: center;
             }
@@ -747,5 +844,18 @@
 
     button:focus {
         outline: 0;
+    }
+
+    .skill-keywords {
+        width: 260px;
+
+        /deep/ .el-input {
+            width: 140px;
+            border-radius: 20px;
+
+            /deep/ .el-input__inner {
+                border-radius: 20px;
+            }
+        }
     }
 </style>

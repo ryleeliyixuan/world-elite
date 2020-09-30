@@ -10,7 +10,7 @@
           {{job.name}}
           <span
             class="text-danger ml-4 salary-text"
-          >{{`${job.minSalary}K - ${job.maxSalary}K`}}{{job.salaryMonths? ` × ${job.salaryMonths}个月` : ''}}</span>
+          >{{job.salary.name}}{{job.salaryMonths? ` × ${job.salaryMonths}个月` : ''}}</span>
         </h2>
         <div
           class="mt-2"
