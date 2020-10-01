@@ -4,9 +4,9 @@
         <transition name="fade-transform" mode="out-in">
             <router-view @complete="onComplete"/>
         </transition>
-        <transition name="fade">
-            <FooterView v-if="show"/>
-        </transition>
+<!--        <transition name="fade">-->
+            <FooterView/>
+<!--        </transition>-->
         <el-backtop></el-backtop>
     </div>
 </template>
