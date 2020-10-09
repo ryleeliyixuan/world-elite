@@ -207,6 +207,7 @@ public class ResumeRepositoryApi extends BaseApi {
                 (resumeEduForm.getGpa() < 0 || resumeEduForm.getGpa() > 4)) {
             return ApiResult.fail(ApiCode.INVALID_PARAM, message("edit.resume.edu.gpa.range.error"));
         }
+        resumeEduForm.setGpa(resumeEduForm.getGpa() == null ? 0.0 : resumeEduForm.getGpa());
         ResumeEduVo resumeEduVo = resumeEduService.saveResumeEdu(resumeEduForm);
         return ApiResult.ok(resumeEduVo);
     }
