@@ -63,8 +63,11 @@
                         @pagination="handleRouteList"/>
         </div>
 
+
+
         <div class="section3-container" v-if="pageResult.list && pageResult.list.length !== 0">
-            <el-card shadow="hover"
+            <el-card v-if="job.salary && job.companyUser.company.name !== ''"
+                     shadow="hover"
                      v-for="job in pageResult.list"
                      :key="job.id"
                      class="section3-item-container"
@@ -204,7 +207,9 @@
                     } else {
                         console.log(2222222);
                         console.log(this.pageResult.list);
+                        console.log(JSON.stringify(response.data));
                         this.pageResult = response.data;
+                        console.log(this.pageResult.list);
                         this.total = this.pageResult.total;
                         this.$emit("complete");
                     }
