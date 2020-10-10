@@ -85,12 +85,12 @@
                 </el-collapse>
                 <div v-if="company.companyWiki && company.companyWiki != ''">
                     <h5 class="mt-4 mb-4">公司百科</h5>
-                    <div v-if="token && token != ''" class="introdution ql-editor">
+                    <div class="introdution ql-editor">
                         <div class="wiki_sidebar" v-html="company.wikiSidebar"></div>
                         <div class="wiki_content" v-html="company.companyWiki"></div>
                         <div style="clear: both;"></div>
                     </div>
-                    <div v-else>
+                    <div style="display: none;">
                         <p>登录后查看百科</p>
                         <el-button type="primary" @click="onLoginClick">马上登录</el-button>
                     </div>
