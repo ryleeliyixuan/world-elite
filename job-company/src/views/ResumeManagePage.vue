@@ -442,7 +442,7 @@
 
             getConfirm5() {
                 this.dialogVisible5 = false;
-                let we = JSON.parse( localStorage.getItem('we') || "{}");
+                let we = JSON.parse(localStorage.getItem('we') || "{}");
                 we.checked = this.checked;
                 window.localStorage.setItem('we', JSON.stringify(we));
             },
@@ -673,11 +673,15 @@
             },
 
             onDialogFileUpdateClose(done) {
-                let we = JSON.parse(localStorage.getItem('we') || "{}");
-                if (!we.checked) {
-                    this.dialogVisible5 = true
-                }else {
-                    this.dialogVisible3=false
+                if (this.fileUpdateStatus.current > 0) {
+                    let we = JSON.parse(localStorage.getItem('we') || "{}");
+                    if (!we.checked) {
+                        this.dialogVisible5 = true
+                    } else {
+                        this.dialogVisible3 = false
+                    }
+                } else {
+                    done();
                 }
             }
 

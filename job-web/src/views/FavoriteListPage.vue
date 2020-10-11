@@ -23,7 +23,7 @@
                         </p>
                         <h6 class="mt-0 mb-1">{{job.name}}</h6>
                         <div class>
-                            <b class="text-danger">{{`${job.minSalary} - ${job.maxSalary}K`}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
+                            <b class="text-danger">{{job.salary.name}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
                             <span class="ml-3 text-gray text-small">{{`${job.city?job.city.name:''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
                         </div>
                         <template v-slot:aside>
