@@ -110,8 +110,8 @@ public class ResumeApi extends BaseApi {
     @RequireLogin
     @GetMapping("resume-detail")
     @ApiDoc
-    public ApiResult<ResumeVo> getResumeDetail(@RequestParam Long id,@RequestParam(required = false) Byte type) {
-        ResumeService resumeService = resumeServiceFactory.getResumeService(type);
+    public ApiResult<ResumeVo> getResumeDetail(@RequestParam Long id) {
+        ResumeService resumeService = resumeServiceFactory.getResumeService(id);
         ResumeDetail resumeDetail = resumeService.getResumeDetail(id);
         return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }

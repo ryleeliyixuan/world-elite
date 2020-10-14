@@ -8,6 +8,7 @@ import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeAttach;
 import com.worldelite.job.entity.ResumeDetail;
 import com.worldelite.job.entity.ResumeEdu;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.JobSearchForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.form.ResumeAttachmentForm;
@@ -320,7 +321,9 @@ public class LuceneSearchService implements SearchService {
             return pageResult;
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            return PageResult.emptyResult();
+            ex.printStackTrace();
+            throw new ServiceException(ex.getMessage());
+            //return PageResult.emptyResult();
         }
     }
 

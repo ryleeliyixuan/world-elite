@@ -170,8 +170,7 @@ public class ResumeRepositoryApi extends BaseApi {
     @GetMapping("resume")
     @ApiDoc
     public ApiResult<ResumeVo> resume(@RequestParam Long resumeId) {
-        Byte type = ResumeType.COMPANY.value;
-        ResumeService resumeService = resumeServiceFactory.getResumeService(type);
+        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
         ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
         return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
