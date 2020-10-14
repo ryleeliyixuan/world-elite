@@ -102,6 +102,11 @@ const constantRoutes = [
         component: () => import('@/views/EntryResume'),
         meta: {title: '寰球菁英-手动录入'}
     },
+    {
+        path: '/manage-chat',
+        component: () => import('@/views/Chat'),
+        meta: {title: '寰球菁英-沟通'}
+    },
 
 ]
 

@@ -54,7 +54,8 @@ export default {
 </script>
 
 <style scoped>
-.resume-page {
+  .
+  .resume-page {
   width: 900px;
   margin: 20px auto;
   border: 1px solid #eee;

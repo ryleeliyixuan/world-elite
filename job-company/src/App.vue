@@ -4,9 +4,9 @@
         <transition name="fade-transform" mode="out-in">
             <router-view @complete="onComplete"/>
         </transition>
-<!--        <transition name="fade">-->
-            <FooterView/>
-<!--        </transition>-->
+        <transition name="fade">
+            <FooterView @complete="onComplete" v-if="show"/>
+        </transition>
         <el-backtop></el-backtop>
     </div>
 </template>
@@ -31,9 +31,9 @@
         methods: {
             onComplete() {
                 this.show = true;
-            }
+            },
+            // this.$emit("complete");
         }
-        // this.$emit("complete");
     };
 </script>
 

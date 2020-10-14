@@ -474,6 +474,7 @@ export default {
             };
           }
         }
+        this.$emit("complete");
       });
     },
     handleEditCompanyAddress(type, address) {

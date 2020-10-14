@@ -56,7 +56,7 @@
                     </el-popover>
                     <el-dropdown style="vertical-align: middle;">
                         <span class="el-dropdown-link">
-<!--                          <el-avatar :size="35" icon="el-icon-user-solid" :src="logo"></el-avatar>-->
+                          <el-avatar :size="35" icon="el-icon-user-solid" :src="logo"></el-avatar>
                         </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>

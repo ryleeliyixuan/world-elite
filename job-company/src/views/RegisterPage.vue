@@ -129,9 +129,10 @@ export default {
 }
 .app-container {
   margin-top: 60px;
+  min-height: calc(100vh - 430px);
 }
 .text-policy {
   font-size: 14px;
   color: #999;
-} 
+}
 </style>

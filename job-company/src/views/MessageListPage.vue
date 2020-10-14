@@ -87,6 +87,7 @@ export default {
 .app-container {
   width: 800px;
   margin: 0 auto;
+  min-height: calc(100vh - 430px);
 }
 .border-bottom{
    border-bottom: #EEE 1px solid
