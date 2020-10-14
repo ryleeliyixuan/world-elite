@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="section1-container">
-      <el-carousel :interval="4000" type="card">
+      <el-carousel :interval="2500" arrow="always">
         <el-carousel-item v-for="banner in banners" :key="banner.img">
           <img
             class="section1-image"
@@ -171,7 +171,7 @@ export default {
           url: "http://www.myworldelite.com/mi",
         },
         {
-          img: require("../assets/banner/vip.png"),
+          img: require("../assets/banner/vip.jpg"),
           alt: "唯品会2021校园招聘",
           url:
             "https://recruitment.corp.vipshop.com/wt/VIPS/web/index?brandCode=186838262#/",
@@ -233,13 +233,14 @@ export default {
       height: 100%;
 
       /deep/.el-carousel__container {
-        height: 90%;
+        height: 100%;
       }
     }
 
     .section1-image {
       width: 100%;
       height: 100%;
+      object-fit: fill;
     }
   }
 
@@ -366,6 +367,10 @@ export default {
 
 @media screen and (max-width: 850px) {
   .app-container {
+    .section1-image {
+        object-fit: scale-down;
+    }
+
     .company-recommend-box {
       padding: 30px 15px 0;
     }
@@ -375,26 +380,21 @@ export default {
 @media screen and (max-width: 420px) {
   .app-container {
     .section1-container {
-      width: 95%;
-      height: 40vh;
+      width: 100%;
+      height: 20vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
 
       .el-carousel {
-        height: 100%;
-
         /deep/.el-carousel__container {
-          width: 80vh;
-          height: 75%;
-          margin: 10px;
+          width: 300px;
         }
       }
 
       .section1-image {
-        width: 100%;
-        height: 100%;
+        object-fit: contain;
       }
     }
 
