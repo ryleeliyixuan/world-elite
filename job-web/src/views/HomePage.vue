@@ -12,52 +12,6 @@
         </el-carousel-item>
       </el-carousel>
     </div>
-    <div class="company-recommend-box">
-      <h3 class="main-title">百科推荐</h3>
-      <div class="recommend-company-container">
-        <div
-          class="company-item-container"
-          v-for="recommendCompany in recommendCompanyList"
-          :key="recommendCompany.id"
-        >
-          <el-card
-            shadow="hover"
-            class="link-pointer company-card"
-            v-if="recommendCompany.object"
-          >
-            <el-link
-              :href="`/company/${recommendCompany.object.id}`"
-              :underline="false"
-            >
-              <div class="company-card-inner">
-                <el-image
-                  class="company-logo"
-                  :src="recommendCompany.object.logo"
-                ></el-image>
-                <h6 class="company-name">{{ recommendCompany.object.name }}</h6>
-                <div class="company-tag text-gray text-small">
-                  <span v-if="recommendCompany.object.stage"
-                    >{{ recommendCompany.object.stage.name }} .</span
-                  >
-                  <span v-if="recommendCompany.object.property"
-                    >{{ recommendCompany.object.property.name }} .</span
-                  >
-                  <span v-if="recommendCompany.object.industry"
-                    >{{ recommendCompany.object.industry.name }} .</span
-                  >
-                  <span v-if="recommendCompany.object.scale">{{
-                    recommendCompany.object.scale.name
-                  }}</span>
-                </div>
-                <div class="company-des text-gray text-small">
-                  {{ recommendCompany.object.synopsis }}
-                </div>
-              </div>
-            </el-link>
-          </el-card>
-        </div>
-      </div>
-    </div>
     <div class="job-recommend-box">
       <h3 class="main-title">职位精选</h3>
       <div class="recommend-job-container">
@@ -139,6 +93,52 @@
                 </div>
               </el-link>
             </div>
+          </el-card>
+        </div>
+      </div>
+    </div>
+    <div class="company-recommend-box">
+      <h3 class="main-title">百科推荐</h3>
+      <div class="recommend-company-container">
+        <div
+          class="company-item-container"
+          v-for="recommendCompany in recommendCompanyList"
+          :key="recommendCompany.id"
+        >
+          <el-card
+            shadow="hover"
+            class="link-pointer company-card"
+            v-if="recommendCompany.object"
+          >
+            <el-link
+              :href="`/company/${recommendCompany.object.id}`"
+              :underline="false"
+            >
+              <div class="company-card-inner">
+                <el-image
+                  class="company-logo"
+                  :src="recommendCompany.object.logo"
+                ></el-image>
+                <h6 class="company-name">{{ recommendCompany.object.name }}</h6>
+                <div class="company-tag text-gray text-small">
+                  <span v-if="recommendCompany.object.stage"
+                    >{{ recommendCompany.object.stage.name }} .</span
+                  >
+                  <span v-if="recommendCompany.object.property"
+                    >{{ recommendCompany.object.property.name }} .</span
+                  >
+                  <span v-if="recommendCompany.object.industry"
+                    >{{ recommendCompany.object.industry.name }} .</span
+                  >
+                  <span v-if="recommendCompany.object.scale">{{
+                    recommendCompany.object.scale.name
+                  }}</span>
+                </div>
+                <div class="company-des text-gray text-small">
+                  {{ recommendCompany.object.synopsis }}
+                </div>
+              </div>
+            </el-link>
           </el-card>
         </div>
       </div>
