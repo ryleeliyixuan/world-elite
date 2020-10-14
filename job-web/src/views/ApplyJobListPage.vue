@@ -1,22 +1,19 @@
 <template>
   <div class="app-container">
     <h5>我的投递</h5>
-    <!-- v-show="total" -->
     <pagination
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       @pagination="handleRouteList"
     />
+    <!-- 通过投递成功／通过初筛／邀请面试／不合适 四种状态来方便用户追踪申请的进度，提升用户体验。 -->
     <div class="job-list">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="待查看" name="1"></el-tab-pane>
-        <el-tab-pane label="已查看" name="2"></el-tab-pane>
-        <el-tab-pane label="待通知" name="3"></el-tab-pane>
-        <el-tab-pane label="面试" name="4"></el-tab-pane>
-        <el-tab-pane label="已入职" name="5"></el-tab-pane>
+        <el-tab-pane label="投递成功" name="2"></el-tab-pane>
+        <el-tab-pane label="通过初筛" name="3"></el-tab-pane>
+        <el-tab-pane label="邀请面试" name="4"></el-tab-pane>
         <el-tab-pane label="不合适" name="6"></el-tab-pane>
-        <el-tab-pane label="已过期" name="7"></el-tab-pane>
       </el-tabs>
       <template v-if="pageResult.list && pageResult.list.length !== 0">
       <el-card
@@ -42,9 +39,6 @@
               >{{`${job.city?job.city.name:''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
             </div>
           </div>
-          <!-- <div>
-            <el-tag>{{ job.applyStatus | statusFilter }}</el-tag>
-          </div> -->
         </div>
       </el-card>
       </template>
@@ -76,7 +70,7 @@ export default {
   components: { Pagination },
   data() {
     return {
-      activeName: "1",
+      activeName: "2",
       listQuery: {
         page: 1,
         limit: 10,
@@ -90,13 +84,10 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        1: "待查看",
-        2: "已查看",
-        3: "待通知",
-        4: "面试",
-        5: "已入职",
+        2: "投递成功",
+        3: "通过初筛",
+        4: "邀请面试",
         6: "不合适",
-        7: "已过期",
       };
       return statusMap[status];
     },

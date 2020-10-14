@@ -14,4 +14,9 @@ public interface RedisKeys {
      * 职位类型树
      */
     String JOB_CATEGORY_TREE = "job_category_tree";
+
+    /**
+     * 用户在线状态信息
+     */
+    String ATTR_ONLINE_INFO = "ATTR_ONLINE_INFO";
 }
