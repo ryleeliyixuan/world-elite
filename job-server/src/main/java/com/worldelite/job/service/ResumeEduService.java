@@ -102,7 +102,7 @@ public class ResumeEduService extends BaseService{
      * @param resumeId
      * @return
      */
-    public List<ResumeEduVo> getResumeEduList(Long resumeId){
+    public List<ResumeEduVo> getResumeEduVoList(Long resumeId){
         ResumeEdu options = new ResumeEdu();
         options.setResumeId(resumeId);
         PageHelper.orderBy("degree_id desc");
@@ -110,4 +110,10 @@ public class ResumeEduService extends BaseService{
         return AppUtils.asVoList(resumeEduList, ResumeEduVo.class);
     }
 
+    public List<ResumeEdu> getResumeEduList(Long resumeId){
+        ResumeEdu options = new ResumeEdu();
+        options.setResumeId(resumeId);
+        PageHelper.orderBy("degree_id desc");
+        return resumeEduMapper.selectAndList(options);
+    }
 }

@@ -2,10 +2,7 @@ package com.worldelite.job.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.anatation.ResumeScore;
-import com.worldelite.job.entity.Resume;
-import com.worldelite.job.entity.ResumeExperience;
-import com.worldelite.job.entity.ResumeLink;
-import com.worldelite.job.entity.ResumePractice;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.TimeUtils;
 import lombok.Data;
@@ -48,6 +45,9 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     private String introduction; //个人介绍
     private String attachResume; //附件简历
     private String userId; //用户Id
+    private String companyId; //企业Id
+    private Byte status; //简历状态
+    private Byte type; //简历类型
 
     private Integer resumeCompleteProgress; //简历完善进度
 
@@ -82,9 +82,12 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     @Override
     public ResumeVo asVo(Resume resume) {
         setId(String.valueOf(resume.getId()));
+        setUserId(String.valueOf(resume.getUserId()));
         setName(resume.getName());
         setGender(resume.getGender());
         setBirth(resume.getBirth());
+        setStatus(resume.getStatus());
+        setType(resume.getType());
         setAttachResume(AppUtils.absOssUrl(resume.getAttachResume()));
         if(resume.getBirth() != null){
             setAge(TimeUtils.getCurrentAge(resume.getBirth()));

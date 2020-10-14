@@ -4,10 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.JobIndexFields;
 import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.ResumeIndexFields;
-import com.worldelite.job.entity.Job;
-import com.worldelite.job.entity.JobOptions;
-import com.worldelite.job.entity.Resume;
-import com.worldelite.job.entity.ResumeOptions;
+import com.worldelite.job.context.LuceneContext;
+import com.worldelite.job.entity.*;
+import com.worldelite.job.form.ResumeForm;
+import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.*;
@@ -20,13 +20,16 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
@@ -42,6 +45,9 @@ public class LuceneIndexService implements IndexService {
 
     @Value("${search.index.path}")
     private String searchIndexPath;
+
+    @Value("${search.index.resumeindex2}")
+    private String folder;
 
     @Autowired
     private Analyzer analyzer;
@@ -64,6 +70,9 @@ public class LuceneIndexService implements IndexService {
 
     @Autowired
     private UserExpectJobService userExpectJobService;
+
+    @Autowired
+    private LuceneContext luceneContext;
 
     @Override
     public void createOrRefresh() {
@@ -234,6 +243,22 @@ public class LuceneIndexService implements IndexService {
         }
     }
 
+    public void saveResumeItem(ResumeDetail resumeDetail,String indexPath) {
+        try {
+            IndexWriter indexWriter = luceneContext.getIndexWriter(indexPath);
+            Document doc = createResumeDoc(resumeDetail);
+            if (doc != null) {
+                Term term = new Term(ResumeIndexFields.RESUME_ID_INDEX,String.valueOf(resumeDetail.getResumeId()));
+                indexWriter.updateDocument(term,doc);
+            }
+            indexWriter.commit();
+        } catch (IOException e) {
+            log.error("saveResumeItem error ", e);
+        } finally {
+            luceneContext.closeIndexWriter(indexPath);
+        }
+    }
+
     @Override
     public void deleteResumeItem(Long resumeId) {
         IndexWriter indexWriter = null;
@@ -248,8 +273,76 @@ public class LuceneIndexService implements IndexService {
         }
     }
 
+    /**
+     * 生成简历Document
+     * @param resume
+     * @return
+     */
+    private Document createResumeDoc(ResumeDetail resume){
+        //必须有简历基础信息才开始生成索引
+        if(resume==null || resume.getResumeId()==null ||resume.getResumeBasic()==null) return null;
+        Document document = new Document();
+        Resume resumeBasic = resume.getResumeBasic();
+        //保存简历ID的值，用于搜索时返回
+        document.add(new StoredField(ResumeIndexFields.RESUME_ID,resume.getResumeId()));
+        //生成简历ID的索引，不会保存值
+        document.add(new StringField(ResumeIndexFields.RESUME_ID_INDEX,String.valueOf(resume.getResumeId()), Field.Store.NO));
+        //简历类型
+        if(resumeBasic.getType()!=null){
+            document.add(new IntPoint(ResumeIndexFields.RESUME_TYPE,resumeBasic.getType()));
+        }
+        //简历状态
+        if(resumeBasic.getStatus()!=null){
+            document.add(new IntPoint(ResumeIndexFields.RESUME_STATUS,resumeBasic.getStatus()));
+        }
+        //为教育信息生成索引
+        if(CollectionUtils.isNotEmpty(resume.getResumeEduList())){
+            for(ResumeEdu resumeEdu:resume.getResumeEduList()){
+                //学校
+                if(resumeEdu.getSchoolId() != null)
+                document.add(new IntPoint(ResumeIndexFields.SCHOOL_ID,resumeEdu.getSchoolId()));
+                //学历
+                if(resumeEdu.getDegreeId() != null)
+                document.add(new IntPoint(ResumeIndexFields.DEGREE,resumeEdu.getDegreeId()));
+                //GPA Todo GPA不是一个范围，可输入的，怎么处理
+
+            }
+        }
+        //UserId索引
+        if(resume.getUserId() != null) {
+            document.add(new LongPoint(ResumeIndexFields.USER_ID, resume.getUserId()));
+        }
+        //CompanyId索引
+        if(resume.getCompanyId() != null) {
+            document.add(new LongPoint(ResumeIndexFields.COMPANY_ID,resume.getCompanyId()));
+        }
+        //名字索引
+        if(resume.getName() != null) {
+            document.add(new StringField(ResumeIndexFields.NAME, resume.getName(), Field.Store.NO));
+        }
+        //邮箱索引
+        if(resume.getEmail() != null) {
+            document.add(new StringField(ResumeIndexFields.EMAIL, resume.getEmail(), Field.Store.NO));
+        }
+        //意向城市
+        addExpectCity(document,resume.getCityList());
+        //意向职位
+        addExpectCategory(document,resume.getCategoryList());
+        //薪资范围
+        if(resume.getSalary() != null){
+            document.add(new IntPoint(ResumeIndexFields.SALARY,resume.getSalary().getId()));
+        }
+        //性别索引
+        if(resume.getGender() != null) {
+            document.add(new IntPoint(ResumeIndexFields.RESUME_ID_INDEX, resume.getGender()));
+        }
+        //技能索引
+        addResumeSkill(document,resume.getResumeSkillList());
+        return document;
+    }
+
     private Document createResumeDoc(Long resumeId) {
-        ResumeVo resumeVo = resumeService.getResumeDetail(resumeId);
+        ResumeVo resumeVo = resumeService.getResumeVo(resumeId);
         //if (checkIfResumeNotComplete(resumeVo)) return null;
 
         final Document doc = new Document();
@@ -310,5 +403,52 @@ public class LuceneIndexService implements IndexService {
                 || CollectionUtils.isEmpty(resumeVo.getResumeExpList())
                 || CollectionUtils.isEmpty(resumeVo.getResumePracticeList())
                 || CollectionUtils.isEmpty(resumeVo.getResumeSkillList());
+    }
+
+    /**
+     * 添加技能标签索引
+     * 技能标签可以用户自定义
+     * 所以使用标签内容做索引，使用ID做索引没有意义
+     * 搜索需要使用模糊搜索
+     * @param document
+     * @param resumeSkillList
+     */
+    private void addResumeSkill(Document document,List<ResumeSkill> resumeSkillList){
+        if(CollectionUtils.isEmpty(resumeSkillList)) return;
+        for(ResumeSkill resumeSkill:resumeSkillList){
+            if(StringUtils.isNotEmpty(resumeSkill.getName())){
+                document.add(new StringField(ResumeIndexFields.RESUME_SKILL,resumeSkill.getName(), Field.Store.NO));
+            }
+        }
+    }
+
+    /**
+     * 添加意向职位索引
+     * @param document
+     * @param categoryList
+     */
+    private void addExpectCategory(Document document,List<JobCategory> categoryList){
+        if(CollectionUtils.isEmpty(categoryList)) return;
+        for(JobCategory category:categoryList){
+            //理论上职位ID不可能为NULL
+            //这里是防止测试库数据异常
+            if(category.getId() != null){
+                document.add(new IntPoint(ResumeIndexFields.EXPECT_CATEGORY,category.getId()));
+            }
+        }
+    }
+
+    /**
+     * 添加意向城市索引
+     * @param document
+     * @param cityList
+     */
+    private void addExpectCity(Document document,List<Dict> cityList){
+        if(CollectionUtils.isEmpty(cityList)) return;
+        for(Dict city:cityList){
+            if(city.getId() != null){
+                document.add(new IntPoint(ResumeIndexFields.EXPECT_CITY,city.getId()));
+            }
+        }
     }
 }

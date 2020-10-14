@@ -77,11 +77,18 @@ public class ResumePracticeService extends BaseService{
      * @param resumeId
      * @return
      */
-    public List<ResumePracticeVo> getResumePracticeList(Long resumeId){
+    public List<ResumePracticeVo> getResumePracticeVoList(Long resumeId){
         ResumePractice options = new ResumePractice();
         options.setResumeId(resumeId);
         PageHelper.orderBy("position desc");
         List<ResumePractice> resumePracticeList = practiceMapper.selectAndList(options);
         return AppUtils.asVoList(resumePracticeList, ResumePracticeVo.class);
+    }
+
+    public List<ResumePractice> getResumePracticeList(Long resumeId){
+        ResumePractice options = new ResumePractice();
+        options.setResumeId(resumeId);
+        PageHelper.orderBy("position desc");
+        return practiceMapper.selectAndList(options);
     }
 }

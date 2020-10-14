@@ -71,4 +71,6 @@ public interface ResumeApplicantMapper {
      * @return
      */
     ResumeApplicant selectByResumeId(Long resumeId);
+
+    List<ResumeApplicant> selectAndList(ResumeApplicant record);
 }

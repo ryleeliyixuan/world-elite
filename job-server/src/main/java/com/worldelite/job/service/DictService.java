@@ -36,6 +36,10 @@ public class DictService extends BaseService{
        return dict == null? null: new DictVo().asVo(dict);
     }
 
+    public Dict getDict(Integer id){
+        return dictMapper.selectByPrimaryKey(id);
+    }
+
     public List<DictVo> getDictList(DictListForm listForm){
         Dict options = new Dict();
         options.setName(listForm.getName());

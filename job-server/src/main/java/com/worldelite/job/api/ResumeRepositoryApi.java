@@ -2,10 +2,15 @@ package com.worldelite.job.api;
 
 import com.alibaba.excel.util.StringUtils;
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.entity.JobApply;
+import com.worldelite.job.entity.ResumeDetail;
 import com.worldelite.job.entity.ResumeRepository;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.*;
+import com.worldelite.job.service.resume.ResumeService;
+import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.vo.*;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.apache.ibatis.annotations.Param;
@@ -42,6 +47,12 @@ public class ResumeRepositoryApi extends BaseApi {
 
     @Autowired
     private UserExpectJobService userExpectJobService;
+
+    @Autowired
+    private ResumeServiceFactory resumeServiceFactory;
+
+    @Autowired
+    private JobApplyService jobApplyService;
 
     /**
      * 通过解析附件简历新增简历库数据
@@ -94,7 +105,12 @@ public class ResumeRepositoryApi extends BaseApi {
     @ApiDoc
     @PostMapping("add-from-user")
     public ApiResult addResume(@RequestParam Long resumeId, @RequestParam Long jobId, @RequestParam Byte status) {
-        resumeRepositoryService.addToJobApply(resumeId, jobId, status);
+        if(jobId==null) jobId = 0L;
+        JobApply jobApply = jobApplyService.applyJob(resumeId,jobId,status);
+        JobApplyForm jobApplyForm = new JobApplyForm();
+        jobApplyForm.setStatus(status);
+        jobApplyForm.setId(jobApply.getId());
+        jobApplyService.handleApplyResume(jobApplyForm);
         return ApiResult.ok();
     }
 
@@ -129,16 +145,9 @@ public class ResumeRepositoryApi extends BaseApi {
     @ApiDoc
     @PostMapping("search")
     public ApiResult<PageResult<ResumeVo>> search(@RequestBody ResumeListForm listForm) {
-//        if(StringUtils.isEmpty(resumeRepositoryListForm.getKeyword())){
-//            PageResult<ResumeRepositoryVo> pageResult = resumeRepositoryService.search(resumeRepositoryListForm);
-//            return ApiResult.ok(pageResult);
-//        }else{
-//            PageResult<ResumeRepositoryVo> pageResult = resumeRepositoryService.searchByKeyword(resumeRepositoryListForm);
-//            return ApiResult.ok(pageResult);
-//        }
-
-        PageResult<ResumeVo> pageResult = resumeRepositoryService.getResumeList(listForm);
-        return ApiResult.ok(pageResult);
+        ResumeService resumeService = resumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
+        PageResult<ResumeDetail> pageResult = resumeService.search(listForm);
+        return ApiResult.ok(resumeService.toResumeVo(pageResult));
     }
 
     public void suggest() {
@@ -161,8 +170,10 @@ public class ResumeRepositoryApi extends BaseApi {
     @GetMapping("resume")
     @ApiDoc
     public ApiResult<ResumeVo> resume(@RequestParam Long resumeId) {
-        ResumeVo resumeVo = resumeRepositoryService.getResumeDetail(resumeId);
-        return ApiResult.ok(resumeVo);
+        Byte type = ResumeType.COMPANY.value;
+        ResumeService resumeService = resumeServiceFactory.getResumeService(type);
+        ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
+        return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
 
     /**
@@ -175,8 +186,10 @@ public class ResumeRepositoryApi extends BaseApi {
     @PostMapping("save-resume-basic")
     @ApiDoc
     public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm) {
-        ResumeVo resumeVo = resumeRepositoryService.saveBasic(resumeForm);
-        return ApiResult.ok(resumeVo);
+        resumeForm.setType(ResumeType.COMPANY.value);
+        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeForm.getType());
+        ResumeDetail resumeDetail = resumeService.saveBasic(resumeForm);
+        return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
 
     /**

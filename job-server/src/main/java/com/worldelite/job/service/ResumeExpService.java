@@ -80,11 +80,18 @@ public class ResumeExpService extends BaseService{
      * @param resumeId
      * @return
      */
-    public List<ResumeExpVo> getResumeExpList(Long resumeId){
+    public List<ResumeExpVo> getResumeExpVoList(Long resumeId){
         ResumeExperience options = new ResumeExperience();
         options.setResumeId(resumeId);
         PageHelper.orderBy("position desc");
         List<ResumeExperience> resumeExpList = resumeExpMapper.selectAndList(options);
         return AppUtils.asVoList(resumeExpList, ResumeExpVo.class);
+    }
+
+    public List<ResumeExperience> getResumeExpList(Long resumeId){
+        ResumeExperience options = new ResumeExperience();
+        options.setResumeId(resumeId);
+        PageHelper.orderBy("position desc");
+        return resumeExpMapper.selectAndList(options);
     }
 }

@@ -1,5 +1,6 @@
 package com.worldelite.job.service.search;
 
+import com.worldelite.job.entity.ResumeDetail;
 import org.apache.lucene.document.Document;
 
 /**
@@ -40,6 +41,7 @@ public interface IndexService {
      * @param resumeId
      */
     void saveResumeItem(Long resumeId);
+    void saveResumeItem(ResumeDetail resumeDetail,String indexPath);
 
     /**
      * 在索引中删除简历记录

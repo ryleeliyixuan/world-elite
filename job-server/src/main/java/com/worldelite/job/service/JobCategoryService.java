@@ -35,6 +35,10 @@ public class JobCategoryService {
         return jobCategory == null? null: new JobCategoryVo().asVo(jobCategory);
     }
 
+    public JobCategory getCategory(Integer id){
+        return jobCategoryMapper.selectByPrimaryKey(id);
+    }
+
     /**
      * 获取分类树
      *

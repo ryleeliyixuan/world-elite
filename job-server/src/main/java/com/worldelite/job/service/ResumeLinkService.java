@@ -29,11 +29,18 @@ public class ResumeLinkService {
      * @param resumeId
      * @return
      */
-    public List<ResumeLinkVo> getResumeLinkList(Long resumeId){
+    public List<ResumeLinkVo> getResumeLinkVoList(Long resumeId){
         ResumeLink options = new ResumeLink();
         options.setResumeId(resumeId);
         List<ResumeLink> resumeLinkList = resumeLinkMapper.selectAndList(options);
         return AppUtils.asVoList(resumeLinkList, ResumeLinkVo.class);
+    }
+
+    public List<ResumeLink> getResumeLinkList(Long resumeId){
+        ResumeLink options = new ResumeLink();
+        options.setResumeId(resumeId);
+        List<ResumeLink> resumeLinkList = resumeLinkMapper.selectAndList(options);
+        return resumeLinkMapper.selectAndList(options);
     }
 
     /**
