@@ -169,7 +169,7 @@ public class LuceneSearchService implements SearchService {
             return PageResult.emptyResult();
         }
         BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
-        DictVo expectCity = jobVo.getCity();
+        CityVo expectCity = jobVo.getCity();
         if (expectCity != null) {
             BooleanQuery.Builder cityBuilder = new BooleanQuery.Builder();
             cityBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.EXPECT_JOB_FIRST_CITY, expectCity.getId()), BooleanClause.Occur.SHOULD);
