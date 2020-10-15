@@ -11,7 +11,10 @@ import com.worldelite.job.form.EmailForm;
 import com.worldelite.job.form.JobApplyForm;
 import com.worldelite.job.mapper.CompanyUserMapper;
 import com.worldelite.job.mapper.JobApplyMapper;
+import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mapper.ResumeMapper;
+import com.worldelite.job.service.resume.ResumeService;
+import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,9 @@ public class JobApplyService extends BaseService{
 
     @Autowired
     private JobApplyMapper jobApplyMapper;
+
+    @Autowired
+    private JobMapper jobMapper;
 
     @Autowired
     private ResumeMapper resumeMapper;
@@ -64,6 +70,52 @@ public class JobApplyService extends BaseService{
     @Autowired
     private UserApplicantService userApplicantService;
 
+    @Autowired
+    private ResumeServiceFactory resumeServiceFactory;
+
+    /**
+     * 申请职位
+     * @param resumeId 简历ID
+     * @param jobId 职位ID
+     */
+    public JobApply applyJob(Long resumeId,Long jobId,Byte status) {
+        //如果简历ID不存在，则使用当前登录用户默认简历
+        if(resumeId==null){
+            ResumeService resumeService = resumeServiceFactory.getDefaultService();
+            ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
+            //默认简历也不存在，则判定为数据异常
+            if(resumeDetail==null){
+                throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
+            }
+            resumeId = resumeDetail.getResumeId();
+        }
+
+        Job job = jobMapper.selectSimpleById(jobId);
+        if (job == null) {
+            throw new ServiceException(ApiCode.INVALID_OPERATION);
+        }
+
+        JobApply newJobApply = new JobApply();
+        newJobApply.setJobId(jobId);
+        newJobApply.setUserId(curUser().getId());
+        if(status==null){
+            status = JobApplyStatus.VIEW.value;
+        }
+        newJobApply.setStatus(status);
+        newJobApply.setType(JobApplyType.APPLICANT.value);
+        newJobApply.setResumeId(resumeId);
+        jobApplyMapper.insertSelective(newJobApply);
+
+        // 给职位创建者发消息
+        Message message = new Message();
+        message.setFromUser(curUser().getId());
+        message.setToUser(job.getCreatorId());
+        message.setContent(message("message.job.apply", job.getName()));
+        message.setUrl("/manage-job");
+        messageService.sendMessage(message);
+        return newJobApply;
+    }
+
     /**
      * 获取需要处理的简历列表
      *
@@ -95,16 +147,16 @@ public class JobApplyService extends BaseService{
             applyResumeVo.setApplyStatus(jobApply.getStatus());
             applyResumeVo.setType(jobApply.getType());
             applyResumeVo.setCommentVos(corporateCommentService.getCommentsByJobApplyId(jobApply.getId()));
-            if(applyResumeVo.getType() == JobApplyType.APPLICANT.value){
-                applyResumeVo.setJob(jobService.getJobInfo(jobApply.getJobId(), false));
-                applyResumeVo.setResume(resumeApplicantService.getResumeDetail(jobApply.getResumeId()));
-            }
-            if(applyResumeVo.getType() == JobApplyType.REPOSITORY.value){
-                JobVo jobVo = new JobVo();
-                jobVo.setName("");
-                applyResumeVo.setResume(resumeRepositoryService.getResumeDetail(jobApply.getResumeId()));
-                applyResumeVo.setJob(jobVo);
-            }
+            //获取简历基础信息
+            ResumeService resumeService = resumeServiceFactory.getDefaultService();
+            Resume resume = resumeService.getResumeBasic(jobApply.getResumeId());
+            //一份职位申请，如果对应简历不存在，判定为数据异常
+            if(resume==null) throw new ServiceException(message("api.error.data.resume"));
+            //根据简历类型获取简历详情
+            resumeService = resumeServiceFactory.getResumeService(resume.getType());
+            ResumeDetail resumeDetail = resumeService.getResumeDetail(resume.getId());
+            applyResumeVo.setResume(resumeService.toResumeVo(resumeDetail));
+            applyResumeVo.setJob(jobService.getJobInfo(jobApply.getJobId(), false));
             applyResumeVo.setTagVos(corporateTagService.getTagsByJobApplyId(jobApply.getId()));
             applyResumeVo.setTime(jobApply.getCreateTime());
             applyResumeVoList.add(applyResumeVo);
@@ -128,60 +180,52 @@ public class JobApplyService extends BaseService{
             throw new ServiceException(String.valueOf(applyResumeForm.getId()), ApiCode.OBJECT_NOT_FOUND);
         }
 
-        if(jobApply.getType() == JobApplyType.APPLICANT.value) {
-            JobVo job = jobService.getJobInfo(jobApply.getJobId(), true);
-            if (!job.getCreatorId().equals(curUser().getId())) {
-                throw new ServiceException(ApiCode.PERMISSION_DENIED);
-            }
-            jobApply.setStatus(applyResumeForm.getStatus());
-            jobApplyMapper.updateByPrimaryKeySelective(jobApply);
+        JobVo job = jobService.getJobInfo(jobApply.getJobId(), true);
+        if (!job.getId().equals("0")&&!job.getCreatorId().equals(curUser().getId())) {
+            throw new ServiceException(ApiCode.PERMISSION_DENIED);
+        }
+        jobApply.setStatus(applyResumeForm.getStatus());
+        jobApplyMapper.updateByPrimaryKeySelective(jobApply);
 
-            if(applyResumeForm.getStatus() == JobApplyStatus.VIEW.value){
-                return;
-            }
+        if(applyResumeForm.getStatus() == JobApplyStatus.VIEW.value){
+            return;
+        }
 
-            ResumeApplicant resumeApplicant = resumeApplicantService.selectByResumeId(resume.getId());
+        ResumeApplicant resumeApplicant = resumeApplicantService.selectByResumeId(resume.getId());
+        if(resumeApplicant==null) return;
 
-            // 发送站内和邮件消息
-            UserApplicantVo toUser = userApplicantService.getUserInfo(resumeApplicant.getUserId());
-            final String jobPlaceholder = String.format("%s.%s", job.getCompanyUser().getCompany().getName(), job.getName());
-            EmailForm emailForm = null;
-            String messageContent = null;
-            if (applyResumeForm.getStatus() == JobApplyStatus.CANDIDATE.value) {
-                emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_CANDIDATE);
-                messageContent = message("message.apply.candidate", jobPlaceholder);
-            } else if (applyResumeForm.getStatus() == JobApplyStatus.INTERVIEW.value) {
-                emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_INTERVIEW);
-                messageContent = message("message.apply.interview", jobPlaceholder);
-            } else if (applyResumeForm.getStatus() == JobApplyStatus.OFFER.value) {
-                emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_OFFER);
-                messageContent = message("message.apply.offer", jobPlaceholder);
-            } else if (applyResumeForm.getStatus() == JobApplyStatus.ABANDON.value) {
-                emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_ABANDON);
-                messageContent = message("message.apply.abandon", jobPlaceholder);
-            }
+        // 发送站内和邮件消息
+        UserApplicantVo toUser = userApplicantService.getUserInfo(resumeApplicant.getUserId());
+        final String jobPlaceholder = String.format("%s.%s", job.getCompanyUser().getCompany().getName(), job.getName());
+        EmailForm emailForm = null;
+        String messageContent = null;
+        if (applyResumeForm.getStatus() == JobApplyStatus.CANDIDATE.value) {
+            emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_CANDIDATE);
+            messageContent = message("message.apply.candidate", jobPlaceholder);
+        } else if (applyResumeForm.getStatus() == JobApplyStatus.INTERVIEW.value) {
+            emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_INTERVIEW);
+            messageContent = message("message.apply.interview", jobPlaceholder);
+        } else if (applyResumeForm.getStatus() == JobApplyStatus.OFFER.value) {
+            emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_OFFER);
+            messageContent = message("message.apply.offer", jobPlaceholder);
+        } else if (applyResumeForm.getStatus() == JobApplyStatus.ABANDON.value) {
+            emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_ABANDON);
+            messageContent = message("message.apply.abandon", jobPlaceholder);
+        }
 
-            if (emailForm != null) {
-                final String emailBody = emailForm.getEmailBody().replace("${JOB}", jobPlaceholder).replace("${DETAIL_URL}", AppUtils.wholeWebUrl("/apply-jobs" ));
-                emailForm.setEmailBody(emailBody);
-                emailForm.setAddress(toUser.getEmail());
-                emailService.sendEmail(emailForm);
-            }
+        if (emailForm != null) {
+            final String emailBody = emailForm.getEmailBody().replace("${JOB}", jobPlaceholder).replace("${DETAIL_URL}", AppUtils.wholeWebUrl("/apply-jobs" ));
+            emailForm.setEmailBody(emailBody);
+            emailForm.setAddress(toUser.getEmail());
+            emailService.sendEmail(emailForm);
+        }
 
-            if(messageContent != null){
-                Message message = new Message();
-                message.setFromUser(curUser().getId());
-                message.setToUser(resumeApplicant.getUserId());
-                message.setContent(messageContent);
-                messageService.sendMessage(message);
-            }
-        }else{
-            jobApply.setStatus(applyResumeForm.getStatus());
-            jobApplyMapper.updateByPrimaryKeySelective(jobApply);
-
-            if(applyResumeForm.getStatus() == JobApplyStatus.VIEW.value){
-                return;
-            }
+        if(messageContent != null){
+            Message message = new Message();
+            message.setFromUser(curUser().getId());
+            message.setToUser(resumeApplicant.getUserId());
+            message.setContent(messageContent);
+            messageService.sendMessage(message);
         }
     }
 

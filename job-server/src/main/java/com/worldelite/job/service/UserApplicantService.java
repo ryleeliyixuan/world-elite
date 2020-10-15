@@ -136,6 +136,9 @@ public class UserApplicantService extends BaseService {
         return userApplicantMapper.selectByPrimaryKey(id);
     }
 
+    public void updateByPrimaryKeySelective(UserApplicant userApplicant){
+        userApplicantMapper.updateByPrimaryKeySelective(userApplicant);
+    }
     /**
      * 修改用户信息
      * @param userForm

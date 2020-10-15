@@ -1,24 +1,20 @@
 package com.worldelite.job.api;
 
-import com.worldelite.job.constants.ResumeAttachmentIndexFields;
-import com.worldelite.job.constants.UserType;
 import com.worldelite.job.anatation.RequireLogin;
-import com.worldelite.job.entity.ResumeApplicant;
-import com.worldelite.job.entity.ResumeAttach;
+import com.worldelite.job.constants.UserType;
+import com.worldelite.job.entity.ResumeDetail;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.*;
+import com.worldelite.job.service.resume.ResumeService;
+import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.vo.*;
 import io.github.yedaxia.apidocs.ApiDoc;
-import org.apache.lucene.document.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,10 +26,6 @@ import java.util.List;
 @RequestMapping("/api/resume/")
 @Validated
 public class ResumeApi extends BaseApi {
-
-    @Autowired
-    @Lazy
-    private ResumeService resumeService;
 
     @Autowired
     private ResumeEduService resumeEduService;
@@ -62,17 +54,21 @@ public class ResumeApi extends BaseApi {
     @Autowired
     private JobApplyService jobApplyService;
 
+    @Autowired
+    private ResumeServiceFactory resumeServiceFactory;
+
     /**
      * 我的简历信息
-     *
+     * @param type 简历类型
      * @return
      */
     @RequireLogin
     @GetMapping("my-resume")
     @ApiDoc
-    public ApiResult<ResumeVo> myResume() {
-        ResumeVo resumeVo = resumeApplicantService.getDefaultOrCreate();
-        return ApiResult.ok(resumeVo);
+    public ApiResult<ResumeVo> myResume(@RequestParam(required = false) Byte type) {
+        ResumeService resumeService = resumeServiceFactory.getResumeService(type);
+        ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
+        return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
 
     /**
@@ -85,8 +81,23 @@ public class ResumeApi extends BaseApi {
     @PostMapping("list")
     @ApiDoc
     public ApiResult<PageResult<ResumeVo>> getResumeList(@RequestBody ResumeListForm listForm){
-        PageResult pageResult = resumeApplicantService.getResumeList(listForm);
-        return ApiResult.ok(pageResult);
+        ResumeService resumeService = resumeServiceFactory.getResumeService(listForm.getType());
+        PageResult<ResumeDetail> pageResult = resumeService.list(listForm);
+        return ApiResult.ok(resumeService.toResumeVo(pageResult));
+    }
+
+    /**
+     * 搜索简历
+     * @param listForm
+     * @return
+     */
+    @RequireLogin
+    @PostMapping("search")
+    @ApiDoc
+    public ApiResult<PageResult<ResumeVo>> searchResume(@RequestBody ResumeListForm listForm){
+        ResumeService resumeService = resumeServiceFactory.getResumeService(listForm.getType());
+        PageResult<ResumeDetail> pageResult = resumeService.search(listForm);
+        return ApiResult.ok(resumeService.toResumeVo(pageResult));
     }
 
     /**
@@ -99,8 +110,9 @@ public class ResumeApi extends BaseApi {
     @GetMapping("resume-detail")
     @ApiDoc
     public ApiResult<ResumeVo> getResumeDetail(@RequestParam Long id) {
-        ResumeVo resumeVo = resumeApplicantService.getResumeDetail(id);
-        return ApiResult.ok(resumeVo);
+        ResumeService resumeService = resumeServiceFactory.getResumeService(id);
+        ResumeDetail resumeDetail = resumeService.getResumeDetail(id);
+        return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
 
     /**
@@ -113,8 +125,9 @@ public class ResumeApi extends BaseApi {
     @PostMapping("save-resume-basic")
     @ApiDoc
     public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm) {
-        ResumeVo resumeVo = resumeApplicantService.saveBasic(resumeForm);
-        return ApiResult.ok(resumeVo);
+        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeForm.getType());
+        ResumeDetail resumeDetail = resumeService.saveBasic(resumeForm);
+        return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
 
     /**
@@ -127,7 +140,9 @@ public class ResumeApi extends BaseApi {
     @PostMapping("del-resume-attachment")
     @ApiDoc
     public ApiResult delResumeAttachment(@RequestParam Long resumeId){
-        resumeApplicantService.delResumeAttachment(resumeId);
+        //删除简历附件的逻辑是一样的，返回默认的简历服务类即可
+        ResumeService resumeService = resumeServiceFactory.getDefaultService();
+        resumeService.deleteResumeAttachment(resumeId);
         return ApiResult.ok();
     }
 
@@ -332,7 +347,7 @@ public class ResumeApi extends BaseApi {
      */
     @PostMapping("rebuild-attachment-index")
     public ApiResult rebuildAttachmentIndex(){
-        resumeAttachService.buildIndex();
+        resumeApplicantService.rebuildAllIndex();
         return ApiResult.ok();
     }
 
@@ -343,7 +358,7 @@ public class ResumeApi extends BaseApi {
     @PostMapping("rebuild-resume-index")
     @ApiDoc
     public ApiResult rebuildIndexFromResume(){
-        resumeAttachService.buildResumeIndex();
+        resumeApplicantService.rebuildAllIndex();
         return ApiResult.ok();
     }
 

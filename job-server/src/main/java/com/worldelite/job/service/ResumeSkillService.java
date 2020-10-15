@@ -45,7 +45,7 @@ public class ResumeSkillService extends BaseService{
                 resumeSkillMapper.insertSelective(resumeSkill);
             }
         }
-        return getResumeSkillList(resumeSkillForm.getResumeId());
+        return getResumeSkillVoList(resumeSkillForm.getResumeId());
     }
 
     /**
@@ -54,10 +54,16 @@ public class ResumeSkillService extends BaseService{
      * @param resumeId
      * @return
      */
-    public List<ResumeSkillVo> getResumeSkillList(Long resumeId){
+    public List<ResumeSkillVo> getResumeSkillVoList(Long resumeId){
         ResumeSkill options = new ResumeSkill();
         options.setResumeId(resumeId);
         List<ResumeSkill> resumeSkillList = resumeSkillMapper.selectAndList(options);
         return AppUtils.asVoList(resumeSkillList, ResumeSkillVo.class);
+    }
+
+    public List<ResumeSkill> getResumeSkillList(Long resumeId){
+        ResumeSkill options = new ResumeSkill();
+        options.setResumeId(resumeId);
+        return resumeSkillMapper.selectAndList(options);
     }
 }

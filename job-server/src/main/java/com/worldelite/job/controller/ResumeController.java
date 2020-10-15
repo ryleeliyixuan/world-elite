@@ -30,7 +30,7 @@ public class ResumeController extends BaseController{
     @RequireLogin
     @GetMapping("/resume/{resumeId}")
     public String resume(ModelMap modelMap, @PathVariable("resumeId") Long resumeId){
-        ResumeVo resumeVo = resumeService.getResumeDetail(resumeId);
+        ResumeVo resumeVo = resumeService.getResumeVo(resumeId);
         modelMap.put("resume", resumeVo);
         return "resume";
     }

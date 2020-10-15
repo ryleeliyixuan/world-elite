@@ -6,11 +6,29 @@
         <include refid="Base_Column_List"/>
         from t_resume
         <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <!-- 企业用户简历过滤 -->
+            <if test="companyId != null">
+                and user_id in (select t_user_repository.id as user_id from t_user_repository where
+                t_user_repository.company_id = #{companyId})
+            </if>
+            <if test="creatorId != null">
+                and user_id in (select t_user_repository.id as user_id from t_user_repository where
+                t_user_repository.creator_id = #{creatorId})
+            </if>
             <if test="name != null and name != ''">
                 and name like CONCAT('%', #{name},'%')
             </if>
             <if test="gender != null">
                 and gender = #{gender,jdbcType=TINYINT}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="type != null">
+                and type = #{type}
             </if>
             <if test="minAge != null and maxAge != null">
                 and age between #{minAge, jdbcType=INTEGER} and #{maxAge, jdbcType=INTEGER}

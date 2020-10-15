@@ -3,16 +3,16 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
-import com.worldelite.job.constants.BusinessType;
-import com.worldelite.job.constants.ConfigType;
-import com.worldelite.job.constants.JobApplyStatus;
-import com.worldelite.job.constants.OperationType;
+import com.github.pagehelper.PageHelper;
+import com.worldelite.job.constants.*;
 import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.*;
 import com.worldelite.job.service.read.ResumeFileRead;
+import com.worldelite.job.service.search.IndexService;
+import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.FormUtils;
 import com.worldelite.job.vo.*;
@@ -23,6 +23,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.lucene.document.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -41,6 +42,9 @@ import java.util.concurrent.Future;
 @Service
 @Slf4j
 public class ResumeApplicantService extends  BaseService{
+
+    @Value("${search.index.resumeindex2}")
+    private String folder;
 
     @Autowired
     private ResumeApplicantMapper resumeApplicantMapper;
@@ -74,6 +78,15 @@ public class ResumeApplicantService extends  BaseService{
 
     @Autowired
     private DictService dictService;
+
+    @Autowired
+    private IndexService indexService;
+
+    @Autowired
+    private SearchService searchService;
+
+    @Autowired
+    private ResumeMapper resumeMapper;
 
     public ResumeApplicant selectByResumeId(Long resumeId){
         return resumeApplicantMapper.selectByResumeId(resumeId);
@@ -113,14 +126,18 @@ public class ResumeApplicantService extends  BaseService{
         if(userApplicant.getPhone() != null && userApplicant.getPhone() != 0){
             resumeVo.setPhone(String.valueOf(userApplicant.getPhone()));
         }
-        resumeVo.setResumeEduList(resumeEduService.getResumeEduList(defaultResume.getId()));
-        resumeVo.setResumeExpList(resumeExpService.getResumeExpList(defaultResume.getId()));
-        resumeVo.setResumePracticeList(resumePracticeService.getResumePracticeList(defaultResume.getId()));
+        resumeVo.setResumeEduList(resumeEduService.getResumeEduVoList(defaultResume.getId()));
+        resumeVo.setResumeExpList(resumeExpService.getResumeExpVoList(defaultResume.getId()));
+        resumeVo.setResumePracticeList(resumePracticeService.getResumePracticeVoList(defaultResume.getId()));
         resumeVo.setUserExpectJob(userExpectJobService.getUserExpectJob(userId));
-        resumeVo.setResumeSkillList(resumeSkillService.getResumeSkillList(defaultResume.getId()));
-        resumeVo.setResumeLinkList(resumeLinkService.getResumeLinkList(defaultResume.getId()));
+        resumeVo.setResumeSkillList(resumeSkillService.getResumeSkillVoList(defaultResume.getId()));
+        resumeVo.setResumeLinkList(resumeLinkService.getResumeLinkVoList(defaultResume.getId()));
         resumeVo.setResumeCompleteProgress(AppUtils.calCompleteProgress(resumeVo));
         return resumeVo;
+    }
+
+    public ResumeDetail getDefaultOrCreate(ResumeType type){
+        return null;
     }
 
     /**
@@ -131,8 +148,8 @@ public class ResumeApplicantService extends  BaseService{
      */
     public PageResult getResumeList(ResumeListForm listForm){
 
-        if(listForm.getSalaryRangeId() != null){
-            DictVo salaryRange =  dictService.getById(listForm.getSalaryRangeId());
+        if(listForm.getSalaryId() != null){
+            DictVo salaryRange =  dictService.getById(listForm.getSalaryId());
             if(salaryRange != null){
                 String[] values =  salaryRange.getValue().split("-");
                 if(values.length == 2){
@@ -173,7 +190,7 @@ public class ResumeApplicantService extends  BaseService{
             Long userId = resumeApplicant.getUserId();
             //返回更详细的简历信息
             //ResumeVo resumeVo = getResumeInfo(resume.getId());
-            List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduList(resume.getId());
+            List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduVoList(resume.getId());
             resumeVo.setResumeEduList(resumeEduVoList);
             if (CollectionUtils.isNotEmpty(resumeEduVoList)) {
                 ResumeEduVo maxResumeEduVo = new ResumeEduVo();
@@ -214,6 +231,10 @@ public class ResumeApplicantService extends  BaseService{
         return pageResult;
     }
 
+    public PageResult<ResumeVo> getResumeVoList(ResumeListForm listForm){
+        return null;
+    }
+
     /**
      * 获取简历详情
      *
@@ -221,7 +242,7 @@ public class ResumeApplicantService extends  BaseService{
      * @return
      */
     public ResumeVo getResumeDetail(Long resumeId) {
-        ResumeVo resumeVo = resumeService.getResumeDetail(resumeId);
+        ResumeVo resumeVo = resumeService.getResumeVo(resumeId);
         ResumeApplicant resumeApplicant = resumeApplicantMapper.selectByResumeId(resumeId);
         UserApplicant userApplicant = userApplicantService.selectByPrimaryKey(resumeApplicant.getUserId());
         resumeVo.setUserId(String.valueOf(userApplicant.getId()));
@@ -274,6 +295,44 @@ public class ResumeApplicantService extends  BaseService{
         //Todo 做一些权限检查
         resumeService.delResumeAttachment(resumeId);
         //Todo 更新索引
+    }
+
+    /**
+     * 重建所有用户简历索引
+     */
+    public void rebuildAllIndex(){
+        //因为一次读取全部简历数据会对内存产生很大压力
+        //所以分批次从数据库读取数据再生成索引
+        List<Resume> resumeList;
+        int curPage = 1;
+        ResumeOptions options = new ResumeOptions();
+        do {
+            PageHelper.startPage(curPage++, 100, false);
+            resumeList = resumeMapper.selectAndList(options);
+            for (Resume resume : resumeList) {
+                //获取简历详情
+                ResumeDetail resumeDetail = resumeService.getResumeDetail(resume.getUserId(),resume.getId());
+                UserApplicant userApplicant = userApplicantService.selectByPrimaryKey(resume.getUserId());
+                //简历详情或者用户信息不存在时
+                //说明该简历为异常数据
+                //不创建索引，直接跳过
+                if(resume!=null && userApplicant!=null) {
+                    resumeDetail.setUserId(resume.getUserId());
+                    resumeDetail.setName(userApplicant.getName());
+                    resumeDetail.setEmail(userApplicant.getEmail());
+                    resumeDetail.setGender(userApplicant.getGender());
+                }
+                //生成索引
+                indexService.saveResumeItem(resumeDetail,folder);
+            }
+        } while (CollectionUtils.isNotEmpty(resumeList));
+    }
+
+    /**
+     * Todo 获取重建索引进度
+     */
+    public void getRebuildProcess(){
+
     }
 
 }

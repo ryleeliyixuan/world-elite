@@ -1,14 +1,12 @@
 package com.worldelite.job.service.sdk;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.worldelite.job.constants.Gender;
-import com.worldelite.job.entity.AttachmentParser;
-import com.worldelite.job.entity.Resume;
-import com.worldelite.job.entity.ResumeEdu;
-import com.worldelite.job.entity.ResumeRepository;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
-import com.worldelite.job.form.ResumeForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.AttachmentParserMapper;
 import com.worldelite.job.service.BaseService;
 import com.worldelite.job.util.FileDownloadUtil;
@@ -129,6 +127,11 @@ public class ResumeSDK extends BaseService {
         return resume;
     }
 
+    /**
+     * 解析出教育信息
+     * @param result
+     * @return
+     */
     public List<ResumeEduVo> getResumeEduList(JSONObject result){
         JSONArray eduList = result.getJSONArray("education_objs");
         List<ResumeEduVo> resumeEduList = new ArrayList<>();
@@ -149,6 +152,80 @@ public class ResumeSDK extends BaseService {
             resumeEduList.add(new ResumeEduVo().asVo(resumeEdu));
         }
         return resumeEduList;
+    }
+
+    /**
+     * 解析工作经验
+     * @param result
+     * @return
+     */
+    public List<ResumeExpForm> getResumeExperience(JSONObject result){
+        JSONArray experienceList = result.getJSONArray("job_exp_objs");
+        List<ResumeExpForm> resumeExpFormList = new ArrayList<>();
+        for(int i=0;i<experienceList.size();i++){
+            ResumeExpForm resumeExpForm = new ResumeExpForm();
+            JSONObject experience = experienceList.getJSONObject(i);
+            resumeExpForm.setStartTime(getDate(experience.getString("start_date")));
+            resumeExpForm.setFinishTime(getDate(experience.getString("end_date")));
+            resumeExpForm.setCompany(experience.getString("job_cpy"));
+            resumeExpForm.setDepart(experience.getString("job_dept"));
+            resumeExpForm.setPost(experience.getString("job_position"));
+            resumeExpForm.setDescription(experience.getString("job_content"));
+            resumeExpFormList.add(resumeExpForm);
+        }
+        return resumeExpFormList;
+    }
+
+    /**
+     * 解析实践经验
+     * 对应ResumeSDK解析结果中的项目经历
+     * @param result
+     * @return
+     */
+    public List<ResumePracticeForm> getResumePractice(JSONObject result){
+        List<ResumePracticeForm> resumePracticeFormList = new ArrayList<>();
+        JSONArray practiceList = result.getJSONArray("proj_exp_objs");
+        for(int i=0;i<practiceList.size();i++){
+            JSONObject practice = practiceList.getJSONObject(i);
+            ResumePracticeForm resumePracticeForm = new ResumePracticeForm();
+            resumePracticeForm.setStartTime(getDate(practice.getString("start_date")));
+            resumePracticeForm.setFinishTime(getDate(practice.getString("end_date")));
+            resumePracticeForm.setTitle(practice.getString("proj_name"));
+            resumePracticeForm.setPost(practice.getString("proj_position"));
+            resumePracticeForm.setDescription(practice.getString("proj_content"));
+            resumePracticeFormList.add(resumePracticeForm);
+        }
+        return resumePracticeFormList;
+    }
+
+    /**
+     * 解析技能标签
+     * @param result
+     * @return
+     */
+    public ResumeSkillForm getResumeSkill(JSONObject result){
+        List<String> tagList = new ArrayList<>();
+        JSONArray skillList = result.getJSONArray("skills_objs");
+        ResumeSkillForm resumeSkillForm = new ResumeSkillForm();
+        for(int i=0;i<skillList.size();i++){
+            JSONObject skill = skillList.getJSONObject(i);
+            tagList.add(skill.getString("skills_name"));
+        }
+        resumeSkillForm.setTagList((String[]) tagList.toArray());
+        return resumeSkillForm;
+    }
+
+    /**
+     * 解析社交主页
+     * ResumeSDK只提供了一条博客地址的解析
+     * @param result
+     * @return
+     */
+    public ResumeLinkForm getResumeLink(JSONObject result){
+        ResumeLinkForm resumeLinkForm = new ResumeLinkForm();
+        resumeLinkForm.setName("博客/主页");
+        resumeLinkForm.setLink(result.getString("blog"));
+        return resumeLinkForm;
     }
 
     /**

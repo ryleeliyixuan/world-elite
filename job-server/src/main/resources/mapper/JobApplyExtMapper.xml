@@ -31,7 +31,7 @@
         from t_job_apply
         <where>
             <if test="creatorId != null and companyId != null">
-                and (job_id = 0 and resume_id in (select resume_id from t_resume_repository where company_id = #{companyId,jdbcType=BIGINT})
+                and (job_id = 0 and user_id in (select user_id from t_company_user where company_id = #{companyId,jdbcType=BIGINT})
                 or job_id in (select id from t_job where creator_id = #{creatorId,jdbcType=BIGINT}))
             </if>
             <if test="statuses != null">

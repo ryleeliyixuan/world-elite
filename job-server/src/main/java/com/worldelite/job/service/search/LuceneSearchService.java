@@ -3,14 +3,20 @@ package com.worldelite.job.service.search;
 import com.worldelite.job.constants.JobIndexFields;
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.constants.ResumeIndexFields;
+import com.worldelite.job.context.LuceneContext;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeAttach;
+import com.worldelite.job.entity.ResumeDetail;
+import com.worldelite.job.entity.ResumeEdu;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.JobSearchForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.form.ResumeAttachmentForm;
+import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.mapper.ResumeAttachMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.*;
+import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -18,8 +24,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.IntPoint;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -83,6 +88,12 @@ public class LuceneSearchService implements SearchService {
 
     @Autowired
     private JobCategoryService categoryService;
+
+    @Autowired
+    private LuceneContext luceneContext;
+
+    @Autowired
+    private ResumeServiceFactory resumeServiceFactory;
 
     private static IndexReader sIndexReader;
 
@@ -158,7 +169,7 @@ public class LuceneSearchService implements SearchService {
             return PageResult.emptyResult();
         }
         BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
-        DictVo expectCity = jobVo.getCity();
+        CityVo expectCity = jobVo.getCity();
         if (expectCity != null) {
             BooleanQuery.Builder cityBuilder = new BooleanQuery.Builder();
             cityBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.EXPECT_JOB_FIRST_CITY, expectCity.getId()), BooleanClause.Occur.SHOULD);
@@ -275,6 +286,138 @@ public class LuceneSearchService implements SearchService {
         for (Integer cityId : ids) {
             Query query = IntPoint.newExactQuery(indexField, cityId);
             queryBuilder.add(query, BooleanClause.Occur.SHOULD);
+        }
+        return queryBuilder.build();
+    }
+
+    /**
+     * 搜索简历
+     * @param searchForm
+     * @return
+     */
+    public PageResult<ResumeDetail> searchResume(ResumeListForm searchForm, String searchPath) {
+        try {
+            IndexSearcher indexSearcher = luceneContext.getIndexSearcher(searchPath);
+            Query resumeQuery = getResumeQuery(searchForm);
+            //分页操作
+            ScoreDoc lastScoreDoc = getLastScoreDoc(searchForm, resumeQuery, indexSearcher);
+            TopDocs topDocs = indexSearcher.searchAfter(lastScoreDoc, resumeQuery, searchForm.getLimit());
+            PageResult<ResumeDetail> pageResult = new PageResult<>();
+            pageResult.setTotal(topDocs.totalHits);
+            pageResult.setCurrentPage(searchForm.getPage());
+            pageResult.setPageSize(searchForm.getLimit());
+
+            com.worldelite.job.service.resume.ResumeService resumeService = resumeServiceFactory.getResumeService(searchForm.getType());
+            List<ResumeDetail> resumeList = new ArrayList<>();
+            for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+                Document hitDoc = indexSearcher.doc(scoreDoc.doc);
+                Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeIndexFields.RESUME_ID));
+                ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
+                resumeList.add(resumeDetail);
+            }
+
+            pageResult.setList(resumeList);
+            pageResult.calPageCountAndHasMore(resumeList);
+            return pageResult;
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            ex.printStackTrace();
+            throw new ServiceException(ex.getMessage());
+            //return PageResult.emptyResult();
+        }
+    }
+
+    /**
+     * 构造简历搜索过滤器
+     * @param searchForm
+     * @return
+     */
+    public Query getResumeQuery(ResumeListForm searchForm){
+        BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
+        //如果没有任何过滤条件，则返回所有数据
+        Query allQuery = new WildcardQuery(new Term(ResumeIndexFields.RESUME_ID_INDEX,"*"));
+        queryBuilder.add(allQuery, BooleanClause.Occur.MUST);
+        //简历类型
+        if(searchForm.getType()!=null){
+            Query typeQuery = IntPoint.newExactQuery(ResumeIndexFields.RESUME_TYPE,searchForm.getType());
+            queryBuilder.add(typeQuery, BooleanClause.Occur.MUST);
+        }
+        //简历状态
+        if(searchForm.getStatus()!=null){
+            Query statusQuery = IntPoint.newExactQuery(ResumeIndexFields.RESUME_STATUS,searchForm.getStatus());
+            queryBuilder.add(statusQuery, BooleanClause.Occur.MUST);
+        }
+        //学校
+        if(ArrayUtils.isNotEmpty(searchForm.getSchoolIds())){
+            BooleanQuery.Builder schoolBuilder = new BooleanQuery.Builder();
+            for(Integer id:searchForm.getSchoolIds()){
+                schoolBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.SCHOOL_ID,id), BooleanClause.Occur.SHOULD);
+            }
+            queryBuilder.add(schoolBuilder.build(), BooleanClause.Occur.MUST);
+        }
+        //学历
+        if(ArrayUtils.isNotEmpty(searchForm.getDegreeIds())){
+            BooleanQuery.Builder degreeBuilder = new BooleanQuery.Builder();
+            for(Integer id:searchForm.getDegreeIds()){
+                degreeBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.DEGREE,id), BooleanClause.Occur.SHOULD);
+            }
+            queryBuilder.add(degreeBuilder.build(), BooleanClause.Occur.MUST);
+        }
+        //GPA Todo GPA不是一个范围，可输入的，怎么处理
+        //UserId索引
+        if(searchForm.getUserId() != null){
+            Query userIdQuery = LongPoint.newExactQuery(ResumeIndexFields.USER_ID,searchForm.getUserId());
+            queryBuilder.add(userIdQuery, BooleanClause.Occur.MUST);
+        }
+        //CompanyId索引
+        if(searchForm.getCompanyId() != null){
+            Query companyIdQuery = LongPoint.newExactQuery(ResumeIndexFields.COMPANY_ID,searchForm.getCompanyId());
+            queryBuilder.add(companyIdQuery, BooleanClause.Occur.MUST);
+        }
+        //名字索引
+        if(StringUtils.isNotEmpty(searchForm.getName())){
+            WildcardQuery nameQuery = new WildcardQuery(new Term(ResumeIndexFields.NAME,"*"+searchForm.getName()+"*"));
+            queryBuilder.add(nameQuery, BooleanClause.Occur.MUST);
+        }
+        //邮箱索引
+        if(StringUtils.isNotEmpty(searchForm.getEmail())){
+            WildcardQuery emailQuery = new WildcardQuery(new Term(ResumeIndexFields.EMAIL,"*"+searchForm.getEmail()+"*"));
+            queryBuilder.add(emailQuery, BooleanClause.Occur.MUST);
+        }
+        //意向城市
+        if(ArrayUtils.isNotEmpty(searchForm.getCityIds())){
+            BooleanQuery.Builder cityBuilder = new BooleanQuery.Builder();
+            for(Integer id:searchForm.getCityIds()){
+                cityBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.EXPECT_CITY,id), BooleanClause.Occur.SHOULD);
+            }
+            queryBuilder.add(cityBuilder.build(), BooleanClause.Occur.MUST);
+        }
+        //意向职位
+        if(ArrayUtils.isNotEmpty(searchForm.getCategoryIds())){
+            BooleanQuery.Builder categoryBuilder = new BooleanQuery.Builder();
+            for(Integer id:searchForm.getCategoryIds()){
+                categoryBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.EXPECT_CATEGORY,id), BooleanClause.Occur.SHOULD);
+            }
+            queryBuilder.add(categoryBuilder.build(), BooleanClause.Occur.MUST);
+        }
+        //薪资范围
+        if(searchForm.getSalaryId() != null){
+            Query salaryQuery = IntPoint.newExactQuery(ResumeIndexFields.SALARY,searchForm.getSalaryId());
+            queryBuilder.add(salaryQuery, BooleanClause.Occur.MUST);
+        }
+        //性别索引
+        if(searchForm.getGender() != null){
+            Query genderQuery = IntPoint.newExactQuery(ResumeIndexFields.GENDER,searchForm.getGender());
+            queryBuilder.add(genderQuery, BooleanClause.Occur.MUST);
+        }
+        //技能索引
+        if(ArrayUtils.isNotEmpty(searchForm.getSkills())){
+            BooleanQuery.Builder skillBuilder = new BooleanQuery.Builder();
+            for(String skill:searchForm.getSkills()){
+                WildcardQuery skillQuery = new WildcardQuery(new Term(ResumeIndexFields.RESUME_SKILL,"*"+skill+"*"));
+                skillBuilder.add(skillQuery, BooleanClause.Occur.SHOULD);
+            }
+            queryBuilder.add(skillBuilder.build(), BooleanClause.Occur.MUST);
         }
         return queryBuilder.build();
     }

@@ -40,6 +40,10 @@ public class ResumeForm {
     private String avatar; //头像
     private String attachResume; //附件简历
 
+    private Long companyId; //公司ID
+    private Byte status; //简历状态
+    private Byte type; //简历类型
+
     public String getName() {
         return FormUtils.removeAllHtmlTag(StringUtils.trim(name));
     }

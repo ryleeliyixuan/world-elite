@@ -1,9 +1,6 @@
 package com.worldelite.job.service;
 
-import com.worldelite.job.entity.JobCategory;
-import com.worldelite.job.entity.UserExpectJob;
-import com.worldelite.job.entity.UserExpectPlace;
-import com.worldelite.job.entity.UserExpectSalary;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.form.UserExpectJobForm;
 import com.worldelite.job.mapper.JobCategoryMapper;
 import com.worldelite.job.mapper.UserExpectJobMapper;
@@ -89,6 +86,52 @@ public class UserExpectJobService extends BaseService{
             userExpectJobVo.setMaxSalary(userExpectSalary.getMaxValue());
         }
         return userExpectJobVo;
+    }
+
+    /**
+     * 获取意向职位
+     * @param userId
+     * @return
+     */
+    public List<JobCategory> getExpectCategoryList(Long userId){
+        UserExpectJob expectJobOptions = new UserExpectJob();
+        expectJobOptions.setUserId(userId);
+        List<UserExpectJob> userExpectJobList = expectJobMapper.selectAndList(expectJobOptions);
+        List<JobCategory> categoryList = new ArrayList<>(userExpectJobList.size());
+        if(CollectionUtils.isNotEmpty(userExpectJobList)){
+            for(UserExpectJob userExpectJob: userExpectJobList){
+                categoryList.add(jobCategoryService.getCategory(userExpectJob.getCategoryId()));
+            }
+        }
+        return categoryList;
+    }
+
+    /**
+     * 意向城市
+     * @param userId
+     * @return
+     */
+    public List<Dict> getExpectCityList(Long userId){
+        UserExpectPlace expectPlaceOptions = new UserExpectPlace();
+        expectPlaceOptions.setUserId(userId);
+        List<UserExpectPlace> userExpectPlaceList = expectPlaceMapper.selectAndList(expectPlaceOptions);
+        List<Dict> cityList = new ArrayList<>(userExpectPlaceList.size());
+        if(CollectionUtils.isNotEmpty(userExpectPlaceList)){
+            for(UserExpectPlace userExpectPlace: userExpectPlaceList){
+                cityList.add(dictService.getDict(userExpectPlace.getCityId()));
+            }
+        }
+        return cityList;
+    }
+
+    /**
+     * 意向薪资
+     * Todo 职位薪资已经改成了一个下拉框，意向薪资应该也要做改变，等待产品回复确认，暂时返回null
+     * @param userId
+     * @return
+     */
+    public Dict getSalary(Long userId){
+        return null;
     }
 
     /**

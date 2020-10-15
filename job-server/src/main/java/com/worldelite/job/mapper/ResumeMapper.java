@@ -1,8 +1,6 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.Resume;
-import com.worldelite.job.entity.ResumeApplicant;
-import com.worldelite.job.entity.ResumeOptions;
 
 import java.util.List;
 
@@ -63,10 +61,5 @@ public interface ResumeMapper {
      */
     int updateByPrimaryKey(Resume record);
 
-    /**
-     * 通过筛选条件查询简历数据
-     * @param options
-     * @return
-     */
-    List<Resume> selectAndList(Resume options);
+    List<Resume> selectAndList(Resume record);
 }

@@ -301,4 +301,8 @@ public class UserCorporateService extends BaseService {
     private String encodePassword(String password, String salt) {
         return DigestUtils.sha256Hex(password + salt);
     }
+
+    public UserCorporate selectByPrimaryKey(Long userId) {
+        return userCorporateMapper.selectByPrimaryKey(userId);
+    }
 }

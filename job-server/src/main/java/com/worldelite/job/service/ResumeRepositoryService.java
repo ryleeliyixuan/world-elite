@@ -84,8 +84,8 @@ public class ResumeRepositoryService extends BaseService{
      * @return
      */
     public PageResult getResumeList(ResumeListForm listForm){
-        if(listForm.getSalaryRangeId() != null){
-            DictVo salaryRange =  dictService.getById(listForm.getSalaryRangeId());
+        if(listForm.getSalaryId() != null){
+            DictVo salaryRange =  dictService.getById(listForm.getSalaryId());
             if(salaryRange != null){
                 String[] values =  salaryRange.getValue().split("-");
                 if(values.length == 2){
@@ -124,7 +124,7 @@ public class ResumeRepositoryService extends BaseService{
             UserRepository userRepository = userRepositoryMapper.selectByPrimaryKey(userId);
             ResumeVo resumeVo = toResumeVo(resume,userRepository);
 
-            List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduList(resume.getId());
+            List<ResumeEduVo> resumeEduVoList = resumeEduService.getResumeEduVoList(resume.getId());
             resumeVo.setResumeEduList(resumeEduVoList);
             if (CollectionUtils.isNotEmpty(resumeEduVoList)) {
                 ResumeEduVo maxResumeEduVo = new ResumeEduVo();
@@ -150,7 +150,7 @@ public class ResumeRepositoryService extends BaseService{
      * @return
      */
     public ResumeVo getResumeDetail(Long resumeId) {
-        ResumeVo resumeVo = resumeService.getResumeDetail(resumeId);
+        ResumeVo resumeVo = resumeService.getResumeVo(resumeId);
         ResumeRepository resumeRepository = resumeRepositoryMapper.selectByResumeId(resumeId);
         UserRepository userRepository = userRepositoryMapper.selectByPrimaryKey(resumeRepository.getUserId());
         resumeVo.setUserId(String.valueOf(userRepository.getId()));
