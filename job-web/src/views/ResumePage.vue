@@ -60,9 +60,9 @@ export default {
 }
 .operate-box {
   padding: 20px;
-  position: fixed;
-  bottom: 20px;
+  position: absolute;
   left: 70%;
+  top: 118%;
   background: #fff;
   border: 1px solid #eee;
 }
