@@ -2,7 +2,7 @@ package com.worldelite.job.vo;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.worldelite.job.entity.City;
-import com.worldelite.job.entity.JobCategory;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 
 import java.util.Date;
@@ -31,6 +31,7 @@ public class CityVo  implements VoConvertable<CityVo, City>{
     private Date createTime; //创建时间
     private Date updateTime; //更新时间
 
+    @Ignore
     private List<CityVo> children;
 
     @Override

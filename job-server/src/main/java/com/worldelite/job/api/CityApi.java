@@ -19,7 +19,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/city/")
-public class CityApi {
+public class CityApi extends BaseApi{
 
     @Autowired
     private CityService cityService;
