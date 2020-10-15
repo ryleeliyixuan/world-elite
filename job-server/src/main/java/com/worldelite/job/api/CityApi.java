@@ -24,7 +24,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/city/")
-@Validated
 public class CityApi {
 
     @Autowired
@@ -35,6 +34,7 @@ public class CityApi {
      * @param type 城市类型
      * @return
      */
+    @ApiDoc
     @GetMapping("list")
     public ApiResult<List<CityVo>> list(@RequestParam Byte type){
         List<CityVo> cityVoList = cityService.getCacheTree(type);

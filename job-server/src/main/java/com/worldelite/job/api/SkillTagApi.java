@@ -5,6 +5,7 @@ import com.worldelite.job.service.SkillTagService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.SkillTagGroupVo;
 import com.worldelite.job.vo.SkillTagVo;
+import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ public class SkillTagApi {
      * @param name 标签名
      * @return 标签列表
      */
+    @ApiDoc
     @GetMapping("search")
     public ApiResult<List<SkillTagVo>> getSkillTag(Integer type,String name){
         SkillTag skillTag = new SkillTag();
@@ -41,6 +43,7 @@ public class SkillTagApi {
      * 获取分组标签
      * @return 按类型分组后标签列表
      */
+    @ApiDoc
     @GetMapping("list-group")
     public ApiResult<List<SkillTagGroupVo>> getSkillGroup(){
         List<SkillTagGroupVo> groupVoList = skillTagService.getSkillTagGroup();
