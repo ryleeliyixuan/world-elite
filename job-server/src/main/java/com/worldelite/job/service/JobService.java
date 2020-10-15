@@ -431,7 +431,7 @@ public class JobService extends BaseService {
         JobApply newJobApply = new JobApply();
         newJobApply.setJobId(jobId);
         newJobApply.setUserId(curUser().getId());
-        newJobApply.setStatus(JobApplyStatus.APPLY.value);
+        newJobApply.setStatus(JobApplyStatus.VIEW.value);
         newJobApply.setType(JobApplyType.APPLICANT.value);
         newJobApply.setResumeId(Long.valueOf(resumeVo.getId()));
         jobApplyMapper.insertSelective(newJobApply);
