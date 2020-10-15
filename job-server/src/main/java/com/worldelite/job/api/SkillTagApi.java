@@ -9,6 +9,7 @@ import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class SkillTagApi {
      */
     @ApiDoc
     @GetMapping("search")
-    public ApiResult<List<SkillTagVo>> getSkillTag(Integer type,String name){
+    public ApiResult<List<SkillTagVo>> getSkillTag(@RequestParam Integer type,@RequestParam String name){
         SkillTag skillTag = new SkillTag();
         skillTag.setType(type);
         skillTag.setName(name);

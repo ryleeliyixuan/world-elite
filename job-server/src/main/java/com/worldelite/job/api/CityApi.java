@@ -1,19 +1,14 @@
 package com.worldelite.job.api;
 
-import com.worldelite.job.anatation.RequireLogin;
-import com.worldelite.job.constants.UserType;
-import com.worldelite.job.form.SchoolForm;
-import com.worldelite.job.form.SchoolListForm;
 import com.worldelite.job.service.CityService;
-import com.worldelite.job.service.SchoolService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.CityVo;
-import com.worldelite.job.vo.PageResult;
-import com.worldelite.job.vo.SchoolVo;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 

@@ -60,7 +60,7 @@ public class ResumeApi extends BaseApi {
 
     /**
      * 我的简历信息
-     *
+     * @param type 简历类型
      * @return
      */
     @RequireLogin
