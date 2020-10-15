@@ -16,6 +16,11 @@ public interface RedisKeys {
     String JOB_CATEGORY_TREE = "job_category_tree";
 
     /**
+     * 城市树
+     */
+    String CITY_TREE = "CITY_TREE";
+
+    /**
      * 用户在线状态信息
      */
     String ATTR_ONLINE_INFO = "ATTR_ONLINE_INFO";

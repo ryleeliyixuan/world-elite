@@ -23,7 +23,7 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private DictVo minDegree; // 学历要求
     private DictVo salary; //薪资范围ID
     private Integer salaryMonths; //发放月数
-    private DictVo city; //工作城市
+    private CityVo city; //工作城市
     private Byte status; //职位状态
     private String description; //职位描述
     private Long creatorId; //创建人

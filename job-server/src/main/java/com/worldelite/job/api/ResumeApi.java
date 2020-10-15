@@ -1,7 +1,6 @@
 package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
-import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.ResumeDetail;
 import com.worldelite.job.form.*;
@@ -60,7 +59,7 @@ public class ResumeApi extends BaseApi {
 
     /**
      * 我的简历信息
-     *
+     * @param type 简历类型
      * @return
      */
     @RequireLogin

@@ -74,6 +74,9 @@ public class JobService extends BaseService {
     private MessageTaskHandler messageTaskHandler;
 
     @Autowired
+    private CityService cityService;
+
+    @Autowired
     private RabbitTemplate rabbitTemplate;
 
     @Resource(name = "luceneIndexCmdFanoutExchange")
@@ -500,7 +503,7 @@ public class JobService extends BaseService {
         JobVo jobVo = new JobVo().asVo(job);
         jobVo.setCategory(jobCategoryService.getById(job.getCategoryId()));
         jobVo.setMinDegree(dictService.getById(job.getMinDegreeId()));
-        jobVo.setCity(dictService.getById(job.getCityId()));
+        jobVo.setCity(cityService.getByCityVo(job.getCityId()));
         jobVo.setJobType(dictService.getById(job.getJobType()));
         jobVo.setRecruitType(dictService.getById(job.getRecruitType()));
         jobVo.setSalary(dictService.getById(job.getSalaryId()));
