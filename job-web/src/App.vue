@@ -1,12 +1,12 @@
 <template>
-    <div id="app" >
+    <div id="app">
         <MainNavBar/>
-        <transition name="fade-transform" mode="out-in">
+        <transition name="fade" mode="out-in">
             <router-view @complete="onComplete"/>
         </transition>
         <FooterView/>
-<!--        v-show="show"-->
-        <el-backtop ></el-backtop>
+        <!--v-show="show"-->
+        <el-backtop></el-backtop>
     </div>
 </template>
 

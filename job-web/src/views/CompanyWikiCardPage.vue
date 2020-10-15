@@ -2,7 +2,7 @@
     <div class="app-container">
         <div class="left-container" v-if="industryList.length>0">
             <el-scrollbar class="left-scrollbar"
-                          wrap-style="overflow: hidden auto; padding-right: 20px;"
+                          wrap-style="overflow-x: hidden; overflow-y: auto; padding-right: 20px;"
                           :native="false">
                 <div class="left-scrollbar">
                     <el-link class="left-item"
@@ -10,7 +10,7 @@
                              :underline="false"
                              v-for="item in industryList" :key="item.id"
                              @click="onLink(item)">
-                        {{item.name + " " + item.count}}
+                        {{item.name + " " + (item.count||"")}}
                     </el-link>
                 </div>
             </el-scrollbar>
@@ -18,7 +18,7 @@
 
         <div class="main-container">
             <el-scrollbar class="main-scrollbar"
-                          wrap-style="overflow: hidden auto; padding-right: 20px;"
+                          wrap-style="overflow-x: hidden; overflow-y: auto; padding-right: 20px;"
                           :native="false"
                           ref="scrollbar">
                 <div class="company-list-container" v-for="item in industryList" :key="item.id">
