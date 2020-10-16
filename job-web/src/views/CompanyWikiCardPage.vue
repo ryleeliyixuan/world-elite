@@ -2,7 +2,7 @@
     <div class="app-container">
         <div class="left-container" v-if="industryList.length>0">
             <el-scrollbar class="left-scrollbar"
-                          wrap-style="overflow-x: hidden; overflow-y: auto; padding-right: 20px;"
+                          wrap-style="overflow-x: hidden; overflow-y: auto; padding-right: 20px;"  
                           :native="false">
                 <div class="left-scrollbar">
                     <el-link class="left-item"
