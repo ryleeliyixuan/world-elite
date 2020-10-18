@@ -29,10 +29,17 @@
             </el-form-item>
 
             <el-form-item label="工作城市" prop="cityId">
-                <el-select v-model="jobForm.cityId" filterable clearable placeholder="请选择工作城市">
-                    <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                </el-select>
+                <el-cascader placeholder="请选择工作城市"
+                             :show-all-levels="true"
+                             :options="cityOptions"
+                             :props="cityIdProps"
+                             filterable
+                             clearable
+                             v-model="jobForm.cityId"
+                             :disabled="isModify">
+                </el-cascader>
             </el-form-item>
+
             <el-form-item label="工作地址" prop="address">
                 <el-input v-model="jobForm.address"
                           maxlength="250"
@@ -244,7 +251,7 @@
                 <div class="title-container">技能要求<span class="title-tips">(最多可选4个技能)</span></div>
                 <div class="industry-tag-container">
                     <el-tag v-for="tag in skillList"
-                            :key="tag.name"
+                            :key="tag.id"
                             :class="['skill-style', {'skill-style-select':tag.selected}]"
                             @click="onSkillSelect(tag)">
                         {{tag.name}}
@@ -252,7 +259,7 @@
                 </div>
                 <div class="industry-tag-container">
                     <el-tag v-for="tag in skillAdditionList"
-                            :key="tag.name"
+                            :key="tag.id"
                             closable
                             @close="onDeleteSkillAddition(tag)"
                             :class="['skill-style', {'skill-style-select':tag.selected}]"
@@ -325,7 +332,7 @@
     import "quill/dist/quill.snow.css";
     import "quill/dist/quill.bubble.css";
     import {quillEditor} from "vue-quill-editor";
-
+    let id = 0;
     export default {
         name: "NewJobPage",
         components: {
@@ -362,19 +369,19 @@
                     skillTags: [],
                     industryTags: [],
                     industryAdditionTags: [],
-                    skillAdditionTags: []
+                    skillAdditionTags: [],
                 },
                 jobFormRules: {
                     name: [{required: true, message: "请输入职位名称", trigger: "blur"}],
                     categoryId: [{required: true, message: "请选择职位类型", trigger: "change"}],
                     minDegreeId: [{required: true, message: "请选择学历要求", trigger: "change"}],
-                    cityId: [{required: true, message: "请选择工作城市", trigger: "change"}],
                     address: [{required: true, message: "请填写工作地点", trigger: "blur"}],
                     jobType: [{required: true, message: "请选择工作类型", trigger: "change"}],
                     recruitType: [{required: true, message: "请选择工作类型", trigger: "change"}],
                     description: [{required: true, message: "请输入职位描述", trigger: "blur"}],
                     salaryId: [{required: true, message: "请选择薪资范围", trigger: "blur"}],
-                    experienceId: [{required: true, message: "请选择经验要求", trigger: "change"}]
+                    experienceId: [{required: true, message: "请选择经验要求", trigger: "blur"}],
+                    cityId: [{required: true, message: "请选择工作城市", trigger: "blur"}],
                 },
                 jobCategoryOptions: [],
                 jobCategoryProps: {
@@ -384,7 +391,35 @@
                     emitPath: true,
                     children: "children"
                 },
-                cityOptions: [],
+                cityIdProps: {
+                    lazy: true,
+                    lazyLoad: (node, resolve) => {
+                        if (node.level === 1) {
+                            this.$axios.request({
+                                url: "/city/list",
+                                method: "get",
+                                params: {type: node.value}
+                            }).then(data => {
+                                console.log(data.data);
+                                let nodes = data.data.map(second => {
+                                    let children = second.children && second.children.map(third => {
+                                        return {id:third.id, name:third.name, leaf:true}
+                                    })
+                                    return {id:second.id, name:second.name, children}
+                                });
+                                resolve(nodes);
+                            })
+                        } else {
+                            resolve();
+                        }
+                    },
+                    expandTrigger: "hover",
+                    value: "id",
+                    label: "name",
+                    emitPath: false,
+                    children: "children"
+                },
+                cityOptions: [{id: 1, name: "国内"}, {id: 2, name: "国外"}],
                 degreeOptions: [],
                 salaryMonthOptions: [],
                 jobTypeOptions1: [],
@@ -442,12 +477,12 @@
                 return this.$route.query.id !== undefined;
             }
         },
+
         methods: {
             initData(jobId) {
                 getCategoryTree().then(response => (this.jobCategoryOptions = response.data));
                 listByType(1).then(response => (this.degreeOptions = response.data.list));
                 listByType(8).then(response => (this.jobTypeOptions1 = response.data.list));
-                listByType(2).then(response => (this.cityOptions = response.data.list));
                 listByType(9).then(response => (this.SalaryOptions = response.data.list));
                 listByType(13).then(response => (this.experienceOptions = response.data.list));
                 listByType(12).then(response => (this.jobTypeOptions2 = response.data.list));
@@ -519,7 +554,6 @@
                     if (valid) {
                         this.nowDate = getNowDate()
                         this.previewSalary = this.SalaryOptions.find(option => option.id === this.jobForm.salaryId).name;
-                        this.previewCity = this.cityOptions.find(option => option.id === this.jobForm.cityId).name;
                         this.previewJobType = this.jobTypeOptions1.find(option => option.id === this.jobForm.recruitType).name;
                         this.previewRecruitType = this.jobTypeOptions2.find(option => option.id === this.jobForm.jobType).name;
                         this.previewMinDegree = this.degreeOptions.find(option => option.id === this.jobForm.minDegreeId).name;
@@ -586,7 +620,6 @@
 
             // 删除用户自定义的技能标签
             onDeleteSkillAddition(tag) {
-                console.log(tag);
                 this.$axios.request({
                     url: "/jobskill/delete-addition",
                     method: "post",
@@ -604,7 +637,6 @@
             // 选择职位分类，获取标签
             onJobCategoryChange() {
                 if (this.jobForm.categoryId && this.jobForm.categoryId.length === 3) {
-                    console.log(this.jobForm.categoryId[1]);
                     this.secondCategoryId = this.jobForm.categoryId[1];
                     let p1 = this.$axios.get('/jobskill/list', {
                         params: {jobCategoryId: this.secondCategoryId} // 取选中标签的父级id

@@ -184,6 +184,43 @@
                                 ></el-option>
                             </el-select>
                         </el-col>
+                        <el-col :span="6">
+                            <el-select
+                                    v-model="ability"
+                                    multiple
+                                    filterable
+                                    remote
+                                    clearable
+                                    reserve-keyword
+                                    :loading="loadingAbilityOptions"
+                                    :remote-method="searchAbilityOptions"
+                                    placeholder="能力"
+                                    @change="handleFilter"
+                                    class="w-100"
+                                    size="small"
+                            >
+                                <el-option
+                                        v-for="item in abilityOptions"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.name"
+                                ></el-option>
+                            </el-select>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-cascader
+                                    placeholder="技能标签"
+                                    :show-all-levels="true"
+                                    :options="skillsOptions"
+                                    :props="skillsProps"
+                                    filterable
+                                    clearable
+                                    v-model="skills"
+                                    @change="handleFilter"
+                                    class="w-100"
+                                    size="small"
+                            ></el-cascader>
+                        </el-col>
                     </el-row>
                 </div>
             </transition>
@@ -247,7 +284,7 @@
                 </b-media>
             </el-card>
 
-          <div v-if="pageResult.total == 0" class="text-center" style="line-height: 200px;">暂无简历</div>
+            <div v-if="pageResult.total == 0" class="text-center" style="line-height: 200px;">暂无简历</div>
             <transition name="slide-fade">
                 <div class="resume-drawer" v-if="resumeSelect">
                     <div class="resume-drawer-body pl-4 pr-4 pb-4">
@@ -332,7 +369,7 @@
                 <div v-html="resume.attachContent" @click="onAttachResume(resume)" class="attach-content"></div>
             </el-card>
 
-          <div v-if="attachPageResult.total == 0" class="text-center" style="line-height: 200px;">暂无简历</div>
+            <div v-if="attachPageResult.total == 0" class="text-center" style="line-height: 200px;">暂无简历</div>
             <pagination
                     v-show="attachPageResult.total"
                     :total="attachPageResult.total"
@@ -385,6 +422,9 @@
                     cityIds: undefined,
                     salaryRangeId: undefined,
                     gpaRangeId: undefined,
+                    status: 2,
+                    type: 2,
+                    skills: [],
                     page: 1,
                     limit: 10,
                     sort: "-id",
@@ -424,6 +464,26 @@
                 showPDF: false,
                 loading: true,
                 categoryIds: [], // 临时保存
+
+                ability: [],
+                abilityOptions: [],
+                loadingAbilityOptions: false,
+                skills: [],
+                skillsOptions: [],
+                loadingSkillOptions: false,
+                skillsProps: {
+                    lazy: true,
+                    lazyLoad: (node, resolve) => {
+                        resolve();
+                    },
+                    multiple: true,
+                    checkStrictly: false,
+                    expandTrigger: "hover",
+                    value: "name",
+                    label: "name",
+                    emitPath: false,
+                    children: "children"
+                },
             };
         },
         created() {
@@ -535,6 +595,20 @@
             },
             handleFilter() {
                 this.listQuery.page = 1;
+                let skills = [];
+                if (this.ability.length > 0 && this.skills.length > 0) {
+                    this.ability.forEach(ability => {
+                        this.skills.forEach(skill => {
+                            skills.push(ability + skill);
+                        })
+                    })
+                    this.listQuery.skills = skills;
+                } else if (this.ability.length > 0) {
+                    this.listQuery.skills = this.ability;
+                } else if (this.skills.length > 0) {
+                    this.listQuery.skills = this.skills;
+                }
+
                 this.handleRouteList();
             },
             handleAttachFilter() {
@@ -577,6 +651,8 @@
                 } else {
                     this.getAttachList();
                 }
+
+                this.listGroup();
             },
             getList() {
                 parseListQuery(this.$route.query, this.listQuery);
@@ -594,6 +670,16 @@
                     this.listQuery.categoryIds = this.$route.query.categoryIds
                         .split(",")
                         .map((id) => parseInt(id));
+                }
+                if (this.$route.query.salaryRangeId) {
+                    this.listQuery.salaryRangeId = parseInt(this.$route.query.salaryRangeId);
+                }
+                if (this.$route.query.gpaRangeId) {
+                    this.listQuery.gpaRangeId = parseInt(this.$route.query.gpaRangeId);
+                }
+                if (this.$route.query.skills) {
+                    this.listQuery.skills = this.$route.query.skills
+                        .split(",");
                 }
                 this.$axios
                     .request({
@@ -672,6 +758,30 @@
                     PDFObject.embed(resume.docPath, this.$refs.pdf);
                 });
             },
+
+            // 搜索能力选项
+            searchAbilityOptions(query) {
+                if (query) {
+                    this.loadingAbilityOptions = true;
+                    this.$axios.get("/dict/list?type=3&limit=99", {params: {name: query}}).then(data => {
+                        this.abilityOptions = data.data.list;
+                        this.loadingAbilityOptions = false;
+                    })
+                }
+            },
+
+            // 获取分组
+            listGroup() {
+                this.$axios.get("/skill-tag/list-group").then(data => {
+                    this.skillsOptions = data.data.map(group => {
+                        let {skillList, type} = group;
+                        let children = skillList.map(skill => {
+                            return {name: skill.name, id: skill.id, leaf: true}
+                        })
+                        return {name: type.name, id: type.id, children}
+                    });
+                })
+            }
         },
     };
 </script>
