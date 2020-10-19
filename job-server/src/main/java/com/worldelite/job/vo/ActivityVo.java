@@ -21,7 +21,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity>{
     private String summary;  //摘要
     private String url;  //链接
     private String description; //活动详情
-    private DictVo city; //活动城市
+    private CityVo city; //活动城市
     @JSONField(format = "yyyy-MM-dd HH:mm")
     private Date startTime; //开始时间
     @JSONField(format = "yyyy-MM-dd HH:mm")

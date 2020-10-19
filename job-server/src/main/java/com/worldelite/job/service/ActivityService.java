@@ -6,11 +6,9 @@ import com.worldelite.job.constants.ActivityStatus;
 import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
-import com.worldelite.job.entity.Dict;
 import com.worldelite.job.entity.Favorite;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
-import com.worldelite.job.form.PageForm;
 import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.util.AppUtils;
@@ -18,7 +16,6 @@ import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.PageResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +34,7 @@ public class ActivityService extends BaseService{
     private ActivityMapper activityMapper;
 
     @Autowired
-    private DictService dictService;
+    private CityService cityService;
 
     @Autowired
     private FavoriteMapper favoriteMapper;
@@ -187,7 +184,7 @@ public class ActivityService extends BaseService{
             activityVo.setStatus(ActivityStatus.END.value);
         }
         activityVo.setCurTime(new Date());
-        activityVo.setCity(dictService.getById(activity.getCityId()));
+        activityVo.setCity(cityService.getCityVo(activity.getCityId()));
         if(curUser() != null){
             activityVo.setJoinFlag(favoriteService.checkUserFavorite(activity.getId().longValue(), FavoriteType.ACTIVITY));
         }

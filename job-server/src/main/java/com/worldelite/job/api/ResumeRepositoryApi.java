@@ -1,19 +1,16 @@
 package com.worldelite.job.api;
 
-import com.alibaba.excel.util.StringUtils;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.JobApply;
 import com.worldelite.job.entity.ResumeDetail;
-import com.worldelite.job.entity.ResumeRepository;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.*;
 import com.worldelite.job.service.resume.ResumeService;
 import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.vo.*;
 import io.github.yedaxia.apidocs.ApiDoc;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

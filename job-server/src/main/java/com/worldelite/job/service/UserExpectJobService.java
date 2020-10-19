@@ -1,26 +1,23 @@
 package com.worldelite.job.service;
 
 import com.worldelite.job.entity.*;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.UserExpectJobForm;
-import com.worldelite.job.mapper.JobCategoryMapper;
 import com.worldelite.job.mapper.UserExpectJobMapper;
 import com.worldelite.job.mapper.UserExpectPlaceMapper;
 import com.worldelite.job.mapper.UserExpectSalaryMapper;
 import com.worldelite.job.service.search.IndexService;
+import com.worldelite.job.vo.CityVo;
 import com.worldelite.job.vo.DictVo;
 import com.worldelite.job.vo.JobCategoryVo;
-import com.worldelite.job.vo.ResumeVo;
 import com.worldelite.job.vo.UserExpectJobVo;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,8 +45,7 @@ public class UserExpectJobService extends BaseService{
     private IndexService indexService;
 
     @Autowired
-    @Lazy
-    private ResumeService resumeService;
+    private CityService cityService;
 
     /**
      * 获取用户求职意向
@@ -72,10 +68,10 @@ public class UserExpectJobService extends BaseService{
         UserExpectPlace expectPlaceOptions = new UserExpectPlace();
         expectPlaceOptions.setUserId(userId);
         List<UserExpectPlace> userExpectPlaceList = expectPlaceMapper.selectAndList(expectPlaceOptions);
-        List<DictVo> cityVoList = new ArrayList<>(userExpectPlaceList.size());
+        List<CityVo> cityVoList = new ArrayList<>(userExpectPlaceList.size());
         if(CollectionUtils.isNotEmpty(userExpectPlaceList)){
             for(UserExpectPlace userExpectPlace: userExpectPlaceList){
-                cityVoList.add(dictService.getById(userExpectPlace.getCityId()));
+                cityVoList.add(cityService.getCityVo(userExpectPlace.getCityId()));
             }
         }
         userExpectJobVo.setCityList(cityVoList);
@@ -111,14 +107,18 @@ public class UserExpectJobService extends BaseService{
      * @param userId
      * @return
      */
-    public List<Dict> getExpectCityList(Long userId){
+    public List<City> getExpectCityList(Long userId){
         UserExpectPlace expectPlaceOptions = new UserExpectPlace();
         expectPlaceOptions.setUserId(userId);
         List<UserExpectPlace> userExpectPlaceList = expectPlaceMapper.selectAndList(expectPlaceOptions);
-        List<Dict> cityList = new ArrayList<>(userExpectPlaceList.size());
+        List<City> cityList = new ArrayList<>(userExpectPlaceList.size());
         if(CollectionUtils.isNotEmpty(userExpectPlaceList)){
             for(UserExpectPlace userExpectPlace: userExpectPlaceList){
-                cityList.add(dictService.getDict(userExpectPlace.getCityId()));
+                City city = cityService.getById(userExpectPlace.getCityId());
+                if(city==null){
+                    throw new ServiceException(message("api.error.data.company"));
+                }
+                cityList.add(city);
             }
         }
         return cityList;

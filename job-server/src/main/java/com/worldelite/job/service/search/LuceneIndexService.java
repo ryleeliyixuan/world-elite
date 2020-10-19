@@ -11,6 +11,8 @@ import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.*;
+import com.worldelite.job.service.resume.ResumeService;
+import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -56,10 +58,6 @@ public class LuceneIndexService implements IndexService {
     private JobService jobService;
 
     @Autowired
-    @Lazy
-    private ResumeService resumeService;
-
-    @Autowired
     private ResumeMapper resumeMapper;
 
     @Autowired
@@ -73,6 +71,9 @@ public class LuceneIndexService implements IndexService {
 
     @Autowired
     private LuceneContext luceneContext;
+
+    @Autowired
+    private ResumeServiceFactory resumeServiceFactory;
 
     @Override
     public void createOrRefresh() {
@@ -343,7 +344,9 @@ public class LuceneIndexService implements IndexService {
     }
 
     private Document createResumeDoc(Long resumeId) {
-        ResumeVo resumeVo = resumeService.getResumeVo(resumeId);
+        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+        ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
+        ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
         //if (checkIfResumeNotComplete(resumeVo)) return null;
 
         final Document doc = new Document();
@@ -354,7 +357,7 @@ public class LuceneIndexService implements IndexService {
         if (expectJobVo != null) {
             if (CollectionUtils.isNotEmpty(expectJobVo.getCityList())) {
                 int index = 1;
-                for (DictVo city : expectJobVo.getCityList()) {
+                for (CityVo city : expectJobVo.getCityList()) {
                     if (index == 1) {
                         doc.add(new IntPoint(ResumeIndexFields.EXPECT_JOB_FIRST_CITY, city.getId()));
                     }
@@ -444,9 +447,9 @@ public class LuceneIndexService implements IndexService {
      * @param document
      * @param cityList
      */
-    private void addExpectCity(Document document,List<Dict> cityList){
+    private void addExpectCity(Document document,List<City> cityList){
         if(CollectionUtils.isEmpty(cityList)) return;
-        for(Dict city:cityList){
+        for(City city:cityList){
             if(city.getId() != null){
                 document.add(new IntPoint(ResumeIndexFields.EXPECT_CITY,city.getId()));
             }
