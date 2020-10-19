@@ -133,6 +133,11 @@ public class ResumeGeneralService extends ResumeService {
         return getResumeDetail(resume.getId());
     }
 
+    @Override
+    public ResumeDetail parseAttachment(String attachmentName) {
+        return null;
+    }
+
     /**
      * 将表单中的简历基础数据提取出来
      * @param resume
