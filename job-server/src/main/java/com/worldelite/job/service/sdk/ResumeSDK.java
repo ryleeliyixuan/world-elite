@@ -51,7 +51,7 @@ public class ResumeSDK extends BaseService {
      * @param url
      * @throws Exception
      */
-    public ResumeVo parse(String url) {
+    public JSONObject parse(String url) {
     	// 设置头字段
         HttpPost httpPost = new HttpPost(api);
         httpPost.addHeader("content-type", "application/json");
@@ -59,6 +59,7 @@ public class ResumeSDK extends BaseService {
 
         try {
             String data = getBase64String(url);
+            System.out.println(url);
             // 设置内容信息
             JSONObject json = new JSONObject();
             json.put("uid", uid);            // 用户id
@@ -83,41 +84,22 @@ public class ResumeSDK extends BaseService {
         	throw new ServiceException("request failed: code=<" + status.getIntValue("code") + ">, message=<" + status.getString("message") + ">");
         }
         else {
-        	JSONObject result = res.getJSONObject("result");
-        	AttachmentParser attachmentParser = new AttachmentParser();
+            JSONObject result = res.getJSONObject("result");
+            AttachmentParser attachmentParser = new AttachmentParser();
             attachmentParser.setEmail(result.getString("email"));
             attachmentParser.setAttachContent(result.toString());
             attachmentParserMapper.insertSelective(attachmentParser);
-            Resume resume = getResume(result);
-            ResumeVo resumeVo = new ResumeVo().asVo(resume);
-            resumeVo.setEmail(result.getString("email"));
-            resumeVo.setPhone(result.getString("phone"));
-            resumeVo.setAvatar(result.getString("avatar_url"));
-            resumeVo.setResumeEduList(getResumeEduList(result));
-            return resumeVo;
+            return result;
         }
     }
 
-    private ResumeForm getResume1(JSONObject result) {
-        ResumeForm resumeForm = new ResumeForm();
-        resumeForm.setName(result.getString("name"));
-        resumeForm.setBirth(getDate(result.getString("birthday")));
-        resumeForm.setGender(getGender(result.getString("gender")));
-        resumeForm.setGraduateTime(getDate(result.getString("grad_time")));
-        resumeForm.setCurPlace(result.getString("living_address_norm"));
-        resumeForm.setIntroduction(result.getString("cont_my_desc"));
-        resumeForm.setEmail(result.getString("email"));
-        try {
-            resumeForm.setPhone(Long.parseLong(result.getString("phone")));
-        }catch (Exception e){
-
-        }
-        resumeForm.setAvatar(result.getString("avatar_url"));
-        return resumeForm;
-    }
-
-    private Resume getResume(JSONObject result) {
-        Resume resume = new Resume();
+    /**
+     * 解析简历基础信息
+     * @param result
+     * @return
+     */
+    public ResumeForm getResume(JSONObject result){
+        ResumeForm resume = new ResumeForm();
         resume.setName(result.getString("name"));
         resume.setBirth(getDate(result.getString("birthday")));
         resume.setGender(getGender(result.getString("gender")));
@@ -132,11 +114,11 @@ public class ResumeSDK extends BaseService {
      * @param result
      * @return
      */
-    public List<ResumeEduVo> getResumeEduList(JSONObject result){
+    public List<ResumeEduForm> getResumeEdu(JSONObject result){
         JSONArray eduList = result.getJSONArray("education_objs");
-        List<ResumeEduVo> resumeEduList = new ArrayList<>();
+        List<ResumeEduForm> resumeEduList = new ArrayList<>();
         for(int i=0;i<eduList.size();i++){
-            ResumeEdu resumeEdu = new ResumeEdu();
+            ResumeEduForm resumeEdu = new ResumeEduForm();
             JSONObject edu = eduList.getJSONObject(i);
             resumeEdu.setStartTime(getDate(edu.getString("start_date")));
             resumeEdu.setFinishTime(getDate(edu.getString("end_date")));
@@ -149,7 +131,7 @@ public class ResumeSDK extends BaseService {
             }catch (Exception e){
 
             }
-            resumeEduList.add(new ResumeEduVo().asVo(resumeEdu));
+            resumeEduList.add(resumeEdu);
         }
         return resumeEduList;
     }
@@ -211,7 +193,7 @@ public class ResumeSDK extends BaseService {
             JSONObject skill = skillList.getJSONObject(i);
             tagList.add(skill.getString("skills_name"));
         }
-        resumeSkillForm.setTagList((String[]) tagList.toArray());
+        resumeSkillForm.setTagList(tagList.toArray(new String[tagList.size()]));
         return resumeSkillForm;
     }
 

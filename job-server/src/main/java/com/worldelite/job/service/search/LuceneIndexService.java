@@ -243,10 +243,10 @@ public class LuceneIndexService implements IndexService {
         }
     }
 
-    public void saveResumeItem(ResumeDetail resumeDetail,String indexPath) {
+    public Document saveResumeItem(ResumeDetail resumeDetail,String indexPath) {
+        Document doc = createResumeDoc(resumeDetail);
         try {
             IndexWriter indexWriter = luceneContext.getIndexWriter(indexPath);
-            Document doc = createResumeDoc(resumeDetail);
             if (doc != null) {
                 Term term = new Term(ResumeIndexFields.RESUME_ID_INDEX,String.valueOf(resumeDetail.getResumeId()));
                 indexWriter.updateDocument(term,doc);
@@ -257,6 +257,7 @@ public class LuceneIndexService implements IndexService {
         } finally {
             luceneContext.closeIndexWriter(indexPath);
         }
+        return doc;
     }
 
     @Override

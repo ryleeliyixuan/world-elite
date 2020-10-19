@@ -2,16 +2,18 @@ package com.worldelite.job.service.resume;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.ResumeStatus;
 import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
-import com.worldelite.job.form.ResumeForm;
-import com.worldelite.job.form.ResumeListForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.CompanyUserMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.*;
+import com.worldelite.job.service.sdk.ResumeSDK;
+import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.FormUtils;
@@ -22,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,6 +65,9 @@ public class ResumeCompanyService extends ResumeService{
     private UserCorporateService userCorporateService;
 
     @Autowired
+    private IndexService indexService;
+
+    @Autowired
     private SearchService searchService;
 
     @Autowired
@@ -69,6 +75,9 @@ public class ResumeCompanyService extends ResumeService{
 
     @Autowired
     private UserRepositoryService userRepositoryService;
+
+    @Autowired
+    private ResumeSDK resumeSDK;
 
     @Override
     public ResumeDetail getDefaultOrCreate() {
@@ -103,6 +112,53 @@ public class ResumeCompanyService extends ResumeService{
         //更新用户数据
         updateUser(resume.getUserId(),resumeForm);
         return getResumeDetail(resume.getId());
+    }
+
+    @Override
+    @Transactional
+    public ResumeDetail parseAttachment(String attachmentName) {
+        //获取OSS路径
+        String fileName = AppUtils.getOssKey(attachmentName);
+        String filePath = AppUtils.absOssUrl(fileName);
+        JSONObject result = resumeSDK.parse(filePath);
+        //保存基本信息
+        ResumeForm resumeForm = resumeSDK.getResume(result);
+        resumeForm.setAttachResume(fileName);
+        resumeForm.setStatus(ResumeStatus.PUBLISH.value);
+        resumeForm.setType(ResumeType.COMPANY.value);
+        ResumeDetail resumeDetail = saveBasic(resumeForm);
+        Long resumeId = resumeDetail.getResumeId();
+        //保存教育信息
+        List<ResumeEduForm> resumeEduFormList = resumeSDK.getResumeEdu(result);
+        for(ResumeEduForm eduForm:resumeEduFormList){
+            eduForm.setResumeId(resumeId);
+            resumeEduService.saveResumeEdu(eduForm);
+        }
+        //保存工作经验
+        List<ResumeExpForm> resumeExpFormList = resumeSDK.getResumeExperience(result);
+        for(ResumeExpForm expForm:resumeExpFormList){
+            expForm.setResumeId(resumeId);
+            resumeExpService.saveResumeExp(expForm);
+        }
+        //保存实践经验
+        List<ResumePracticeForm> practiceFormList = resumeSDK.getResumePractice(result);
+        for(ResumePracticeForm practiceForm:practiceFormList){
+            practiceForm.setResumeId(resumeId);
+            resumePracticeService.saveResumePractice(practiceForm);
+        }
+        //能力标签
+        ResumeSkillForm resumeSkillForm = resumeSDK.getResumeSkill(result);
+        resumeSkillForm.setResumeId(resumeId);
+        resumeSkillService.saveResumeSkill(resumeSkillForm);
+        //社交主页
+        ResumeLinkForm resumeLinkForm = resumeSDK.getResumeLink(result);
+        resumeLinkForm.setResumeId(resumeId);
+        resumeLinkService.saveResumeLink(resumeLinkForm);
+        //生成索引
+        resumeDetail = getResumeDetail(resumeId);
+        indexService.saveResumeItem(resumeDetail,folder);
+        //返回简历详情
+        return resumeDetail;
     }
 
     private void updateUser(Long userId, ResumeForm resumeForm) {
@@ -232,6 +288,9 @@ public class ResumeCompanyService extends ResumeService{
 
     @Override
     public PageResult<ResumeDetail> search(ResumeListForm resumeListForm) {
+        //企业简历类型为企业用户简历，状态为正常状态
+        resumeListForm.setType(ResumeType.COMPANY.value);
+        resumeListForm.setStatus(ResumeStatus.PUBLISH.value);
         return searchService.searchResume(resumeListForm,folder);
     }
 

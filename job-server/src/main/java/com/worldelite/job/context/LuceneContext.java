@@ -76,10 +76,21 @@ public class LuceneContext {
      */
     public IndexSearcher getIndexSearcher(String folder){
         IndexSearcher indexSearcher = indexSearcherMap.get(folder);
-        if(indexSearcher != null){
-            return indexSearcher;
-        }
         try {
+            if(indexSearcher != null){
+                //判断是否需要重新打开索引文件夹
+                IndexReader sIndexReader = indexSearcher.getIndexReader();
+                if(sIndexReader != null) {
+                    IndexReader indexReader = DirectoryReader.openIfChanged((DirectoryReader) sIndexReader);
+                    if (indexReader != null) {
+                        sIndexReader.close();
+                        sIndexReader = indexReader;
+                        indexSearcher = new IndexSearcher(sIndexReader);
+                        indexSearcherMap.put(folder,indexSearcher);
+                    }
+                    return indexSearcher;
+                }
+            }
             IndexReader indexReader = DirectoryReader.open(FSDirectory.open(Paths.get(folder)));
             indexSearcher = new IndexSearcher(indexReader);
             indexSearcherMap.put(folder,indexSearcher);
