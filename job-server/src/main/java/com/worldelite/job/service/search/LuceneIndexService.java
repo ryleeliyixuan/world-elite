@@ -306,8 +306,10 @@ public class LuceneIndexService implements IndexService {
                 //学历
                 if(resumeEdu.getDegreeId() != null)
                 document.add(new IntPoint(ResumeIndexFields.DEGREE,resumeEdu.getDegreeId()));
-                //GPA Todo GPA不是一个范围，可输入的，怎么处理
-
+                //GPA
+                if(resumeEdu.getGpa() != null){
+                    document.add(new FloatPoint(ResumeIndexFields.GPA, resumeEdu.getGpa().floatValue()));
+                }
             }
         }
         //UserId索引
