@@ -116,7 +116,7 @@ public class UserExpectJobService extends BaseService{
             for(UserExpectPlace userExpectPlace: userExpectPlaceList){
                 City city = cityService.getById(userExpectPlace.getCityId());
                 if(city==null){
-                    throw new ServiceException(message("api.error.data.company"));
+                    throw new ServiceException(message("api.error.data.city"));
                 }
                 cityList.add(city);
             }
