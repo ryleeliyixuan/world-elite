@@ -69,7 +69,7 @@
                                 <div class="text-center">面试</div>
                             </el-link>
                         </el-col>
-                        <el-col :span="8" class="text-center">
+                        <el-col :span="9" class="text-center">
                             <el-button
                                     type="primary"
                                     size="mini"
