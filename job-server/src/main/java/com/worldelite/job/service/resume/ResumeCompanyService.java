@@ -239,7 +239,7 @@ public class ResumeCompanyService extends ResumeService{
         //区号
         resumeDetail.setPhoneCode(userRepository.getPhoneCode());
         //头像
-        resumeDetail.setAvatar(userRepository.getAvatar());
+        resumeDetail.setAvatar(AppUtils.absOssUrl(userRepository.getAvatar()));
         //性别
         resumeDetail.setGender(userRepository.getGender());
         //基础信息
