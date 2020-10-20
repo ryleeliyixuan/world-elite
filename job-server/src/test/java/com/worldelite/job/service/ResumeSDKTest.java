@@ -29,7 +29,7 @@ public class ResumeSDKTest {
     public void testGetResumeEduList(){
         AttachmentParser attachmentParser = attachmentParserMapper.selectByPrimaryKey(20L);
         JSONObject result = JSONObject.parseObject(attachmentParser.getAttachContent());
-        resumeSDK.getResumeEduList(result);
+        resumeSDK.getResumeEdu(result);
     }
 
 }
