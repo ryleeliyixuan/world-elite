@@ -440,7 +440,7 @@ public class JobService extends BaseService {
         message.setFromUser(curUser().getId());
         message.setToUser(job.getCreatorId());
         message.setContent(message("message.job.apply", job.getName()));
-        message.setUrl("/manage-job");
+        message.setUrl(String.format("/manage-resume?jobIds=%s", job.getId()));
         messageService.sendMessage(message);
     }
 
