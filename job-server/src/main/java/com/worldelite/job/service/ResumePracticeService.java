@@ -1,16 +1,13 @@
 package com.worldelite.job.service;
 
 import com.github.pagehelper.PageHelper;
-import com.worldelite.job.entity.ResumeExperience;
 import com.worldelite.job.entity.ResumePractice;
 import com.worldelite.job.form.ResumePracticeForm;
 import com.worldelite.job.mapper.ResumePracticeMapper;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.ResumeExpVo;
 import com.worldelite.job.vo.ResumePracticeVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -24,10 +21,6 @@ public class ResumePracticeService extends BaseService{
 
     @Autowired
     private ResumePracticeMapper practiceMapper;
-
-    @Autowired
-    @Lazy
-    private ResumeService resumeService;
 
     /**
      * 保存实践经验

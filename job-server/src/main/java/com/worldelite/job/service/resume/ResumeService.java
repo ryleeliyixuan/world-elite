@@ -1,11 +1,14 @@
 package com.worldelite.job.service.resume;
 
+import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.BusinessType;
 import com.worldelite.job.constants.OperationType;
 import com.worldelite.job.constants.ResumeIndexFields;
 import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeDetail;
+import com.worldelite.job.entity.ResumeOptions;
+import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.form.ResumeForm;
 import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.mapper.ResumeMapper;
@@ -13,6 +16,7 @@ import com.worldelite.job.service.BaseService;
 import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.ResumeVo;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.document.Document;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -20,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 简历服务类接口
@@ -142,4 +147,14 @@ public abstract class ResumeService extends BaseService{
         Long resumeId = Long.valueOf(document.get(ResumeIndexFields.RESUME_ID));
         saveResumeItem(resumeId);
     }
+
+    /**
+     * 从t_resume表重建所有简历索引
+     */
+    public abstract void rebuildAllIndex();
+
+    /**
+     * Todo 获取重建索引进度
+     */
+    public abstract void getRebuildProcess();
 }

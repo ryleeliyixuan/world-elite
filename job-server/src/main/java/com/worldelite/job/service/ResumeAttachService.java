@@ -56,9 +56,6 @@ public class ResumeAttachService extends BaseService{
     @Autowired
     private ResumeAttachMapper resumeAttacheMapper;
 
-    @Autowired
-    private ResumeService resumeService;
-
     private boolean switchFolder = false;
 
     /**

@@ -1,6 +1,7 @@
 package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.ResumeDetail;
 import com.worldelite.job.form.*;
@@ -49,9 +50,6 @@ public class ResumeApi extends BaseApi {
     private ResumeAttachService resumeAttachService;
 
     @Autowired
-    private ResumeApplicantService resumeApplicantService;
-
-    @Autowired
     private JobApplyService jobApplyService;
 
     @Autowired
@@ -81,8 +79,11 @@ public class ResumeApi extends BaseApi {
     @PostMapping("list")
     @ApiDoc
     public ApiResult<PageResult<ResumeVo>> getResumeList(@RequestBody ResumeListForm listForm){
-        ResumeService resumeService = resumeServiceFactory.getResumeService(listForm.getType());
-        PageResult<ResumeDetail> pageResult = resumeService.list(listForm);
+//        ResumeService resumeService = resumeServiceFactory.getResumeService(listForm.getType());
+//        PageResult<ResumeDetail> pageResult = resumeService.list(listForm);
+//        return ApiResult.ok(resumeService.toResumeVo(pageResult));
+        ResumeService resumeService = resumeServiceFactory.getResumeService(ResumeType.GENERAL.value);
+        PageResult<ResumeDetail> pageResult = resumeService.search(listForm);
         return ApiResult.ok(resumeService.toResumeVo(pageResult));
     }
 
@@ -319,35 +320,13 @@ public class ResumeApi extends BaseApi {
         return ApiResult.ok();
     }
 
-//    /**
-//     * 添加指定索引
-//     * @param resumeAttach
-//     * @return
-//     */
-//    @PostMapping("append-attachment-index")
-//    public ApiResult appendAttachmentIndex(@RequestBody ResumeAttach resumeAttach){
-//        resumeAttachService.appendIndex(resumeAttach);
-//        return ApiResult.ok();
-//    }
-//
-//    /**
-//     * 删除指定索引
-//     * @param resumeId
-//     * @return
-//     */
-//    @PostMapping("del-attachment-index")
-//    public ApiResult delAttachmentIndex(Long resumeId){
-//        resumeAttachService.deleteIndex(resumeId);
-//        return ApiResult.ok();
-//    }
-
     /**
      * 重建全部索引
      * @return
      */
     @PostMapping("rebuild-attachment-index")
     public ApiResult rebuildAttachmentIndex(){
-        resumeApplicantService.rebuildAllIndex();
+        //resumeApplicantService.rebuildAllIndex();
         return ApiResult.ok();
     }
 
@@ -358,7 +337,12 @@ public class ResumeApi extends BaseApi {
     @PostMapping("rebuild-resume-index")
     @ApiDoc
     public ApiResult rebuildIndexFromResume(){
-        resumeApplicantService.rebuildAllIndex();
+        //用户简历
+        ResumeService resumeService = resumeServiceFactory.getResumeService(ResumeType.GENERAL.value);
+        resumeService.rebuildAllIndex();
+        //企业简历
+        resumeService = resumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
+        resumeService.rebuildAllIndex();
         return ApiResult.ok();
     }
 

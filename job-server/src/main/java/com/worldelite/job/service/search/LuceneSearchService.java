@@ -16,6 +16,7 @@ import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.mapper.ResumeAttachMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.*;
+import com.worldelite.job.service.resume.ResumeService;
 import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -69,10 +70,6 @@ public class LuceneSearchService implements SearchService {
 
     @Autowired
     private JobService jobService;
-
-    @Autowired
-    @Lazy
-    private ResumeService resumeService;
 
     @Autowired
     private ResumeMapper resumeMapper;
@@ -214,7 +211,9 @@ public class LuceneSearchService implements SearchService {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeAttachmentIndexFields.RESUME_ID_STR));
-                ResumeVo resumeVo = resumeService.getResumeInfo(resumeId);
+                ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+                ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
+                ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
                 resumeVoList.add(resumeVo);
             }
 
@@ -463,7 +462,9 @@ public class LuceneSearchService implements SearchService {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeIndexFields.RESUME_ID));
-                ResumeVo resumeVo = resumeService.getResumeInfo(resumeId);
+                ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+                ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
+                ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
                 resumeVoList.add(resumeVo);
             }
 
