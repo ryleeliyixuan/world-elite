@@ -78,7 +78,7 @@ public class CompanyScoreService extends BaseService{
             likes++;
         }
         companyScore.setLikes(likes);
-        hotCalc(companyScore);
+        companyScore.setHots(hotCalc(companyScore));
         companyScoreMapper.updateByPrimaryKeySelective(companyScore);
         return companyScore;
     }
@@ -97,7 +97,7 @@ public class CompanyScoreService extends BaseService{
             likes--;
         }
         companyScore.setLikes(likes);
-        hotCalc(companyScore);
+        companyScore.setHots(hotCalc(companyScore));
         companyScoreMapper.updateByPrimaryKeySelective(companyScore);
         return companyScore;
     }
@@ -116,7 +116,7 @@ public class CompanyScoreService extends BaseService{
             comments++;
         }
         companyScore.setComments(comments);
-        hotCalc(companyScore);
+        companyScore.setHots(hotCalc(companyScore));
         companyScoreMapper.updateByPrimaryKeySelective(companyScore);
         return companyScore;
     }
@@ -124,18 +124,19 @@ public class CompanyScoreService extends BaseService{
     /**
      * 取消评论
      * @param scoreId 评分ID
+     * @param value 减少的评论数
      * @return 评分
      */
-    public CompanyScore commentsSub(Long scoreId){
+    public CompanyScore commentsSub(Long scoreId,Integer value){
         CompanyScore companyScore = getById(scoreId);
         Integer comments = companyScore.getComments();
-        if(comments==null || comments==0){
+        if(comments==null || comments<=value){
             comments = 0;
         }else{
-            comments--;
+            comments -= value;
         }
         companyScore.setComments(comments);
-        hotCalc(companyScore);
+        companyScore.setHots(hotCalc(companyScore));
         companyScoreMapper.updateByPrimaryKeySelective(companyScore);
         return companyScore;
     }
@@ -155,7 +156,7 @@ public class CompanyScoreService extends BaseService{
             reports++;
         }
         companyScore.setReports(reports);
-        hotCalc(companyScore);
+        companyScore.setHots(hotCalc(companyScore));
         companyScoreMapper.updateByPrimaryKeySelective(companyScore);
         return companyScore;
     }

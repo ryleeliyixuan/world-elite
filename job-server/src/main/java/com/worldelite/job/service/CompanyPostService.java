@@ -81,7 +81,7 @@ public class CompanyPostService extends BaseService{
             likes++;
         }
         companyPost.setLikes(likes);
-        hotCalc(companyPost);
+        companyPost.setHots(hotCalc(companyPost));
         companyPostMapper.updateByPrimaryKeySelective(companyPost);
         return companyPost;
     }
@@ -100,7 +100,7 @@ public class CompanyPostService extends BaseService{
             likes--;
         }
         companyPost.setLikes(likes);
-        hotCalc(companyPost);
+        companyPost.setHots(hotCalc(companyPost));
         companyPostMapper.updateByPrimaryKeySelective(companyPost);
         return companyPost;
     }
@@ -119,7 +119,7 @@ public class CompanyPostService extends BaseService{
             comments++;
         }
         companyPost.setComments(comments);
-        hotCalc(companyPost);
+        companyPost.setHots(hotCalc(companyPost));
         companyPostMapper.updateByPrimaryKeySelective(companyPost);
         return companyPost;
     }
@@ -127,18 +127,19 @@ public class CompanyPostService extends BaseService{
     /**
      * 取消评论
      * @param postId 帖子ID
+     * @param value 减少的评论数
      * @return 帖子
      */
-    public CompanyPost commentsSub(Long postId){
+    public CompanyPost commentsSub(Long postId,Integer value){
         CompanyPost companyPost = getById(postId);
         Integer comments = companyPost.getComments();
-        if(comments==null || comments==0){
+        if(comments==null || comments<=value){
             comments = 0;
         }else{
-            comments--;
+            comments -= value;
         }
         companyPost.setComments(comments);
-        hotCalc(companyPost);
+        companyPost.setHots(hotCalc(companyPost));
         companyPostMapper.updateByPrimaryKeySelective(companyPost);
         return companyPost;
     }
@@ -158,7 +159,7 @@ public class CompanyPostService extends BaseService{
             reports++;
         }
         companyPost.setReports(reports);
-        hotCalc(companyPost);
+        companyPost.setHots(hotCalc(companyPost));
         companyPostMapper.updateByPrimaryKeySelective(companyPost);
         return companyPost;
     }
