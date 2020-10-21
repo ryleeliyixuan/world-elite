@@ -187,52 +187,55 @@
                         :limit.sync="listQuery.limit"
                         @pagination="handleListPageRoute"/>
             </div>
-            <transition name="slide-fade">
-                <div class="resume-drawer" v-if="reviewDrawerVisible && activeApplyResume">
-                    <div class="resume-drawer-header">
-                        <el-row type="flex" class="row-bg" justify="space-between">
-                            <el-col class="mt-4 ml-4">
-                                <el-button type="primary"
-                                           @click="handleApplyResume(3, activeApplyResume.id)"
-                                           v-if="activeApplyResume.applyStatus === 1 || activeApplyResume.applyStatus === 2">
-                                    通过初筛
-                                </el-button>
-                                <el-button type="primary"
-                                           @click="handleApplyResume(4, activeApplyResume.id)"
-                                           v-if="activeApplyResume.applyStatus === 3">
-                                    进入面试
-                                </el-button>
-                                <el-button type="primary"
-                                           @click="handleApplyResume(5, activeApplyResume.id)"
-                                           v-if="activeApplyResume.applyStatus === 4">
-                                    录用
-                                </el-button>
-                                <el-button type="danger"
-                                           plain
-                                           @click="handleApplyResume(6, activeApplyResume.id)"
-                                           v-if="activeApplyResume.applyStatus !== 5 && activeApplyResume.applyStatus !== 6">
-                                    不合适
-                                </el-button>
-                                <el-button type="primary"
-                                           :loading="resumeExporting"
-                                           icon="el-icon-download"
-                                           @click="onDownloadResumeClick(activeApplyResume)">
-                                    生成简历
-                                </el-button>
-                            </el-col>
-                            <el-col :span="6" class="text-right">
-                                <el-button type="text"
-                                           class="el-icon-close text-muted close-text p-4"
-                                           @click="reviewDrawerVisible=false">
-                                </el-button>
-                            </el-col>
-                        </el-row>
+            <div class="mask" v-if="reviewDrawerVisible && activeApplyResume" @click="reviewDrawerVisible=false">
+                <transition name="slide-fade">
+                    <div class="resume-drawer" v-if="reviewDrawerVisible && activeApplyResume">
+                        <div class="resume-drawer-header">
+                            <el-row type="flex" class="row-bg" justify="space-between">
+                                <el-col class="mt-4 ml-4">
+                                    <el-button type="primary"
+                                               @click="handleApplyResume(3, activeApplyResume.id)"
+                                               v-if="activeApplyResume.applyStatus === 1 || activeApplyResume.applyStatus === 2">
+                                        通过初筛
+                                    </el-button>
+                                    <el-button type="primary"
+                                               @click="handleApplyResume(4, activeApplyResume.id)"
+                                               v-if="activeApplyResume.applyStatus === 3">
+                                        进入面试
+                                    </el-button>
+                                    <el-button type="primary"
+                                               @click="handleApplyResume(5, activeApplyResume.id)"
+                                               v-if="activeApplyResume.applyStatus === 4">
+                                        录用
+                                    </el-button>
+                                    <el-button type="danger"
+                                               plain
+                                               @click="handleApplyResume(6, activeApplyResume.id)"
+                                               v-if="activeApplyResume.applyStatus !== 5 && activeApplyResume.applyStatus !== 6">
+                                        不合适
+                                    </el-button>
+                                    <el-button type="primary"
+                                               :loading="resumeExporting"
+                                               icon="el-icon-download"
+                                               @click="onDownloadResumeClick(activeApplyResume)">
+                                        生成简历
+                                    </el-button>
+                                </el-col>
+                                <el-col :span="6" class="text-right">
+                                    <el-button type="text"
+                                               class="el-icon-close text-muted close-text p-4"
+                                               @click="reviewDrawerVisible=false">
+                                    </el-button>
+                                </el-col>
+                            </el-row>
+                        </div>
+                        <div class="resume-drawer-body pl-4 pr-4 pb-4">
+                            <ResumeView :resumeId="activeApplyResume.resume.id" class="mt-3"></ResumeView>
+                        </div>
                     </div>
-                    <div class="resume-drawer-body pl-4 pr-4 pb-4">
-                        <ResumeView :resumeId="activeApplyResume.resume.id" class="mt-3"></ResumeView>
-                    </div>
-                </div>
-            </transition>
+                </transition>
+            </div>
+
 
             <el-dialog :visible.sync="dialogVisible"
                        class="dialog-container"
@@ -694,6 +697,15 @@
         margin: 0 auto;
         width: 1000px;
         min-height: calc(100vh - 448px);
+
+        .mask {
+            position: fixed;
+            background: #cccccccc;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
 
         .menu-button-container {
             display: flex;

@@ -235,7 +235,7 @@
                 <b-media @click="handleShowResume(resume)" style="cursor: pointer;">
                     <template v-slot:aside>
                         <el-badge class="item">
-                            <el-avatar :src="resume.avatar"></el-avatar>
+                            <el-avatar :src="resume.avatar" fit="cover"></el-avatar>
                         </el-badge>
                     </template>
                     <b-media-body>
@@ -791,6 +791,10 @@
         max-width: 1200px;
         margin: 0 auto;
         min-height: calc(100vh - 448px);
+
+        ::v-deep img {
+            width: 40px;
+        }
     }
 
     .resume-drawer {

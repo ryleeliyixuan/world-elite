@@ -8,6 +8,7 @@
                             :src="banner.img"
                             :alt="banner.alt"
                             v-on:click="select(banner)"
+                            fit="fit"
                     ></el-image>
                 </el-carousel-item>
             </el-carousel>
@@ -166,23 +167,23 @@
                 homeConfig: {},
                 banners: [
                     {
-                        img: require("../assets/banner/xiaomi.jpeg"),
+                        img: require("../assets/banner/xiaomi1.jpg"),
                         alt: "小米未来星项目招聘",
                         url: "http://www.myworldelite.com/mi",
                     },
                     {
-                        img: require("../assets/banner/vip.jpg"),
+                        img: require("../assets/banner/vip1.jpg"),
                         alt: "唯品会2021校园招聘",
                         url:
                             "https://recruitment.corp.vipshop.com/wt/VIPS/web/index?brandCode=186838262#/",
                     },
                     {
-                        img: require("../assets/banner/qunar.jpg"),
+                        img: require("../assets/banner/qunar1.jpg"),
                         alt: "去哪儿2021校园招聘",
                         url: "https://app.mokahr.com/campus_apply/qunar/4207#/",
                     },
                     {
-                        img: require("../assets/banner/kuaishou.jpg"),
+                        img: require("../assets/banner/kuaishou1.jpg"),
                         alt: "快手2021校园招聘",
                         url: "https://campus.kuaishou.cn/recruit/campus/e/#/campus/index/",
                     },
@@ -225,8 +226,10 @@
         min-height: calc(100vh - 477px);
 
         .section1-container {
-            height: 36vw;
-            width: calc(100vw - 20px);
+            /*height: 30vw;*/
+            /*width: calc(60vw - 20px);*/
+            height: 600px;
+            width: 1200px;
             margin: 0 auto 30px;
 
             .el-carousel {
@@ -234,11 +237,13 @@
 
                 /deep/ .el-carousel__container {
                     height: 100%;
+
                 }
             }
 
             .section1-image {
-                width: 100vw;
+                /*width: 50vw;*/
+                width: 100%;
                 height: 100%;
             }
         }
