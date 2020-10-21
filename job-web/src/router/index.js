@@ -98,6 +98,11 @@ const constantRoutes = [
         meta: {title: '寰球菁英-百科'}
     },
     {
+        path: '/post-list',
+        component: () => import('@/views/PostListPage'),
+        meta: {title: '寰球菁英-岗位'}
+    },
+    {
         path: '/wiki-list',
         component: () => import('@/views/CompanyWikiListPage'),
         meta: {title: '寰球菁英-百科'}
