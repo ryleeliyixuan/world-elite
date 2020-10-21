@@ -156,7 +156,7 @@
                 <div v-if="jobDescriptionShow" v-html="jobDescription" class="job-description"></div>
             </div>
             <el-form-item>
-                <el-button type="primary" size="mini" style="padding: 0 12px;line-height: 30px;margin-top: 60px" :loading="posting" @click="onPreview">预览
+                <el-button type="primary" size="mini" style="padding: 0 12px;line-height: 30px;margin-top: 60px" @click="onPreview">预览
                 </el-button>
                 <el-button type="primary" size="mini" style="padding: 0 12px;line-height: 30px;margin-top: 60px;margin-left: 30px" :loading="posting"
                            @click="onSubmit">{{pubButtonText}}

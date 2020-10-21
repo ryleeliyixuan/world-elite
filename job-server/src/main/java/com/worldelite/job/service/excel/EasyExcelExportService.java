@@ -4,21 +4,22 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.JSON;
 import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.Gender;
 import com.worldelite.job.constants.UserStatus;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.Download;
-import com.worldelite.job.entity.Resume;
-import com.worldelite.job.entity.User;
-import com.worldelite.job.form.*;
-import com.worldelite.job.service.*;
+import com.worldelite.job.form.CompanyListForm;
+import com.worldelite.job.form.JobListForm;
+import com.worldelite.job.form.ResumeListForm;
+import com.worldelite.job.form.UserListForm;
+import com.worldelite.job.service.DownloadService;
+import com.worldelite.job.service.FileService;
+import com.worldelite.job.service.JobService;
+import com.worldelite.job.service.UserService;
 import com.worldelite.job.vo.*;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -38,10 +39,6 @@ public class EasyExcelExportService implements IExportExcelService {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    @Lazy
-    private ResumeService resumeService;
 
     @Autowired
     private FileService fileService;

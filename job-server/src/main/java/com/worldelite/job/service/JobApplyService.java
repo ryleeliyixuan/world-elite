@@ -30,7 +30,6 @@ import java.util.List;
 @Service
 public class JobApplyService extends BaseService{
 
-
     @Autowired
     private JobApplyMapper jobApplyMapper;
 
@@ -51,12 +50,6 @@ public class JobApplyService extends BaseService{
 
     @Autowired
     private CompanyUserMapper companyUserMapper;
-
-    @Autowired
-    private ResumeApplicantService resumeApplicantService;
-
-    @Autowired
-    private ResumeRepositoryService resumeRepositoryService;
 
     @Autowired
     private ConfigService configService;
@@ -111,7 +104,7 @@ public class JobApplyService extends BaseService{
         message.setFromUser(curUser().getId());
         message.setToUser(job.getCreatorId());
         message.setContent(message("message.job.apply", job.getName()));
-        message.setUrl("/manage-job");
+        message.setUrl(String.format("/manage-resume?jobIds=%s", job.getId()));
         messageService.sendMessage(message);
         return newJobApply;
     }
@@ -191,12 +184,15 @@ public class JobApplyService extends BaseService{
             return;
         }
 
-        ResumeApplicant resumeApplicant = resumeApplicantService.selectByResumeId(resume.getId());
-        if(resumeApplicant==null) return;
-
         // 发送站内和邮件消息
-        UserApplicantVo toUser = userApplicantService.getUserInfo(resumeApplicant.getUserId());
-        final String jobPlaceholder = String.format("%s.%s", job.getCompanyUser().getCompany().getName(), job.getName());
+        ResumeService resumeService = resumeServiceFactory.getResumeService(resume.getType());
+        ResumeDetail resumeDetail = resumeService.getResumeDetail(resume.getId());
+        String jobPlaceholder = "";
+        if(job.getId().equals("0")){
+            return;
+        }else {
+            jobPlaceholder = String.format("%s.%s", job.getCompanyUser().getCompany().getName(), job.getName());
+        }
         EmailForm emailForm = null;
         String messageContent = null;
         if (applyResumeForm.getStatus() == JobApplyStatus.CANDIDATE.value) {
@@ -216,14 +212,14 @@ public class JobApplyService extends BaseService{
         if (emailForm != null) {
             final String emailBody = emailForm.getEmailBody().replace("${JOB}", jobPlaceholder).replace("${DETAIL_URL}", AppUtils.wholeWebUrl("/apply-jobs" ));
             emailForm.setEmailBody(emailBody);
-            emailForm.setAddress(toUser.getEmail());
+            emailForm.setAddress(resumeDetail.getEmail());
             emailService.sendEmail(emailForm);
         }
 
         if(messageContent != null){
             Message message = new Message();
             message.setFromUser(curUser().getId());
-            message.setToUser(resumeApplicant.getUserId());
+            message.setToUser(resume.getUserId());
             message.setContent(messageContent);
             messageService.sendMessage(message);
         }

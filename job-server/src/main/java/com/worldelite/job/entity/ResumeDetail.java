@@ -60,7 +60,7 @@ public class ResumeDetail {
     private List<JobCategory> categoryList;
 
     //期望城市
-    private List<Dict> cityList;
+    private List<City> cityList;
 
     //期望薪资
     private Dict salary;

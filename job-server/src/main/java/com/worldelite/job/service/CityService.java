@@ -90,7 +90,7 @@ public class CityService {
      * @param cityId 城市ID
      * @return 城市
      */
-    public City getByCity(Integer cityId) {
+    public City getById(Integer cityId) {
         return cityMapper.selectByPrimaryKey(cityId);
     }
 
@@ -99,8 +99,8 @@ public class CityService {
      * @param cityId 城市ID
      * @return 城市
      */
-    public CityVo getByCityVo(Integer cityId) {
-        City city = getByCity(cityId);
+    public CityVo getCityVo(Integer cityId) {
+        City city = getById(cityId);
         return new CityVo().asVo(city);
     }
 }

@@ -1,18 +1,14 @@
 package com.worldelite.job.service;
 
-import com.worldelite.job.entity.ResumeExperience;
 import com.worldelite.job.entity.ResumeSkill;
 import com.worldelite.job.form.ResumeSkillForm;
 import com.worldelite.job.mapper.ResumeSkillMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ResumeSkillVo;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,10 +16,6 @@ import java.util.List;
  */
 @Service
 public class ResumeSkillService extends BaseService{
-
-    @Autowired
-    @Lazy
-    private ResumeService resumeService;
 
     @Autowired
     private ResumeSkillMapper resumeSkillMapper;

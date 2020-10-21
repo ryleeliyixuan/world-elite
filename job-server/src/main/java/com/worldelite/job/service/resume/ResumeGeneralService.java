@@ -3,14 +3,18 @@ package com.worldelite.job.service.resume;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.worldelite.job.constants.JobApplyStatus;
 import com.worldelite.job.constants.ResumeStatus;
 import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.ResumeForm;
 import com.worldelite.job.form.ResumeListForm;
+import com.worldelite.job.mapper.JobApplyMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.*;
+import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.FormUtils;
@@ -37,6 +41,9 @@ public class ResumeGeneralService extends ResumeService {
     private ResumeMapper resumeMapper;
 
     @Autowired
+    private JobApplyMapper jobApplyMapper;
+
+    @Autowired
     private ResumeEduService resumeEduService;
 
     @Autowired
@@ -59,6 +66,9 @@ public class ResumeGeneralService extends ResumeService {
 
     @Autowired
     private SearchService searchService;
+
+    @Autowired
+    private IndexService indexService;
 
     @Override
     public ResumeDetail getDefaultOrCreate() {
@@ -179,6 +189,40 @@ public class ResumeGeneralService extends ResumeService {
     }
 
     @Override
+    public void rebuildAllIndex(){
+        //因为一次读取全部简历数据会对内存产生很大压力
+        //所以分批次从数据库读取数据再生成索引
+        List<Resume> resumeList;
+        int curPage = 1;
+        ResumeOptions options = new ResumeOptions();
+        options.setType(ResumeType.GENERAL.value);
+        do {
+            PageHelper.startPage(curPage++, 100, false);
+            resumeList = resumeMapper.selectAndList(options);
+            for (Resume resume : resumeList) {
+                //获取简历详情
+                ResumeDetail resumeDetail = getResumeDetail(resume.getId());
+                UserApplicant userApplicant = userApplicantService.selectByPrimaryKey(resume.getUserId());
+                //简历详情或者用户信息不存在时
+                //说明该简历为异常数据
+                //不创建索引，直接跳过
+                if(resume!=null && userApplicant!=null) {
+                    resumeDetail.setUserId(resume.getUserId());
+                    resumeDetail.setName(userApplicant.getName());
+                    resumeDetail.setEmail(userApplicant.getEmail());
+                    resumeDetail.setGender(userApplicant.getGender());
+                }
+                //生成索引
+                indexService.saveResumeItem(resumeDetail,folder);
+            }
+        } while (CollectionUtils.isNotEmpty(resumeList));
+    }
+
+    public void getRebuildProcess(){
+
+    }
+
+    @Override
     public ResumeDetail getResumeDetail(Long resumeId) {
         ResumeDetail resumeDetail = new ResumeDetail();
         //获取基础信息
@@ -199,7 +243,7 @@ public class ResumeGeneralService extends ResumeService {
         //区号
         resumeDetail.setPhoneCode(userApplicant.getPhoneCode());
         //头像
-        resumeDetail.setAvatar(userApplicant.getAvatar());
+        resumeDetail.setAvatar(AppUtils.absOssUrl(userApplicant.getAvatar()));
         //性别
         resumeDetail.setGender(userApplicant.getGender());
         //基础信息
@@ -247,6 +291,8 @@ public class ResumeGeneralService extends ResumeService {
 
     @Override
     public PageResult<ResumeDetail> search(ResumeListForm resumeListForm) {
+        resumeListForm.setType(ResumeType.GENERAL.value);
+        resumeListForm.setStatus(ResumeStatus.PUBLISH.value);
         return searchService.searchResume(resumeListForm,folder);
     }
 
@@ -299,7 +345,7 @@ public class ResumeGeneralService extends ResumeService {
             userExpectJobVo.setCategoryList(AppUtils.asVoList(resumeDetail.getCategoryList(),JobCategoryVo.class));
         }
         if(CollectionUtils.isNotEmpty(resumeDetail.getCityList())){
-            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(),DictVo.class));
+            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(),CityVo.class));
         }
         if(resumeDetail.getSalary()!=null){
             userExpectJobVo.setSalary(new DictVo().asVo(resumeDetail.getSalary()));
@@ -324,5 +370,31 @@ public class ResumeGeneralService extends ResumeService {
         voPageResult.setHasMore(pageResult.getHasMore());
         voPageResult.setList(resumeVoList);
         return voPageResult;
+    }
+
+    /**
+     * 简历投递情况统计
+     * @param resumeId
+     * @param userId
+     * @param resumeVo
+     * @return
+     */
+    private int getApplyOfferCount(Long resumeId,Long userId,ResumeVo resumeVo){
+        JobApplyOptions applyOptions = new JobApplyOptions();
+        applyOptions.setResumeId(resumeId);
+        applyOptions.setUserId(userId);
+        final int applyTotalCount = jobApplyMapper.countJobApply(applyOptions);
+        resumeVo.setApplyTotalCount(applyTotalCount);
+        applyOptions.setStatuses(String.valueOf(JobApplyStatus.APPLY.value));
+        final int applyingCount = jobApplyMapper.countJobApply(applyOptions);
+        resumeVo.setApplyingCount(applyingCount);
+        applyOptions.setStatuses(String.valueOf(JobApplyStatus.CANDIDATE.value));
+        final int applyCandidateCount = jobApplyMapper.countJobApply(applyOptions);
+        resumeVo.setApplyCandidateCount(applyCandidateCount);
+        applyOptions.setStatuses(String.valueOf(JobApplyStatus.INTERVIEW.value));
+        final int applyInterviewCount = jobApplyMapper.countJobApply(applyOptions);
+        resumeVo.setApplyInterviewCount(applyInterviewCount);
+        applyOptions.setStatuses(String.valueOf(JobApplyStatus.OFFER.value));
+        return  jobApplyMapper.countJobApply(applyOptions);
     }
 }

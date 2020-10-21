@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.ResumeStatus;
 import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.entity.*;
@@ -238,7 +239,7 @@ public class ResumeCompanyService extends ResumeService{
         //区号
         resumeDetail.setPhoneCode(userRepository.getPhoneCode());
         //头像
-        resumeDetail.setAvatar(userRepository.getAvatar());
+        resumeDetail.setAvatar(AppUtils.absOssUrl(userRepository.getAvatar()));
         //性别
         resumeDetail.setGender(userRepository.getGender());
         //基础信息
@@ -295,6 +296,40 @@ public class ResumeCompanyService extends ResumeService{
     }
 
     @Override
+    public void rebuildAllIndex(){
+        //因为一次读取全部简历数据会对内存产生很大压力
+        //所以分批次从数据库读取数据再生成索引
+        List<Resume> resumeList;
+        int curPage = 1;
+        ResumeOptions options = new ResumeOptions();
+        options.setType(ResumeType.COMPANY.value);
+        do {
+            PageHelper.startPage(curPage++, 100, false);
+            resumeList = resumeMapper.selectAndList(options);
+            for (Resume resume : resumeList) {
+                //获取简历详情
+                ResumeDetail resumeDetail = getResumeDetail(resume.getId());
+                UserRepository userRepository = userRepositoryService.getUserById(resume.getUserId());
+                //简历详情或者用户信息不存在时
+                //说明该简历为异常数据
+                //不创建索引，直接跳过
+                if(resume!=null && userRepository!=null) {
+                    resumeDetail.setUserId(resume.getUserId());
+                    resumeDetail.setName(userRepository.getName());
+                    resumeDetail.setEmail(userRepository.getEmail());
+                    resumeDetail.setGender(userRepository.getGender());
+                }
+                //生成索引
+                indexService.saveResumeItem(resumeDetail,folder);
+            }
+        } while (CollectionUtils.isNotEmpty(resumeList));
+    }
+
+    public void getRebuildProcess(){
+
+    }
+
+    @Override
     public ResumeVo toResumeVo(ResumeDetail resumeDetail) {
         //简历ID如果不存在则不进行转换
         if(resumeDetail.getResumeId() == null) return null;
@@ -343,7 +378,7 @@ public class ResumeCompanyService extends ResumeService{
             userExpectJobVo.setCategoryList(AppUtils.asVoList(resumeDetail.getCategoryList(),JobCategoryVo.class));
         }
         if(CollectionUtils.isNotEmpty(resumeDetail.getCityList())){
-            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(),DictVo.class));
+            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(),CityVo.class));
         }
         if(resumeDetail.getSalary()!=null){
             userExpectJobVo.setSalary(new DictVo().asVo(resumeDetail.getSalary()));
@@ -411,7 +446,7 @@ public class ResumeCompanyService extends ResumeService{
         resume.setName(userRepository.getName());
         //企业简历默认为草稿状态，简历类型固定且不能改变
         resume.setType(ResumeType.COMPANY.value);
-        resume.setStatus(ResumeStatus.DRAFT.value);
+        resume.setStatus(ResumeStatus.PUBLISH.value);
         resumeMapper.insertSelective(resume);
         return resume;
     }

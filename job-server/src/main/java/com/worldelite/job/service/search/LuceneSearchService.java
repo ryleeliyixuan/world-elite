@@ -4,10 +4,10 @@ import com.worldelite.job.constants.JobIndexFields;
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.constants.ResumeIndexFields;
 import com.worldelite.job.context.LuceneContext;
+import com.worldelite.job.entity.Dict;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeAttach;
 import com.worldelite.job.entity.ResumeDetail;
-import com.worldelite.job.entity.ResumeEdu;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.JobSearchForm;
 import com.worldelite.job.form.PageForm;
@@ -15,7 +15,11 @@ import com.worldelite.job.form.ResumeAttachmentForm;
 import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.mapper.ResumeAttachMapper;
 import com.worldelite.job.mapper.ResumeMapper;
-import com.worldelite.job.service.*;
+import com.worldelite.job.service.DictService;
+import com.worldelite.job.service.JobCategoryService;
+import com.worldelite.job.service.JobService;
+import com.worldelite.job.service.ResumeAttachService;
+import com.worldelite.job.service.resume.ResumeService;
 import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +28,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.*;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FloatPoint;
+import org.apache.lucene.document.IntPoint;
+import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -33,7 +40,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -69,10 +75,6 @@ public class LuceneSearchService implements SearchService {
 
     @Autowired
     private JobService jobService;
-
-    @Autowired
-    @Lazy
-    private ResumeService resumeService;
 
     @Autowired
     private ResumeMapper resumeMapper;
@@ -194,9 +196,9 @@ public class LuceneSearchService implements SearchService {
         IndexSearcher indexSearcher = getIndexSearcher(getSearchFolder());
         //构造搜索请求
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
-        for(String keyword : searchForm.getKeywords()){
+        for (String keyword : searchForm.getKeywords()) {
             //目标简历附件必须包含所有关键词
-            Term term = new Term(ResumeAttachmentIndexFields.CONTENT,keyword);
+            Term term = new Term(ResumeAttachmentIndexFields.CONTENT, keyword);
             Query query = new TermQuery(term);
             builder.add(query, BooleanClause.Occur.MUST);
         }
@@ -214,7 +216,9 @@ public class LuceneSearchService implements SearchService {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeAttachmentIndexFields.RESUME_ID_STR));
-                ResumeVo resumeVo = resumeService.getResumeInfo(resumeId);
+                ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+                ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
+                ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
                 resumeVoList.add(resumeVo);
             }
 
@@ -235,20 +239,20 @@ public class LuceneSearchService implements SearchService {
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         //预处理关键词，用与生成索引文件一样的分词器将关键词分词
         List<String> keywordList = new ArrayList<String>();
-        for(String keyword : searchForm.getKeywords()){
+        for (String keyword : searchForm.getKeywords()) {
             String[] tempKeywords = new String[]{};
             try {
                 tempKeywords = resumeAttachService.analysis(keyword);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            for(String tempKeyword:tempKeywords){
+            for (String tempKeyword : tempKeywords) {
                 keywordList.add(tempKeyword);
             }
         }
-        for(String keyword : keywordList){
+        for (String keyword : keywordList) {
             //目标简历附件必须包含所有关键词
-            Term term = new Term(ResumeAttachmentIndexFields.CONTENT,keyword);
+            Term term = new Term(ResumeAttachmentIndexFields.CONTENT, keyword);
             Query query = new TermQuery(term);
             builder.add(query, BooleanClause.Occur.MUST);
         }
@@ -268,7 +272,7 @@ public class LuceneSearchService implements SearchService {
                 Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeAttachmentIndexFields.RESUME_ID_STR));
                 ResumeAttach resumeAttach = resumeAttachMapper.selectByResumeIdWithBLOBs(resumeId);
                 Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
-                resumeAttach.setDocPath(ossDomain+resume.getAttachResume());
+                resumeAttach.setDocPath(ossDomain + resume.getAttachResume());
                 resumeVoList.add(new ResumeAttachVo().asVo(resumeAttach));
             }
 
@@ -292,6 +296,7 @@ public class LuceneSearchService implements SearchService {
 
     /**
      * 搜索简历
+     *
      * @param searchForm
      * @return
      */
@@ -329,92 +334,107 @@ public class LuceneSearchService implements SearchService {
 
     /**
      * 构造简历搜索过滤器
+     *
      * @param searchForm
      * @return
      */
-    public Query getResumeQuery(ResumeListForm searchForm){
+    public Query getResumeQuery(ResumeListForm searchForm) {
         BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
         //如果没有任何过滤条件，则返回所有数据
-        Query allQuery = new WildcardQuery(new Term(ResumeIndexFields.RESUME_ID_INDEX,"*"));
+        Query allQuery = new WildcardQuery(new Term(ResumeIndexFields.RESUME_ID_INDEX, "*"));
         queryBuilder.add(allQuery, BooleanClause.Occur.MUST);
         //简历类型
-        if(searchForm.getType()!=null){
-            Query typeQuery = IntPoint.newExactQuery(ResumeIndexFields.RESUME_TYPE,searchForm.getType());
+        if (searchForm.getType() != null) {
+            Query typeQuery = IntPoint.newExactQuery(ResumeIndexFields.RESUME_TYPE, searchForm.getType());
             queryBuilder.add(typeQuery, BooleanClause.Occur.MUST);
         }
         //简历状态
-        if(searchForm.getStatus()!=null){
-            Query statusQuery = IntPoint.newExactQuery(ResumeIndexFields.RESUME_STATUS,searchForm.getStatus());
+        if (searchForm.getStatus() != null) {
+            Query statusQuery = IntPoint.newExactQuery(ResumeIndexFields.RESUME_STATUS, searchForm.getStatus());
             queryBuilder.add(statusQuery, BooleanClause.Occur.MUST);
         }
         //学校
-        if(ArrayUtils.isNotEmpty(searchForm.getSchoolIds())){
+        if (ArrayUtils.isNotEmpty(searchForm.getSchoolIds())) {
             BooleanQuery.Builder schoolBuilder = new BooleanQuery.Builder();
-            for(Integer id:searchForm.getSchoolIds()){
-                schoolBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.SCHOOL_ID,id), BooleanClause.Occur.SHOULD);
+            for (Integer id : searchForm.getSchoolIds()) {
+                schoolBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.SCHOOL_ID, id), BooleanClause.Occur.SHOULD);
             }
             queryBuilder.add(schoolBuilder.build(), BooleanClause.Occur.MUST);
         }
         //学历
-        if(ArrayUtils.isNotEmpty(searchForm.getDegreeIds())){
+        if (ArrayUtils.isNotEmpty(searchForm.getDegreeIds())) {
             BooleanQuery.Builder degreeBuilder = new BooleanQuery.Builder();
-            for(Integer id:searchForm.getDegreeIds()){
-                degreeBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.DEGREE,id), BooleanClause.Occur.SHOULD);
+            for (Integer id : searchForm.getDegreeIds()) {
+                degreeBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.DEGREE, id), BooleanClause.Occur.SHOULD);
             }
             queryBuilder.add(degreeBuilder.build(), BooleanClause.Occur.MUST);
         }
-        //GPA Todo GPA不是一个范围，可输入的，怎么处理
+        //GPA
+        if (searchForm.getGpaRangeId() != null) {
+            try {
+                final Dict dict = dictService.getDict(searchForm.getGpaRangeId());
+                final String[] value = dict.getValue().split("-");
+                if (StringUtils.isNoneEmpty(value) && value.length == 2) {
+                    float minGpa = Float.parseFloat(value[0]);
+                    float maxGpa = Float.parseFloat(value[1]);
+
+                    queryBuilder.add(FloatPoint.newRangeQuery(ResumeIndexFields.GPA, minGpa, maxGpa), BooleanClause.Occur.MUST);
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
         //UserId索引
-        if(searchForm.getUserId() != null){
-            Query userIdQuery = LongPoint.newExactQuery(ResumeIndexFields.USER_ID,searchForm.getUserId());
+        if (searchForm.getUserId() != null) {
+            Query userIdQuery = LongPoint.newExactQuery(ResumeIndexFields.USER_ID, searchForm.getUserId());
             queryBuilder.add(userIdQuery, BooleanClause.Occur.MUST);
         }
         //CompanyId索引
-        if(searchForm.getCompanyId() != null){
-            Query companyIdQuery = LongPoint.newExactQuery(ResumeIndexFields.COMPANY_ID,searchForm.getCompanyId());
+        if (searchForm.getCompanyId() != null) {
+            Query companyIdQuery = LongPoint.newExactQuery(ResumeIndexFields.COMPANY_ID, searchForm.getCompanyId());
             queryBuilder.add(companyIdQuery, BooleanClause.Occur.MUST);
         }
         //名字索引
-        if(StringUtils.isNotEmpty(searchForm.getName())){
-            WildcardQuery nameQuery = new WildcardQuery(new Term(ResumeIndexFields.NAME,"*"+searchForm.getName()+"*"));
+        if (StringUtils.isNotEmpty(searchForm.getName())) {
+            WildcardQuery nameQuery = new WildcardQuery(new Term(ResumeIndexFields.NAME, "*" + searchForm.getName() + "*"));
             queryBuilder.add(nameQuery, BooleanClause.Occur.MUST);
         }
         //邮箱索引
-        if(StringUtils.isNotEmpty(searchForm.getEmail())){
-            WildcardQuery emailQuery = new WildcardQuery(new Term(ResumeIndexFields.EMAIL,"*"+searchForm.getEmail()+"*"));
+        if (StringUtils.isNotEmpty(searchForm.getEmail())) {
+            WildcardQuery emailQuery = new WildcardQuery(new Term(ResumeIndexFields.EMAIL, "*" + searchForm.getEmail() + "*"));
             queryBuilder.add(emailQuery, BooleanClause.Occur.MUST);
         }
         //意向城市
-        if(ArrayUtils.isNotEmpty(searchForm.getCityIds())){
+        if (ArrayUtils.isNotEmpty(searchForm.getCityIds())) {
             BooleanQuery.Builder cityBuilder = new BooleanQuery.Builder();
-            for(Integer id:searchForm.getCityIds()){
-                cityBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.EXPECT_CITY,id), BooleanClause.Occur.SHOULD);
+            for (Integer id : searchForm.getCityIds()) {
+                cityBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.EXPECT_CITY, id), BooleanClause.Occur.SHOULD);
             }
             queryBuilder.add(cityBuilder.build(), BooleanClause.Occur.MUST);
         }
         //意向职位
-        if(ArrayUtils.isNotEmpty(searchForm.getCategoryIds())){
+        if (ArrayUtils.isNotEmpty(searchForm.getCategoryIds())) {
             BooleanQuery.Builder categoryBuilder = new BooleanQuery.Builder();
-            for(Integer id:searchForm.getCategoryIds()){
-                categoryBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.EXPECT_CATEGORY,id), BooleanClause.Occur.SHOULD);
+            for (Integer id : searchForm.getCategoryIds()) {
+                categoryBuilder.add(IntPoint.newExactQuery(ResumeIndexFields.EXPECT_CATEGORY, id), BooleanClause.Occur.SHOULD);
             }
             queryBuilder.add(categoryBuilder.build(), BooleanClause.Occur.MUST);
         }
         //薪资范围
-        if(searchForm.getSalaryId() != null){
-            Query salaryQuery = IntPoint.newExactQuery(ResumeIndexFields.SALARY,searchForm.getSalaryId());
+        if (searchForm.getSalaryId() != null) {
+            Query salaryQuery = IntPoint.newExactQuery(ResumeIndexFields.SALARY, searchForm.getSalaryId());
             queryBuilder.add(salaryQuery, BooleanClause.Occur.MUST);
         }
         //性别索引
-        if(searchForm.getGender() != null){
-            Query genderQuery = IntPoint.newExactQuery(ResumeIndexFields.GENDER,searchForm.getGender());
+        if (searchForm.getGender() != null) {
+            Query genderQuery = IntPoint.newExactQuery(ResumeIndexFields.GENDER, searchForm.getGender());
             queryBuilder.add(genderQuery, BooleanClause.Occur.MUST);
         }
         //技能索引
-        if(ArrayUtils.isNotEmpty(searchForm.getSkills())){
+        if (ArrayUtils.isNotEmpty(searchForm.getSkills())) {
             BooleanQuery.Builder skillBuilder = new BooleanQuery.Builder();
-            for(String skill:searchForm.getSkills()){
-                WildcardQuery skillQuery = new WildcardQuery(new Term(ResumeIndexFields.RESUME_SKILL,"*"+skill+"*"));
+            for (String skill : searchForm.getSkills()) {
+                WildcardQuery skillQuery = new WildcardQuery(new Term(ResumeIndexFields.RESUME_SKILL, "*" + skill + "*"));
                 skillBuilder.add(skillQuery, BooleanClause.Occur.SHOULD);
             }
             queryBuilder.add(skillBuilder.build(), BooleanClause.Occur.MUST);
@@ -463,7 +483,9 @@ public class LuceneSearchService implements SearchService {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeIndexFields.RESUME_ID));
-                ResumeVo resumeVo = resumeService.getResumeInfo(resumeId);
+                ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+                ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
+                ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
                 resumeVoList.add(resumeVo);
             }
 
@@ -534,17 +556,19 @@ public class LuceneSearchService implements SearchService {
 
     /**
      * 获取当前索引文件重建目录
+     *
      * @return
      */
-    private String getBuildFolder(){
-        return switchFolder?resumeAttachmentPath1:resumeAttachmentPath2;
+    private String getBuildFolder() {
+        return switchFolder ? resumeAttachmentPath1 : resumeAttachmentPath2;
     }
 
     /**
      * 获取当前索引文件搜索目录
+     *
      * @return
      */
-    private String getSearchFolder(){
-        return switchFolder?resumeAttachmentPath2:resumeAttachmentPath1;
+    private String getSearchFolder() {
+        return switchFolder ? resumeAttachmentPath2 : resumeAttachmentPath1;
     }
 }
