@@ -167,7 +167,8 @@
         <el-dialog :visible.sync="dialogVisible"
                    class="dialog-container"
                    width="800px"
-                   title="添加职位关键词">
+                   title="添加职位关键词"
+                   :before-close="dialogClose">
             <div class="selected-container">
                 <span>已选择</span>
                 <div class="selected-right">
@@ -341,6 +342,7 @@
         data() {
             return {
                 dialogVisible: false,
+                dialogConfirm: false,
                 dialogVisible2: false,//预览弹框
                 Salary: '',
                 nowDate: '',//当前时间
@@ -541,6 +543,7 @@
                         this.jobForm.skillTags = this.skillList.filter(item => item.selected).map(item => item.name);
                         saveJob(this.jobForm).then(() => {
                             Toast.success(this.isModify ? "保存成功" : "发布成功");
+                            this.$store.commit("setting/JOB_DRAFT", undefined);
                             this.$router.go(-1);
                         }).finally(() => {
                             this.posting = false;
@@ -579,9 +582,28 @@
                 this.dialogVisible = true;
             },
 
+            dialogClose(done) {
+                if(!this.dialogConfirm) {
+                    this.industryAdditionList.forEach(item => {
+                        item.selected = false;
+                    });
+                    this.skillAdditionList.forEach(item => {
+                        item.selected = false;
+                    });
+                    this.industryList.forEach(item => {
+                        item.selected = false;
+                    });
+                    this.skillList.forEach(item => {
+                        item.selected = false;
+                    });
+                }
+                done()
+            },
+
             // 关键词选择确认
             onConfirm() {
                 this.dialogVisible = false;
+                this.dialogConfirm =  true;
                 let industry = this.industryList.filter(item => item.selected).map(item => item.name);
                 let skill = this.skillList.filter(item => item.selected).map(item => item.name);
                 let industryAddition = this.industryAdditionList.filter(item => item.selected).map(item => item.name);
