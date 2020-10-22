@@ -313,14 +313,14 @@ public class ResumeCompanyService extends ResumeService{
                 //简历详情或者用户信息不存在时
                 //说明该简历为异常数据
                 //不创建索引，直接跳过
-                if(resume!=null && userRepository!=null) {
-                    resumeDetail.setUserId(resume.getUserId());
+                if(resumeDetail!=null && userRepository!=null) {
+/*                    resumeDetail.setUserId(resume.getUserId());
                     resumeDetail.setName(userRepository.getName());
                     resumeDetail.setEmail(userRepository.getEmail());
-                    resumeDetail.setGender(userRepository.getGender());
+                    resumeDetail.setGender(userRepository.getGender());*/
+                    //生成索引
+                    indexService.saveResumeItem(resumeDetail,folder);
                 }
-                //生成索引
-                indexService.saveResumeItem(resumeDetail,folder);
             }
         } while (CollectionUtils.isNotEmpty(resumeList));
     }

@@ -1,8 +1,11 @@
 package com.worldelite.job.entity;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 简历详情实体类
@@ -64,4 +67,131 @@ public class ResumeDetail {
 
     //期望薪资
     private Dict salary;
+
+    /**
+     * 计算简历完成度评分,没有最高分 越高越好
+     *
+     * @return 分数
+     */
+    public int calcCompletion() {
+
+        if (StringUtils.isAnyBlank(resumeId.toString(), userId.toString(), name, email, phone.toString())) {
+            return 0;
+        }
+        if (resumeBasic == null) return 0;
+        if (StringUtils.isAnyBlank(resumeBasic.getName())) return 0;
+        AtomicInteger score = new AtomicInteger();
+
+        try {
+            for (Field f : resumeBasic.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
+                if (f.get(resumeBasic) != null && StringUtils.isNotBlank(f.get(resumeBasic).toString())) {
+                    score.getAndIncrement();
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        if (resumeEduList != null && resumeEduList.size() > 0) {
+            resumeEduList.forEach(resumeEdu -> {
+                for (Field f : resumeEdu.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    try {
+                        if (f.get(resumeEdu) != null && StringUtils.isNotBlank(f.get(resumeEdu).toString())) {
+                            score.getAndIncrement();
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    }
+                }
+            });
+        }
+
+        if (resumeExpList != null && resumeExpList.size() > 0) {
+            resumeExpList.forEach(experience -> {
+                for (Field f : experience.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    try {
+                        if (f.get(experience) != null && StringUtils.isNotBlank(f.get(experience).toString())) {
+                            score.getAndIncrement();
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    }
+                }
+            });
+        }
+
+        if (resumePracticeList != null && resumePracticeList.size() > 0) {
+            resumePracticeList.forEach(resumePractice -> {
+                for (Field f : resumePractice.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    try {
+                        if (f.get(resumePractice) != null && StringUtils.isNotBlank(f.get(resumePractice).toString())) {
+                            score.getAndIncrement();
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    }
+                }
+            });
+        }
+
+        if (resumeSkillList != null && resumeSkillList.size() > 0) {
+            resumeSkillList.forEach(resumeSkill -> {
+                for (Field f : resumeSkill.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    try {
+                        if (f.get(resumeSkill) != null && StringUtils.isNotBlank(f.get(resumeSkill).toString())) {
+                            score.getAndIncrement();
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    }
+                }
+            });
+        }
+        if (resumeLinkList != null && resumeLinkList.size() > 0) {
+            resumeLinkList.forEach(resumeLink -> {
+                for (Field f : resumeLink.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    try {
+                        if (f.get(resumeLink) != null && StringUtils.isNotBlank(f.get(resumeLink).toString())) {
+                            score.getAndIncrement();
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    }
+                }
+            });
+        }
+        if (categoryList != null && categoryList.size() > 0) {
+            categoryList.forEach(jobCategory -> {
+                for (Field f : jobCategory.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    try {
+                        if (f.get(jobCategory) != null && StringUtils.isNotBlank(f.get(jobCategory).toString())) {
+                            score.getAndIncrement();
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    }
+                }
+            });
+        }
+        if (cityList != null && cityList.size() > 0) {
+            cityList.forEach(city -> {
+                for (Field f : city.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    try {
+                        if (f.get(city) != null && StringUtils.isNotBlank(f.get(city).toString())) {
+                            score.getAndIncrement();
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    }
+                }
+            });
+        }
+
+        if (salary != null) {
+            score.getAndIncrement();
+        }
+
+
+        return score.get();
+    }
 }

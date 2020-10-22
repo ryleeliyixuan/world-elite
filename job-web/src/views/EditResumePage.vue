@@ -280,12 +280,12 @@
                   size="small"
                 >{{ category.name }}</el-tag>
               </p>
-              <p v-if="resume.userExpectJob.minSalary">
+              <p v-if="resume.userExpectJob.salary">
                 <el-tag
                   effect="plain"
                   class="mr-2"
                   size="small"
-                >{{resume.userExpectJob.minSalary}}K ~ {{resume.userExpectJob.maxSalary}}K</el-tag>
+                >{{resume.userExpectJob.salary.name}}</el-tag>
               </p>
             </div>
           </div>
@@ -581,15 +581,17 @@
               end-placeholder="结束时间"
               :disabled="resumePracticeForm.onWork == 1"
             ></el-date-picker>
+
+            <el-checkbox
+                    class="ml-2"
+                    v-model="resumePracticeForm.onWork"
+                    label="实践中"
+                    border
+                    :true-label="1"
+                    :false-label="0"
+            ></el-checkbox>
           </div>
-          <el-checkbox
-            class="ml-2"
-            v-model="resumePracticeForm.onWork"
-            label="实践中"
-            border
-            :true-label="1"
-            :false-label="0"
-          ></el-checkbox>
+
         </el-form-item>
         <el-form-item label="实践内容" prop="description">
           <quill-editor v-model="resumePracticeForm.description" :options="practiceEditorOption"></quill-editor>
@@ -604,22 +606,17 @@
     <el-dialog title="编辑求职意向" :visible.sync="showExpectJobDialog" width="80%" top="9vh">
       <el-form ref="expectJobForm" :model="expectJobForm" label-width="80px">
         <el-form-item label="意向城市" prop="cityIds">
-          <el-select
-            v-model="expectJobForm.cityIds"
-            multiple
-            filterable
-            clearable
-            placeholder="最多选择三个"
-            class="w-100"
-          >
-            <el-option
-              v-for="item in cityOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+          <el-cascader placeholder="最多选择三个"
+                       :show-all-levels="false"
+                       :options="cityOptions"
+                       :props="cityIdProps"
+                       filterable
+                       clearable
+                       class="w-100"
+                       v-model="expectJobForm.cityIds">
+          </el-cascader>
         </el-form-item>
+
         <el-form-item label="意向职位" prop="categoryIds">
           <el-cascader
             placeholder="最多选择三个"
@@ -633,39 +630,13 @@
           ></el-cascader>
         </el-form-item>
         <el-form-item label="薪资范围">
-          <el-col :span="11">
-            <el-select
-              v-model="expectJobForm.minSalary"
-              filterable
-              clearable
-              placeholder="请选择"
-              class="w-100"
-            >
-              <el-option
-                v-for="item in minSalaryOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-col>
-          <el-col class="text-center" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-select
-              v-model="expectJobForm.maxSalary"
-              filterable
-              clearable
-              placeholder="请选择"
-              class="w-100"
-            >
-              <el-option
-                v-for="item in maxSalaryOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-col>
+          <el-select v-model="expectJobForm.salaryId" placeholder="薪资范围" class="w-100">
+            <el-option v-for="item in salaryOptions"
+                       :key="item.id"
+                       :label="item.name"
+                       :value="item.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -909,8 +880,7 @@ export default {
       expectJobForm: {
         cityIds: [],
         categoryIds: [],
-        minSalary: undefined,
-        maxSalary: undefined,
+        salaryId: undefined,
       },
       uploadPicOptions: {
         action: "",
@@ -927,7 +897,6 @@ export default {
       resume: {},
       countryOptions: [],
       degreeOptions: [],
-      cityOptions: [],
       jobCategoryOptions: [],
       skillTagOptions: [],
       showBasicDialog: false,
@@ -970,15 +939,44 @@ export default {
         emitPath: false,
         children: "children",
       },
-      minSalaryOptions: [],
-      maxSalaryOptions: [],
       newSkillTag: "",
       skillTagListForm: [],
+      salaryOptions: [],//薪资范围
       oldDatePickerOptions: {
         disabledDate(time) {
           return time.getTime() >= Date.now() - 8.64e7;
         },
       },
+      cityIdProps: {
+        multiple: true,
+        lazy: true,
+        lazyLoad: (node, resolve) => {
+          if (node.level === 1) {
+            this.$axios.request({
+              url: "/city/list",
+              method: "get",
+              params: {type: node.value}
+            }).then(data => {
+              console.log(data.data);
+              let nodes = data.data.map(second => {
+                let children = second.children && second.children.map(third => {
+                  return {id:third.id, name:third.name, leaf:true}
+                })
+                return {id:second.id, name:second.name, children}
+              });
+              resolve(nodes);
+            })
+          } else {
+            resolve();
+          }
+        },
+        expandTrigger: "hover",
+        value: "id",
+        label: "name",
+        emitPath: false,
+        children: "children"
+      },
+      cityOptions: [{id: 1, name: "国内"}, {id: 2, name: "国外"}],
     };
   },
   watch: {
@@ -986,21 +984,13 @@ export default {
       if (newVal.length > 3) {
         this.expectJobForm.cityIds = oldVal;
         Toast.error("意向城市不能超过3个");
+
       }
     },
     "expectJobForm.categoryIds": function (newVal, oldVal) {
       if (newVal.length > 3) {
         this.expectJobForm.categoryIds = oldVal;
         Toast.error("意向职位不能超过3个");
-      }
-    },
-    "expectJobForm.minSalary": function () {
-      if (this.expectJobForm.minSalary) {
-        this.maxSalaryOptions = this.generateSalaryOptions(
-          this.expectJobForm.minSalary
-        );
-      } else {
-        this.expectJobForm.maxSalary = undefined;
       }
     },
     "resumeEduForm.gpa": function (newVal, oldVal) {
@@ -1033,7 +1023,6 @@ export default {
       listByType(1).then(
         (response) => (this.degreeOptions = response.data.list)
       );
-      listByType(2).then((response) => (this.cityOptions = response.data.list));
       listByType(3).then(
         (response) => (this.skillTagOptions = response.data.list)
       );
@@ -1041,7 +1030,7 @@ export default {
         (response) => (this.jobCategoryOptions = response.data)
       );
       this.getResumeInfo();
-      this.minSalaryOptions = this.generateSalaryOptions(1);
+      listByType(9).then(response => (this.salaryOptions = response.data.list));
     },
     beforeAvatarUpload(file) {
       return new Promise((resolve, reject) => {
@@ -1224,8 +1213,6 @@ export default {
           return category.id;
         }
       );
-      this.expectJobForm.minSalary = this.resume.userExpectJob.minSalary;
-      this.expectJobForm.maxSalary = this.resume.userExpectJob.maxSalary;
       this.$nextTick(() => {
         this.$refs["expectJobForm"].clearValidate();
       });
@@ -1467,17 +1454,6 @@ export default {
         return true;
       }
     },
-    generateSalaryOptions(minVal) {
-      minVal = minVal === undefined ? 1 : minVal;
-      const salaryOptions = [];
-      for (; minVal != 200; minVal++) {
-        salaryOptions.push({
-          label: minVal + "k",
-          value: minVal,
-        });
-      }
-      return salaryOptions;
-    },
     goAnchor(selector) {
       const anchor = this.$el.querySelector(selector);
       const scrollTop = anchor.offsetTop - 80;
@@ -1604,7 +1580,7 @@ $border-style: 1px solid #eee;
     position: relative;
     display: flex;
   }
-  
+
   .resume-nav-container {
     display: none;
   }
