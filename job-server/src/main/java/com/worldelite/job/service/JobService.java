@@ -2,6 +2,7 @@ package com.worldelite.job.service;
 
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
+import com.worldelite.job.dto.JobRecruitDto;
 import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
@@ -494,6 +495,25 @@ public class JobService extends BaseService {
         message.setContent(message("message.recommend.resume.for.job", job.getName(), resumeDetail.getName()));
         message.setUrl(String.format("/resume?resumeId=%s", resumeId));
         messageService.sendMessage(message);
+    }
+
+    /**
+     * 获取指定公司职位的招聘类型计数
+     * @param companyId 公司id
+     */
+    public List<JobRecruitVo> getJobRecruitCount(Long companyId){
+        List<JobRecruitVo> jobRecruitVos = new ArrayList<>();
+        JobOptions options = new JobOptions();
+        options.setCompanyId(companyId);
+        final List<JobRecruitDto> jobRecruitDtos = jobMapper.selectJobRecruitCount(options);
+        jobRecruitDtos.forEach(jobRecruitDto -> {
+            JobRecruitVo jobRecruitVo = new JobRecruitVo();
+            jobRecruitVo.setCount(jobRecruitDto.getCount());
+            jobRecruitVo.setDictVo(dictService.getById(jobRecruitDto.getRecruitType()));
+            jobRecruitVos.add(jobRecruitVo);
+        });
+
+        return jobRecruitVos;
     }
 
     private JobVo toJobVo(Job job, Boolean includeCompany) {

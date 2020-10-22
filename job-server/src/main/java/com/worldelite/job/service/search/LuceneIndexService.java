@@ -217,6 +217,13 @@ public class LuceneIndexService implements IndexService {
 //        if (jobVo.getMinSalary() != null && jobVo.getMaxSalary() != null) {
 //            doc.add(new IntPoint(JobIndexFields.AVER_SALARY_INDEX, (jobVo.getMinSalary() + jobVo.getMaxSalary()) / 2));
 //        }
+        //防止空指针,不想一级一级判空了
+        try {
+            if(jobVo.getCompanyUser().getCompany().getId() != null){
+                doc.add(new LongPoint(JobIndexFields.COMPANY_ID, Long.parseLong(jobVo.getCompanyUser().getCompany().getId())));
+            }
+        } catch (Exception ignored) {
+        }
 
         doc.add(new TextField(JobIndexFields.KEYWORD_INDEX, keyWordBuilder.toString(), Field.Store.NO));
         return doc;

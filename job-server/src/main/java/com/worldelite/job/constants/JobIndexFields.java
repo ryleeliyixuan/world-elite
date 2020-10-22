@@ -72,4 +72,9 @@ public interface JobIndexFields {
      * 工作类型
      */
     String JOB_TYPE_INDEX = "job_type";
+
+    /**
+     * 公司id- 新百科公司下职位搜索时用
+     */
+    String COMPANY_ID = "company_id";
 }

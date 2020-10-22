@@ -49,4 +49,13 @@
     from t_job
     where name like CONCAT('%',#{name},'%') limit 10
   </select>
+  <select id="selectJobRecruitCount" resultType="com.worldelite.job.dto.JobRecruitDto">
+    select recruit_type as recruitType, count(id) as count from t_job
+    <where>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=BIGINT}
+      </if>
+    </where>
+    group by recruit_type
+</select>
 </mapper>

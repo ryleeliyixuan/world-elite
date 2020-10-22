@@ -161,6 +161,9 @@ public class LuceneSearchService implements SearchService {
         if (ArrayUtils.isNotEmpty(searchForm.getJobTypes())) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getJobTypes(), JobIndexFields.JOB_TYPE_INDEX), BooleanClause.Occur.MUST);
         }
+        if(searchForm.getCompanyId() != null)
+            queryBuilder.add(LongPoint.newExactQuery(JobIndexFields.COMPANY_ID, searchForm.getCompanyId()), BooleanClause.Occur.MUST);
+
         return searchJobByQuery(queryBuilder.build(), searchForm);
     }
 
