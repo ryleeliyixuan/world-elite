@@ -20,18 +20,49 @@ public class CompanyLikeService extends BaseService{
     private CompanyLikeMapper companyLikeMapper;
 
     /**
-     * 改变点赞状态
+     * 根据当前点赞情况选择点赞或者取消点赞
      * @param ownerId 对象ID
      */
     public void changLike(Long ownerId){
-        CompanyLike companyLike = getCompanyLike(ownerId);
-        if(companyLike==null){
-            //点赞
-            newCompanyLike(ownerId);
-        }else{
+        if(hasLike(ownerId)){
             //取消点赞
-            companyLikeMapper.deleteByPrimaryKey(companyLike.getId());
+            cancel(ownerId);
+        }else{
+            //点赞
+            like(ownerId);
         }
+    }
+
+    /**
+     * 获取点赞统计数
+     * @param ownerId
+     * @return
+     */
+    public Integer getLikeCount(Long ownerId){
+        Integer likeCount = companyLikeMapper.countByOwnerId(ownerId);
+        return likeCount!=null?likeCount:0;
+    }
+
+    /**
+     * 点赞
+     * @param ownerId
+     */
+    private void like(Long ownerId){
+        CompanyLike like = new CompanyLike();
+        like.setOwnerId(ownerId);
+        like.setFromId(curUser().getId());
+        companyLikeMapper.insertSelective(like);
+    }
+
+    /**
+     * 取消点赞
+     * @param ownerId
+     */
+    private void cancel(Long ownerId){
+        CompanyLike like = new CompanyLike();
+        like.setOwnerId(ownerId);
+        like.setFromId(curUser().getId());
+        companyLikeMapper.deleteSelective(like);
     }
 
     /**
@@ -56,21 +87,10 @@ public class CompanyLikeService extends BaseService{
     }
 
     /**
-     * 点赞
-     * @param ownerId 对象ID
-     */
-    private void newCompanyLike(Long ownerId){
-        CompanyLike like = new CompanyLike();
-        like.setOwnerId(ownerId);
-        like.setFromId(curUser().getId());
-        companyLikeMapper.insertSelective(like);
-    }
-
-    /**
      * 删除对象下所有用户点赞信息
      * @param ownerId 对象ID
      */
-    private void deleteByOwnerId(Long ownerId){
+    public void deleteByOwnerId(Long ownerId){
         companyLikeMapper.deleteByOwnerId(ownerId);
     }
 }

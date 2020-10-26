@@ -2,17 +2,26 @@ package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
+import com.worldelite.job.constants.CommentType;
+import com.worldelite.job.entity.CompanyComment;
+import com.worldelite.job.entity.CompanyPost;
+import com.worldelite.job.entity.CompanyScore;
 import com.worldelite.job.entity.CompanyScore;
 import com.worldelite.job.exception.ServiceException;
-import com.worldelite.job.form.CompanyScoreForm;
-import com.worldelite.job.form.CompanyScoreListForm;
+import com.worldelite.job.form.*;
+import com.worldelite.job.mapper.CompanyScoreMapper;
 import com.worldelite.job.mapper.CompanyScoreMapper;
 import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.CompanyCommentVo;
+import com.worldelite.job.vo.CompanyScoreVo;
 import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.UserApplicantVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,11 +34,24 @@ public class CompanyScoreService extends BaseService{
     @Autowired
     private CompanyScoreMapper companyScoreMapper;
 
+    @Autowired
+    private CompanyLikeService companyLikeService;
+
+    @Autowired
+    private CompanyReportService companyReportService;
+
+    @Autowired
+    private CompanyCommentService companyCommentService;
+
+    @Autowired
+    private UserApplicantService userApplicantService;
+
     /**
      * 保存评分
      * @param companyScoreForm 评分表单
      * @return 评分
      */
+    @Transactional
     public CompanyScore save(CompanyScoreForm companyScoreForm){
         //如果不存在对应评分数据，新建空评分
         CompanyScore companyScore = null;
@@ -37,15 +59,77 @@ public class CompanyScoreService extends BaseService{
             companyScore = getById(companyScoreForm.getId());
         }
         if(companyScore == null){
-            companyScore = newPost(companyScoreForm.getCompanyId());
+            companyScore = newScore(companyScoreForm.getCompanyId());
         }
         //保存基本数据
         BeanUtil.copyProperties(companyScoreForm,companyScore,"id");
-        //计算热度
-        companyScore.setHots(hotCalc(companyScore));
         //更新数据
         companyScoreMapper.updateByPrimaryKeySelective(companyScore);
+        //计算热度
+        hotCalc(companyScore);
         return companyScore;
+    }
+
+    /**
+     * 删除评分
+     * @param scoreId
+     */
+    @Transactional
+    public void delete(Long scoreId){
+        //删除评分
+        companyScoreMapper.deleteByPrimaryKey(scoreId);
+        //删除点赞
+        companyLikeService.deleteByOwnerId(scoreId);
+        //删除举报
+        companyReportService.deleteByOwnerId(scoreId);
+        //删除评论
+        companyCommentService.deleteByOwnerId(scoreId);
+    }
+
+    /**
+     * 点赞
+     * @param scoreId
+     */
+    @Transactional
+    public CompanyScoreVo like(Long scoreId){
+        //评分存在才能点赞
+        CompanyScore companyScore = getById(scoreId);
+        //点赞
+        companyLikeService.changLike(scoreId);
+        //更新点赞数
+        hotCalc(companyScore);
+        CompanyScoreVo companyScoreVo = new CompanyScoreVo();
+        companyScoreVo.setLike(companyLikeService.hasLike(scoreId));
+        companyScoreVo.setLikes(companyScore.getLikes());
+        return companyScoreVo;
+    }
+
+    /**
+     * 举报
+     * @param companyReportForm
+     */
+    @Transactional
+    public CompanyScoreVo report(CompanyReportForm companyReportForm){
+        CompanyScore companyScore = getById(companyReportForm.getOwnerId());
+        companyReportService.save(companyReportForm);
+        hotCalc(companyScore);
+        CompanyScoreVo companyScoreVo = new CompanyScoreVo();
+        companyScoreVo.setReport(companyReportService.getReportVo(companyReportForm.getOwnerId()));
+        companyScoreVo.setReports(companyScore.getReports());
+        return companyScoreVo;
+    }
+
+    /**
+     * 评论
+     * @param companyCommentForm
+     */
+    @Transactional
+    public CompanyCommentVo comment(CompanyCommentForm companyCommentForm){
+        CompanyScore companyScore = getById(companyCommentForm.getOwnerId());
+        companyCommentForm.setType(CommentType.SCORE.value);
+        CompanyComment companyComment = companyCommentService.save(companyCommentForm);
+        hotCalc(companyScore);
+        return companyCommentService.getCommentVo(companyComment);
     }
 
     /**
@@ -65,102 +149,37 @@ public class CompanyScoreService extends BaseService{
     }
 
     /**
-     * 点赞
-     * @param scoreId 评分ID
-     * @return 评分
+     * 评分视图对象
+     * @param listForm
+     * @return
      */
-    public CompanyScore likesAdd(Long scoreId){
-        CompanyScore companyScore = getById(scoreId);
-        Integer likes = companyScore.getLikes();
-        if(likes==null){
-            likes = 0;
-        }else{
-            likes++;
+    public PageResult<CompanyScoreVo> listVo(CompanyScoreListForm listForm){
+        PageResult<CompanyScore> companyScorePageResult = list(listForm);
+        List<CompanyScore> postList = companyScorePageResult.getList();
+        PageResult<CompanyScoreVo> pageResult = new PageResult<>();
+        BeanUtil.copyProperties(companyScorePageResult,pageResult,"list");
+        List<CompanyScoreVo> postVoList = new ArrayList<>(postList.size());
+        for(CompanyScore companyScore:postList){
+            postVoList.add(getScoreVo(companyScore));
         }
-        companyScore.setLikes(likes);
-        companyScore.setHots(hotCalc(companyScore));
-        companyScoreMapper.updateByPrimaryKeySelective(companyScore);
-        return companyScore;
+        pageResult.setList(postVoList);
+        return pageResult;
     }
 
-    /**
-     * 取消点赞
-     * @param scoreId 评分ID
-     * @return 评分
-     */
-    public CompanyScore likesSub(Long scoreId){
-        CompanyScore companyScore = getById(scoreId);
-        Integer likes = companyScore.getLikes();
-        if(likes==null || likes==0){
-            likes = 0;
+    public CompanyScoreVo getScoreVo(CompanyScore companyScore){
+        CompanyScoreVo companyScoreVo = new CompanyScoreVo().asVo(companyScore);
+        if(companyScore.getAnonymous()==0){
+            companyScoreVo.setFromUser(userApplicantService.getUserInfo(companyScore.getFromId()));
         }else{
-            likes--;
+            UserApplicantVo userVo = new UserApplicantVo();
+            userVo.setName("匿名用户");
+            userVo.setAvatar("");
+            companyScoreVo.setFromUser(userVo);
         }
-        companyScore.setLikes(likes);
-        companyScore.setHots(hotCalc(companyScore));
-        companyScoreMapper.updateByPrimaryKeySelective(companyScore);
-        return companyScore;
+        companyScoreVo.setLike(companyLikeService.hasLike(companyScore.getId()));
+        companyScoreVo.setReport(companyReportService.getReportVo(companyScore.getId()));
+        return companyScoreVo;
     }
-
-    /**
-     * 评论
-     * @param scoreId 评分ID
-     * @return 评分
-     */
-    public CompanyScore commentsAdd(Long scoreId){
-        CompanyScore companyScore = getById(scoreId);
-        Integer comments = companyScore.getComments();
-        if(comments==null){
-            comments = 0;
-        }else{
-            comments++;
-        }
-        companyScore.setComments(comments);
-        companyScore.setHots(hotCalc(companyScore));
-        companyScoreMapper.updateByPrimaryKeySelective(companyScore);
-        return companyScore;
-    }
-
-    /**
-     * 取消评论
-     * @param scoreId 评分ID
-     * @param value 减少的评论数
-     * @return 评分
-     */
-    public CompanyScore commentsSub(Long scoreId,Integer value){
-        CompanyScore companyScore = getById(scoreId);
-        Integer comments = companyScore.getComments();
-        if(comments==null || comments<=value){
-            comments = 0;
-        }else{
-            comments -= value;
-        }
-        companyScore.setComments(comments);
-        companyScore.setHots(hotCalc(companyScore));
-        companyScoreMapper.updateByPrimaryKeySelective(companyScore);
-        return companyScore;
-    }
-
-    /**
-     * 举报
-     * 举报不能取消，只能修改举报理由
-     * @param scoreId 评分ID
-     * @return 评分
-     */
-    public CompanyScore reportsAdd(Long scoreId){
-        CompanyScore companyScore = getById(scoreId);
-        Integer reports = companyScore.getReports();
-        if(reports==null){
-            reports = 0;
-        }else{
-            reports++;
-        }
-        companyScore.setReports(reports);
-        companyScore.setHots(hotCalc(companyScore));
-        companyScoreMapper.updateByPrimaryKeySelective(companyScore);
-        return companyScore;
-    }
-
 
     /**
      * 通过评分ID获取评分数据
@@ -180,12 +199,11 @@ public class CompanyScoreService extends BaseService{
      * @param companyId 公司ID
      * @return 新评分
      */
-    private CompanyScore newPost(Long companyId){
+    private CompanyScore newScore(Long companyId){
         CompanyScore companyScore = new CompanyScore();
         companyScore.setId(AppUtils.nextId());
         companyScore.setFromId(curUser().getId());
         companyScore.setCompanyId(companyId);
-        companyScore.setScore(0);
         companyScore.setAnonymous((byte) 0);
         companyScore.setLikes(0);
         companyScore.setComments(0);
@@ -195,23 +213,22 @@ public class CompanyScoreService extends BaseService{
         return companyScore;
     }
 
-    /**
-     * 计算评分热度
-     * @param companyScore 评分
-     * @return 热度
-     */
-    private int hotCalc(CompanyScore companyScore){
+    private void hotCalc(CompanyScore companyScore){
         int hot = 0;
-        if(companyScore.getHots() != null){
-            hot = companyScore.getHots();
-        }
-        if(companyScore.getLikes() != null){
-            hot += companyScore.getLikes();
-        }
-        if(companyScore.getComments() != null){
-            hot += companyScore.getComments();
-        }
-        return hot;
+        Long scoreId = companyScore.getId();
+        Integer likeCount = companyLikeService.getLikeCount(scoreId);
+        Integer reportCount = companyReportService.getReportCount(scoreId);
+        Integer commentCount = companyCommentService.getCommentCount(scoreId);
+        hot += likeCount+reportCount+commentCount;
+        companyScore.setLikes(likeCount);
+        companyScore.setReports(reportCount);
+        companyScore.setComments(commentCount);
+        companyScore.setHots(hot);
+        companyScoreMapper.updateByPrimaryKeySelective(companyScore);
     }
 
+    public void hotCalc(Long scoreId){
+        CompanyScore companyScore = getById(scoreId);
+        hotCalc(companyScore);
+    }
 }

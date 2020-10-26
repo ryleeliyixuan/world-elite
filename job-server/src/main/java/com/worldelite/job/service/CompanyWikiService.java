@@ -2,12 +2,14 @@ package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.http.HTMLFilter;
+import com.worldelite.job.entity.CompanyMarket;
 import com.worldelite.job.entity.CompanyWiki;
 import com.worldelite.job.form.CompanyWikiForm;
 import com.worldelite.job.form.CompanyWikiListForm;
 import com.worldelite.job.mapper.CompanyMapper;
 import com.worldelite.job.mapper.CompanyWikiMapper;
 import com.worldelite.job.util.FormUtils;
+import com.worldelite.job.vo.CityVo;
 import com.worldelite.job.vo.CompanyVo;
 import com.worldelite.job.vo.CompanyWikiVo;
 import com.worldelite.job.vo.PageResult;
@@ -16,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,6 +74,13 @@ public class CompanyWikiService {
         if (companyWiki != null) {
             companyWikiVo.setContent(companyWiki.getContent());
             companyWikiVo.setSummary(companyWiki.getSummary());
+            companyWikiVo.setCity(new CityVo());
+            companyWikiVo.setVideo("");
+            companyWikiVo.setEmployeeList(new ArrayList<>());
+            companyWikiVo.setProductList(new ArrayList<>());
+            companyWikiVo.setMarket(new CompanyMarket());
+            companyWikiVo.setHistoryList(new ArrayList<>());
+            companyWikiVo.setStructure(new ArrayList<>());
         }
         return companyWikiVo;
     }

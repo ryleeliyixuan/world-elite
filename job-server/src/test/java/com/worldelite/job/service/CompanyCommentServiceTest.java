@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * 公司评论测试类
  */
-//@Transactional
+@Transactional
 @SpringBootTest(classes = JobApplication.class)
 public class CompanyCommentServiceTest {
 

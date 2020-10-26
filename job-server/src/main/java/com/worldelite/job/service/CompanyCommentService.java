@@ -9,14 +9,17 @@ import com.worldelite.job.entity.CompanyScore;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.CompanyCommentForm;
 import com.worldelite.job.form.CompanyCommentListForm;
+import com.worldelite.job.form.CompanyReportForm;
 import com.worldelite.job.mapper.CompanyCommentMapper;
 import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.CompanyCommentVo;
 import com.worldelite.job.vo.PageResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,11 +38,21 @@ public class CompanyCommentService extends BaseService{
     @Autowired
     private CompanyScoreService companyScoreService;
 
+    @Autowired
+    private CompanyLikeService companyLikeService;
+
+    @Autowired
+    private CompanyReportService companyReportService;
+
+    @Autowired
+    private UserApplicantService userApplicantService;
+
     /**
      * 保存评论
      * @param companyCommentForm 评论表单
      * @return 评论
      */
+    @Transactional
     public CompanyComment save(CompanyCommentForm companyCommentForm){
         //如果不存在对应评论数据，新建空评论
         CompanyComment companyComment = null;
@@ -55,20 +68,109 @@ public class CompanyCommentService extends BaseService{
             setToIdAndOwnerIds(companyComment);
             //只需分两层，所以改变所属对象
             changeOwnerId(companyComment);
-            //更新数据
-            companyCommentMapper.updateByPrimaryKeySelective(companyComment);
-            //更新父级评论数
-            ownerCommentsAdd(companyComment);
+            //更新热度
+            hotCalc(companyComment);
+            //更新父级热度
+            ownerHotCalc(companyComment);
         }else{
             //修改评论
             //保存基本数据
             BeanUtil.copyProperties(companyCommentForm,companyComment,"id");
-            //计算热度
-            companyComment.setHots(hotCalc(companyComment));
-            //更新数据
-            companyCommentMapper.updateByPrimaryKeySelective(companyComment);
+            //更新热度
+            hotCalc(companyComment);
         }
         return companyComment;
+    }
+
+    /**
+     * 删除评论
+     * @param commentId
+     */
+    @Transactional
+    public void delete(Long commentId){
+        //先复制一份要删除的数据
+        CompanyComment comment = getById(commentId);
+        //删除评论
+        companyCommentMapper.deleteByPrimaryKey(commentId);
+        //删除点赞数据
+        companyLikeService.deleteByOwnerId(commentId);
+        //删除举报数据
+        companyReportService.deleteByOwnerId(commentId);
+        //删除子评论
+        deleteByOwnerId(commentId);
+        //更新父级热度
+        ownerHotCalc(comment);
+    }
+
+    /**
+     * 点赞
+     * @param commentId
+     * @return
+     */
+    @Transactional
+    public CompanyCommentVo like(Long commentId){
+        CompanyComment comment = getById(commentId);
+        companyLikeService.changLike(commentId);
+        hotCalc(comment);
+        CompanyCommentVo commentVo = new CompanyCommentVo();
+        commentVo.setLikes(comment.getLikes());
+        commentVo.setLike(companyLikeService.hasLike(commentId));
+        return commentVo;
+    }
+
+    /**
+     * 举报
+     * @param companyReportForm
+     * @return
+     */
+    @Transactional
+    public CompanyCommentVo report(CompanyReportForm companyReportForm){
+        CompanyComment comment = getById(companyReportForm.getOwnerId());
+        companyReportService.save(companyReportForm);
+        hotCalc(comment);
+        CompanyCommentVo commentVo = new CompanyCommentVo();
+        commentVo.setReports(comment.getReports());
+        commentVo.setReport(companyReportService.getReportVo(companyReportForm.getOwnerId()));
+        return commentVo;
+    }
+
+    /**
+     * 评论
+     * @param companyCommentForm
+     * @return
+     */
+    @Transactional
+    public CompanyCommentVo comment(CompanyCommentForm companyCommentForm){
+        CompanyComment comment = getById(companyCommentForm.getOwnerId());
+        companyCommentForm.setType(CommentType.COMMENT.value);
+        CompanyComment companyComment = save(companyCommentForm);
+        hotCalc(comment);
+        ownerHotCalc(comment);
+        return getCommentVo(companyComment);
+    }
+
+    /**
+     * 查询
+     * @param listForm
+     * @return
+     */
+    public PageResult<CompanyCommentVo> listVo(CompanyCommentListForm listForm){
+        CompanyComment companyComment = new CompanyComment();
+        BeanUtil.copyProperties(listForm,companyComment);
+        AppUtils.setPage(listForm);
+        Page<CompanyComment> companyCommentPage = (Page<CompanyComment>) companyCommentMapper.selectAndList(companyComment);
+        PageResult<CompanyCommentVo> pageResult = new PageResult<>(companyCommentPage);
+        List<CompanyCommentVo> commentVoList = new ArrayList<>(companyCommentPage.size());
+        for(CompanyComment comment:companyCommentPage){
+            commentVoList.add(getCommentVo(comment));
+        }
+        pageResult.setList(commentVoList);
+        return pageResult;
+    }
+
+    public Integer getCommentCount(Long ownerId){
+        Integer commentCount = companyCommentMapper.countByOwnerId(ownerId);
+        return commentCount!=null?commentCount:0;
     }
 
     /**
@@ -87,125 +189,12 @@ public class CompanyCommentService extends BaseService{
     }
 
     /**
-     * 删除指定评论
-     * @param commentId 评论ID
-     */
-    public void deleteById(Long commentId){
-        //先计算评论数
-        CompanyComment comment = getById(commentId);
-        //需要删除的评论数量为子评论数+本身
-        Integer value = comment.getComments()+1;
-        ownerCommentsSub(comment,value);
-        //删除评论
-        companyCommentMapper.deleteByPrimaryKey(commentId);
-        //删除子评论
-        deleteByOwnerId(commentId);
-    }
-
-    /**
      * 删除指定对象的所有评论
      * 不维护评论数，调用此方法后owner需要重新计算评论数
      * @param ownerId 所属对象ID
      */
     public void deleteByOwnerId(Long ownerId){
         companyCommentMapper.deleteByOwnerId(ownerId);
-    }
-
-    /**
-     * 点赞
-     * @param commentId 评论ID
-     * @return 评论
-     */
-    public CompanyComment likesAdd(Long commentId){
-        CompanyComment companyComment = getById(commentId);
-        Integer likes = companyComment.getLikes();
-        if(likes==null){
-            likes = 0;
-        }else{
-            likes++;
-        }
-        companyComment.setLikes(likes);
-        companyComment.setHots(hotCalc(companyComment));
-        companyCommentMapper.updateByPrimaryKeySelective(companyComment);
-        return companyComment;
-    }
-
-    /**
-     * 取消点赞
-     * @param commentId 评论ID
-     * @return 评论
-     */
-    public CompanyComment likesSub(Long commentId){
-        CompanyComment companyComment = getById(commentId);
-        Integer likes = companyComment.getLikes();
-        if(likes==null || likes==0){
-            likes = 0;
-        }else{
-            likes--;
-        }
-        companyComment.setLikes(likes);
-        companyComment.setHots(hotCalc(companyComment));
-        companyCommentMapper.updateByPrimaryKeySelective(companyComment);
-        return companyComment;
-    }
-
-    /**
-     * 评论
-     * @param commentId 评论ID
-     * @return 评论
-     */
-    public CompanyComment commentsAdd(Long commentId){
-        CompanyComment companyComment = getById(commentId);
-        Integer comments = companyComment.getComments();
-        if(comments==null){
-            comments = 0;
-        }else{
-            comments++;
-        }
-        companyComment.setComments(comments);
-        companyComment.setHots(hotCalc(companyComment));
-        companyCommentMapper.updateByPrimaryKeySelective(companyComment);
-        return companyComment;
-    }
-
-    /**
-     * 取消评论
-     * @param commentId 评论ID
-     * @param value 减少的评论数
-     * @return 评论
-     */
-    public CompanyComment commentsSub(Long commentId,Integer value){
-        CompanyComment companyComment = getById(commentId);
-        Integer comments = companyComment.getComments();
-        if(comments==null || comments<=value){
-            comments = 0;
-        }else{
-            comments -= value;
-        }
-        companyComment.setComments(comments);
-        companyComment.setHots(hotCalc(companyComment));
-        companyCommentMapper.updateByPrimaryKeySelective(companyComment);
-        return companyComment;
-    }
-
-    /**
-     * 举报
-     * 举报不能取消，只能修改举报理由
-     * @param commentId 评论ID
-     * @return 评论
-     */
-    public CompanyComment reportsAdd(Long commentId){
-        CompanyComment companyComment = getById(commentId);
-        Integer reports = companyComment.getReports();
-        if(reports==null){
-            reports = 0;
-        }else{
-            reports++;
-        }
-        companyComment.setReports(reports);
-        companyComment.setHots(hotCalc(companyComment));
-        companyCommentMapper.updateByPrimaryKeySelective(companyComment);
-        return companyComment;
     }
 
     /**
@@ -220,6 +209,16 @@ public class CompanyCommentService extends BaseService{
         }
         return companyComment;
     }
+
+    public CompanyCommentVo getCommentVo(CompanyComment companyComment){
+        CompanyCommentVo commentVo = new CompanyCommentVo().asVo(companyComment);
+        commentVo.setFromUser(userApplicantService.getUserInfo(companyComment.getFromId()));
+        commentVo.setToUser(userApplicantService.getUserInfo(companyComment.getToId()));
+        commentVo.setLike(companyLikeService.hasLike(companyComment.getId()));
+        commentVo.setReport(companyReportService.getReportVo(companyComment.getId()));
+        return commentVo;
+    }
+
 
     /**
      * 新建评论
@@ -241,74 +240,47 @@ public class CompanyCommentService extends BaseService{
     /**
      * 计算评论热度
      * @param companyComment 评论
-     * @return 热度
      */
-    private int hotCalc(CompanyComment companyComment){
+    private void hotCalc(CompanyComment companyComment){
         int hot = 0;
-        if(companyComment.getLikes() != null){
-            hot += companyComment.getLikes();
-        }
-        if(companyComment.getComments() != null){
-            hot += companyComment.getComments();
-        }
-        return hot;
+        Long commentId = companyComment.getId();
+        Integer likeCount = companyLikeService.getLikeCount(commentId);
+        Integer reportCount = companyReportService.getReportCount(commentId);
+        Integer commentCount = getCommentCount(commentId);
+        hot += likeCount+reportCount+commentCount;
+        companyComment.setLikes(likeCount);
+        companyComment.setReports(reportCount);
+        companyComment.setComments(commentCount);
+        companyComment.setHots(hot);
+        companyCommentMapper.updateByPrimaryKeySelective(companyComment);
     }
 
     /**
-     * 给所属对象增加评论数
-     * @param companyComment 评论
+     * 更新父级热度
+     * @param companyComment
      */
-    private void ownerCommentsAdd(CompanyComment companyComment){
+    private void ownerHotCalc(CompanyComment companyComment){
         if(companyComment.getType()==null || companyComment.getOwnerId()==null){
             throw new ServiceException(message("api.error.data.comment"));
         }
         Long ownerId = companyComment.getOwnerId();
         switch (CommentType.valueOf(companyComment.getType())){
             case POST:
-                companyPostService.commentsAdd(ownerId);
+                companyPostService.hotCalc(ownerId);
                 return;
             case SCORE:
-                companyScoreService.commentsAdd(ownerId);
+                companyScoreService.hotCalc(ownerId);
                 return;
             case COMMENT:
-                //给父评论添加评论数
-                commentsAdd(ownerId);
-                //递归给父评论所属对象添加评论数
                 CompanyComment comment = getById(ownerId);
-                ownerCommentsAdd(comment);
+                hotCalc(comment);
+                ownerHotCalc(comment);
                 return;
         }
     }
 
     /**
-     * 给所属对象减少评论数
-     * @param companyComment 评论
-     * @param value 删除的评论数量
-     */
-    private void ownerCommentsSub(CompanyComment companyComment,Integer value){
-        if(companyComment.getType()==null || companyComment.getOwnerId()==null){
-            throw new ServiceException(message("api.error.data.comment"));
-        }
-        Long ownerId = companyComment.getOwnerId();
-        switch (CommentType.valueOf(companyComment.getType())){
-            case POST:
-                companyPostService.commentsSub(ownerId,value);
-                return;
-            case SCORE:
-                companyScoreService.commentsSub(ownerId,value);
-                return;
-            case COMMENT:
-                //给父评论添加评论数
-                commentsSub(ownerId,value);
-                //递归给父评论所属对象添加评论数
-                CompanyComment comment = getById(ownerId);
-                ownerCommentsSub(comment,value);
-                return;
-        }
-    }
-
-    /**
-     * 添加被评论人和所有所属对象
+     * 添加被评论人和所属对象集
      * @param companyComment 评论
      */
     private void setToIdAndOwnerIds(CompanyComment companyComment){
