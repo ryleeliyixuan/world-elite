@@ -286,7 +286,6 @@
             margin-top: 30px;
             width: 100%;
             overflow-x: auto;
-            text-align: center;
         }
 
         .section3-container {
@@ -380,6 +379,11 @@
                 height: 350px;
                 flex: 1;
                 margin: 0 10px 25px;
+                cursor: pointer;
+            }
+            .post-item:hover {
+                box-shadow: 4px 4px 4px rgba(116, 185, 255,0.3);
+                top: -2px;
             }
             .time {
                 font-size: 13px;

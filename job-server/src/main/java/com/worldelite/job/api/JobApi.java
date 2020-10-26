@@ -79,6 +79,13 @@ public class JobApi extends BaseApi {
         return ApiResult.ok(pageResult);
     }
 
+    @ApiDoc
+    @GetMapping("job-recruit-count")
+    public ApiResult<JobRecruitVo> getJobRecruitCount(Long companyId) {
+        List<JobRecruitVo> pageResult = jobService.getJobRecruitCount(companyId);
+        return ApiResult.ok(pageResult);
+    }
+
     /**
      * 简历筛选-职位
      *

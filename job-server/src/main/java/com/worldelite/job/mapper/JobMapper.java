@@ -1,5 +1,6 @@
 package com.worldelite.job.mapper;
 
+import com.worldelite.job.dto.JobRecruitDto;
 import com.worldelite.job.entity.Job;
 import com.worldelite.job.entity.JobOptions;
 
@@ -72,4 +73,6 @@ public interface JobMapper {
      * @return
      */
     List<Job> selectSmartTips(String name);
+
+    List<JobRecruitDto> selectJobRecruitCount(JobOptions options);
 }
