@@ -184,16 +184,32 @@
                                 ></el-option>
                             </el-select>
                         </el-col>
+
+<!--                        <el-col :span="6">-->
+<!--                            <el-select-->
+<!--                                    v-model="listQuery.degreeIds"-->
+<!--                                    clearable-->
+<!--                                    multiple-->
+<!--                                    placeholder="学历"-->
+<!--                                    @change="handleFilter"-->
+<!--                                    class="w-100"-->
+<!--                                    size="small"-->
+<!--                            >-->
+<!--                                <el-option-->
+<!--                                        v-for="item in degreeOptions"-->
+<!--                                        :key="item.id"-->
+<!--                                        :label="item.name"-->
+<!--                                        :value="item.id"-->
+<!--                                ></el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-col>-->
+
+
                         <el-col :span="6">
                             <el-select
                                     v-model="ability"
                                     multiple
-                                    filterable
-                                    remote
                                     clearable
-                                    reserve-keyword
-                                    :loading="loadingAbilityOptions"
-                                    :remote-method="searchAbilityOptions"
                                     placeholder="能力"
                                     @change="handleFilter"
                                     class="w-100"
@@ -643,6 +659,9 @@
                 listByType(11).then(
                     (response) => (this.buzzWordOptions = response.data.list)
                 );
+                listByType(3).then(
+                    (response) => (this.abilityOptions = response.data.list)
+                );
                 getCategoryTree().then(
                     (response) => (this.jobCategoryOptions = response.data)
                 );
@@ -760,15 +779,15 @@
             },
 
             // 搜索能力选项
-            searchAbilityOptions(query) {
-                if (query) {
-                    this.loadingAbilityOptions = true;
-                    this.$axios.get("/dict/list?type=3&limit=99", {params: {name: query}}).then(data => {
-                        this.abilityOptions = data.data.list;
-                        this.loadingAbilityOptions = false;
-                    })
-                }
-            },
+            // searchAbilityOptions(query) {
+            //     if (query) {
+            //         this.loadingAbilityOptions = true;
+            //         this.$axios.get("/dict/list?type=3&limit=99", {params: {name: query}}).then(data => {
+            //             this.abilityOptions = data.data.list;
+            //             this.loadingAbilityOptions = false;
+            //         })
+            //     }
+            // },
 
             // 获取分组
             listGroup() {
