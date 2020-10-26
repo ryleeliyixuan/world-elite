@@ -1,8 +1,11 @@
 package com.worldelite.job.vo;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.anatation.ResumeScore;
+import com.worldelite.job.entity.CompanyComment;
 import com.worldelite.job.entity.CompanyPost;
+import com.worldelite.job.entity.CompanyReport;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.TimeUtils;
@@ -19,7 +22,6 @@ import java.util.List;
 public class CompanyPostVo implements VoConvertable<CompanyPostVo, CompanyPost>{
 
     private String id; //帖子ID
-    private String fromId; //发帖人
     private String companyId; //企业ID
     private Integer cliqueId; //圈子ID
     private String title; //帖子标题
@@ -34,20 +36,16 @@ public class CompanyPostVo implements VoConvertable<CompanyPostVo, CompanyPost>{
     private Date updateTime; //更新时间
     private String content; //帖子内容
 
+    private UserApplicantVo fromUser; //发帖人
+    private Boolean like; //是否点赞
+    private CompanyReportVo report; //举报信息
+
     @Override
     public CompanyPostVo asVo(CompanyPost companyPost) {
+        if(companyPost==null) return null;
+        BeanUtil.copyProperties(companyPost,this,"id","companyId","tags");
         setId(String.valueOf(companyPost.getId()));
-        setFromId(String.valueOf(companyPost.getFromId()));
         setCompanyId(String.valueOf(companyPost.getCompanyId()));
-        setCliqueId(companyPost.getCliqueId());
-        setTitle(companyPost.getTitle());
-        setContent(companyPost.getContent());
-        setCreateTime(companyPost.getCreateTime());
-        setUpdateTime(companyPost.getUpdateTime());
-        setLikes(companyPost.getLikes());
-        setComments(companyPost.getComments());
-        setReports(companyPost.getReports());
-        setHots(companyPost.getHots());
         if(StringUtils.isNotEmpty(companyPost.getTags())){
             setTags(companyPost.getTags().split(","));
         }else{

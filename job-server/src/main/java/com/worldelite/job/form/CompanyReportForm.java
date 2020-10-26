@@ -7,7 +7,6 @@ import lombok.Data;
  */
 @Data
 public class CompanyReportForm {
-    private Integer id; //举报ID
     private Long ownerId; //对象ID
     private Integer optionId; //选项ID
     private String content; //举报理由

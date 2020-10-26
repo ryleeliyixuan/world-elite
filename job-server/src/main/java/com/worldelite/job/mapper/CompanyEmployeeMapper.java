@@ -50,4 +50,6 @@ public interface CompanyEmployeeMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(CompanyEmployee record);
+
+    void deleteByCompanyId(Long companyId);
 }

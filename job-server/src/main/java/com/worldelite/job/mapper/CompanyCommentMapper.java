@@ -56,4 +56,7 @@ public interface CompanyCommentMapper {
     void deleteByOwnerId(Long ownerId);
 
     List<CompanyComment> selectAndList(CompanyComment companyComment);
+
+    Integer countByOwnerId(Long ownerId);
+
 }

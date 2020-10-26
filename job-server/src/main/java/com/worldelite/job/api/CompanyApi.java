@@ -42,6 +42,9 @@ public class CompanyApi extends BaseApi {
     @Autowired
     private RecommendService recommendService;
 
+    @Autowired
+    private CompanyEmployeeService companyEmployeeService;
+
     /**
      * 搜索公司
      *
@@ -241,6 +244,13 @@ public class CompanyApi extends BaseApi {
     @ApiDoc
     public ApiResult saveCompanyWiki(@RequestBody CompanyWikiForm  wikiForm){
         companyWikiService.saveCompanyWiki(wikiForm);
+        return ApiResult.ok();
+    }
+
+    @ApiDoc
+    @PostMapping("save-company-employee")
+    public ApiResult saveEmployee(@RequestBody CompanyEmployeeForm companyEmployeeForm){
+        companyEmployeeService.save(companyEmployeeForm);
         return ApiResult.ok();
     }
 }

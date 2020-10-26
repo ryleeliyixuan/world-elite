@@ -20,6 +20,11 @@
       </if>
     </where>
   </select>
+
+  <select id="countByOwnerId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select count(*) from t_company_comment where owner_id = #{ownerId}
+  </select>
+
   <delete id="deleteByOwnerId" parameterType="java.lang.Long">
     delete from t_company_comment
     where owner_ids like concat('%',#{ownerId},'%')

@@ -58,25 +58,6 @@ public class CompanyPostServiceTest {
     }
 
     /**
-     * 点赞功能测试
-     */
-    @Test
-    public void testLike(){
-        //新增帖子
-        CompanyPost companyPost = newPost();
-        //点赞3次
-        companyPostService.likesAdd(companyPost.getId());
-        companyPostService.likesAdd(companyPost.getId());
-        companyPostService.likesAdd(companyPost.getId());
-        //取消点赞一次
-        companyPostService.likesSub(companyPost.getId());
-        //获取最后的帖子信息
-        companyPost = companyPostService.getById(companyPost.getId());
-        Assert.notNull(companyPost,"帖子数据不存在");
-        Assert.isTrue(companyPost.getLikes()==2,"点赞数据错误");
-    }
-
-    /**
      * 搜索测试
      */
     @Test

@@ -2,18 +2,25 @@ package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
+import com.worldelite.job.constants.CommentType;
 import com.worldelite.job.entity.Company;
+import com.worldelite.job.entity.CompanyComment;
 import com.worldelite.job.entity.CompanyPost;
 import com.worldelite.job.exception.ServiceException;
+import com.worldelite.job.form.CompanyCommentForm;
 import com.worldelite.job.form.CompanyPostForm;
 import com.worldelite.job.form.CompanyPostListForm;
+import com.worldelite.job.form.CompanyReportForm;
 import com.worldelite.job.mapper.CompanyPostMapper;
 import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.CompanyCommentVo;
+import com.worldelite.job.vo.CompanyPostVo;
 import com.worldelite.job.vo.CompanyVo;
 import com.worldelite.job.vo.PageResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +35,24 @@ public class CompanyPostService extends BaseService{
     @Autowired
     private CompanyPostMapper companyPostMapper;
 
+    @Autowired
+    private CompanyLikeService companyLikeService;
+
+    @Autowired
+    private CompanyReportService companyReportService;
+
+    @Autowired
+    private CompanyCommentService companyCommentService;
+
+    @Autowired
+    private UserApplicantService userApplicantService;
+
     /**
      * 保存帖子
      * @param companyPostForm 帖子表单
      * @return 帖子
      */
+    @Transactional
     public CompanyPost save(CompanyPostForm companyPostForm){
         //如果不存在对应帖子数据，新建空帖子
         CompanyPost companyPost = null;
@@ -44,11 +64,73 @@ public class CompanyPostService extends BaseService{
         }
         //保存基本数据
         BeanUtil.copyProperties(companyPostForm,companyPost,"id");
-        //计算热度
-        companyPost.setHots(hotCalc(companyPost));
         //更新数据
         companyPostMapper.updateByPrimaryKeySelective(companyPost);
+        //计算热度
+        hotCalc(companyPost);
         return companyPost;
+    }
+
+    /**
+     * 删除帖子
+     * @param postId
+     */
+    @Transactional
+    public void delete(Long postId){
+        //删除帖子
+        companyPostMapper.deleteByPrimaryKey(postId);
+        //删除点赞
+        companyLikeService.deleteByOwnerId(postId);
+        //删除举报
+        companyReportService.deleteByOwnerId(postId);
+        //删除评论
+        companyCommentService.deleteByOwnerId(postId);
+    }
+
+    /**
+     * 点赞
+     * @param postId
+     */
+    @Transactional
+    public CompanyPostVo like(Long postId){
+        //帖子存在才能点赞
+        CompanyPost companyPost = getById(postId);
+        //点赞
+        companyLikeService.changLike(postId);
+        //更新点赞数
+        hotCalc(companyPost);
+        CompanyPostVo companyPostVo = new CompanyPostVo();
+        companyPostVo.setLike(companyLikeService.hasLike(postId));
+        companyPostVo.setLikes(companyPost.getLikes());
+        return companyPostVo;
+    }
+
+    /**
+     * 举报
+     * @param companyReportForm
+     */
+    @Transactional
+    public CompanyPostVo report(CompanyReportForm companyReportForm){
+        CompanyPost companyPost = getById(companyReportForm.getOwnerId());
+        companyReportService.save(companyReportForm);
+        hotCalc(companyPost);
+        CompanyPostVo companyPostVo = new CompanyPostVo();
+        companyPostVo.setReport(companyReportService.getReportVo(companyReportForm.getOwnerId()));
+        companyPostVo.setReports(companyPost.getReports());
+        return companyPostVo;
+    }
+
+    /**
+     * 评论
+     * @param companyCommentForm
+     */
+    @Transactional
+    public CompanyCommentVo comment(CompanyCommentForm companyCommentForm){
+        CompanyPost companyPost = getById(companyCommentForm.getOwnerId());
+        companyCommentForm.setType(CommentType.POST.value);
+        CompanyComment companyComment = companyCommentService.save(companyCommentForm);
+        hotCalc(companyPost);
+        return companyCommentService.getCommentVo(companyComment);
     }
 
     /**
@@ -60,7 +142,7 @@ public class CompanyPostService extends BaseService{
         CompanyPost companyPost = new CompanyPost();
         BeanUtil.copyProperties(listForm,companyPost);
         AppUtils.setPage(listForm);
-        Page<CompanyPost> companyPostPage = (Page<CompanyPost>) companyPostMapper.selectAndList(companyPost);
+        Page<CompanyPost> companyPostPage = (Page<CompanyPost>) companyPostMapper.selectAndListSimple(companyPost);
         PageResult<CompanyPost> pageResult = new PageResult<>(companyPostPage);
         List<CompanyPost> companyPostList = (List<CompanyPost>) companyPostPage;
         pageResult.setList(companyPostList);
@@ -68,102 +150,35 @@ public class CompanyPostService extends BaseService{
     }
 
     /**
-     * 点赞
-     * @param postId 帖子ID
-     * @return 帖子
+     * 帖子视图对象
+     * @param listForm
+     * @return
      */
-    public CompanyPost likesAdd(Long postId){
-        CompanyPost companyPost = getById(postId);
-        Integer likes = companyPost.getLikes();
-        if(likes==null){
-            likes = 0;
-        }else{
-            likes++;
+    public PageResult<CompanyPostVo> listVo(CompanyPostListForm listForm){
+        PageResult<CompanyPost> companyPostPageResult = list(listForm);
+        List<CompanyPost> postList = companyPostPageResult.getList();
+        PageResult<CompanyPostVo> pageResult = new PageResult<>();
+        BeanUtil.copyProperties(companyPostPageResult,pageResult,"list");
+        List<CompanyPostVo> postVoList = new ArrayList<>(postList.size());
+        for(CompanyPost companyPost:postList){
+            postVoList.add(getPostVo(companyPost));
         }
-        companyPost.setLikes(likes);
-        companyPost.setHots(hotCalc(companyPost));
-        companyPostMapper.updateByPrimaryKeySelective(companyPost);
-        return companyPost;
+        pageResult.setList(postVoList);
+        return pageResult;
     }
 
-    /**
-     * 取消点赞
-     * @param postId 帖子ID
-     * @return 帖子
-     */
-    public CompanyPost likesSub(Long postId){
-        CompanyPost companyPost = getById(postId);
-        Integer likes = companyPost.getLikes();
-        if(likes==null || likes==0){
-            likes = 0;
-        }else{
-            likes--;
-        }
-        companyPost.setLikes(likes);
-        companyPost.setHots(hotCalc(companyPost));
-        companyPostMapper.updateByPrimaryKeySelective(companyPost);
-        return companyPost;
+    public CompanyPostVo getPostVo(CompanyPost companyPost){
+        CompanyPostVo companyPostVo = new CompanyPostVo().asVo(companyPost);
+        companyPostVo.setFromUser(userApplicantService.getUserInfo(companyPost.getFromId()));
+        companyPostVo.setLike(companyLikeService.hasLike(companyPost.getId()));
+        companyPostVo.setReport(companyReportService.getReportVo(companyPost.getId()));
+        return companyPostVo;
     }
 
-    /**
-     * 评论
-     * @param postId 帖子ID
-     * @return 帖子
-     */
-    public CompanyPost commentsAdd(Long postId){
+    public CompanyPostVo getPostVo(Long postId){
         CompanyPost companyPost = getById(postId);
-        Integer comments = companyPost.getComments();
-        if(comments==null){
-            comments = 0;
-        }else{
-            comments++;
-        }
-        companyPost.setComments(comments);
-        companyPost.setHots(hotCalc(companyPost));
-        companyPostMapper.updateByPrimaryKeySelective(companyPost);
-        return companyPost;
+        return getPostVo(companyPost);
     }
-
-    /**
-     * 取消评论
-     * @param postId 帖子ID
-     * @param value 减少的评论数
-     * @return 帖子
-     */
-    public CompanyPost commentsSub(Long postId,Integer value){
-        CompanyPost companyPost = getById(postId);
-        Integer comments = companyPost.getComments();
-        if(comments==null || comments<=value){
-            comments = 0;
-        }else{
-            comments -= value;
-        }
-        companyPost.setComments(comments);
-        companyPost.setHots(hotCalc(companyPost));
-        companyPostMapper.updateByPrimaryKeySelective(companyPost);
-        return companyPost;
-    }
-
-    /**
-     * 举报
-     * 举报不能取消，只能修改举报理由
-     * @param postId 帖子ID
-     * @return 帖子
-     */
-    public CompanyPost reportsAdd(Long postId){
-        CompanyPost companyPost = getById(postId);
-        Integer reports = companyPost.getReports();
-        if(reports==null){
-            reports = 0;
-        }else{
-            reports++;
-        }
-        companyPost.setReports(reports);
-        companyPost.setHots(hotCalc(companyPost));
-        companyPostMapper.updateByPrimaryKeySelective(companyPost);
-        return companyPost;
-    }
-
 
     /**
      * 通过帖子ID获取帖子数据
@@ -199,23 +214,22 @@ public class CompanyPostService extends BaseService{
         return companyPost;
     }
 
-    /**
-     * 计算帖子热度
-     * @param companyPost 帖子
-     * @return 热度
-     */
-    private int hotCalc(CompanyPost companyPost){
+    private void hotCalc(CompanyPost companyPost){
         int hot = 0;
-        if(companyPost.getHots() != null){
-            hot = companyPost.getHots();
-        }
-        if(companyPost.getLikes() != null){
-            hot += companyPost.getLikes();
-        }
-        if(companyPost.getComments() != null){
-            hot += companyPost.getComments();
-        }
-        return hot;
+        Long postId = companyPost.getId();
+        Integer likeCount = companyLikeService.getLikeCount(postId);
+        Integer reportCount = companyReportService.getReportCount(postId);
+        Integer commentCount = companyCommentService.getCommentCount(postId);
+        hot += likeCount+reportCount+commentCount;
+        companyPost.setLikes(likeCount);
+        companyPost.setReports(reportCount);
+        companyPost.setComments(commentCount);
+        companyPost.setHots(hot);
+        companyPostMapper.updateByPrimaryKeySelective(companyPost);
     }
 
+    public void hotCalc(Long postId){
+        CompanyPost companyPost = getById(postId);
+        hotCalc(companyPost);
+    }
 }

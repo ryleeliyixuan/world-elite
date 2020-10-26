@@ -10,7 +10,7 @@ public class GenerateApiDoc {
     public static void main(String[] args) {
         DocsConfig docsConfig = new DocsConfig();
         docsConfig.setProjectPath("./");
-        docsConfig.setDocsPath("./api-docs");
+        docsConfig.setDocsPath("/api-docs");
         Docs.buildHtmlDocs(docsConfig);
     }
 }

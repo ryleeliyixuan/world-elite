@@ -7,17 +7,22 @@
     from t_company_report
     <where>
       <if test="id != null">
-        id = #{id}
+        and id = #{id}
       </if>
       <if test="ownerId != null">
-        owner_id = #{ownerId}
+        and owner_id = #{ownerId}
       </if>
       <if test="fromId != null">
-        from_id = #{fromId}
+        and from_id = #{fromId}
       </if>
     </where>
     limit 1
   </select>
+
+  <select id="countByOwnerId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select count(*) from t_company_report where owner_id = #{ownerId}
+  </select>
+
   <delete id="deleteByOwnerId" parameterType="java.lang.Long">
     delete from t_company_report
     where owner_id = #{ownerId}

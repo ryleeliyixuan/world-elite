@@ -54,4 +54,6 @@ public interface CompanyReportMapper {
     void deleteByOwnerId(Long ownerId);
 
     CompanyReport select(CompanyReport companyReport);
+
+    Integer countByOwnerId(Long ownerId);
 }

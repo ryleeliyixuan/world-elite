@@ -61,5 +61,17 @@ public interface CompanyPostMapper {
      */
     int updateByPrimaryKey(CompanyPost record);
 
+    /**
+     * 查询完整数据
+     * @param companyPost
+     * @return
+     */
     List<CompanyPost> selectAndList(CompanyPost companyPost);
+
+    /**
+     * 查询不带content字段的数据
+     * @param companyPost
+     * @return
+     */
+    List<CompanyPost> selectAndListSimple(CompanyPost companyPost);
 }
