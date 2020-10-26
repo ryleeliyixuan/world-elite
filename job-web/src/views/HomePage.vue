@@ -8,7 +8,7 @@
                             :src="banner.img"
                             :alt="banner.alt"
                             v-on:click="select(banner)"
-                            fit="fit"
+                            fit="cover"
                     ></el-image>
                 </el-carousel-item>
             </el-carousel>
@@ -27,12 +27,12 @@
                             v-if="recommendJob.object"
                     >
                         <div class="company-card-inner">
+
                             <el-link
                                     :href="`/job/${recommendJob.object.id}`"
-                                    :underline="false"
-                            >
-                                <h6>
-                                    {{ recommendJob.object.name }}
+                                    :underline="false">
+                                <h6 style="display: flex;align-items: center">
+                                    <span class="job-name">{{ recommendJob.object.name }}</span>
                                     <span class="job-salary">{{
                    recommendJob.object.salary.name
                   }}</span>
@@ -52,6 +52,7 @@
                                     }}
                                 </div>
                             </el-link>
+
                             <el-divider></el-divider>
                             <el-link
                                     :href="`/company/${recommendJob.object.companyUser.company.id}`"
@@ -226,10 +227,10 @@
         min-height: calc(100vh - 477px);
 
         .section1-container {
-            /*height: 30vw;*/
-            /*width: calc(60vw - 20px);*/
-            height: 600px;
-            width: 1200px;
+            max-width: 1200px;
+            max-height: 600px;
+            height: 50vw;
+            width: calc(100vw - 20px);
             margin: 0 auto 30px;
 
             .el-carousel {
@@ -239,12 +240,6 @@
                     height: 100%;
 
                 }
-            }
-
-            .section1-image {
-                /*width: 50vw;*/
-                width: 100%;
-                height: 100%;
             }
         }
 
@@ -327,9 +322,17 @@
 
                         .company-card-inner {
                             width: 317px;
+                            .job-name{
+                                display: inline-block;
+                                max-width: 240px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                            }
 
                             .job-salary {
                                 color: #dc3545;
+                                margin-left: 4px;
                             }
 
                             .job-company-container {
