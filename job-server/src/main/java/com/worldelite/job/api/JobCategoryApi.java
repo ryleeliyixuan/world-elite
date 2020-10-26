@@ -46,7 +46,7 @@ public class JobCategoryApi extends BaseApi{
     @GetMapping("category-tree")
     @ApiDoc
     public ApiResult<List<JobCategoryVo>> categoryTree(){
-        List<JobCategoryVo> jobCategoryVoList = jobCategoryService.getCategoryTree();
+        List<JobCategoryVo> jobCategoryVoList = jobCategoryService.getCacheTree();
         return ApiResult.ok(jobCategoryVoList);
     }
 
