@@ -1,7 +1,11 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.worldelite.job.entity.CompanyProduct;
+import com.worldelite.job.form.CompanyProductForm;
 import com.worldelite.job.mapper.CompanyProductMapper;
+import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.CompanyProductVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,14 +24,17 @@ public class CompanyProductService extends BaseService{
 
     /**
      * 保存产品
-     * @param companyProduct 产品表单
+     * @param companyProductForm 产品表单
      */
-    public void save(CompanyProduct companyProduct){
-        if(companyProduct.getId() == null){
+    public CompanyProduct save(CompanyProductForm companyProductForm){
+        CompanyProduct companyProduct = new CompanyProduct();
+        BeanUtil.copyProperties(companyProductForm,companyProduct);
+        if(companyProductForm.getId() == null){
             companyProductMapper.insertSelective(companyProduct);
-            return;
+            return companyProduct;
         }
         companyProductMapper.updateByPrimaryKeySelective(companyProduct);
+        return companyProduct;
     }
 
     /**
@@ -45,7 +52,18 @@ public class CompanyProductService extends BaseService{
      * @return 产品列表
      */
     public List<CompanyProduct> getByCompanyId(Long companyId){
-        return null;
+        CompanyProduct companyProduct = new CompanyProduct();
+        companyProduct.setCompanyId(companyId);
+        return companyProductMapper.selectAndList(companyProduct);
+    }
+
+    public List<CompanyProductVo> listProductVo(Long companyId){
+        List<CompanyProduct> productList = getByCompanyId(companyId);
+        return AppUtils.asVoList(productList,CompanyProductVo.class);
+    }
+
+    public CompanyProductVo toVo(CompanyProduct companyProduct){
+        return new CompanyProductVo().asVo(companyProduct);
     }
 
     /**
@@ -55,13 +73,4 @@ public class CompanyProductService extends BaseService{
     public void deleteById(Integer id){
         companyProductMapper.deleteByPrimaryKey(id);
     }
-
-    /**
-     * 删除企业所有产品
-     * @param companyId 企业ID
-     */
-    public void deleteByCompanyId(Long companyId){
-        ;
-    }
-
 }

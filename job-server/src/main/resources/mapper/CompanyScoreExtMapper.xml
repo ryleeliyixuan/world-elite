@@ -17,4 +17,7 @@
       </if>
     </where>
   </select>
+  <select id="selectCompanyScore" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select avg(score) from t_company_score where company_id = #{companyId}
+  </select>
 </mapper>

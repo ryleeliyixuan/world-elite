@@ -1,7 +1,11 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.worldelite.job.entity.CompanyHistory;
+import com.worldelite.job.form.CompanyHistoryForm;
 import com.worldelite.job.mapper.CompanyHistoryMapper;
+import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.CompanyHistoryVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,14 +24,17 @@ public class CompanyHistoryService extends BaseService{
 
     /**
      * 保存发展路径
-     * @param companyHistory 发展路径表单
+     * @param companyHistoryForm 发展路径表单
      */
-    public void save(CompanyHistory companyHistory){
-        if(companyHistory.getId() == null){
+    public CompanyHistory save(CompanyHistoryForm companyHistoryForm){
+        CompanyHistory companyHistory = new CompanyHistory();
+        BeanUtil.copyProperties(companyHistoryForm,companyHistory);
+        if(companyHistoryForm.getId() == null){
             companyHistoryMapper.insertSelective(companyHistory);
-            return;
+            return companyHistory;
         }
         companyHistoryMapper.updateByPrimaryKeySelective(companyHistory);
+        return companyHistory;
     }
 
     /**
@@ -45,7 +52,23 @@ public class CompanyHistoryService extends BaseService{
      * @return 发展路径列表
      */
     public List<CompanyHistory> getByCompanyId(Long companyId){
-        return null;
+        CompanyHistory companyHistory = new CompanyHistory();
+        companyHistory.setCompanyId(companyId);
+        return companyHistoryMapper.selectAndList(companyHistory);
+    }
+
+    /**
+     * 返回视图对象列表
+     * @param companyId
+     * @return
+     */
+    public List<CompanyHistoryVo> listHistoryVo(Long companyId){
+        List<CompanyHistory> historyList = getByCompanyId(companyId);
+        return AppUtils.asVoList(historyList, CompanyHistoryVo.class);
+    }
+
+    public CompanyHistoryVo toVo(CompanyHistory companyHistory){
+        return new CompanyHistoryVo().asVo(companyHistory);
     }
 
     /**
@@ -55,13 +78,4 @@ public class CompanyHistoryService extends BaseService{
     public void deleteById(Integer id){
         companyHistoryMapper.deleteByPrimaryKey(id);
     }
-
-    /**
-     * 删除企业所有发展路径
-     * @param companyId 企业ID
-     */
-    public void deleteByCompanyId(Long companyId){
-        ;
-    }
-
 }

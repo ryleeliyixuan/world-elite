@@ -175,4 +175,17 @@ public class FavoriteService extends BaseService{
         return CollectionUtils.isNotEmpty(favoriteList);
     }
 
+    /**
+     * 获取百科订阅数
+     * @param companyId
+     * @return
+     */
+    public Integer getWikiFavoriteCount(Long companyId){
+        Favorite options = new Favorite();
+        options.setType(FavoriteType.COMPANY.value);
+        options.setObjectId(companyId);
+        List<Favorite> favoriteList = favoriteMapper.selectAndList(options);
+        return favoriteList.size();
+    }
+
 }

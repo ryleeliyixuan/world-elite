@@ -28,10 +28,6 @@ public class CompanyForm {
     private String introduction; //公司介绍
     private String synopsis; //一句话描述
 
-    private String video; //公司视频
-    private Integer cityId; //地址ID
-
-
 
     public void setName(String name) {
         this.name = FormUtils.removeAllHtmlTag(name);

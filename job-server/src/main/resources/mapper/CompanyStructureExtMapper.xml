@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.worldelite.job.mapper.CompanyStructureMapper">
+  <delete id="deleteByCompanyId" parameterType="java.lang.Long">
+    delete from t_company_structure
+    where company_id = #{companyId}
+  </delete>
+
+  <delete id="deleteByParentId" parameterType="java.lang.Integer">
+    delete from t_company_structure
+    where parent_id = #{parentId}
+  </delete>
+
+  <select id="selectAndList" parameterType="com.worldelite.job.entity.CompanyStructure" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_company_structure
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="parentId != null">
+        and parent_id = #{parentId}
+      </if>
+      <if test="companyId != null">
+        and company_id = #{companyId}
+      </if>
+      <if test="name != null and name != ''">
+        and name like concat('%',#{name},'%')
+      </if>
+    </where>
+  </select>
+</mapper>

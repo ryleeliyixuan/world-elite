@@ -54,4 +54,6 @@ public interface CompanyScoreMapper {
     int updateByPrimaryKey(CompanyScore record);
 
     List<CompanyScore> selectAndList(CompanyScore companyScore);
+
+    Integer selectCompanyScore(Long companyId);
 }
