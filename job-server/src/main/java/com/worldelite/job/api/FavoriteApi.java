@@ -76,4 +76,15 @@ public class FavoriteApi extends BaseApi{
         return ApiResult.ok(pageResult);
     }
 
+    /**
+     * 获取百科订阅数
+     * @param companyId
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("wiki-favorite-count")
+    public ApiResult<Integer> getWikiFavoriteCount(@RequestParam Long companyId){
+        Integer count = favoriteService.getWikiFavoriteCount(companyId);
+        return ApiResult.ok(count);
+    }
 }

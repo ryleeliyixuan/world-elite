@@ -50,25 +50,42 @@
                             ></el-option>
                         </el-select>
                     </el-col>
+
+                    <!--                    <el-col :span="6">-->
+                    <!--                        <el-select-->
+                    <!--                                v-model="listQuery.cityIds"-->
+                    <!--                                multiple-->
+                    <!--                                clearable-->
+                    <!--                                filterable-->
+                    <!--                                placeholder="意向城市"-->
+                    <!--                                @change="handleFilter"-->
+                    <!--                                class="w-100"-->
+                    <!--                                size="small"-->
+                    <!--                        >-->
+                    <!--                            <el-option-->
+                    <!--                                    v-for="item in cityOptions"-->
+                    <!--                                    :key="item.id"-->
+                    <!--                                    :label="item.name"-->
+                    <!--                                    :value="item.id"-->
+                    <!--                            ></el-option>-->
+                    <!--                        </el-select>-->
+                    <!--                    </el-col>-->
                     <el-col :span="6">
-                        <el-select
-                                v-model="listQuery.cityIds"
-                                multiple
-                                clearable
-                                filterable
-                                placeholder="意向城市"
-                                @change="handleFilter"
-                                class="w-100"
-                                size="small"
-                        >
-                            <el-option
-                                    v-for="item in cityOptions"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id"
-                            ></el-option>
-                        </el-select>
+                        <el-cascader placeholder="意向城市"
+                                     :show-all-levels="true"
+                                     :options="cityOptions"
+                                     :props="cityIdProps"
+                                     @change="handleFilter"
+                                     filterable
+                                     clearable
+                                     v-model="listQuery.cityIds"
+                                     class="w-100"
+                                     size="small">
+                        </el-cascader>
+
                     </el-col>
+
+
                 </el-row>
             </div>
             <div class="mt-3">
@@ -184,16 +201,12 @@
                                 ></el-option>
                             </el-select>
                         </el-col>
+
                         <el-col :span="6">
                             <el-select
                                     v-model="ability"
                                     multiple
-                                    filterable
-                                    remote
                                     clearable
-                                    reserve-keyword
-                                    :loading="loadingAbilityOptions"
-                                    :remote-method="searchAbilityOptions"
                                     placeholder="能力"
                                     @change="handleFilter"
                                     class="w-100"
@@ -210,7 +223,7 @@
                         <el-col :span="6">
                             <el-cascader
                                     placeholder="技能标签"
-                                    :show-all-levels="true"
+                                    :show-all-levels="false"
                                     :options="skillsOptions"
                                     :props="skillsProps"
                                     filterable
@@ -419,7 +432,7 @@
                     degreeIds: undefined,
                     schoolIds: undefined,
                     categoryIds: undefined,
-                    cityIds: undefined,
+                    cityIds: [],
                     salaryRangeId: undefined,
                     gpaRangeId: undefined,
                     status: 2,
@@ -433,6 +446,36 @@
                     1: "男",
                     2: "女",
                 },
+                cityOptions: [{id: 1, name: "国内"}, {id: 2, name: "国外"}],
+                cityIdProps: {
+                    lazy: true,
+                    lazyLoad: (node, resolve) => {
+                        if (node.level === 1) {
+                            this.$axios.request({
+                                url: "/city/list",
+                                method: "get",
+                                params: {type: node.value}
+                            }).then(data => {
+                                console.log(data.data);
+                                let nodes = data.data.map(second => {
+                                    let children = second.children && second.children.map(third => {
+                                        return {id: third.id, name: third.name, leaf: true}
+                                    })
+                                    return {id: second.id, name: second.name, children}
+                                });
+                                resolve(nodes);
+                            })
+                        } else {
+                            resolve();
+                        }
+                    },
+                    expandTrigger: "hover",
+                    value: "id",
+                    label: "name",
+                    emitPath: false,
+                    multiple: true,
+                    children: "children"
+                },
                 genderOptions: [
                     {name: "男", value: 1},
                     {name: "女", value: 2},
@@ -440,7 +483,6 @@
                 degreeOptions: [],
                 schoolOptions: [],
                 jobCategoryOptions: [],
-                cityOptions: [],
                 salaryRangeOptions: [],
                 gpaRangeOptions: [],
                 loadingSchoolOptions: false,
@@ -498,6 +540,7 @@
                     this.getAttachList();
                 }
             },
+
             resumeType() {
                 this.resumeSelect = undefined;
                 if (this.resumeType === 1) {
@@ -607,6 +650,8 @@
                     this.listQuery.skills = this.ability;
                 } else if (this.skills.length > 0) {
                     this.listQuery.skills = this.skills;
+                } else {
+                    this.listQuery.skills = [];
                 }
 
                 this.handleRouteList();
@@ -633,7 +678,7 @@
                 listByType(1).then(
                     (response) => (this.degreeOptions = response.data.list)
                 );
-                listByType(2).then((response) => (this.cityOptions = response.data.list));
+                // listByType(2).then((response) => (this.cityOptions = response.data.list));
                 listByType(9).then(
                     (response) => (this.salaryRangeOptions = response.data.list)
                 );
@@ -642,6 +687,9 @@
                 );
                 listByType(11).then(
                     (response) => (this.buzzWordOptions = response.data.list)
+                );
+                listByType(3).then(
+                    (response) => (this.abilityOptions = response.data.list)
                 );
                 getCategoryTree().then(
                     (response) => (this.jobCategoryOptions = response.data)
@@ -760,15 +808,15 @@
             },
 
             // 搜索能力选项
-            searchAbilityOptions(query) {
-                if (query) {
-                    this.loadingAbilityOptions = true;
-                    this.$axios.get("/dict/list?type=3&limit=99", {params: {name: query}}).then(data => {
-                        this.abilityOptions = data.data.list;
-                        this.loadingAbilityOptions = false;
-                    })
-                }
-            },
+            // searchAbilityOptions(query) {
+            //     if (query) {
+            //         this.loadingAbilityOptions = true;
+            //         this.$axios.get("/dict/list?type=3&limit=99", {params: {name: query}}).then(data => {
+            //             this.abilityOptions = data.data.list;
+            //             this.loadingAbilityOptions = false;
+            //         })
+            //     }
+            // },
 
             // 获取分组
             listGroup() {

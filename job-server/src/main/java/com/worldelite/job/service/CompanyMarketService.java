@@ -1,8 +1,12 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.worldelite.job.entity.CompanyMarket;
+import com.worldelite.job.form.CompanyMarketForm;
 import com.worldelite.job.mapper.CompanyMarketMapper;
+import com.worldelite.job.vo.CompanyMarketVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +24,15 @@ public class CompanyMarketService extends BaseService{
 
     /**
      * 保存市值
-     * @param companyMarket 市值表单
+     * @param companyMarketForm 市值表单
      */
-    public void save(CompanyMarket companyMarket){
-        if(companyMarket.getId() == null){
-            companyMarketMapper.insertSelective(companyMarket);
-            return;
-        }
-        companyMarketMapper.updateByPrimaryKeySelective(companyMarket);
+    public CompanyMarket save(CompanyMarketForm companyMarketForm){
+        CompanyMarket companyMarket = new CompanyMarket();
+        BeanUtil.copyProperties(companyMarketForm,companyMarket);
+        //公司市值URL只能有一个，所以需要先删除旧URL
+        companyMarketMapper.deleteByCompanyId(companyMarketForm.getCompanyId());
+        companyMarketMapper.insertSelective(companyMarket);
+        return companyMarket;
     }
 
     /**
@@ -40,12 +45,23 @@ public class CompanyMarketService extends BaseService{
     }
 
     /**
-     * 查询企业对应的所有市值
-     * @param companyId 企业ID
-     * @return 市值列表
+     * 获取公司市值
+     * @param companyId 公司ID
+     * @return
      */
-    public List<CompanyMarket> getByCompanyId(Long companyId){
-        return null;
+    public CompanyMarket getByCompanyId(Long companyId){
+        CompanyMarket companyMarket = new CompanyMarket();
+        companyMarket.setCompanyId(companyId);
+        List<CompanyMarket> marketList = companyMarketMapper.selectAndList(companyMarket);
+        if(CollectionUtils.isNotEmpty(marketList)){
+            return marketList.get(0);
+        }else{
+            return null;
+        }
+    }
+
+    public CompanyMarketVo toVo(CompanyMarket companyMarket){
+        return new CompanyMarketVo().asVo(companyMarket);
     }
 
     /**
@@ -54,14 +70,6 @@ public class CompanyMarketService extends BaseService{
      */
     public void deleteById(Integer id){
         companyMarketMapper.deleteByPrimaryKey(id);
-    }
-
-    /**
-     * 删除企业所有市值
-     * @param companyId 企业ID
-     */
-    public void deleteByCompanyId(Long companyId){
-        ;
     }
 
 }
