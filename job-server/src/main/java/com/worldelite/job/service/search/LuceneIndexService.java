@@ -214,6 +214,9 @@ public class LuceneIndexService implements IndexService {
         if (jobVo.getMinDegree() != null) {
             doc.add(new IntPoint(JobIndexFields.MIN_DEGREE_INDEX, jobVo.getMinDegree().getId()));
         }
+        if (jobVo.getRecruitType() != null) {
+            doc.add(new IntPoint(JobIndexFields.RECRUIT_TYPE_INDEX, jobVo.getRecruitType().getId()));
+        }
 //        if (jobVo.getMinSalary() != null && jobVo.getMaxSalary() != null) {
 //            doc.add(new IntPoint(JobIndexFields.AVER_SALARY_INDEX, (jobVo.getMinSalary() + jobVo.getMaxSalary()) / 2));
 //        }

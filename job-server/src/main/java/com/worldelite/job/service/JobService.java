@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -239,6 +240,8 @@ public class JobService extends BaseService {
         return org.apache.commons.lang.StringUtils.isEmpty(jobSearchForm.getKeyword())
                 && jobSearchForm.getSalaryRangeId() == null
                 && jobSearchForm.getJobType() == null
+                && (jobSearchForm.getRecruitId() ==null || jobSearchForm.getRecruitId() == 0)
+                && jobSearchForm.getCompanyId() == null
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getSalaryRangeIds())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getJobTypes())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCityIds())
@@ -516,6 +519,23 @@ public class JobService extends BaseService {
         return jobRecruitVos;
     }
 
+
+
+    /**
+     * 获取指定公司不同招聘类型职位数量
+     *
+     * @param id 公司ID
+     * @return 职位数量
+     */
+    /*public Map<String, Integer> getRecruitCount(Long id) {
+        Map<String, Integer> map = jobMapper.getRecruitCount(id);
+        System.out.println("map = " + map);
+        return map;
+    }*/
+
+
+
+
     private JobVo toJobVo(Job job, Boolean includeCompany) {
         if (job == null) {
             return null;
@@ -618,4 +638,10 @@ public class JobService extends BaseService {
             throw new ServiceException("请先完善简历：能力标签未填写", ApiCode.UNCOMPLETE_RESUME);
         }
     }
+
+
+
+
+
+
 }
