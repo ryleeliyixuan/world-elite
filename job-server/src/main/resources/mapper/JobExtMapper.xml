@@ -49,13 +49,25 @@
     from t_job
     where name like CONCAT('%',#{name},'%') limit 10
   </select>
-  <select id="selectJobRecruitCount" resultType="com.worldelite.job.dto.JobRecruitDto">
-    select recruit_type as recruitType, count(id) as count from t_job
-    <where>
-      <if test="companyId != null">
-        company_id = #{companyId,jdbcType=BIGINT}
-      </if>
-    </where>
-    group by recruit_type
-</select>
+<!--  <select id="selectJobRecruitCount" resultType="com.worldelite.job.dto.JobRecruitDto">-->
+<!--    select recruit_type as recruitType, count(id) as count from t_job-->
+<!--    <where>-->
+<!--      <if test="companyId != null">-->
+<!--        company_id = #{companyId,jdbcType=BIGINT}-->
+<!--      </if>-->
+<!--    </where>-->
+<!--    group by recruit_type-->
+<!--  </select>-->
+    <select id="selectJobRecruitCount" resultType="com.worldelite.job.dto.JobRecruitDto">
+      select
+        t_dict.id as recruitType,
+        count(t_job.recruit_type) as count
+      from t_dict
+      left join t_job
+      on t_dict.id = t_job.recruit_type and t_job.company_id = #{companyId,jdbcType=BIGINT}
+      <where>
+        and t_dict.type = 12
+      </where>
+      group by t_job.recruit_type,t_dict.id order by t_dict.value asc
+    </select>
 </mapper>

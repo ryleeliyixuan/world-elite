@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author 王星瀚
  */
 @Service
-public class UserCorporateCommentService {
+public class UserCorporateCommentService extends BaseService{
 
     @Autowired
     private UserCorporateCommentMapper userCorporateCommentMapper;
@@ -28,12 +28,13 @@ public class UserCorporateCommentService {
      * @param userCorporateCommentForm
      * @return
      */
-    public void saveComment(final @NonNull UserCorporateCommentForm userCorporateCommentForm) {
+    public UserCorporateCommentVo saveComment(final @NonNull UserCorporateCommentForm userCorporateCommentForm) {
 
         UserCorporateComment userCorporateComment;
         if (userCorporateCommentForm.getId() == null || (userCorporateComment = userCorporateCommentMapper.selectByPrimaryKey(userCorporateCommentForm.getId())) == null) {
             userCorporateComment = new UserCorporateComment();
-            userCorporateComment.setJobApplyId(userCorporateCommentForm.getJobApplyId());
+            userCorporateComment.setCreatorId(curUser().getId());
+            userCorporateComment.setResumeId(userCorporateCommentForm.getResumeId());
             userCorporateComment.setComment(userCorporateCommentForm.getComment());
             userCorporateCommentMapper.insertSelective(userCorporateComment);
         } else {
@@ -41,25 +42,25 @@ public class UserCorporateCommentService {
             userCorporateComment.setComment(userCorporateCommentForm.getComment());
             userCorporateCommentMapper.updateByPrimaryKey(userCorporateComment);
         }
+        return new UserCorporateCommentVo().asVo(userCorporateComment);
     }
 
     /**
-     * 根据用户id取得用户笔记
+     * 根据简历id取得笔记
      *
-     * @param jobApplyId
+     * @param resumeId
      * @return
      */
-    public List<UserCorporateCommentVo> getCommentsByJobApplyId(long jobApplyId) {
-
-        final List<UserCorporateComment> userCorporateComments;
-        userCorporateComments = userCorporateCommentMapper.selectByJobApplyId(jobApplyId);
-
-        if (Objects.nonNull(userCorporateComments)) {
-            return userCorporateComments.stream()
+    public List<UserCorporateCommentVo> getCommentsByResumeId(long resumeId) {
+        UserCorporateComment corporateComment = new UserCorporateComment();
+        corporateComment.setResumeId(resumeId);
+        corporateComment.setCreatorId(curUser().getId());
+        List<UserCorporateComment> userCorporateCommentList = userCorporateCommentMapper.selectAndList(corporateComment);
+        if (Objects.nonNull(userCorporateCommentList)) {
+            return userCorporateCommentList.stream()
                     .map(userCorporateComment -> new UserCorporateCommentVo().asVo(userCorporateComment))
                     .collect(Collectors.toList());
         }
-
         return Collections.emptyList();
     }
 
@@ -68,7 +69,7 @@ public class UserCorporateCommentService {
      * @param userCorporateCommentId
      * @return
      */
-    public void deleteCommentById(final @NonNull Long userCorporateCommentId) {
+    public void deleteCommentById(long userCorporateCommentId) {
         userCorporateCommentMapper.deleteByPrimaryKey(userCorporateCommentId);
     }
 }

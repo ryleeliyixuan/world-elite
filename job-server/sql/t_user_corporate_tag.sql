@@ -36,3 +36,6 @@ CREATE TABLE `t_user_corporate_tag`  (
 -- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+alter table `t_user_corporate_tag` change `job_apply_id` `resume_id` bigint(20) not null default '0' comment '简历ID';
+alter table `t_user_corporate_tag` add `creator_id` bigint(20) not null default '0' comment '创建者ID';

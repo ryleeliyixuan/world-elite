@@ -8,16 +8,16 @@ import java.util.Date;
 
 @Data
 public class UserCorporateCommentVo implements VoConvertable<UserCorporateCommentVo, UserCorporateComment> {
-    private Long id; //笔记Id， Primary Key
-    private Long jobApplyId; //职位Id
+    private String id; //笔记Id， Primary Key
+    private String resumeId; //简历ID
     private String comment; //用户笔记
     @JSONField(format = "yyyy-MM-dd")
     private Date createTime; //创建时间
 
     @Override
-    public UserCorporateCommentVo asVo(final UserCorporateComment userCorporateComment) {
-        setId(userCorporateComment.getId());
-        setJobApplyId(userCorporateComment.getJobApplyId());
+    public UserCorporateCommentVo asVo(UserCorporateComment userCorporateComment) {
+        setId(String.valueOf(userCorporateComment.getId()));
+        setResumeId(String.valueOf(userCorporateComment.getResumeId()));
         setComment(userCorporateComment.getComment());
         setCreateTime(userCorporateComment.getCreateTime());
         return this;

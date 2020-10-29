@@ -502,6 +502,8 @@ public class JobService extends BaseService {
 
     /**
      * 获取指定公司职位的招聘类型计数
+     * 这个功能用到的sql中，招聘类型的字典表type写了固定值
+     * 字典表发生较大变动，type值有变化需要及时更改此处sql
      * @param companyId 公司id
      */
     public List<JobRecruitVo> getJobRecruitCount(Long companyId){

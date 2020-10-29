@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-public class UserCorporateTagService {
+public class UserCorporateTagService extends BaseService{
     @Autowired
     UserCorporateTagMapper userCorporateTagMapper;
 
@@ -24,12 +24,12 @@ public class UserCorporateTagService {
      * @param userCorporateTagForm
      * @return
      */
-    public void saveTag(final @NonNull UserCorporateTagForm userCorporateTagForm) {
-
+    public UserCorporateTagVo saveTag(UserCorporateTagForm userCorporateTagForm) {
         UserCorporateTag userCorporateTag;
         if (userCorporateTagForm.getId() == null || (userCorporateTag = userCorporateTagMapper.selectByPrimaryKey(userCorporateTagForm.getId())) == null) {
             userCorporateTag = new UserCorporateTag();
-            userCorporateTag.setJobApplyId(userCorporateTagForm.getJobApplyId());
+            userCorporateTag.setResumeId(userCorporateTagForm.getResumeId());
+            userCorporateTag.setCreatorId(curUser().getId());
             userCorporateTag.setTagName(userCorporateTagForm.getTagName());
             userCorporateTagMapper.insertSelective(userCorporateTag);
         } else {
@@ -37,23 +37,25 @@ public class UserCorporateTagService {
             userCorporateTag.setUpdateTime(new Date());
             userCorporateTagMapper.updateByPrimaryKey(userCorporateTag);
         }
+        return new UserCorporateTagVo().asVo(userCorporateTag);
     }
 
     /**
-     * 职位申请ID
+     * 获取简历标签
      *
-     * @param jobApplyId
+     * @param resumeId
      * @return
      */
-    public List<UserCorporateTagVo> getTagsByJobApplyId(final long jobApplyId) {
-        final List<UserCorporateTag> userCorporateTags = userCorporateTagMapper.selectByJobApplyId(jobApplyId);
-
-        if (Objects.nonNull(userCorporateTags)) {
-            return userCorporateTags.stream()
-                    .map(userCorporateTag -> new UserCorporateTagVo().asVo(userCorporateTag))
+    public List<UserCorporateTagVo> getTagsByResumeId(long resumeId) {
+        UserCorporateTag userCorporateTag = new UserCorporateTag();
+        userCorporateTag.setCreatorId(curUser().getId());
+        userCorporateTag.setResumeId(resumeId);
+        List<UserCorporateTag> corporateTagList = userCorporateTagMapper.selectAndList(userCorporateTag);
+        if (Objects.nonNull(corporateTagList)) {
+            return corporateTagList.stream()
+                    .map(corporateTag -> new UserCorporateTagVo().asVo(corporateTag))
                     .collect(Collectors.toList());
         }
-
         return Collections.emptyList();
     }
 
@@ -62,7 +64,7 @@ public class UserCorporateTagService {
      *
      * @param id
      */
-    public void delTag(Long id){
+    public void delTag(long id){
         userCorporateTagMapper.deleteByPrimaryKey(id);
     }
 }

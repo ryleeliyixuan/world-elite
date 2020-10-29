@@ -34,9 +34,9 @@ public class UserCorporateCommentApi extends BaseController {
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("save")
     @ApiDoc
-    public ApiResult saveComment(@RequestBody UserCorporateCommentForm userCorporateCommentForm){
-        userCorporateCommentService.saveComment(userCorporateCommentForm);
-        return ApiResult.ok();
+    public ApiResult<UserCorporateCommentVo> saveComment(@RequestBody UserCorporateCommentForm userCorporateCommentForm){
+        UserCorporateCommentVo userCorporateCommentVo = userCorporateCommentService.saveComment(userCorporateCommentForm);
+        return ApiResult.ok(userCorporateCommentVo);
     }
 
     /**
@@ -45,8 +45,8 @@ public class UserCorporateCommentApi extends BaseController {
     @RequireLogin(allow = UserType.COMPANY)
     @GetMapping("list")
     @ApiDoc
-    public ApiResult<List<UserCorporateCommentVo>> getCommentList(@RequestParam long jobApplyId) {
-        final List<UserCorporateCommentVo> userCorporateCommentVos = userCorporateCommentService.getCommentsByJobApplyId(jobApplyId);
+    public ApiResult<List<UserCorporateCommentVo>> getCommentList(@RequestParam long resumeId) {
+        final List<UserCorporateCommentVo> userCorporateCommentVos = userCorporateCommentService.getCommentsByResumeId(resumeId);
         return ApiResult.ok(userCorporateCommentVos);
     }
 
@@ -61,7 +61,6 @@ public class UserCorporateCommentApi extends BaseController {
     @ApiDoc
     public ApiResult deleteComment(@RequestParam long userCorporateCommentId){
         userCorporateCommentService.deleteCommentById(userCorporateCommentId);
-
         return ApiResult.ok();
     }
 }

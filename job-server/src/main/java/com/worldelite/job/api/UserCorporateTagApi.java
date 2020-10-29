@@ -33,22 +33,22 @@ public class UserCorporateTagApi extends BaseController {
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("save")
     @ApiDoc
-    public ApiResult saveTag(@RequestBody UserCorporateTagForm userCorporateTagForm){
-        userCorporateTagService.saveTag(userCorporateTagForm);
-        return ApiResult.ok();
+    public ApiResult<UserCorporateTagVo> saveTag(@RequestBody UserCorporateTagForm userCorporateTagForm){
+        UserCorporateTagVo userCorporateTagVo = userCorporateTagService.saveTag(userCorporateTagForm);
+        return ApiResult.ok(userCorporateTagVo);
     }
 
     /**
      * 获取标签列表
      *
-     * @param jobApplyId
+     * @param resumeId
      * @return
      */
     @RequireLogin(allow = UserType.COMPANY)
     @GetMapping("list")
     @ApiDoc
-    public ApiResult<List<UserCorporateTagVo>> getTagList(@RequestParam long jobApplyId) {
-        final List<UserCorporateTagVo> userCorporateTagVos = userCorporateTagService.getTagsByJobApplyId(jobApplyId);
+    public ApiResult<List<UserCorporateTagVo>> getTagList(@RequestParam long resumeId) {
+        final List<UserCorporateTagVo> userCorporateTagVos = userCorporateTagService.getTagsByResumeId(resumeId);
         return ApiResult.ok(userCorporateTagVos);
     }
 
@@ -61,7 +61,7 @@ public class UserCorporateTagApi extends BaseController {
     @RequireLogin(allow = UserType.COMPANY)
     @PostMapping("delete")
     @ApiDoc
-    public ApiResult deleteTag(@RequestParam Long id) {
+    public ApiResult deleteTag(@RequestParam long id) {
         userCorporateTagService.delTag(id);
         return ApiResult.ok();
     }
