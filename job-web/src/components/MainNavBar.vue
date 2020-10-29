@@ -100,6 +100,7 @@
 <script>
     import {mapGetters, mapMutations} from "vuex";
     import {getUnReadMessageCount, getMessageList} from "@/api/message_api";
+    import {storage} from "@/utils/storage";
 
     export default {
         name: "MainNavBar",
@@ -147,6 +148,7 @@
             }),
             handleLogout() {
                 this.$store.dispatch("user/LOGOUT").then(() => {
+                    storage.removeLoginInfo();
                     this.$router.push({path: "/"});
                 });
             },
