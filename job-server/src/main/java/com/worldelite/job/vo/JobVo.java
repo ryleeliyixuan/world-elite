@@ -26,7 +26,7 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private CityVo city; //工作城市
     private Byte status; //职位状态
     private String description; //职位描述
-    private Long creatorId; //创建人
+    private String creatorId; //创建人
     private String address; //工作地址
     @JSONField(format = "yyyy-MM-dd")
     private Date time; //发布时间
@@ -54,7 +54,7 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setId(String.valueOf(job.getId()));
         setName(job.getName());
         setDepart(job.getDepart());
-        setCreatorId(job.getCreatorId());
+        setCreatorId(String.valueOf(job.getCreatorId()));
         setSalaryMonths(job.getSalaryMonths());
         setStatus(job.getStatus());
         setDescription(job.getDescription());

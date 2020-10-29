@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class UserCorporateCommentForm {
     private Long id;
-    private Long jobApplyId;
+    private Long resumeId;
     private String comment;
 }

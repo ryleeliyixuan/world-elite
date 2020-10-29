@@ -30,7 +30,7 @@ public class CompanyMarket {
      *
      * @mbg.generated
      */
-    private Integer companyId;
+    private Long companyId;
 
     /**
      * Database Column Remarks:
@@ -97,7 +97,7 @@ public class CompanyMarket {
      *
      * @mbg.generated
      */
-    public Integer getCompanyId() {
+    public Long getCompanyId() {
         return companyId;
     }
 
@@ -109,7 +109,7 @@ public class CompanyMarket {
      *
      * @mbg.generated
      */
-    public void setCompanyId(Integer companyId) {
+    public void setCompanyId(Long companyId) {
         this.companyId = companyId;
     }
 

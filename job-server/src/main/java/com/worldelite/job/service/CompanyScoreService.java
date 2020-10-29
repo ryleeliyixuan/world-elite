@@ -17,6 +17,7 @@ import com.worldelite.job.vo.CompanyScoreVo;
 import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.UserApplicantVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -230,5 +231,34 @@ public class CompanyScoreService extends BaseService{
     public void hotCalc(Long scoreId){
         CompanyScore companyScore = getById(scoreId);
         hotCalc(companyScore);
+    }
+
+    /**
+     * 获取公司平均评分
+     * @param companyId
+     * @return
+     */
+    public Integer getCompanyScore(Long companyId){
+        return companyScoreMapper.selectCompanyScore(companyId);
+    }
+
+    public CompanyScore myScoreInfo(Long companyId){
+        CompanyScore companyScore = new CompanyScore();
+        companyScore.setCompanyId(companyId);
+        companyScore.setFromId(curUser().getId());
+        List<CompanyScore> scoreList = companyScoreMapper.selectAndList(companyScore);
+        if(CollectionUtils.isNotEmpty(scoreList)){
+            return scoreList.get(0);
+        }
+        return null;
+    }
+
+    public CompanyScoreVo myScoreInfoVo(Long companyId){
+        CompanyScore companyScore = myScoreInfo(companyId);
+        if(companyScore==null) return null;
+        CompanyScoreVo companyScoreVo = new CompanyScoreVo().asVo(companyScore);
+        companyScoreVo.setLike(companyLikeService.hasLike(companyScore.getId()));
+        companyScoreVo.setReport(companyReportService.getReportVo(companyScore.getId()));
+        return companyScoreVo;
     }
 }

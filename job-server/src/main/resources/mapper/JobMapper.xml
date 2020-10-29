@@ -418,4 +418,13 @@
       max_salary = #{maxSalary,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+
+  <!--<select id="getRecruitCount" parameterType="INTEGER" resultType="map">
+    SELECT recruit_type as recruitType,
+           COUNT(recruit_type) AS count
+    FROM t_job WHERE company_id=#{id} GROUP BY recruit_type;
+  </select>-->
+
 </mapper>

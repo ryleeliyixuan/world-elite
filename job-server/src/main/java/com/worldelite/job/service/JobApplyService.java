@@ -139,7 +139,7 @@ public class JobApplyService extends BaseService{
             applyResumeVo.setId(jobApply.getId());
             applyResumeVo.setApplyStatus(jobApply.getStatus());
             applyResumeVo.setType(jobApply.getType());
-            applyResumeVo.setCommentVos(corporateCommentService.getCommentsByJobApplyId(jobApply.getId()));
+            applyResumeVo.setCommentVos(corporateCommentService.getCommentsByResumeId(jobApply.getId()));
             //获取简历基础信息
             ResumeService resumeService = resumeServiceFactory.getDefaultService();
             Resume resume = resumeService.getResumeBasic(jobApply.getResumeId());
@@ -150,7 +150,7 @@ public class JobApplyService extends BaseService{
             ResumeDetail resumeDetail = resumeService.getResumeDetail(resume.getId());
             applyResumeVo.setResume(resumeService.toResumeVo(resumeDetail));
             applyResumeVo.setJob(jobService.getJobInfo(jobApply.getJobId(), false));
-            applyResumeVo.setTagVos(corporateTagService.getTagsByJobApplyId(jobApply.getId()));
+            applyResumeVo.setTagVos(corporateTagService.getTagsByResumeId(resume.getId()));
             applyResumeVo.setTime(jobApply.getCreateTime());
             applyResumeVoList.add(applyResumeVo);
         }

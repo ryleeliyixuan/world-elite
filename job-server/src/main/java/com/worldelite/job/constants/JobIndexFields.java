@@ -69,6 +69,11 @@ public interface JobIndexFields {
     String MIN_DEGREE_INDEX = "min_degree";
 
     /**
+     * 招聘类型
+     */
+    String RECRUIT_TYPE_INDEX = "recruit_type_index";
+
+    /**
      * 工作类型
      */
     String JOB_TYPE_INDEX = "job_type";

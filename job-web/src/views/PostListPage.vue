@@ -22,7 +22,7 @@
                 <el-option v-for="item in salaryRangeOptions" :key="item.id" :label="item.name"
                            :value="item.id"></el-option>
             </el-select>
-            <el-select v-model="listQuery.educationIds"
+            <el-select v-model="listQuery.degreeIds"
                        multiple
                        filterable
                        clearable
@@ -30,7 +30,7 @@
                        @change="handleFilter"
                        size="mini"
                        class="section1-select">
-                <el-option v-for="item in educationOptions" :key="item.id" :label="item.name"
+                <el-option v-for="item in degreeOptions" :key="item.id" :label="item.name"
                            :value="item.id"></el-option>
             </el-select>
             <el-select v-model="listQuery.companyIndustryIds"
@@ -51,50 +51,51 @@
         </div>
 
         <div style="display: inline-block;">
-            <el-tabs v-model="activeName" style="padding-left: 25px;">
-                <el-tab-pane label="全部" name="first"></el-tab-pane>
-                <el-tab-pane label="急招" name="second"></el-tab-pane>
-                <el-tab-pane label="热招" name="third"></el-tab-pane>
-                <el-tab-pane label="内推" name="fourth"></el-tab-pane>
-                <el-tab-pane label="校招" name="five"></el-tab-pane>
-                <el-tab-pane label="社招" name="six"></el-tab-pane>
+            <el-tabs v-model="listQuery.recruitId"
+                     @tab-click="handleFilter"
+                     style="padding-left: 25px;">
+                <el-tab-pane :label="'全部 ' + this.recruitCountResult.all"></el-tab-pane>
+                <el-tab-pane :label="'校招 ' + this.recruitCountResult.school" name="1"></el-tab-pane>
+                <el-tab-pane :label="'社招 ' + this.recruitCountResult.community" name="2"></el-tab-pane>
+                <el-tab-pane :label="'急招 ' + this.recruitCountResult.urgency" name="3"></el-tab-pane>
+                <el-tab-pane :label="'热招 ' + this.recruitCountResult.hot" name="4"></el-tab-pane>
+                <el-tab-pane :label="'内推 ' + this.recruitCountResult.inner" name="5"></el-tab-pane>
             </el-tabs>
         </div>
 
-        <div class="sort-options">
+      <div class="sort-options">
             <el-link @click="" :underline="false" style="color: #599EF8;">最新</el-link>
             /
             <el-link @click="" :underline="false">发布顺序</el-link>
         </div>
 
         <div class="section3-container">
-            <!-- v-for="(company, index) in companyList" -->
-            <!-- companyList[0].id -->
-            <el-card v-for="i in 6"
+            <el-card v-for="job in pageResult.list"
                      class="post-item" style="display: inline-block;"
                      :body-style="{ padding: '0px' }"
-                     :key="i">
-                <!-- fit="contain"-->
-                <el-image style="width: 100%;height: 210px;" :src="mockLogo"></el-image>
+                     :key="job.id">
+                <el-image style="width: 100%;height: 210px;" :src="job.companyUser.company.logo"></el-image>
                 <div class="type-logo-box">
-                    <div class="type-logo school">校 招</div>
-                    <div class="type-logo inner">内 推</div>
-                    <div class="type-logo hot">热 招</div>
-                    <div class="type-logo urgency">急 招</div>
+                    <div v-if="job.recruitType.value === '1'" class="type-logo school">校 招</div>
+                    <div v-if="job.recruitType.value === '5'" class="type-logo inner">内 推</div>
+                    <div v-if="job.recruitType.value === '4'" class="type-logo hot">热 招</div>
+                    <div v-if="job.recruitType.value === '3'" class="type-logo urgency">急 招</div>
                 </div>
                 <div class="mid" style="display: block">
-                    <span class="post-name">游戏UI设计</span>
-                    <span class="post-desc">下一款爆款游戏会是你设计的吗</span>
+                    <span v-text="job.name" class="post-name"></span>
+                    <span v-text="job.companyUser.company.synopsis" class="post-desc"></span>
                     <div class="mid-2">
-                        <span class="post-salary">6-12</span>
-                        <span class="post-addr">北京</span>
-                        <span class="post-degree">博士</span>
+                        <span v-text="job.salary.value" class="post-salary"></span>.
+                        &nbsp;
+                        <span v-text="job.address" class="post-addr"></span>.
+                        &nbsp;
+                        <span v-text="job.minDegree.name" class="post-degree"></span>
                     </div>
                 </div>
                 <span class="post-line"></span>
                 <div class="bot">
                     <span class="hr-logo"><i style="font-size: 30px;" class="el-icon-user"></i></span>
-                    <span class="recruiter">HR</span>
+                    <span v-text="job.companyUser.post" class="recruiter"></span>
                 </div>
             </el-card>
         </div>
@@ -112,7 +113,7 @@
 
 <script>
     import {listByType} from "@/api/dict_api";
-    import {searchJob} from "@/api/job_api";
+    import {getJobRecruitCount, searchJob} from "@/api/job_api";
     import Pagination from "@/components/Pagination";
     import {mapGetters} from "vuex";
 
@@ -127,11 +128,9 @@
         },
         data() {
             return {
-                companyList: [{"address":"南京","candidateResumeCount":0,"category":{"id":3,"name":"后端开发","parentId":2,"position":1},"city":{"code":"320100","createTime":"2020-10-15 10:14:52","english":"Nanjing","firstChar":"N","id":320100,"lat":"32.05830027444024","lng":"118.7959997119601","name":"南京市","parentId":320000,"phoneCode":"025","pinyin":"nan jing shi","py":"NJS","shortName":"南京","type":1,"updateTime":"2020-10-15 10:27:26","zipCode":"210008"},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294957277431529472","industryTags":[],"interviewResumeCount":0,"jobType":{"id":107,"name":"全职","type":8,"value":"1"},"minDegree":{"id":2,"name":"本科及以上","type":1,"value":"1"},"name":"后端开发工程师-Data","newResumeCount":1,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":111,"name":"10K-15K","type":9,"value":"10-15"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-16","totalResumeCount":1},{"address":"杭州","candidateResumeCount":0,"category":{"id":213,"name":"其他设计职位","parentId":212,"position":187},"city":{"code":"330100","createTime":"2020-10-15 10:14:53","english":"Hangzhou","firstChar":"H","id":330100,"lat":"30.24709986422286","lng":"120.2090000813704","name":"杭州市","parentId":330000,"phoneCode":"0571","pinyin":"hang zhou shi","py":"HZS","shortName":"杭州","type":1,"updateTime":"2020-10-15 10:27:35","zipCode":"310026"},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294954271319326720","industryTags":[],"interviewResumeCount":0,"jobType":{"id":108,"name":"实习","type":8,"value":"2"},"minDegree":{"id":2,"name":"本科及以上","type":1,"value":"1"},"name":"游戏AI音频实习生","newResumeCount":1,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":153,"name":"5K以下","type":9,"value":"0-5"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-16","totalResumeCount":1},{"address":"上海","candidateResumeCount":0,"category":{"id":41,"name":"测试开发","parentId":36,"position":37},"city":{"code":"310000","createTime":"2020-10-15 10:14:52","english":"Shanghai","firstChar":"S","id":310000,"lat":"31.230000555064284","lng":"121.47399982458053","name":"上海市","parentId":0,"phoneCode":"","pinyin":"shang hai shi","py":"SHS","shortName":"上海","type":1,"updateTime":"2020-10-15 10:27:24","zipCode":""},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294941203617087488","industryTags":[],"interviewResumeCount":0,"jobType":{"id":108,"name":"实习","type":8,"value":"2"},"minDegree":{"id":2,"name":"本科及以上","type":1,"value":"1"},"name":"测试开发实习生-飞书视频会议","newResumeCount":0,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":153,"name":"5K以下","type":9,"value":"0-5"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-16","totalResumeCount":0},{"address":"北京","candidateResumeCount":0,"category":{"id":5,"name":"C++","parentId":2,"position":3},"city":{"code":"110000","createTime":"2020-10-15 10:14:52","english":"Beijing","firstChar":"B","id":110000,"lat":"39.90459941931698","lng":"116.40700054364608","name":"北京市","parentId":0,"phoneCode":"","pinyin":"bei jing shi","py":"BJS","shortName":"北京","type":1,"updateTime":"2020-10-15 10:26:18","zipCode":""},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294936460647792640","industryTags":[],"interviewResumeCount":0,"jobType":{"id":107,"name":"全职","type":8,"value":"1"},"minDegree":{"id":2,"name":"本科及以上","type":1,"value":"1"},"name":"C++客户端开发工程师-视频架构","newResumeCount":1,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":111,"name":"10K-15K","type":9,"value":"10-15"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-16","totalResumeCount":1},{"address":"杭州","candidateResumeCount":0,"category":{"id":140,"name":"其他技术职位","parentId":139,"position":125},"city":{"code":"330100","createTime":"2020-10-15 10:14:53","english":"Hangzhou","firstChar":"H","id":330100,"lat":"30.24709986422286","lng":"120.2090000813704","name":"杭州市","parentId":330000,"phoneCode":"0571","pinyin":"hang zhou shi","py":"HZS","shortName":"杭州","type":1,"updateTime":"2020-10-15 10:27:35","zipCode":"310026"},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294934722897313792","industryTags":[],"interviewResumeCount":0,"jobType":{"id":107,"name":"全职","type":8,"value":"1"},"minDegree":{"id":2,"name":"本科及以上","type":1,"value":"1"},"name":"游戏引擎开发工程师-朝夕光年(字节跳动游","newResumeCount":0,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":111,"name":"10K-15K","type":9,"value":"10-15"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-16","totalResumeCount":0},{"address":"北京","candidateResumeCount":0,"category":{"id":143,"name":"产品经理","parentId":142,"position":126},"city":{"code":"110000","createTime":"2020-10-15 10:14:52","english":"Beijing","firstChar":"B","id":110000,"lat":"39.90459941931698","lng":"116.40700054364608","name":"北京市","parentId":0,"phoneCode":"","pinyin":"bei jing shi","py":"BJS","shortName":"北京","type":1,"updateTime":"2020-10-15 10:26:18","zipCode":""},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294600909809844224","industryTags":[],"interviewResumeCount":0,"jobType":{"id":107,"name":"全职","type":8,"value":"1"},"minDegree":{"id":2,"name":"本科及以上","type":1,"value":"1"},"name":"国际化策略产品经理","newResumeCount":0,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":153,"name":"5K以下","type":9,"value":"0-5"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-15","totalResumeCount":0},{"address":"北京","candidateResumeCount":0,"category":{"id":143,"name":"产品经理","parentId":142,"position":126},"city":{"code":"110000","createTime":"2020-10-15 10:14:52","english":"Beijing","firstChar":"B","id":110000,"lat":"39.90459941931698","lng":"116.40700054364608","name":"北京市","parentId":0,"phoneCode":"","pinyin":"bei jing shi","py":"BJS","shortName":"北京","type":1,"updateTime":"2020-10-15 10:26:18","zipCode":""},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294590214141706240","industryTags":[],"interviewResumeCount":0,"jobType":{"id":107,"name":"全职","type":8,"value":"1"},"minDegree":{"id":2,"name":"本科及以上","type":1,"value":"1"},"name":"策略产品经理-西瓜视频","newResumeCount":0,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":111,"name":"10K-15K","type":9,"value":"10-15"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-15","totalResumeCount":0},{"address":"北京","candidateResumeCount":0,"category":{"id":143,"name":"产品经理","parentId":142,"position":126},"city":{"code":"110000","createTime":"2020-10-15 10:14:52","english":"Beijing","firstChar":"B","id":110000,"lat":"39.90459941931698","lng":"116.40700054364608","name":"北京市","parentId":0,"phoneCode":"","pinyin":"bei jing shi","py":"BJS","shortName":"北京","type":1,"updateTime":"2020-10-15 10:26:18","zipCode":""},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294587161468534784","industryTags":[],"interviewResumeCount":0,"jobType":{"id":107,"name":"全职","type":8,"value":"1"},"minDegree":{"id":2,"name":"本科及以上","type":1,"value":"1"},"name":"APP产品经理","newResumeCount":0,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":111,"name":"10K-15K","type":9,"value":"10-15"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-15","totalResumeCount":0},{"address":"北京","candidateResumeCount":0,"category":{"id":273,"name":"市场策划","parentId":270,"position":238},"city":{"code":"110000","createTime":"2020-10-15 10:14:52","english":"Beijing","firstChar":"B","id":110000,"lat":"39.90459941931698","lng":"116.40700054364608","name":"北京市","parentId":0,"phoneCode":"","pinyin":"bei jing shi","py":"BJS","shortName":"北京","type":1,"updateTime":"2020-10-15 10:26:18","zipCode":""},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294586995877412864","industryTags":[],"interviewResumeCount":0,"jobType":{"id":108,"name":"实习","type":8,"value":"2"},"minDegree":{"id":1,"name":"专科及以上","type":1,"value":"0"},"name":"市场研究实习生","newResumeCount":0,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":153,"name":"5K以下","type":9,"value":"0-5"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-15","totalResumeCount":0},{"address":"北京","candidateResumeCount":0,"category":{"id":217,"name":"运营","parentId":215,"position":189},"city":{"code":"110000","createTime":"2020-10-15 10:14:52","english":"Beijing","firstChar":"B","id":110000,"lat":"39.90459941931698","lng":"116.40700054364608","name":"北京市","parentId":0,"phoneCode":"","pinyin":"bei jing shi","py":"BJS","shortName":"北京","type":1,"updateTime":"2020-10-15 10:26:18","zipCode":""},"companyUser":{"avatar":"","company":{"completeProgress":0,"favoriteFlag":0,"fullName":"北京字节跳动科技有限公司","homepage":"https://www.bytedance.com/zh/","id":"1253552062077882368","industry":{"id":93,"name":"互联网","type":6,"value":"19"},"logo":"https://oss.myworldelite.com/pic/7f2919c915354502852ec339cb4e0481.png","name":"字节跳动","property":{"id":105,"name":"民营","type":7,"value":"2"},"scale":{"id":74,"name":"2000人以上","type":5,"value":"6"},"stage":{"id":139,"name":"已融资","type":4,"value":"9"},"synopsis":"最早将AI应用于移动互联网"},"createTime":"2020-05-27","depart":"","email":"dtqkxwhdynyrfeuisv@awdrt.net","gender":0,"id":1265849571601084416,"name":"字节跳动","phoneCode":"","post":"人力资源部","status":1,"subscribeFlag":1,"type":2,"userId":"1265849571601084416"},"creatorId":1265849571601084416,"depart":"","experience":{"id":156,"name":"不限","type":13,"value":"1"},"id":"1294586798409580544","industryTags":[],"interviewResumeCount":0,"jobType":{"id":108,"name":"实习","type":8,"value":"2"},"minDegree":{"id":1,"name":"专科及以上","type":1,"value":"0"},"name":"用户运营实习生——社群方向","newResumeCount":0,"recruitType":{"id":154,"name":"校招","type":12,"value":"1"},"salary":{"id":153,"name":"5K以下","type":9,"value":"0-5"},"salaryMonths":0,"skillTags":[],"status":2,"time":"2020-08-15","totalResumeCount":0}],
-                mockLogo: "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1768115958,649887212&fm=26&gp=0.jpg",
-
-
+                //companyId: "1253552062077882368", // 1254648303499104256
                 listQuery: {
+                    companyId: undefined,
                     keyword: "",
                     salaryRangeIds: [],
                     jobTypes: [],
@@ -141,20 +140,20 @@
                     companyStageIds: [],
                     degreeIds: [],
                     categoryIds: [],
-                    educationIds: [],
+                    recruitId: '0',
                     page: 1,
-                    limit: 10
+                    limit: 20
                 },
-                activeName: 'second',
-                queryStr: '',
+                queryStr: "",
                 total: 0,
                 pageResult: {},
+                recruitCountResult: {all: 0, school: 0, community: 0, urgency: 0, hot: 0, inner: 0},
                 cityOptions: [],
                 salaryRangeOptions: [],
                 companyScaleOptions: [],
                 companyIndustryOptions: [],
                 jobTypeOptions: [],
-                educationOptions: [],
+                degreeOptions: [],
                 showNoResult: false
             };
         },
@@ -173,8 +172,10 @@
         },
         methods: {
             initData() {
+                console.log(this.$route.params.id);
+                this.listQuery.companyId = this.$route.params.id;
                 listByType(1).then(
-                    response => (this.educationOptions = response.data.list)
+                    response => (this.degreeOptions = response.data.list)
                 );
                 listByType(2).then(response => (this.cityOptions = response.data.list)).catch(function (err) {
                     console.log(err)
@@ -200,9 +201,12 @@
                 if (this.isHomeListPage()) {
                     this.$store.commit("setting/SET_KEYWORD", this.queryStr);
                 } else {
+                    console.log("asdsadas: " + this.listQuery.companyId)
+                    console.log("dasdasda: " + this.queryStr);
+                    this.listQuery.keyword = this.queryStr;
                     this.$router.push({
-                        path: "/job-list",
-                        query: {queryStr: this.queryStr}
+                        path: "/post-list/" + this.listQuery.companyId,
+                        query: {searchForm: this.listQuery}
                     });
                 }
             },
@@ -216,28 +220,47 @@
                 searchJob(this.listQuery).then(response => {
                     if (!response.data.list || response.data.list.length === 0) {
                         this.showNoResult = true;
-                        this.total = 10;
+                        this.total = 20;
                         getRecommendList({
                             objectType: 1, // 职位
                             page: 1,
-                            limit: 10,
+                            limit: 20,
                             sort: "+position"
                         }).then(response => {
                             this.pageResult.list = response.data.list.map(item => item.object);
-                            console.log(1111111);
-                            console.log(this.pageResult.list)
                             this.total = response.data.total;
                             this.$emit("complete");
-
                         });
                     } else {
-                        console.log(2222222);
-                        console.log(this.pageResult.list);
                         this.pageResult = response.data;
                         this.total = this.pageResult.total;
                         this.$emit("complete");
                     }
                 });
+
+              getJobRecruitCount(this.listQuery.companyId).then(response => {
+                  for ( let i = 0; i < response.data.length; i++) {
+                    let recruitType = response.data[i].dictVo.name;
+                    if (recruitType === "校招") {
+                        this.recruitCountResult.school = response.data[i].count;
+                    } else if (recruitType === "社招") {
+                        this.recruitCountResult.community = response.data[i].count;
+                    } else if (recruitType === "急招") {
+                        this.recruitCountResult.urgency = response.data[i].count;
+                    } else if (recruitType === "热招") {
+                        this.recruitCountResult.hot = response.data[i].count;
+                    } else if (recruitType === "内推") {
+                        this.recruitCountResult.inner = response.data[i].count;
+                    }
+                    this.recruitCountResult.all = this.recruitCountResult.school
+                                                  + this.recruitCountResult.inner
+                                                  + this.recruitCountResult.community
+                                                  + this.recruitCountResult.urgency
+                                                  + this.recruitCountResult.hot;
+                  }
+                  // console.log("getJobRecruitCount this.recruitCountResult: " + JSON.stringify(this.recruitCountResult));
+              });
+
             },
             handleRouteList() {
                 this.$router.replace({
@@ -254,7 +277,6 @@
                     options.item(i).remove();
                 }
                 this.queryStr = '';
-                console.log('clearOptions');
             }
         }
     };
@@ -352,17 +374,36 @@
                 width: 100%;
                 background-color: #E4E4E4;
             }
+
             .mid-2 {
-                color: #CCCCCC;
-                font-size: 12px;
-                margin-left: 15px;
+              color: #CCCCCC;
+              font-size: 12px;
+              margin-left: 15px;
+
+              .post-addr {
+                display: inline-block;
+
+                vertical-align: top;
+                max-width: 60px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow:ellipsis;
+              }
             }
+
             .post-desc {
                 display: block;
                 font-size: 12px;
                 color: #CCCCCC;
                 margin-left: 15px;
                 margin-bottom: 10px;
+                margin-top: 2px;
+                max-width: 150px;
+                min-height: 17.6px;
+
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow:ellipsis;
             }
             .post-name {
                 display: block;
@@ -372,6 +413,11 @@
                 margin-bottom: 5px;
                 margin-left: 15px;
                 color: #757371;
+                max-width: 150px;
+
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow:ellipsis;
             }
             .post-item {
                 min-width: 250px;

@@ -102,4 +102,17 @@ public class CompanyScoreApi extends BaseApi {
         PageResult<CompanyScoreVo> companyScorePageResult = companyScoreService.listVo(listForm);
         return ApiResult.ok(companyScorePageResult);
     }
+
+    /**
+     * 获取我的评分信息
+     * @param companyId 公司ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("my-score-info")
+    @RequireLogin(allow = UserType.GENERAL)
+    public ApiResult<CompanyScoreVo> getMyScoreInfo(@RequestParam Long companyId){
+        CompanyScoreVo companyScoreVo = companyScoreService.myScoreInfoVo(companyId);
+        return ApiResult.ok(companyScoreVo);
+    }
 }
