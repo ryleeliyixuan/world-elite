@@ -121,7 +121,19 @@ const constantRoutes = [
         path: '/mi',
         component: () => import('@/views/MiPage'),
         meta: {title: '寰球菁英-小米内页'}
-    }
+    },
+    {
+        path: '/companywiki/:id',
+        name: 'companywiki',
+        component: () => import('@/views/CompanyWikiMainPage'),
+        meta: {title: '寰球菁英-公司百科'}
+    },
+    {
+        path: '/test',
+        name: 'test',
+        component: () => import('@/views/test'),
+        meta: {title: '测试界面'}
+    },
 ]
 
 const createRouter = () => new Router({
