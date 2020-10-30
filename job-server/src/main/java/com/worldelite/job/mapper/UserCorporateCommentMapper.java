@@ -1,7 +1,6 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.UserCorporateComment;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -54,5 +53,5 @@ public interface UserCorporateCommentMapper {
      */
     int updateByPrimaryKey(UserCorporateComment record);
 
-    List<UserCorporateComment> selectByJobApplyId(@Param("jobApplyId") Long jobApplyId);
+    List<UserCorporateComment> selectAndList(UserCorporateComment userCorporateComment);
 }

@@ -257,25 +257,27 @@
                 </b-media>
             </el-card>
 
-            <transition name="slide-fade">
-                <div class="resume-drawer" v-if="resumeSelect">
-                    <div class="resume-drawer-body pl-4 pr-4 pb-4">
-                        <el-button
-                                type="text"
-                                class="el-icon-close button-close"
-                                @click="resumeSelect = undefined"
-                        ></el-button>
-                        <ResumeView :resumeId="resumeSelect.id" class="mt-3"></ResumeView>
+
+            <div class="mask" v-if="resumeSelect" @click="resumeSelect = undefined">
+                <transition name="slide-fade">
+                    <div class="resume-drawer" v-if="resumeSelect">
+                        <div class="resume-drawer-body pl-4 pr-4 pb-4">
+                            <el-button
+                                    type="text"
+                                    class="el-icon-close button-close"
+                                    @click="resumeSelect = undefined">
+                            </el-button>
+                            <ResumeView :resumeId="resumeSelect.id" class="mt-3"></ResumeView>
+                        </div>
                     </div>
-                </div>
-            </transition>
+                </transition>
+            </div>
             <pagination
                     v-show="pageResult.total"
                     :total="pageResult.total"
                     :page.sync="listQuery.page"
                     :limit.sync="listQuery.limit"
-                    @pagination="handleRouteList"
-            />
+                    @pagination="handleRouteList"/>
         </div>
         <div class="app-container" v-else>
             <div class="mt-3">
@@ -286,8 +288,7 @@
                                 placeholder="简历类型"
                                 @change="handleResumeType"
                                 class="w-100"
-                                size="small"
-                        >
+                                size="small">
                             <el-option
                                     v-for="item in resumeTypeOptions"
                                     :key="item.value"
@@ -715,6 +716,16 @@
     .app-container {
         max-width: 1200px;
         margin: 0 auto;
+    }
+
+    .mask {
+        position: fixed;
+        background: rgba(0,0,0,0.3);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9;
     }
 
     .resume-drawer {

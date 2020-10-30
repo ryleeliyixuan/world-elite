@@ -30,10 +30,6 @@ public class ResumeEduService extends BaseService{
     private ResumeEduMapper resumeEduMapper;
 
     @Autowired
-    @Lazy
-    private ResumeService resumeService;
-
-    @Autowired
     private SchoolMapper schoolMapper;
 
     /**

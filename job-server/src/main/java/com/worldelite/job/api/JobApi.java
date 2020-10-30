@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 职位接口
@@ -65,6 +66,7 @@ public class JobApi extends BaseApi {
         return ApiResult.ok();
     }
 
+
     /**
      * 获取公司已发布职位列表
      *
@@ -76,6 +78,20 @@ public class JobApi extends BaseApi {
     public ApiResult<PageResult<JobVo>> getCompanyJobList(JobListForm jobListForm) {
         jobListForm.setStatus(JobStatus.PUBLISH.value);
         PageResult pageResult = jobService.getJobList(jobListForm);
+        return ApiResult.ok(pageResult);
+    }
+
+
+    /**
+     * 获取指定公司不同招聘类型职位数量
+     *
+     * @param companyId 公司ID
+     * @return 职位数量
+     */
+    @ApiDoc
+    @GetMapping("job-recruit-count")
+    public ApiResult<JobRecruitVo> getJobRecruitCount(Long companyId) {
+        List<JobRecruitVo> pageResult = jobService.getJobRecruitCount(companyId);
         return ApiResult.ok(pageResult);
     }
 
@@ -91,6 +107,16 @@ public class JobApi extends BaseApi {
         List<JobVo> jobVoList = jobService.getUserJobOptions();
         return ApiResult.ok(jobVoList);
     }
+
+
+
+    /*@GetMapping("job-recruit-count")
+    @ApiDoc
+    public ApiResult getRecruitCount(@RequestParam Long id) {
+        Map<String, Integer> recruitsCount = jobService.getRecruitCount(id);
+        return ApiResult.ok(recruitsCount);
+    }*/
+
 
     /**
      * 获取职位详情
@@ -265,7 +291,7 @@ public class JobApi extends BaseApi {
     /**
      * 推荐简历
      *
-     * @param jobId 职位ID
+     * @param jobId    职位ID
      * @param resumeId 简历ID
      * @return
      */

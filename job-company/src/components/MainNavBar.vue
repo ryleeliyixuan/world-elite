@@ -93,6 +93,7 @@
         },
         data() {
             return {
+                logo:'',
                 activeIndex: "/manage-job",
                 newMessageList: [],
                 unreadMessageCount: 0,

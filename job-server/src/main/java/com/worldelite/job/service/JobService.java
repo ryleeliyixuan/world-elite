@@ -2,6 +2,7 @@ package com.worldelite.job.service;
 
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
+import com.worldelite.job.dto.JobRecruitDto;
 import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
@@ -10,6 +11,8 @@ import com.worldelite.job.mapper.JobApplyMapper;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mq.JobMessage;
 import com.worldelite.job.mq.MessageTaskHandler;
+import com.worldelite.job.service.resume.ResumeService;
+import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.util.AppUtils;
@@ -21,7 +24,6 @@ import org.apache.lucene.document.Document;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -55,10 +58,6 @@ public class JobService extends BaseService {
     private CompanyAddressService companyAddressService;
 
     @Autowired
-    @Lazy
-    private ResumeApplicantService resumeService;
-
-    @Autowired
     private FavoriteService favoriteService;
 
     @Autowired
@@ -75,6 +74,9 @@ public class JobService extends BaseService {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private ResumeServiceFactory resumeServiceFactory;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -193,12 +195,11 @@ public class JobService extends BaseService {
             return getNewestJobList(jobSearchForm);
         } else {
             //已登录用户组合相关条件
-            ResumeVo resumeVo = resumeService.getDefaultOrCreate();;
-            if (resumeVo.getUserExpectJob() != null) {
-                UserExpectJobVo expectJobVo = resumeVo.getUserExpectJob();
-
-                List<JobCategoryVo> categoryList = expectJobVo.getCategoryList();
-
+            ResumeService resumeService = resumeServiceFactory.getDefaultService();
+            ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
+            //意向职位
+            if (resumeDetail.getCategoryList() != null) {
+                List<JobCategory> categoryList = resumeDetail.getCategoryList();
                 if (CollectionUtils.isNotEmpty(categoryList)) {
                     Integer[] categoryIds = new Integer[categoryList.size()];
                     for (int i = 0, size = categoryList.size(); i != size; i++) {
@@ -206,25 +207,24 @@ public class JobService extends BaseService {
                     }
                     jobSearchForm.setCategoryIds(categoryIds);
                 }
-
-                if (ArrayUtils.isEmpty(jobSearchForm.getCityIds())) {
-                    List<DictVo> cityList = resumeVo.getUserExpectJob().getCityList();
-                    if (CollectionUtils.isNotEmpty(cityList)) {
-                        Integer[] cityIds = new Integer[cityList.size()];
-                        for (int i = 0, size = cityList.size(); i != size; i++) {
-                            cityIds[i] = cityList.get(i).getId();
-                        }
-                        jobSearchForm.setCityIds(cityIds);
+            }
+            //意向城市
+            if (ArrayUtils.isEmpty(jobSearchForm.getCityIds())) {
+                List<City> cityList = resumeDetail.getCityList();
+                if (CollectionUtils.isNotEmpty(cityList)) {
+                    Integer[] cityIds = new Integer[cityList.size()];
+                    for (int i = 0, size = cityList.size(); i != size; i++) {
+                        cityIds[i] = cityList.get(i).getId();
                     }
+                    jobSearchForm.setCityIds(cityIds);
                 }
-
-            } else if (CollectionUtils.isNotEmpty(resumeVo.getResumeSkillList())) {
+            }
+            //能力标签
+            if (CollectionUtils.isNotEmpty(resumeDetail.getResumeSkillList())) {
                 StringBuilder keywordBuilder = new StringBuilder();
-
-                for (ResumeSkillVo resumeSkillVo : resumeVo.getResumeSkillList()) {
-                    keywordBuilder.append(resumeSkillVo.getName());
+                for (ResumeSkill resumeSkill : resumeDetail.getResumeSkillList()) {
+                    keywordBuilder.append(resumeSkill.getName());
                 }
-
                 jobSearchForm.setKeyword(keywordBuilder.toString());
             }
             PageResult<JobVo> jobPageResult = searchService.searchJob(jobSearchForm);
@@ -240,6 +240,8 @@ public class JobService extends BaseService {
         return org.apache.commons.lang.StringUtils.isEmpty(jobSearchForm.getKeyword())
                 && jobSearchForm.getSalaryRangeId() == null
                 && jobSearchForm.getJobType() == null
+                && (jobSearchForm.getRecruitId() ==null || jobSearchForm.getRecruitId() == 0)
+                && jobSearchForm.getCompanyId() == null
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getSalaryRangeIds())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getJobTypes())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCityIds())
@@ -417,12 +419,13 @@ public class JobService extends BaseService {
             throw new ServiceException(ApiCode.INVALID_OPERATION);
         }
 
-        ResumeVo resumeVo = resumeService.getDefaultOrCreate();;
-        if (resumeVo == null) {
+        ResumeService resumeService = resumeServiceFactory.getDefaultService();
+        ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
+        if (resumeDetail == null) {
             throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
         }
 
-        checkResumeComplete(resumeVo);
+        checkResumeComplete(resumeDetail);
 
         if (checkUserApply(jobId)) {
             throw new ServiceException(message("job.apply.repeat"));
@@ -433,7 +436,7 @@ public class JobService extends BaseService {
         newJobApply.setUserId(curUser().getId());
         newJobApply.setStatus(JobApplyStatus.VIEW.value);
         newJobApply.setType(JobApplyType.APPLICANT.value);
-        newJobApply.setResumeId(Long.valueOf(resumeVo.getId()));
+        newJobApply.setResumeId(resumeDetail.getResumeId());
         jobApplyMapper.insertSelective(newJobApply);
 
         // 给职位创建者发消息
@@ -441,7 +444,7 @@ public class JobService extends BaseService {
         message.setFromUser(curUser().getId());
         message.setToUser(job.getCreatorId());
         message.setContent(message("message.job.apply", job.getName()));
-        message.setUrl("/manage-job");
+        message.setUrl(String.format("/manage-resume?jobIds=%s", job.getId()));
         messageService.sendMessage(message);
     }
 
@@ -484,17 +487,56 @@ public class JobService extends BaseService {
         if(job == null){
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
-        ResumeVo resumeVo = resumeService.getResumeDetail(resumeId);
-        if(resumeVo == null){
+        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+        ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
+        if(resumeDetail == null){
             throw new ServiceException("简历不存在，请检查输入的简历ID", ApiCode.OBJECT_NOT_FOUND);
         }
         Message message = new Message();
         message.setFromUser(-1L);
         message.setToUser(job.getCreatorId());
-        message.setContent(message("message.recommend.resume.for.job", job.getName(), resumeVo.getName()));
+        message.setContent(message("message.recommend.resume.for.job", job.getName(), resumeDetail.getName()));
         message.setUrl(String.format("/resume?resumeId=%s", resumeId));
         messageService.sendMessage(message);
     }
+
+    /**
+     * 获取指定公司职位的招聘类型计数
+     * 这个功能用到的sql中，招聘类型的字典表type写了固定值
+     * 字典表发生较大变动，type值有变化需要及时更改此处sql
+     * @param companyId 公司id
+     */
+    public List<JobRecruitVo> getJobRecruitCount(Long companyId){
+        List<JobRecruitVo> jobRecruitVos = new ArrayList<>();
+        JobOptions options = new JobOptions();
+        options.setCompanyId(companyId);
+        final List<JobRecruitDto> jobRecruitDtos = jobMapper.selectJobRecruitCount(options);
+        jobRecruitDtos.forEach(jobRecruitDto -> {
+            JobRecruitVo jobRecruitVo = new JobRecruitVo();
+            jobRecruitVo.setCount(jobRecruitDto.getCount());
+            jobRecruitVo.setDictVo(dictService.getById(jobRecruitDto.getRecruitType()));
+            jobRecruitVos.add(jobRecruitVo);
+        });
+
+        return jobRecruitVos;
+    }
+
+
+
+    /**
+     * 获取指定公司不同招聘类型职位数量
+     *
+     * @param id 公司ID
+     * @return 职位数量
+     */
+    /*public Map<String, Integer> getRecruitCount(Long id) {
+        Map<String, Integer> map = jobMapper.getRecruitCount(id);
+        System.out.println("map = " + map);
+        return map;
+    }*/
+
+
+
 
     private JobVo toJobVo(Job job, Boolean includeCompany) {
         if (job == null) {
@@ -503,7 +545,7 @@ public class JobService extends BaseService {
         JobVo jobVo = new JobVo().asVo(job);
         jobVo.setCategory(jobCategoryService.getById(job.getCategoryId()));
         jobVo.setMinDegree(dictService.getById(job.getMinDegreeId()));
-        jobVo.setCity(cityService.getByCityVo(job.getCityId()));
+        jobVo.setCity(cityService.getCityVo(job.getCityId()));
         jobVo.setJobType(dictService.getById(job.getJobType()));
         jobVo.setRecruitType(dictService.getById(job.getRecruitType()));
         jobVo.setSalary(dictService.getById(job.getSalaryId()));
@@ -563,38 +605,45 @@ public class JobService extends BaseService {
         }
     }
 
-    private void checkResumeComplete(ResumeVo resumeVo) {
-        if (StringUtils.isEmpty(resumeVo.getName())
-                || resumeVo.getAge() == null
-                || resumeVo.getBirth() == null
-                || resumeVo.getGender() == null) {
+    private void checkResumeComplete(ResumeDetail resumeDetail) {
+        Resume resumeBasic = resumeDetail.getResumeBasic();
+        if (StringUtils.isEmpty(resumeDetail.getName())
+                || resumeBasic == null
+                || resumeBasic.getBirth() == null
+                || resumeDetail.getGender() == null) {
 
             throw new ServiceException("请先完善简历：基本信息未填写", ApiCode.UNCOMPLETE_RESUME);
         }
 
-        if (StringUtils.isEmpty(resumeVo.getAvatar())) {
+        if (StringUtils.isEmpty(resumeDetail.getAvatar())) {
             throw new ServiceException("请先完善简历：简历头像未上传", ApiCode.UNCOMPLETE_RESUME);
         }
 
-        if (StringUtils.isEmpty(resumeVo.getIntroduction())) {
+        if (StringUtils.isEmpty(resumeBasic.getIntroduction())) {
             throw new ServiceException("请先完善简历：自我介绍未填写", ApiCode.UNCOMPLETE_RESUME);
         }
 
-        if (CollectionUtils.isEmpty(resumeVo.getResumeEduList())) {
+        if (CollectionUtils.isEmpty(resumeDetail.getResumeEduList())) {
             throw new ServiceException("请先完善简历：教育经历未填写", ApiCode.UNCOMPLETE_RESUME);
         }
 
 
-        if (CollectionUtils.isEmpty(resumeVo.getResumeExpList())) {
+        if (CollectionUtils.isEmpty(resumeDetail.getResumeExpList())) {
             throw new ServiceException("请先完善简历：工作经验未填写", ApiCode.UNCOMPLETE_RESUME);
         }
 
-        if (CollectionUtils.isEmpty(resumeVo.getResumePracticeList())) {
+        if (CollectionUtils.isEmpty(resumeDetail.getResumePracticeList())) {
             throw new ServiceException("请先完善简历：实践经验未填写", ApiCode.UNCOMPLETE_RESUME);
         }
 
-        if (CollectionUtils.isEmpty(resumeVo.getResumeSkillList())) {
+        if (CollectionUtils.isEmpty(resumeDetail.getResumeSkillList())) {
             throw new ServiceException("请先完善简历：能力标签未填写", ApiCode.UNCOMPLETE_RESUME);
         }
     }
+
+
+
+
+
+
 }

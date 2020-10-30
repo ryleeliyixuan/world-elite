@@ -41,7 +41,7 @@ public interface IndexService {
      * @param resumeId
      */
     void saveResumeItem(Long resumeId);
-    void saveResumeItem(ResumeDetail resumeDetail,String indexPath);
+    Document saveResumeItem(ResumeDetail resumeDetail,String indexPath);
 
     /**
      * 在索引中删除简历记录

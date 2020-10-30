@@ -5,7 +5,7 @@ package com.worldelite.job.constants;
  */
 public enum FavoriteType {
 
-    JOB(1),COMPANY(2),ACTIVITY(3);
+    JOB(1),COMPANY(2),ACTIVITY(3),RESUME(4);
 
     public final byte value;
 

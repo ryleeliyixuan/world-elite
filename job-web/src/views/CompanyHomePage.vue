@@ -97,28 +97,11 @@
                 </div>
             </div>
             <div class="row job-box" v-else-if="tabIndex == 'job'">
-                <div class="col-lg-8 col-md-10 col-sm-12" v-if="jobPage.list.length>0">
-                    <el-card shadow="hover"
-                             v-for="job in jobPage.list"
-                             :key="job.id"
-                             class="mb-2 link-pointer"
-                             @click.native="onJobClick(job)">
-                        <h6> {{job.name}}
-                            <span class="text-danger float-right">
-                                {{job.minSalary}}K - {{job.maxSalary}}K</span>
-                        </h6>
-                        <div class="text-small text-gray">
-                            {{job.minDegree? job.minDegree.name: ''}} . {{job.city? job.city.name: ''}}
-                        </div>
-                    </el-card>
-                    <pagination v-show="total"
-                                :total="total"
-                                :page.sync="listQuery.page"
-                                :limit.sync="listQuery.limit"
-                                @pagination="getCompanyJobList"/>
+                <div v-if="jobPage.list.length>0">
+                    <PostListPage></PostListPage>
                 </div>
                 <div style="line-height: 80px; text-align: center; padding-bottom: 20px; width: 100%;" v-else>
-                    暂无岗位
+                  很抱歉，该公司暂无岗位发布哦。
                 </div>
             </div>
             <!-- Activity START-->
@@ -157,6 +140,7 @@
     import {setPageTitle} from "@/utils/setting";
     import {doFavorite} from "@/api/favorite_api";
     import {mapGetters} from "vuex";
+    import PostListPage from './PostListPage';
 
     Vue.use(VueAMap);
 
@@ -167,7 +151,7 @@
 
     export default {
         name: "CompanyHomePage",
-        components: {Pagination},
+        components: {Pagination, PostListPage},
         data() {
             return {
                 companyId: undefined,

@@ -5,7 +5,8 @@ package com.worldelite.job.constants;
  **/
 public enum BusinessType {
     Job(0, "职位更新/删除"),
-    AttachResume(1, "附件简历更新/删除");
+    Resume(1,"简历更新/删除"),
+    AttachResume(2, "附件简历更新/删除");
 
     private int business;
     private String name;

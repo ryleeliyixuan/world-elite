@@ -128,7 +128,7 @@ public class MessageService extends BaseService{
             favoriteList = favoriteMapper.selectAndList(options);
             for(Favorite favorite: favoriteList){
                 Message message = new Message();
-                message.setFromUser(jobVo.getCreatorId());
+                message.setFromUser(Long.valueOf(jobVo.getCreatorId()));
                 message.setToUser(favorite.getUserId());
                 message.setContent(message("message.job.subscribe", companyVo.getName(), jobVo.getName()));
                 message.setUrl(String.format("/job/%s", jobVo.getId()));

@@ -4,9 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.ObjectType;
 import com.worldelite.job.constants.UserType;
-import com.worldelite.job.entity.Company;
-import com.worldelite.job.entity.CompanyWiki;
-import com.worldelite.job.entity.User;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
@@ -41,6 +39,21 @@ public class CompanyApi extends BaseApi {
 
     @Autowired
     private RecommendService recommendService;
+
+    @Autowired
+    private CompanyEmployeeService companyEmployeeService;
+
+    @Autowired
+    private CompanyHistoryService companyHistoryService;
+
+    @Autowired
+    private CompanyMarketService companyMarketService;
+
+    @Autowired
+    private CompanyProductService companyProductService;
+
+    @Autowired
+    private CompanyStructureService companyStructureService;
 
     /**
      * 搜索公司
@@ -242,5 +255,197 @@ public class CompanyApi extends BaseApi {
     public ApiResult saveCompanyWiki(@RequestBody CompanyWikiForm  wikiForm){
         companyWikiService.saveCompanyWiki(wikiForm);
         return ApiResult.ok();
+    }
+
+    /**
+     * 新增百科雇员人数
+     * @param companyEmployeeForm 雇员人数表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-employee")
+    public ApiResult<CompanyEmployeeVo> saveEmployee(@RequestBody CompanyEmployeeForm companyEmployeeForm){
+        CompanyEmployee employee = companyEmployeeService.save(companyEmployeeForm);
+        return ApiResult.ok(companyEmployeeService.toVo(employee));
+    }
+
+    /**
+     * 删除百科雇员人数
+     * @param employeeId 雇员人数ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-employee")
+    public ApiResult deleteEmployee(@RequestParam Integer employeeId){
+        companyEmployeeService.deleteById(employeeId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司雇员人数
+     * @param companyId 公司雇员人数ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-employee")
+    public ApiResult<List<CompanyEmployeeVo>> listEmployee(@RequestParam Long companyId){
+        List<CompanyEmployeeVo> employeeVoList = companyEmployeeService.listEmployeeVo(companyId);
+        return ApiResult.ok(employeeVoList);
+    }
+
+    /**
+     * 新增百科发展路径
+     * @param companyHistoryForm 发展路径表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-history")
+    public ApiResult<CompanyHistoryVo> saveHistory(@RequestBody CompanyHistoryForm companyHistoryForm){
+        CompanyHistory history = companyHistoryService.save(companyHistoryForm);
+        return ApiResult.ok(companyHistoryService.toVo(history));
+    }
+
+    /**
+     * 删除百科发展路径
+     * @param historyId 发展路径ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-history")
+    public ApiResult deleteHistory(@RequestParam Integer historyId){
+        companyHistoryService.deleteById(historyId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司发展路径
+     * @param companyId 公司发展路径ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-history")
+    public ApiResult<List<CompanyHistoryVo>> listHistory(@RequestParam Long companyId){
+        List<CompanyHistoryVo> historyVoList = companyHistoryService.listHistoryVo(companyId);
+        return ApiResult.ok(historyVoList);
+    }
+
+    /**
+     * 新增百科市值
+     * @param companyMarketForm 市值表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-market")
+    public ApiResult<CompanyMarketVo> saveMarket(@RequestBody CompanyMarketForm companyMarketForm){
+        CompanyMarket market = companyMarketService.save(companyMarketForm);
+        return ApiResult.ok(companyMarketService.toVo(market));
+    }
+
+    /**
+     * 删除百科市值
+     * @param marketId 市值ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-market")
+    public ApiResult deleteMarket(@RequestParam Integer marketId){
+        companyMarketService.deleteById(marketId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司市值
+     * @param companyId 公司市值ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-market")
+    public ApiResult<CompanyMarketVo> listMarket(@RequestParam Long companyId){
+        CompanyMarket market = companyMarketService.getByCompanyId(companyId);
+        return ApiResult.ok(companyMarketService.toVo(market));
+    }
+
+    /**
+     * 新增百科产品
+     * @param companyProductForm 产品表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-product")
+    public ApiResult<CompanyProductVo> saveProduct(@RequestBody CompanyProductForm companyProductForm){
+        CompanyProduct product = companyProductService.save(companyProductForm);
+        return ApiResult.ok(companyProductService.toVo(product));
+    }
+
+    /**
+     * 删除百科产品
+     * @param productId 产品ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-product")
+    public ApiResult deleteProduct(@RequestParam Integer productId){
+        companyProductService.deleteById(productId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司产品
+     * @param companyId 公司产品ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-product")
+    public ApiResult<List<CompanyProductVo>> listProduct(@RequestParam Long companyId){
+        List<CompanyProductVo> productVoList = companyProductService.listProductVo(companyId);
+        return ApiResult.ok(productVoList);
+    }
+
+    /**
+     * 新增百科组织架构
+     * @param companyStructureForm 组织架构表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-structure")
+    public ApiResult<CompanyStructureVo> saveStructure(@RequestBody CompanyStructureForm companyStructureForm){
+        CompanyStructure structure = companyStructureService.save(companyStructureForm);
+        return ApiResult.ok(companyStructureService.toVo(structure));
+    }
+
+    /**
+     * 删除百科组织架构
+     * @param structureId 组织架构ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-structure")
+    public ApiResult deleteStructure(@RequestParam Integer structureId){
+        companyStructureService.deleteById(structureId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司组织架构
+     * @param companyId 公司组织架构ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-structure")
+    public ApiResult<List<CompanyStructureVo>> listStructure(@RequestParam Long companyId){
+        List<CompanyStructureVo> structureVoList = companyStructureService.getStructureTree(companyId);
+        return ApiResult.ok(structureVoList);
+    }
+
+    /**
+     * 改变模块启用状态
+     * @param companyWikiForm 百科表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("change-module-enable")
+    public ApiResult<CompanyWikiVo> changeModuleEnable(@RequestBody CompanyWikiForm companyWikiForm){
+        CompanyWiki companyWiki = companyWikiService.changeModuleEnable(companyWikiForm);
+        return ApiResult.ok(companyWikiService.toVo(companyWiki));
     }
 }

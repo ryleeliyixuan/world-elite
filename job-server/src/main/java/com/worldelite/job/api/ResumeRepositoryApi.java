@@ -1,19 +1,16 @@
 package com.worldelite.job.api;
 
-import com.alibaba.excel.util.StringUtils;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.JobApply;
 import com.worldelite.job.entity.ResumeDetail;
-import com.worldelite.job.entity.ResumeRepository;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.*;
 import com.worldelite.job.service.resume.ResumeService;
 import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.vo.*;
 import io.github.yedaxia.apidocs.ApiDoc;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,9 +23,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/resume-repository/")
 public class ResumeRepositoryApi extends BaseApi {
-
-    @Autowired
-    private ResumeRepositoryService resumeRepositoryService;
 
     @Autowired
     private ResumeEduService resumeEduService;
@@ -63,7 +57,8 @@ public class ResumeRepositoryApi extends BaseApi {
     @ApiDoc
     @PostMapping("save-attachment")
     public ApiResult saveAttachment(@RequestParam String attachmentName) {
-        resumeRepositoryService.saveAttachment(attachmentName);
+        ResumeService resumeService = resumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
+        resumeService.parseAttachment(attachmentName);
         return ApiResult.ok();
     }
 
@@ -77,7 +72,8 @@ public class ResumeRepositoryApi extends BaseApi {
     @ApiDoc
     @PostMapping("add-attachment")
     public ApiResult addAttachment(@RequestParam Long id, @RequestParam String attachmentName) {
-        //resumeRepositoryService.addAttachment(id,attachmentName);
+//        ResumeService resumeService = resumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
+//        resumeService.parseAttachment(attachmentName);
         return ApiResult.ok();
     }
 
@@ -150,14 +146,6 @@ public class ResumeRepositoryApi extends BaseApi {
         return ApiResult.ok(resumeService.toResumeVo(pageResult));
     }
 
-    public void suggest() {
-
-    }
-
-    public void delete() {
-
-    }
-
     /***************** 新简历库逻辑 *********************/
 
     /**
@@ -201,7 +189,8 @@ public class ResumeRepositoryApi extends BaseApi {
     @PostMapping("del-resume-attachment")
     @ApiDoc
     public ApiResult delResumeAttachment(@RequestParam Long resumeId) {
-        resumeRepositoryService.delResumeAttachment(resumeId);
+        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+        resumeService.deleteResumeAttachment(resumeId);
         return ApiResult.ok();
     }
 

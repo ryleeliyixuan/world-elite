@@ -1,5 +1,6 @@
 package com.worldelite.job.mapper;
 
+import com.worldelite.job.entity.UserCorporate;
 import com.worldelite.job.entity.UserCorporateTag;
 
 import java.util.List;
@@ -53,5 +54,5 @@ public interface UserCorporateTagMapper {
      */
     int updateByPrimaryKey(UserCorporateTag record);
 
-    List<UserCorporateTag> selectByJobApplyId(Long jobApplyId);
+    List<UserCorporateTag> selectAndList(UserCorporateTag userCorporateTag);
 }

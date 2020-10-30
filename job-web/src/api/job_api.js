@@ -39,3 +39,11 @@ export function myApplyJobList(data){
         params: data
     })
 }
+
+export function getJobRecruitCount(id) {
+    return request({
+        url: '/job/job-recruit-count',
+        method: 'get',
+        params: {companyId: id}
+    })
+}

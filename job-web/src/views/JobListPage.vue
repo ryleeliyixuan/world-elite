@@ -1,23 +1,32 @@
 <template>
     <div class="app-container">
         <div class="section1-container">
-            <el-select v-model="listQuery.cityIds"
-                       multiple
-                       filterable
-                       clearable
-                       placeholder="城市"
-                       @change="handleFilter"
-                       size="small"
-                       class="section1-select">
-                <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
+            <el-cascader placeholder="城市"
+                         :show-all-levels="false"
+                         :options="cityOptions"
+                         :props="cityIdProps"
+                         filterable
+                         clearable
+                         @change="handleFilter"
+                         class="cascader"
+                         v-model="listQuery.cityIds">
+            </el-cascader>
+<!--            <el-select v-model="listQuery.cityIds"-->
+<!--                       multiple-->
+<!--                       filterable-->
+<!--                       clearable-->
+<!--                       placeholder="城市"-->
+<!--                       @change="handleFilter"-->
+<!--                       size="small"-->
+<!--                       class="section1-select">-->
+<!--                <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+<!--            </el-select>-->
             <el-select v-model="listQuery.salaryRangeIds"
                        multiple
                        filterable
                        clearable
                        placeholder="薪资"
                        @change="handleFilter"
-                       size="small"
                        class="section1-select">
                 <el-option v-for="item in salaryRangeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
@@ -27,7 +36,6 @@
                        clearable
                        placeholder="行业"
                        @change="handleFilter"
-                       size="small"
                        class="section1-select">
                 <el-option v-for="item in companyIndustryOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
@@ -37,7 +45,6 @@
                        clearable
                        placeholder="公司规模"
                        @change="handleFilter"
-                       size="small"
                        class="section1-select">
                 <el-option v-for="item in companyScaleOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
@@ -47,7 +54,6 @@
                        clearable
                        placeholder="工作类型"
                        @change="handleFilter"
-                       size="small"
                        class="section1-select">
                 <el-option v-for="item in jobTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
@@ -141,12 +147,40 @@
                 },
                 total: 0,
                 pageResult: {},
-                cityOptions: [],
                 salaryRangeOptions: [],
                 companyScaleOptions: [],
                 companyIndustryOptions: [],
                 jobTypeOptions: [],
-                showNoResult: false
+                showNoResult: false,
+                cityIdProps: {
+                    multiple: true,
+                    lazy: true,
+                    lazyLoad: (node, resolve) => {
+                        if (node.level === 1) {
+                            this.$axios.request({
+                                url: "/city/list",
+                                method: "get",
+                                params: {type: node.value}
+                            }).then(data => {
+                                let nodes = data.data.map(second => {
+                                    let children = second.children && second.children.map(third => {
+                                        return {id:third.id, name:third.name, leaf:true}
+                                    })
+                                    return {id:second.id, name:second.name, children}
+                                });
+                                resolve(nodes);
+                            })
+                        } else {
+                            resolve();
+                        }
+                    },
+                    expandTrigger: "hover",
+                    value: "id",
+                    label: "name",
+                    emitPath: false,
+                    children: "children"
+                },
+                cityOptions: [{id: 1, name: "国内"}, {id: 2, name: "国外"}],
             };
         },
         created() {
@@ -164,9 +198,6 @@
         },
         methods: {
             initData() {
-                listByType(2).then(response => (this.cityOptions = response.data.list)).catch(function (err) {
-                    console.log(err)
-                });
                 listByType(5).then(
                     response => (this.companyScaleOptions = response.data.list)
                 );
@@ -198,18 +229,12 @@
                             sort: "+position"
                         }).then(response => {
                             this.pageResult.list = response.data.list.map(item => item.object);
-                            console.log(1111111);
-                            console.log(this.pageResult.list)
                             this.total = response.data.total;
                             this.$emit("complete");
 
                         });
                     } else {
-                        console.log(2222222);
-                        console.log(this.pageResult.list);
-                        console.log(JSON.stringify(response.data));
                         this.pageResult = response.data;
-                        console.log(this.pageResult.list);
                         this.total = this.pageResult.total;
                         this.$emit("complete");
                     }
@@ -240,6 +265,10 @@
             min-width: 335px;
             display: flex;
             flex-wrap: wrap;
+
+            ::v-deep .el-cascader {
+                margin-bottom: 10px;
+            }
 
             .section1-select {
                 flex: 1;

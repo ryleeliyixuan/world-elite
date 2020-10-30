@@ -1,15 +1,30 @@
 package com.worldelite.job.service.resume;
 
-import com.worldelite.job.constants.ResumeType;
+import com.github.pagehelper.PageHelper;
+import com.worldelite.job.constants.BusinessType;
+import com.worldelite.job.constants.OperationType;
+import com.worldelite.job.constants.ResumeIndexFields;
+import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeDetail;
+import com.worldelite.job.entity.ResumeOptions;
+import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.form.ResumeForm;
 import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.BaseService;
+import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.ResumeVo;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.lucene.document.Document;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 简历服务类接口
@@ -19,6 +34,18 @@ public abstract class ResumeService extends BaseService{
 
     @Autowired
     private ResumeMapper resumeMapper;
+
+    @Autowired
+    private IndexService indexService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Resource(name = "luceneIndexCmdFanoutExchange")
+    private FanoutExchange exchange;
+
+    @Value("${search.index.resumeindex2}")
+    private String folder;
 
     /**
      * 获取登录用户默认的简历
@@ -32,6 +59,13 @@ public abstract class ResumeService extends BaseService{
      * @return 简历详细数据
      */
     public abstract ResumeDetail saveBasic(ResumeForm resumeForm);
+
+    /**
+     * 解析简历文件
+     * @param attachmentName 存在OSS上的简历文件名
+     * @return 解析后的简历详情
+     */
+    public abstract ResumeDetail parseAttachment(String attachmentName);
 
     /**
      * 删除简历附件
@@ -93,4 +127,34 @@ public abstract class ResumeService extends BaseService{
     public Resume getResumeBasic(Long resumeId){
         return resumeMapper.selectByPrimaryKey(resumeId);
     }
+
+
+    /**
+     * 给简历添加索引
+     * @param resumeId 简历ID
+     */
+    public void saveResumeItem(Long resumeId){
+        Document document = indexService.saveResumeItem(getResumeDetail(resumeId),folder);
+        //MQ广播索引更新指令
+        rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.CreateOrUpdate, BusinessType.Resume));
+    }
+
+    /**
+     * 给简历添加索引
+     * @param document 简历Document
+     */
+    public void saveResumeItem(Document document){
+        Long resumeId = Long.valueOf(document.get(ResumeIndexFields.RESUME_ID));
+        saveResumeItem(resumeId);
+    }
+
+    /**
+     * 从t_resume表重建所有简历索引
+     */
+    public abstract void rebuildAllIndex();
+
+    /**
+     * Todo 获取重建索引进度
+     */
+    public abstract void getRebuildProcess();
 }

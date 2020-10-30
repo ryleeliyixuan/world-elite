@@ -25,4 +25,6 @@ public class JobSearchForm extends PageForm{
     private Integer[] companyStageIds; //公司阶段
     private Integer[] degreeIds; //学历要求
     private Integer[] categoryIds; //职位类型
+    private Long companyId; //公司id -新百科搜索公司下职位时使用
+    private Integer recruitId; //招聘类型
 }

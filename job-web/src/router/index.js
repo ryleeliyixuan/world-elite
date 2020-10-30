@@ -31,6 +31,12 @@ const constantRoutes = [
         meta: {title: '寰球菁英-公司页面'}
     },
     {
+        path: '/post-list/:id',
+        name: 'post-list',
+        component: () => import('@/views/PostListPage'),
+        meta: {title: '寰球菁英-岗位'}
+    },
+    {
         path: '/job/:id',
         name: 'job',
         component: () => import('@/views/JobPage'),

@@ -1,9 +1,12 @@
 package com.worldelite.job.mapper;
 
+import com.worldelite.job.dto.JobRecruitDto;
 import com.worldelite.job.entity.Job;
 import com.worldelite.job.entity.JobOptions;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface JobMapper {
     /**
@@ -68,8 +71,19 @@ public interface JobMapper {
 
     /**
      * 智能搜索职位名称
+     *
      * @param name
      * @return
      */
     List<Job> selectSmartTips(String name);
+
+    List<JobRecruitDto> selectJobRecruitCount(JobOptions options);
+
+    /**
+     * 获取各个招聘类型的职位数量
+     *
+     * @param id 公司id
+     * @return 职位数量
+     */
+//    Map<String, Integer> getRecruitCount(@Param("id") Long id);
 }
