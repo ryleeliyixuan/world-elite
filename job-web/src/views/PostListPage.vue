@@ -55,11 +55,11 @@
                      @tab-click="handleFilter"
                      style="padding-left: 25px;">
                 <el-tab-pane :label="'全部 ' + this.recruitCountResult.all"></el-tab-pane>
-                <el-tab-pane :label="'校招 ' + this.recruitCountResult.school" name="1"></el-tab-pane>
-                <el-tab-pane :label="'社招 ' + this.recruitCountResult.community" name="2"></el-tab-pane>
-                <el-tab-pane :label="'急招 ' + this.recruitCountResult.urgency" name="3"></el-tab-pane>
-                <el-tab-pane :label="'热招 ' + this.recruitCountResult.hot" name="4"></el-tab-pane>
-                <el-tab-pane :label="'内推 ' + this.recruitCountResult.inner" name="5"></el-tab-pane>
+                <el-tab-pane :label="'校招 ' + this.recruitCountResult.school" name="154"></el-tab-pane>
+                <el-tab-pane :label="'社招 ' + this.recruitCountResult.community" name="155"></el-tab-pane>
+                <el-tab-pane :label="'急招 ' + this.recruitCountResult.urgency" name="170"></el-tab-pane>
+                <el-tab-pane :label="'热招 ' + this.recruitCountResult.hot" name="171"></el-tab-pane>
+                <el-tab-pane :label="'内推 ' + this.recruitCountResult.inner" name="172"></el-tab-pane>
             </el-tabs>
         </div>
 
