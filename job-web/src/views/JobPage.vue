@@ -20,10 +20,15 @@
                 <el-button
                         type="primary"
                         :loading="applyLoading"
-                        icon="el-icon-s-promotion"
+                        icon="el-icon-phone-outline"
                         @click="handleAppleJob"
                         v-bind:disabled="job.applyFlag === 1">
                     {{job.applyFlag === 1? '已申请' : '申请岗位'}}
+                </el-button>
+                <el-button type="primary"
+                           icon="el-icon-s-promotion"
+                           @click="handleChat">
+                    聊一聊
                 </el-button>
             </div>
         </div>
@@ -124,7 +129,7 @@
                     description: "",
                     image: "",
                     sites: ["wechat", "qq", "weibo", "google", "facebook", "twitter"]
-                }
+                },
             };
         },
         created() {
@@ -183,6 +188,10 @@
                     .finally(() => {
                         this.applyLoading = false;
                     });
+            },
+
+            handleChat() {
+                this.$router.push({path: "/chat", query: {toUser: this.job.creatorId, jobId:this.job.id}})
             }
         }
     };
