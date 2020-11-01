@@ -27,7 +27,10 @@
           <div class="item-company-container">
             <div class="text-small text-gray item-company-name">
               <span>{{job.companyUser.company.name}}</span>
-              <span>{{job.applyTime}}</span>
+              <div>
+                <span style="margin-right: 10px;">{{job.applyTime}}</span>
+                <el-button type="primary" plain  @click.stop="handleChat(job)" size="small">聊一聊</el-button>
+              </div>
             </div>
             <h6 class="mt-0 mb-1">{{job.name}}</h6>
             <div class>
@@ -123,6 +126,9 @@ export default {
       const status = parseInt(tab.name);
       this.listQuery.status = status;
       this.getList();
+    },
+    handleChat(item) {
+        this.$router.push({path: "/chat", query: {toUser: item.creatorId, jobId:item.id}})
     },
   },
 };

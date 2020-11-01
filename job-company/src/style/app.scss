@@ -10,6 +10,10 @@
   line-height: normal !important;
 }
 
+a:hover {
+  text-decoration: none !important;
+}
+
 // 兼容编辑器
 .ql-editor {
   min-height: 200px;

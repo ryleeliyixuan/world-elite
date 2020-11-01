@@ -40,6 +40,7 @@
             </div>
             <!-- 已登录 -->
             <div class="user_container" v-else>
+                <svg-icon @click="handlerChat" icon-class="chat2" class="chat"/>
                 <!-- 系统通知 -->
                 <el-popover placement="bottom-end"
                             width="300"
@@ -186,6 +187,12 @@
             },
             goMessageList() {
                 this.$router.push("/messages");
+            },
+
+            handlerChat() {
+                if (this.$route.path !== '/chat') {
+                    this.$router.push({path: "/chat"})
+                }
             }
         }
     };
@@ -253,6 +260,17 @@
             .user_container {
                 display: flex;
                 align-items: center;
+
+                .chat {
+                    width: 30px;
+                    height: 30px;
+                    margin-left: 10px;
+
+                    &:hover {
+                        cursor: pointer;
+                        color: #409eff;
+                    }
+                }
 
                 .join {
                     padding: 0 14px;

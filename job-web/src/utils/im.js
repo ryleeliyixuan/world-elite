@@ -344,7 +344,7 @@ let im = {
     conversationSearchByJobMessage(keyWords, readStatus, applyStatus) {
         return new Promise((resolve) => {
             this.sendMessage({
-                messageType: "12", keyWords
+                messageType: "12", keyWords, readStatus, applyStatus
             }).then(data => {
                 if (data.code) {
                     Message.error(data.errorMsg);

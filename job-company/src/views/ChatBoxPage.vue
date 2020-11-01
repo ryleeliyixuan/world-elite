@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
-        <div class="chat-container">
-            <div class="user-list" @click="filter=false">
+        <div class="chat-container" @click="closePopup">
+            <div class="user-list">
                 <div style="padding-right: 20px">
                     <el-input placeholder="搜索联系人"
                               prefix-icon="el-icon-search"
@@ -9,33 +9,32 @@
                               clearable
                               @keyup.enter.native="onSearch"/>
                 </div>
-
-                <!--                <el-autocomplete-->
-                <!--                        style="padding-right: 20px"-->
-                <!--                        v-model="keywords"-->
-                <!--                        :fetch-suggestions="querySearchAsync"-->
-                <!--                        placeholder="搜索联系人"-->
-                <!--                        @select="onSearchByJob"-->
-                <!--                ></el-autocomplete>-->
+                <!-- <el-autocomplete-->
+                <!--         style="padding-right: 20px"-->
+                <!--         v-model="keywords"-->
+                <!--         :fetch-suggestions="querySearchAsync"-->
+                <!--         placeholder="搜索联系人"-->
+                <!--         @select="onSearchByJob"-->
+                <!-- ></el-autocomplete>-->
                 <div class="top-button-container">
-                    <div class="filter-main-container">
-                        <el-button type="primary" size="mini" @click.stop="filter=!filter;manage=false;">筛选</el-button>
-                        <el-card class="filter-container" v-if="filter" @click.stop="filter=true">
+                    <div class="filter-main-container" @click.stop>
+                        <el-button type="primary" size="mini" @click="onFilter">筛选</el-button>
+                        <el-card class="filter-container" v-if="filter">
                             <div class="filter-title-container">
                                 <el-image :src="require('@/assets/close.png')" alt="" class="filter-close" @click="filter=false"/>
                             </div>
-                            <div class="check-container" @click.stop>
-                                <el-checkbox v-model="watched" @change="onFilter">只看未读</el-checkbox>
-                                <el-checkbox v-model="apply" @change="onFilter">只看已投递</el-checkbox>
+                            <div class="check-container">
+                                <el-checkbox v-model="watched" @change="onFilterChange">只看未读</el-checkbox>
+                                <el-checkbox v-model="apply" @change="onFilterChange">只看已投递</el-checkbox>
                             </div>
                         </el-card>
                     </div>
-                    <el-button type="primary" size="mini" icon="el-icon-s-fold" style="margin-left: 20px" @click="manage=!manage; filter=false;">
+                    <el-button type="primary" size="mini" icon="el-icon-s-fold" style="margin-left: 20px" @click.stop="onManage">
                         {{manage?'完成':'管理'}}
                     </el-button>
                 </div>
                 <el-scrollbar class="friend-container" wrap-style="overflow: hidden auto; padding-right: 40px;">
-                    <div class="friend-item" v-for="item in conversationList" @click="onConversationClick(item)">
+                    <div class="friend-item" v-for="item in conversationList" @click.stop="onConversationClick(item)">
                         <el-checkbox v-model="item.checked" class="friends-checked" v-if="manage"></el-checkbox>
                         <div style="position: relative">
                             <el-image :src="item.friendVo.avatar" alt="" class="avatar">
@@ -66,13 +65,29 @@
             </div>
             <div class="chat-detail" v-if="conversationItem">
                 <div class="detail-title">
-                    <span>{{conversationItem.friendVo.name}}</span>{{getTime(conversationItem.lastActiveTime)}}
+                    <div class="job-name" v-if="type==='user'">{{conversationItem.jobApplyInfoVo && conversationItem.jobApplyInfoVo.jobName}}</div>
+                    <span>{{conversationItem.friendVo.name}}</span>[{{getTime(conversationItem.lastActiveTime)}}]
+                    <el-link class="job-detail-link" v-if="type==='user' && conversationItem.jobApplyInfoVo" type="primary"
+                             :href="`/job/${conversationItem.jobApplyInfoVo.jobId}`" :underline="false">查看职位详情
+                    </el-link>
+                    <el-dropdown class="job-more" v-if="type==='user'" @command="handleCommand">
+                        <span>···</span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="toCompanyHome">查看公司主页</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                 </div>
                 <el-scrollbar ref="receive" class="content-container" wrap-style="overflow: hidden auto; padding-right: 40px;">
                     <div v-for="item in messageList">
                         <div class="self-container" v-if="item.fromUser===userId">
-                            <div class="self-content">{{item.payload.content}}
-                                <div class="self-arrow"/>
+                            <div class="self-text-content" v-if="item.payload.contentType===1">
+                                {{item.payload.content}}
+                            </div>
+                            <div class="self-image-content" v-else-if="item.payload.contentType===3">
+                                <el-image :src="item.payload.remoteMediaUrl" @load="scrollBottom"/>
+                            </div>
+                            <div class="self-text-content" v-else-if="item.payload.contentType===5">
+                                <el-link type="primary" :href="item.payload.remoteMediaUrl" target="_blank">{{item.payload.content}}</el-link>
                             </div>
                             <el-image :src="$store.state.user.avatar" class="avatar">
                                 <div slot="error">
@@ -86,8 +101,14 @@
                                     <i class="el-icon-picture-outline"></i>
                                 </div>
                             </el-image>
-                            <div class="others-content">{{item.payload.content}}
-                                <div class="others-arrow"/>
+                            <div class="others-text-content" v-if="item.payload.contentType===1">
+                                {{item.payload.content}}
+                            </div>
+                            <div class="others-image-content" v-else-if="item.payload.contentType===3">
+                                <el-image :src="item.payload.remoteMediaUrl" @load="scrollBottom"/>
+                            </div>
+                            <div class="others-text-content" v-else-if="item.payload.contentType===5">
+                                <el-link type="primary" :href="item.payload.remoteMediaUrl" target="_blank">{{item.payload.content}}</el-link>
                             </div>
                         </div>
                     </div>
@@ -95,9 +116,37 @@
                 <div class="operating-container">
                     <div class="icon-container">
                         <div class="left-container">
-                            <div class="icon1" @click="onInvite">邀请面试</div>
-                            <div class="icon2" @click="onAnnex">附件</div>
-                            <div class="icon3" @click="onWord">常用语</div>
+                            <div class="icon1" @click.stop="onEmoji">表情
+                                <el-card class="emoji-card" v-if="showEmoji">
+                                    <el-row :gutter="2" v-for="rowIndex in Math.ceil(emojis.length/12)" :key="rowIndex">
+                                        <el-col :span="2" v-for="colIndex in 12" class="emoji-item" :key="colIndex">
+                                            <div @click.stop="onEmojiSelect(emojis[(rowIndex-1)*12+(colIndex-1)])">
+                                                {{emojis[(rowIndex-1)*12+(colIndex-1)]}}
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                </el-card>
+                            </div>
+                            <div class="icon1" @click="onInvite" v-if="type==='company'">邀请面试</div>
+                            <el-upload
+                                    v-loading.fullscreen.lock="fullscreenLoading"
+                                    ref="upload"
+                                    :action="uploadAnnexOptions.action"
+                                    :data="uploadAnnexOptions.params"
+                                    :accept="uploadAnnexOptions.acceptFileType"
+                                    :show-file-list="false"
+                                    :on-success="handleEditorUploadSuccess"
+                                    :on-error="handleEditorUploadError"
+                                    :before-upload="beforeUpload">
+                                <div class="icon2">附件</div>
+                            </el-upload>
+                            <div class="icon3" @click.stop="onWord">常用语
+                                <el-card class="word-card" v-if="showWord">
+                                    <div v-for="(word, index) in words" :key="index" class="word-item" @click.stop="onWordSelect(word)">
+                                        {{word}}
+                                    </div>
+                                </el-card>
+                            </div>
                         </div>
                         <div class="right-container">
                             <div class="icon4" @click="onReport">举报</div>
@@ -106,6 +155,7 @@
                     </div>
                     <div class="input-container">
                         <el-input type="textarea"
+                                  ref="content"
                                   :rows="3"
                                   placeholder="请输入内容"
                                   v-model="content">
@@ -115,16 +165,28 @@
                 </div>
             </div>
         </div>
+        <!--        <el-dialog title="上传附件"-->
+        <!--                   :visible.sync="annexDialogVisible"-->
+        <!--                   width="400px">-->
+        <!--            -->
+        <!--            <span slot="footer" class="dialog-footer">-->
+        <!--                <el-button @click="annexDialogVisible = false">取 消</el-button>-->
+        <!--                <el-button type="primary" @click="annexDialogVisible = false">确 定</el-button>-->
+        <!--            </span>-->
+        <!--        </el-dialog>-->
     </div>
 </template>
 
 <script>
     import im from "@/utils/im"
+    import {getUploadPicToken} from '@/api/upload_api'
 
     export default {
         name: "ChatBox",
         data() {
             return {
+                type: 'user', // user:用户端     company:企业端
+
                 // IM信息
                 userId: undefined,
                 token: undefined,
@@ -136,10 +198,37 @@
                 // 消息
                 content: '', // 输入文本内容
                 keywords: '', // 搜索联系人
-                manage: false, // 选择
+                filter: false, // 是否显示过滤框
                 watched: false, // 只看未读
                 apply: false, // 只看已投递
-                filter: false, // 过滤框
+                manage: false, // 是否显示管理框
+
+                // 上传附件
+                fullscreenLoading: false,
+                uploadAnnexOptions: {
+                    action: '',
+                    params: {},
+                    fileUrl: '',
+                    acceptFileType: '.*',
+                    filename: '',
+                    localUrl: '',
+                },
+
+                // 常用语
+                showWord: false,
+                words: ["你好，看了你的简历，非常感兴趣",
+                    "你好，我们该岗位还在招聘",
+                    "你好，看了你的简历，非常感兴趣",
+                    "你好，我们该岗位还在招聘"],
+
+                // 表情符
+                emojis: ["😋", "😘", "😊", "😡", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
+                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
+                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
+                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
+                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘"],
+                showEmoji: false,
+                insertPosition: 0,
             };
         },
 
@@ -156,12 +245,17 @@
         mounted() {
             // 初始化webSocket
             im.init(this.receiveMessage).then((data) => {
-                this.userId = data.userId;
-                this.token = data.token;
-                this.getConversationList();
+                if(this.$route.path==="/chat") {
+                    this.userId = data.userId;
+                    this.token = data.token;
+                    this.getConversationList();
+                } else {
+                    this.$emit("receiveMessage");
+                }
             }).catch(() => {
                 this.$router.push({path: "/login", query: {...this.$route.query, redirect: "/chat"}});
             });
+            this.$emit("complete");
         },
         methods: {
             // 获取会话列表
@@ -190,6 +284,7 @@
 
             // 查看会话消息
             onConversationClick(item) {
+                this.messageList = [];
                 this.conversationItem = item;
                 im.getHistoryMessage(this.userId, item.friendVo.friendUserId, item.jobId).then(data => {
                     data.list.forEach(item => {
@@ -245,7 +340,7 @@
             },
 
             // 会话过滤
-            onFilter() {
+            onFilterChange() {
                 console.log(this.watched);
                 console.log(this.apply);
                 if (this.watched || this.apply) {
@@ -257,19 +352,69 @@
                 }
             },
 
+            // 关闭弹窗
+            closePopup() {
+                this.showWord = false;
+                this.manage = false;
+                this.filter = false;
+                this.showEmoji = false;
+            },
+            // 表情
+            onEmoji() {
+                this.insertPosition = this.$refs.content.$refs.textarea.selectionStart;
+                this.showEmoji = true;
+                this.manage = false;
+                this.showWord = false;
+                this.filter = false;
+            },
+
+            // 表情选择
+            onEmojiSelect(emoji) {
+                let prefix = this.content.substring(0, this.insertPosition);
+                let suffix = this.content.substring(this.insertPosition);
+                this.content = prefix + emoji + suffix;
+                this.showEmoji = false;
+                this.$refs.content.$refs.textarea.focus();
+                this.$nextTick(() => {
+                    this.$refs.content.$refs.textarea.selectionStart = this.insertPosition + 2;
+                    this.$refs.content.$refs.textarea.selectionEnd = this.insertPosition + 2;
+                })
+            },
+
             // 邀请面试
             onInvite() {
 
             },
 
-            // 附件
-            onAnnex() {
+            // 过滤按钮
+            onFilter() {
+                this.filter = !this.filter;
+                this.manage = false;
+                this.showWord = false;
+                this.showEmoji = false;
+            },
 
+            // 管理
+            onManage() {
+                this.manage = !this.manage;
+                this.filter = false;
+                this.showWord = false;
+                this.showEmoji = false;
             },
 
             // 常用语
             onWord() {
+                this.showWord = true;
+                this.manage = false;
+                this.filter = false;
+                this.showEmoji = false;
+            },
 
+            // 常用语选择
+            onWordSelect(word) {
+                this.content = word;
+                this.showWord = false;
+                this.onSend();
             },
 
             // 举报
@@ -278,6 +423,9 @@
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                 }).then(({value}) => {
+                    if (value === "") {
+                        value = "默认举报信息";
+                    }
                     im.reportFriendMessage(this.conversationItem.friendVo.friendUserId, value).then(() => {
                         this.$message({
                             type: 'success',
@@ -306,12 +454,11 @@
             },
 
             // 发送
-            onSend(e) {
+            onSend() {
                 if (this.content !== '') {
                     // 保存消息，并清空发送框
                     let content = this.content;
                     this.content = '';
-                    console.log(e);
 
                     // 构建消息对象，插入接收框
                     let message = {
@@ -338,23 +485,28 @@
                         message.messageId = data.messageId;
                         this.conversationItem.lastMessage = message;
                     });
+                } else {
+                    this.$message.warning("消息不能为空");
                 }
             },
 
+            // 接收消息处理
             receiveMessage(value) {
-                // 消息来自已经打开的窗口
-                if (value.fromUser === this.conversationItem.friendVo.friendUserId) {
-                    im.msgAsReadMessage(value.fromUser, value.toUser, [value.messageId], value.conversation.conversationId);
+                if(this.$route.path==="/chat") {
+                    // 消息来自已经打开的窗口
+                    if (value.fromUser === this.conversationItem.friendVo.friendUserId) {
+                        im.msgAsReadMessage(value.fromUser, value.toUser, [value.messageId], value.conversation.conversationId);
 
-                    // 构建消息对象，插入接收框
-                    value.timestamp = Date.now();
-                    this.messageList.push(value);
-                    this.scrollBottom();
+                        // 构建消息对象，插入接收框
+                        value.timestamp = Date.now();
+                        this.messageList.push(value);
+                        this.scrollBottom();
 
-                    // 更新会话列表
-                    this.conversationItem.lastMessage = value;
-                } else {
-                    this.getConversationList();
+                        // 更新会话列表
+                        this.conversationItem.lastMessage = value;
+                    } else {
+                        this.getConversationList();
+                    }
                 }
             },
 
@@ -381,7 +533,6 @@
                 let conversationList = this.conversationList.filter(item => item.checked);
                 conversationList.forEach(item => {
                     // 获取全部历史消息，并将最后n个未读消息标记为已读
-                    console.log(123);
                     im.getHistoryMessage(this.userId, item.friendVo.friendUserId, item.jobId).then(data => {
                         if (item.unReadeCount > 0) {
                             let messageIds = [];
@@ -410,18 +561,91 @@
                 let conversationList = this.conversationList.filter(item => item.checked);
                 conversationList.forEach(item => {
                     let lastMessage = item.lastMessage;
-                    if (lastMessage && lastMessage.messageId) {
+                    if (lastMessage && lastMessage.messageId && lastMessage.status === 3 && lastMessage.toUser === this.userId) {
                         im.msgAsUnReadMessage(lastMessage.fromUser, lastMessage.toUser, [lastMessage.messageId], item.id);
+                        item.unReadeCount++;
                     }
                 })
                 this.manage = false;
+            },
+
+            // 上传资源
+            beforeUpload(file) {
+                this.fullscreenLoading = true;
+                return new Promise((resolve, reject) => {
+                    getUploadPicToken(file.name).then(response => {
+                        this.fullscreenLoading = false;
+                        const {data} = response;
+                        this.uploadAnnexOptions.action = data.host;
+                        this.uploadAnnexOptions.params = data;
+                        this.uploadAnnexOptions.fileUrl = data.host + '/' + data.key;
+                        this.uploadAnnexOptions.filename = file.name;
+                        const _URL = window.URL || window.webkitURL;
+                        this.uploadAnnexOptions.localUrl = _URL.createObjectURL(file);
+                        resolve(data)
+                    }).catch(error => {
+                        this.fullscreenLoading = false;
+                        reject(error)
+                    })
+                })
+            },
+
+            // 资源上传成功
+            handleEditorUploadSuccess() {
+                let contentType;
+                let names = this.uploadAnnexOptions.filename.split("\.");
+                let imageType = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
+                this.$message.success("资源上传成功");
+                if (names.length > 1 && imageType.includes(names[names.length - 1])) {
+                    contentType = 3;
+                } else {
+                    contentType = 5;
+                }
+
+                // 构建消息对象，插入接收框
+                let message = {
+                    fromUser: this.userId,
+                    messageId: undefined,
+                    payload: {
+                        content: this.uploadAnnexOptions.filename,
+                        contentType: contentType,
+                        expireDuration: 0,
+                        extra: null,
+                        remoteMediaUrl: this.uploadAnnexOptions.localUrl,
+                    },
+                    status: 1,
+                    timestamp: Date.now(),
+                    toUser: this.conversationItem.friendVo.friendUserId,
+                }
+                this.messageList.push(message);
+
+                // 接收框滚动到底部
+                this.scrollBottom();
+
+                // 发送消息
+                im.chatMessage(this.userId, this.conversationItem.friendVo.friendUserId, this.conversationItem.id, this.uploadAnnexOptions.filename, contentType, this.uploadAnnexOptions.fileUrl).then(data => {
+                    message.messageId = data.messageId;
+                    this.conversationItem.lastMessage = message;
+                });
+            },
+
+            // 资源上传失败
+            handleEditorUploadError() {
+                this.$message.error("资源上传失败")
+            },
+
+            // 菜单指令
+            handleCommand(command) {
+                if (command === 'toCompanyHome') {
+                    this.$router.push(`/company/${this.conversationItem.jobApplyInfoVo.companyId}`);
+                }
             },
 
             getHandledValue(num) {
                 return num < 10 ? '0' + num : num;
             },
 
-            timestampToMonthDateHoursMinutes (timeStamp) {
+            timestampToMonthDateHoursMinutes(timeStamp) {
                 if (timeStamp) {
                     const d = new Date(parseInt(timeStamp));
                     const month = this.getHandledValue(d.getMonth() + 1);
@@ -435,7 +659,7 @@
             },
 
             getTime(minute) {
-                if (minute) {
+                if (minute >= 0) {
                     if (minute < 60) {
                         return minute + "分钟前活跃";
                     } else if (minute < 60 * 24) {
@@ -459,7 +683,7 @@
             width: 1200px;
             height: 678px;
             display: flex;
-            margin: 50px auto 0;
+            margin: 0 auto;
 
             .user-list {
                 width: 32%;
@@ -623,12 +847,43 @@
                     text-align: center;
                     font-size: 10px;
                     color: #909399;
+                    position: relative;
+
+                    .job-name {
+                        position: absolute;
+                        left: 20px;
+                        top: 0;
+                        line-height: 50px;
+                        font-size: 15px;
+                        color: #7f7f7f;
+                    }
 
                     span {
                         font-size: 18px;
                         color: #169BD5;
                         font-weight: bold;
                         margin-right: 5px;
+                    }
+
+                    .job-detail-link {
+                        position: absolute;
+                        right: 45px;
+                        top: 0;
+                        line-height: 50px;
+                        font-size: 15px;
+                    }
+
+                    .job-more {
+                        position: absolute;
+                        right: 0;
+                        padding: 0 10px;
+                        top: 0;
+                        line-height: 50px;
+                        font-size: 15px;
+
+                        &:hover {
+                            cursor: pointer;
+                        }
                     }
                 }
 
@@ -647,7 +902,7 @@
                         justify-content: flex-end;
                         margin-top: 10px;
 
-                        .self-content {
+                        .self-text-content {
                             max-width: 70%;
                             height: auto;
                             padding: 8px;
@@ -678,6 +933,12 @@
                                 border-left: 8px solid #98e165;
                             }
                         }
+
+                        .self-image-content {
+                            max-width: 70%;
+                            height: auto;
+                            margin-right: 8px;
+                        }
                     }
 
                     .others-container {
@@ -687,7 +948,7 @@
                         align-items: flex-start;
                         margin-top: 20px;
 
-                        .others-content {
+                        .others-text-content {
                             max-width: 70%;
                             height: auto;
                             padding: 8px;
@@ -716,6 +977,12 @@
                             &:hover::before {
                                 border-right: 8px solid #fbfbfb;
                             }
+                        }
+
+                        .others-image-content {
+                            max-width: 70%;
+                            height: auto;
+                            margin-left: 8px;
                         }
                     }
                 }
@@ -748,8 +1015,29 @@
                                 line-height: 20px;
 
                                 &:hover {
-                                    color: #4545f5;
+                                    color: #66b1ff;
                                     cursor: pointer;
+                                }
+
+                                .emoji-card {
+                                    position: absolute;
+                                    top: -136px;
+                                    left: 0;
+                                    width: 400px;
+
+                                    ::v-deep .el-card__body {
+                                        padding: 5px;
+                                    }
+
+                                    .emoji-item {
+                                        text-align: center;
+                                        font-size: 16px;
+                                        line-height: 26px;
+
+                                        &:hover {
+                                            background: #e3e3e3;
+                                        }
+                                    }
                                 }
                             }
 
@@ -763,7 +1051,7 @@
                                 line-height: 16px;
 
                                 &:hover {
-                                    color: #4545f5;
+                                    color: #66b1ff;
                                     cursor: pointer;
                                 }
                             }
@@ -776,10 +1064,27 @@
                                 padding-left: 18px;
                                 margin-right: 12px;
                                 line-height: 16px;
+                                position: relative;
 
                                 &:hover {
-                                    color: #4545f5;
+                                    color: #66b1ff;
                                     cursor: pointer;
+                                }
+
+                                .word-card {
+                                    position: absolute;
+                                    top: -150px;
+                                    left: -100px;
+                                    width: 300px;
+
+                                    .word-item {
+                                        font-size: 14px;
+                                        line-height: 24px;
+
+                                        &:hover {
+                                            color: #66b1ff;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -799,7 +1104,7 @@
                                 line-height: 16px;
 
                                 &:hover {
-                                    color: #4545f5;
+                                    color: #66b1ff;
                                     cursor: pointer;
                                 }
                             }
@@ -814,7 +1119,7 @@
                                 line-height: 16px;
 
                                 &:hover {
-                                    color: #4545f5;
+                                    color: #66b1ff;
                                     cursor: pointer;
                                 }
                             }

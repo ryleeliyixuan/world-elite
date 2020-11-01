@@ -18,13 +18,14 @@
                 </el-menu>
             </el-col>
             <el-col :span="9">
-                <div class="text-right" v-if="token === undefined || token === ''">
+                <div class="right-container" v-if="token === undefined || token === ''">
                     <el-link :underline="false" class="p-4 mr-2" @click="$router.push('/register')">
                         <b>免费加入</b>
                     </el-link>
                     <el-button type="primary" @click="$router.push('/login')">登录</el-button>
                 </div>
-                <div class="text-right" v-else>
+                <div class="right-container" v-else>
+                    <svg-icon @click="handlerChat" icon-class="chat2" class="chat"/>
                     <el-popover placement="bottom-end"
                                 width="300"
                                 trigger="hover"
@@ -138,17 +139,41 @@
             },
             gotoMessageList() {
                 this.$router.push("/messages");
+            },
+
+            handlerChat() {
+                if (this.$route.path !== '/chat') {
+                    this.$router.push({path: "/chat"})
+                }
             }
         }
     };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
     .app-nav {
         width: 1200px;
-        padding: 20px 0px;
+        padding: 20px 0;
         margin: 0 auto;
+
+        .right-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            .chat {
+                width: 30px !important;
+                height: 30px !important;
+                margin:  0 20px 0 10px;
+                line-height: 50px;
+
+                &:hover {
+                    cursor: pointer;
+                    color: #409eff;
+                }
+            }
+        }
     }
 
     .logo-text {
@@ -184,4 +209,5 @@
         font-size: 15px;
         color: #888;
     }
+
 </style>
