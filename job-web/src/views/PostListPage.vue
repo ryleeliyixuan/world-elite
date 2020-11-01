@@ -64,9 +64,9 @@
         </div>
 
       <div class="sort-options">
-            <el-link @click="" :underline="false" style="color: #599EF8;">最新</el-link>
+            <el-link :underline="false" style="color: #599EF8;">最新</el-link>
             /
-            <el-link @click="" :underline="false">发布顺序</el-link>
+            <el-link :underline="false">发布顺序</el-link>
         </div>
 
         <div class="section3-container">
