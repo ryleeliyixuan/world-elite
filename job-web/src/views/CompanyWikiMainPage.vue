@@ -1,0 +1,452 @@
+<template>
+  <div class="app-container container">
+    <!-- 百科头页 -->
+    <div v-if="company" class="company-wiki-header-container">
+      <div class="company-info-container">
+        <div class="company-info">
+          <!-- 缺接口 -->
+          <img
+            class="company-info-banner"
+            v-if="company.banner"
+            :src="company.banner"
+            :alt="company.fullName"
+          />
+          <img
+            class="company-info-banner"
+            v-else
+            src="../assets/defaultbanner.png"
+            alt=""
+          />
+          <div class="company-info-description">
+            <el-avatar
+              class="company-info-logo"
+              :src="company.logo"
+              :alt="company.fullName"
+            ></el-avatar>
+            <h5 class="mt-0">{{ company.name }}</h5>
+            <p class="mb-2">
+              <span v-if="company.stage">{{ company.stage.name }} |</span>
+              <span v-if="company.property">
+                {{ company.property.name }} |</span
+              >
+              <span v-if="company.industry">
+                {{ company.industry.name }} |</span
+              >
+              <span v-if="company.scale"> {{ company.scale.name }}</span>
+            </p>
+            <div class="company-info-rating mb-2 d-flex">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="星级呈现该企业在本网站的综评分"
+                placement="left"
+              >
+                <el-rate
+                  v-model="company.score"
+                  disabled
+                  show-score
+                  text-color="#ff9900"
+                  score-template="{value}"
+                >
+                </el-rate>
+              </el-tooltip>
+              <!-- (dialogVisible = true) -->
+              <el-button
+                v-if="tabIndex != 'community'"
+                type="text"
+                @click="goToSaveScore"
+                size="mini"
+                style="padding: 0; margin-left: 10px"
+                >评分</el-button
+              >
+              <!-- <el-dialog :visible.sync="dialogVisible" width="80%" show-close>
+                <div class="mb-4" style="color: grey">
+                  星级呈现该企业在本网站的综评分
+                </div>
+                <el-form
+                  ref="scoreForm"
+                  :model="scoreForm"
+                  :rules="scoreFormRules"
+                  label-width="100px"
+                  class="mt-4"
+                  label-position="left"
+                  hide-required-asterisk
+                >
+                  <el-form-item label="评分" prop="score">
+                    <el-rate v-model="scoreForm.score"></el-rate>
+                  </el-form-item>
+                  <el-form-item label="评论" prop="content">
+                    <el-input
+                      type="textarea"
+                      :rows="5"
+                      resize="none"
+                      placeholder="请输入评论（登录后可以发表评论）"
+                      v-model="scoreForm.content"
+                      style="margin-bottom: 12px"
+                    >
+                    </el-input>
+                  </el-form-item>
+                </el-form>
+                <div class="d-flex justify-content-end align-items-end">
+                  <el-checkbox class="mr-4" v-model="scoreForm.anonymous">
+                    匿名发表
+                  </el-checkbox>
+                  <el-button type="primary" @click="saveScore">
+                    {{ hasMyScore == true ? "修改我的评分" : "提交" }}
+                  </el-button>
+                </div>
+              </el-dialog> -->
+            </div>
+            <el-button
+              type="primary"
+              size="small"
+              :loading="favoriteLoading"
+              @click="handleFavorite"
+            >
+              {{ company.favoriteFlag === 1 ? "已订阅百科" : "订阅百科" }}
+            </el-button>
+          </div>
+          <div class="company-info-stat">
+            <el-row
+              type="flex"
+              class="row-bg"
+              justify="space-between"
+              size="mini"
+            >
+              <!-- 缺接口 -->
+              <el-col>
+                <el-tag type="info" effect="dark"
+                  >已进驻： <span>{{ company.listed || "0" }}</span></el-tag
+                >
+              </el-col>
+              <el-col :span="12">
+                <el-tag type="info" effect="dark"
+                  >已订阅：
+                  <span>{{ company.favoriteCount || "0" }}</span>
+                </el-tag>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 百科内容 -->
+    <div v-if="company" class="company-wiki-content-container">
+      <el-menu
+        class="mt-2 mb-4"
+        :default-active="tabIndex"
+        mode="horizontal"
+        @select="handleSelectTab"
+      >
+        <el-menu-item index="intro">首页</el-menu-item>
+        <el-menu-item index="job">岗位</el-menu-item>
+        <el-menu-item @click="linkToActivity" index="activity">活动</el-menu-item>
+        <el-menu-item index="community">圈子</el-menu-item>
+      </el-menu>
+      <router-view> </router-view>
+    </div>
+  </div>
+</template>
+
+<script>
+import Vue from "vue";
+import VueAMap from "vue-amap";
+import Pagination from "@/components/Pagination";
+import { formatListQuery, parseListQuery } from "@/utils/common";
+
+import WikiActivityPage from "./WikiActivityPage";
+import WikiIntroPage from "./WikiIntroPage";
+import WikiCommunityPage from "./WikiCommunityPage";
+
+import { getMyScore, saveScore } from "@/api/community_api";
+import { getCompanyInfo } from "@/api/company_api";
+import { setPageTitle } from "@/utils/setting";
+import { doFavorite } from "@/api/favorite_api";
+import { mapGetters } from "vuex";
+import Toast from "@/utils/toast";
+
+Vue.use(VueAMap);
+
+VueAMap.initAMapApiLoader({
+  key: process.env.VUE_APP_AMAP_KEY,
+  v: "1.4.4",
+});
+
+export default {
+  name: "CompanyWikiMainPage",
+  components: {
+    Pagination,
+    WikiActivityPage,
+    WikiIntroPage,
+    WikiCommunityPage,
+  },
+
+  data() {
+    return {
+      tabIndex: "intro",
+      companyId: undefined,
+      company: undefined,
+      //rating
+      hasMyScore: false,
+      myScoreId: undefined,
+      dialogVisible: false,
+      scoreForm: {
+        id: undefined,
+        companyId: undefined,
+        score: undefined,
+        content: "",
+        anonymous: 0,
+      },
+      scoreFormRules: {
+        score: [
+          {
+            required: true,
+            message: "请发表您的评分",
+            trigger: "change",
+          },
+        ],
+        content: [
+          {
+            required: true,
+            message: "请发表您的评论",
+            trigger: "change",
+          },
+        ],
+      },
+      //subscribe
+      favoriteForm: {
+        objectId: undefined,
+        type: 2,
+        favorite: false,
+      },
+      favoriteLoading: false,
+    };
+  },
+  created() {
+    this.initData();
+    this.initTabActive();
+  },
+  computed: {
+    companyLink() {
+      return this.company.homepage.startsWith("http")
+        ? this.company.homepage
+        : "http://" + this.company.homepage;
+    },
+    ...mapGetters(["token", "userId"]),
+    noMore() {
+      return this.count >= 20;
+    },
+    disabled() {
+      return this.loading || this.noMore;
+    },
+  },
+  watch: {
+    $route() {
+      this.initData();
+    },
+  },
+  methods: {
+    // 重新进入默认选择项
+    initTabActive() {
+      const name = this.$route.name;
+      const lastIndex = name.lastIndexOf("-");
+      const getName =
+        lastIndex !== -1 ? name.substring(lastIndex + 1) : this.tabIndex;
+      if (getName) {
+        this.tabIndex = getName;
+      }
+    },
+    linkToActivity() {
+      this.$router.push({
+        name: "wiki-activity",
+        params: {
+          id: this.companyId,
+          name: this.company.name,
+        },
+      });
+    },
+    initData() {
+      this.companyId = this.$route.params.id;
+      this.favoriteForm.objectId = this.companyId;
+      this.scoreForm.companyId = this.companyId;
+      getCompanyInfo(this.companyId).then((response) => {
+        this.company = response.data;
+        setPageTitle(this.company.name);
+      });
+    },
+    handleSelectTab(tabIndex) {
+      const urlRootPath = `/company/${this.companyId}/`;
+      this.$router.push({
+        path: urlRootPath + tabIndex,
+      });
+    },
+    handleFavorite() {
+      this.favoriteLoading = true;
+      this.favoriteForm.favorite = !this.favoriteForm.favorite;
+      doFavorite(this.favoriteForm)
+        .then(() => {
+          this.company.favoriteFlag = this.favoriteForm.favorite ? 1 : 0;
+          if (this.company.favoriteFlag == 1) {
+            this.$message("订阅成功");
+          } else {
+            this.$message("取消订阅");
+          }
+        })
+        .finally(() => {
+          this.favoriteLoading = false;
+        });
+    },
+    onLoginClick() {
+      this.$router.push("/login");
+    },
+    goToSaveScore() {
+      const urlRootPath = `/company/${this.companyId}/community/score/#save`;
+      this.$router.push({
+        path: urlRootPath,
+      });
+    },
+    // getMyScore(id) {
+    //   getMyScore(id).then((response) => {
+    //     if (response.data != undefined) {
+    //       this.hasMyScore = true;
+    //       this.myScoreId = response.data.id;
+    //       this.scoreForm.score = response.data.score;
+    //       this.scoreForm.content = response.data.content;
+    //       this.scoreForm.anonymous = Boolean(response.data.anonymous);
+    //     } else {
+    //       this.hasMyScore = false;
+    //       this.myScoreId = undefined;
+    //       this.scoreForm.id = undefined;
+    //       this.scoreForm.score = undefined;
+    //       this.scoreForm.content = "";
+    //       this.scoreForm.anonymous = 0;
+    //     }
+    //   });
+    // },
+    // saveScore() {
+    //   this.scoreForm.id = this.myScoreId;
+    //   this.scoreForm.anonymous = +this.scoreForm.anonymous;
+    //   this.$refs["scoreForm"].validate((valid) => {
+    //     if (valid) {
+    //       saveScore(this.scoreForm).then(() => {
+    //         Toast.success("评分成功");
+    //       });
+    //     }
+    //   });
+    // },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.noInfoMsgBox {
+  line-height: 80px;
+  text-align: center;
+  padding-bottom: 20px;
+  width: 100%;
+}
+
+.app-container {
+  margin: 0 auto;
+  min-height: calc(100vh - 477px);
+
+  .company-wiki-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .company-info-container {
+    height: calc(91px + 100vw * 0.39);
+
+    .company-info {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .company-info-banner {
+        width: 100%;
+        z-index: -1;
+      }
+
+      .company-info-stat {
+        width: 230px;
+        height: 50px;
+        position: absolute;
+        right: 7%;
+        top: 77%;
+      }
+
+      .company-info-logo {
+        width: 100px;
+        height: 100px;
+        border: 2px solid white;
+      }
+
+      .company-info-description {
+        position: absolute;
+        top: calc(100% - 50px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .company-rating-dialog-content {
+        margin-bottom: 12px;
+      }
+    }
+  }
+
+  .company-wiki-content-container {
+    width: 100%;
+    padding: 0 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .community-box {
+      width: 100%;
+    }
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .app-container {
+    .company-info-container {
+      height: 525px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .app-container {
+    .company-info-container {
+      height: 350px;
+
+      .company-info {
+        display: flex;
+        flex-direction: column;
+
+        .company-info-stat {
+          width: 230px;
+          height: 25px;
+          position: absolute;
+          width: 100%;
+          left: 7%;
+          top: 50%;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 415px) {
+  .app-container {
+    .company-info-container {
+      height: 300px;
+    }
+  }
+}
+</style>

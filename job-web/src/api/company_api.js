@@ -24,3 +24,5 @@ export function getCompanyWikiList(data){
     params: data
   })
 }
+
+
