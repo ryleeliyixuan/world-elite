@@ -24,9 +24,9 @@
                             <div class="filter-title-container">
                                 <el-image :src="require('@/assets/close.png')" alt="" class="filter-close" @click="filter=false"/>
                             </div>
-                            <div class="check-container">
-                                <el-checkbox v-model="watched" @change.stop="onFilter">只看未读</el-checkbox>
-                                <el-checkbox v-model="apply" @change.stop="onFilter">只看已投递</el-checkbox>
+                            <div class="check-container" @click.stop>
+                                <el-checkbox v-model="watched" @change="onFilter">只看未读</el-checkbox>
+                                <el-checkbox v-model="apply" @change="onFilter">只看已投递</el-checkbox>
                             </div>
                         </el-card>
                     </div>
@@ -49,7 +49,7 @@
                             <div class="top-content">
                                 <div class="friend-name">{{item.friendVo.name}}</div>
                                 <div class="friend-title">{{item.jobApplyInfoVo && item.jobApplyInfoVo.jobName}}</div>
-                                <div class="friend-title">{{timestampToMinute(item.lastMessage && item.lastMessage.timestamp)}}</div>
+                                <div class="friend-title">{{timestampToMonthDateHoursMinutes(item.lastMessage && item.lastMessage.timestamp)}}</div>
                             </div>
                             <div class="bottom-content">
                                 <div class="friend-title">{{item.lastMessage && item.lastMessage.payload.content}}</div>
@@ -66,7 +66,7 @@
             </div>
             <div class="chat-detail" v-if="conversationItem">
                 <div class="detail-title">
-                    <span>{{conversationItem.friendVo.name}}</span>{{conversationItem.lastActiveTime}}分钟前活跃
+                    <span>{{conversationItem.friendVo.name}}</span>{{getTime(conversationItem.lastActiveTime)}}
                 </div>
                 <el-scrollbar ref="receive" class="content-container" wrap-style="overflow: hidden auto; padding-right: 40px;">
                     <div v-for="item in messageList">
@@ -191,14 +191,24 @@
             // 查看会话消息
             onConversationClick(item) {
                 this.conversationItem = item;
-                im.getHistoryMessage(this.userId, item.friendVo.friendUserId, item.id).then(data => {
+                im.getHistoryMessage(this.userId, item.friendVo.friendUserId, item.jobId).then(data => {
                     data.list.forEach(item => {
                         this.messageList.unshift(item);
                     })
                     this.messageTotal = data.total;
 
-                    // TODO 消息已读
-                    // im.msgAsReadMessage();
+                    // 标记已读消息
+                    if (item.unReadeCount > 0) {
+                        let messageIds = [];
+                        for (let i = this.messageList.length - 1; i > 0 && messageIds.length < item.unReadeCount; i--) {
+                            if (this.messageList[i].toUser === this.userId) {
+                                messageIds.push(this.messageList[i].messageId);
+                            }
+                        }
+                        im.msgAsReadMessage(item.friendVo.friendUserId, this.userId, messageIds, item.id).then(() => {
+                            item.unReadeCount = 0;
+                        });
+                    }
 
                     this.scrollBottom();
                 })
@@ -343,7 +353,6 @@
 
                     // 更新会话列表
                     this.conversationItem.lastMessage = value;
-
                 } else {
                     this.getConversationList();
                 }
@@ -371,10 +380,27 @@
             onMessageRead() {
                 let conversationList = this.conversationList.filter(item => item.checked);
                 conversationList.forEach(item => {
-                    let lastMessage = item.lastMessage;
-                    if (lastMessage && lastMessage.messageId) {
-                        im.msgAsReadMessage(lastMessage.fromUser, lastMessage.toUser, [lastMessage.messageId], item.id);
-                    }
+                    // 获取全部历史消息，并将最后n个未读消息标记为已读
+                    console.log(123);
+                    im.getHistoryMessage(this.userId, item.friendVo.friendUserId, item.jobId).then(data => {
+                        if (item.unReadeCount > 0) {
+                            let messageIds = [];
+                            for (let i = 0; i < data.list.length && messageIds.length < item.unReadeCount; i++) {
+                                if (data.list[i].toUser === this.userId) {
+                                    messageIds.push(data.list[i].messageId);
+                                }
+                            }
+                            im.msgAsReadMessage(item.friendVo.friendUserId, this.userId, messageIds, item.id).then(() => {
+                                item.unReadeCount = 0;
+                            });
+                        }
+                    })
+
+                    // 将最后一条消息标记为已读
+                    // let lastMessage = item.lastMessage;
+                    // if (lastMessage && lastMessage.messageId) {
+                    //     im.msgAsReadMessage(lastMessage.fromUser, lastMessage.toUser, [lastMessage.messageId], item.id);
+                    // }
                 })
                 this.manage = false;
             },
@@ -395,14 +421,30 @@
                 return num < 10 ? '0' + num : num;
             },
 
-            timestampToMinute(timestamp) {
-                if (timestamp) {
-                    const d = new Date(parseInt(timestamp));
+            timestampToMonthDateHoursMinutes (timeStamp) {
+                if (timeStamp) {
+                    const d = new Date(parseInt(timeStamp));
+                    const month = this.getHandledValue(d.getMonth() + 1);
+                    const date = this.getHandledValue(d.getDate());
                     const hours = this.getHandledValue(d.getHours());
                     const minutes = this.getHandledValue(d.getMinutes());
-                    return hours + ":" + minutes;
+                    return month + '/' + date + ' ' + hours + ":" + minutes;
                 } else {
                     return '';
+                }
+            },
+
+            getTime(minute) {
+                if (minute) {
+                    if (minute < 60) {
+                        return minute + "分钟前活跃";
+                    } else if (minute < 60 * 24) {
+                        return Math.floor(parseInt(minute) / 60) + "小时前活跃";
+                    } else {
+                        return Math.floor(parseInt(minute) / 60 / 24) + "天前活跃";
+                    }
+                } else {
+                    return "活跃时间未知"
                 }
             }
         }

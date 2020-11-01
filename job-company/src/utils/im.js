@@ -200,10 +200,10 @@ let im = {
      * @param limit
      * @param queryType 查询类型 -1:无   0:按时间查询  1：按id查询
      */
-    getHistoryMessage(fromUser, toUser, conversationId, page = 1, limit = 100, queryType = -1) {
+    getHistoryMessage(fromUser, toUser, jobId, page = 1, limit = 100, queryType = -1) {
         return new Promise((resolve, reject) => {
             this.sendMessage({
-                messageType: "16", fromUser, toUser, conversationId, page, limit, queryType
+                messageType: "16", fromUser, toUser, jobId, page, limit, queryType
             }).then(data => {
                 if (data.code) {
                     Message.error(data.errorMsg);
