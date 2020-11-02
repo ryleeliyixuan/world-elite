@@ -214,8 +214,11 @@ public class CompanyCommentService extends BaseService{
         CompanyCommentVo commentVo = new CompanyCommentVo().asVo(companyComment);
         commentVo.setFromUser(userApplicantService.getUserInfo(companyComment.getFromId()));
         commentVo.setToUser(userApplicantService.getUserInfo(companyComment.getToId()));
-        commentVo.setLike(companyLikeService.hasLike(companyComment.getId()));
-        commentVo.setReport(companyReportService.getReportVo(companyComment.getId()));
+        //登录用户显示点赞和评论信息
+        if(curUser() != null) {
+            commentVo.setLike(companyLikeService.hasLike(companyComment.getId()));
+            commentVo.setReport(companyReportService.getReportVo(companyComment.getId()));
+        }
         return commentVo;
     }
 

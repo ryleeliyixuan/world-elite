@@ -94,9 +94,6 @@ public class LuceneSearchService implements SearchService {
     @Autowired
     private LuceneContext luceneContext;
 
-    @Autowired
-    private ResumeServiceFactory resumeServiceFactory;
-
     private static IndexReader sIndexReader;
 
     private boolean switchFolder = false;
@@ -224,7 +221,7 @@ public class LuceneSearchService implements SearchService {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeAttachmentIndexFields.RESUME_ID_STR));
-                ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+                ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeId);
                 ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
                 ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
                 resumeVoList.add(resumeVo);
@@ -320,7 +317,7 @@ public class LuceneSearchService implements SearchService {
             pageResult.setCurrentPage(searchForm.getPage());
             pageResult.setPageSize(searchForm.getLimit());
 
-            com.worldelite.job.service.resume.ResumeService resumeService = resumeServiceFactory.getResumeService(searchForm.getType());
+            com.worldelite.job.service.resume.ResumeService resumeService = ResumeServiceFactory.getResumeService(searchForm.getType());
             List<ResumeDetail> resumeList = new ArrayList<>();
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
@@ -491,7 +488,7 @@ public class LuceneSearchService implements SearchService {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeIndexFields.RESUME_ID));
-                ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+                ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeId);
                 ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
                 ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
                 resumeVoList.add(resumeVo);

@@ -15,7 +15,7 @@
         <el-tab-pane label="邀请面试" name="4"></el-tab-pane>
         <el-tab-pane label="不合适" name="6"></el-tab-pane>
       </el-tabs>
-      <div v-if="pageResult.list && pageResult.list.length !== 0">
+      <template v-if="pageResult.list && pageResult.list.length !== 0">
         <el-card
           shadow="hover"
           v-for="job in pageResult.list"
@@ -27,16 +27,25 @@
             <div class="item-company-container">
               <div class="text-small text-gray item-company-name">
                 <span>{{ job.companyUser.company.name }}</span>
-                <span>{{ job.applyTime }}</span>
+                <div>
+                  <span style="margin-right: 10px">{{ job.applyTime }}</span>
+                  <el-button
+                    type="primary"
+                    plain
+                    @click.stop="handleChat(job)"
+                    size="small"
+                    >聊一聊</el-button
+                  >
+                </div>
               </div>
               <h6 class="mt-0 mb-1">{{ job.name }}</h6>
               <div class="item-footer">
                 <div class="item-footer-text">
-                  <b class="text-danger mr-3"
+                  <b class="text-danger"
                     >{{ job.salary.name
                     }}{{ job.salaryMonths ? ` × ${job.salaryMonths}` : "" }}</b
                   >
-                  <span class="text-gray text-small">{{
+                  <span class="ml-3 text-gray text-small">{{
                     `${job.city ? job.city.name : ""} / ${
                       job.minDegree ? job.minDegree.name : ""
                     }`
@@ -49,12 +58,12 @@
             </div>
           </div>
         </el-card>
-      </div>
-      <div v-else>
+      </template>
+      <template v-else>
         <el-card shadow="hover" class="item-card">
           您没有状态为“{{ activeName | statusFilter }}”的投递
         </el-card>
-      </div>
+      </template>
     </div>
     <pagination
       :total="total"
@@ -134,6 +143,12 @@ export default {
         this.listQuery.status = status;
       }
       this.getList();
+    },
+    handleChat(item) {
+      this.$router.push({
+        path: "/chat",
+        query: { toUser: item.creatorId, jobId: item.id },
+      });
     },
   },
 };

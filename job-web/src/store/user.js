@@ -1,11 +1,12 @@
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { register, login, logout, getMyInfo } from '@/api/user_api'
+import {getToken, setToken, removeToken} from '@/utils/auth'
+import {register, login, logout, getMyInfo} from '@/api/user_api'
 import Toast from '@/utils/toast'
+import {storage} from "@/utils/storage";
 
 const state = {
     token: getToken(),
-    name: undefined,
-    avatar: undefined
+    name: storage.getUsername(),
+    avatar: storage.getAvatar()
 }
 
 const mutations = {
@@ -24,12 +25,12 @@ const mutations = {
 }
 
 const actions = {
-    LOGIN: ({ commit }, loginForm) => {
+    LOGIN: ({commit}, loginForm) => {
         return new Promise((resolve, reject) => {
             login(loginForm).then(response => {
-                const { data } = response
+                const {data} = response
 
-                if(data.type != 1){
+                if (data.type != 1) {
                     Toast.error('该账号不允许登录用户端');
                     return;
                 }
@@ -40,16 +41,18 @@ const actions = {
                 commit('SET_USERID', data.userId)
 
                 setToken(data.token, loginForm.rememberFlag)
+                storage.setUserInfo(data);
+                storage.setLoginInfo(loginForm);
                 resolve()
             }).catch(error => {
                 reject(error)
             })
         })
     },
-    REGISTER: ({ commit }, registerForm) => {
+    REGISTER: ({commit}, registerForm) => {
         return new Promise((resolve, reject) => {
             register(registerForm).then(response => {
-                const { data } = response
+                const {data} = response
 
                 commit('SET_TOKEN', data.token)
                 commit('SET_NAME', data.name)
@@ -63,10 +66,10 @@ const actions = {
             })
         })
     },
-    MYINFO: ({ commit }) => {
+    MYINFO: ({commit}) => {
         return new Promise((resolve, reject) => {
             getMyInfo().then(response => {
-                const { data } = response
+                const {data} = response
                 commit('SET_NAME', data.name)
                 commit('SET_AVATAR', data.avatar)
                 commit('SET_USERID', data.userId)
@@ -76,7 +79,7 @@ const actions = {
             })
         })
     },
-    LOGOUT: ({ commit }) => {
+    LOGOUT: ({commit}) => {
         return new Promise((resolve, reject) => {
             logout().then(() => {
 
@@ -86,6 +89,7 @@ const actions = {
                 commit('SET_USERID', undefined)
 
                 removeToken()
+                storage.removeUserInfo();
                 resolve()
             }).catch(error => {
                 reject(error)

@@ -22,9 +22,6 @@ public class LuceneCmdHandler {
     @Autowired
     private ResumeAttachService resumeAttachService;
 
-    @Autowired
-    private ResumeServiceFactory resumeServiceFactory;
-
     private IndexService indexService;
 
     /**
@@ -51,7 +48,7 @@ public class LuceneCmdHandler {
             }
         }else if (message.getBizType() == BusinessType.Resume) {
             if(message.getOpType() == OperationType.CreateOrUpdate) {
-                ResumeService resumeService = resumeServiceFactory.getDefaultService();
+                ResumeService resumeService = ResumeServiceFactory.getDefaultService();
                 resumeService.saveResumeItem(message.getDoc());
             }
         }

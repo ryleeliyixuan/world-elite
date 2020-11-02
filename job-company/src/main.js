@@ -15,6 +15,11 @@ import '@/permission'
 import '@/icons' // icon
 import Loading from "@/components/Loading";
 
+import storage from "@/utils/storage"
+
+// 数据存储
+Vue.use(storage);
+
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
@@ -22,7 +27,6 @@ Vue.use(BootstrapVue)
 Vue.use(Loading)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
-Vue.$
 const _vm = new Vue({
   router,
   store,

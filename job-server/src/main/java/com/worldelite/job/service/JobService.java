@@ -76,9 +76,6 @@ public class JobService extends BaseService {
     private CityService cityService;
 
     @Autowired
-    private ResumeServiceFactory resumeServiceFactory;
-
-    @Autowired
     private RabbitTemplate rabbitTemplate;
 
     @Resource(name = "luceneIndexCmdFanoutExchange")
@@ -195,7 +192,7 @@ public class JobService extends BaseService {
             return getNewestJobList(jobSearchForm);
         } else {
             //已登录用户组合相关条件
-            ResumeService resumeService = resumeServiceFactory.getDefaultService();
+            ResumeService resumeService = ResumeServiceFactory.getDefaultService();
             ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
             //意向职位
             if (resumeDetail.getCategoryList() != null) {
@@ -419,7 +416,7 @@ public class JobService extends BaseService {
             throw new ServiceException(ApiCode.INVALID_OPERATION);
         }
 
-        ResumeService resumeService = resumeServiceFactory.getDefaultService();
+        ResumeService resumeService = ResumeServiceFactory.getDefaultService();
         ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
         if (resumeDetail == null) {
             throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
@@ -487,7 +484,7 @@ public class JobService extends BaseService {
         if(job == null){
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
-        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+        ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeId);
         ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
         if(resumeDetail == null){
             throw new ServiceException("简历不存在，请检查输入的简历ID", ApiCode.OBJECT_NOT_FOUND);
@@ -520,23 +517,6 @@ public class JobService extends BaseService {
 
         return jobRecruitVos;
     }
-
-
-
-    /**
-     * 获取指定公司不同招聘类型职位数量
-     *
-     * @param id 公司ID
-     * @return 职位数量
-     */
-    /*public Map<String, Integer> getRecruitCount(Long id) {
-        Map<String, Integer> map = jobMapper.getRecruitCount(id);
-        System.out.println("map = " + map);
-        return map;
-    }*/
-
-
-
 
     private JobVo toJobVo(Job job, Boolean includeCompany) {
         if (job == null) {

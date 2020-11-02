@@ -4,25 +4,31 @@ import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.service.BaseService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
- * 简历服务类工程类
+ * 简历服务类工厂类
  * 根据简历类型返回对应的简历服务类实例
  */
-@Slf4j
-@Service
+@Component
 public class ResumeServiceFactory extends BaseService {
 
-    @Autowired
-    private ResumeGeneralService resumeGeneralService;
+    private static ResumeGeneralService resumeGeneralService;
+
+    private static ResumeCompanyService resumeCompanyService;
 
     @Autowired
-    private ResumeCompanyService resumeCompanyService;
+    public void setResumeGeneralService(ResumeGeneralService resumeGeneralService){
+        ResumeServiceFactory.resumeGeneralService = resumeGeneralService;
+    }
 
-    public ResumeService getResumeService(Byte resumeType){
+    @Autowired
+    public void setResumeCompanyService(ResumeCompanyService resumeCompanyService){
+        ResumeServiceFactory.resumeCompanyService = resumeCompanyService;
+    }
+
+    public static ResumeService getResumeService(Byte resumeType){
         //默认为用户简历
         if(resumeType == null) resumeType = ResumeType.GENERAL.value;
         switch (ResumeType.valueOf(resumeType)){
@@ -32,7 +38,7 @@ public class ResumeServiceFactory extends BaseService {
                 return resumeCompanyService;
             default:
                 //不支持的简历类型
-                throw new ServiceException("api.error.resume.type.not.support");
+                return null;
         }
     }
 
@@ -42,7 +48,7 @@ public class ResumeServiceFactory extends BaseService {
      * 这里默认返回普通用户简历的服务类
      * @return 默认的简历服务类
      */
-    public ResumeService getDefaultService(){
+    public static ResumeService getDefaultService(){
         return getResumeService(ResumeType.GENERAL.value);
     }
 
@@ -51,12 +57,12 @@ public class ResumeServiceFactory extends BaseService {
      * @param resumeId
      * @return
      */
-    public ResumeService getResumeService(Long resumeId){
+    public static ResumeService getResumeService(Long resumeId){
         //先用默认类型
         ResumeService resumeService = getDefaultService();
         //获取简历基础信息
         Resume resume = resumeService.getResumeBasic(resumeId);
-        if(resume==null) throw new ServiceException(message("api.error.data.resume"));
+        if(resume==null) return null;
         return getResumeService(resume.getType());
     }
 

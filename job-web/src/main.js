@@ -1,5 +1,5 @@
-  import 'core-js/stable';
-  import 'regenerator-runtime/runtime';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -10,23 +10,32 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import i18n from '@/i18n'
+
 import echarts from "echarts";
+import storage from "@/utils/storage"
 
 import '@/permission'
 import '@/icons' // icon
 
+import * as filters from './filters/filters'
+Object.keys(filters).forEach(key => {
+    Vue.filter(key, filters[key])
+})
 
 const version = "2.0";
 
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
-if(cookies.get("version")!== version) {
-  Object.keys(cookies.getAll()).forEach(key => {
-    cookies.remove(key)
-  })
-  cookies.set("version", version)
+if (cookies.get("version") !== version) {
+    Object.keys(cookies.getAll()).forEach(key => {
+        cookies.remove(key)
+    })
+    cookies.set("version", version)
 }
+
+// Êý¾Ý´æ´¢
+Vue.use(storage);
 
 Vue.config.productionTip = false
 
@@ -37,10 +46,10 @@ Vue.prototype.$echarts = echarts;
 
 
 const _vm = new Vue({
-  router,
-  store,
-  i18n,
-  render: h => h(App),
+    router,
+    store,
+    i18n,
+    render: h => h(App),
 }).$mount('#app')
 
 document._vm_instance = _vm

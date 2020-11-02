@@ -73,7 +73,9 @@
             onSubmit(evt) {
                 evt.preventDefault();
                 this.$store.dispatch("user/LOGIN", this.form).then(() => {
-                    this.$router.push({path: this.redirect || "/"});
+                    let query = {...this.$route.query};
+                    delete query.redirect;
+                    this.$router.push({path: this.redirect || "/", query});
                 });
             },
             goThridPartLoginUrl(type) {

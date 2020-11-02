@@ -177,8 +177,11 @@ public class CompanyScoreService extends BaseService{
             userVo.setAvatar("");
             companyScoreVo.setFromUser(userVo);
         }
-        companyScoreVo.setLike(companyLikeService.hasLike(companyScore.getId()));
-        companyScoreVo.setReport(companyReportService.getReportVo(companyScore.getId()));
+        //登录用户显示点赞和举报信息
+        if(curUser() != null) {
+            companyScoreVo.setLike(companyLikeService.hasLike(companyScore.getId()));
+            companyScoreVo.setReport(companyReportService.getReportVo(companyScore.getId()));
+        }
         return companyScoreVo;
     }
 

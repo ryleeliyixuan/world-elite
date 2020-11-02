@@ -1,11 +1,12 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { register, login, logout, getMyInfo } from '@/api/user_api'
 import Toast from '@/utils/toast'
+import {storage} from "@/utils/storage";
 
 const state = {
     token: getToken(),
-    name: undefined,
-    avatar: undefined,
+    name: storage.getUsername(),
+    avatar: storage.getAvatar(),
     status: undefined
 }
 
@@ -29,7 +30,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             login(loginForm).then(response => {
                 const { data } = response
-                
+
                 if(data.type != 2){
                     Toast.error('该账号不允许登录企业端');
                     return;
@@ -41,6 +42,8 @@ const actions = {
                 commit('SET_STATUS', data.status)
 
                 setToken(data.token, loginForm.rememberFlag)
+                storage.setUserInfo(data);
+                storage.setLoginInfo(loginForm);
                 resolve()
             }).catch(error => {
                 reject(error)
@@ -86,6 +89,7 @@ const actions = {
                 commit('SET_AVATAR', undefined)
 
                 removeToken()
+                storage.removeUserInfo();
                 resolve()
             }).catch(error => {
                 reject(error)

@@ -14,6 +14,7 @@ import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.BaseService;
 import com.worldelite.job.service.search.IndexService;
+import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.ResumeVo;
 import org.apache.commons.collections.CollectionUtils;
@@ -37,6 +38,9 @@ public abstract class ResumeService extends BaseService{
 
     @Autowired
     private IndexService indexService;
+
+    @Autowired
+    private SearchService searchService;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -134,7 +138,16 @@ public abstract class ResumeService extends BaseService{
      * @param resumeId 简历ID
      */
     public void saveResumeItem(Long resumeId){
-        Document document = indexService.saveResumeItem(getResumeDetail(resumeId),folder);
+        ResumeDetail resumeDetail = getResumeDetail(resumeId);
+        saveResumeItem(resumeDetail);
+    }
+
+    /**
+     * 给简历添加索引
+     * @param resumeDetail
+     */
+    public void saveResumeItem(ResumeDetail resumeDetail){
+        Document document = indexService.saveResumeItem(resumeDetail,folder);
         //MQ广播索引更新指令
         rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.CreateOrUpdate, BusinessType.Resume));
     }
@@ -146,6 +159,10 @@ public abstract class ResumeService extends BaseService{
     public void saveResumeItem(Document document){
         Long resumeId = Long.valueOf(document.get(ResumeIndexFields.RESUME_ID));
         saveResumeItem(resumeId);
+    }
+
+    public PageResult<ResumeDetail> searchDefault(ResumeListForm resumeListForm){
+        return searchService.searchResume(resumeListForm, folder);
     }
 
     /**
