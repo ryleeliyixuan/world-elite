@@ -12,6 +12,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 @Data
 public class ResumeListForm extends PageForm implements IExportable{
     private Long userId; //用户ID
+    private Long collectorId; //收藏者ID
     private Long companyId; //企业ID
     private String name; //用户名
     private String email; //用户邮箱

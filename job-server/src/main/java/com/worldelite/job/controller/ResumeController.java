@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ResumeController extends BaseController{
 
-    @Autowired
-    private ResumeServiceFactory resumeServiceFactory;
-
     /**
      * 导出简历模板
      *
@@ -29,7 +26,7 @@ public class ResumeController extends BaseController{
     @RequireLogin
     @GetMapping("/resume/{resumeId}")
     public String resume(ModelMap modelMap, @PathVariable("resumeId") Long resumeId){
-        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+        ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeId);
         ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
         ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
         modelMap.put("resume", resumeVo);

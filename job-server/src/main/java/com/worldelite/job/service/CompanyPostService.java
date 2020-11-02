@@ -170,8 +170,11 @@ public class CompanyPostService extends BaseService{
     public CompanyPostVo getPostVo(CompanyPost companyPost){
         CompanyPostVo companyPostVo = new CompanyPostVo().asVo(companyPost);
         companyPostVo.setFromUser(userApplicantService.getUserInfo(companyPost.getFromId()));
-        companyPostVo.setLike(companyLikeService.hasLike(companyPost.getId()));
-        companyPostVo.setReport(companyReportService.getReportVo(companyPost.getId()));
+        //登录后才有点赞和举报
+        if(curUser() != null) {
+            companyPostVo.setLike(companyLikeService.hasLike(companyPost.getId()));
+            companyPostVo.setReport(companyReportService.getReportVo(companyPost.getId()));
+        }
         return companyPostVo;
     }
 

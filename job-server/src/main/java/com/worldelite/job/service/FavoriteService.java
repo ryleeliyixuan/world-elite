@@ -15,6 +15,7 @@ import me.zhyd.oauth.utils.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.jsf.FacesContextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,6 +187,22 @@ public class FavoriteService extends BaseService{
         options.setObjectId(companyId);
         List<Favorite> favoriteList = favoriteMapper.selectAndList(options);
         return favoriteList.size();
+    }
+
+    public void save(Favorite favorite){
+        favoriteMapper.insertSelective(favorite);
+    }
+
+    public void delete(Integer id){
+        favoriteMapper.deleteByPrimaryKey(id);
+    }
+
+    public List<Favorite> listByObjectId(Long objectId,FavoriteType type){
+        Favorite favorite = new Favorite();
+        favorite.setUserId(curUser().getId());
+        favorite.setType(type.value);
+        favorite.setObjectId(objectId);
+        return favoriteMapper.selectAndList(favorite);
     }
 
 }

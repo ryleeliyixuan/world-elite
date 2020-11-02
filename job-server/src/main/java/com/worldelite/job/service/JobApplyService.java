@@ -63,9 +63,6 @@ public class JobApplyService extends BaseService{
     @Autowired
     private UserApplicantService userApplicantService;
 
-    @Autowired
-    private ResumeServiceFactory resumeServiceFactory;
-
     /**
      * 申请职位
      * @param resumeId 简历ID
@@ -74,7 +71,7 @@ public class JobApplyService extends BaseService{
     public JobApply applyJob(Long resumeId,Long jobId,Byte status) {
         //如果简历ID不存在，则使用当前登录用户默认简历
         if(resumeId==null){
-            ResumeService resumeService = resumeServiceFactory.getDefaultService();
+            ResumeService resumeService = ResumeServiceFactory.getDefaultService();
             ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
             //默认简历也不存在，则判定为数据异常
             if(resumeDetail==null){
@@ -141,12 +138,12 @@ public class JobApplyService extends BaseService{
             applyResumeVo.setType(jobApply.getType());
             applyResumeVo.setCommentVos(corporateCommentService.getCommentsByResumeId(jobApply.getId()));
             //获取简历基础信息
-            ResumeService resumeService = resumeServiceFactory.getDefaultService();
+            ResumeService resumeService = ResumeServiceFactory.getDefaultService();
             Resume resume = resumeService.getResumeBasic(jobApply.getResumeId());
             //一份职位申请，如果对应简历不存在，判定为数据异常
             if(resume==null) throw new ServiceException(message("api.error.data.resume"));
             //根据简历类型获取简历详情
-            resumeService = resumeServiceFactory.getResumeService(resume.getType());
+            resumeService = ResumeServiceFactory.getResumeService(resume.getType());
             ResumeDetail resumeDetail = resumeService.getResumeDetail(resume.getId());
             applyResumeVo.setResume(resumeService.toResumeVo(resumeDetail));
             applyResumeVo.setJob(jobService.getJobInfo(jobApply.getJobId(), false));
@@ -185,7 +182,7 @@ public class JobApplyService extends BaseService{
         }
 
         // 发送站内和邮件消息
-        ResumeService resumeService = resumeServiceFactory.getResumeService(resume.getType());
+        ResumeService resumeService = ResumeServiceFactory.getResumeService(resume.getType());
         ResumeDetail resumeDetail = resumeService.getResumeDetail(resume.getId());
         String jobPlaceholder = "";
         if(job.getId().equals("0")){

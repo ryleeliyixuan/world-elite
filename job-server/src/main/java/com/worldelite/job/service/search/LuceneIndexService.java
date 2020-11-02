@@ -69,9 +69,6 @@ public class LuceneIndexService implements IndexService {
     @Autowired
     private LuceneContext luceneContext;
 
-    @Autowired
-    private ResumeServiceFactory resumeServiceFactory;
-
     @Override
     public void createOrRefresh() {
         IndexWriter indexWriter = null;
@@ -357,7 +354,7 @@ public class LuceneIndexService implements IndexService {
     }
 
     private Document createResumeDoc(Long resumeId) {
-        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+        ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeId);
         ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
         ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
         if (checkIfResumeNotComplete(resumeVo)) return null;

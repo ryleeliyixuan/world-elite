@@ -43,9 +43,6 @@ public class ResumeRepositoryApi extends BaseApi {
     private UserExpectJobService userExpectJobService;
 
     @Autowired
-    private ResumeServiceFactory resumeServiceFactory;
-
-    @Autowired
     private JobApplyService jobApplyService;
 
     /**
@@ -57,7 +54,7 @@ public class ResumeRepositoryApi extends BaseApi {
     @ApiDoc
     @PostMapping("save-attachment")
     public ApiResult saveAttachment(@RequestParam String attachmentName) {
-        ResumeService resumeService = resumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
+        ResumeService resumeService = ResumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
         resumeService.parseAttachment(attachmentName);
         return ApiResult.ok();
     }
@@ -72,7 +69,7 @@ public class ResumeRepositoryApi extends BaseApi {
     @ApiDoc
     @PostMapping("add-attachment")
     public ApiResult addAttachment(@RequestParam Long id, @RequestParam String attachmentName) {
-//        ResumeService resumeService = resumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
+//        ResumeService resumeService = ResumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
 //        resumeService.parseAttachment(attachmentName);
         return ApiResult.ok();
     }
@@ -141,7 +138,7 @@ public class ResumeRepositoryApi extends BaseApi {
     @ApiDoc
     @PostMapping("search")
     public ApiResult<PageResult<ResumeVo>> search(@RequestBody ResumeListForm listForm) {
-        ResumeService resumeService = resumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
+        ResumeService resumeService = ResumeServiceFactory.getResumeService(ResumeType.COMPANY.value);
         PageResult<ResumeDetail> pageResult = resumeService.search(listForm);
         return ApiResult.ok(resumeService.toResumeVo(pageResult));
     }
@@ -158,7 +155,7 @@ public class ResumeRepositoryApi extends BaseApi {
     @GetMapping("resume")
     @ApiDoc
     public ApiResult<ResumeVo> resume(@RequestParam Long resumeId) {
-        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+        ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeId);
         ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
         return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
@@ -174,7 +171,7 @@ public class ResumeRepositoryApi extends BaseApi {
     @ApiDoc
     public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm) {
         resumeForm.setType(ResumeType.COMPANY.value);
-        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeForm.getType());
+        ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeForm.getType());
         ResumeDetail resumeDetail = resumeService.saveBasic(resumeForm);
         return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
@@ -189,7 +186,7 @@ public class ResumeRepositoryApi extends BaseApi {
     @PostMapping("del-resume-attachment")
     @ApiDoc
     public ApiResult delResumeAttachment(@RequestParam Long resumeId) {
-        ResumeService resumeService = resumeServiceFactory.getResumeService(resumeId);
+        ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeId);
         resumeService.deleteResumeAttachment(resumeId);
         return ApiResult.ok();
     }
