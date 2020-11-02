@@ -1,5 +1,5 @@
 <template>
-  <div class="community-post-container">
+  <div class="community-post-container" v-if="postPage">
     <div v-if="postPage.list.length > 0" class="community-post-display">
       <div class="community-post-switch mb-4 d-flex justify-content-end">
         <el-switch
@@ -33,7 +33,7 @@
                     ><i class="el-icon-s-opportunity"></i> 热度: {{ post.hots }}
                   </el-tag>
                   <el-tag size="medium" type="success">
-                    <i class="el-icon-time"></i> 更新于 {{ post.updateTime }}
+                    <i class="el-icon-time"></i> {{ post.updateTime }}
                   </el-tag>
                   <el-button
                     type="text"
@@ -44,9 +44,9 @@
                   </el-button>
                 </div>
               </div>
-              <div v-if="hasDetailOpen == true" class="community-post-detail">
+              <div v-if="postDetail && hasDetailOpen == true" class="community-post-detail">
                 <el-divider></el-divider>
-                <div class="mb-4 d-flex align-items-center">
+                <div class="mb-4 d-flex align-items-center" v-if="postDetail.fromUser">
                   <el-avatar
                     class="mr-2"
                     :src="postDetail.fromUser.avatar"
@@ -60,6 +60,7 @@
                 <div class="mb-4">{{ postDetail.content }}</div>
                 <div
                   class="community-post-detail-action mb-4 d-flex justify-content-end"
+                  v-if="postDetail.fromUser"
                 >
                   <div v-if="postDetail.like">
                     <el-button
@@ -158,6 +159,7 @@
                       >
                         <div class="mb-3 d-flex align-items-center">
                           <el-avatar
+                            v-if="comment.fromUser.avatar"
                             style="margin-right: 12px"
                             :src="comment.fromUser.avatar"
                             size="small"
@@ -651,7 +653,6 @@ export default {
       } else {
         this.hasDetailOpen = true;
         this.listQuery.id = id;
-        // this.getPostDetail();
       }
       this.getPostList();
     },
@@ -866,8 +867,8 @@ export default {
           padding: 8px 0 8px 0;
         }
         .community-post-item-title-stats {
-          width: 300px;
-          min-width: 300px;
+          width: 280px;
+          min-width: 280px;
           display: flex;
           flex-direction: row;
           justify-content: space-around;

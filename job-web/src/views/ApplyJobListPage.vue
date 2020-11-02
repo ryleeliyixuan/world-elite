@@ -9,47 +9,52 @@
     />
     <!-- 通过投递成功／通过初筛／邀请面试／不合适 四种状态来方便用户追踪申请的进度，提升用户体验。 -->
     <div class="job-list">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="投递成功" name="2"></el-tab-pane>
+      <el-tabs class="nav-bar" v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="投递成功" name="0"></el-tab-pane>
         <el-tab-pane label="通过初筛" name="3"></el-tab-pane>
         <el-tab-pane label="邀请面试" name="4"></el-tab-pane>
         <el-tab-pane label="不合适" name="6"></el-tab-pane>
       </el-tabs>
-      <template v-if="pageResult.list && pageResult.list.length !== 0">
-      <el-card
-        shadow="hover"
-        v-for="job in pageResult.list"
-        :key="job.id"
-        class="item-card"
-        @click.native="openJobDetail(job.id)"
-      >
-        <div class="item-container">
-          <div class="item-company-container">
-            <div class="text-small text-gray item-company-name">
-              <span>{{job.companyUser.company.name}}</span>
-              <span>{{job.applyTime}}</span>
-            </div>
-            <h6 class="mt-0 mb-1">{{job.name}}</h6>
-            <div class>
-              <b
-                class="text-danger"
-              >{{job.salary.name}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
-              <span
-                class="ml-3 text-gray text-small"
-              >{{`${job.city?job.city.name:''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
+      <div v-if="pageResult.list && pageResult.list.length !== 0">
+        <el-card
+          shadow="hover"
+          v-for="job in pageResult.list"
+          :key="job.id"
+          class="item-card"
+          @click.native="openJobDetail(job.id)"
+        >
+          <div class="item-container">
+            <div class="item-company-container">
+              <div class="text-small text-gray item-company-name">
+                <span>{{ job.companyUser.company.name }}</span>
+                <span>{{ job.applyTime }}</span>
+              </div>
+              <h6 class="mt-0 mb-1">{{ job.name }}</h6>
+              <div class="item-footer">
+                <div class="item-footer-text">
+                  <b class="text-danger mr-3"
+                    >{{ job.salary.name
+                    }}{{ job.salaryMonths ? ` × ${job.salaryMonths}` : "" }}</b
+                  >
+                  <span class="text-gray text-small">{{
+                    `${job.city ? job.city.name : ""} / ${
+                      job.minDegree ? job.minDegree.name : ""
+                    }`
+                  }}</span>
+                </div>
+                <el-tag v-if="activeName == 0">
+                  {{ job.status | statusFilter }}
+                </el-tag>
+              </div>
             </div>
           </div>
-        </div>
-      </el-card>
-      </template>
-      <template v-else>
-      <el-card
-        shadow="hover"
-        class="item-card"
-      >
-        您没有状态为“{{ activeName | statusFilter }}”的投递
-      </el-card>
-      </template>
+        </el-card>
+      </div>
+      <div v-else>
+        <el-card shadow="hover" class="item-card">
+          您没有状态为“{{ activeName | statusFilter }}”的投递
+        </el-card>
+      </div>
     </div>
     <pagination
       :total="total"
@@ -70,12 +75,12 @@ export default {
   components: { Pagination },
   data() {
     return {
-      activeName: "2",
+      activeName: "0",
       listQuery: {
         page: 1,
         limit: 10,
         sort: "-id",
-        status: '',
+        status: "",
       },
       total: 0,
       pageResult: 0,
@@ -84,10 +89,13 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
+        1: "投递中",
         2: "投递成功",
         3: "通过初筛",
         4: "邀请面试",
+        5: "录用",
         6: "不合适",
+        7: "已过期",
       };
       return statusMap[status];
     },
@@ -106,7 +114,6 @@ export default {
       myApplyJobList(this.listQuery).then((response) => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
-        this.status = response.data;
         this.$emit("complete");
       });
     },
@@ -121,7 +128,11 @@ export default {
     },
     handleClick(tab, event) {
       const status = parseInt(tab.name);
-      this.listQuery.status = status;
+      if (status === 0) {
+        this.listQuery.status = "";
+      } else {
+        this.listQuery.status = status;
+      }
       this.getList();
     },
   },
@@ -137,6 +148,11 @@ export default {
 
   .job-list {
     width: 75%;
+    .nav-bar {
+      display: inline-flex;
+      margin-bottom: 10px;
+      align-items: center;
+    }
 
     .item-card {
       margin-bottom: 10px;
@@ -156,6 +172,11 @@ export default {
             justify-content: space-between;
             align-items: center;
           }
+          .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
         }
       }
     }
@@ -169,6 +190,13 @@ export default {
     .job-list {
       width: 100%;
     }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .item-footer-text {
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>

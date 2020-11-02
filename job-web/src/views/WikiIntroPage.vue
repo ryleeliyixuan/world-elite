@@ -202,15 +202,17 @@
             <i class="el-icon-s-custom" style="color: #1e90ff"></i>
             公司架构
           </h5>
-          <el-button
-            class="intro-structure-fullscreen"
-            type="primary"
-            icon="el-icon-full-screen"
-            size="mini"
-            @click="fullScreen = true"
-            plain
-            >全屏</el-button
-          >
+          <div class="d-flex justify-content-end">
+            <el-button
+              class="intro-structure-fullscreen"
+              size="mini"
+              type="primary"
+              icon="el-icon-full-screen"
+              @click="fullScreen = true"
+              plain
+              >查 看</el-button
+            >
+          </div>
           <el-dialog title="公司结构" :visible.sync="fullScreen" width="90%">
             <TreeChart
               :items="structureList"
@@ -641,7 +643,7 @@ export default {
   },
   methods: {
     initData() {
-      const {id} = this.$route.params;
+      const { id } = this.$route.params;
       //COMPANY METHODS - MAIN PAGE - INIT
       getCompanyInfo(id).then((response) => {
         this.company = response.data;
@@ -649,17 +651,17 @@ export default {
 
         //for test use
         if (this.addressList) {
-            for (const addr of this.addressList) {
-                addr.mapWindow = {
-                    position: [addr.longitude, addr.latitude],
-                    content: addr.address
-                };
-            }
+          for (const addr of this.addressList) {
+            addr.mapWindow = {
+              position: [addr.longitude, addr.latitude],
+              content: addr.address,
+            };
+          }
         }
       });
-      getCompanyWiki(id).then((response) => {
-        this.companyWiki = response.data;
-      });
+      // getCompanyWiki(id).then((response) => {
+      //   this.companyWiki = response.data;
+      // });
     },
     //change another group of comps, clicking "换一批"
     changeComps() {
@@ -801,7 +803,7 @@ export default {
     }
 
     .intro-structure-fullscreen {
-      position: absolute;
+      position: relative;
       right: 50px;
     }
 
