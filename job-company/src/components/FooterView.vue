@@ -20,6 +20,7 @@
                 <el-col :span="6">
                     <h5 class="mb-3">联系我们</h5>
                     <a class="link-text" href="mailto:career@myworldelite.com">邮箱：career@myworldelite.com</a>
+                    <a class="link-text">微信：Worldeliteus</a>
                 </el-col>
                 <el-col :span="6">
                     <div class="link-text text-center">
