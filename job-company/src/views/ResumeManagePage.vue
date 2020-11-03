@@ -124,6 +124,13 @@
                                            v-if="applyResume.applyStatus !== 5 && applyResume.applyStatus !== 6">
                                     不合适
                                 </el-button>
+                                <el-button
+                                        type="primary"
+                                        plain
+                                        @click.stop="handleChat(applyResume)"
+                                        size="small"
+                                >聊一聊</el-button
+                                >
                             </div>
                         </div>
                         <b-media @click="handleShowResume(applyResume)" style="cursor: pointer;">
@@ -686,8 +693,15 @@
                 } else {
                     done();
                 }
-            }
+            },
 
+            handleChat(item) {
+                console.log(item);
+                this.$router.push({
+                    path: "/chat",
+                    query: { toUser: item.resume.userId, jobId: item.job.id },
+                });
+            },
         }
     };
 </script>
