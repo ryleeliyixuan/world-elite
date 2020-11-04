@@ -49,7 +49,8 @@
                             title="系统通知">
                     <div class="message-list" v-if="newMessageList && newMessageList.length !== 0">
                         <div class="message-item" v-for="message in newMessageList" :key="message.id">
-                            <el-badge is-dot v-if="message.readFlag === 0"/>
+                            <el-badge type="success" is-dot v-if="message.readFlag === 0 && message.msgType === 1"/>
+                            <el-badge is-dot v-if="message.readFlag === 0 && message.msgType === 0"/>
                             {{message.content}}
                             <el-link v-if="message.url && message.url !== ''"
                                      :href="message.url"
@@ -172,16 +173,16 @@
                 this.$store.commit("setting/SET_KEYWORD", this.keyword);
             },
             getUnReadMessageCount() {
-                if (this.token && this.token !== "") {
-                    getUnReadMessageCount().then(response => {
-                        this.setMessageCount(response.data);
-                    });
-                }
+              if (this.token && this.token !== "") {
+                getUnReadMessageCount().then(response => {
+                  this.setMessageCount(response.data);
+                });
+              }
             },
             getMessageList() {
                 if (this.token && this.token !== "") {
                     getMessageList(this.messageListForm).then(response => {
-                        this.newMessageList = response.data.list;
+                       this.newMessageList = response.data.list;
                     });
                 }
             },
