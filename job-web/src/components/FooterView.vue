@@ -23,7 +23,6 @@
                 <div class="section1-item">
                     <h5 class="section1-text">联系我们</h5>
                     <a class="link-text" href="mailto:career@myworldelite.com">邮箱：career@myworldelite.com</a>
-                    <a class="link-text">微信：Worldeliteus</a>
                 </div>
 
                 <div class="section1-item">

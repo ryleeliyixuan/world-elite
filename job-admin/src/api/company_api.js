@@ -78,3 +78,11 @@ export function saveCompanyWiki(data){
     data
   })
 }
+
+export function changeModuleEnable(data){
+  return request({
+    url: '/company/change-module-enable',
+    method: 'post',
+    data
+  })
+}

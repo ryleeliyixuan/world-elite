@@ -2,21 +2,30 @@
   <div class="intro-box" v-if="company">
     <el-divider></el-divider>
     <div class="intro-summary">
-      <div class="intro-summary-img">
-        <el-image
-          :src="summaryImgUrl"
+      <div
+        v-if="companyWiki.video && companyWiki.video !== ''"
+        class="intro-summary-img"
+      >
+        <video
+          style="height: 300px"
+          :src="companyWiki.video"
           :alt="company.fullName"
-          fit="cover"
-        ></el-image>
+          controls="controls"
+        ></video>
       </div>
       <div class="intro-summary-text">
-        {{ company.wikiSummary }}
+        {{ companyWiki.summary }}
       </div>
     </div>
     <el-divider></el-divider>
-    <div class="intro-module">
+    <div v-if="companyWiki" class="intro-module">
       <el-row :gutter="36">
         <el-col
+          v-if="
+            companyWiki.cityEnable == 1 &&
+            company.addressList &&
+            company.addressList.length != 0
+          "
           class="intro-address intro-module-element"
           :xs="24"
           :sm="24"
@@ -31,7 +40,7 @@
           <el-collapse
             v-model="activeAddress"
             accordion
-            v-for="(addr, index) in addressList"
+            v-for="(addr, index) in company.addressList"
             :key="addr.id"
           >
             <el-collapse-item :title="addr.address" :name="index">
@@ -51,6 +60,11 @@
           </el-collapse>
         </el-col>
         <el-col
+          v-if="
+            companyWiki.employeeEnable === 1 &&
+            companyWiki.employeeList &&
+            companyWiki.employeeList.length !== 0
+          "
           class="intro-employee intro-module-element"
           :xs="24"
           :sm="24"
@@ -63,11 +77,16 @@
             雇员数量
           </h5>
           <BarChart
-            :items="employeeData"
+            :items="companyWiki.employeeList"
             class="intro-employee-chart"
           ></BarChart>
         </el-col>
         <el-col
+          v-if="
+            companyWiki.productEnable == 1 &&
+            companyWiki.productList &&
+            companyWiki.productList.length !== 0
+          "
           class="intro-product intro-module-element"
           :xs="24"
           :sm="24"
@@ -79,18 +98,22 @@
             <i class="el-icon-s-flag" style="color: #1e90ff"></i> 旗下产品
           </h5>
           <el-carousel height="380px" :interval="2500" arrow="always">
-            <el-carousel-item v-for="product in productList" :key="product.img">
+            <el-carousel-item
+              v-for="product in companyWiki.productList"
+              :key="product.picture"
+            >
               <img
                 class="intro-product-image"
-                :src="product.img"
+                :src="product.picture"
                 :alt="product.alt"
-                fit="cover"
+                fit="fill"
                 v-on:click="select(product)"
               />
             </el-carousel-item>
           </el-carousel>
         </el-col>
         <el-col
+          v-if="companyWiki.marketEnable === 1"
           class="intro-valuation intro-module-element"
           :xs="24"
           :sm="24"
@@ -106,57 +129,81 @@
             <div class="stockstats-basicinfo stockstats-section">
               <el-row>
                 <el-col :span="12">
-                  <h5>{{ ticker }}</h5>
+                  <h5>{{ stockInfo.name }}</h5>
                 </el-col>
                 <el-col :span="12">
-                  <span>{{ timestamp }}</span>
+                  <span> {{ stockInfo.date }} {{ stockInfo.timestamp }}</span>
                 </el-col>
               </el-row>
-              <h6 style="color: grey">{{ market }}</h6>
             </div>
             <div class="stockstats-currentprice stockstats-section">
-              <div v-if="changeNumerical <= 0">
-                <h3 style="color: red">{{ currency + current }}</h3>
+              <h1>{{ stockInfo.current }}</h1>
+              <!-- <div v-if="stockInfo.changeNumerical <= 0">
+                <h3 style="color: red">
+                  {{ stockInfo.currency + stockInfo.current }}
+                </h3>
                 <i
                   class="el-icon-caret-bottom stockstats-change-down"
                   style="color: red"
                 ></i>
                 <span style="color: red">
-                  {{ changeNumerical + " (" + changePercentage + "%)" }}
+                  {{
+                    stockInfo.changeNumerical + " (" + changePercentage + "%)"
+                  }}
                 </span>
               </div>
-              <div v-if="changeNumerical > 0">
-                <h3 style="color: green">{{ currency + current }}</h3>
+              <div v-if="stockInfo.changeNumerical > 0">
+                <h3 style="color: green">
+                  {{ stockInfo.currency + stockInfo.current }}
+                </h3>
                 <i
                   class="el-icon-caret-top stockstats-change-up"
                   style="color: green"
                 ></i>
-                <span v-if="changeNumerical > 0" style="color: green">
-                  {{ changeNumerical + " (" + changePercentage + "%)" }}
+                <span v-if="stockInfo.changeNumerical > 0" style="color: green">
+                  {{
+                    stockInfo.changeNumerical +
+                    " (" +
+                    stockInfo.changePercentage +
+                    "%)"
+                  }}
                 </span>
-              </div>
+              </div> -->
             </div>
             <div class="stockstats-detail stockstats-section">
               <el-row>
                 <el-col :span="12">
-                  最高：<span style="font-weight: bold">{{ high }}</span>
+                  最高：<span style="font-weight: bold">{{
+                    stockInfo.high
+                  }}</span>
                 </el-col>
                 <el-col :span="12">
-                  最低：<span style="font-weight: bold">{{ low }}</span>
+                  最低：<span style="font-weight: bold">{{
+                    stockInfo.low
+                  }}</span>
                 </el-col>
               </el-row>
               <el-row>
                 <el-col :span="12">
-                  今开：<span style="font-weight: bold">{{ open }}</span>
+                  今开：<span style="font-weight: bold">{{
+                    stockInfo.open
+                  }}</span>
                 </el-col>
                 <el-col :span="12">
-                  <span></span>
+                  昨收：<span style="font-weight: bold">{{
+                    stockInfo.close
+                  }}</span>
                 </el-col>
               </el-row>
             </div>
           </el-card>
         </el-col>
         <el-col
+          v-if="
+            companyWiki.historyEnable == 1 &&
+            companyWiki.historyList &&
+            companyWiki.historyList.length !== 0
+          "
           class="intro-timeline intro-module-element"
           :xs="24"
           :sm="24"
@@ -168,7 +215,7 @@
             <i class="el-icon-s-data" style="color: #1e90ff"></i> 发展路径
           </h5>
           <div class="block">
-            <div class="radio">
+            <div class="radio mb-4">
               <el-radio-group v-model="reverse">
                 <el-radio :label="true">时间倒序</el-radio>
                 <el-radio :label="false">时间正序</el-radio>
@@ -177,19 +224,20 @@
             <div class="infinite-list-wrapper" style="overflow: auto">
               <el-timeline :reverse="reverse">
                 <el-timeline-item
-                  v-for="(activity, index) in activities"
-                  :key="index"
-                  :timestamp="activity.timestamp"
+                  v-for="history in companyWiki.historyList"
+                  :key="history.id"
+                  :timestamp="history.eventTime"
                   placement="top"
                   v-infinite-scroll="load"
                   infinite-scroll-disabled="disabled"
                 >
-                  {{ activity.content }}
+                  {{ history.event }}
                 </el-timeline-item>
               </el-timeline>
             </div>
           </div>
         </el-col>
+        <!-- v-if="company.structureEnable == 1" -->
         <el-col
           class="intro-structure intro-module-element"
           :xs="24"
@@ -215,12 +263,12 @@
           </div>
           <el-dialog title="公司结构" :visible.sync="fullScreen" width="90%">
             <TreeChart
-              :items="structureList"
+              :items="companyWiki.structure"
               class="intro-structure-chart"
             ></TreeChart>
           </el-dialog>
           <TreeChart
-            :items="structureList"
+            :items="companyWiki.structure"
             class="intro-structure-chart"
           ></TreeChart>
         </el-col>
@@ -304,6 +352,7 @@
 <script>
 import Vue from "vue";
 import VueAMap from "vue-amap";
+import axios from "axios";
 import BarChart from "../components/BarChart";
 import TreeChart from "../components/TreeChart";
 import Pagination from "@/components/Pagination";
@@ -334,7 +383,7 @@ export default {
     return {
       //MAIN PAGE ATTRIBUTE
       company: undefined,
-      companyWiki: undefined,
+      companyWiki: {},
       load: true,
       //intro-address
       activeAddress: 0,
@@ -355,9 +404,6 @@ export default {
       contributorIndex: [],
 
       //FAKE COMPANY INFO LIST START - for test only
-      //summary image url
-      summaryImgUrl: "http://i4.hexun.com/2019-08-01/198052912.png",
-
       //recommended company
       recommendedComps: [
         {
@@ -482,50 +528,6 @@ export default {
         },
       ],
 
-      //history
-      activities: [
-        {
-          timestamp: "2009",
-          content: "Bilibili正式成立",
-        },
-        {
-          timestamp: "2012",
-          content: "Bilibili移动端app正式上线",
-        },
-        {
-          timestamp: "2013",
-          content: "Bilibili首次举行bml",
-        },
-        {
-          timestamp: "2016",
-          content:
-            "百度发布2016年搜索报告，bilibili成为十大新鲜关注（00后）第一位",
-        },
-        {
-          timestamp: "2018",
-          content: "Bilibili在美国纳斯达克上市，股票代码bili",
-        },
-        {
-          timestamp: "2019",
-          content: "阿里巴巴入股Bilibili",
-        },
-      ],
-
-      //stock info
-      ticker: "APPL",
-      market: "NASDQ",
-      changeNumerical: 1.53,
-      changePercentage: 1.319,
-      currency: "$",
-      current: 117.51,
-      timestamp: "10-20 7:59PM PSD",
-      open: 116.2,
-      low: 115.63,
-      high: 118.93,
-
-      //companyrating 公司评分
-      companyRating: 3.8,
-
       //structurelist 公司结构
       structureList: [
         {
@@ -571,42 +573,21 @@ export default {
           ],
         },
       ],
-      employeeData: [
-        //雇员数量
-        { year: "2010", value: 1000 },
-        { year: "2011", value: 2000 },
-        { year: "2012", value: 4000 },
-        { year: "2013", value: 3000 },
-        { year: "2014", value: 1000 },
-        { year: "2015", value: 1000 },
-        { year: "2016", value: 1234 },
-        { year: "2018", value: 2341 },
-        { year: "2019", value: 8712 },
-        { year: "2020", value: 12432 },
-      ],
-      addressList: [
-        {
-          //公司地址
-          address: "上海市杨浦区政立路485号国正中心3号楼",
-          cityId: 0,
-          id: 20,
-          latitude: 31.309352,
-          longitude: 121.506414,
-        },
-      ],
-      productList: [
-        //产品列表
-        {
-          img:
-            "https://x0.ifengimg.com/res/2019/F675FF42FC2459230839D9E9CDB1AF49FEDC5ABD_size414_w2560_h1707.jpeg",
-          alt: "小红书产品1",
-        },
-        {
-          img: "http://i.17173cdn.com/2fhnvk/YWxqaGBf/cms3/FVYpgtbnbfxhggm.jpg",
-          alt: "小红书产品2",
-        },
-      ],
       //FAKE COMPANY INFO LIST END
+
+      //stock info
+      stockInfo: {
+        name: "",
+        open: undefined,
+        close: undefined,
+        current: undefined,
+        low: undefined,
+        high: undefined,
+        date: undefined,
+        timestamp: undefined,
+      },
+      stockUrl: "",
+      sinaMarketInfo: undefined,
     };
   },
   created() {
@@ -644,14 +625,11 @@ export default {
   methods: {
     initData() {
       const { id } = this.$route.params;
-      //COMPANY METHODS - MAIN PAGE - INIT
       getCompanyInfo(id).then((response) => {
         this.company = response.data;
         setPageTitle(this.company.name);
-
-        //for test use
-        if (this.addressList) {
-          for (const addr of this.addressList) {
+        if (this.company.addressList) {
+          for (const addr of this.company.addressList) {
             addr.mapWindow = {
               position: [addr.longitude, addr.latitude],
               content: addr.address,
@@ -659,9 +637,32 @@ export default {
           }
         }
       });
-      // getCompanyWiki(id).then((response) => {
-      //   this.companyWiki = response.data;
-      // });
+      //http://hq.sinajs.cn/list=hk00700
+      getCompanyWiki(id).then((response) => {
+        this.companyWiki = response.data;
+        this.stockUrl = response.data.market.url;
+        if (this.stockUrl) {
+          var url = this.stockUrl.split(".");
+          this.stockUrl = "/" + url[1] + "." + url[2];
+          axios.get(this.stockUrl).then((response) => {
+            this.sinaMarketInfo = response.data;
+            console.log(response.data, "sinajs--------------");
+            this.getMarketInfo();
+          });
+        }
+      });
+    },
+    getMarketInfo() {
+      var elements = this.sinaMarketInfo.split(",");
+      this.stockInfo.name = elements[1];
+      this.stockInfo.open = elements[2];
+      this.stockInfo.close = elements[3];
+      this.stockInfo.current = elements[4];
+      this.stockInfo.high = elements[5];
+      this.stockInfo.low = elements[6];
+      this.stockInfo.date = elements[17];
+      var timestamp = elements[18];
+      this.stockInfo.timestamp = timestamp.substring(0, timestamp.length - 3);
     },
     //change another group of comps, clicking "换一批"
     changeComps() {
@@ -689,7 +690,6 @@ export default {
         this.contributorDisplayed.push(this.contributedUsers[i]);
       }
     },
-    //MAIN PAGE ENDS
   },
 };
 </script>

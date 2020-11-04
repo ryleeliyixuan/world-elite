@@ -17,27 +17,17 @@ export default {
     //接受父组件传递来的数据
     items: {
       type: Array,
-      default() {
-        //默认数据，没有数剧的情况下启用
-        return [
-          { year: "2015", value: 0 },
-          { year: "2016", value: 0 },
-          { year: "2018", value: 0 },
-          { year: "2019", value: 0 },
-          { year: "2020", value: 0 },
-        ];
-      },
     },
   },
   mounted() {
     //提炼接收到的数据
-    let values = [];
+    let number = [];
     this.items.forEach((el) => {
-      values.push(el.value);
+      number.push(el.number);
     });
-    let years = [];
+    let year = [];
     this.items.forEach((el) => {
-      years.push(el.year);
+      year.push(el.year);
     });
 
     const option = {
@@ -45,7 +35,7 @@ export default {
       tooltip: {},
       xAxis: {
         type: "category",
-        data: years,
+        data: year,
       },
       yAxis: {
         type: "value",
@@ -54,14 +44,13 @@ export default {
         {
           show: true,
           type: "slider",
-          start: 50,
+          start: 0,
           end: 100,
-          // fillerColor: "#F0F8FF",
         },
       ],
       series: [
         {
-          data: values,
+          data: number,
           type: "bar",
           showBackground: true,
           backgroundStyle: {
@@ -80,6 +69,7 @@ export default {
 </script>
 <style scoped>
 .barchart-container {
+  width: 100%;
   height: 370px;
 }
 </style>

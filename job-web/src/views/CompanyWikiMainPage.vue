@@ -42,7 +42,7 @@
                 placement="left"
               >
                 <el-rate
-                  v-model="company.score"
+                  v-model="score"
                   disabled
                   show-score
                   text-color="#ff9900"
@@ -50,7 +50,6 @@
                 >
                 </el-rate>
               </el-tooltip>
-              <!-- (dialogVisible = true) -->
               <el-button
                 v-if="tabIndex != 'community'"
                 type="text"
@@ -59,43 +58,6 @@
                 style="padding: 0; margin-left: 10px"
                 >评分</el-button
               >
-              <!-- <el-dialog :visible.sync="dialogVisible" width="80%" show-close>
-                <div class="mb-4" style="color: grey">
-                  星级呈现该企业在本网站的综评分
-                </div>
-                <el-form
-                  ref="scoreForm"
-                  :model="scoreForm"
-                  :rules="scoreFormRules"
-                  label-width="100px"
-                  class="mt-4"
-                  label-position="left"
-                  hide-required-asterisk
-                >
-                  <el-form-item label="评分" prop="score">
-                    <el-rate v-model="scoreForm.score"></el-rate>
-                  </el-form-item>
-                  <el-form-item label="评论" prop="content">
-                    <el-input
-                      type="textarea"
-                      :rows="5"
-                      resize="none"
-                      placeholder="请输入评论（登录后可以发表评论）"
-                      v-model="scoreForm.content"
-                      style="margin-bottom: 12px"
-                    >
-                    </el-input>
-                  </el-form-item>
-                </el-form>
-                <div class="d-flex justify-content-end align-items-end">
-                  <el-checkbox class="mr-4" v-model="scoreForm.anonymous">
-                    匿名发表
-                  </el-checkbox>
-                  <el-button type="primary" @click="saveScore">
-                    {{ hasMyScore == true ? "修改我的评分" : "提交" }}
-                  </el-button>
-                </div>
-              </el-dialog> -->
             </div>
             <el-button
               type="primary"
@@ -122,7 +84,7 @@
               <el-col :span="12">
                 <el-tag type="info" effect="dark"
                   >已订阅：
-                  <span>{{ company.favoriteCount || "0" }}</span>
+                  <span>{{ favoriteCount || "0" }}</span>
                 </el-tag>
               </el-col>
             </el-row>
@@ -158,8 +120,7 @@ import WikiActivityPage from "./WikiActivityPage";
 import WikiIntroPage from "./WikiIntroPage";
 import WikiCommunityPage from "./WikiCommunityPage";
 
-import { getMyScore, saveScore } from "@/api/community_api";
-import { getCompanyInfo } from "@/api/company_api";
+import { getCompanyInfo, getCompanyWiki } from "@/api/company_api";
 import { setPageTitle } from "@/utils/setting";
 import { doFavorite } from "@/api/favorite_api";
 import { mapGetters } from "vuex";
@@ -180,39 +141,13 @@ export default {
     WikiIntroPage,
     WikiCommunityPage,
   },
-
   data() {
     return {
       tabIndex: "intro",
       companyId: undefined,
       company: undefined,
-      //rating
-      hasMyScore: false,
-      myScoreId: undefined,
-      dialogVisible: false,
-      scoreForm: {
-        id: undefined,
-        companyId: undefined,
-        score: undefined,
-        content: "",
-        anonymous: 0,
-      },
-      scoreFormRules: {
-        score: [
-          {
-            required: true,
-            message: "请发表您的评分",
-            trigger: "change",
-          },
-        ],
-        content: [
-          {
-            required: true,
-            message: "请发表您的评论",
-            trigger: "change",
-          },
-        ],
-      },
+      score: undefined,
+      favoriteCount: undefined,
       //subscribe
       favoriteForm: {
         objectId: undefined,
@@ -266,12 +201,19 @@ export default {
       });
     },
     initData() {
-      this.companyId = this.$route.params.id;
-      this.favoriteForm.objectId = this.companyId;
-      this.scoreForm.companyId = this.companyId;
-      getCompanyInfo(this.companyId).then((response) => {
+      let id = this.$route.params.id;
+      this.companyId = id
+      this.favoriteForm.objectId = id;
+      getCompanyInfo(id).then((response) => {
         this.company = response.data;
         setPageTitle(this.company.name);
+      });
+      this.getCompanyWiki(id);
+    },
+    getCompanyWiki(id){
+      getCompanyWiki(id).then((response) => {
+        this.score = response.data.score;
+        this.favoriteCount = response.data.favoriteCount;
       });
     },
     handleSelectTab(tabIndex) {
@@ -305,35 +247,6 @@ export default {
         path: urlRootPath,
       });
     },
-    // getMyScore(id) {
-    //   getMyScore(id).then((response) => {
-    //     if (response.data != undefined) {
-    //       this.hasMyScore = true;
-    //       this.myScoreId = response.data.id;
-    //       this.scoreForm.score = response.data.score;
-    //       this.scoreForm.content = response.data.content;
-    //       this.scoreForm.anonymous = Boolean(response.data.anonymous);
-    //     } else {
-    //       this.hasMyScore = false;
-    //       this.myScoreId = undefined;
-    //       this.scoreForm.id = undefined;
-    //       this.scoreForm.score = undefined;
-    //       this.scoreForm.content = "";
-    //       this.scoreForm.anonymous = 0;
-    //     }
-    //   });
-    // },
-    // saveScore() {
-    //   this.scoreForm.id = this.myScoreId;
-    //   this.scoreForm.anonymous = +this.scoreForm.anonymous;
-    //   this.$refs["scoreForm"].validate((valid) => {
-    //     if (valid) {
-    //       saveScore(this.scoreForm).then(() => {
-    //         Toast.success("评分成功");
-    //       });
-    //     }
-    //   });
-    // },
   },
 };
 </script>

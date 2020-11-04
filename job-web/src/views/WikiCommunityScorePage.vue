@@ -663,7 +663,6 @@ export default {
         }
       });
     },
-
     //COMMENT METHOD
     likeComment(id) {
       likeComment(id).then((response) => {
