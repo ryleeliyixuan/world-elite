@@ -102,6 +102,7 @@ public class JobApplyService extends BaseService{
         message.setToUser(job.getCreatorId());
         message.setContent(message("message.job.apply", job.getName()));
         message.setUrl(String.format("/manage-resume?jobIds=%s", job.getId()));
+        message.setMsgType((byte)1);
         messageService.sendMessage(message);
         return newJobApply;
     }
@@ -192,18 +193,23 @@ public class JobApplyService extends BaseService{
         }
         EmailForm emailForm = null;
         String messageContent = null;
+        Byte msgType = null;
         if (applyResumeForm.getStatus() == JobApplyStatus.CANDIDATE.value) {
             emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_CANDIDATE);
             messageContent = message("message.apply.candidate", jobPlaceholder);
+            msgType = (byte)1;
         } else if (applyResumeForm.getStatus() == JobApplyStatus.INTERVIEW.value) {
             emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_INTERVIEW);
             messageContent = message("message.apply.interview", jobPlaceholder);
+            msgType = (byte)1;
         } else if (applyResumeForm.getStatus() == JobApplyStatus.OFFER.value) {
             emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_OFFER);
             messageContent = message("message.apply.offer", jobPlaceholder);
+            msgType = (byte)1;
         } else if (applyResumeForm.getStatus() == JobApplyStatus.ABANDON.value) {
             emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_ABANDON);
             messageContent = message("message.apply.abandon", jobPlaceholder);
+            msgType = (byte)0;
         }
 
         if (emailForm != null) {
@@ -218,6 +224,7 @@ public class JobApplyService extends BaseService{
             message.setFromUser(curUser().getId());
             message.setToUser(resume.getUserId());
             message.setContent(messageContent);
+            message.setMsgType(msgType);
             messageService.sendMessage(message);
         }
     }

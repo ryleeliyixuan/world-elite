@@ -165,8 +165,10 @@ public class UserService extends BaseService {
             message.setToUser(user.getId());
             if (user.getStatus() == UserStatus.NORMAL.value && userForm.getStatus() == UserStatus.BLACK.value) {
                 message.setContent(message("message.status.black", userForm.getReason()));
+                message.setMsgType((byte)0);
             } else if (user.getStatus() == UserStatus.BLACK.value && userForm.getStatus() == UserStatus.NORMAL.value) {
                 message.setContent(message("message.status.recover"));
+                message.setMsgType((byte)1);
             }
             if(message.getContent() != null){
                 messageService.sendMessage(message);
