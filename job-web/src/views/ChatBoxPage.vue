@@ -9,13 +9,6 @@
                               clearable
                               @keyup.enter.native="onSearch"/>
                 </div>
-                <!-- <el-autocomplete-->
-                <!--         style="padding-right: 20px"-->
-                <!--         v-model="keywords"-->
-                <!--         :fetch-suggestions="querySearchAsync"-->
-                <!--         placeholder="搜索联系人"-->
-                <!--         @select="onSearchByJob"-->
-                <!-- ></el-autocomplete>-->
                 <div class="top-button-container">
                     <div class="filter-main-container" @click.stop>
                         <el-button type="primary" size="mini" @click="onFilter">筛选</el-button>
@@ -27,6 +20,16 @@
                                 <el-checkbox v-model="watched" @change="onFilterChange">只看未读</el-checkbox>
                                 <el-checkbox v-model="apply" @change="onFilterChange">只看已投递</el-checkbox>
                             </div>
+                            <el-autocomplete
+                                    v-if="type==='company'"
+                                    style="padding-right: 20px"
+                                    v-model="jobKeywords"
+                                    :fetch-suggestions="querySearchAsync"
+                                    clearable
+                                    @keyup.enter.native="onSearchByJob"
+                                    placeholder="搜索职位"
+                                    @select="onSearchByJob"
+                            ></el-autocomplete>
                         </el-card>
                     </div>
                     <el-button type="primary" size="mini" icon="el-icon-s-fold" style="margin-left: 20px" @click.stop="onManage">
@@ -34,7 +37,8 @@
                     </el-button>
                 </div>
                 <el-scrollbar class="friend-container" wrap-style="overflow: hidden auto; padding-right: 40px;">
-                    <div class="friend-item" v-for="item in conversationList" @click.stop="onConversationClick(item)">
+                    <div :class="['friend-item',{'friend-item-selected':item.selected}]" v-for="item in conversationList"
+                         @click.stop="onConversationClick(item)">
                         <el-checkbox v-model="item.checked" class="friends-checked" v-if="manage"></el-checkbox>
                         <div style="position: relative">
                             <el-image :src="item.friendVo.avatar" alt="" class="avatar">
@@ -65,7 +69,7 @@
             </div>
             <div class="chat-detail" v-if="conversationItem">
                 <div class="detail-title">
-                    <div class="job-name" v-if="type==='user'">{{conversationItem.jobApplyInfoVo && conversationItem.jobApplyInfoVo.jobName}}</div>
+                    <div class="job-name">{{conversationItem.jobApplyInfoVo && conversationItem.jobApplyInfoVo.jobName}}</div>
                     <span>{{conversationItem.friendVo.name}}</span>[{{getTime(conversationItem.lastActiveTime)}}]
                     <el-link class="job-detail-link" v-if="type==='user' && conversationItem.jobApplyInfoVo" type="primary"
                              :href="`/job/${conversationItem.jobApplyInfoVo.jobId}`" :underline="false">查看职位详情
@@ -180,6 +184,7 @@
 <script>
     import im from "@/utils/im"
     import {getUploadPicToken} from '@/api/upload_api'
+    import {handleApplyResume} from "@/api/resume_api";
 
     export default {
         name: "ChatBox",
@@ -194,6 +199,7 @@
                 messageList: [], // 选中会话的，消息列表
                 messageTotal: 0, // 选中会话的消息总数
                 conversationItem: undefined, // 选中的会话信息
+                imInitComplete: false, // 初始化完成
 
                 // 消息
                 content: '', // 输入文本内容
@@ -202,6 +208,7 @@
                 watched: false, // 只看未读
                 apply: false, // 只看已投递
                 manage: false, // 是否显示管理框
+                jobKeywords: '', // 职位搜索信息
 
                 // 上传附件
                 fullscreenLoading: false,
@@ -222,11 +229,11 @@
                     "你好，我们该岗位还在招聘"],
 
                 // 表情符
-                emojis: ["😋", "😘", "😊", "😡", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
-                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
-                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
-                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
-                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘"],
+                emojis: ["😋", "😠", "😩", "😡", "😲", "😱", "😞", "😏", "😵", "😰", "😋", "😒",
+                    "😍", "😤", "😜", "😝", "😋", "😘", "😚", "😷", "😳", "😃", "😅", "😆",
+                    "😁", "😂", "😄", "😢", "😭", "😨", "😪", "😏", "😓", "😥", "😉", "😺",
+                    "😹", "😻", "🙅", "🙆", "🙈", "🙉", "🙋", "💓", "💪", "⭐", "🌔", "🌓",
+                    "🌙", "🕐", "⌚", "⌛", "🍀", "🌹", "🍄", "🍒", "🍓", "🐟", "🐭", "🐴"],
                 showEmoji: false,
                 insertPosition: 0,
             };
@@ -245,17 +252,20 @@
         mounted() {
             // 初始化webSocket
             im.init(this.receiveMessage).then((data) => {
-                if(this.$route.path==="/chat") {
-                    this.userId = data.userId;
-                    this.token = data.token;
-                    this.getConversationList();
-                } else {
-                    this.$emit("receiveMessage");
-                }
+                this.userId = data.userId;
+                this.token = data.token;
+                this.$emit("imInitComplete");
+                this.imInitComplete = true;
+                this.getConversationList();
             }).catch(() => {
                 this.$router.push({path: "/login", query: {...this.$route.query, redirect: "/chat"}});
             });
             this.$emit("complete");
+        },
+        activated() {
+            if (this.imInitComplete) {
+                this.getConversationList();
+            }
         },
         methods: {
             // 获取会话列表
@@ -285,7 +295,12 @@
             // 查看会话消息
             onConversationClick(item) {
                 this.messageList = [];
+                if (this.conversationItem) {
+                    this.$set(this.conversationItem, "selected", false);
+                }
                 this.conversationItem = item;
+                this.$set(this.conversationItem, "selected", true);
+                this.$router.replace({path: '/chat', query: {toUser: item.friendVo.friendUserId, jobId: item.jobId}});
                 im.getHistoryMessage(this.userId, item.friendVo.friendUserId, item.jobId).then(data => {
                     data.list.forEach(item => {
                         this.messageList.unshift(item);
@@ -311,25 +326,33 @@
 
             // 搜索职位名称
             querySearchAsync(queryString, cb) {
-                console.log(queryString);
                 im.jobNameSearchMessage(queryString).then(data => {
-                    cb([1, 2, 3]);
+                    if (data && data.list) {
+                        cb(data.list.map(item => {
+                            return {value: item}
+                        }));
+                    } else {
+                        cb([{value: "无搜索结果"}])
+                    }
                 });
             },
 
             // 按职位搜索联系人
             onSearchByJob() {
-                console.log(this.keywords);
-                if (this.keywords) {
-                    im.conversationSearchByJobMessage(this.keywords).then(data => {
-
+                if (this.jobKeywords) {
+                    this.filter = false;
+                    im.conversationSearchByJobMessage(this.jobKeywords).then(data => {
+                        console.log(data);
+                        console.log(data.list);
+                        this.conversationList = data && data.list;
                     })
+                } else {
+                    this.getConversationList();
                 }
             },
 
             // 按名称搜索联系人
             onSearch() {
-                console.log(this.keywords);
                 if (this.keywords) {
                     im.conversationSearchMessage(this.keywords).then(data => {
                         this.conversationList = data.list;
@@ -341,8 +364,6 @@
 
             // 会话过滤
             onFilterChange() {
-                console.log(this.watched);
-                console.log(this.apply);
                 if (this.watched || this.apply) {
                     im.conversationSearchByJobMessage("", this.watched ? 3 : 0, this.apply ? 1 : 0).then(data => {
                         this.conversationList = data.list;
@@ -383,7 +404,17 @@
 
             // 邀请面试
             onInvite() {
-
+                this.$confirm("此操作将把该简历标识为面试，并通知应聘者，是否继续？", "提示", {
+                    confirmButtonText: "继续",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                }).then(() => {
+                    handleApplyResume({id: this.conversationItem.jobId, status: 4}).then(() => {
+                        this.$message("操作成功");
+                        this.reviewDrawerVisible = false;
+                        this.getList();
+                    });
+                });
             },
 
             // 过滤按钮
@@ -492,9 +523,9 @@
 
             // 接收消息处理
             receiveMessage(value) {
-                if(this.$route.path==="/chat") {
+                if (this.$route.path === "/chat") {
                     // 消息来自已经打开的窗口
-                    if (value.fromUser === this.conversationItem.friendVo.friendUserId) {
+                    if (this.conversationItem && value.fromUser === this.conversationItem.friendVo.friendUserId) {
                         im.msgAsReadMessage(value.fromUser, value.toUser, [value.messageId], value.conversation.conversationId);
 
                         // 构建消息对象，插入接收框
@@ -507,6 +538,8 @@
                     } else {
                         this.getConversationList();
                     }
+                } else {
+                    this.$emit("receiveMessage");
                 }
             },
 
@@ -704,7 +737,7 @@
                         .filter-container {
                             position: absolute;
                             width: 240px;
-                            height: 90px;
+                            height: auto;
                             top: 40px;
                             left: 0;
                             z-index: 1;
@@ -819,6 +852,10 @@
                                 }
                             }
                         }
+                    }
+
+                    .friend-item-selected {
+                        background-color: #e3e3e3;
                     }
                 }
 
