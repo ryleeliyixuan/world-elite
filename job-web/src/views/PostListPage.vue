@@ -287,6 +287,7 @@
 <style scoped lang="scss">
     .app-container {
         max-width: 1140px;
+        width: 1120px;
         margin: 0 auto;
         padding: 0 20px;
         min-height: calc(100vh - 477px);

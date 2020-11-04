@@ -378,6 +378,7 @@ public class JobService extends BaseService {
             message.setToUser(job.getCreatorId());
             message.setContent(message("message.job.takeoff", job.getName(), reason));
             message.setUrl(AppUtils.wholeWebUrl(String.format("job/%s", jobId)));
+            message.setMsgType((byte)0);
             messageService.sendMessage(message);
         }
 
@@ -442,6 +443,7 @@ public class JobService extends BaseService {
         message.setToUser(job.getCreatorId());
         message.setContent(message("message.job.apply", job.getName()));
         message.setUrl(String.format("/manage-resume?jobIds=%s", job.getId()));
+        message.setMsgType((byte)1);
         messageService.sendMessage(message);
     }
 
@@ -494,6 +496,7 @@ public class JobService extends BaseService {
         message.setToUser(job.getCreatorId());
         message.setContent(message("message.recommend.resume.for.job", job.getName(), resumeDetail.getName()));
         message.setUrl(String.format("/resume?resumeId=%s", resumeId));
+        message.setMsgType((byte)1);
         messageService.sendMessage(message);
     }
 

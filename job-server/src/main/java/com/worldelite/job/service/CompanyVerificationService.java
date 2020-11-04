@@ -140,6 +140,7 @@ public class CompanyVerificationService extends BaseService {
         message.setToUser(userId);
         message.setFromUser(curUser().getId());
         message.setContent(message("message.verification.pass"));
+        message.setMsgType((byte)1);
         messageService.sendMessage(message);
 
         // 发送审核成功邮件
@@ -169,6 +170,7 @@ public class CompanyVerificationService extends BaseService {
         message.setToUser(userId);
         message.setFromUser(curUser().getId());
         message.setContent(message("message.verification.reject", reason));
+        message.setMsgType((byte)0);
         messageService.sendMessage(message);
 
         //发送审核失败邮件
