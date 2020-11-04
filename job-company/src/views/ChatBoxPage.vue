@@ -82,6 +82,23 @@
                     </el-dropdown>
                 </div>
                 <el-scrollbar ref="receive" class="content-container" wrap-style="overflow: hidden auto; padding-right: 40px;">
+                    <el-card class="box-card" v-if="type==='company' && resumeInfo">
+                        <el-avatar :src="resumeInfo.avatar" class="avatar"/>
+                        <div class="card-right">
+                            <div>
+                                <span class="item-card" style="font-size: 18px;color:#303133">{{resumeInfo.name}}</span>
+                                <span class="item-card" v-if="resumeInfo.maxResumeEdu">{{resumeInfo.maxResumeEdu.finishTime}}毕业</span>
+                                <span class="item-card" v-if="resumeInfo.maxResumeEdu && resumeInfo.maxResumeEdu.degree">{{resumeInfo.maxResumeEdu.degree.name}}</span>
+                                <span class="item-card">{{resumeInfo.age}}岁</span>
+                                <span class="item-card" v-if="resumeInfo.userExpectJob && resumeInfo.userExpectJob.salary">{{resumeInfo.userExpectJob.salary.name}}</span>
+                            </div>
+                            <div>
+                                <span class="item-card" v-if="resumeInfo.maxResumeEdu">{{resumeInfo.maxResumeEdu.schoolName}}</span>
+                                <span class="item-card" v-if="resumeInfo.maxResumeEdu">{{resumeInfo.maxResumeEdu.majorName}}</span>
+                                <span class="item-card">{{resumeInfo.graduateTime}}</span>
+                            </div>
+                        </div>
+                    </el-card>
                     <div v-for="item in messageList">
                         <div class="self-container" v-if="item.fromUser===userId">
                             <div class="self-text-content" v-if="item.payload.contentType===1">
@@ -200,6 +217,7 @@
                 messageTotal: 0, // 选中会话的消息总数
                 conversationItem: undefined, // 选中的会话信息
                 imInitComplete: false, // 初始化完成
+                resumeInfo: undefined, // 用户简历
 
                 // 消息
                 content: '', // 输入文本内容
@@ -322,6 +340,17 @@
 
                     this.scrollBottom();
                 })
+
+                this.resumeInfo = undefined;
+                this.$axios.request({
+                    url: "/resume/list",
+                    method: "post",
+                    data: {userId: item.friendVo.friendUserId},
+                }).then((data) => {
+                    if (data.code === 0 && data.data.list.length > 0) {
+                        this.resumeInfo = data.data.list[0];
+                    }
+                });
             },
 
             // 搜索职位名称
@@ -931,6 +960,33 @@
                     background-color: #f5f5f5;
                     padding: 20px;
                     flex: 1;
+
+                    .box-card {
+                        width: 500px;
+                        height: 100px;
+                        display: flex;
+                        align-items: center;
+
+                        /deep/ .el-card__body {
+                            width: 500px;
+                            height: 100px;
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        .card-right {
+                            width: 380px;
+                            height: 60px;
+                            margin-left: 20px;
+                            padding-top: 8px;
+
+                            .item-card {
+                                margin-right: 8px;
+                                color: #606266;
+                                font-size: 14px;
+                            }
+                        }
+                    }
 
                     .self-container {
                         width: 100%;
