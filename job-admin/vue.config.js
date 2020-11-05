@@ -40,7 +40,7 @@ module.exports = {
     hotOnly: false,
     proxy: {
       '/api': {
-        target: 'https://api.myworldelite.com/api/',
+        target: 'http://api.test.myworldelite.com/api',
         changeOrigin: true,
         ws: true,
         pathRewrite: {

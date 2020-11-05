@@ -646,7 +646,7 @@ export default {
           this.stockUrl = "/" + url[1] + "." + url[2];
           axios.get(this.stockUrl).then((response) => {
             this.sinaMarketInfo = response.data;
-            console.log(response.data, "sinajs--------------");
+            console.log(response.data, "------sinajs------");
             this.getMarketInfo();
           });
         }
@@ -661,8 +661,8 @@ export default {
       this.stockInfo.high = elements[5];
       this.stockInfo.low = elements[6];
       this.stockInfo.date = elements[17];
-      var timestamp = elements[18];
-      this.stockInfo.timestamp = timestamp.substring(0, timestamp.length - 3);
+      var timestamp = elements[elements.length - 1];
+      this.stockInfo.timestamp = timestamp.substr(0, 5);
     },
     //change another group of comps, clicking "换一批"
     changeComps() {
