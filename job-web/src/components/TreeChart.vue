@@ -10,6 +10,7 @@ import echarts from "echarts/lib/echarts";
 import "echarts/lib/chart/tree";
 // 引入提示框和图例组件
 import "echarts/lib/component/tooltip";
+import { faTemperatureHigh } from '@fortawesome/free-solid-svg-icons';
 
 export default {
   name: "TreeChart",
@@ -17,20 +18,28 @@ export default {
     //接受父组件传递来的数据
     items: {
       type: Array,
-      default() {
-        //默认数据，没有数剧的情况下启用
-        return [
-          //none
-        ];
-      },
     },
   },
-  
+  data() {
+    return {
+      root: {
+        name: "",
+        label: {
+          normal: {
+            backgroundColor: "#1E90FF",
+          },
+        },
+        children: [],
+      },
+    };
+  },
   mounted() {
     this.tree();
   },
   methods: {
     tree() {
+      this.root.children = this.items;
+      this.root.name= this.rootName;
       const tr = this.$echarts.init(document.getElementById("tree"));
       window.onresize = tr.resize;
       tr.setOption({
@@ -42,7 +51,6 @@ export default {
           {
             name: "树状图",
             type: "tree",
-            //排列方式，横向、纵向
             orient: "vertical",
             symbolSize: 1,
             edgeShape: "polyline",

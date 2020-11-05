@@ -77,7 +77,7 @@
                      v-for="job in pageResult.list"
                      :key="job.id"
                      class="section3-item-container"
-                     @click.native="openJobDetail(job.id)">
+                     @click="openJobDetail(job.id)">
                 <div class="section3-left-container">
                     <h6 class="section3-job-name">{{job.name}}</h6>
                     <div>

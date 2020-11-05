@@ -25,4 +25,12 @@ export function getCompanyWikiList(data){
   })
 }
 
+export function getCompanyWiki(companyId){
+  return request({
+    url: '/company/get-company-wiki',
+    method: 'get',
+    params: {companyId: companyId}
+  })
+}
+
 

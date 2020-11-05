@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueResource from 'vue-resource'
 import { BootstrapVue} from 'bootstrap-vue'
 import '@/style/app.scss'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -13,6 +14,7 @@ import i18n from '@/i18n'
 
 import echarts from "echarts";
 import storage from "@/utils/storage"
+
 
 import '@/permission'
 import '@/icons' // icon
@@ -34,9 +36,9 @@ if (cookies.get("version") !== version) {
     cookies.set("version", version)
 }
 
-// Êý¾Ý´æ´¢
+// ï¿½ï¿½ï¿½Ý´æ´¢
 Vue.use(storage);
-
+Vue.use(VueResource)
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
