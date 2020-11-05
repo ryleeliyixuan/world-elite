@@ -8,7 +8,7 @@ appPropsFile=src/main/resources/application.properties;
 cd ${sourcePath}
 
 #修改application.properties
-sed -i 's/local/prod/g' ${appPropsFile}
+sed -i 's/local/prod-shenzhen/g' ${appPropsFile}
 
 # 构建jar包
 sudo ./gradlew clean build -x test
@@ -26,4 +26,4 @@ fi
 sudo /etc/init.d/${module} restart
 
 #恢复application.properties
-sed -i 's/prod/local/g' ${appPropsFile}
+sed -i 's/prod-shenzhen/local/g' ${appPropsFile}

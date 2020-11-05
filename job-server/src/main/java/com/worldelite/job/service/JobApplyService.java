@@ -89,7 +89,7 @@ public class JobApplyService extends BaseService{
         newJobApply.setJobId(jobId);
         newJobApply.setUserId(curUser().getId());
         if(status==null){
-            status = JobApplyStatus.VIEW.value;
+            status = JobApplyStatus.APPLY.value;
         }
         newJobApply.setStatus(status);
         newJobApply.setType(JobApplyType.APPLICANT.value);
@@ -172,8 +172,13 @@ public class JobApplyService extends BaseService{
         }
 
         JobVo job = jobService.getJobInfo(jobApply.getJobId(), true);
-        if (!job.getId().equals("0")&&!job.getCreatorId().equals(curUser().getId())) {
+        Long creatorId = Long.valueOf(job.getCreatorId());
+        if (!job.getId().equals("0")&&!creatorId.equals(curUser().getId())) {
             throw new ServiceException(ApiCode.PERMISSION_DENIED);
+        }
+        //只有未查看状态才能变换到查看状态
+        if(applyResumeForm.getStatus()==JobApplyStatus.VIEW.value && jobApply.getStatus()!=JobApplyStatus.APPLY.value){
+            return;
         }
         jobApply.setStatus(applyResumeForm.getStatus());
         jobApplyMapper.updateByPrimaryKeySelective(jobApply);
