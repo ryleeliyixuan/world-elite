@@ -60,7 +60,8 @@
       <el-table-column label="操作" align="center" width="200">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleModify(row)" icon="el-icon-edit">编辑</el-button>
-          <el-popconfirm title="你确定要下架该活动？" @onConfirm="handleTakeoff(row)" v-if="row.status == 2">
+          <el-popconfirm title="你确定要下架该活动？" @onConfirm="handleTakeoff(row)" >
+<!--            v-if="row.status == 2"-->
             <el-button
               type="danger"
               size="mini"

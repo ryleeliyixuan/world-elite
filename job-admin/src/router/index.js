@@ -46,33 +46,33 @@ export const constantRoutes = [
       meta: { title: '管理面板', icon: 'dashboard' }
     }]
   },
-  {
-    path: '/wiki',
-    component: Layout,
-    meta: { title: '百科模块', icon: 'company' },
-    children: [
-      {
-        path: 'wiki-list',
-        component: () => import('@/views/wiki/WikiListPage'),
-        meta: { title: '百科列表' },
-      },
-      {
-        path: 'wiki-edit',
-        component: () => import('@/views/wiki/WikiEditPage'),
-        meta: { title: '发布/编辑百科专题' },
-      },
-      {
-        path: 'community-post',
-        component: () => import('@/views/wiki/CommunityPostPage'),
-        meta: { title: '闲聊圈' },
-      },
-      {
-        path: 'community-score',
-        component: () => import('@/views/wiki/CommunityScorePage'),
-        meta: { title: '评分圈' },
-      },
-    ]
-  },
+  // {
+  //   path: '/wiki',
+  //   component: Layout,
+  //   meta: { title: '百科模块', icon: 'company' },
+  //   children: [
+  //     {
+  //       path: 'wiki-list',
+  //       component: () => import('@/views/wiki/WikiListPage'),
+  //       meta: { title: '百科列表' },
+  //     },
+  //     {
+  //       path: 'wiki-edit',
+  //       component: () => import('@/views/wiki/WikiEditPage'),
+  //       meta: { title: '发布/编辑百科专题' },
+  //     },
+  //     {
+  //       path: 'community-post',
+  //       component: () => import('@/views/wiki/CommunityPostPage'),
+  //       meta: { title: '闲聊圈' },
+  //     },
+  //     {
+  //       path: 'community-score',
+  //       component: () => import('@/views/wiki/CommunityScorePage'),
+  //       meta: { title: '评分圈' },
+  //     },
+  //   ]
+  // },
   {
     path: '/user',
     component: Layout,

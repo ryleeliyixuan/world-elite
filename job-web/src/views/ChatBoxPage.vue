@@ -133,13 +133,13 @@
                                     ref="upload"
                                     :action="uploadAnnexOptions.action"
                                     :data="uploadAnnexOptions.params"
-                                    :accept="uploadAnnexOptions.acceptFileType"
                                     :show-file-list="false"
                                     :on-success="handleEditorUploadSuccess"
                                     :on-error="handleEditorUploadError"
                                     :before-upload="beforeUpload">
                                 <div class="icon2">附件</div>
                             </el-upload>
+                            <!-- :accept="uploadAnnexOptions.acceptFileType" -->
                             <div class="icon3" @click.stop="onWord">常用语
                                 <el-card class="word-card" v-if="showWord">
                                     <div v-for="(word, index) in words" :key="index" class="word-item" @click.stop="onWordSelect(word)">
