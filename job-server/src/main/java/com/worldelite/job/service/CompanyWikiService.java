@@ -146,7 +146,7 @@ public class CompanyWikiService extends BaseService{
             Long companyId = companyWiki.getCompanyId();
             WikiModule wikiModule = wikiModuleService.getModuleByCompanyId(companyId);
             if(wikiModule == null){
-                throw new ServiceException(message("api.error.data.company"));
+                wikiModule = wikiModuleService.newModule(companyId);
             }
             companyWikiVo.setWikiModule(new WikiModuleVo().asVo(wikiModule));
             //百科基础信息
