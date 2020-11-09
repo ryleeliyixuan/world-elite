@@ -18,5 +18,6 @@
         and company_id = #{companyId}
       </if>
     </where>
+    order by year asc
   </select>
 </mapper>

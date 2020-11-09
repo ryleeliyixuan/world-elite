@@ -24,5 +24,6 @@
         and object_type = #{objectType}
       </if>
     </where>
+    order by position asc
   </select>
 </mapper>

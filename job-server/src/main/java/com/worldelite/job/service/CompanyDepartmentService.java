@@ -12,7 +12,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -49,7 +52,25 @@ public class CompanyDepartmentService extends BaseService{
 
 	public List<CompanyDepartmentVo> listVoByCompanyId(Long companyId){
 		List<CompanyDepartment> companyDepartmentList = listByCompanyId(companyId);
-		return AppUtils.asVoList(companyDepartmentList,CompanyDepartmentVo.class);
+		Map<Integer,CompanyDepartmentVo> nodes = new HashMap<>();
+		for(CompanyDepartment companyDepartment:companyDepartmentList){
+			nodes.put(companyDepartment.getId(),new CompanyDepartmentVo().asVo(companyDepartment));
+		}
+		List<CompanyDepartmentVo> roots = new ArrayList<>();
+		for(Integer id:nodes.keySet()){
+			CompanyDepartmentVo department = nodes.get(id);
+			if(department.getParentId()==null || department.getParentId()==0){
+				department.setParentId(0);
+				roots.add(department);
+			}else{
+				CompanyDepartmentVo parent = nodes.get(department.getParentId());
+				if(CollectionUtils.isEmpty(parent.getChildren())){
+					parent.setChildren(new ArrayList<>());
+				}
+				parent.getChildren().add(department);
+			}
+		}
+		return roots;
 	}
 
 }
