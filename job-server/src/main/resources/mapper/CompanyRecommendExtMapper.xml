@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.worldelite.job.mapper.CompanyRecommendMapper">
+  <delete id="deleteByCompanyId" parameterType="java.lang.Long">
+    delete from t_company_recommend
+    where company_id = #{companyId}
+  </delete>
+
+  <select id="selectAndList" parameterType="com.worldelite.job.entity.CompanyRecommend" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_company_recommend
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="companyId != null">
+        and company_id = #{companyId}
+      </if>
+      <if test="objectId != null">
+        and object_id = #{objectId}
+      </if>
+      <if test="objectType != null">
+        and object_type = #{objectType}
+      </if>
+    </where>
+  </select>
+</mapper>
