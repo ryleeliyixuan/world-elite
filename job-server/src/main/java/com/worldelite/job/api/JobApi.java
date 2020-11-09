@@ -58,10 +58,11 @@ public class JobApi extends BaseApi {
     @PostMapping("save")
     @ApiDoc
     public ApiResult saveJob(@Valid @RequestBody JobForm jobForm) throws Exception {
-        ScanResult scanResult = contentScanner.scanText(jobForm.getDescription());
-        if (scanResult.getCode() != ScanResult.CODE_PASS) {
-            return ApiResult.fail(message("content.scan.fail"));
-        }
+        //Todo 敏感词检测经常超时，影响用户体验，暂时屏蔽
+//        ScanResult scanResult = contentScanner.scanText(jobForm.getDescription());
+//        if (scanResult.getCode() != ScanResult.CODE_PASS) {
+//            return ApiResult.fail(message("content.scan.fail"));
+//        }
         jobService.saveJob(jobForm);
         return ApiResult.ok();
     }
