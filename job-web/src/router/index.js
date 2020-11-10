@@ -174,6 +174,11 @@ const constantRoutes = [
         path: '/chat',
         component: () => import('@/views/ChatBoxPage'),
         meta: {title: '寰球菁英-聊一聊'}
+    },
+    {
+        path: '/webRTC',
+        component: () => import('@/views/WebRTC'),
+        meta: {title: '寰球菁英-模拟面试'}
     }
 ]
 
