@@ -1,0 +1,300 @@
+<template>
+    <div class="mock-container">
+        <div class="title-container">
+            <div class="title-left">面试官排行榜</div>
+            <div class="title-right"  @click="onMoreInterviewer">更多面试官
+                <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon"></div>
+        </div>
+
+        <div class="interviewer-container">
+            <div class="interviewer-left">
+                <div class="left-item1">
+                    <div class="item-left-container">
+                        <div class="item-title">Cathy Liu</div>
+                        <el-rate
+                                v-model="rate"
+                                disabled
+                                show-score
+                                text-color="#FFFFFF"
+                                score-template="{value}"
+                        class="item-rate">
+                        </el-rate>
+                        <div class="item-bottom">
+                            <img src="../assets/mock/icon1.png" alt="" class="item-bottom-icon1">
+                            <div class="item-bottom-text1">阿里巴巴</div>
+                            <img src="../assets/mock/icon2.png" alt="" class="item-bottom-icon1" style="margin-left: 38px">
+                            <div class="item-bottom-text1">战略分析师</div>
+                        </div>
+
+                    </div>
+                        <img src="../assets/demo.jpg" alt="" class="right-image">
+                </div>
+                <div class="left-item2">
+                    <div class="item-left-container">
+                        <div class="item-title">Cathy Liu</div>
+                        <el-rate
+                                v-model="rate"
+                                disabled
+                                show-score
+                                text-color="#FFFFFF"
+                                score-template="{value}"
+                                class="item-rate">
+                        </el-rate>
+                        <div class="item-bottom">
+                            <img src="../assets/mock/icon1.png" alt="" class="item-bottom-icon1">
+                            <div class="item-bottom-text1">阿里巴巴</div>
+                            <img src="../assets/mock/icon2.png" alt="" class="item-bottom-icon1" style="margin-left: 38px">
+                            <div class="item-bottom-text1">战略分析师</div>
+                        </div>
+
+                    </div>
+                    <img src="../assets/demo.jpg" alt="" class="right-image">
+                </div>
+                <div class="left-item3">
+                    <div class="item-left-container">
+                        <div class="item-title">Cathy Liu</div>
+                        <el-rate
+                                v-model="rate"
+                                disabled
+                                show-score
+                                text-color="#FFFFFF"
+                                score-template="{value}"
+                                class="item-rate">
+                        </el-rate>
+                        <div class="item-bottom">
+                            <img src="../assets/mock/icon1.png" alt="" class="item-bottom-icon1">
+                            <div class="item-bottom-text1">阿里巴巴</div>
+                            <img src="../assets/mock/icon2.png" alt="" class="item-bottom-icon1" style="margin-left: 38px">
+                            <div class="item-bottom-text1">战略分析师</div>
+                        </div>
+
+                    </div>
+                    <img src="../assets/demo.jpg" alt="" class="right-image">
+                </div>
+            </div>
+            <div class="interviewer-right">
+                <div class="right-item1">
+                    <img src="../assets/mock/mock4.png" alt="" class="right-item1-img1">
+                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
+                    <div class="right-item1-name">健壮的大姐姐</div>
+                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
+                    <div class="right-item1-position">资深产品经理</div>
+                    <div class="right-item1-score">4.7</div>
+                    <div class="right-item-tip">HOT</div>
+                </div>
+                <div class="right-item2">
+                    <img src="../assets/mock/mock5.png" alt="" class="right-item1-img1">
+                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
+                    <div class="right-item1-name">健壮的大姐姐</div>
+                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
+                    <div class="right-item1-position">资深产品经理</div>
+                    <div class="right-item1-score">4.7</div>
+                </div>
+                <div class="right-item3">
+                    <img src="../assets/mock/mock6.png" alt="" class="right-item1-img1">
+                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
+                    <div class="right-item1-name">健壮的大姐姐</div>
+                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
+                    <div class="right-item1-position">资深产品经理</div>
+                    <div class="right-item1-score">4.7</div>
+                </div>
+                <div class="right-item4">
+                    <img src="../assets/mock/mock7.png" alt="" class="right-item1-img1">
+                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
+                    <div class="right-item1-name">健壮的大姐姐</div>
+                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
+                    <div class="right-item1-position">资深产品经理</div>
+                    <div class="right-item1-score">4.7</div>
+                </div>
+                <div class="right-item5" style="margin-bottom: 0">
+                    <img src="../assets/mock/mock8.png" alt="" class="right-item1-img1">
+                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
+                    <div class="right-item1-name">健壮的大姐姐</div>
+                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
+                    <div class="right-item1-position">资深产品经理</div>
+                    <div class="right-item1-score">4.7</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="title-container" style="margin-top: 70px">
+            <div class="title-left">本月新入驻面试官</div>
+            <div class="title-right">立即入驻
+                <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon"></div>
+        </div>
+
+        <div class="new-interviewer-container"></div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "MockInterview",
+        data() {
+          return{
+              rate:5,
+
+          }
+        },
+        mounted() {
+            this.$emit("onComplete");
+        },
+        methods: {
+            onMoreInterviewer() {
+                this.$router.push("/more-interviewer");
+            }
+        }
+    }
+</script>
+
+<style scoped lang="scss">
+    .mock-container{
+        max-width: 1200px;
+        margin: 0 auto;
+        height: auto;
+        padding: 20px;
+        .title-container{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .title-left{
+                font-size: 24px;
+                color: #333333;
+                font-weight: bold;
+            }
+            .title-right{
+                display: flex;
+                align-items: center;
+                font-size: 21px;
+                font-weight: 400;
+                color: #666666;
+                cursor: pointer;
+                .title-icon{
+                    width: 10px;
+                    height: 16px;
+                    margin-left: 7px;
+                }
+            }
+        }
+        .interviewer-container{
+            width:100%;
+            display: flex;
+            margin-top: 9px;
+            .interviewer-left{
+                width: 453px;
+                height: auto;
+                .left-item1,
+                .left-item2,
+                .left-item3{
+                    width: 453px;
+                    height: 157px;
+                    background: url("../assets/mock/mock1.png") no-repeat ;
+                    background-size: 453px 157px;
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+
+                    .item-left-container{
+                        width: auto;
+                        height: 100%;
+                        padding: 20px 20px 20px 40px;
+                        .item-title{
+                            width: 100%;
+                            font-size: 28px;
+                            font-weight: bold;
+                            color: #FFFFFF;
+                            margin-left: 95px;
+                        }
+                        .item-rate{
+                            margin: 17px 0 7px 0;
+                        }
+                        .item-bottom{
+                            display: flex;
+                            align-items: center;
+                            .item-bottom-icon1{
+                                width: 21px;
+                                height: 21px;
+                                margin-right: 5px;
+                            }
+                            .item-bottom-text1{
+                                font-size: 18px;
+                                color: #FFFFFF;
+                            }
+                        }
+                    }
+                    .right-image{
+                        width: 112px;
+                        height: 112px;
+                        border-radius: 50%;
+                        overflow: hidden;
+                        position: absolute;
+                        top: 23px;
+                        right: 28px;
+
+                    }
+                }
+
+            }
+            .interviewer-right{
+                max-width: 605px;
+                height: auto;
+                margin-left: 45px;
+                .right-item1,
+                .right-item2,
+                .right-item3,
+                .right-item4,
+                .right-item5{
+                    width: 605px;
+                    display: flex;
+                    height: 77px;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 24px;
+                    position: relative;
+                    .right-item-tip{
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        right: -60px;
+                        background: #EE6055;
+                        box-shadow: 0px 5px 13px 0px rgba(238, 96, 85, 0.5);
+                        border-radius: 5px;
+                        padding: 2px 8px;
+                        font-size: 16px;
+                        color: #FFFFFF;
+                    }
+                    .right-item1-img1{
+                        width: 100px;
+                        height: 36px;
+                    }
+                    .right-item1-img2{
+                        width: 77px;
+                        height: 77px;
+                        border-radius: 50%;
+                        overflow: hidden;
+                    }
+                    .right-item1-name{
+                        font-size: 21px;
+                        color: #0F3057;
+
+                    }
+                    .right-item1-img3{
+                        width: 94px;
+                        height: 27px;
+                    }
+                    .right-item1-position{
+                        font-size: 21px;
+                        color: #333333;
+                    }
+                    .right-item1-score{
+                        font-size: 21px;
+                        color: #F9A620;
+                    }
+
+                }
+
+            }
+        }
+    }
+</style>

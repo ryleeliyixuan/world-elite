@@ -17,6 +17,7 @@
                 <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
                 <el-menu-item class="nav-item" index="/wiki-card">百科</el-menu-item>
                 <el-menu-item class="nav-item" index="/activity-list">活动</el-menu-item>
+                <el-menu-item class="nav-item" index="/mock-interview">模拟面试</el-menu-item>
             </el-menu>
         </div>
 

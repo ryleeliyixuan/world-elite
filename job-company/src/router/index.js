@@ -107,6 +107,11 @@ const constantRoutes = [
         component: () => import('@/views/ChatBoxPage'),
         meta: {title: '寰球菁英-沟通'}
     },
+    {
+        path: '/calendar',
+        component: () => import('@/views/CalendarPage'),
+        meta: {title: '寰球菁英-日历'}
+    },
 
 ]
 
