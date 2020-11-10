@@ -16,8 +16,9 @@ import java.util.UUID;
 @Service
 public class AliRTCTokenService extends BaseService {
     // Parsed from CLI.
-    private String appId = "rifwol88";
-    private String appKey = "9772af2eba07d5c84ce5075f11c6b904";
+    private final String appId = "rifwol88";
+    private final String appKey = "9772af2eba07d5c84ce5075f11c6b904";
+    private final String gslb = "https://rgslb.rtc.aliyuncs.com";
 
     public String createToken(
             String appId, String appKey, String channelId, String userId,
@@ -30,7 +31,6 @@ public class AliRTCTokenService extends BaseService {
         digest.update(userId.getBytes());
         digest.update(nonce.getBytes());
         digest.update(Long.toString(timestamp).getBytes());
-
         String token = DatatypeConverter.printHexBinary(digest.digest()).toLowerCase();
         return token;
     }
@@ -43,6 +43,12 @@ public class AliRTCTokenService extends BaseService {
         try {
             String token = createToken(appId,appKey,channelId,userId,nonce,timestamp);
             RTCTokenVo rtcTokenVo = new RTCTokenVo();
+            rtcTokenVo.setUserId(userId);
+            rtcTokenVo.setChannelId(channelId);
+            rtcTokenVo.setAppId(appId);
+            rtcTokenVo.setGslb(gslb);
+            rtcTokenVo.setNonce(nonce);
+            rtcTokenVo.setTimestamp(String.valueOf(timestamp));
             rtcTokenVo.setToken(token);
             return rtcTokenVo;
         } catch (NoSuchAlgorithmException e) {

@@ -1,16 +1,17 @@
 package com.worldelite.job.vo;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.worldelite.job.entity.CompanyComment;
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  * 视频Token视图对象
  */
 @Data
 public class RTCTokenVo{
-    private String token;
+    private String userId; //用户ID
+    private String channelId; //频道ID
+    private String appId; //应用ID
+    private String nonce; //随机吗
+    private String timestamp; //时间戳
+    private String gslb; //gslb服务地址
+    private String token; //令牌
 }
