@@ -26,15 +26,19 @@ public class WikiModuleService extends BaseService{
      * @return
      */
     public WikiModule save(WikiModuleForm wikiModuleForm){
-        Integer id = wikiModuleForm.getId();
         WikiModule wikiModule = new WikiModule();
         BeanUtil.copyProperties(wikiModuleForm,wikiModule);
-        if(id==null){
+        //判断companyId是否存在记录
+        List<WikiModule> wikiModuleList = wikiModuleMapper.selectAndList(wikiModule);
+        if(CollectionUtils.isNotEmpty(wikiModuleList)){
+            wikiModule.setId(wikiModuleList.get(0).getId());
+        }
+        if(wikiModule.getId()==null){
             wikiModuleMapper.insertSelective(wikiModule);
             return wikiModule;
         }
         wikiModuleMapper.updateByPrimaryKeySelective(wikiModule);
-        return getModuleById(id);
+        return getModuleById(wikiModule.getId());
     }
 
     public WikiModule newModule(Long companyId){
