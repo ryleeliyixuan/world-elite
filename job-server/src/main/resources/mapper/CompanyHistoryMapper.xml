@@ -8,7 +8,7 @@
     -->
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="company_id" jdbcType="BIGINT" property="companyId" />
-    <result column="event_time" jdbcType="TIMESTAMP" property="eventTime" />
+    <result column="event_time" jdbcType="DATE" property="eventTime" />
     <result column="event" jdbcType="VARCHAR" property="event" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -46,7 +46,7 @@
     insert into t_company_history (id, company_id, event_time, 
       event, create_time, update_time
       )
-    values (#{id,jdbcType=INTEGER}, #{companyId,jdbcType=BIGINT}, #{eventTime,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=INTEGER}, #{companyId,jdbcType=BIGINT}, #{eventTime,jdbcType=DATE}, 
       #{event,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -84,7 +84,7 @@
         #{companyId,jdbcType=BIGINT},
       </if>
       <if test="eventTime != null">
-        #{eventTime,jdbcType=TIMESTAMP},
+        #{eventTime,jdbcType=DATE},
       </if>
       <if test="event != null">
         #{event,jdbcType=VARCHAR},
@@ -108,7 +108,7 @@
         company_id = #{companyId,jdbcType=BIGINT},
       </if>
       <if test="eventTime != null">
-        event_time = #{eventTime,jdbcType=TIMESTAMP},
+        event_time = #{eventTime,jdbcType=DATE},
       </if>
       <if test="event != null">
         event = #{event,jdbcType=VARCHAR},
@@ -129,7 +129,7 @@
     -->
     update t_company_history
     set company_id = #{companyId,jdbcType=BIGINT},
-      event_time = #{eventTime,jdbcType=TIMESTAMP},
+      event_time = #{eventTime,jdbcType=DATE},
       event = #{event,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}

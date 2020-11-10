@@ -53,7 +53,7 @@ public interface CompanyHistoryMapper {
      */
     int updateByPrimaryKey(CompanyHistory record);
 
-    List<CompanyHistory> selectAndList(CompanyHistory companyHistory);
-
     void deleteByCompanyId(Long companyId);
+
+    List<CompanyHistory> selectAndList(CompanyHistory companyHistory);
 }
