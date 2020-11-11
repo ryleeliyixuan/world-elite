@@ -15,6 +15,7 @@
                                 v-model="rate"
                                 disabled
                                 show-score
+                                :colors="colors"
                                 text-color="#FFFFFF"
                                 score-template="{value}"
                         class="item-rate">
@@ -36,6 +37,7 @@
                                 v-model="rate"
                                 disabled
                                 show-score
+                                :colors="colors"
                                 text-color="#FFFFFF"
                                 score-template="{value}"
                                 class="item-rate">
@@ -57,6 +59,7 @@
                                 v-model="rate"
                                 disabled
                                 show-score
+                                :colors="colors"
                                 text-color="#FFFFFF"
                                 score-template="{value}"
                                 class="item-rate">
@@ -123,7 +126,63 @@
                 <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon"></div>
         </div>
 
-        <div class="new-interviewer-container"></div>
+        <div class="new-interviewer-container">
+            <el-image :src="require('@/assets/mock/arrow2.png')" class="interviewer-arrow"  fit="fill" @click="onLeft" ></el-image>
+            <div class="interviewer-detail" ref="interview">
+                <div class="item-detail">
+                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
+                    <div class="interviewer-bottom">
+                        <div class="name-left">
+                            <div class="name1">Cathy</div>
+                            <div class="position">资深产品经理</div>
+                        </div>
+                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                    </div>
+                </div>
+                <div class="item-detail">
+                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill" ></el-image>
+                    <div class="interviewer-bottom">
+                        <div class="name-left">
+                            <div class="name1">Cathy</div>
+                            <div class="position">资深产品经理</div>
+                        </div>
+                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                    </div>
+                </div>
+                <div class="item-detail">
+                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
+                    <div class="interviewer-bottom">
+                        <div class="name-left">
+                            <div class="name1">Cathy</div>
+                            <div class="position">资深产品经理</div>
+                        </div>
+                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                    </div>
+                </div>
+                <div class="item-detail">
+                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
+                    <div class="interviewer-bottom">
+                        <div class="name-left">
+                            <div class="name1">Cathy</div>
+                            <div class="position">资深产品经理</div>
+                        </div>
+                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                    </div>
+                </div>
+                <div class="item-detail">
+                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
+                    <div class="interviewer-bottom">
+                        <div class="name-left">
+                            <div class="name1">Cathy</div>
+                            <div class="position">资深产品经理</div>
+                        </div>
+                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                    </div>
+                </div>
+            </div>
+            <el-image :src="require('@/assets/mock/arrow1.png')" class="interviewer-arrow"  fit="fill" @click="onRight"></el-image>
+
+        </div>
     </div>
 </template>
 
@@ -133,7 +192,7 @@
         data() {
           return{
               rate:5,
-
+              colors:['#FFD740','#FFD740','#FFD740']
           }
         },
         mounted() {
@@ -142,7 +201,13 @@
         methods: {
             onMoreInterviewer() {
                 this.$router.push("/more-interviewer");
-            }
+            },
+            onLeft(){
+                this.$refs.interview.translate(-241,0)
+            },
+            onRight(){
+
+            },
         }
     }
 </script>
@@ -295,6 +360,67 @@
                 }
 
             }
+        }
+        .new-interviewer-container{
+            margin-top: 22px;
+            width: 100%;
+            height: 303px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .interviewer-arrow{
+                width: 66px;
+                height: 66px;
+            }
+            .interviewer-detail{
+                width: 1036px;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                overflow: hidden;
+                .item-detail{
+                    width: 241px;
+                    height: 100%;
+                    position: relative;
+                    margin-right: 23px;
+                    .interviewer-img{
+                        width: 241px;
+                        height: 100%;
+                    }
+                    .interviewer-bottom{
+                        width: 197px;
+                        height: 62px;
+                        background: rgba(255, 255, 255, 0.85);
+                        position: absolute;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        bottom: 22px;
+                        padding: 10px 5px 10px 9px;
+                        display: flex;
+                        align-items: center;
+                        .name-left{
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            .name1{
+                                font-size: 18px;
+                                color: #333333;
+                            }
+                            .position{
+                                font-size: 12px;
+                                color: #333333;
+                            }
+                        }
+                        .company-image{
+                            width: 100px;
+                            height: 36px;
+                        }
+                    }
+                }
+
+            }
+
         }
     }
 </style>
