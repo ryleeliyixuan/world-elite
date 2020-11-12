@@ -1,26 +1,51 @@
 <template>
-    <div>
-        <div>模拟面试</div>
-        <el-input v-model="userName" placeholder="请输入用户名"></el-input>
-        <el-input v-model="channelId" placeholder="请输入频道id"></el-input>
-        <div>用户Id：{{userId}}</div>
-        <div>用户名：{{userName}}</div>
-        <div>远端用户数量:{{userList.length}}</div>
-        <div v-if="userList.length>0">
-            <div v-for="user in userList">{{user.displayName + " " + user.userId}}</div>
-        </div>
-        <el-button @click="joinRoom">加入房间</el-button>
-        <el-button @click="leaveRoom">离开房间</el-button>
-        <div class="local-video">
-            <video autoplay playsinline ref="preview"></video>
-        </div>
-        <div class="remote-video">
-            <video autoplay playsinline ref="remote"></video>
-        </div>
+    <div class="bg">
+        <div class="app-container">
 
-        <div @click="getPublishState">刷新流状态</div>
-        <div>流状态：{{streamstate}}</div>
+            <div class="main-container">
+                <div class="video-container" :style="{height:videoHeight+'px'}">
+                    <video :class="[{'major':remoteVideo && !waiting},{'minor':!remoteVideo || waiting}]" autoplay playsinline ref="remote" @play="calculateHeight"
+                           @click="changeVideo"/>
+                    <video :class="[{'major':!remoteVideo || waiting},{'minor':remoteVideo && !waiting}]" autoplay playsinline ref="preview" @play="calculateHeight"
+                           @click="changeVideo"/>
+                    <div v-if="waiting" style="text-align: center; z-index: 100; line-height: 300px; background: #cccccccc; border-radius: 20px;">等待对方加入...
+                    </div>
+                </div>
+                <div class="chat-container" :style="{height:videoHeight+'px'}">
+                    <div class="header">
+                        <el-avatar :size="35" :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
+                                   style="border: 1px solid #3D6FF4;"></el-avatar>
+                        <div>
+                            <div class="name">Cathy Liu</div>
+                            <div class="tags">互联网/战略分析师/经验丰富</div>
+                        </div>
+                    </div>
+                    <div class="content"></div>
+                    <div class="footer">
+                        <el-input
+                                type="text"
+                                placeholder="请输入内容"
+                                v-model="message"
+                                maxlength="150"
+                                :show-word-limit="false"/>
+                        <el-button class="send-button" type="primary" icon="el-icon-message" size="small" circle></el-button>
+                    </div>
+                </div>
+            </div>
+            <div class="finish-button" @click="leaveRoom">结 束</div>
+            <el-dialog title="提示"
+                       :visible.sync="dialogVisible"
+                       width="30%">
+                <el-input v-model="userId" placeholder="请输入用户Id"></el-input>
+                <el-input v-model="userName" placeholder="请输入用户名"></el-input>
+                <el-input v-model="channelId" placeholder="请输入频道id"></el-input>
+                <span slot="footer">
+                <el-button type="primary" @click="onConfirm">确 定</el-button>
+            </span>
+            </el-dialog>
+        </div>
     </div>
+
 </template>
 
 <script>
@@ -32,13 +57,16 @@
         name: "InterviewPage",
         data() {
             return {
-                userId: undefined,
-                userName: "test",
-                channelId: 1,
-                aliWebRTC: undefined,
-                publisherList: [],
-                streamstate: "",
-                userList: [], // 远程用户列表
+                userId: Date.now(), // 用户Id
+                userName: "test", // 用户名
+                channelId: 1, // 频道
+                aliWebRTC: undefined, // webRTC对象
+                streamState: "", // 流状态
+                remoteVideo: false, // 默认主显示远程视频
+                waiting: true, // 等待远程加入
+                dialogVisible: true, // 输入对话框
+                videoHeight: 0, // 视频高度
+                message: "", // 要发送得消息
             }
         },
         mounted() {
@@ -56,13 +84,54 @@
                 this.$message.error(error.message);
             })
 
+            this.$emit("complete");
         },
 
         destroy() {
-          this.leaveRoom();
+            this.leaveRoom();
         },
 
         methods: {
+            /**
+             * 对话框确认
+             */
+            onConfirm() {
+                if (!this.userId || !this.channelId) {
+                    this.$message.warning("请正确输入用户名和频道")
+                } else {
+                    this.dialogVisible = false;
+                    this.joinRoom();
+                }
+            },
+
+            changeVideo() {
+                if (!this.waiting) {
+                    this.remoteVideo = !this.remoteVideo;
+                }
+                this.calculateHeight();
+            },
+            /**
+             * 监听视频播放，获取视频最大高度
+             */
+            calculateHeight() {
+                setTimeout(()=> {
+                    let videoHeight;
+                    if (this.$refs.remote && this.$refs.preview) {
+                        videoHeight = Math.max(this.$refs.remote.offsetHeight, this.$refs.preview.offsetHeight);
+                    } else if (this.$refs.remote) {
+                        videoHeight = this.$refs.remote.offsetHeight;
+                    } else if (this.$refs.preview) {
+                        videoHeight = this.$refs.preview.offsetHeight;
+                    } else {
+                        videoHeight = 0;
+                    }
+                    this.videoHeight = videoHeight;
+                },100)
+            },
+
+            /**
+             * webRTC初始化，监听事件
+             */
             init() {
                 /**
                  * remote用户加入房间 onJoin
@@ -85,6 +154,8 @@
                     console.log("远程用户开始推送流", publisher);
                     this.receivePublishManual(publisher, "sophon_video_camera_large").then(() => {
                         console.log("订阅成功");
+                        this.waiting = false;
+                        this.remoteVideo = true;
                         this.aliWebRTC.setDisplayRemoteVideo(publisher.userId, this.$refs.remote, 1);
                     });
                 });
@@ -182,6 +253,8 @@
                  */
                 this.aliWebRTC.on("onLeave", (publisher) => {
                     console.log("远程用户已退出频道");
+                    this.remoteVideo = false;
+                    this.waiting = true;
                     this.initialization(publisher.userId);
                     this.$message.success(publisher.displayName + "离开房间");
                 })
@@ -246,6 +319,8 @@
              * 离开房间
              */
             leaveRoom() {
+                this.remoteVideo = false;
+                this.calculateHeight();
                 this.aliWebRTC.leaveChannel().then(() => {
                 }, (error) => {
                     console.log(error.message);
@@ -325,18 +400,18 @@
             getPublishState() {
                 if (this.aliWebRTC.configLocalAudioPublish || this.aliWebRTC.configLocalCameraPublish || this.aliWebRTC.configLocalScreenPublish) {
                     if (this.aliWebRTC.configLocalScreenPublish && this.aliWebRTC.configLocalCameraPublish) {
-                        this.streamstate = "视频流 + 共享流";
+                        this.streamState = "视频流 + 共享流";
                     } else {
                         if (this.aliWebRTC.configLocalScreenPublish) {
-                            this.streamstate = "共享流";
+                            this.streamState = "共享流";
                         } else if (this.aliWebRTC.configLocalCameraPublish) {
-                            this.streamstate = "视频流";
+                            this.streamState = "视频流";
                         }
                     }
                 } else {
-                    this.streamstate = "当前未推流";
+                    this.streamState = "当前未推流";
                 }
-                this.$message.success("推流状态：" + this.streamstate);
+                this.$message.success("推流状态：" + this.streamState);
             },
 
             /**
@@ -390,9 +465,125 @@
     }
 </script>
 
-<style scoped>
-    .local-video, .remote-video {
-        margin: 0 calc(50 / 1080 * 100vh);
-        position: relative;
+<style scoped lang="scss">
+    .bg {
+        background: url("../assets/webrtc_bg.png") no-repeat center;
+        min-height: calc(100vh - 480px);
+        background-size: 1920px 913px;
+        padding: 20px 0;
+
+        .app-container {
+            max-width: 1140px;
+            margin: 0 auto;
+
+            .main-container {
+                display: flex;
+
+                .video-container {
+                    flex: 7;
+                    height: auto;
+                    position: relative;
+                    display: inline-block;
+                    min-height: 300px;
+
+                    .major {
+                        position: absolute;
+                        width: 100%;
+                        height: auto;
+                        border-radius: 20px;
+                    }
+
+                    .minor {
+                        position: absolute;
+                        width: 20%;
+                        right: 0;
+                        top: 0;
+                        height: auto;
+                        z-index: 99;
+                        border-radius: 20px;
+                    }
+                }
+
+                .chat-container {
+                    flex: 3;
+                    display: inline-flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    min-height: 300px;
+                    border: 10px solid #D7E6FE;
+                    border-radius: 20px;
+                    background: white;
+                    margin-left: 10px;
+
+                    .header {
+                        width: 100%;
+                        height: 44px;
+                        display: flex;
+                        align-items: center;
+                        padding-left: 10px;
+                        border-bottom: 1px solid #CCCCCC;
+
+                        .name {
+                            font-size: 16px;
+                            font-weight: 500;
+                            color: #333333;
+                            line-height: 22px;
+                            margin-left: 10px;
+                        }
+
+                        .tags {
+                            margin-top: 2px;
+                            font-size: 7px;
+                            transform: scale(0.75) translateX(-10px);
+                            font-weight: 500;
+                            color: #999999;
+                            line-height: 9px;
+                        }
+                    }
+
+                    .content {
+                        flex: 1;
+                    }
+
+                    .footer {
+                        width: 100%;
+                        margin: 10px;
+                        height: auto;
+                        display: flex;
+
+                        .send-button {
+                            min-width: 40px;
+                            margin-right: 20px;
+                            margin-left: 10px;
+                            font-size: 18px;
+                        }
+                    }
+                }
+            }
+
+
+            .finish-button {
+                width: 136px;
+                height: 41px;
+                background: #F9E3E1;
+                border-radius: 21px;
+                border: 1px solid #F44336;
+                font-size: 18px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #F44336;
+                line-height: 41px;
+                text-align: center;
+                margin: 20px auto;
+                z-index: 120;
+
+                &:hover {
+                    cursor: pointer;
+                    color: #db4d42;
+                    border-color: #db4d42;
+                }
+            }
+        }
+
     }
 </style>
