@@ -24,7 +24,7 @@
         </div>
 
         <div class="interviewer-container">
-            <div class="interviewer-item">
+            <div class="interviewer-item" @click="onInterviewer">
                 <div class="interviewer-left">
                     <el-image :src="require('@/assets/demo.jpg')" class="interviewer-image"  fit="fill"></el-image>
                     <div class="interviewer-message">
@@ -128,6 +128,9 @@
                 })
 
             },
+            onInterviewer(){
+                this.$router.push("/interviewer-detail");
+            },
 
         }
     }
@@ -197,6 +200,7 @@
                 box-shadow: 0px 3px 13px 1px #DEE5F4;
                 margin-top: 63px;
                 justify-content: space-between;
+                cursor: pointer;
                 .interviewer-left{
                     display: flex;
                     align-items: center;

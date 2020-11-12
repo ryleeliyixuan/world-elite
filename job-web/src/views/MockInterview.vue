@@ -128,58 +128,64 @@
 
         <div class="new-interviewer-container">
             <el-image :src="require('@/assets/mock/arrow2.png')" class="interviewer-arrow"  fit="fill" @click="onLeft" ></el-image>
-            <div class="interviewer-detail" ref="interview">
-                <div class="item-detail">
-                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
-                    <div class="interviewer-bottom">
-                        <div class="name-left">
-                            <div class="name1">Cathy</div>
-                            <div class="position">资深产品经理</div>
+            <div class="transition-container">
+                <transition  name='fade' @after-leave="afterLeave">
+                    <div :class="['interviewer-detail',flag1?'interviewer-detail-translate':'']" ref="interview">
+                        <div class="item-detail">
+                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
+                            <div class="interviewer-bottom">
+                                <div class="name-left">
+                                    <div class="name1">Cathy</div>
+                                    <div class="position">资深产品经理1</div>
+                                </div>
+                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                            </div>
                         </div>
-                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
-                    </div>
-                </div>
-                <div class="item-detail">
-                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill" ></el-image>
-                    <div class="interviewer-bottom">
-                        <div class="name-left">
-                            <div class="name1">Cathy</div>
-                            <div class="position">资深产品经理</div>
+                        <div class="item-detail">
+                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill" ></el-image>
+                            <div class="interviewer-bottom">
+                                <div class="name-left">
+                                    <div class="name1">Cathy</div>
+                                    <div class="position">资深产品经理2</div>
+                                </div>
+                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                            </div>
                         </div>
-                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
-                    </div>
-                </div>
-                <div class="item-detail">
-                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
-                    <div class="interviewer-bottom">
-                        <div class="name-left">
-                            <div class="name1">Cathy</div>
-                            <div class="position">资深产品经理</div>
+                        <div class="item-detail">
+                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
+                            <div class="interviewer-bottom">
+                                <div class="name-left">
+                                    <div class="name1">Cathy</div>
+                                    <div class="position">资深产品经理3</div>
+                                </div>
+                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                            </div>
                         </div>
-                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
-                    </div>
-                </div>
-                <div class="item-detail">
-                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
-                    <div class="interviewer-bottom">
-                        <div class="name-left">
-                            <div class="name1">Cathy</div>
-                            <div class="position">资深产品经理</div>
+                        <div class="item-detail">
+                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
+                            <div class="interviewer-bottom">
+                                <div class="name-left">
+                                    <div class="name1">Cathy</div>
+                                    <div class="position">资深产品经理4</div>
+                                </div>
+                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                            </div>
                         </div>
-                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
-                    </div>
-                </div>
-                <div class="item-detail">
-                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
-                    <div class="interviewer-bottom">
-                        <div class="name-left">
-                            <div class="name1">Cathy</div>
-                            <div class="position">资深产品经理</div>
+                        <div class="item-detail">
+                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
+                            <div class="interviewer-bottom">
+                                <div class="name-left">
+                                    <div class="name1">Cathy</div>
+                                    <div class="position">资深产品经理5</div>
+                                </div>
+                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
+                            </div>
                         </div>
-                        <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
                     </div>
-                </div>
+                </transition>
+
             </div>
+
             <el-image :src="require('@/assets/mock/arrow1.png')" class="interviewer-arrow"  fit="fill" @click="onRight"></el-image>
 
         </div>
@@ -192,7 +198,8 @@
         data() {
           return{
               rate:5,
-              colors:['#FFD740','#FFD740','#FFD740']
+              colors:['#FFD740','#FFD740','#FFD740'],
+              flag1:false,
           }
         },
         mounted() {
@@ -202,8 +209,14 @@
             onMoreInterviewer() {
                 this.$router.push("/more-interviewer");
             },
+            afterLeave(){
+                this. flag1=false
+                console.log("123456")
+            },
             onLeft(){
-                this.$refs.interview.translate(-241,0)
+            //     this.$refs.interview.transform.translate(-241,0);
+                this. flag1=true
+
             },
             onRight(){
 
@@ -213,6 +226,7 @@
 </script>
 
 <style scoped lang="scss">
+
     .mock-container{
         max-width: 1200px;
         margin: 0 auto;
@@ -372,54 +386,88 @@
                 width: 66px;
                 height: 66px;
             }
-            .interviewer-detail{
+            .transition-container{
                 width: 1036px;
                 height: 100%;
-                display: flex;
-                align-items: center;
                 overflow: hidden;
-                .item-detail{
-                    width: 241px;
+                .fade-enter-active, .fade-leave-active{
+                    transition: all 20s;
+                }
+                .fade-enter{
+                    opacity: 0.8;
+                    transform: translateX(-241px);
+                }
+                .fade-enter-to{
+                    opacity: 0.8;
+                    transform: translateX(-241px);
+                }
+                .fade-leave{
+                    opacity: 1;
+                }
+                .fade-leave-to{
+                    opacity: 0;
+                    transform: translateX(-241px);
+                }
+
+                .interviewer-detail-translate{
+                    transform: translateX(-241px);
+                }
+                .interviewer-detail{
+                    width: 100%;
                     height: 100%;
-                    position: relative;
-                    margin-right: 23px;
-                    .interviewer-img{
+                    display: flex;
+                    align-items: center;
+                    .item-detail{
                         width: 241px;
                         height: 100%;
-                    }
-                    .interviewer-bottom{
-                        width: 197px;
-                        height: 62px;
-                        background: rgba(255, 255, 255, 0.85);
-                        position: absolute;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        bottom: 22px;
-                        padding: 10px 5px 10px 9px;
-                        display: flex;
-                        align-items: center;
-                        .name-left{
+                        position: relative;
+                        margin-right: 23px;
+                        .interviewer-img{
+                            width: 241px;
                             height: 100%;
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: space-between;
-                            .name1{
-                                font-size: 18px;
-                                color: #333333;
-                            }
-                            .position{
-                                font-size: 12px;
-                                color: #333333;
-                            }
                         }
-                        .company-image{
-                            width: 100px;
-                            height: 36px;
+                        .interviewer-bottom{
+                            width: 197px;
+                            height: 62px;
+                            background: rgba(255, 255, 255, 0.85);
+                            position: absolute;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            bottom: 22px;
+                            padding: 10px 5px 10px 9px;
+                            display: flex;
+                            align-items: center;
+                            .name-left{
+                                height: 100%;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: space-between;
+                                .name1{
+                                    font-size: 18px;
+                                    color: #333333;
+                                }
+                                .position{
+                                    font-size: 12px;
+                                    color: #333333;
+                                }
+                            }
+                            .company-image{
+                                width: 100px;
+                                height: 36px;
+                            }
                         }
                     }
+
                 }
 
             }
+
+
+
+
+
+
+
 
         }
     }
