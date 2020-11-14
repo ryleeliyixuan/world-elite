@@ -155,6 +155,18 @@ public class CompanyApi extends BaseApi {
     }
 
     /**
+     * 获取公司信息
+     * @param id 公司ID
+     * @return
+     */
+    @GetMapping("company-base-data")
+    public ApiResult<CompanyVo> getCompanyBaseData(@RequestParam Long id){
+        CompanyVo companyVo = companyService.getSimpleCompanyInfo(id);
+        return ApiResult.ok(companyVo);
+    }
+
+
+    /**
      * 我的公司详情
      *
      * @return

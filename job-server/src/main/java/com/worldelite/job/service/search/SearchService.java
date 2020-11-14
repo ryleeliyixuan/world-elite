@@ -25,7 +25,7 @@ public interface SearchService {
      */
     PageResult<JobVo> searchJob(JobSearchForm searchForm);
 
-    PageResult<ResumeDetail> searchResume(ResumeListForm searchForm, String searchPath);
+    PageResult<ResumeDetail>  searchResume(ResumeListForm searchForm, String searchPath);
 
     /**
      * 给某个工作推荐职位

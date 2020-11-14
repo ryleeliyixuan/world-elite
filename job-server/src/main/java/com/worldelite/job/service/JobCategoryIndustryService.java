@@ -61,6 +61,10 @@ public class JobCategoryIndustryService {
         return jobIndustryVoList;
     }
 
+    public JobIndustryVo getJobIndustryById(Long id){
+        return new JobIndustryVo().asVo(jobIndustryMapper.selectByPrimaryKey(id));
+    }
+
     /**
      * 保存行业领域
      * @param jobIndustryForm
