@@ -2,10 +2,10 @@
     <div class="app-container">
         <div class="section1-container">
             <el-cascader placeholder="城市"
-                         :show-all-levels="false"
+                         :show-all-levels="true"
                          :options="cityOptions"
                          :props="cityIdProps"
-                         filterable
+                         collapse-tags
                          clearable
                          @change="handleFilter"
                          class="cascader"
