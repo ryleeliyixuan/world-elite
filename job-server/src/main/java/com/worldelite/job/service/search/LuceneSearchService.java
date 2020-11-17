@@ -143,11 +143,8 @@ public class LuceneSearchService implements SearchService {
         if (ArrayUtils.isNotEmpty(searchForm.getSalaryRangeIds())) {
             BooleanQuery.Builder salaryRangeQueryBuilder = new BooleanQuery.Builder();
             for (Integer rangeId : searchForm.getSalaryRangeIds()) {
-                SalaryRange salaryRange = dictService.getSalaryRange(rangeId);
-                if (salaryRange != null) {
-                    Query query = IntPoint.newRangeQuery(JobIndexFields.AVER_SALARY_INDEX, salaryRange.getMin(), salaryRange.getMax());
-                    salaryRangeQueryBuilder.add(query, BooleanClause.Occur.SHOULD);
-                }
+                Query query = IntPoint.newExactQuery(JobIndexFields.AVER_SALARY_INDEX,rangeId);
+                salaryRangeQueryBuilder.add(query, BooleanClause.Occur.SHOULD);
             }
             queryBuilder.add(salaryRangeQueryBuilder.build(), BooleanClause.Occur.MUST);
         }

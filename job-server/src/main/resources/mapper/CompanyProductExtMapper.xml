@@ -21,5 +21,6 @@
         and name like concat('%',#{name},'%')
       </if>
     </where>
+    order by position asc
   </select>
 </mapper>

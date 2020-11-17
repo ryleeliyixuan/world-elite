@@ -214,9 +214,9 @@ public class LuceneIndexService implements IndexService {
         if (jobVo.getRecruitType() != null) {
             doc.add(new IntPoint(JobIndexFields.RECRUIT_TYPE_INDEX, jobVo.getRecruitType().getId()));
         }
-//        if (jobVo.getMinSalary() != null && jobVo.getMaxSalary() != null) {
-//            doc.add(new IntPoint(JobIndexFields.AVER_SALARY_INDEX, (jobVo.getMinSalary() + jobVo.getMaxSalary()) / 2));
-//        }
+        if(jobVo.getSalary() != null){
+            doc.add(new IntPoint(JobIndexFields.AVER_SALARY_INDEX, jobVo.getSalary().getId()));
+        }
         //防止空指针,不想一级一级判空了
         try {
             if(jobVo.getCompanyUser().getCompany().getId() != null){

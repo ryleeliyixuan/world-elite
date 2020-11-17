@@ -1,0 +1,10 @@
+CREATE TABLE `t_channel_user` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`user_id` BIGINT(20) NULL DEFAULT NULL,
+	`channel_id` BIGINT(20) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`) USING BTREE
+)
+COMMENT='用户房间表'
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;

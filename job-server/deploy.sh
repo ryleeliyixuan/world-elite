@@ -26,4 +26,4 @@ fi
 sudo /etc/init.d/${module} restart
 
 #恢复application.properties
-sed -i 's/dev/local/g' ${appPropsFile}
+sed -i 's/prod/local/g' ${appPropsFile}

@@ -2,6 +2,7 @@ package com.worldelite.job.api;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.CompanyRecommendType;
 import com.worldelite.job.constants.ObjectType;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.*;
@@ -55,6 +56,26 @@ public class CompanyApi extends BaseApi {
     @Autowired
     private CompanyStructureService companyStructureService;
 
+    @Autowired
+    private CompanySalaryService companySalaryService;
+
+    @Autowired
+    private CompanyEnvironmentService companyEnvironmentService;
+
+    @Autowired
+    private CompanyHonorService companyHonorService;
+
+    @Autowired
+    private CompanyDepartmentService companyDepartmentService;
+
+    @Autowired
+    private CompanyRecruitService companyRecruitService;
+
+    @Autowired
+    private CompanyRecommendService companyRecommendService;
+
+    @Autowired
+    private WikiModuleService wikiModuleService;
     /**
      * 搜索公司
      *
@@ -132,6 +153,18 @@ public class CompanyApi extends BaseApi {
         CompanyVo companyVo = companyService.getCompanyHomeData(id);
         return ApiResult.ok(companyVo);
     }
+
+    /**
+     * 获取公司信息
+     * @param id 公司ID
+     * @return
+     */
+    @GetMapping("company-base-data")
+    public ApiResult<CompanyVo> getCompanyBaseData(@RequestParam Long id){
+        CompanyVo companyVo = companyService.getSimpleCompanyInfo(id);
+        return ApiResult.ok(companyVo);
+    }
+
 
     /**
      * 我的公司详情
@@ -255,6 +288,18 @@ public class CompanyApi extends BaseApi {
     public ApiResult saveCompanyWiki(@RequestBody CompanyWikiForm  wikiForm){
         companyWikiService.saveCompanyWiki(wikiForm);
         return ApiResult.ok();
+    }
+
+    /**
+     * 获取百科模块启用情况
+     * @param listForm
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("list-wiki-module")
+    public ApiResult<PageResult<CompanyWikiVo>> listWikiModule(@RequestBody CompanyWikiListForm listForm){
+        PageResult<CompanyWikiVo> pageResult = companyWikiService.listSimple(listForm);
+        return ApiResult.ok(pageResult);
     }
 
     /**
@@ -439,13 +484,270 @@ public class CompanyApi extends BaseApi {
 
     /**
      * 改变模块启用状态
-     * @param companyWikiForm 百科表单
+     * @param wikiModuleForm 百科表单
      * @return
      */
     @ApiDoc
     @PostMapping("change-module-enable")
-    public ApiResult<CompanyWikiVo> changeModuleEnable(@RequestBody CompanyWikiForm companyWikiForm){
-        CompanyWiki companyWiki = companyWikiService.changeModuleEnable(companyWikiForm);
-        return ApiResult.ok(companyWikiService.toVo(companyWiki));
+    public ApiResult<CompanyWikiVo> changeModuleEnable(@RequestBody WikiModuleForm wikiModuleForm){
+        WikiModule wikiModule = wikiModuleService.save(wikiModuleForm);
+        return ApiResult.ok(new WikiModuleVo().asVo(wikiModule));
     }
+
+    /**
+     * 新增百科薪资
+     * @param companySalaryForm 薪资表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-salary")
+    public ApiResult<CompanySalaryVo> saveSalary(@RequestBody CompanySalaryForm companySalaryForm){
+        CompanySalary salary = companySalaryService.save(companySalaryForm);
+        return ApiResult.ok(companySalaryService.toVo(salary));
+    }
+
+    /**
+     * 删除百科薪资
+     * @param salaryId 薪资ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-salary")
+    public ApiResult deleteSalary(@RequestParam Integer salaryId){
+        companySalaryService.deleteById(salaryId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司薪资
+     * @param companyId 公司薪资ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-salary")
+    public ApiResult<List<CompanySalaryVo>> listSalary(@RequestParam Long companyId){
+        List<CompanySalaryVo> salaryVoList = companySalaryService.listVoByCompanyId(companyId);
+        return ApiResult.ok(salaryVoList);
+    }
+
+    /**
+     * 新增百科荣誉
+     * @param companyHonorForm 荣誉表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-honor")
+    public ApiResult<CompanyHonorVo> saveHonor(@RequestBody CompanyHonorForm companyHonorForm){
+        CompanyHonor honor = companyHonorService.save(companyHonorForm);
+        return ApiResult.ok(companyHonorService.toVo(honor));
+    }
+
+    /**
+     * 删除百科荣誉
+     * @param honorId 荣誉ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-honor")
+    public ApiResult deleteHonor(@RequestParam Integer honorId){
+        companyHonorService.deleteById(honorId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司荣誉
+     * @param companyId 公司荣誉ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-honor")
+    public ApiResult<List<CompanyHonorVo>> listHonor(@RequestParam Long companyId){
+        List<CompanyHonorVo> honorVoList = companyHonorService.listVoByCompanyId(companyId);
+        return ApiResult.ok(honorVoList);
+    }
+
+
+    /**
+     * 新增百科招聘时间线
+     * @param companyRecruitForm 招聘时间线表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-recruit")
+    public ApiResult<CompanyRecruitVo> saveRecruit(@RequestBody CompanyRecruitForm companyRecruitForm){
+        CompanyRecruit recruit = companyRecruitService.save(companyRecruitForm);
+        return ApiResult.ok(companyRecruitService.toVo(recruit));
+    }
+
+    /**
+     * 删除百科招聘时间线
+     * @param recruitId 招聘时间线ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-recruit")
+    public ApiResult deleteRecruit(@RequestParam Integer recruitId){
+        companyRecruitService.deleteById(recruitId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司招聘时间线
+     * @param companyId 公司招聘时间线ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-recruit")
+    public ApiResult<List<CompanyRecruitVo>> listRecruit(@RequestParam Long companyId){
+        List<CompanyRecruitVo> recruitVoList = companyRecruitService.listVoByCompanyId(companyId);
+        return ApiResult.ok(recruitVoList);
+    }
+
+
+    /**
+     * 新增百科环境
+     * @param companyEnvironmentForm 环境表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-environment")
+    public ApiResult<CompanyEnvironmentVo> saveEnvironment(@RequestBody CompanyEnvironmentForm companyEnvironmentForm){
+        CompanyEnvironment environment = companyEnvironmentService.save(companyEnvironmentForm);
+        return ApiResult.ok(companyEnvironmentService.toVo(environment));
+    }
+
+    /**
+     * 删除百科环境
+     * @param environmentId 环境ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-environment")
+    public ApiResult deleteEnvironment(@RequestParam Integer environmentId){
+        companyEnvironmentService.deleteById(environmentId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司环境
+     * @param companyId 公司环境ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-environment")
+    public ApiResult<List<CompanyEnvironmentVo>> listEnvironment(@RequestParam Long companyId){
+        List<CompanyEnvironmentVo> environmentVoList = companyEnvironmentService.listVoByCompanyId(companyId);
+        return ApiResult.ok(environmentVoList);
+    }
+
+    /**
+     * 新增百科部门
+     * @param companyDepartmentForm 部门表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-company-department")
+    public ApiResult<CompanyDepartmentVo> saveDepartment(@RequestBody CompanyDepartmentForm companyDepartmentForm){
+        CompanyDepartment department = companyDepartmentService.save(companyDepartmentForm);
+        return ApiResult.ok(companyDepartmentService.toVo(department));
+    }
+
+    /**
+     * 删除百科部门
+     * @param departmentId 部门ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-company-department")
+    public ApiResult deleteDepartment(@RequestParam Integer departmentId){
+        companyDepartmentService.deleteById(departmentId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司部门
+     * @param companyId 公司部门ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-company-department")
+    public ApiResult<List<CompanyDepartmentVo>> listDepartment(@RequestParam Long companyId){
+        List<CompanyDepartmentVo> departmentVoList = companyDepartmentService.listVoByCompanyId(companyId);
+        return ApiResult.ok(departmentVoList);
+    }
+
+    /**
+     * 新增百科推荐帖子
+     * @param companyRecommendForm 推荐帖子表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-recommend-post")
+    public ApiResult<CompanyRecommendVo> savePost(@RequestBody CompanyRecommendForm companyRecommendForm){
+        companyRecommendForm.setObjectType(CompanyRecommendType.POST.value);
+        CompanyRecommend recommend = companyRecommendService.save(companyRecommendForm);
+        return ApiResult.ok(companyRecommendService.toVo(recommend));
+    }
+
+    /**
+     * 删除百科推荐帖子
+     * @param recommendId 推荐帖子ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-recommend-post")
+    public ApiResult deletePost(@RequestParam Integer recommendId){
+        companyRecommendService.deleteById(recommendId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司推荐帖子
+     * @param companyId 公司推荐帖子ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-recommend-post")
+    public ApiResult<List<CompanyRecommendVo>> listPost(@RequestParam Long companyId){
+        List<CompanyRecommendVo> recommendVoList = companyRecommendService.listVoByCompanyId(companyId);
+        return ApiResult.ok(recommendVoList);
+    }
+
+    /**
+     * 新增百科推荐职位
+     * @param companyRecommendForm 推荐职位表单
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("save-recommend-job")
+    public ApiResult<CompanyRecommendVo> saveJob(@RequestBody CompanyRecommendForm companyRecommendForm){
+        companyRecommendForm.setObjectType(CompanyRecommendType.JOB.value);
+        CompanyRecommend recommend = companyRecommendService.save(companyRecommendForm);
+        return ApiResult.ok(companyRecommendService.toVo(recommend));
+    }
+
+    /**
+     * 删除百科推荐职位
+     * @param recommendId 推荐职位ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("delete-recommend-job")
+    public ApiResult deleteJob(@RequestParam Integer recommendId){
+        companyRecommendService.deleteById(recommendId);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 查询公司推荐职位
+     * @param companyId 公司推荐职位ID
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list-recommend-job")
+    public ApiResult<List<CompanyRecommendVo>> listJob(@RequestParam Long companyId){
+        List<CompanyRecommendVo> recommendVoList = companyRecommendService.listVoByCompanyId(companyId);
+        return ApiResult.ok(recommendVoList);
+    }
+
 }

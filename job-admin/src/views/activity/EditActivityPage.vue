@@ -16,9 +16,10 @@
           :on-success="handleUploadSuccess"
           :before-upload="beforeUpload"
         >
-          <img
+          <el-image
             v-if="activityForm.thumbnail && activityForm.thumbnail !== ''"
             :src="activityForm.thumbnail"
+            v-loading="uploadPicOptions.loading"
             class="thumbnail"
           />
           <i v-else class="el-icon-plus thumbnail-uploader-icon"></i>
@@ -133,7 +134,8 @@ export default {
         action: "",
         params: {},
         fileUrl: "",
-        acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG"
+        acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
+        loading:false
       },
       saveLoading: false
     };
@@ -193,21 +195,24 @@ export default {
     },
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
+        this.uploadPicOptions.loading = true;
         getUploadPicToken(file.name)
           .then(response => {
             const { data } = response;
             this.uploadPicOptions.action = data.host;
             this.uploadPicOptions.params = data;
             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+            this.activityForm.thumbnail = URL.createObjectURL(file);
             resolve(data);
           })
           .catch(error => {
+            this.uploadPicOptions.loading = false;
             reject(error);
           });
       });
     },
     handleUploadSuccess() {
-      this.activityForm.thumbnail = this.uploadPicOptions.fileUrl;
+      this.uploadPicOptions.loading = false;
     }
   },
 };

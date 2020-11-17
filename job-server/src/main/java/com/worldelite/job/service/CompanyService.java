@@ -215,7 +215,7 @@ public class CompanyService extends BaseService{
      * @param companyId
      * @return
      */
-    private CompanyVo getSimpleCompanyInfo(Long companyId) {
+    public CompanyVo getSimpleCompanyInfo(Long companyId) {
         Company company = companyMapper.selectSimpleById(companyId);
         if (company == null) return null;
         return toCompanyVo(company);

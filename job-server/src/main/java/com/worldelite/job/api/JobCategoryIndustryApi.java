@@ -83,6 +83,12 @@ public class JobCategoryIndustryApi extends BaseApi{
         return ApiResult.ok(jobIndustryVos);
     }
 
+    @GetMapping("/{id}")
+    @ApiDoc
+    public ApiResult<List<JobIndustryVo>> getJobIndustryById(@PathVariable("id") String id) {
+        return ApiResult.ok(jobCategoryIndustryService.getJobIndustryById(Long.valueOf(id)));
+    }
+
     /**
      * 保存职位行业领域-职位类别映射
      * @param jobCategoryIndustryForm

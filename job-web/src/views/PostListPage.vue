@@ -49,21 +49,25 @@
             </el-button>
             <el-link @click="clearOptions" :underline="false" style="color: #b4bbc5;">清空搜索条件</el-link>
         </div>
+      <div class="non-post-tip"
+            v-if="showNoResult">
+        <span>很抱歉，该公司暂无岗位发布哦。</span>
+      </div>
 
-        <div style="display: inline-block;">
-            <el-tabs v-model="listQuery.recruitId"
-                     @tab-click="handleFilter"
-                     style="padding-left: 25px;">
-                <el-tab-pane :label="'全部 ' + this.recruitCountResult.all"></el-tab-pane>
-                <el-tab-pane :label="'校招 ' + this.recruitCountResult.school" name="154"></el-tab-pane>
-                <el-tab-pane :label="'社招 ' + this.recruitCountResult.community" name="155"></el-tab-pane>
-                <el-tab-pane :label="'急招 ' + this.recruitCountResult.urgency" name="170"></el-tab-pane>
-                <el-tab-pane :label="'热招 ' + this.recruitCountResult.hot" name="171"></el-tab-pane>
-                <el-tab-pane :label="'内推 ' + this.recruitCountResult.inner" name="172"></el-tab-pane>
-            </el-tabs>
-        </div>
+      <div style="display: inline-block;" v-show="!showNoResult">
+          <el-tabs v-model="listQuery.recruitId"
+                   @tab-click="handleFilter"
+                   style="padding-left: 25px;">
+              <el-tab-pane :label="'全部 ' + this.recruitCountResult.all"></el-tab-pane>
+              <el-tab-pane :label="'校招 ' + this.recruitCountResult.school" name="154"></el-tab-pane>
+              <el-tab-pane :label="'社招 ' + this.recruitCountResult.community" name="155"></el-tab-pane>
+              <el-tab-pane :label="'急招 ' + this.recruitCountResult.urgency" name="170"></el-tab-pane>
+              <el-tab-pane :label="'热招 ' + this.recruitCountResult.hot" name="171"></el-tab-pane>
+              <el-tab-pane :label="'内推 ' + this.recruitCountResult.inner" name="172"></el-tab-pane>
+          </el-tabs>
+      </div>
 
-      <div class="sort-options">
+      <div class="sort-options" v-show="!showNoResult">
             <el-link :underline="false" style="color: #599EF8;">最新</el-link>
             /
             <el-link :underline="false">发布顺序</el-link>
@@ -99,7 +103,6 @@
                 </div>
             </el-card>
         </div>
-
         <div class="section2-container">
             <pagination v-show="total"
                         :total="total"
@@ -118,7 +121,7 @@
     import {mapGetters} from "vuex";
 
     import {formatListQuery, parseListQuery} from "@/utils/common";
-    import {getRecommendList} from "@/api/recommend_api";
+    // import {getRecommendList} from "@/api/recommend_api";
 
     export default {
         name: "JobListPage",
@@ -220,17 +223,17 @@
                 searchJob(this.listQuery).then(response => {
                     if (!response.data.list || response.data.list.length === 0) {
                         this.showNoResult = true;
-                        this.total = 20;
-                        getRecommendList({
-                            objectType: 1, // 职位
-                            page: 1,
-                            limit: 20,
-                            sort: "+position"
-                        }).then(response => {
-                            this.pageResult.list = response.data.list.map(item => item.object);
-                            this.total = response.data.total;
-                            this.$emit("complete");
-                        });
+                        // this.total = 20;
+                        // getRecommendList({
+                        //     objectType: 1, // 职位
+                        //     page: 1,
+                        //     limit: 20,
+                        //     sort: "+position"
+                        // }).then(response => {
+                        //     this.pageResult.list = response.data.list.map(item => item.object);
+                        //     this.total = response.data.total;
+                        //     this.$emit("complete");
+                        // });
                     } else {
                         this.pageResult = response.data;
                         this.total = this.pageResult.total;
@@ -287,9 +290,16 @@
 <style scoped lang="scss">
     .app-container {
         max-width: 1140px;
+        width: 1140px;
         margin: 0 auto;
         padding: 0 20px;
         min-height: calc(100vh - 477px);
+
+        .non-post-tip {
+          text-align: center;
+          line-height: 30px;
+          height: 30px;
+        }
 
         .section1-container {
             min-width: 335px;
@@ -331,11 +341,9 @@
                     text-align: center;
                 }
 
-
                 .school {
                     background-color: #36A9CE;
                 }
-
                 .inner {
                     background-color: #70B603;
                 }
@@ -498,7 +506,7 @@
         vertical-align: top;
         position: relative;
         top: 10px;
-        left: 610px;
+        left: 525px;
     }
 
 

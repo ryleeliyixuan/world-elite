@@ -2,17 +2,16 @@ package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.http.HTMLFilter;
-import com.worldelite.job.entity.CompanyMarket;
-import com.worldelite.job.entity.CompanyWiki;
+import com.github.pagehelper.Page;
+import com.worldelite.job.entity.*;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.CompanyWikiForm;
 import com.worldelite.job.form.CompanyWikiListForm;
 import com.worldelite.job.mapper.CompanyMapper;
 import com.worldelite.job.mapper.CompanyWikiMapper;
+import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.FormUtils;
-import com.worldelite.job.vo.CityVo;
-import com.worldelite.job.vo.CompanyVo;
-import com.worldelite.job.vo.CompanyWikiVo;
-import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.bridge.IMessage;
@@ -35,6 +34,12 @@ public class CompanyWikiService extends BaseService{
     private CompanyService companyService;
 
     @Autowired
+    private CompanyMapper companyMapper;
+
+    @Autowired
+    private WikiModuleService wikiModuleService;
+
+    @Autowired
     private CompanyEmployeeService companyEmployeeService;
 
     @Autowired
@@ -50,7 +55,22 @@ public class CompanyWikiService extends BaseService{
     private CompanyStructureService companyStructureService;
 
     @Autowired
-    private CityService cityService;
+    private CompanySalaryService companySalaryService;
+
+    @Autowired
+    private CompanyRecruitService companyRecruitService;
+
+    @Autowired
+    private CompanyEnvironmentService companyEnvironmentService;
+
+    @Autowired
+    private CompanyDepartmentService companyDepartmentService;
+
+    @Autowired
+    private CompanyHonorService companyHonorService;
+
+    @Autowired
+    private CompanyRecommendService companyRecommendService;
 
     @Autowired
     private FavoriteService favoriteService;
@@ -63,7 +83,7 @@ public class CompanyWikiService extends BaseService{
      *
      * @param companyWikiForm
      */
-    public void saveCompanyWiki(CompanyWikiForm companyWikiForm) {
+    public CompanyWiki saveCompanyWiki(CompanyWikiForm companyWikiForm) {
         CompanyWiki options = new CompanyWiki();
         options.setCompanyId(companyWikiForm.getCompanyId());
         List<CompanyWiki> wikiList = companyWikiMapper.selectAndList(options);
@@ -82,6 +102,29 @@ public class CompanyWikiService extends BaseService{
         } else {
             companyWikiMapper.insertSelective(companyWiki);
         }
+        return companyWiki;
+    }
+
+    public PageResult<CompanyWikiVo> listSimple(CompanyWikiListForm listForm){
+        AppUtils.setPage(listForm);
+        CompanyOptions companyOptions = new CompanyOptions();
+        companyOptions.setIndustryId(listForm.getIndustryId());
+        companyOptions.setName(listForm.getKeyword());
+        Page<Company> page = (Page<Company>) companyMapper.searchWiki(companyOptions);
+        PageResult<CompanyWikiVo> pageResult = new PageResult<>(page);
+        List<CompanyWikiVo> wikiList = new ArrayList<>();
+        for(Company company:page){
+            CompanyWikiVo companyWikiVo = new CompanyWikiVo();
+            WikiModule wikiModule = wikiModuleService.getModuleByCompanyId(company.getId());
+            if(wikiModule == null){
+                wikiModule = wikiModuleService.newModule(company.getId());
+            }
+            companyWikiVo.setCompany(new CompanyVo().asVo(company));
+            companyWikiVo.setWikiModule(new WikiModuleVo().asVo(wikiModule));
+            wikiList.add(companyWikiVo);
+        }
+        pageResult.setList(wikiList);
+        return pageResult;
     }
 
     /**
@@ -101,41 +144,66 @@ public class CompanyWikiService extends BaseService{
         CompanyWikiVo companyWikiVo = new CompanyWikiVo();
         if (companyWiki != null) {
             Long companyId = companyWiki.getCompanyId();
-            companyWikiVo.setCompany(companyService.getCompanyInfo(companyId));
-            CompanyMarket companyMarket = companyMarketService.getByCompanyId(companyId);
-            companyWikiVo.setContent(companyWiki.getContent());
-            companyWikiVo.setSummary(companyWiki.getSummary());
-            companyWikiVo.setVideo(companyWiki.getVideo());
-            companyWikiVo.setFavoriteCount(favoriteService.getWikiFavoriteCount(companyId));
-            companyWikiVo.setScore(companyScoreService.getCompanyScore(companyId));
-            if(companyWiki.getCityEnable()!=0) {
-                Integer cityId = companyWiki.getCityId();
-                companyWikiVo.setCity(cityService.getCityVo(cityId));
+            WikiModule wikiModule = wikiModuleService.getModuleByCompanyId(companyId);
+            if(wikiModule == null){
+                wikiModule = wikiModuleService.newModule(companyId);
             }
-            if(companyWiki.getEmployeeEnable()!=0){
+            companyWikiVo.setWikiModule(new WikiModuleVo().asVo(wikiModule));
+            //百科基础信息
+            if(wikiModule.getWikiEnable() != 0){
+                companyWikiVo.setCompany(companyService.getCompanyInfo(companyId));
+                companyWikiVo.setContent(companyWiki.getContent());
+                companyWikiVo.setSummary(companyWiki.getSummary());
+                companyWikiVo.setVideo(companyWiki.getVideo());
+                companyWikiVo.setBanner(companyWiki.getBanner());
+                companyWikiVo.setScore(companyScoreService.getCompanyScore(companyId));
+            }
+            //地址
+            if(wikiModule.getAddressEnable() != 0){
+                companyWikiVo.setAddress(companyWiki.getAddress());
+            }
+            if(wikiModule.getEmployeeEnable() != 0){
                 companyWikiVo.setEmployeeList(companyEmployeeService.listEmployeeVo(companyId));
             }
-            if(companyWiki.getProductEnable()!=0){
+            if(wikiModule.getProductEnable() != 0){
                 companyWikiVo.setProductList(companyProductService.listProductVo(companyId));
             }
-            if(companyWiki.getMarketEnable()!=0){
+            if(wikiModule.getMarketEnable() != 0){
+                CompanyMarket companyMarket = companyMarketService.getByCompanyId(companyId);
                 companyWikiVo.setMarket(companyMarketService.toVo(companyMarket));
             }
-            if(companyWiki.getHistoryEnable()!=0){
+            if(wikiModule.getHistoryEnable() != 0){
                 companyWikiVo.setHistoryList(companyHistoryService.listHistoryVo(companyId));
             }
-            if(companyWiki.getStructureEnable()!=0){
+            if(wikiModule.getStructureEnable() != 0){
                 companyWikiVo.setStructure(companyStructureService.getStructureTree(companyId));
             }
-            companyWikiVo.setCityEnable(companyWiki.getCityEnable());
-            companyWikiVo.setEmployeeEnable(companyWiki.getEmployeeEnable());
-            companyWikiVo.setProductEnable(companyWiki.getProductEnable());
-            companyWikiVo.setMarketEnable(companyWiki.getMarketEnable());
-            companyWikiVo.setHistoryEnable(companyWiki.getHistoryEnable());
-            companyWikiVo.setStructureEnable(companyWiki.getStructureEnable());
-            return companyWikiVo;
+            if(wikiModule.getSalaryEnable() != 0){
+                companyWikiVo.setSalaryList(companySalaryService.listVoByCompanyId(companyId));
+            }
+            if(wikiModule.getRecruitEnable() != 0){
+                companyWikiVo.setRecruitList(companyRecruitService.listVoByCompanyId(companyId));
+            }
+            if(wikiModule.getEnvironmentEnable() != 0){
+                companyWikiVo.setEnvironmentList(companyEnvironmentService.listVoByCompanyId(companyId));
+            }
+            if(wikiModule.getDepartmentEnable() != 0){
+                companyWikiVo.setDepartment(companyDepartmentService.listVoByCompanyId(companyId));
+            }
+            if(wikiModule.getHonorEnable() != 0){
+                companyWikiVo.setHonorList(companyHonorService.listVoByCompanyId(companyId));
+            }
+            if(wikiModule.getPostEnable() != 0){
+                companyWikiVo.setPostList(companyRecommendService.listPostByCompanyId(companyId));
+            }
+            if(wikiModule.getJobEnable() != 0){
+                companyWikiVo.setJobList(companyRecommendService.listJobByCompanyId(companyId));
+            }
+            if(wikiModule.getCountEnable() != 0){
+                companyWikiVo.setFavoriteCount(favoriteService.getWikiFavoriteCount(companyId));
+            }
         }
-        return null;
+        return companyWikiVo;
     }
 
     /**
@@ -152,26 +220,5 @@ public class CompanyWikiService extends BaseService{
             return wikiList.get(0).getSummary();
         }
         return null;
-    }
-
-    /***
-     * 更新模块启用状态
-     * @param companyWikiForm
-     */
-    public CompanyWiki changeModuleEnable(CompanyWikiForm companyWikiForm){
-        //检查百科有效性，更新模块状态必须百科存在
-        CompanyWiki options = new CompanyWiki();
-        options.setCompanyId(companyWikiForm.getCompanyId());
-        List<CompanyWiki> wikiList = companyWikiMapper.selectAndList(options);
-        CompanyWiki companyWiki;
-        if (CollectionUtils.isNotEmpty(wikiList)) {
-            companyWiki = wikiList.get(0);
-        } else {
-            throw new SecurityException(message("api.error.data.company"));
-        }
-        BeanUtil.copyProperties(companyWikiForm, companyWiki);
-        //更新状态
-        companyWikiMapper.updateByPrimaryKeySelective(companyWiki);
-        return companyWiki;
     }
 }

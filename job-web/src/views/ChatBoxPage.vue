@@ -133,13 +133,13 @@
                                     ref="upload"
                                     :action="uploadAnnexOptions.action"
                                     :data="uploadAnnexOptions.params"
-                                    :accept="uploadAnnexOptions.acceptFileType"
                                     :show-file-list="false"
                                     :on-success="handleEditorUploadSuccess"
                                     :on-error="handleEditorUploadError"
                                     :before-upload="beforeUpload">
                                 <div class="icon2">附件</div>
                             </el-upload>
+                            <!-- :accept="uploadAnnexOptions.acceptFileType" -->
                             <div class="icon3" @click.stop="onWord">常用语
                                 <el-card class="word-card" v-if="showWord">
                                     <div v-for="(word, index) in words" :key="index" class="word-item" @click.stop="onWordSelect(word)">
@@ -216,17 +216,16 @@
 
                 // 常用语
                 showWord: false,
-                words: ["你好，看了你的简历，非常感兴趣",
-                    "你好，我们该岗位还在招聘",
-                    "你好，看了你的简历，非常感兴趣",
-                    "你好，我们该岗位还在招聘"],
-
-                // 表情符
-                emojis: ["😋", "😘", "😊", "😡", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
-                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
-                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
-                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘",
-                    "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘", "😋", "😘"],
+                words: [" 您好，我对这个职位很感兴趣。",
+                    "你好，看了你的招聘，非常感兴趣",
+                    "您好，请问什么时候能安排面试？",
+                    "您好，请问有消息了吗？"],
+            // 表情符
+                emojis: ["😋", "😠", "😩", "😡", "😲", "😱", "😞", "😏", "😵", "😰", "😋", "😒",
+                    "😍", "😤", "😜", "😝", "😋", "😘", "😚", "😷", "😳", "😃", "😅", "😆",
+                    "😁", "😂", "😄", "😢", "😭", "😨", "😪", "😏", "😓", "😥", "😉", "😺",
+                    "😹", "😻", "🙅", "🙆", "🙈", "🙉", "🙋", "💓", "💪", "⭐", "🌔", "🌓",
+                    "🌙", "🕐", "⌚", "⌛", "🍀", "🌹", "🍄", "🍒", "🍓", "🐟", "🐭", "🐴"],
                 showEmoji: false,
                 insertPosition: 0,
             };
