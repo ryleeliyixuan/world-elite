@@ -460,7 +460,6 @@ export default {
       companyId: undefined,
       companyWiki: {
         employeeList: [],
-        market: { url: "" },
         productList: [],
         structure: [],
         company: {
