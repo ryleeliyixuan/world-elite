@@ -34,6 +34,6 @@ h3 {
 }
 .edit-text{
   float: right;
-  text-size: 16px;
+  font-size: 16px;
 }
 </style>

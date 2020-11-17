@@ -50,21 +50,41 @@ export const constantRoutes = [
     path: '/wiki',
     component: Layout,
     meta: { title: '百科模块', icon: 'company' },
+    redirect: '/wiki/list',
     children: [
       {
-        path: 'wiki-list',
+        path: 'list',
         component: () => import('@/views/wiki/WikiListPage'),
         meta: { title: '百科列表' },
       },
       {
-        path: 'wiki-edit',
+        path: 'edit',
+        hidden: true,
         component: () => import('@/views/wiki/WikiEditPage'),
-        meta: { title: '发布/编辑百科专题' },
+        meta: { title: '编辑百科' },
       },
       {
         path: 'community-post',
-        component: () => import('@/views/wiki/CommunityPostPage'),
+        component: () => import('@/views/wiki/post/index'),
+        redirect: '/wiki/community-post/post',
         meta: { title: '闲聊圈' },
+        children: [
+          {
+            path: 'post',
+            component: () => import('@/views/wiki/post/postListPage'),
+            meta: { title: '帖子列表' },
+          },
+          {
+            path: 'comment',
+            component: () => import('@/views/wiki/post/commentListPage'),
+            meta: { title: '评论列表' },
+          },
+          {
+            path: 'report',
+            component: () => import('@/views/wiki/post/reportListPage'),
+            meta: { title: '举报列表' },
+          },
+        ]
       },
       {
         path: 'community-score',

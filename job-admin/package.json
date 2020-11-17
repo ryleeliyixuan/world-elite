@@ -14,10 +14,12 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/vue-fontawesome": "^0.1.9",
+    "@tinymce/tinymce-vue": "^3.2.2",
     "axios": "^0.19.2",
     "bootstrap": "4.4.1",
     "bootstrap-vue": "2.3.0",
     "core-js": "^3.4.4",
+    "echarts": "^4.9.0",
     "element-ui": "2.13.0",
     "file-saver": "2.0.1",
     "js-cookie": "^2.2.1",
@@ -26,6 +28,7 @@
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
     "quill-image-resize-module": "^3.0.0",
+    "tinymce": "^5.4.1",
     "universal-cookie": "^4.0.3",
     "vue": "2.6.10",
     "vue-amap": "^0.5.10",
@@ -35,9 +38,7 @@
     "vue-router": "3.0.6",
     "vue-sticky": "^3.3.4",
     "vuex": "3.1.0",
-    "xlsx": "0.14.1",
-    "@tinymce/tinymce-vue": "^3.2.2",
-    "tinymce": "^5.4.1"
+    "xlsx": "0.14.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.6",

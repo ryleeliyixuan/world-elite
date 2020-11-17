@@ -46,7 +46,15 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
-      }
+      },
+      "/sinajs": {
+        target: "http://hq.sinajs.cn",
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          "^/sinajs": "",
+        },
+      },
     }
   },
   configureWebpack: {
