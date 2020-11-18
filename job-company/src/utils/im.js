@@ -66,9 +66,9 @@ let im = {
             eventBus.addEvent(message.messageType, (value) => {
                 resolve(value);
             })
-            setTimeout(() => {
-                reject("消息已超时");
-            }, 20000);
+            // setTimeout(() => {
+            //     reject("消息已超时");
+            // }, 20000);
             this.ws.send(JSON.stringify(message));
         })
     },

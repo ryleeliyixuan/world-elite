@@ -25,7 +25,6 @@
                     <el-button type="primary" @click="$router.push('/login')">登录</el-button>
                 </div>
                 <div class="right-container" v-else>
-                    <svg-icon @click="handlerChat" icon-class="chat2" class="chat"/>
                     <el-popover placement="bottom-end"
                                 width="300"
                                 trigger="hover"
@@ -142,12 +141,6 @@
             gotoMessageList() {
                 this.$router.push("/messages");
             },
-
-            handlerChat() {
-                if (this.$route.path !== '/chat') {
-                    this.$router.push({path: "/chat"})
-                }
-            }
         }
     };
 </script>
@@ -163,18 +156,6 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-
-            .chat {
-                width: 30px !important;
-                height: 30px !important;
-                margin:  0 20px 0 10px;
-                line-height: 50px;
-
-                &:hover {
-                    cursor: pointer;
-                    color: #409eff;
-                }
-            }
         }
     }
 
