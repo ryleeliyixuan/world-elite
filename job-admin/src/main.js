@@ -10,12 +10,14 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import App from './App'
 import store from './store'
 import router from './router'
+import echarts from "echarts";
 
 import '@/icons' // icon
 import '@/permission' // permission control
 
 Vue.use(ElementUI)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.prototype.$echarts = echarts;
 
 Vue.config.productionTip = false
 

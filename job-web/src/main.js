@@ -36,7 +36,6 @@ if (cookies.get("version") !== version) {
     cookies.set("version", version)
 }
 
-// ���ݴ洢
 Vue.use(storage);
 Vue.use(VueResource)
 Vue.config.productionTip = false

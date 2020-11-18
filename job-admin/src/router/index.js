@@ -46,33 +46,53 @@ export const constantRoutes = [
       meta: { title: '管理面板', icon: 'dashboard' }
     }]
   },
-  // {
-  //   path: '/wiki',
-  //   component: Layout,
-  //   meta: { title: '百科模块', icon: 'company' },
-  //   children: [
-  //     {
-  //       path: 'wiki-list',
-  //       component: () => import('@/views/wiki/WikiListPage'),
-  //       meta: { title: '百科列表' },
-  //     },
-  //     {
-  //       path: 'wiki-edit',
-  //       component: () => import('@/views/wiki/WikiEditPage'),
-  //       meta: { title: '发布/编辑百科专题' },
-  //     },
-  //     {
-  //       path: 'community-post',
-  //       component: () => import('@/views/wiki/CommunityPostPage'),
-  //       meta: { title: '闲聊圈' },
-  //     },
-  //     {
-  //       path: 'community-score',
-  //       component: () => import('@/views/wiki/CommunityScorePage'),
-  //       meta: { title: '评分圈' },
-  //     },
-  //   ]
-  // },
+  {
+    path: '/wiki',
+    component: Layout,
+    meta: { title: '百科模块', icon: 'company' },
+    redirect: '/wiki/list',
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/wiki/WikiListPage'),
+        meta: { title: '百科列表' },
+      },
+      {
+        path: 'edit',
+        hidden: true,
+        component: () => import('@/views/wiki/WikiEditPage'),
+        meta: { title: '编辑百科' },
+      },
+      {
+        path: 'community-post',
+        component: () => import('@/views/wiki/post/index'),
+        redirect: '/wiki/community-post/post',
+        meta: { title: '闲聊圈' },
+        children: [
+          {
+            path: 'post',
+            component: () => import('@/views/wiki/post/postListPage'),
+            meta: { title: '帖子列表' },
+          },
+          {
+            path: 'comment',
+            component: () => import('@/views/wiki/post/commentListPage'),
+            meta: { title: '评论列表' },
+          },
+          {
+            path: 'report',
+            component: () => import('@/views/wiki/post/reportListPage'),
+            meta: { title: '举报列表' },
+          },
+        ]
+      },
+      {
+        path: 'community-score',
+        component: () => import('@/views/wiki/CommunityScorePage'),
+        meta: { title: '评分圈' },
+      },
+    ]
+  },
   {
     path: '/user',
     component: Layout,

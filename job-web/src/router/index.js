@@ -183,7 +183,7 @@ const constantRoutes = [
 ]
 
 const createRouter = () => new Router({
-    mode: 'history', // require service support
+    mode: 'hash', // require service support
     scrollBehavior: (to, from, savedPosition) => {
         if (to.hash)
             return {selector: to.hash}
