@@ -200,10 +200,12 @@
               rate:5,
               colors:['#FFD740','#FFD740','#FFD740'],
               flag1:false,
+              InterViewerList:[],//面试官排行榜
           }
         },
         mounted() {
             this.$emit("onComplete");
+            this.getInterViewList();
         },
         methods: {
             onMoreInterviewer() {
@@ -220,6 +222,14 @@
             },
             onRight(){
 
+            },
+            getInterViewList(){
+                this.$axios.get('/interviewer/rank', {
+                    params: {limit: 10}
+                }).then(data => {
+                    console.log(123456)
+                console.log(data)
+                })
             },
         }
     }
@@ -260,9 +270,13 @@
             width:100%;
             display: flex;
             margin-top: 9px;
+            height: 490px;
             .interviewer-left{
                 width: 453px;
-                height: auto;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
                 .left-item1,
                 .left-item2,
                 .left-item3{
@@ -317,8 +331,12 @@
             }
             .interviewer-right{
                 max-width: 605px;
-                height: auto;
+                height: 100%;
                 margin-left: 45px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding-bottom: 20px;
                 .right-item1,
                 .right-item2,
                 .right-item3,
@@ -329,7 +347,6 @@
                     height: 77px;
                     align-items: center;
                     justify-content: space-between;
-                    margin-bottom: 24px;
                     position: relative;
                     .right-item-tip{
                         position: absolute;

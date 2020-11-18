@@ -1,23 +1,26 @@
 <template>
-    <div class="hello">
-        <el-date-picker size='small' v-model="selectDate" type="month"
-                        placeholder="选择月" value-format="yyyy-MM">
-        </el-date-picker>
-        <el-button size='small' @click='changeDate'>确定</el-button>
-        <full-calendar
-                :config="config"
-                :events="events"
-                ref="calendar"
-                @event-selected='eventClick'
-                @day-click="dayClick">
-        </full-calendar>
-        <add-schedule v-if="isAdd" :isAdd='isAdd' :editItem='editItem' @add='addItem' @close='isAdd = false'></add-schedule>
+    <div class="app-container">
+        <calendar class="calendar"></calendar>
+<!--        <el-date-picker size='small' v-model="selectDate" type="month"-->
+<!--                        placeholder="选择月" value-format="yyyy-MM">-->
+<!--        </el-date-picker>-->
+<!--        <el-button size='small' @click='changeDate'>确定</el-button>-->
+<!--        <fullcalendar-->
+<!--                class="calendar"-->
+<!--                :config="config"-->
+<!--                :events="events"-->
+<!--                ref="calendar"-->
+<!--                @event-selected='eventClick'-->
+<!--                @day-click="dayClick">-->
+<!--        </fullcalendar>-->
+<!--        <add-schedule v-if="isAdd" :isAdd='isAdd' :editItem='editItem' @add='addItem' @close='isAdd = false'></add-schedule>-->
     </div>
 </template>
 <script>
-    import {FullCalendar} from 'vue-full-calendar'
-    import 'fullcalendar/dist/fullcalendar.css'
-    import addSchedule from '@/components/calendar/add.vue'
+    import Calendar from '@/components/calendar/Calendar'
+// <!--    import FullCalendar from 'vue-fullcalendar'-->
+// <!--    // import 'fullcalendar/dist/fullcalendar.css'-->
+// <!--    import addSchedule from '@/components/calendar/add.vue'-->
 
     export default {
         data() {
@@ -25,6 +28,11 @@
                 isAdd: false,
                 selectDate: '',//日期选择器选中的月份
                 config: {
+                    header: {//表头信息
+                        left: 'title',
+                        center: 'hide, custom',
+                        right: 'prev,today,next'
+                    },
                     firstDay: '0',//以周日为每周的第一天
                     // weekends: true,//是否在日历中显示周末
                     locale: 'zh-cn',//语言
@@ -35,11 +43,6 @@
                     allDaySlot: false,
                     // allDay:true,
                     displayEventEnd: true,
-                    header: {//表头信息
-                        left: 'prev, next, today',
-                        center: 'title',
-                        right: 'hide, custom'
-                    },
                 },
                 events: [{
                     id: 1,
@@ -71,7 +74,7 @@
                 editItem: {}
             }
         },
-        components: {FullCalendar, addSchedule},
+        components: {Calendar},
         methods: {
             changeDate() {
                 // this.$refs.calendar.fireMethod('gotoDate', this.selectDate)
@@ -98,29 +101,24 @@
                     })
                 }
                 this.events.push({
-                    id: this.editItem.id ? this.editItem.id : this.setUuid(),
+                    id: this.editItem.id ? this.editItem.id : Date.now(),
                     title: this.newItem.title,
                     start: this.newItem.period[0],
                     end: this.newItem.period[1],
                 })
             },
-            setUuid() {
-                var s = [];
-                var hexDigits = "0123456789abcdef";
-                for (var i = 0; i < 36; i++) {
-                    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-                }
-                s[14] = "4";
-                s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
-                s[8] = s[13] = s[18] = s[23];
-                var uuid = s.join("");
-                return uuid;
-            },
-
         },
     }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
+    .app-container {
+        margin: 0 auto;
+        max-width: 1200px;
+
+        .calendar {
+            width: 985px;
+        }
+    }
 </style>

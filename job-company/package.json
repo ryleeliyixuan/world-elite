@@ -12,11 +12,15 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/vue-fontawesome": "^0.1.9",
+    "@fullcalendar/daygrid": "^5.4.0",
+    "@fullcalendar/interaction": "^5.4.0",
+    "@fullcalendar/vue": "^5.4.0",
     "axios": "^0.19.2",
     "bootstrap": "4.4.1",
     "bootstrap-vue": "2.3.0",
     "core-js": "^3.4.4",
     "element-ui": "2.12.0",
+    "moment": "^2.29.1",
     "pdfobject": "^2.2.3",
     "regenerator-runtime": "^0.13.5",
     "svg-sprite-loader": "^4.2.1",
@@ -27,10 +31,7 @@
     "vue-quill-editor": "^3.0.6",
     "vue-router": "3.0.6",
     "vue-sticky": "^3.3.4",
-    "vuex": "3.1.0",
-    "vue-full-calendar": "^2.8.1-0",
-    "vue-fullcalendar": "^1.0.9",
-    "moment": "^2.29.1"
+    "vuex": "3.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",

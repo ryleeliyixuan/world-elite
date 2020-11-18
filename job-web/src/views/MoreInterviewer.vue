@@ -54,12 +54,24 @@
             </div>
 
         </div>
+<div class="section2-container">
+    <pagination
+            v-show="total"
+            :total="total"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.limit"
+            @pagination="handleRouteList"
+    />
+</div>
+
 
     </div>
 
 </template>
 
 <script>
+    import {formatListQuery} from "@/utils/common";
+
     export default {
         name: "MoreInterviewer",
         data() {
@@ -80,6 +92,13 @@
                     id: 4
                 }, {name: '两周内', select: false, id: 5}, {name: '本月内', select: false, id: 6}],
                 recommendList: [{name: '评分', select: true, id: 1}, {name: '价格', select: false, id: 2}, {name: '热度', select: false, id: 3}],
+                listQuery: {
+                    page: 1,
+                    limit: 10,
+                    type: 1,
+                    sort: "-id",
+                },
+                total: 12,
 
             }
         },
@@ -130,6 +149,12 @@
             },
             onInterviewer(){
                 this.$router.push("/interviewer-detail");
+            },
+            handleRouteList() {
+                this.$router.push({
+                    path: this.$route.path,
+                    query: formatListQuery(this.listQuery),
+                });
             },
 
         }
@@ -275,6 +300,11 @@
             }
 
         }
+        .section2-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
     }
 
 </style>

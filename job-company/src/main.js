@@ -17,10 +17,6 @@ import Loading from "@/components/Loading";
 
 import storage from "@/utils/storage"
 
-import FullCalendar from 'vue-full-calendar'
-
-Vue.use(FullCalendar)
-
 // 数据存储
 Vue.use(storage);
 

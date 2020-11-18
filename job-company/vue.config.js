@@ -84,7 +84,7 @@ module.exports = {
         // 是否使用css分离插件 MiniCssExtractPlugin。Default: 生产环境下是 true，开发环境下是 false
         extract: process.env.NODE_ENV !== 'development',
         // 默认为false。是否为 CSS 开启 source map。设置为 true 之后可能会影响构建的性能。
-        sourceMap: process.env.NODE_ENV === 'development'
+        sourceMap: false
     },
 
     chainWebpack(config) {
