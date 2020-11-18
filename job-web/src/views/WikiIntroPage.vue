@@ -27,7 +27,7 @@
               companyWiki.wikiModule.addressEnable == 1 &&
               companyWiki.company &&
               companyWiki.company.addressList &&
-              companyWiki.company.addressList.length != 0
+              companyWiki.company.addressList.length > 0
             "
             class="intro-address intro-module-element"
             :xs="24"
@@ -108,12 +108,15 @@
                 :key="product.id"
               >
                 <img
+                  v-if="product.url.length > 0"
                   class="intro-product-image"
                   :src="product.url"
                   :alt="product.description"
-                  fit="fill"
                   v-on:click="select(product)"
                 />
+                <h5 v-else>
+                  {{ product.description }}
+                </h5>
               </el-carousel-item>
             </el-carousel>
           </el-col>
@@ -575,7 +578,11 @@ export default {
       //http://hq.sinajs.cn/list=hk00700
       getCompanyWiki(id).then((response) => {
         this.companyWiki = response.data;
-        if (this.companyWiki.company.addressList) {
+        if (
+          this.companyWiki.company &&
+          this.companyWiki.company.addressList &&
+          this.companyWiki.company.addressList.length > 0
+        ) {
           for (const addr of this.companyWiki.company.addressList) {
             addr.mapWindow = {
               position: [addr.longitude, addr.latitude],
@@ -583,7 +590,11 @@ export default {
             };
           }
         }
-        if (this.companyWiki.market.url) {
+        if (
+          this.companyWiki.market &&
+          this.companyWiki.market.url &&
+          this.companyWiki.market.url.length > 0
+        ) {
           this.stockUrl = this.companyWiki.market.url;
           this.getMarketInfo();
         }
@@ -593,6 +604,7 @@ export default {
       if (this.stockUrl) {
         var url = this.stockUrl.split(".");
         this.stockUrl = "/" + url[1] + "." + url[2];
+        console.log( this.stockUrl , "------stockurl------");
         axios.get(this.stockUrl).then((response) => {
           this.sinaMarketInfo = response.data;
           // console.log(response.data, "------sinajs------");
@@ -729,7 +741,7 @@ export default {
     .intro-product-image {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
 
     .intro-valuation-stockstats {

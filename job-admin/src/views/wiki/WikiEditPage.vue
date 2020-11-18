@@ -1,46 +1,31 @@
 <template>
   <div class="app-container intro-box intro-module" v-if="companyWiki">
     <el-row :gutter="24">
-      <el-col class="intro-address intro-module-element" :span="24">
-        <h2 class="mt-4 mb-4">
-          <i class="el-icon-location" style="color: #1e90ff"></i>
-          公司地址
-        </h2>
-        <div
-          v-if="
-            companyWiki.company.addressList &&
-            companyWiki.company.addressList.length > 0
-          "
-        >
-          <el-collapse
-            v-model="activeAddress"
-            accordion
-            v-for="(addr, index) in companyWiki.company.addressList"
-            :key="addr.id"
-          >
-            <el-collapse-item :title="addr.address" :name="index">
-              <div class="map-box">
-                <el-amap
-                  :vid="'amap' + index"
-                  :zoom="mapZoom"
-                  :center="addr.mapWindow.position"
-                >
-                  <el-amap-info-window
-                    :position="addr.mapWindow.position"
-                    :content="addr.mapWindow.content"
-                  ></el-amap-info-window>
-                </el-amap>
-              </div>
-            </el-collapse-item>
-          </el-collapse>
-        </div>
-        <div v-else class="noInfoMsgBox">暂无数据，点击添加</div>
-      </el-col>
       <el-col class="intro-employee intro-module-element" :span="24">
-        <h2 class="mt-4 mb-4">
-          <i class="el-icon-s-cooperation" style="color: #1e90ff"></i>
-          雇员数量
-        </h2>
+        <div class="d-flex justify-content-start align-items-center">
+          <h2 style="margin-right: 18px">
+            <i class="el-icon-s-cooperation" style="color: #1e90ff"></i>
+            雇员数量
+          </h2>
+          <span>
+            启用该模块：
+            <el-switch
+              v-model="wikiModule.employeeEnable"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              @change="
+                changeEmployeeStatus(
+                  $event,
+                  companyWiki.wikiModule.id,
+                  companyId
+                )
+              "
+            >
+            </el-switch>
+          </span>
+        </div>
         <el-table
           v-if="companyWiki.employeeList && companyWiki.employeeList.length > 0"
           :data="companyWiki.employeeList"
@@ -51,19 +36,6 @@
           <el-table-column prop="number" label="雇员人数"> </el-table-column>
           <el-table-column label="操作" width="160">
             <template slot-scope="scope">
-              <!-- <el-button
-                    type="primary"
-                    size="mini"
-                    @click="
-                      handleEditEmployee(
-                        2,
-                        scope.row.year,
-                        scope.row.number,
-                        scope.row.id
-                      )
-                    "
-                    >编辑
-                  </el-button> -->
               <el-button
                 type="danger"
                 size="mini"
@@ -111,85 +83,161 @@
         </el-dialog>
       </el-col>
       <el-col class="intro-product intro-module-element" :span="24">
-        <h2 class="mt-4 mb-4">
-          <i class="el-icon-s-flag" style="color: #1e90ff"></i> 旗下产品
-        </h2>
+        <div class="d-flex justify-content-start align-items-center">
+          <h2 style="margin-right: 18px">
+            <i class="el-icon-s-flag" style="color: #1e90ff"></i> 旗下产品
+          </h2>
+          <span>
+            启用该模块：
+            <el-switch
+              v-model="wikiModule.productEnable"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              @change="
+                changeProductStatus(
+                  $event,
+                  companyWiki.wikiModule.id,
+                  companyId
+                )
+              "
+            >
+            </el-switch>
+          </span>
+        </div>
         <div
           v-if="companyWiki.productList && companyWiki.productList.length > 0"
         >
-          <el-row :gutter="12">
-            <el-col
-              :span="6"
-              v-for="product in companyWiki.productList"
-              :key="product.id"
-            >
-              <el-card :body-style="{ padding: '0px' }">
-                <div class="product-image-wrapper">
-                  <img
-                    class="product-image-content"
-                    :src="product.url"
-                    :alt="product.description"
-                    fit="cover"
-                  />
-                </div>
-                <div
-                  class="mt-2 d-flex justify-content-end"
-                  style="padding: 14px"
+          <el-table
+            :data="companyWiki.productList"
+            style="width: 100%"
+            max-height="500"
+          >
+            <el-table-column prop="position" label="顺序" width="100">
+            </el-table-column>
+            <el-table-column prop="imageName" label="图片"> </el-table-column>
+            <el-table-column prop="name" label="产品名"> </el-table-column>
+            <el-table-column prop="description" label="文字说明">
+            </el-table-column>
+            <el-table-column label="链接（点击查看图片）"
+              ><template slot-scope="scope">
+                <el-link
+                  :href="scope.row.url"
+                  target="_blank"
+                  :underline="true"
+                  >{{ scope.row.url }}</el-link
                 >
-                  <el-button
-                    type="primary"
-                    size="mini"
-                    @click="handleOpenProductPic(product.url)"
-                  >
-                    查 看 大 图
-                  </el-button>
-                  <el-button
-                    type="danger"
-                    size="mini"
-                    @click="delCompanyProduct(product.id)"
-                  >
-                    删 除
-                  </el-button>
-                </div>
-              </el-card>
-            </el-col>
-          </el-row>
+              </template></el-table-column
+            >
+            <el-table-column label="操作" width="160">
+              <template slot-scope="scope">
+                <el-button
+                  type="danger"
+                  size="mini"
+                  @click="delCompanyProduct(scope.row.id)"
+                >
+                  删 除
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  @click="moveProductForward(scope.row.id, scope.$index)"
+                >
+                  上 移
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  @click="moveProductDownward(scope.row.id, scope.$index)"
+                >
+                  下 移
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
         <div v-else class="noInfoMsgBox">暂无数据，点击添加</div>
         <el-dialog
-          title="查看产品大图"
+          title="编辑旗下产品"
           :visible.sync="showProductDialog"
           width="80%"
         >
-          <div class="product-image-dialog-wrapper">
-            <img class="product-image-dialog" :src="productOpenUrl" />
-          </div>
+          <el-form
+            label-position="right"
+            label-width="80px"
+            ref="productForm"
+            :model="productForm"
+            :rules="productFormRules"
+          >
+            <el-form-item label="产品名">
+              <el-input v-model="productForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="文字说明">
+              <el-input v-model="productForm.description"></el-input>
+            </el-form-item>
+            <el-form-item label="产品图片">
+              <el-upload
+                class="thumbnail-uploader"
+                :action="uploadPicOptions.action"
+                :data="uploadPicOptions.params"
+                :accept="uploadPicOptions.acceptFileType"
+                :before-upload="beforeUpload"
+                :on-success="handleUploadSuccess"
+                list-type="picture"
+              >
+                <el-button type="success" size="mini" icon="el-icon-edit">
+                  上 传 产 品 图 片
+                </el-button>
+              </el-upload>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="showProductDialog = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="saveCompanyProduct(), (showProductDialog = false)"
+              >保 存</el-button
+            >
+          </span>
         </el-dialog>
         <div class="mt-2 d-flex justify-content-center">
-          <el-upload
-            class="thumbnail-uploader"
-            :action="uploadPicOptions.action"
-            :data="uploadPicOptions.params"
-            :accept="uploadPicOptions.acceptFileType"
-            :show-file-list="false"
-            :on-success="handleUploadSuccess"
-            :before-upload="beforeUpload"
+          <el-button
+            type="success"
+            icon="el-icon-edit"
+            @click="showProductDialog = true"
           >
-            <el-button type="success" icon="el-icon-edit">
-              上 传 产 品 图 片
-            </el-button>
-          </el-upload>
+            上 传 旗 下 产 品
+          </el-button>
         </div>
       </el-col>
       <el-col class="intro-valuation intro-module-element" :span="24">
-        <div class="edit-button mb-3">
-          <h2>
+        <div class="d-flex justify-content-start align-items-center">
+          <h2 style="margin-right: 18px">
             <i class="el-icon-s-marketing" style="color: #1e90ff"></i>
             市值情况
           </h2>
+          <span>
+            启用该模块：
+            <el-switch
+              v-model="wikiModule.marketEnable"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              @change="
+                changeMarketStatus($event, companyWiki.wikiModule.id, companyId)
+              "
+            >
+            </el-switch>
+          </span>
         </div>
         <el-card
-          v-if="companyWiki.market.url && companyWiki.market.url.length > 0"
+          v-if="
+            companyWiki.market &&
+            companyWiki.market.url &&
+            companyWiki.market.url.length > 0
+          "
         >
           市值信息链接(点击打开链接):
           <a :href="companyWiki.market.url" target="_blank">
@@ -227,12 +275,34 @@
         </div>
       </el-col>
       <el-col class="intro-timeline intro-module-element" :span="24">
-        <h2><i class="el-icon-s-data" style="color: #1e90ff"></i> 发展路径</h2>
+        <div class="d-flex justify-content-start align-items-center">
+          <h2 style="margin-right: 18px">
+            <i class="el-icon-s-data" style="color: #1e90ff"></i> 发展路径
+          </h2>
+          <span>
+            启用该模块：
+            <el-switch
+              v-model="wikiModule.historyEnable"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              @change="
+                changeHistoryStatus(
+                  $event,
+                  companyWiki.wikiModule.id,
+                  companyId
+                )
+              "
+            >
+            </el-switch>
+          </span>
+        </div>
         <el-table
           v-if="companyWiki.historyList && companyWiki.historyList.length > 0"
           :data="companyWiki.historyList"
           style="width: 100%"
-          max-height="350"
+          max-height="500"
         >
           <el-table-column prop="eventTime" label="时间" width="100">
           </el-table-column>
@@ -285,7 +355,9 @@
               <el-date-picker
                 type="date"
                 placeholder="选择日期"
+                value-format="yyyy-MM-dd"
                 v-model="historyEditForm.eventTime"
+                :picker-options="oldDatePickerOptions"
                 style="width: 100%"
               ></el-date-picker>
             </el-form-item>
@@ -304,30 +376,30 @@
         </el-dialog>
       </el-col>
       <el-col class="intro-structure intro-module-element" :span="24">
-        <h2 class="mt-4 mb-4">
-          <i class="el-icon-s-custom" style="color: #1e90ff"></i>
-          公司架构
-        </h2>
-        <!-- <div
-          class="d-flex justify-content-end"
-          v-if="companyWiki.structure && companyWiki.structure.length > 0"
-        >
-          <el-button
-            class="intro-structure-fullscreen"
-            size="mini"
-            type="primary"
-            icon="el-icon-full-screen"
-            @click="fullScreen = true"
-            plain
-            >查 看 效 果 图</el-button
-          >
-        </div> -->
-        <!-- <el-dialog title="公司结构" :visible.sync="fullScreen" width="90%">
-          <TreeChart
-            :items="companyWiki.structure"
-            class="intro-structure-chart"
-          ></TreeChart>
-        </el-dialog> -->
+        <div class="d-flex justify-content-start align-items-center">
+          <h2 style="margin-right: 18px">
+            <i class="el-icon-s-custom" style="color: #1e90ff"></i>
+            公司架构
+          </h2>
+          <span>
+            启用该模块：
+            <el-switch
+              v-model="wikiModule.structureEnable"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              @change="
+                changeStructureStatus(
+                  $event,
+                  companyWiki.wikiModule.id,
+                  companyId
+                )
+              "
+            >
+            </el-switch>
+          </span>
+        </div>
         <el-tree
           v-if="companyWiki.structure && companyWiki.structure.length > 0"
           :data="companyWiki.structure"
@@ -378,6 +450,7 @@
 <script>
 import Vue from "vue";
 import VueAMap from "vue-amap";
+import { lazyAMapApiLoaderInstance } from "vue-amap";
 import axios from "axios";
 import BarChart from "@/components/BarChart";
 import TreeChart from "@/components/TreeChart";
@@ -385,7 +458,12 @@ import Pagination from "@/components/Pagination";
 import { getUploadPicToken } from "@/api/upload_api";
 import { formatListQuery, parseListQuery } from "@/utils/common";
 
-import { getCompanyWiki } from "@/api/company_api";
+import {
+  getCompanyWiki,
+  delCompanyAddr,
+  saveCompanyAddr,
+  changeModuleEnable,
+} from "@/api/company_api";
 import {
   saveCompanyMarket,
   saveCompanyHistory,
@@ -405,7 +483,20 @@ Vue.use(VueAMap);
 
 VueAMap.initAMapApiLoader({
   key: process.env.VUE_APP_AMAP_KEY,
+  plugin: [
+    "AMap.Autocomplete",
+    "AMap.PlaceSearch",
+    "AMap.Scale",
+    "AMap.Geocoder",
+  ],
   v: "1.4.4",
+});
+
+let geocoder;
+
+lazyAMapApiLoaderInstance.load().then(() => {
+  // eslint-disable-next-line no-undef
+  geocoder = new AMap.Geocoder({ extensions: "base" });
 });
 
 export default {
@@ -413,12 +504,13 @@ export default {
   components: { Pagination, BarChart, TreeChart },
   data() {
     return {
-      uploadPicOptions: {
-        action: "",
-        params: {},
-        fileUrl: "",
-        acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
+      posting: false,
+      wikiModule: {
+        id: undefined,
+        addressEnable: undefined,
+        employeeEnable: "0",
       },
+      employeeEnable: undefined,
       //MARKET
       showMarketDialog: false,
       marketForm: {
@@ -430,6 +522,11 @@ export default {
         eventTime: undefined,
         event: undefined,
       },
+      oldDatePickerOptions: {
+        disabledDate(time) {
+          return time.getTime() >= Date.now() - 8.64e7;
+        },
+      },
       //employee
       showEmployeeEditDialog: false,
       employeeEditForm: {
@@ -438,14 +535,33 @@ export default {
       },
       //product
       showProductDialog: false,
-      productOpenUrl: "",
+      productIdList: [],
       productForm: {
-        url: undefined,
+        id: undefined,
+        companyId: undefined,
+        url: "",
+        description: "",
+        imageName: "",
+        name: "",
+        position: undefined,
+      },
+      productFormRules: {
+        name: [{ required: true, message: "请填写产品名", trigger: "blur" }],
+        description: [
+          { required: true, message: "请输入文字说明", trigger: "blur" },
+        ],
+        url: [{ required: true, message: "请上传产品图片", trigger: "blur" }],
+      },
+      uploadPicOptions: {
+        action: "",
+        params: {},
+        fileUrl: "",
+        acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
+        imageName: "",
       },
       //structure
       showStructureDialog: false,
       options: [],
-      structureList: [],
       strucureFrom: {
         parentId: undefined,
         name: undefined,
@@ -460,6 +576,7 @@ export default {
       companyId: undefined,
       companyWiki: {
         employeeList: [],
+        market: {},
         productList: [],
         structure: [],
         company: {
@@ -467,38 +584,12 @@ export default {
         },
       },
       load: true,
-      //intro-address
-      activeAddress: 0,
-      mapZoom: 14,
-      //intro-timeline
-      count: 10,
-      loading: false,
-      reverse: true,
-      //intro-structure
-      fullScreen: false,
-      //intro-relatives
-      companyShowed: [], // 用来存放每次点击换一批出来的5个对象
-      randomCompIndex: "", // 用来放5个随机数
-      randomCompArr: [], // 用来放5个随机数的数组，用来循环
-      //intro-contributor
-      contributorDisplayed: [],
-      contributorIndex: "",
-      contributorIndex: [],
-
-      //stock info
-      stockInfo: {
-        name: "",
-        open: undefined,
-        close: undefined,
-        current: undefined,
-        low: undefined,
-        high: undefined,
-        date: undefined,
-        timestamp: undefined,
-      },
-      stockUrl: "",
-      sinaMarketInfo: undefined,
     };
+  },
+  watch: {
+    $route() {
+      this.initData();
+    },
   },
   created() {
     this.initData();
@@ -524,33 +615,79 @@ export default {
   methods: {
     initData() {
       this.companyId = this.$route.query.id;
+      this.productForm.companyId = this.companyId;
       getCompanyWiki(this.companyId).then((response) => {
         this.companyWiki = response.data;
-        if (this.companyWiki.company.addressList) {
-          for (const addr of this.companyWiki.company.addressList) {
-            addr.mapWindow = {
-              position: [addr.longitude, addr.latitude],
-              content: addr.address,
-            };
-          }
-        }
+        this.wikiModule = response.data.wikiModule;
         if (
           this.companyWiki.market &&
           this.companyWiki.market.url &&
           this.companyWiki.market.url.length > 0
         ) {
-          this.stockUrl = this.companyWiki.market.url;
-          this.getMarketInfo();
+          this.marketForm.url = this.companyWiki.market.url;
         }
-
-        if (
-          this.companyWiki.structure &&
-          this.companyWiki.structure.length > 0
-        ) {
-          this.getStructure();
-        }
+        this.getProductIdList();
       });
     },
+    getProductIdList() {
+      this.productIdList = []; //empty list
+      for (let i = 0; i < this.companyWiki.productList.length; i++) {
+        let product = this.companyWiki.productList[i];
+        this.productIdList.push(product.id);
+      }
+    },
+    //change module status
+    changeEmployeeStatus(event, wikiModuleId, companyId) {
+      let data = {
+        employeeEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("雇员数量状态改变成功");
+      });
+    },
+    changeProductStatus(event, wikiModuleId, companyId) {
+      let data = {
+        productEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("产品模块状态改变成功");
+      });
+    },
+    changeMarketStatus(event, wikiModuleId, companyId) {
+      let data = {
+        marketEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("市值模块状态改变成功");
+      });
+    },
+    changeHistoryStatus(event, wikiModuleId, companyId) {
+      let data = {
+        historyEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("发展路径状态改变成功");
+      });
+    },
+    changeStructureStatus(event, wikiModuleId, companyId) {
+      let data = {
+        structureEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("组织架构状态改变成功");
+      });
+    },
+    //tree
     renderContent(h, { node, data, store }) {
       return (
         <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
@@ -603,32 +740,6 @@ export default {
         Toast.success("组织结构节点增加成功");
         this.initData();
       });
-    },
-    getStructure() {
-      listCompanyStructure(this.companyId).then((response) => {
-        this.structureList = response.data;
-      });
-    },
-    getMarketInfo() {
-      if (this.stockUrl) {
-        this.marketForm.url = this.stockUrl;
-        var url = this.stockUrl.split(".");
-        this.stockUrl = "/" + url[1] + "." + url[2];
-        axios.get(this.stockUrl).then((response) => {
-          this.sinaMarketInfo = response.data;
-          // console.log(response.data, "------sinajs------");
-          var elements = this.sinaMarketInfo.split(",");
-          this.stockInfo.name = elements[1];
-          this.stockInfo.open = elements[2];
-          this.stockInfo.close = elements[3];
-          this.stockInfo.current = elements[4];
-          this.stockInfo.high = elements[5];
-          this.stockInfo.low = elements[6];
-          this.stockInfo.date = elements[17];
-          var timestamp = elements[elements.length - 1];
-          this.stockInfo.timestamp = timestamp.substr(0, 5);
-        });
-      }
     },
     saveCompanyMarket() {
       let data = {
@@ -709,6 +820,7 @@ export default {
       });
     },
     beforeUpload(file) {
+      this.uploadPicOptions.imageName = file.name;
       return new Promise((resolve, reject) => {
         getUploadPicToken(file.name)
           .then((response) => {
@@ -724,13 +836,25 @@ export default {
       });
     },
     handleUploadSuccess() {
-      let data = {
-        companyId: this.companyId,
-        url: this.uploadPicOptions.fileUrl,
-      };
-      saveCompanyProduct(data).then((response) => {
-        Toast.success("产品图片上传成功");
-        this.initData();
+      this.productForm.url = this.uploadPicOptions.fileUrl;
+      this.productForm.imageName = this.uploadPicOptions.imageName;
+      this.$message.success("图片上传成功");
+      const len = this.companyWiki.productList.length;
+      this.productForm.position = len > 0 ? len : 0;
+    },
+    saveCompanyProduct() {
+      console.log("---productform----", this.productForm);
+      this.$refs["productForm"].validate((valid) => {
+        if (valid) {
+          saveCompanyProduct(this.productForm).then(() => {
+            Toast.success("旗下产品上传成功");
+            this.initData();
+            this.productForm.url = undefined;
+            this.productForm.imageName = undefined;
+            this.productForm.name = undefined;
+            this.productForm.description = undefined;
+          });
+        }
       });
     },
     delCompanyProduct(id) {
@@ -743,9 +867,49 @@ export default {
         });
       });
     },
-    handleOpenProductPic(url) {
-      this.showProductDialog = true;
-      this.productOpenUrl = url;
+    moveProductForward(id, index) {
+      if (index === 0) {
+        this.$message.warning("该图片已在第一位，位置不能上升");
+      } else {
+        const newP = index - 1;
+        let data = {
+          companyId: this.companyId,
+          id: id,
+          position: newP,
+        };
+        saveCompanyProduct(data);
+        let data2 = {
+          companyId: this.companyId,
+          id: this.productIdList[index - 1],
+          position: index,
+        };
+        saveCompanyProduct(data2).then(() => {
+          Toast.success("产品图片上升成功");
+          this.initData();
+        });
+      }
+    },
+    moveProductDownward(id, index) {
+      if (index === this.companyWiki.productList.length - 1) {
+        this.$message.warning("该图片已在最后一位，位置不能下移");
+      } else {
+        const newP = index + 1;
+        let data = {
+          companyId: this.companyId,
+          id: id,
+          position: newP,
+        };
+        saveCompanyProduct(data);
+        let data2 = {
+          companyId: this.companyId,
+          id: this.productIdList[index + 1],
+          position: index,
+        };
+        saveCompanyProduct(data2).then(() => {
+          Toast.success("产品图片下移成功");
+          this.initData();
+        });
+      }
     },
   },
 };
@@ -759,152 +923,21 @@ export default {
   width: 100%;
 }
 
-.edit-button {
-  display: flex;
-  flex-direction: row;
-  align-content: center;
-  justify-content: space-between;
-}
-
 .map-box {
   height: 300px;
 }
-
-.product-image-dialog-wrapper {
-  .product-image-dialog {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
+.map-search-box {
+  position: absolute;
+  top: 70px;
+  left: 20px;
 }
 
-.product-image-wrapper {
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-top: 100%;
-  .product-image-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
+.intro-module-element {
+  margin-bottom: 36px;
 }
 
 .app-container {
   margin: 0px 12px 12px 12px;
   min-height: calc(100vh - 477px);
-
-  .company-wiki-header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .company-info-container {
-    height: calc(91px + 100vw * 0.39);
-
-    .company-info {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      .company-info-banner {
-        width: 100%;
-        z-index: -1;
-      }
-
-      .company-info-stat {
-        width: 230px;
-        height: 50px;
-        position: absolute;
-        right: 7%;
-        top: 77%;
-      }
-
-      .company-info-logo {
-        width: 100px;
-        height: 100px;
-        border: 2px solid white;
-      }
-
-      .company-info-description {
-        position: absolute;
-        top: calc(100% - 50px);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .company-rating-dialog-content {
-        margin-bottom: 12px;
-      }
-    }
-  }
-
-  .company-wiki-content-container {
-    width: 100%;
-    padding: 0 20px 20px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    .intro-summary {
-      display: flex;
-      flex-direction: row;
-
-      .intro-summary-img {
-        margin-right: 20px;
-        max-width: 600px;
-      }
-    }
-
-    .intro-module-element {
-      height: 450px;
-      margin-bottom: 30px;
-    }
-
-    .intro-product-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .intro-valuation-stockstats {
-      display: flex;
-      flex-direction: column;
-      align-content: stretch;
-
-      .stockstats-section {
-        margin-top: 24px;
-        height: 80px;
-      }
-    }
-
-    .intro-structure-fullscreen {
-      position: relative;
-      right: 50px;
-    }
-
-    .edit-info-container {
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: flex-start;
-      margin-bottom: 24px;
-
-      .edit-info {
-        width: 20%;
-        margin-bottom: 12px;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-    }
-  }
 }
 </style>

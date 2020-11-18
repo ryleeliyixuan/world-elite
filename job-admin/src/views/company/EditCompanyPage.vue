@@ -225,7 +225,6 @@
                 :search-option="mapSearchOption"
                 :on-search-result="onSearchPoiResult"
               ></el-amap-search-box>
-
               <el-amap-marker
                 vid="poi-marker"
                 :position="poiMapMarker.position"
