@@ -118,7 +118,7 @@
         max-width: 1200px;
 
         .calendar {
-            width: 985px;
+            width: 1200px;
         }
     }
 </style>
