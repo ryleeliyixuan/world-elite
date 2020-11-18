@@ -53,7 +53,7 @@ public interface CompanyProductMapper {
      */
     int updateByPrimaryKey(CompanyProduct record);
 
-    List<CompanyProduct> selectAndList(CompanyProduct companyProduct);
+    List<CompanyProduct> selectAndList(CompanyProduct record);
 
     void deleteByCompanyId(Long companyId);
 }

@@ -140,7 +140,7 @@
                               @change="onEditorChange($event)">
                 </quill-editor>
                 <div style="bottom: 0; text-align: right; position: absolute; right: 12px;">
-                    {{contentLength}}/300
+                    {{contentLength}}/900
                 </div>
             </el-form-item>
 
@@ -709,7 +709,7 @@
             },
 
             onEditorChange(event) {
-                event.quill.deleteText(300, 1);
+                event.quill.deleteText(900, 1);
                 this.contentLength = event.quill.getLength() - 1
             },
 
