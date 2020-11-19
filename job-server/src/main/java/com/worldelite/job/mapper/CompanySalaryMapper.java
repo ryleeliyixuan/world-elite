@@ -53,5 +53,7 @@ public interface CompanySalaryMapper {
      */
     int updateByPrimaryKey(CompanySalary record);
 
-    List<CompanySalary> selectAndList(CompanySalary record);
+    List<CompanySalary> selectAndList(CompanySalary companySalary);
+
+    void deleteByCompanyId(Long companyId);
 }

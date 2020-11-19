@@ -1,41 +1,44 @@
 <template>
     <div id="app" @click="showConversation=false;">
-        <MainNavBar/>
+        <div class="fake-container">
+            <MainNavBar/>
+            <svg-icon @click.stop="handlerChat" icon-class="chat3" class="chat"/>
+            <el-scrollbar class="friend-container" wrap-style="overflow: hidden auto; padding-right: 40px;" v-if="showConversation">
+                <div :class="['friend-item',{'friend-item-selected':item.selected}]" v-for="item in conversationList"
+                     @click.stop="onConversationClick(item)">
+                    <div style="position: relative">
+                        <el-image :src="item.friendVo.avatar" alt="" class="avatar">
+                            <div slot="error" class="image-slot">
+                                <i class="el-icon-picture-outline"></i>
+                            </div>
+                        </el-image>
+                        <span class="circle-number" v-if="item.unReadeCount!==0">{{item.unReadeCount}}</span>
+                    </div>
+                    <div class="friend-right-container">
+                        <div class="top-content">
+                            <div class="friend-name">{{item.friendVo.name}}</div>
+                            <div class="friend-title">{{item.jobApplyInfoVo && item.jobApplyInfoVo.jobName}}</div>
+                            <div class="friend-title">{{timestampToMonthDateHoursMinutes(item.lastMessage && item.lastMessage.timestamp)}}</div>
+                        </div>
+                        <div class="bottom-content">
+                            <div class="friend-title">{{item.lastMessage && item.lastMessage.payload.content}}</div>
+                            <div class="friend-state">{{(item.jobApplyInfoVo && item.jobApplyInfoVo.jobStatus)?'已投':'未投'}}</div>
+                        </div>
+                    </div>
+                </div>
+            </el-scrollbar>
+            <div class="red-dot" v-if="showRedDot"/>
+        </div>
+
         <transition name="fade-transform" mode="out-in">
             <keep-alive include="ChatBox">
                 <router-view @complete="onComplete" @receiveMessage="onReceiveMessage" @imInitComplete="imInitComplete=true;"/>
             </keep-alive>
         </transition>
         <transition name="fade">
-            <FooterView @complete="onComplete" v-if="show"/>
+            <FooterView v-if="show"/>
         </transition>
         <el-backtop></el-backtop>
-        <svg-icon @click.stop="handlerChat" icon-class="chat3" class="chat"/>
-        <el-scrollbar class="friend-container" wrap-style="overflow: hidden auto; padding-right: 40px;" v-if="showConversation">
-            <div :class="['friend-item',{'friend-item-selected':item.selected}]" v-for="item in conversationList"
-                 @click.stop="onConversationClick(item)">
-                <div style="position: relative">
-                    <el-image :src="item.friendVo.avatar" alt="" class="avatar">
-                        <div slot="error" class="image-slot">
-                            <i class="el-icon-picture-outline"></i>
-                        </div>
-                    </el-image>
-                    <span class="circle-number" v-if="item.unReadeCount!==0">{{item.unReadeCount}}</span>
-                </div>
-                <div class="friend-right-container">
-                    <div class="top-content">
-                        <div class="friend-name">{{item.friendVo.name}}</div>
-                        <div class="friend-title">{{item.jobApplyInfoVo && item.jobApplyInfoVo.jobName}}</div>
-                        <div class="friend-title">{{timestampToMonthDateHoursMinutes(item.lastMessage && item.lastMessage.timestamp)}}</div>
-                    </div>
-                    <div class="bottom-content">
-                        <div class="friend-title">{{item.lastMessage && item.lastMessage.payload.content}}</div>
-                        <div class="friend-state">{{(item.jobApplyInfoVo && item.jobApplyInfoVo.jobStatus)?'已投':'未投'}}</div>
-                    </div>
-                </div>
-            </div>
-        </el-scrollbar>
-        <div class="red-dot" v-if="showRedDot"/>
     </div>
 </template>
 
@@ -57,8 +60,8 @@
         components: {MainNavBar, FooterView},
         name: "app",
         watch: {
-            $route(route) {
-                this.show = false;
+            $route(newRoute, oldRouter) {
+                this.show = newRoute.path === oldRouter.path;
                 if (this.$route.path === '/chat') {
                     this.showRedDot = false;
                 }
@@ -124,10 +127,16 @@
         -moz-osx-font-smoothing: grayscale;
         color: #2c3e50;
 
+        .fake-container {
+            width: 1200px;
+            position: relative;
+            margin: 0 auto;
+        }
+
         .chat {
-            position: fixed;
-            top: 650px;
-            right: 80px;
+            position: absolute;
+            top: 22px;
+            right: 234px;
             width: 60px;
             height: 60px;
             padding: 10px;
@@ -142,9 +151,9 @@
             flex: 1;
             margin-top: 20px;
             overflow-y: auto;
-            position: fixed;
-            top: 480px;
-            right: 150px;
+            position: absolute;
+            top: 48px;
+            right: 285px;
             width: 290px;
             height: 240px;
             padding: 5px 0 5px 5px;
@@ -232,12 +241,12 @@
         }
 
         .red-dot {
-            position: fixed;
-            top: 654px;
-            right: 85px;
+            position: absolute;
+            top: 28px;
+            right: 239px;
             background: red;
-            width: 14px;
-            height: 14px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
         }
 

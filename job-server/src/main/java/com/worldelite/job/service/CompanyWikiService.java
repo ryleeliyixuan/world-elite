@@ -150,58 +150,28 @@ public class CompanyWikiService extends BaseService{
             }
             companyWikiVo.setWikiModule(new WikiModuleVo().asVo(wikiModule));
             //百科基础信息
-            if(wikiModule.getWikiEnable() != 0){
-                companyWikiVo.setCompany(companyService.getCompanyInfo(companyId));
-                companyWikiVo.setContent(companyWiki.getContent());
-                companyWikiVo.setSummary(companyWiki.getSummary());
-                companyWikiVo.setVideo(companyWiki.getVideo());
-                companyWikiVo.setBanner(companyWiki.getBanner());
-                companyWikiVo.setScore(companyScoreService.getCompanyScore(companyId));
-            }
+            companyWikiVo.setCompany(companyService.getCompanyInfo(companyId));
+            companyWikiVo.setContent(companyWiki.getContent());
+            companyWikiVo.setSummary(companyWiki.getSummary());
+            companyWikiVo.setVideo(companyWiki.getVideo());
+            companyWikiVo.setBanner(companyWiki.getBanner());
+            companyWikiVo.setScore(companyScoreService.getCompanyScore(companyId));
             //地址
-            if(wikiModule.getAddressEnable() != 0){
-                companyWikiVo.setAddress(companyWiki.getAddress());
-            }
-            if(wikiModule.getEmployeeEnable() != 0){
-                companyWikiVo.setEmployeeList(companyEmployeeService.listEmployeeVo(companyId));
-            }
-            if(wikiModule.getProductEnable() != 0){
-                companyWikiVo.setProductList(companyProductService.listProductVo(companyId));
-            }
-            if(wikiModule.getMarketEnable() != 0){
-                CompanyMarket companyMarket = companyMarketService.getByCompanyId(companyId);
-                companyWikiVo.setMarket(companyMarketService.toVo(companyMarket));
-            }
-            if(wikiModule.getHistoryEnable() != 0){
-                companyWikiVo.setHistoryList(companyHistoryService.listHistoryVo(companyId));
-            }
-            if(wikiModule.getStructureEnable() != 0){
-                companyWikiVo.setStructure(companyStructureService.getStructureTree(companyId));
-            }
-            if(wikiModule.getSalaryEnable() != 0){
-                companyWikiVo.setSalaryList(companySalaryService.listVoByCompanyId(companyId));
-            }
-            if(wikiModule.getRecruitEnable() != 0){
-                companyWikiVo.setRecruitList(companyRecruitService.listVoByCompanyId(companyId));
-            }
-            if(wikiModule.getEnvironmentEnable() != 0){
-                companyWikiVo.setEnvironmentList(companyEnvironmentService.listVoByCompanyId(companyId));
-            }
-            if(wikiModule.getDepartmentEnable() != 0){
-                companyWikiVo.setDepartment(companyDepartmentService.listVoByCompanyId(companyId));
-            }
-            if(wikiModule.getHonorEnable() != 0){
-                companyWikiVo.setHonorList(companyHonorService.listVoByCompanyId(companyId));
-            }
-            if(wikiModule.getPostEnable() != 0){
-                companyWikiVo.setPostList(companyRecommendService.listPostByCompanyId(companyId));
-            }
-            if(wikiModule.getJobEnable() != 0){
-                companyWikiVo.setJobList(companyRecommendService.listJobByCompanyId(companyId));
-            }
-            if(wikiModule.getCountEnable() != 0){
-                companyWikiVo.setFavoriteCount(favoriteService.getWikiFavoriteCount(companyId));
-            }
+            companyWikiVo.setAddress(companyWiki.getAddress());
+            companyWikiVo.setEmployeeList(companyEmployeeService.listEmployeeVo(companyId));
+            companyWikiVo.setProductList(companyProductService.listProductVo(companyId));
+            CompanyMarket companyMarket = companyMarketService.getByCompanyId(companyId);
+            companyWikiVo.setMarket(companyMarketService.toVo(companyMarket));
+            companyWikiVo.setHistoryList(companyHistoryService.listHistoryVo(companyId));
+            companyWikiVo.setStructure(companyStructureService.getStructureTree(companyId));
+            companyWikiVo.setSalaryList(companySalaryService.listVoByCompanyId(companyId));
+            companyWikiVo.setRecruitList(companyRecruitService.listVoByCompanyId(companyId));
+            companyWikiVo.setEnvironmentList(companyEnvironmentService.listVoByCompanyId(companyId));
+            companyWikiVo.setDepartment(companyDepartmentService.listVoByCompanyId(companyId));
+            companyWikiVo.setHonorList(companyHonorService.listVoByCompanyId(companyId));
+            companyWikiVo.setPostList(companyRecommendService.listPostByCompanyId(companyId));
+            companyWikiVo.setJobList(companyRecommendService.listJobByCompanyId(companyId));
+            companyWikiVo.setFavoriteCount(favoriteService.getWikiFavoriteCount(companyId));
         }
         return companyWikiVo;
     }

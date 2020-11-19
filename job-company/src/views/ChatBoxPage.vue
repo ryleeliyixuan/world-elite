@@ -88,7 +88,8 @@
                             <div>
                                 <span class="item-card" style="font-size: 18px;color:#303133">{{resumeInfo.name}}</span>
                                 <span class="item-card" v-if="resumeInfo.maxResumeEdu">{{resumeInfo.maxResumeEdu.finishTime}}毕业</span>
-                                <span class="item-card" v-if="resumeInfo.maxResumeEdu && resumeInfo.maxResumeEdu.degree">{{resumeInfo.maxResumeEdu.degree.name}}</span>
+                                <span class="item-card"
+                                      v-if="resumeInfo.maxResumeEdu && resumeInfo.maxResumeEdu.degree">{{resumeInfo.maxResumeEdu.degree.name}}</span>
                                 <span class="item-card">{{resumeInfo.age}}岁</span>
                                 <span class="item-card" v-if="resumeInfo.userExpectJob && resumeInfo.userExpectJob.salary">{{resumeInfo.userExpectJob.salary.name}}</span>
                             </div>
@@ -273,6 +274,7 @@
                 this.userId = data.userId;
                 this.token = data.token;
                 this.$emit("imInitComplete");
+
                 this.imInitComplete = true;
                 this.getConversationList();
             }).catch(() => {
@@ -371,8 +373,6 @@
                 if (this.jobKeywords) {
                     this.filter = false;
                     im.conversationSearchByJobMessage(this.jobKeywords).then(data => {
-                        console.log(data);
-                        console.log(data.list);
                         this.conversationList = data && data.list;
                     })
                 } else {
@@ -498,7 +498,7 @@
 
             // 拉黑
             onBlack() {
-                this.$confirm('确认拉黑该公司HR?', '提示', {
+                this.$confirm('确认拉黑该候选人?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -739,7 +739,7 @@
 
 <style scoped lang="scss">
     .app-container {
-        min-height: calc(100vh - 527px);
+        min-height: calc(100vh - 431px);
 
         .chat-container {
             width: 1200px;

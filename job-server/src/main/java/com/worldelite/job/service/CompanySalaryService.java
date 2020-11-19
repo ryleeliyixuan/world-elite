@@ -7,11 +7,14 @@ import com.worldelite.job.form.CompanySalaryForm;
 import com.worldelite.job.mapper.CompanySalaryMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.CompanySalaryVo;
+import com.worldelite.job.vo.DictVo;
+import com.worldelite.job.vo.JobVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -20,6 +23,12 @@ public class CompanySalaryService extends BaseService{
 	
 	@Autowired
 	private CompanySalaryMapper companySalaryMapper;
+
+	@Autowired
+	private JobService jobService;
+
+	@Autowired
+	private DictService dictService;
 
 	public CompanySalary save(CompanySalaryForm companySalaryForm){
 		Integer id = companySalaryForm.getId();
@@ -44,12 +53,25 @@ public class CompanySalaryService extends BaseService{
 	}
 
 	public CompanySalaryVo toVo(CompanySalary companySalary){
-		return new CompanySalaryVo().asVo(companySalary);
+		CompanySalaryVo companySalaryVo = new CompanySalaryVo().asVo(companySalary);
+		if(companySalary.getJobId() != null){
+			JobVo job = jobService.getJobInfo(companySalary.getJobId(),false);
+			companySalaryVo.setJob(job);
+		}
+		if(companySalary.getSalaryId() != null){
+			DictVo salary = dictService.getById(companySalary.getSalaryId());
+			companySalaryVo.setSalary(salary);
+		}
+		return companySalaryVo;
 	}
 
 	public List<CompanySalaryVo> listVoByCompanyId(Long companyId){
 		List<CompanySalary> companySalaryList = listByCompanyId(companyId);
-		return AppUtils.asVoList(companySalaryList,CompanySalaryVo.class);
+		List<CompanySalaryVo> companySalaryVoList = new ArrayList<>(companySalaryList.size());
+		for(CompanySalary companySalary:companySalaryList){
+			companySalaryVoList.add(toVo(companySalary));
+		}
+		return companySalaryVoList;
 	}
 
 }
