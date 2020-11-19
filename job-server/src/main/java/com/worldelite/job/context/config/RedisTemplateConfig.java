@@ -22,7 +22,16 @@ public class RedisTemplateConfig {
 
     @Bean
     public StringRedisTemplate getRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        return new StringRedisTemplate(redisConnectionFactory);
+        //TODO 为了兼容新系统的缓存机制以及为了减少对本项目代码的改动,
+        // 这里的StringRedisTemplate改为和RedisTemplate<String, Object>一样
+
+        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+        stringRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        stringRedisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        stringRedisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        stringRedisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
+        stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        return stringRedisTemplate;
     }
 
     @Bean
@@ -30,8 +39,8 @@ public class RedisTemplateConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;
     }
