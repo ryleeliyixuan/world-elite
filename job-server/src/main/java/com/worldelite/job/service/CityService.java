@@ -31,7 +31,7 @@ public class CityService {
     private CityMapper cityMapper;
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 获取所有城市数据树形数据
@@ -73,14 +73,14 @@ public class CityService {
      */
     public List<CityVo> getCacheTree(Byte type){
         //从Redis中取缓存数据
-        final String cityTreeJson = redisTemplate.opsForValue().get(RedisKeys.CITY_TREE+"_"+type);
+        final String cityTreeJson = stringRedisTemplate.opsForValue().get(RedisKeys.CITY_TREE+"_"+type);
         if(StringUtils.isNotEmpty(cityTreeJson)){
             return JSON.parseArray(cityTreeJson, CityVo.class);
         }
         //没有缓存则新建缓存
         List<CityVo> cityTree = getCityTree(type);
         if(CollectionUtils.isNotEmpty(cityTree)) {
-            redisTemplate.opsForValue().set(RedisKeys.CITY_TREE + "_" + type, JSON.toJSONString(cityTree), 10, TimeUnit.MINUTES);
+            stringRedisTemplate.opsForValue().set(RedisKeys.CITY_TREE + "_" + type, JSON.toJSONString(cityTree), 10, TimeUnit.MINUTES);
         }
         return cityTree;
     }

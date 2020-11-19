@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -22,16 +21,7 @@ public class RedisTemplateConfig {
 
     @Bean
     public StringRedisTemplate getRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        //TODO 为了兼容新系统的缓存机制以及为了减少对本项目代码的改动,
-        // 这里的StringRedisTemplate改为和RedisTemplate<String, Object>一样
-
-        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
-        stringRedisTemplate.setKeySerializer(new StringRedisSerializer());
-        stringRedisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        stringRedisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
-        stringRedisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
-        stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
-        return stringRedisTemplate;
+        return new StringRedisTemplate(redisConnectionFactory);
     }
 
     @Bean

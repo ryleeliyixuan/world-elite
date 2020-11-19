@@ -25,7 +25,7 @@ public class JobCategoryService {
     private JobCategoryMapper jobCategoryMapper;
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     public JobCategoryVo getById(Integer id) {
         JobCategory jobCategory = jobCategoryMapper.selectByPrimaryKey(id);
@@ -44,13 +44,13 @@ public class JobCategoryService {
      */
     public List<JobCategoryVo> getCacheTree() {
         //从Redis中取缓存数据
-        final String categoryTreeJson = redisTemplate.opsForValue().get(RedisKeys.JOB_CATEGORY_TREE);
+        final String categoryTreeJson = stringRedisTemplate.opsForValue().get(RedisKeys.JOB_CATEGORY_TREE);
         if (StringUtils.isNotEmpty(categoryTreeJson)) {
             return JSON.parseArray(categoryTreeJson, JobCategoryVo.class);
         }
         //没有缓存则新建缓存
         List<JobCategoryVo> categoryTree = getCategoryTree();
-        redisTemplate.opsForValue().set(RedisKeys.JOB_CATEGORY_TREE, JSON.toJSONString(categoryTree), 10, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(RedisKeys.JOB_CATEGORY_TREE, JSON.toJSONString(categoryTree), 10, TimeUnit.MINUTES);
         return categoryTree;
     }
 

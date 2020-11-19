@@ -15,6 +15,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -27,6 +28,9 @@ import java.util.Date;
  * @author yeguozhong yedaxia.github.com
  */
 public class AuthInterceptor extends HandlerInterceptorAdapter {
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private RedisTemplate<String, ?> redisTemplate;
@@ -54,7 +58,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         UserVo loginUser = null;
 
         if (StringUtils.isNotEmpty(token)) {
-            final String userJson = (String) redisTemplate.opsForValue().get(token);
+            final String userJson = stringRedisTemplate.opsForValue().get(token);
             if (StringUtils.isNotEmpty(userJson)) {
                 loginUser = JSON.parseObject(userJson, UserVo.class);
                 request.setAttribute(AttrKeys.LOGIN_USER, loginUser);
