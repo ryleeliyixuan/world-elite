@@ -1,8 +1,19 @@
 <template>
   <div class="app-container mb-4">
-    <div class="intro-box" v-if="companyWiki">
-      <el-divider></el-divider>
-      <div class="intro-summary">
+    <el-divider
+      v-if="
+        (companyWiki.video && companyWiki.video !== '') ||
+        (companyWiki.summary && companyWiki.summary.length > 0)
+      "
+    ></el-divider>
+    <div class="intro-box company-info-container" v-if="companyWiki">
+      <div
+        class="intro-summary"
+        v-if="
+          (companyWiki.video && companyWiki.video !== '') ||
+          (companyWiki.summary && companyWiki.summary.length > 0)
+        "
+      >
         <div
           v-if="companyWiki.video && companyWiki.video !== ''"
           class="intro-summary-img"
@@ -18,8 +29,8 @@
           {{ companyWiki.summary }}
         </div>
       </div>
-      <el-divider></el-divider>
       <div v-if="companyWiki" class="intro-module">
+        <el-divider></el-divider>
         <el-row :gutter="36">
           <el-col
             v-if="
@@ -245,12 +256,16 @@
                 size="mini"
                 type="primary"
                 icon="el-icon-full-screen"
-                @click="fullScreen = true"
+                @click="fullScreenStructure = true"
                 plain
                 >查 看</el-button
               >
             </div>
-            <el-dialog title="公司结构" :visible.sync="fullScreen" width="90%">
+            <el-dialog
+              title="公司结构"
+              :visible.sync="fullScreenStructure"
+              width="90%"
+            >
               <TreeChart
                 :items="companyWiki.structure"
                 class="intro-structure-chart"
@@ -260,6 +275,171 @@
               :items="companyWiki.structure"
               class="intro-structure-chart"
             ></TreeChart>
+          </el-col>
+          <el-col
+            v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.salaryEnable == 1 &&
+              companyWiki.salaryList &&
+              companyWiki.salaryList.length > 0
+            "
+            class="intro-salary intro-module-element"
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="12"
+            :xl="12"
+          >
+            <div class="intro-salary-container">
+              <h5 class="mt-4 mb-4">
+                <i class="el-icon-s-home" style="color: #1e90ff"></i> 薪资待遇
+              </h5>
+              <div class="intro-salary-pie-container">
+                <SalaryPieChart
+                  class="intro-salary-pie"
+                  :items="companyWiki.salaryList"
+                  :name="companyWiki.company.fullName"
+                ></SalaryPieChart>
+              </div>
+            </div>
+          </el-col>
+          <el-col
+            v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.environmentEnable == 1 &&
+              companyWiki.environmentList &&
+              companyWiki.environmentList.length > 0
+            "
+            class="intro-environment intro-module-element"
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="12"
+            :xl="12"
+          >
+            <h5 class="mt-4 mb-4">
+              <i class="el-icon-s-home" style="color: #1e90ff"></i> 工作环境
+            </h5>
+            <el-carousel height="380px" :interval="2500" arrow="always">
+              <el-carousel-item
+                v-for="image in companyWiki.environmentList"
+                :key="image.id"
+              >
+                <img
+                  class="intro-product-image"
+                  :src="image.imageUrl"
+                  :alt="image.name"
+                  v-on:click="select(image)"
+                />
+              </el-carousel-item>
+            </el-carousel>
+          </el-col>
+          <el-col
+            v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.recruitEnable == 1 &&
+              companyWiki.recruitList &&
+              companyWiki.recruitList.length > 0
+            "
+            class="intro-recruit intro-module-element"
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="12"
+            :xl="12"
+          >
+            <h5 class="mt-4 mb-4">
+              <i class="el-icon-time" style="color: #1e90ff"></i> 招聘时间线
+            </h5>
+            <div class="block">
+              <div class="radio mb-4">
+                <el-radio-group v-model="reverseRecruit">
+                  <el-radio :label="true">时间倒序</el-radio>
+                  <el-radio :label="false">时间正序</el-radio>
+                </el-radio-group>
+              </div>
+              <div class="infinite-list-wrapper" style="overflow: auto">
+                <el-timeline :reverse="reverseRecruit">
+                  <el-timeline-item
+                    v-for="history in companyWiki.recruitList"
+                    :key="history.id"
+                    :timestamp="history.time"
+                    placement="top"
+                    v-infinite-scroll="load"
+                    infinite-scroll-disabled="disabled"
+                  >
+                    {{ history.event }}
+                  </el-timeline-item>
+                </el-timeline>
+              </div>
+            </div>
+          </el-col>
+          <el-col
+            v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.honorEnable == 1 &&
+              companyWiki.honorList &&
+              companyWiki.honorList.length > 0
+            "
+            class="intro-honor intro-module-element"
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="12"
+            :xl="12"
+          >
+            <h5 class="mt-4 mb-4">
+              <i class="el-icon-medal-1" style="color: #1e90ff"></i> 企业荣誉
+            </h5>
+            <el-table
+              :data="companyWiki.honorList"
+              style="width: 100%"
+              max-height="330"
+            >
+              <el-table-column prop="year" label="年份" width="100">
+              </el-table-column>
+              <el-table-column prop="honor" label="荣誉"> </el-table-column>
+            </el-table>
+          </el-col>
+          <el-col
+            v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.departmentEnable == 1 &&
+              companyWiki.department &&
+              companyWiki.department.length > 0
+            "
+            class="intro-department intro-module-element"
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="12"
+            :xl="12"
+          >
+            <h5 class="mt-4 mb-4">
+              <i class="el-icon-s-custom" style="color: #1e90ff"></i>
+              公司部门
+            </h5>
+            <div class="d-flex justify-content-end">
+              <el-button
+                class="intro-structure-fullscreen"
+                size="mini"
+                type="primary"
+                icon="el-icon-full-screen"
+                @click="fullScreen = true"
+                plain
+                >查 看</el-button
+              >
+            </div>
+            <el-dialog title="公司部门" :visible.sync="fullScreen" width="90%">
+              <DepartmentChart
+                :items="companyWiki.department"
+                class="intro-structure-chart"
+              ></DepartmentChart>
+            </el-dialog>
+            <DepartmentChart
+              :items="companyWiki.department"
+              class="intro-structure-chart"
+            ></DepartmentChart>
           </el-col>
         </el-row>
       </div>
@@ -344,6 +524,8 @@ import VueAMap from "vue-amap";
 import axios from "axios";
 import BarChart from "../components/BarChart";
 import TreeChart from "../components/TreeChart";
+import DepartmentChart from "../components/DepartmentChart";
+import SalaryPieChart from "../components/SalaryPieChart";
 import Pagination from "@/components/Pagination";
 import { formatListQuery, parseListQuery } from "@/utils/common";
 
@@ -351,6 +533,7 @@ import { getCompanyWiki } from "@/api/company_api";
 import { setPageTitle } from "@/utils/setting";
 import { mapGetters } from "vuex";
 import Toast from "@/utils/toast";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 
 Vue.use(VueAMap);
 
@@ -361,7 +544,13 @@ VueAMap.initAMapApiLoader({
 
 export default {
   name: "WikiIntroPage",
-  components: { Pagination, BarChart, TreeChart },
+  components: {
+    Pagination,
+    BarChart,
+    TreeChart,
+    DepartmentChart,
+    SalaryPieChart,
+  },
   props: {
     //接受父组件传递来的数据
     companyId: {
@@ -390,7 +579,10 @@ export default {
       loading: false,
       reverse: true,
       //intro-structure
+      fullScreenStructure: false,
       fullScreen: false,
+      reverseRecruit: true,
+
       //intro-relatives
       companyShowed: [], // 用来存放每次点击换一批出来的5个对象
       randomCompIndex: "", // 用来放5个随机数
@@ -602,9 +794,10 @@ export default {
     },
     getMarketInfo() {
       if (this.stockUrl) {
-        var url = this.stockUrl.split(".");
-        this.stockUrl = "/" + url[1] + "." + url[2];
-        console.log( this.stockUrl , "------stockurl------");
+        // var url = this.stockUrl.split(".");
+        // // http://hq.sinajs.cn/list=hk00700x
+        // this.stockUrl = url[1] + "." + url[2];
+        console.log(this.stockUrl, "------stockurl------");
         axios.get(this.stockUrl).then((response) => {
           this.sinaMarketInfo = response.data;
           // console.log(response.data, "------sinajs------");
@@ -661,16 +854,12 @@ export default {
 
 .app-container {
   margin: 0 auto;
+  width: 100%;
   min-height: calc(100vh - 477px);
-
-  .company-wiki-header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
 
   .company-info-container {
     height: calc(91px + 100vw * 0.39);
+    width: 100%;
 
     .company-info {
       position: relative;
@@ -762,6 +951,19 @@ export default {
     .intro-structure-fullscreen {
       position: relative;
       right: 50px;
+    }
+
+    .intro-salary-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      .intro-salary-pie-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 380px;
+      }
     }
 
     .edit-info-container {

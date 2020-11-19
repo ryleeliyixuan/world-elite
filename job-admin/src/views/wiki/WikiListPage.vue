@@ -125,6 +125,101 @@
           </el-switch>
         </template>
       </el-table-column>
+      <el-table-column label="薪酬待遇">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.salaryEnable"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-value="1"
+            inactive-value="0"
+            @change="
+              changeSalaryStatus(
+                $event,
+                scope.row.wikiModuleId,
+                scope.row.id
+              )
+            "
+          >
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="工作环境">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.environmentEnable"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-value="1"
+            inactive-value="0"
+            @change="
+              changeEnvironmentStatus(
+                $event,
+                scope.row.wikiModuleId,
+                scope.row.id
+              )
+            "
+          >
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="招聘时间线">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.recruitEnable"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-value="1"
+            inactive-value="0"
+            @change="
+              changeRecruitStatus(
+                $event,
+                scope.row.wikiModuleId,
+                scope.row.id
+              )
+            "
+          >
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="企业荣誉">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.honorEnable"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-value="1"
+            inactive-value="0"
+            @change="
+              changeHonorStatus(
+                $event,
+                scope.row.wikiModuleId,
+                scope.row.id
+              )
+            "
+          >
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="公司部门">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.departmentEnable"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-value="1"
+            inactive-value="0"
+            @change="
+              changeDepartmentStatus(
+                $event,
+                scope.row.wikiModuleId,
+                scope.row.id
+              )
+            "
+          >
+          </el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="text" @click="viewWiki(scope.row.id)"
@@ -281,6 +376,51 @@ export default {
         } else {
           this.companyList[index].productEnable = "0";
         }
+        if (
+          response.data &&
+          response.data.wikiModule &&
+          response.data.wikiModule.salaryEnable === 1
+        ) {
+          this.companyList[index].salaryEnable = "1";
+        } else {
+          this.companyList[index].salaryEnable = "0";
+        }
+        if (
+          response.data &&
+          response.data.wikiModule &&
+          response.data.wikiModule.environmentEnable === 1
+        ) {
+          this.companyList[index].environmentEnable = "1";
+        } else {
+          this.companyList[index].environmentEnable = "0";
+        }
+        if (
+          response.data &&
+          response.data.wikiModule &&
+          response.data.wikiModule.recruitEnable === 1
+        ) {
+          this.companyList[index].recruitEnable = "1";
+        } else {
+          this.companyList[index].recruitEnable = "0";
+        }
+        if (
+          response.data &&
+          response.data.wikiModule &&
+          response.data.wikiModule.honorEnable === 1
+        ) {
+          this.companyList[index].honorEnable = "1";
+        } else {
+          this.companyList[index].honorEnable = "0";
+        }
+        if (
+          response.data &&
+          response.data.wikiModule &&
+          response.data.wikiModule.departmentEnable === 1
+        ) {
+          this.companyList[index].departmentEnable = "1";
+        } else {
+          this.companyList[index].departmentEnable = "0";
+        }
       });
     },
     handleRouteList() {
@@ -295,6 +435,56 @@ export default {
       this.handleRouteList();
     },
     //change status function
+    changeEnvironmentStatus(event, wikiModuleId, companyId) {
+      let data = {
+        environmentEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("企业环境状态改变成功");
+      });
+    },
+    changeRecruitStatus(event, wikiModuleId, companyId) {
+      let data = {
+        recruitEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("招聘时间线状态改变成功");
+      });
+    },
+    changeHonorStatus(event, wikiModuleId, companyId) {
+      let data = {
+        honorEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("企业荣誉状态改变成功");
+      });
+    },
+    changeDepartmentStatus(event, wikiModuleId, companyId) {
+      let data = {
+        departmentEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("公司部门状态改变成功");
+      });
+    },
+    changeSalaryStatus(event, wikiModuleId, companyId) {
+      let data = {
+        salaryEnable: Number(event),
+        id: wikiModuleId,
+        companyId: companyId,
+      };
+      changeModuleEnable(data).then((response) => {
+        Toast.success("薪酬待遇状态改变成功");
+      });
+    },
     changeCityStatus(event, wikiModuleId, companyId) {
       let data = {
         addressEnable: Number(event),
