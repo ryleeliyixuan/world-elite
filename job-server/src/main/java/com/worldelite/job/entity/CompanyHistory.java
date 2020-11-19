@@ -41,7 +41,7 @@ public class CompanyHistory {
      *
      * @mbg.generated
      */
-    private Date eventTime;
+    private String eventTime;
 
     /**
      * Database Column Remarks:
@@ -132,7 +132,7 @@ public class CompanyHistory {
      *
      * @mbg.generated
      */
-    public Date getEventTime() {
+    public String getEventTime() {
         return eventTime;
     }
 
@@ -144,8 +144,8 @@ public class CompanyHistory {
      *
      * @mbg.generated
      */
-    public void setEventTime(Date eventTime) {
-        this.eventTime = eventTime;
+    public void setEventTime(String eventTime) {
+        this.eventTime = eventTime == null ? null : eventTime.trim();
     }
 
     /**

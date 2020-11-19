@@ -14,8 +14,7 @@ public class CompanyHistoryVo implements VoConvertable<CompanyHistoryVo, Company
 
     private Integer id; //发展路径ID
     private String companyId; //公司ID
-    @JSONField(format = "yyyy-MM-dd")
-    private Date eventTime; //标志时间
+    private String eventTime; //标志时间
     private String event; //标志事件描述
 
     @Override

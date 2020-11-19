@@ -6,6 +6,7 @@ import lombok.Data;
 public class CompanySalaryForm {
 	private Integer id;
     private Long companyId;
-    private Integer categoryId; //职位ID
+    private Long jobId; //岗位ID
+    private Integer salaryId; //薪资范围ID
     private Integer percent; //百分比
 }

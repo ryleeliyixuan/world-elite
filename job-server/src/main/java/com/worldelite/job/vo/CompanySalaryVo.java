@@ -8,7 +8,8 @@ public class CompanySalaryVo implements VoConvertable<CompanySalaryVo, CompanySa
 
     private Integer id; //ID
     private String companyId; //公司ID
-    private JobCategoryVo category; //职位
+    private JobVo job; //岗位
+    private DictVo salary; //薪资范围
     private Integer percent; //百分比
 
     @Override

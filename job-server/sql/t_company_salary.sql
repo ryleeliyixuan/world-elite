@@ -12,3 +12,9 @@ COMMENT='公司薪资待遇'
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
+
+ALTER TABLE `t_company_salary`
+	CHANGE COLUMN `category_id` `job_id` INT(11) UNSIGNED ZEROFILL NOT NULL COMMENT '岗位ID' AFTER `company_id`,
+	ADD COLUMN `salary_id` INT(11) UNSIGNED NOT NULL COMMENT '薪资范围ID' AFTER `job_id`;
+ALTER TABLE `t_company_salary`
+	CHANGE COLUMN `job_id` `job_id` BIGINT UNSIGNED ZEROFILL NOT NULL DEFAULT 0 COMMENT '岗位ID' AFTER `company_id`;
