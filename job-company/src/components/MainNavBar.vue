@@ -6,7 +6,7 @@
                     <el-link class="logo-text" type="primary" href="/" :underline="false">{{$t('app_name')}} 企业端</el-link>
                 </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="7">
                 <el-menu :router="true"
                          :default-active="activeIndex"
                          mode="horizontal"
@@ -14,10 +14,9 @@
                     <el-menu-item class="nav-item" index="/manage-job">职位管理</el-menu-item>
                     <el-menu-item class="nav-item" index="/manage-resume">简历管理</el-menu-item>
                     <el-menu-item class="nav-item" index="/manage-search">简历搜索</el-menu-item>
-                    <el-menu-item class="nav-item" index="/chat">沟通</el-menu-item>
                 </el-menu>
             </el-col>
-            <el-col :span="9">
+            <el-col :span="10">
                 <div class="right-container" v-if="token === undefined || token === ''">
                     <el-link :underline="false" class="p-4 mr-2" @click="$router.push('/register')">
                         <b>免费加入</b>
@@ -170,6 +169,8 @@
     .nav-item {
         font-size: 16px;
         font-weight: 600;
+        width: 33.33%;
+        text-align: center;
     }
 
     .nav-message {

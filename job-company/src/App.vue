@@ -158,6 +158,7 @@
             height: 240px;
             padding: 5px 0 5px 5px;
             background: #cccccccc;
+            z-index: 99;
 
             .friend-item {
                 width: 300px;
@@ -207,11 +208,20 @@
                         .friend-name {
                             font-size: 16px;
                             color: #5C6984;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            width: 80px;
                         }
 
                         .friend-title {
                             color: #909399;
                             font-size: 12px;
+                            flex: 1;
+                            padding: 0 5px;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            overflow: hidden;
                         }
                     }
 
@@ -225,6 +235,11 @@
                         .friend-title {
                             color: #909399;
                             font-size: 12px;
+                            flex: 1;
+                            padding: 0 5px;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            overflow: hidden;
                         }
 
                         .friend-state {
