@@ -38,6 +38,18 @@ public class DictApi extends BaseApi{
     }
 
     /**
+     * 获取字典对象
+     * @param id
+     * @return
+     */
+    @GetMapping("get-by-id")
+    @ApiDoc
+    public ApiResult<DictVo> getDictById(@RequestParam Integer id){
+        DictVo dictVo = dictService.getById(id);
+        return ApiResult.ok(dictVo);
+    }
+
+    /**
      * 保存字典
      * @param dictForm
      * @return
