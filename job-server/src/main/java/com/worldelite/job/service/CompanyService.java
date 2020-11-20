@@ -251,6 +251,10 @@ public class CompanyService extends BaseService{
         if(company.getId() == null){
             company.setId(AppUtils.nextId());
             companyMapper.insertSelective(company);
+            //同时创建一个空的百科
+            CompanyWikiForm companyWikiForm = new CompanyWikiForm();
+            companyWikiForm.setCompanyId(company.getId());
+            companyWikiService.saveCompanyWiki(companyWikiForm);
         }else{
             company.setUpdateTime(new Date());
             companyMapper.updateByPrimaryKeySelective(company);
