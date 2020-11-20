@@ -15,6 +15,10 @@
     "@fortawesome/vue-fontawesome": "^0.1.9",
     "@tinymce/tinymce-vue": "^3.2.2",
     "aliyun-webrtc-sdk": "^1.13.3",
+
+	"@fullcalendar/daygrid": "^5.4.0",
+    "@fullcalendar/interaction": "^5.4.0",
+    "@fullcalendar/vue": "^5.4.0",
     "axios": "^0.19.2",
     "bootstrap": "4.4.1",
     "bootstrap-vue": "2.3.0",

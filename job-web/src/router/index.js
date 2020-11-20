@@ -210,6 +210,16 @@ const constantRoutes = [
         path: '/webRTC',
         component: () => import('@/views/WebRTC'),
         meta: {title: '寰球菁英-模拟面试'}
+    },
+    {
+        path: '/mock/promise',
+        component: () => import('@/views/MockPromisePage'),
+        meta: {title: '寰球菁英-预约'}
+    },
+    {
+        path: '/mock/mine',
+        component: () => import('@/views/MockMinePage'),
+        meta: {title: '寰球菁英-我的模拟面试'}
     }
 ]
 

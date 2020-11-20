@@ -35,10 +35,11 @@ module.exports = {
     open: false,
     host: "0.0.0.0",
     https: true,
+    https: true,
     hotOnly: true,
     proxy: {
       "/api": {
-        target: "https://api.test.myworldelite.com",
+        target: "https://api.test.myworldelite.com/api",
         changeOrigin: true,
         ws: true,
         pathRewrite: {

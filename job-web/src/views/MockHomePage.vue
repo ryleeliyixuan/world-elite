@@ -224,7 +224,7 @@
 
             },
             getInterViewList(){
-                this.$axios.get('/interviewer/rank', {
+                this.$axios.get('/mock/interviewer/rank', {
                     params: {limit: 10}
                 }).then(data => {
                     console.log(123456)
