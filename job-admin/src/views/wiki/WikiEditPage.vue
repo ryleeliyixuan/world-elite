@@ -44,9 +44,8 @@
           <el-form
             label-position="top"
             label-width="80px"
-            ref="productForm"
-            :model="productForm"
-            :rules="productFormRules"
+            ref="summaryForm"
+            :model="summaryForm"
           >
             <el-form-item label="摘要">
               <el-input v-model="summaryForm.summary"></el-input>
@@ -66,7 +65,9 @@
                 </el-button>
               </el-upload>
             </el-form-item>
-            <el-form-item label="百科横幅（方法一：“粘贴链接”至下方上传网络文件 ｜ 方法二：点击“上传百科横幅”上传本地照片）">
+            <el-form-item
+              label="百科横幅（方法一：“粘贴链接”至下方上传网络文件 ｜ 方法二：点击“上传百科横幅”上传本地照片）"
+            >
               <el-input v-model="summaryForm.banner"></el-input>
               <el-upload
                 class="thumbnail-uploader"
@@ -1082,7 +1083,15 @@ export default {
   data() {
     return {
       posting: false,
-      wikiModule: {},
+      wikiModule: {
+        employeeEnable: 0,
+        productEnable: 0,
+        marketEnable: 0,
+        historyEnable: 0,
+        departmentEnable: 0,
+        structureEnable: 0,
+        salaryEnable: 0,
+      },
       //summary
       showSummaryDialog: false,
       showVideoDialog: false,
@@ -1094,16 +1103,6 @@ export default {
         banner: "",
       },
 
-      //video
-      videoFlag: false,
-      //是否显示进度条
-      videoUploadPercent: "",
-      //进度条的进度，
-      isShowUploadVideo: false,
-      //显示上传按钮
-      videoForm: {
-        showVideoPath: "",
-      },
       uploadVideoOptions: {
         action: "",
         params: {},
@@ -1284,7 +1283,9 @@ export default {
       );
       getCompanyWiki(this.companyId).then((response) => {
         this.companyWiki = response.data;
-        this.wikiModule = response.data.wikiModule;
+        if (response.data.wikiModule) {
+          this.wikiModule = response.data.wikiModule;
+        } 
         if (
           this.companyWiki.market &&
           this.companyWiki.market.url &&
@@ -1292,8 +1293,22 @@ export default {
         ) {
           this.marketForm.url = this.companyWiki.market.url;
         }
-        this.getProductIdList();
-        this.getEnvironmentIdList();
+
+        if (
+          this.companyWiki &&
+          this.companyWiki.productList &&
+          this.companyWiki.productList.length > 0
+        ) {
+          this.getProductIdList();
+        }
+
+        if (
+          this.companyWiki &&
+          this.companyWiki.environmentList &&
+          this.companyWiki.environmentList.length > 0
+        ) {
+          this.getEnvironmentIdList();
+        }
       });
     },
     getProductIdList() {

@@ -212,7 +212,7 @@
           <el-input
             v-model="companyAddrForm.address"
             placeholder="请填写公司简称"
-            :maxlength="20"
+            :maxlength="40"
             show-word-limit
           ></el-input>
         </el-form-item>
