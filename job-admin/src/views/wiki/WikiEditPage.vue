@@ -1,6 +1,107 @@
 <template>
   <div class="app-container intro-box intro-module" v-if="companyWiki">
     <el-row :gutter="24">
+      <el-col class="intro-summary intro-module-element" :span="24">
+        <div class="d-flex justify-content-start align-items-center">
+          <h2 style="margin-right: 18px">
+            <i class="el-icon-info" style="color: #1e90ff"></i> 公司简介
+          </h2>
+        </div>
+        <el-card class="mb-2">
+          <h3>文字摘要</h3>
+          <div v-if="companyWiki.summary && companyWiki.summary.length > 0">
+            {{ companyWiki.summary }}
+          </div>
+          <div v-else class="noInfoMsgBox">暂无数据，点击添加</div>
+        </el-card>
+        <el-card class="mb-2">
+          <h3>简介视频</h3>
+          <div v-if="companyWiki.video && companyWiki.video.length > 0">
+            <div class="mb-1">
+              点击链接下载视频：
+              <a :href="companyWiki.video" target="_blank">
+                {{ companyWiki.video }}
+              </a>
+            </div>
+          </div>
+          <div v-else class="noInfoMsgBox">暂无数据，点击添加</div>
+        </el-card>
+        <el-card>
+          <h3>百科横幅</h3>
+          <div v-if="companyWiki.banner && companyWiki.banner.length > 0">
+            点击链接查看图片：
+            <a :href="companyWiki.banner" target="_blank">
+              {{ companyWiki.banner }}
+            </a>
+          </div>
+          <div v-else class="noInfoMsgBox">暂无数据，点击添加</div>
+        </el-card>
+        <el-dialog
+          title="编辑公司简介"
+          :visible.sync="showSummaryDialog"
+          width="80%"
+        >
+          <el-form
+            label-position="top"
+            label-width="80px"
+            ref="productForm"
+            :model="productForm"
+            :rules="productFormRules"
+          >
+            <el-form-item label="摘要">
+              <el-input v-model="summaryForm.summary"></el-input>
+            </el-form-item>
+            <el-form-item label="公司视频">
+              <el-input v-model="summaryForm.video"></el-input>
+              <el-upload
+                class="thumbnail-uploader"
+                :action="uploadVideoOptions.action"
+                :data="uploadVideoOptions.params"
+                :before-upload="beforeUploadVideo"
+                :on-success="handleUploadVideoSuccess"
+                list-type="picture"
+              >
+                <el-button type="success" size="mini" icon="el-icon-edit">
+                  上 传 介 绍 视 频
+                </el-button>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="百科横幅（方法一：“粘贴链接”至下方上传网络文件 ｜ 方法二：点击“上传百科横幅”上传本地照片）">
+              <el-input v-model="summaryForm.banner"></el-input>
+              <el-upload
+                class="thumbnail-uploader"
+                :action="uploadPicOptions.action"
+                :data="uploadPicOptions.params"
+                :accept="uploadPicOptions.acceptFileType"
+                :before-upload="beforeUpload"
+                :on-success="handleUploadBannerSuccess"
+                list-type="picture"
+              >
+                <el-button type="success" size="mini" icon="el-icon-edit">
+                  上 传 百 科 横 幅
+                </el-button>
+              </el-upload>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="showSummaryDialog = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="saveCompanyWiki(), (showSummaryDialog = false)"
+              >保 存</el-button
+            >
+          </span>
+        </el-dialog>
+        <div class="mt-2 d-flex justify-content-center">
+          <el-button
+            type="success"
+            icon="el-icon-edit"
+            @click="handleEditSummary()"
+          >
+            编 辑 公 司 简 介
+          </el-button>
+        </div>
+      </el-col>
       <el-col class="intro-employee intro-module-element" :span="24">
         <div class="d-flex justify-content-start align-items-center">
           <h2 style="margin-right: 18px">
@@ -470,7 +571,8 @@
           style="width: 100%"
           max-height="350"
         >
-          <el-table-column prop="salary.name" label="薪资范围"> </el-table-column>
+          <el-table-column prop="salary.name" label="薪资范围">
+          </el-table-column>
           <el-table-column prop="percent" label="比例"> </el-table-column>
           <el-table-column label="操作" width="160">
             <template slot-scope="scope">
@@ -927,6 +1029,7 @@ import {
   delCompanyAddr,
   saveCompanyAddr,
   changeModuleEnable,
+  saveCompanyWiki,
 } from "@/api/company_api";
 import {
   saveCompanyMarket,
@@ -980,6 +1083,34 @@ export default {
     return {
       posting: false,
       wikiModule: {},
+      //summary
+      showSummaryDialog: false,
+      showVideoDialog: false,
+      showBannerDialog: false,
+      summaryForm: {
+        companyId: undefined,
+        summary: "",
+        video: "",
+        banner: "",
+      },
+
+      //video
+      videoFlag: false,
+      //是否显示进度条
+      videoUploadPercent: "",
+      //进度条的进度，
+      isShowUploadVideo: false,
+      //显示上传按钮
+      videoForm: {
+        showVideoPath: "",
+      },
+      uploadVideoOptions: {
+        action: "",
+        params: {},
+        fileUrl: "",
+        acceptFileType: ".mp4,.ogg,.flv,.avi,.wmv,.rmvb,.mov",
+        imageName: "",
+      },
       //salary
       showSalaryDialog: false,
       salaryOptions: [],
@@ -1147,6 +1278,7 @@ export default {
       this.productForm.companyId = this.companyId;
       this.environmentForm.companyId = this.companyId;
       this.salaryForm.companyId = this.companyId;
+      this.summaryForm.companyId = this.companyId;
       listByType(9).then(
         (response) => (this.salaryOptions = response.data.list)
       );
@@ -1178,6 +1310,56 @@ export default {
         this.environmentIdList.push(environment.id);
       }
     },
+    //summary
+    saveCompanyWiki() {
+      let data = {
+        companyId: this.companyId,
+        summary: this.summaryForm.summary,
+        video: this.summaryForm.video,
+        banner: this.summaryForm.banner,
+      };
+      saveCompanyWiki(data).then((response) => {
+        Toast.success("公司百科保存成功");
+        this.initData();
+      });
+    },
+    handleEditSummary() {
+      this.showSummaryDialog = true;
+      this.summaryForm.summary = this.companyWiki.summary;
+      this.summaryForm.video = this.companyWiki.video;
+      this.summaryForm.banner = this.companyWiki.banner;
+    },
+    //上传前回调
+    beforeUploadVideo(file) {
+      this.uploadVideoOptions.imageName = file.name;
+      return new Promise((resolve, reject) => {
+        getUploadPicToken(file.name)
+          .then((response) => {
+            const { data } = response;
+            this.uploadVideoOptions.action = data.host;
+            this.uploadVideoOptions.params = data;
+            this.uploadVideoOptions.fileUrl = data.host + "/" + data.key;
+            resolve(data);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    //进度条
+    uploadVideoProcess(event, file, fileList) {
+      this.videoFlag = true;
+      this.videoUploadPercent = file.percentage.toFixed(0) * 1;
+    },
+    handleUploadVideoSuccess() {
+      this.summaryForm.video = this.uploadVideoOptions.fileUrl;
+      this.$message.success("公司视频上传成功");
+    },
+    handleUploadBannerSuccess() {
+      this.summaryForm.banner = this.uploadPicOptions.fileUrl;
+      this.$message.success("百科横幅上传成功");
+    },
+
     //change module status
     //recent added
     changeEnvironmentStatus(event, wikiModuleId, companyId) {

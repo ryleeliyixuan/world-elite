@@ -40,7 +40,7 @@
           <el-button
             type="danger"
             size="mini"
-            @click="handleDeletePost(scope.row.id, scope.$index, postPage.list)"
+            @click="deletePost(scope.row.id)"
             icon="el-icon-edit"
             >删除</el-button
           >
@@ -83,7 +83,7 @@ import {
 } from "@/api/community_api";
 
 export default {
-  name: "CommunityPostPage",
+  name: "PostListPage",
   components: { Pagination },
   directives: { waves },
   data() {
@@ -150,13 +150,13 @@ export default {
         `http://test.myworldelite.com/company/${companyId}/community/post?page=1&limit=5&sort=-hots&id=${postId}&companyId=${companyId}`
       );
     },
-    handleDeletePost(id, index, rows) {
+    deletePost(id) {
       this.$confirm("是否要删除该帖子？", {
         confirmButtonText: "删除",
       }).then(() => {
         deletePost(id).then(() => {
           Toast.success("成功删除该帖子");
-          rows.splice(index, 1);
+          this.initData();
         });
       });
     },

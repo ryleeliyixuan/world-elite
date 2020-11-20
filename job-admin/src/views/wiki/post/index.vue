@@ -34,7 +34,6 @@ export default {
       const lastIndex = name.lastIndexOf("/");
       const getName =
         lastIndex !== -1 ? name.substring(lastIndex + 1) : this.tabIndex;
-      // console.log(getName, "----name----");
       if (getName) {
         this.tabIndex = getName;
       }

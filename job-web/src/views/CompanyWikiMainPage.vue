@@ -4,16 +4,14 @@
     <div v-if="company" class="company-wiki-header-container">
       <div class="company-info-container">
         <div class="company-info">
-          <!-- 缺接口 -->
-          <img
+          <!-- <img
             class="company-info-banner"
-            v-if="company.banner"
-            :src="company.banner"
+            v-if="banner && banner.length > 0"
+            :src="banner"
             :alt="company.fullName"
-          />
+          /> -->
           <img
             class="company-info-banner"
-            v-else
             src="../assets/defaultbanner.png"
             alt=""
           />
@@ -23,7 +21,8 @@
               :src="company.logo"
               :alt="company.fullName"
             ></el-avatar>
-            <h5 class="mt-0">{{ company.name }}</h5>
+            <h5 class="mt-2" v-if="company.name">{{ company.name }}</h5>
+            <h5 class="mt-2" v-else>{{ company.fullName }}</h5>
             <p class="mb-2">
               <span v-if="company.stage">{{ company.stage.name }} |</span>
               <span v-if="company.property">
@@ -148,6 +147,7 @@ export default {
       company: undefined,
       score: undefined,
       favoriteCount: undefined,
+      banner: "",
       //subscribe
       favoriteForm: {
         objectId: undefined,
@@ -214,6 +214,7 @@ export default {
       getCompanyWiki(id).then((response) => {
         this.score = response.data.score;
         this.favoriteCount = response.data.favoriteCount;
+        this.banner = response.data.banner;
       });
     },
     handleSelectTab(tabIndex) {
@@ -281,6 +282,7 @@ export default {
       .company-info-banner {
         width: 100%;
         z-index: -1;
+        object-fit: cover;
       }
 
       .company-info-stat {

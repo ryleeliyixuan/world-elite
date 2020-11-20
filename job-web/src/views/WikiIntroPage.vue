@@ -15,13 +15,13 @@
         "
       >
         <div
-          v-if="companyWiki.video && companyWiki.video !== ''"
+          v-if="companyWiki.video && companyWiki.video.length > 0"
           class="intro-summary-img"
         >
           <video
             style="height: 300px"
             :src="companyWiki.video"
-            :alt="company.fullName"
+            :alt="companyWiki.company.fullName"
             controls="controls"
           ></video>
         </div>
@@ -131,7 +131,7 @@
               </el-carousel-item>
             </el-carousel>
           </el-col>
-          <el-col
+          <!-- <el-col
             v-if="
               companyWiki.wikiModule &&
               companyWiki.wikiModule.marketEnable === 1 &&
@@ -191,7 +191,7 @@
                 </el-row>
               </div>
             </el-card>
-          </el-col>
+          </el-col> -->
           <el-col
             v-if="
               companyWiki.wikiModule &&
@@ -534,6 +534,7 @@ import { setPageTitle } from "@/utils/setting";
 import { mapGetters } from "vuex";
 import Toast from "@/utils/toast";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import RemoteJs from "../components/RemoteJs";
 
 Vue.use(VueAMap);
 
@@ -550,6 +551,7 @@ export default {
     TreeChart,
     DepartmentChart,
     SalaryPieChart,
+    RemoteJs,
   },
   props: {
     //接受父组件传递来的数据
@@ -794,9 +796,9 @@ export default {
     },
     getMarketInfo() {
       if (this.stockUrl) {
-        // var url = this.stockUrl.split(".");
-        // // http://hq.sinajs.cn/list=hk00700x
-        // this.stockUrl = url[1] + "." + url[2];
+        //http://hq.sinajs.cn/list=hk00700
+        var url = this.stockUrl.split(".");
+        this.stockUrl = "/" + url[1] + "." + url[2];
         console.log(this.stockUrl, "------stockurl------");
         axios.get(this.stockUrl).then((response) => {
           this.sinaMarketInfo = response.data;
