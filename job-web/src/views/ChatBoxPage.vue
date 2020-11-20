@@ -35,7 +35,9 @@
                 </div>
                 <el-scrollbar class="friend-container" wrap-style="overflow: hidden auto; padding-right: 40px;">
                     <div class="friend-item" v-for="item in conversationList" @click.stop="onConversationClick(item)">
-                        <el-checkbox v-model="item.checked" class="friends-checked" v-if="manage"></el-checkbox>
+                        <div @click.stop>
+                            <el-checkbox v-model="item.checked" class="friends-checked" v-if="manage"></el-checkbox>
+                        </div>
                         <div style="position: relative">
                             <el-image :src="item.friendVo.avatar" alt="" class="avatar">
                                 <div slot="error" class="image-slot">
@@ -357,6 +359,9 @@
                 this.manage = false;
                 this.filter = false;
                 this.showEmoji = false;
+                this.conversationList.forEach(item => {
+                    item.checked = false;
+                })
             },
             // 表情
             onEmoji() {
@@ -443,6 +448,7 @@
                     type: 'warning'
                 }).then(() => {
                     im.blockFriendMessage(this.conversationItem.friendVo.friendUserId).then(() => {
+                        this.getConversationList();
                         this.$message({
                             type: 'success',
                             message: '已拉黑!'
@@ -792,11 +798,20 @@
                                 .friend-name {
                                     font-size: 16px;
                                     color: #5C6984;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    width: 80px;
                                 }
 
                                 .friend-title {
                                     color: #909399;
                                     font-size: 12px;
+                                    flex: 1;
+                                    padding: 0 5px;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                    overflow: hidden;
                                 }
                             }
 
@@ -810,6 +825,11 @@
                                 .friend-title {
                                     color: #909399;
                                     font-size: 12px;
+                                    flex: 1;
+                                    padding: 0 5px;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                    overflow: hidden;
                                 }
 
                                 .friend-state {
