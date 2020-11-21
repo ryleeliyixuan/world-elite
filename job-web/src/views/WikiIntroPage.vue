@@ -534,7 +534,6 @@ import { setPageTitle } from "@/utils/setting";
 import { mapGetters } from "vuex";
 import Toast from "@/utils/toast";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import RemoteJs from "../components/RemoteJs";
 
 Vue.use(VueAMap);
 
@@ -551,7 +550,6 @@ export default {
     TreeChart,
     DepartmentChart,
     SalaryPieChart,
-    RemoteJs,
   },
   props: {
     //接受父组件传递来的数据
