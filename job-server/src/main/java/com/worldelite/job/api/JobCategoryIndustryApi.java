@@ -74,7 +74,7 @@ public class JobCategoryIndustryApi extends BaseApi{
         return ApiResult.ok(jobIndustryVos);
     }
 
-    @RequireLogin(allow = {UserType.COMPANY, UserType.ADMIN})
+    @RequireLogin
     @GetMapping("list")
     @ApiDoc
     public ApiResult<List<JobIndustryVo>> getAllJobIndustryList() {
