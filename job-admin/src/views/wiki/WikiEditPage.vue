@@ -449,19 +449,20 @@
           width="70%"
         >
           <el-form
-            label-position="right"
+            label-position="top"
             label-width="80px"
             :model="historyEditForm"
           >
-            <el-form-item label="时间">
-              <el-date-picker
+            <el-form-item label="时间 (输入格式范例：1.纯年份 2020 2.年份+月份 2020-12 3.年份+月份+日期 2020-12-03)">
+              <!-- <el-date-picker
                 type="date"
                 placeholder="选择日期"
                 value-format="yyyy-MM-dd"
                 v-model="historyEditForm.eventTime"
                 :picker-options="oldDatePickerOptions"
                 style="width: 100%"
-              ></el-date-picker>
+              ></el-date-picker> -->
+              <el-input v-model="historyEditForm.eventTime"></el-input>
             </el-form-item>
             <el-form-item label="事件">
               <el-input v-model="historyEditForm.event"></el-input>
