@@ -131,19 +131,19 @@ const constantRoutes = [
     {
         path: "/company/:id",
         name: "company",
-        component: () => import("@/views/CompanyWikiMainPage"),
+        component: () => import("@/views/wiki/CompanyWikiMainPage"),
         redirect: "/company/:id/intro",
         meta: {title: "寰球菁英-公司百科"},
         children: [
             {
                 path: "intro",
                 name: "wiki-intro",
-                component: () => import("@/views/WikiIntroPage"),
+                component: () => import("@/views/wiki/WikiIntroPage"),
             },
             {
                 path: "activity/:name",
                 name: "wiki-activity",
-                component: () => import("@/views/WikiActivityPage"),
+                component: () => import("@/views/wiki/WikiActivityPage"),
             },
             {
                 path: "job",
@@ -153,18 +153,18 @@ const constantRoutes = [
             {
                 path: "community",
                 name: "wiki-community",
-                component: () => import("@/views/WikiCommunityPage"),
+                component: () => import("@/views/wiki/WikiCommunityPage"),
                 redirect: "/company/:id/community/post",
                 children: [
                     {
                         path: "post",
                         name: "wiki-community-post",
-                        component: () => import("@/views/WikiCommunityPostPage"),
+                        component: () => import("@/views/wiki/WikiCommunityPostPage"),
                     },
                     {
                         path: "score",
                         name: "wiki-community-score",
-                        component: () => import("@/views/WikiCommunityScorePage"),
+                        component: () => import("@/views/wiki/WikiCommunityScorePage"),
                     },
                 ],
             },

@@ -13,10 +13,6 @@ import Vue from "vue";
 import VueAMap from "vue-amap";
 import Pagination from "@/components/Pagination";
 import { formatListQuery, parseListQuery } from "@/utils/common";
-
-import { WikiCommunityPostPage } from "./WikiCommunityPostPage";
-import { WikiCommunityScorePage } from "./WikiCommunityScorePage";
-
 import { setPageTitle } from "@/utils/setting";
 import { doFavorite } from "@/api/favorite_api";
 import { mapGetters } from "vuex";

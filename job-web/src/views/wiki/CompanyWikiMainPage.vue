@@ -4,17 +4,20 @@
     <div v-if="company" class="company-wiki-header-container">
       <div class="company-info-container">
         <div class="company-info">
-          <!-- <img
-            class="company-info-banner"
-            v-if="banner && banner.length > 0"
-            :src="banner"
-            :alt="company.fullName"
-          /> -->
-          <img
-            class="company-info-banner"
-            src="../assets/defaultbanner.png"
-            alt=""
-          />
+          <div class="company-info-banner-wrapper">
+            <img
+              class="company-info-banner"
+              v-if="banner && banner.length > 0"
+              :src="banner"
+              :alt="company.fullName"
+            />
+            <img
+              v-else
+              class="company-info-banner"
+              src="@/assets/defaultbanner.png"
+              alt=""
+            />
+          </div>
           <div class="company-info-description">
             <el-avatar
               class="company-info-logo"
@@ -101,7 +104,9 @@
       >
         <el-menu-item index="intro">首页</el-menu-item>
         <el-menu-item index="job">岗位</el-menu-item>
-        <el-menu-item @click="linkToActivity" index="activity">活动</el-menu-item>
+        <el-menu-item @click="linkToActivity" index="activity"
+          >活动</el-menu-item
+        >
         <el-menu-item index="community">圈子</el-menu-item>
       </el-menu>
       <router-view> </router-view>
@@ -202,7 +207,7 @@ export default {
     },
     initData() {
       let id = this.$route.params.id;
-      this.companyId = id
+      this.companyId = id;
       this.favoriteForm.objectId = id;
       getCompanyInfo(id).then((response) => {
         this.company = response.data;
@@ -210,7 +215,7 @@ export default {
       });
       this.getCompanyWiki(id);
     },
-    getCompanyWiki(id){
+    getCompanyWiki(id) {
       getCompanyWiki(id).then((response) => {
         this.score = response.data.score;
         this.favoriteCount = response.data.favoriteCount;
@@ -265,24 +270,36 @@ export default {
   min-height: calc(100vh - 477px);
 
   .company-wiki-header-container {
+    // display: flex;
+    // align-items: center;
+    // justify-content: space-between;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
   }
 
   .company-info-container {
     height: calc(91px + 100vw * 0.39);
+    width: 100%;
 
     .company-info {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
 
-      .company-info-banner {
+      .company-info-banner-wrapper {
+        max-height: 335px;
         width: 100%;
-        z-index: -1;
-        object-fit: cover;
+
+        .company-info-banner {
+          max-height: 335px;
+          width: 100%;
+          z-index: -1;
+          object-fit: fill;
+        }
       }
 
       .company-info-stat {
@@ -341,8 +358,14 @@ export default {
       height: 350px;
 
       .company-info {
-        display: flex;
-        flex-direction: column;
+        max-height: 200px;
+
+        .company-info-banner-wrapper {
+          max-height: 200px;
+          .company-info-banner {
+            max-height: 200px;
+          }
+        }
 
         .company-info-stat {
           width: 230px;
@@ -361,6 +384,16 @@ export default {
   .app-container {
     .company-info-container {
       height: 300px;
+      .company-info {
+        max-height: 140px;
+        .company-info-banner-wrapper {
+          max-height: 140px;
+
+          .company-info-banner {
+            max-height: 140px;
+          }
+        }
+      }
     }
   }
 }

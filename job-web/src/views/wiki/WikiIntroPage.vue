@@ -522,10 +522,10 @@
 import Vue from "vue";
 import VueAMap from "vue-amap";
 import axios from "axios";
-import BarChart from "../components/BarChart";
-import TreeChart from "../components/TreeChart";
-import DepartmentChart from "../components/DepartmentChart";
-import SalaryPieChart from "../components/SalaryPieChart";
+import BarChart from "@/components/BarChart";
+import TreeChart from "@/components/TreeChart";
+import DepartmentChart from "@/components/DepartmentChart";
+import SalaryPieChart from "@/components/SalaryPieChart";
 import Pagination from "@/components/Pagination";
 import { formatListQuery, parseListQuery } from "@/utils/common";
 

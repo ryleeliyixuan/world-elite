@@ -124,7 +124,7 @@
     // import {getRecommendList} from "@/api/recommend_api";
 
     export default {
-        name: "JobListPage",
+        name: "WikiJobListPage",
         components: {Pagination},
         computed: {
             ...mapGetters(["keyword"])
