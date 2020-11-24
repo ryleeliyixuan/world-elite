@@ -1,162 +1,201 @@
 <template>
     <div class="app-container">
         <el-breadcrumb separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{ path: '/mock-interview' }">模拟面试</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/mock/interview' }">模拟面试</el-breadcrumb-item>
             <el-breadcrumb-item>面试官列表</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="filter-container">
             <div class="filter-item">
-                <div class="filter-title">行业类型:</div>
-                <div :class="item.select?'selected':'select-item'" v-for="item in industryList" @click="select1(item)" :key="item.id">{{item.name}}</div>
+                <div class="filter-title">行业类型</div>
+                <div class="filter">
+                    <div :class="[{'selected':item.select},'select-item']" v-for="item in industryList" @click="select1(item)" :key="item.id">{{item.name}}
+                    </div>
+                </div>
             </div>
             <div class="filter-item">
-                <div class="filter-title">从业时长:</div>
-                <div :class="item.select?'selected':'select-item'" v-for="item in yearsList" @click="select2(item)" :key="item.id">{{item.name}}</div>
+                <div class="filter-title">从业时长</div>
+                <div class="filter">
+                    <div :class="[{'selected':item.select},'select-item']" v-for="item in experienceTimeList" @click="select2(item)" :key="item.id">
+                        {{item.name}}
+                    </div>
+                </div>
             </div>
             <div class="filter-item">
-                <div class="filter-title">可预约时间:</div>
-                <div :class="item.select?'selected':'select-item'" v-for="item in reservationList" @click="select3(item)" :key="item.id">{{item.name}}</div>
+                <div class="filter-title">可预约时间</div>
+                <div class="filter">
+                    <div :class="[{'selected':item.select},'select-item']" v-for="item in reservationList" @click="select3(item)" :key="item.id">{{item.name}}
+                    </div>
+                </div>
             </div>
             <div class="filter-item">
-                <div class="filter-title">推荐指标:</div>
-                <div :class="item.select?'selected':'select-item'" v-for="item in recommendList" @click="select4(item)" :key="item.id">{{item.name}}</div>
+                <div class="filter-title">推荐指标</div>
+                <div class="filter">
+                    <div :class="[{'selected':item.select},'select-item']" v-for="item in recommendList" @click="select4(item)" :key="item.id">{{item.name}}
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="interviewer-container">
-            <div class="interviewer-item" @click="onInterviewer">
+            <div class="interviewer-item" v-for="interviewer in interviewerList" @click="onInterviewer(interviewer)">
                 <div class="interviewer-left">
-                    <el-image :src="require('@/assets/demo.jpg')" class="interviewer-image"  fit="fill"></el-image>
+                    <el-image :src="interviewer.avatar" class="interviewer-image" fit="cover"></el-image>
                     <div class="interviewer-message">
                         <div class="message-top">
-                            <div class="message-text">Cathy</div>
-                            <el-image :src="require('@/assets/mock/company-logo.png')"class="message-image"  fit="fill"></el-image>
+                            <div class="message-text">{{interviewer.nickName}}</div>
+                            <el-image :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
                         </div>
                         <div class="message-bottom">
-                            <el-image :src="require('@/assets/mock/icon5.png')"  class="tip-image"  fit="fill"></el-image>
-                            <div class="tip-text">互联网</div>
-                            <el-image :src="require('@/assets/mock/icon3.png')"  class="tip-image"  fit="fill"></el-image>
-                            <div class="tip-text">战略分析师</div>
-                            <el-image :src="require('@/assets/mock/icon4.png')" class="tip-image"  fit="fill"></el-image>
-                            <div class="tip-text">已从业1~3年</div>
+                            <el-image :src="require('@/assets/mock/icon5.png')" class="tip-image" fit="fill"></el-image>
+                            <div class="tip-text">{{interviewer.industry.name}}</div>
+                            <el-image :src="require('@/assets/mock/icon3.png')" class="tip-image" fit="fill"></el-image>
+                            <div class="tip-text">{{interviewer.position}}</div>
+                            <el-image :src="require('@/assets/mock/icon4.png')" class="tip-image" fit="fill"></el-image>
+                            <div class="tip-text">已从业{{interviewer.experienceTime.name}}</div>
                         </div>
                     </div>
                 </div>
                 <div class="interviewer-right">
                     <div class="rate-top">
-                        <el-image :src="require('@/assets/mock/icon6.png')" class="rate-image"  fit="fill"></el-image>
-                        <div class="rate-text">5.0</div>
+                        <el-image :src="require('@/assets/mock/icon6.png')" class="rate-image" fit="fill"></el-image>
+                        <div class="rate-text">{{interviewer.avgScore|toFixed1}}</div>
                     </div>
-                    <div class="reservation">马上预约</div>
-
+                    <div class="reservation" @click.stop="onPromise(interviewer)">马上预约</div>
                 </div>
-
             </div>
-
+            <div v-if="interviewerList.length===0">
+                暂无结果
+            </div>
         </div>
-<div class="section2-container">
-    <pagination
-            v-show="total"
-            :total="total"
-            :page.sync="listQuery.page"
-            :limit.sync="listQuery.limit"
-            @pagination="handleRouteList"
-    />
-</div>
-
-
+        <el-pagination
+                v-if="interviewerList.length>0"
+                size="medium" class="pagination"
+                layout="prev, pager, next, jumper"
+                :total="total" :page-size="10"
+                :current-page.sync="listQuery.page">
+        </el-pagination>
     </div>
-
 </template>
 
 <script>
-    import {formatListQuery} from "@/utils/common";
-
     export default {
         name: "MoreInterviewer",
         data() {
             return {
-                industryList: [{name: '不限', select: true, id: 1}, {name: '互联网', select: false, id: 2}, {name: '金融', select: false, id: 3}, {
-                    name: '咨询',
-                    select: false,
-                    id: 4
-                }, {name: '媒体', select: false, id: 5}, {name: '房地产', select: false, id: 6}],
-                yearsList: [{name: '不限', select: true, id: 1}, {name: '1~3年', select: false, id: 2}, {name: '3~5年', select: false, id: 3}, {
-                    name: '5年以上',
-                    select: false,
-                    id: 4
-                }],
-                reservationList: [{name: '不限', select: true, id: 1}, {name: '1~3天内', select: false, id: 2}, {name: '3~5天内', select: false, id: 3}, {
-                    name: '本周内',
-                    select: false,
-                    id: 4
-                }, {name: '两周内', select: false, id: 5}, {name: '本月内', select: false, id: 6}],
-                recommendList: [{name: '评分', select: true, id: 1}, {name: '价格', select: false, id: 2}, {name: '热度', select: false, id: 3}],
+                industryList: [], // 行业标签列表
+                experienceTimeList: [], // 从业时长标签列表
+                reservationList: [], // 可预约时间标签列表
+                recommendList: [
+                    {name: '评分', select: false, id: 1, type: 'SCORE'},
+                    {name: '价格', select: false, id: 2, type: 'PRICE'},
+                    {name: '热度', select: false, id: 3, type: 'HOT'}], // 推荐指标标签列表
                 listQuery: {
+                    industryId: undefined, // 行业Id
+                    experienceTimeId: undefined, // 从业时长Id
+                    appointAbleTimeId:undefined, // 可预约时长
+                    sortField: undefined, // 排序字段[SCORE-按分数, PRICE-按价格, HOT-按热度]
+                    orderBy: "desc", // 降序
                     page: 1,
                     limit: 10,
-                    type: 1,
-                    sort: "-id",
                 },
-                total: 12,
-
+                interviewerList: [], // 面试官列表
+                total: 50,
             }
         },
+        created() {
+            this.initData();
+        },
+        mounted() {
+            this.getList();
+        },
         methods: {
+            initData() {
+
+                // 行业标签
+                this.$axios.get("/jobindustry/list").then(data => {
+                    this.industryList = data.data.map(item => {
+                        item.select = false;
+                        return item;
+                    })
+                })
+
+                // 从业时长
+                this.$axios.get("/dict/list", {params: {type: 13, limit: 99}}).then(data => {
+                    this.experienceTimeList = data.data.list.filter(item => item.name !== '不限').map(item => {
+                        item.select = false;
+                        return item;
+                    })
+                })
+
+                // 可预约时间
+                this.$axios.get("/dict/list", {params: {type: 16, limit: 99}}).then(data => {
+                    this.reservationList = data.data.list;
+                })
+            },
+
+            // 行业类型
             select1(item) {
-                this.industryList.filter((e) => {
-                    if (e.id === item.id) {
-                        e.select = true
-                    } else {
-                        e.select = false
-                    }
-                    return e
-                })
-
+                if (item.select) {
+                    item.select = false;
+                    this.listQuery.industryId = undefined;
+                } else {
+                    this.listQuery.industryId = item.id;
+                    this.industryList.forEach((industry) => industry.select = industry.id === item.id);
+                }
+                this.getList();
             },
+
+            // 从业时长
             select2(item) {
-                this.yearsList.filter((e) => {
-                    if (e.id === item.id) {
-                        e.select = true
-                    } else {
-                        e.select = false
-                    }
-                    return e
-                })
-
+                if (item.select) {
+                    item.select = false;
+                    this.listQuery.experienceTimeId = undefined;
+                } else {
+                    this.listQuery.experienceTimeId = item.id;
+                    this.experienceTimeList.forEach((experienceTime) => experienceTime.select = experienceTime.id === item.id)
+                }
+                this.getList();
             },
+
+            // 可预约时间
             select3(item) {
-                this.reservationList.filter((e) => {
-                    if (e.id === item.id) {
-                        e.select = true
-                    } else {
-                        e.select = false
-                    }
-                    return e
-                })
-
+                if (item.select) {
+                    item.select = false;
+                    this.listQuery.appointAbleTimeId = undefined;
+                } else {
+                    this.listQuery.appointAbleTimeId = item.id;
+                    this.reservationList.forEach((reservation) => reservation.select = reservation.id === item.id);
+                }
+                this.getList();
             },
+
+            // 推荐指标
             select4(item) {
-                this.recommendList.filter((e) => {
-                    if (e.id === item.id) {
-                        e.select = true
-                    } else {
-                        e.select = false
-                    }
-                    return e
+                if (item.select) {
+                    item.select = false;
+                    this.listQuery.sortField = undefined;
+                } else {
+                    this.listQuery.sortField = item.type;
+                    this.recommendList.forEach((recommend) => recommend.select = recommend.id === item.id);
+                }
+                this.getList();
+            },
+
+            onInterviewer(interviewer) {
+                this.$router.push(`/mock/interviewer/${interviewer.id}`);
+            },
+
+            // 马上预约
+            onPromise(interviewer) {
+                this.$router.push(`/mock/promise/${interviewer.id}`);
+            },
+
+            getList() {
+                this.$axios.get("/mock/interviewer/list", {params: this.listQuery}).then(data => {
+                    this.interviewerList = data.data.list;
+                    this.total = data.data.total;
                 })
-
-            },
-            onInterviewer(){
-                this.$router.push("/interviewer-detail");
-            },
-            handleRouteList() {
-                this.$router.push({
-                    path: this.$route.path,
-                    query: formatListQuery(this.listQuery),
-                });
-            },
-
+            }
         }
     }
 </script>
@@ -179,132 +218,207 @@
                 width: 100%;
                 display: flex;
                 align-items: center;
-                margin-top: 30px;
+                margin-top: 20px;
 
                 .filter-title {
                     width: 120px;
+                    min-width: 120px;
                     font-size: 21px;
-                    font-weight: 500;
                     color: #333333;
                 }
 
-                .select-item {
-                    padding: 4px 30px;
-                    background: #F5F5F5;
-                    border-radius: 17px;
-                    font-size: 18px;
-                    color: #333333;
-                    margin-right: 17px;
-                    cursor: pointer;
-                }
+                .filter {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
 
-                .selected {
-                    border: 1px solid #698EC7;
-                    background: #F4F5F8;
-                    color: #698EC7;
-                    margin-right: 17px;
-                    padding: 4px 30px;
-                    border-radius: 17px;
-                    font-size: 18px;
-                    cursor: pointer;
+                    .select-item {
+                        margin-top: 10px;
+                        width: 150px;
+                        height: 33px;
+                        background: #F5F5F5;
+                        border-radius: 17px;
+                        border: 1px solid #F5F5F5;
+                        font-size: 18px;
+                        color: #333333;
+                        margin-right: 17px;
+                        cursor: pointer;
+                        line-height: 33px;
+                        text-align: center;
+                    }
 
+                    .selected {
+                        border: 1px solid #698EC7;
+                        background: #F4F5F8;
+                        color: #698EC7;
+                    }
                 }
             }
-
         }
 
         .interviewer-container {
             width: 100%;
-            height: auto;
-            .interviewer-item{
+            margin-top: 60px;
+
+            .interviewer-item {
                 width: 100%;
                 height: 118px;
                 padding: 16px 32px 20px 11px;
                 display: flex;
                 align-items: center;
-                box-shadow: 0px 3px 13px 1px #DEE5F4;
-                margin-top: 63px;
+                box-shadow: 0 3px 13px 1px #DEE5F4;
+                margin-bottom: 21px;
                 justify-content: space-between;
                 cursor: pointer;
-                .interviewer-left{
+
+                .interviewer-left {
                     display: flex;
                     align-items: center;
-                    .interviewer-image{
+
+                    .interviewer-image {
                         width: 87px;
                         height: 87px;
+                        border-radius: 5px;
                     }
-                    .interviewer-message{
+
+                    .interviewer-message {
                         height: 87px;
                         display: flex;
                         margin-left: 23px;
                         flex-direction: column;
                         justify-content: space-between;
-                        .message-top{
+
+                        .message-top {
                             display: flex;
                             align-items: center;
-                            .message-text{
+
+                            .message-text {
                                 font-size: 28px;
                                 color: #333333;
                             }
-                            .message-image{
-                                width: 118px;
-                                height: 30px;
+
+                            .message-image {
+                                width: 130px;
+                                height: 31px;
                                 margin-left: 17px;
                             }
                         }
-                        .message-bottom{
+
+                        .message-bottom {
                             display: flex;
                             align-items: center;
-                            .tip-image{
+
+                            .tip-image {
                                 width: 25px;
                                 height: 25px;
                                 margin-right: 8px;
                             }
-                            .tip-text{
+
+                            .tip-text {
                                 font-size: 18px;
                                 color: #333333;
                                 margin-right: 38px;
                             }
-
                         }
                     }
                 }
-                .interviewer-right{
+
+                .interviewer-right {
                     height: 87px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
                     justify-content: space-between;
-                    .rate-top{
+
+                    .rate-top {
                         display: flex;
                         align-items: center;
-                        .rate-image{
+
+                        .rate-image {
                             width: 26px;
                             height: 26px;
                         }
-                        .rate-text{
+
+                        .rate-text {
                             font-size: 21px;
                             color: #999999;
-                            margin-left: 1px;
+                            margin-left: 5px;
                         }
                     }
-                    .reservation{
+
+                    .reservation {
+                        width: 136px;
+                        height: 41px;
                         background: rgba(255, 189, 105, 0.3);
                         border-radius: 21px;
                         border: 1px solid #F78259;
-                        padding: 8px 32px;
                         font-size: 18px;
                         color: #F78259;
+                        line-height: 41px;
+                        text-align: center;
                     }
                 }
             }
-
-        }
-        .section2-container {
-            width: 100%;
-            overflow-x: auto;
         }
 
+        .pagination {
+            margin-top: 20px;
+            align-items: center;
+            justify-content: center;
+
+            ::v-deep .number, ::v-deep .more {
+                width: 37px;
+                height: 37px;
+                border-radius: 50%;
+                background: #EEEEEE;
+                box-shadow: 0 5px 11px 0 #CCCCCC;
+                line-height: 37px;
+                text-align: center;
+                margin: 0 6px;
+                color: #999999;
+
+                &.active {
+                    color: white;
+                    background: #4C90FC;
+                    box-shadow: 0 5px 11px 0 rgba(30, 150, 252, 0.5);
+                }
+            }
+
+            ::v-deep .btn-prev, ::v-deep .btn-next {
+                width: 37px;
+                height: 37px;
+                border-radius: 50%;
+                background: #EEEEEE;
+                box-shadow: 0 5px 11px 0 #CCCCCC;
+                line-height: 37px;
+                text-align: center;
+                margin: 0 6px;
+                color: #999999;
+                padding: 0;
+
+                & .el-icon {
+                    font-size: 18px;
+                }
+            }
+
+            ::v-deep .el-pagination__jump {
+                font-size: 18px;
+                color: #999999;
+                line-height: 25px;
+                height: 37px;
+
+                .el-input {
+                    width: 66px;
+                    height: 37px;
+                    margin: 0 6px;
+
+                    .el-input__inner {
+                        width: 66px;
+                        height: 37px;
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
     }
-
 </style>

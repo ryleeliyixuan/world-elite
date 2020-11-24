@@ -64,3 +64,22 @@ export const timestampToMinute = (timestamp) => {
         return '';
     }
 }
+
+// 保留一位小数
+export const toFixed1 = (num) => {
+    if (num) {
+        return parseFloat(num.toFixed(1))
+    } else {
+        return 0.0;
+    }
+}
+
+
+// 保留两位小数
+export const toFixed2 = (num) => {
+    if (num) {
+        return parseFloat(parseFloat(num).toFixed(2))
+    } else {
+        return "0.00";
+    }
+}

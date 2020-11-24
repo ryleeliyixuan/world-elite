@@ -12,12 +12,36 @@
             </div>
         </div>
         <div class="content-container">
-            <div class="button-container"></div>
-            <div class="calendar-container">
+            <div class="button-container">
+                <el-avatar :src="avatar" :size="117" cover class="avatar"></el-avatar>
+                <div class="username">Yuumi</div>
+                <div :class="['button', {'select':button===1}]" @click="onMineCalendar">
+                    <el-image v-if="button===1" style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar.png')"></el-image>
+                    <el-image v-else style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar2.png')"></el-image>
+                    我的日历
+                </div>
+                <div :class="['button', {'select':button===2}]" @click="onMockRecord">
+                    <el-image v-if="button===2" style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record.png')"></el-image>
+                    <el-image v-else style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record2.png')"></el-image>
+                    面试记录
+                </div>
+                <div :class="['button', {'select':button===3}]" @click="onSettleIn" v-if="userIdentity!==2 && identity===1">
+                    <el-image v-if="button===3" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
+                    <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
+                    立即入住
+                </div>
+                <div :class="['button', {'select':button===4}]" @click="onIncome" v-if="userIdentity===2 && identity===2">
+                    <el-image v-if="button===4" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income.png')"></el-image>
+                    <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income2.png')"></el-image>
+                    我的收益
+                </div>
+            </div>
+            <!--面试者-->
+            <div class="calendar-container" v-if="identity===1 && button===1">
                 <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
                 <div class="additive-container">
                     <div class="tag"/>
-                    <div class="tag-text">可预约时间</div>
+                    <div class="tag-text">预约成功时间</div>
                     <div class="left-container" @click="onPrev">
                         <div class="left-arrow"/>
                     </div>
@@ -26,14 +50,139 @@
                     </div>
                 </div>
             </div>
+            <!--面试官-->
+            <div class="calendar-container" v-if="identity===2 && button===1">
+                <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
+                <div class="additive-container">
+                    <div class="tag2"/>
+                    <div class="tag-text">可预约时间</div>
+                    <div class="tag"/>
+                    <div class="tag-text">预约成功时间</div>
+                    <div class="left-container" @click="onPrev">
+                        <div class="left-arrow"/>
+                    </div>
+                    <div class="right-container" @click="onNext">
+                        <div class="right-arrow"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="record-container" v-show="identity===1 && button===2">
+                <div class="title">面试记录</div>
+                <el-table class="table" :data="intervieweeRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
+                    <el-table-column prop="type" label="面试类别" width="260">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
+                                {{scope.row.type}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="interviewer" label="面试官" width="190">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                {{scope.row.interviewer}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="time" label="面试时间" width="280">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                {{scope.row.time}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="time" label="操作" width="110">
+                        <template slot-scope="scope">
+                            <div class="view" @click="onView(scope.row)">查看评价</div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="50" :page-size="5"
+                               :current-page.sync="intervieweePage"></el-pagination>
+            </div>
+            <div class="record-container" v-show="identity===2 && button===2">
+                <div class="title">面试记录</div>
+                <el-table class="table" :data="interviewerRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
+                    <el-table-column prop="type" label="面试类别" width="260">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
+                                {{scope.row.type}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="interviewer" label="面试官" width="190">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                {{scope.row.interviewer}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="time" label="面试时间" width="280">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                {{scope.row.time}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作" width="110">
+                        <template slot-scope="scope">
+                            <div class="view" @click="onView(scope.row)">查看评价</div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="interviewerTotal" :page-size="5"
+                               :current-page.sync="interviewerPage"></el-pagination>
+            </div>
+            <div class="record-container" v-show="identity===2 && button===4">
+                <div class="title" style="margin-bottom: 20px;">我的收益</div>
+                <el-table class="table" :data="incomeList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}" :show-header="false">
+                    <el-table-column width="120">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                {{scope.row.date}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="200">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                总收入：{{scope.row.income}}元
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="200">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                实际收入：{{scope.row.realIncome}}元
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="time" width="130">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                {{scope.row.settlement}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="195">
+                        <template slot-scope="scope">
+                            <div class="detail" @click="onDetail(scope.row)">查看当月明细</div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="incomeTotal" :page-size="5"
+                               :current-page.sync="incomePage"></el-pagination>
+            </div>
         </div>
 
 
-        <el-dialog title="预约面试时间"
+        <el-dialog title="可供预约时间"
                    :visible.sync="dialogVisible"
                    class="dialog">
             <div v-if="step===1">
-                <div class="dialog-text">请选择您想预约的时间段</div>
+                <div class="dialog-text">请选择可供预约时间</div>
                 <el-time-select
                         size="small"
                         class="select"
@@ -57,8 +206,8 @@
                       end: end
                     }">
                 </el-time-select>
-                <div class="dialog-text" style="margin-top: 20px;">请选择您想预约的类型</div>
-                <el-select v-model="type" placeholder="预约类型" class="select">
+                <div class="dialog-text" style="margin: 20px 20px 0 0; display: inline-block;">此时间段添加在</div>
+                <el-select v-model="repeat" placeholder="预约类型" class="select">
                     <el-option size="small"
                                v-for="item in typeList"
                                :key="item.value"
@@ -68,24 +217,8 @@
                 </el-select>
                 <div class="footer">
                     <el-button @click="dialogVisible = false" round style="width: 100px;" size="small">取消</el-button>
-                    <el-button type="primary" @click="toStep2" round style="width: 100px; margin-left: 20px;" size="small">下一步</el-button>
+                    <el-button type="primary" @click="onConfirm" round style="width: 100px; margin-left: 20px;" size="small">确定</el-button>
                 </div>
-            </div>
-            <div v-else-if="step===2">
-                <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的时间为：</span><span class="dialog-text2">{{startTime}}至{{endTime}}</span></div>
-                <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{type}}</span></div>
-                <div style="width:100%; height:1px; background:#C9DAFB;margin-bottom: 18px;"></div>
-                <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：<span style="color:#3D6FF4;">￥{{'400.00'}}</span></div>
-                <el-image class="qrcode" src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2973432407,1075552176&fm=26&gp=0.jpg"></el-image>
-                <div class="footer">
-                    <el-button @click="step=1" round style="width: 100px;" size="small">上一步</el-button>
-                    <el-button type="primary" @click="onSave" round style="width: 100px; margin-left: 20px;" size="small">确定</el-button>
-                </div>
-            </div>
-            <div v-else-if="step===3">
-                <el-image class="image-success" :src="require('@/assets/pay-sucsses.png')"></el-image>
-                <div style="font-size: 28px; color: #333333; line-height: 40px;margin: 13px 0; text-align: center;">恭喜您，预约成功！</div>
-                <el-button type="primary" @click="onBack" round style="width: 200px; margin: 0 auto; display: block;">返回</el-button>
             </div>
         </el-dialog>
     </div>
@@ -95,6 +228,7 @@
     import FullCalendar from '@fullcalendar/vue'
     import dayGridPlugin from '@fullcalendar/daygrid'
     import interactionPlugin from '@fullcalendar/interaction'
+    import {timestampToDateTime} from '@/filters/filters'
 
     export default {
         name: "MockMinePage",
@@ -105,14 +239,16 @@
             return {
                 dialogVisible: false, // 对话框是否可见
                 date: 0, // 预约日期
-                startTime: 0, // 预约起始时间
-                endTime: 0, // 预约结束时间
                 start: '00:00', // 预约最小时间
                 end: '24:00', // 预约最大时间
-                type: undefined, // 要预约的类型
-                typeList: [{label: "HR面试（通用）", value: "HR面试（通用）"}], // 可选的预约类型
-                step: 1, // 当前预约步骤
+                startTime: 0, // 预约起始时间
+                endTime: 0, // 预约结束时间
+                repeat: "1", // 要预约的类型
+                typeList: [{label: "不重复", value: "1"},
+                    {label: "按周重复", value: "2"},
+                    {label: "按月重复", value: "3"}], // 重复类型  1=不重复，2=按周重复，3=按月重复
 
+                step: 1, // 当前预约步骤
                 calendarOptions: {
                     // 语言
                     locale: "zh-cn",
@@ -156,27 +292,86 @@
                 },
 
                 calendarApi: undefined, // 日历api
-                identity: 1, // 1：面试者    2：面试管
+                userIdentity: 2, // 用户身份   1：面试者    2：面试官
+                identity: 1, // 当前选择的身份  1：面试者    2：面试官
+                button: 1, // 选中按钮  1：我的日历   2：面试记录
+                intervieweeRecordList: [{type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
+                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
+                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
+                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
+                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"}], // 面试者记录
+                intervieweePage: 1, // 面试者记录页码
+                intervieweeTotal: 50, // 面试者记录总数
+                interviewerRecordList: [{type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
+                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
+                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
+                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
+                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"}], // 面试官记录
+                interviewerPage: 1, // 面试官记录页码
+                interviewerTotal: 40, // 面试官记录总数
+
+                incomeList: [{date: '2020/11', income: '800', realIncome: '800', settlement: '月底结算'}], // 收益列表
+                incomePage: 1, // 面试官记录页码
+                incomeTotal: 30, // 面试官记录总数
+            }
+        },
+
+        computed: {
+            avatar() {
+                return this.$store.state.user.avatar;
             }
         },
         mounted() {
             this.calendarApi = this.$refs.fullCalendar.getApi()
-            this.calendarApi.addEvent({
-                start: new Date(2020, 10, 17, 10).getTime(),
-                end: new Date(2020, 10, 17, 16).getTime(),
-                eventBorderColor: '#D3F261', // 块边框颜色
-                eventBackgroundColor: '#D3F261', // 块背景色
-            })
         },
         methods: {
             // 面试者
             onInterviewee() {
                 this.identity = 1;
+
+                // 面试者预约成功事件
+                this.calendarOptions.events = [{
+                    start: new Date(2020, 10, 17, 10).getTime(),
+                    end: new Date(2020, 10, 17, 16).getTime(),
+                    borderColor: '#FFE58F', // 块边框颜色
+                    backgroundColor: '#FFE58F', // 块背景色
+                }]
+
+                // this.calendarApi.addEvent({
+                //     start: new Date(2020, 10, 17, 10).getTime(),
+                //     end: new Date(2020, 10, 17, 16).getTime(),
+                //     eventBorderColor: '#FFE58F', // 块边框颜色
+                //     eventBackgroundColor: '#FFE58F', // 块背景色
+                // })
             },
 
             // 面试官
             onInterviewer() {
-                this.identity = 2;
+                if (this.userIdentity === 2) {
+                    this.getEvent()
+
+                    this.identity = 2;
+
+
+                    this.calendarOptions.events = [
+                        // 面试官预约成功事件
+                        {
+                            start: new Date(2020, 10, 17, 10).getTime(),
+                            end: new Date(2020, 10, 17, 16).getTime(),
+                            borderColor: '#FFE58F', // 块边框颜色
+                            backgroundColor: '#FFE58F', // 块背景色
+                        },
+                        // 面试管可预约时间
+                        {
+                            start: new Date(2020, 10, 18, 10).getTime(),
+                            end: new Date(2020, 10, 18, 16).getTime(),
+                            borderColor: '#D3F261', // 块边框颜色
+                            backgroundColor: '#D3F261', // 块背景色
+                        }
+                    ]
+                } else {
+                    this.$message.warning("您当前还未认证面试官，请先认证后操作!");
+                }
             },
 
             // 上月
@@ -189,40 +384,75 @@
                 this.calendarApi.next()
             },
 
+            // 点击我的日历
+            onMineCalendar() {
+                this.button = 1;
+            },
+
+            // 点击面试记录
+            onMockRecord() {
+                this.button = 2;
+            },
+
+            // 点击立即入住
+            onSettleIn() {
+                this.button = 3;
+            },
+
+            // 我的收益
+            onIncome() {
+                this.button = 4;
+            },
+
+            // 查看评价
+            onView(item) {
+                console.log(item);
+            },
+
+            // 查看收益明细
+            onDetail(item) {
+                console.log(item);
+            },
+
             // 检查参数，跳转下一步
-            toStep2() {
+            onConfirm() {
                 if (!this.startTime) {
                     this.$message.warning("请选择预约开始时间")
                 } else if (!this.endTime) {
                     this.$message.warning("请选择预约结束时间")
-                } else if (!this.type) {
+                } else if (!this.repeat) {
                     this.$message.warning("请选择预约类型")
                 } else {
-                    this.step = 2;
+                    let startTime = this.getDate(this.date, this.startTime);
+                    let endTime = this.getDate(this.date, this.endTime);
+                    let repeat = this.repeat;
+                    if (endTime <= startTime) {
+                        this.$message.warning("结束时间必须大于开始时间")
+                    } else {
+                        console.log(startTime, endTime, repeat);
+                        this.$axios.post("/mock/interview/time", {startTime, endTime, repeat}).then(data => {
+                            console.log(data);
+                        })
+                    }
                 }
             },
 
-            // 请求服务器获取二维码
-            onSave() {
-                let startTime = this.getDate(this.date, this.startTime);
-                let endTime = this.getDate(this.date, this.endTime);
-                let type = this.type;
-                console.log(startTime, endTime, type);
-                this.step = 3;
-            },
-
-            // 返回到我的模拟面试
-            onBack() {
-                this.dialogVisible = false;
-                this.step = 1;
-            },
-
             onDateClick(info) {
-                console.log('Clicked on: ' + info.dateStr);
-                console.log('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                console.log('Current view: ' + info.view.type);
-                // change the day's background color just for fun
-                info.dayEl.style.backgroundColor = 'red'; // 改变背景颜色
+                // console.log('Clicked on: ' + info.dateStr);
+                // console.log('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+                // console.log('Current view: ' + info.view.type);
+                // // change the day's background color just for fun
+                // info.dayEl.style.backgroundColor = 'red'; // 改变背景颜色
+
+                console.log()
+                // 面试官点击日期，添加可预约时间
+                if (this.identity === 2 && info.date > new Date()) {
+                    this.step = 1;
+                    this.start = '00:00';
+                    this.end = '24:00';
+                    this.date = info.date;
+                    this.dialogVisible = true;
+                }
             },
 
             onEventClick(info) {
@@ -240,6 +470,17 @@
                 this.dialogVisible = true;
             },
 
+            // 获取数据
+            // 获取我的预约列表（当前月）
+            getEvent() {
+                let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
+                let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
+                this.$axios.get(`/mock/interview/time/my/${beginTime}/${endTime}`).then(data => {
+                    console.log(data);
+                })
+            },
+
+            // 工具方法
             getHourMinutes(time) {
                 return time ? `${time.getHours()}:${time.getMinutes() < 10 ? '0' : ''}${time.getMinutes()}` : '00:00';
             },
@@ -248,6 +489,19 @@
                 let t = time.split(":");
                 date.setHours(t[0], t[1])
                 return date.getTime();
+            },
+
+            getFirstDayOfMonth(date) {
+                const temp = new Date(date.getTime());
+                temp.setDate(1)
+                return temp.getTime();
+            },
+
+            getLastDayOfMonth(date) {
+                const temp = new Date(date.getTime());
+                temp.setMonth(temp.getMonth() + 1);
+                temp.setDate(1)
+                return temp.getTime() - 1;
             }
         }
     }
@@ -263,12 +517,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 30px;
 
             .title {
-                font-size: 36px;
+                font-size: 24px;
                 color: #333333;
                 line-height: 50px;
-                margin-bottom: 30px;
             }
 
             .identity-change-container {
@@ -291,13 +545,8 @@
 
                     &:hover {
                         cursor: pointer;
-                        background: #d7750c;
+                        background: #D4771356;
                     }
-                }
-
-                .select {
-                    background: #FA8C16;
-                    color: #FFFFFF;
                 }
 
                 .interviewer-container {
@@ -319,6 +568,16 @@
                         background: #D4771356;
                     }
                 }
+
+                .select {
+                    background: #FA8C16;
+                    color: #FFFFFF;
+
+                    &:hover {
+                        cursor: pointer;
+                        background: #d7750c;
+                    }
+                }
             }
         }
 
@@ -327,11 +586,47 @@
             justify-content: space-between;
 
             .button-container {
+                width: 140px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
 
+                .avatar {
+                    border: #5d9bfc 2px solid;
+                }
+
+                .username {
+                    text-align: center;
+                    margin-top: 11px;
+                    font-size: 18px;
+                    color: #1C2541;
+                    line-height: 25px;
+                    margin-bottom: 70px;
+                }
+
+                .button {
+                    width: 140px;
+                    height: 35px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-bottom: 25px;
+                    color: #3D6FF4;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                .select {
+                    background: #3D6FF4;
+                    border-radius: 18px;
+                    color: white;
+                }
             }
 
             .calendar-container {
-                width: 900px;
+                width: 925px;
                 position: relative;
                 box-shadow: 0 5px 13px 0 rgba(19, 67, 123, 0.2);
                 padding: 16px 10px 16px;
@@ -359,11 +654,18 @@
                     display: flex;
                     align-items: center;
 
-                    .tag {
+                    .tag2 {
                         width: 18px;
                         height: 18px;
                         border-radius: 9px;
                         background: #D3F261;
+                    }
+
+                    .tag {
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 9px;
+                        background: #FFE58F;
                     }
 
                     .tag-text {
@@ -371,7 +673,7 @@
                         color: #333333;
                         line-height: 25px;
                         margin-left: 4px;
-                        margin-right: 21px;
+                        margin-right: 31px;
                     }
 
                     .left-container {
@@ -421,6 +723,136 @@
                             border-top: 2px solid #F4F5F8;
                             border-right: 2px solid #F4F5F8;
                             transform: rotateZ(45deg);
+                        }
+                    }
+                }
+            }
+
+            .record-container {
+                width: 925px;
+                box-shadow: 0 5px 13px 0 rgba(19, 67, 123, 0.2);
+                padding: 21px 35px;
+                background: white;
+                display: flex;
+                flex-direction: column;
+
+                .title {
+                    font-size: 36px;
+                    color: #333333;
+                    line-height: 50px;
+                }
+
+                .table {
+                    width: 100%;
+                    height: 430px;
+
+                    ::v-deep .is-leaf {
+                        border: none;
+                        vertical-align: middle;
+                        font-size: 21px;
+                        color: #999999;
+                        line-height: 29px;
+                        font-style: normal;
+                        font-weight: 500;
+                    }
+
+                    .type {
+                        display: flex;
+                        align-items: center;
+                        font-size: 21px;
+                        color: #333333;
+                        line-height: 29px;
+
+                        .type-icon {
+                            margin-right: 10px;
+                            width: 34px;
+                            height: 34px;
+                        }
+                    }
+
+                    .view {
+                        font-size: 21px;
+                        color: #3D6FF4;
+                        line-height: 29px;
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+                    }
+
+                    .detail {
+                        width: 185px;
+                        height: 41px;
+                        background: rgba(255, 189, 105, 0.3);
+                        border-radius: 21px;
+                        border: 1px solid #F78259;
+                        font-size: 18px;
+                        color: #F78259;
+                        line-height: 41px;
+                        text-align: center;
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                .pagination {
+                    align-self: center;
+                    margin-top: 20px;
+                    align-items: center;
+
+                    ::v-deep .number, ::v-deep .more {
+                        width: 37px;
+                        height: 37px;
+                        border-radius: 50%;
+                        background: #EEEEEE;
+                        box-shadow: 0 5px 11px 0 #CCCCCC;
+                        line-height: 37px;
+                        text-align: center;
+                        margin: 0 6px;
+                        color: #999999;
+
+                        &.active {
+                            color: white;
+                            background: #4C90FC;
+                            box-shadow: 0 5px 11px 0 rgba(30, 150, 252, 0.5);
+                        }
+                    }
+
+                    ::v-deep .btn-prev, ::v-deep .btn-next {
+                        width: 37px;
+                        height: 37px;
+                        border-radius: 50%;
+                        background: #EEEEEE;
+                        box-shadow: 0 5px 11px 0 #CCCCCC;
+                        line-height: 37px;
+                        text-align: center;
+                        margin: 0 6px;
+                        color: #999999;
+                        padding: 0;
+
+                        & .el-icon {
+                            font-size: 18px;
+                        }
+                    }
+
+                    ::v-deep .el-pagination__jump {
+                        font-size: 18px;
+                        color: #999999;
+                        line-height: 25px;
+                        height: 37px;
+
+                        .el-input {
+                            width: 66px;
+                            height: 37px;
+                            margin: 0 6px;
+
+                            .el-input__inner {
+                                width: 66px;
+                                height: 37px;
+                                font-size: 18px;
+                            }
                         }
                     }
                 }

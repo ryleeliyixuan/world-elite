@@ -2,120 +2,52 @@
     <div class="mock-container">
         <div class="title-container">
             <div class="title-left">面试官排行榜</div>
-            <div class="title-right"  @click="onMoreInterviewer">更多面试官
-                <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon"></div>
+            <div class="title-right" @click="onMoreInterviewer">
+                更多面试官
+                <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon">
+            </div>
         </div>
-
         <div class="interviewer-container">
             <div class="interviewer-left">
-                <div class="left-item1">
+                <div v-for="(interviewer, index) in interviewerList"
+                     v-if="index<3"
+                     :key="interviewer.key"
+                     :class="['left-item','index'+index]"
+                     @click="onInterviewer(interviewer)">
                     <div class="item-left-container">
-                        <div class="item-title">Cathy Liu</div>
-                        <el-rate
-                                v-model="rate"
-                                disabled
-                                show-score
-                                :colors="colors"
-                                text-color="#FFFFFF"
-                                score-template="{value}"
-                        class="item-rate">
+                        <div class="item-title">{{interviewer.nickName}}</div>
+                        <el-rate :value="interviewer.avgScore|toFixed1"
+                                 disabled
+                                 show-score
+                                 :colors="['#FFD740', '#FFD740', '#FFD740']"
+                                 text-color="#FFFFFF"
+                                 score-template="{value}"
+                                 class="item-rate">
                         </el-rate>
                         <div class="item-bottom">
                             <img src="../assets/mock/icon1.png" alt="" class="item-bottom-icon1">
-                            <div class="item-bottom-text1">阿里巴巴</div>
+                            <div class="item-bottom-text1">{{interviewer.company.name}}</div>
                             <img src="../assets/mock/icon2.png" alt="" class="item-bottom-icon1" style="margin-left: 38px">
-                            <div class="item-bottom-text1">战略分析师</div>
+                            <div class="item-bottom-text1">{{interviewer.industry.name}}</div>
                         </div>
-
                     </div>
-                        <img src="../assets/demo.jpg" alt="" class="right-image">
-                </div>
-                <div class="left-item2">
-                    <div class="item-left-container">
-                        <div class="item-title">Cathy Liu</div>
-                        <el-rate
-                                v-model="rate"
-                                disabled
-                                show-score
-                                :colors="colors"
-                                text-color="#FFFFFF"
-                                score-template="{value}"
-                                class="item-rate">
-                        </el-rate>
-                        <div class="item-bottom">
-                            <img src="../assets/mock/icon1.png" alt="" class="item-bottom-icon1">
-                            <div class="item-bottom-text1">阿里巴巴</div>
-                            <img src="../assets/mock/icon2.png" alt="" class="item-bottom-icon1" style="margin-left: 38px">
-                            <div class="item-bottom-text1">战略分析师</div>
-                        </div>
-
-                    </div>
-                    <img src="../assets/demo.jpg" alt="" class="right-image">
-                </div>
-                <div class="left-item3">
-                    <div class="item-left-container">
-                        <div class="item-title">Cathy Liu</div>
-                        <el-rate
-                                v-model="rate"
-                                disabled
-                                show-score
-                                :colors="colors"
-                                text-color="#FFFFFF"
-                                score-template="{value}"
-                                class="item-rate">
-                        </el-rate>
-                        <div class="item-bottom">
-                            <img src="../assets/mock/icon1.png" alt="" class="item-bottom-icon1">
-                            <div class="item-bottom-text1">阿里巴巴</div>
-                            <img src="../assets/mock/icon2.png" alt="" class="item-bottom-icon1" style="margin-left: 38px">
-                            <div class="item-bottom-text1">战略分析师</div>
-                        </div>
-
-                    </div>
-                    <img src="../assets/demo.jpg" alt="" class="right-image">
+                    <el-image :src="interviewer.avatar" alt="" class="right-image" fit="cover"/>
                 </div>
             </div>
             <div class="interviewer-right">
-                <div class="right-item1">
-                    <img src="../assets/mock/mock4.png" alt="" class="right-item1-img1">
-                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
-                    <div class="right-item1-name">健壮的大姐姐</div>
-                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
-                    <div class="right-item1-position">资深产品经理</div>
-                    <div class="right-item1-score">4.7</div>
-                    <div class="right-item-tip">HOT</div>
-                </div>
-                <div class="right-item2">
-                    <img src="../assets/mock/mock5.png" alt="" class="right-item1-img1">
-                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
-                    <div class="right-item1-name">健壮的大姐姐</div>
-                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
-                    <div class="right-item1-position">资深产品经理</div>
-                    <div class="right-item1-score">4.7</div>
-                </div>
-                <div class="right-item3">
-                    <img src="../assets/mock/mock6.png" alt="" class="right-item1-img1">
-                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
-                    <div class="right-item1-name">健壮的大姐姐</div>
-                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
-                    <div class="right-item1-position">资深产品经理</div>
-                    <div class="right-item1-score">4.7</div>
-                </div>
-                <div class="right-item4">
-                    <img src="../assets/mock/mock7.png" alt="" class="right-item1-img1">
-                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
-                    <div class="right-item1-name">健壮的大姐姐</div>
-                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
-                    <div class="right-item1-position">资深产品经理</div>
-                    <div class="right-item1-score">4.7</div>
-                </div>
-                <div class="right-item5" style="margin-bottom: 0">
-                    <img src="../assets/mock/mock8.png" alt="" class="right-item1-img1">
-                    <img src="../assets/demo.jpg" alt="" class="right-item1-img2">
-                    <div class="right-item1-name">健壮的大姐姐</div>
-                    <img src="../assets/item9.jpg" alt="" class="right-item1-img3">
-                    <div class="right-item1-position">资深产品经理</div>
-                    <div class="right-item1-score">4.7</div>
+                <div v-for="(interviewer, index) in interviewerList"
+                     v-if="index>=3 && index<8"
+                     :key="interviewer.key"
+                     class="right-item"
+                     @click="onInterviewer(interviewer)">
+                    <el-image :src="require('../assets/mock/mock'+index+'.png')" class="right-item1-img1" fit="cover"/>
+                    <el-image :src="interviewer.avatar" class="right-item1-img2" fit="cover"/>
+                    <div class="right-item1-name">{{interviewer.nickName}}</div>
+                    <el-image :src="interviewer.companyLogo" class="right-item1-img3" fit="scale-down"/>
+                    <div class="right-item1-position">{{interviewer.position}}</div>
+                    <div class="right-item1-score">{{interviewer.avgScore | toFixed1}}</div>
+                    <div class="right-item-tip" v-if="interviewer.hot>5">HOT</div>
+                    <div class="right-item-tip2" v-else-if="new Date(interviewer.createTime).getTime()>Date.now()-2*7*24*60*60*1000">NEW</div>
                 </div>
             </div>
         </div>
@@ -123,71 +55,28 @@
         <div class="title-container" style="margin-top: 70px">
             <div class="title-left">本月新入驻面试官</div>
             <div class="title-right">立即入驻
-                <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon"></div>
+                <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon">
+            </div>
         </div>
 
         <div class="new-interviewer-container">
-            <el-image :src="require('@/assets/mock/arrow2.png')" class="interviewer-arrow"  fit="fill" @click="onLeft" ></el-image>
-            <div class="transition-container">
-                <transition  name='fade' @after-leave="afterLeave">
-                    <div :class="['interviewer-detail',flag1?'interviewer-detail-translate':'']" ref="interview">
-                        <div class="item-detail">
-                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
-                            <div class="interviewer-bottom">
-                                <div class="name-left">
-                                    <div class="name1">Cathy</div>
-                                    <div class="position">资深产品经理1</div>
-                                </div>
-                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
-                            </div>
+            <el-image :src="require('@/assets/mock/arrow2.png')" class="interviewer-arrow" fit="cover" @click="onLeft"></el-image>
+            <div class="new-interviewer-scroll" ref="scrollbar">
+                <div class="item-detail"
+                     v-for="interviewer in newArrivalInterviewerList"
+                     :key="interviewer.key"
+                     @click="onInterviewer(interviewer)">
+                    <el-image :src="interviewer.avatar" class="interviewer-img" fit="cover"></el-image>
+                    <div class="interviewer-bottom">
+                        <div class="name-left">
+                            <div class="name1">{{interviewer.nickName}}</div>
+                            <div class="position">{{interviewer.position}}</div>
                         </div>
-                        <div class="item-detail">
-                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill" ></el-image>
-                            <div class="interviewer-bottom">
-                                <div class="name-left">
-                                    <div class="name1">Cathy</div>
-                                    <div class="position">资深产品经理2</div>
-                                </div>
-                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
-                            </div>
-                        </div>
-                        <div class="item-detail">
-                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
-                            <div class="interviewer-bottom">
-                                <div class="name-left">
-                                    <div class="name1">Cathy</div>
-                                    <div class="position">资深产品经理3</div>
-                                </div>
-                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
-                            </div>
-                        </div>
-                        <div class="item-detail">
-                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
-                            <div class="interviewer-bottom">
-                                <div class="name-left">
-                                    <div class="name1">Cathy</div>
-                                    <div class="position">资深产品经理4</div>
-                                </div>
-                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
-                            </div>
-                        </div>
-                        <div class="item-detail">
-                            <el-image :src="require('@/assets/demo.jpg')" class="interviewer-img"  fit="fill"></el-image>
-                            <div class="interviewer-bottom">
-                                <div class="name-left">
-                                    <div class="name1">Cathy</div>
-                                    <div class="position">资深产品经理5</div>
-                                </div>
-                                <el-image :src="require('@/assets/mock/company-logo.png')" class="company-image"  fit="fill"></el-image>
-                            </div>
-                        </div>
+                        <el-image :src="interviewer.companyLogo" class="company-image" fit="scale-down"></el-image>
                     </div>
-                </transition>
-
+                </div>
             </div>
-
-            <el-image :src="require('@/assets/mock/arrow1.png')" class="interviewer-arrow"  fit="fill" @click="onRight"></el-image>
-
+            <el-image :src="require('@/assets/mock/arrow1.png')" class="interviewer-arrow" fit="cover" @click="onRight"></el-image>
         </div>
     </div>
 </template>
@@ -196,127 +85,250 @@
     export default {
         name: "MockInterview",
         data() {
-          return{
-              rate:5,
-              colors:['#FFD740','#FFD740','#FFD740'],
-              flag1:false,
-              InterViewerList:[],//面试官排行榜
-          }
+            return {
+                interviewerList: [],// 面试官列表
+                newArrivalInterviewerList: [],// 新入驻面试官列表
+                stepTimer: undefined, // 滚动列表定时器
+                autoTimer: undefined,
+                index: 3, // 滚动列表索引
+            }
         },
         mounted() {
-            this.$emit("onComplete");
-            this.getInterViewList();
+            this.getInterviewerList();
+            this.getNewArrivalInterviewerList();
+            this.autoTimer = setInterval(() => {
+                this.onRight();
+            }, 2000);
+        },
+        unmount() {
+            this.clearTime();
+        },
+        destroy() {
+            this.clearTime();
         },
         methods: {
             onMoreInterviewer() {
-                this.$router.push("/more-interviewer");
+                this.$router.push("/mock/interviewer/more");
             },
-            afterLeave(){
-                this. flag1=false
-                console.log("123456")
-            },
-            onLeft(){
-            //     this.$refs.interview.transform.translate(-241,0);
-                this. flag1=true
 
+            onInterviewer(interviewer) {
+                this.$router.push(`/mock/interviewer/${interviewer.id}`);
             },
-            onRight(){
 
+            onLeft() {
+                if (!this.stepTimer) {
+
+                    this.stepTimer = setInterval(() => {
+                        try {
+                            if (this.index === 0) {
+                                this.$refs.scrollbar.scrollLeft = (this.newArrivalInterviewerList.length - 6) * 256;
+                                this.index = this.newArrivalInterviewerList.length - 6;
+                            }
+                            let offset = (256 * (this.index - 1) - this.$refs.scrollbar.scrollLeft) * 0.1;
+                            offset = offset > 0 ? Math.ceil(offset) : Math.floor(offset);
+                            this.$refs.scrollbar.scrollLeft += offset;
+
+                            if (256 * (this.index - 1) === Math.round(this.$refs.scrollbar.scrollLeft)) // 到达位置
+                            {
+                                this.index--;
+                                clearInterval(this.stepTimer);
+                                this.stepTimer = undefined;
+                            }
+                        } catch (e) {
+                            this.clearTime();
+                        }
+                    }, 30)
+                }
             },
-            getInterViewList(){
+            onRight() {
+                if (!this.stepTimer) {
+                    this.stepTimer = setInterval(() => {
+                        try {
+                            if (this.index === this.newArrivalInterviewerList.length - 4) {
+                                this.$refs.scrollbar.scrollLeft = 256 * 3;
+                                this.index = 3;
+                            }
+                            let offset = (256 * (this.index + 1) - this.$refs.scrollbar.scrollLeft) * 0.1;
+                            offset = offset > 0 ? Math.ceil(offset) : Math.floor(offset);
+                            this.$refs.scrollbar.scrollLeft += offset;
+
+                            if (256 * (this.index + 1) === Math.round(this.$refs.scrollbar.scrollLeft)
+                                || ((this.index + 1) === this.newArrivalInterviewerList.length - 4
+                                    && Math.abs(this.$refs.scrollbar.scrollLeft - (this.index + 1) * 256) < 5)) // 到达位置
+                            {
+                                this.index++;
+                                clearInterval(this.stepTimer);
+                                this.stepTimer = undefined;
+                            }
+                        } catch (e) {
+                            console.log("捕获异常");
+                            this.clearTime();
+                        }
+                    }, 30)
+                }
+            },
+
+            getInterviewerList() {
                 this.$axios.get('/mock/interviewer/rank', {
-                    params: {limit: 10}
+                    params: {limit: 8}
                 }).then(data => {
-                    console.log(123456)
-                console.log(data)
+                    this.$emit("complete");
+                    let interviewerList = [];
+                    // TODO
+                    for (let i = 0; i < 8; i++) {
+                        interviewerList.push({...data.data.list[0]});
+                    }
+
+                    // this.interviewerList = data.data.list;
+                    // TODO END
+
+                    for (let i = 0; i < interviewerList.length; i++) {
+                        interviewerList[i].key = i;
+                    }
+                    this.interviewerList = interviewerList;
                 })
             },
+            getNewArrivalInterviewerList() {
+                this.$axios.get('/mock/interviewer/newarrival', {
+                    params: {limit: 8}
+                }).then(data => {
+                    this.$emit("onComplete");
+                    let newArrivalInterviewerList = [];
+
+                    // TODO
+                    for (let i = 0; i < 8; i++) {
+                        newArrivalInterviewerList.push({...data.data.list[0]});
+                    }
+                    newArrivalInterviewerList.unshift({...newArrivalInterviewerList[newArrivalInterviewerList.length - 1]});
+                    newArrivalInterviewerList.unshift({...newArrivalInterviewerList[newArrivalInterviewerList.length - 2]});
+                    newArrivalInterviewerList.unshift({...newArrivalInterviewerList[newArrivalInterviewerList.length - 3]});
+                    newArrivalInterviewerList.push({...newArrivalInterviewerList[0]});
+                    newArrivalInterviewerList.push({...newArrivalInterviewerList[1]});
+                    newArrivalInterviewerList.push({...newArrivalInterviewerList[2]});
+
+
+                    // newArrivalInterviewerList = data.data.list;
+                    // newArrivalInterviewerList.unshift(data.data.list[data.data.list.length-1]);
+                    // newArrivalInterviewerList.unshift(data.data.list[data.data.list.length-2]);
+                    // newArrivalInterviewerList.unshift(data.data.list[data.data.list.length-3]);
+                    // newArrivalInterviewerList.push(data.data.list[0]);
+                    // newArrivalInterviewerList.push(data.data.list[1]);
+                    // newArrivalInterviewerList.push(data.data.list[2]);
+                    // TODO END
+
+                    for (let i = 0; i < newArrivalInterviewerList.length; i++) {
+                        newArrivalInterviewerList[i].key = i;
+                    }
+                    this.newArrivalInterviewerList = newArrivalInterviewerList;
+                    this.$nextTick(() => {
+                        this.$refs.scrollbar.scrollLeft = 256 * 3;
+                    })
+                })
+            },
+
+            clearTime() {
+                if (this.stepTimer) {
+                    clearTimeout(this.stepTimer);
+                    this.stepTimer = undefined;
+                }
+
+                if (this.autoTimer) {
+                    clearTimeout(this.autoTimer);
+                    this.autoTimer = undefined;
+                }
+            }
         }
     }
 </script>
 
 <style scoped lang="scss">
-
-    .mock-container{
+    .mock-container {
         max-width: 1200px;
         margin: 0 auto;
-        height: auto;
         padding: 20px;
-        .title-container{
+
+        .title-container {
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            .title-left{
+
+            .title-left {
                 font-size: 24px;
                 color: #333333;
                 font-weight: bold;
             }
-            .title-right{
+
+            .title-right {
                 display: flex;
                 align-items: center;
                 font-size: 21px;
                 font-weight: 400;
                 color: #666666;
                 cursor: pointer;
-                .title-icon{
+
+                .title-icon {
                     width: 10px;
                     height: 16px;
                     margin-left: 7px;
                 }
             }
         }
-        .interviewer-container{
-            width:100%;
+
+        .interviewer-container {
+            width: 100%;
             display: flex;
             margin-top: 9px;
-            height: 490px;
-            .interviewer-left{
+
+            .interviewer-left {
                 width: 453px;
-                height: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
-                .left-item1,
-                .left-item2,
-                .left-item3{
-                    width: 453px;
+
+                .left-item {
+                    width: 100%;
                     height: 157px;
-                    background: url("../assets/mock/mock1.png") no-repeat ;
-                    background-size: 453px 157px;
                     display: flex;
                     align-items: center;
                     position: relative;
+                    margin-top: 12px;
+                    cursor: pointer;
 
-                    .item-left-container{
-                        width: auto;
+                    .item-left-container {
                         height: 100%;
+                        width: 100%;
                         padding: 20px 20px 20px 40px;
-                        .item-title{
-                            width: 100%;
+
+                        .item-title {
                             font-size: 28px;
                             font-weight: bold;
                             color: #FFFFFF;
                             margin-left: 95px;
                         }
-                        .item-rate{
+
+                        .item-rate {
                             margin: 17px 0 7px 0;
                         }
-                        .item-bottom{
+
+                        .item-bottom {
                             display: flex;
                             align-items: center;
-                            .item-bottom-icon1{
+
+                            .item-bottom-icon1 {
                                 width: 21px;
                                 height: 21px;
                                 margin-right: 5px;
                             }
-                            .item-bottom-text1{
+
+                            .item-bottom-text1 {
                                 font-size: 18px;
                                 color: #FFFFFF;
+                                line-height: 21px;
                             }
                         }
                     }
-                    .right-image{
+
+                    .right-image {
                         width: 112px;
                         height: 112px;
                         border-radius: 50%;
@@ -324,168 +336,172 @@
                         position: absolute;
                         top: 23px;
                         right: 28px;
-
                     }
                 }
 
+                .index0 {
+                    background: url("../assets/mock/mock0.png") no-repeat;
+                    background-size: 453px 157px;
+                }
+
+                .index1 {
+                    background: url("../assets/mock/mock1.png") no-repeat;
+                    background-size: 453px 157px;
+                }
+
+                .index2 {
+                    background: url("../assets/mock/mock2.png") no-repeat;
+                    background-size: 453px 157px;
+                }
             }
-            .interviewer-right{
-                max-width: 605px;
-                height: 100%;
+
+            .interviewer-right {
+                width: 660px;
                 margin-left: 45px;
+                margin-top: -7px;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
-                padding-bottom: 20px;
-                .right-item1,
-                .right-item2,
-                .right-item3,
-                .right-item4,
-                .right-item5{
-                    width: 605px;
+
+                .right-item {
+                    width: 100%;
                     display: flex;
                     height: 77px;
                     align-items: center;
-                    justify-content: space-between;
-                    position: relative;
-                    .right-item-tip{
-                        position: absolute;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        right: -60px;
-                        background: #EE6055;
-                        box-shadow: 0px 5px 13px 0px rgba(238, 96, 85, 0.5);
-                        border-radius: 5px;
-                        padding: 2px 8px;
-                        font-size: 16px;
-                        color: #FFFFFF;
-                    }
-                    .right-item1-img1{
+                    margin-top: 23px;
+                    cursor: pointer;
+
+                    .right-item1-img1 {
                         width: 100px;
                         height: 36px;
                     }
-                    .right-item1-img2{
+
+                    .right-item1-img2 {
                         width: 77px;
                         height: 77px;
                         border-radius: 50%;
                         overflow: hidden;
+                        margin-left: 12px;
                     }
-                    .right-item1-name{
+
+                    .right-item1-name {
+                        width: 110px;
                         font-size: 21px;
                         color: #0F3057;
-
+                        margin-left: 12px;
                     }
-                    .right-item1-img3{
+
+                    .right-item1-img3 {
                         width: 94px;
-                        height: 27px;
+                        height: 70px;
+                        margin-left: 12px;
                     }
-                    .right-item1-position{
-                        font-size: 21px;
+
+                    .right-item1-position {
+                        width: 126px;
+                        font-size: 20px;
                         color: #333333;
+                        margin-left: 12px;
                     }
-                    .right-item1-score{
-                        font-size: 21px;
+
+                    .right-item1-score {
+                        width: 30px;
+                        font-size: 20px;
                         color: #F9A620;
+                        margin-left: 12px;
                     }
 
-                }
+                    .right-item-tip {
+                        background: #EE6055;
+                        box-shadow: 0 5px 13px 0 rgba(238, 96, 85, 0.5);
+                        border-radius: 5px;
+                        padding: 2px 8px;
+                        font-size: 16px;
+                        color: #FFFFFF;
+                        margin-left: 12px;
+                    }
 
+                    .right-item-tip2 {
+                        background: #F7B801;
+                        box-shadow: 0 5px 13px 0 rgba(247, 184, 1, 0.5);
+                        border-radius: 5px;
+                        padding: 2px 8px;
+                        font-size: 16px;
+                        color: #FFFFFF;
+                        margin-left: 12px;
+                    }
+                }
             }
         }
-        .new-interviewer-container{
+
+        .new-interviewer-container {
             margin-top: 22px;
             width: 100%;
             height: 303px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            .interviewer-arrow{
+
+            .interviewer-arrow {
+                min-width: 66px;
                 width: 66px;
                 height: 66px;
+                cursor: pointer;
             }
-            .transition-container{
-                width: 1036px;
-                height: 100%;
-                overflow: hidden;
-                .fade-enter-active, .fade-leave-active{
-                    transition: all 20s;
-                }
-                .fade-enter{
-                    opacity: 0.8;
-                    transform: translateX(-241px);
-                }
-                .fade-enter-to{
-                    opacity: 0.8;
-                    transform: translateX(-241px);
-                }
-                .fade-leave{
-                    opacity: 1;
-                }
-                .fade-leave-to{
-                    opacity: 0;
-                    transform: translateX(-241px);
-                }
 
-                .interviewer-detail-translate{
-                    transform: translateX(-241px);
-                }
-                .interviewer-detail{
-                    width: 100%;
+            .new-interviewer-scroll {
+                height: 100%;
+                width: auto;
+                overflow: hidden;
+                white-space: nowrap;
+
+                .item-detail {
+                    width: 220px;
                     height: 100%;
-                    display: flex;
-                    align-items: center;
-                    .item-detail{
-                        width: 241px;
+                    position: relative;
+                    margin: 0 18px;
+                    display: inline-block;
+
+                    .interviewer-img {
+                        width: 220px;
                         height: 100%;
-                        position: relative;
-                        margin-right: 23px;
-                        .interviewer-img{
-                            width: 241px;
-                            height: 100%;
-                        }
-                        .interviewer-bottom{
-                            width: 197px;
-                            height: 62px;
-                            background: rgba(255, 255, 255, 0.85);
-                            position: absolute;
-                            left: 50%;
-                            transform: translateX(-50%);
-                            bottom: 22px;
-                            padding: 10px 5px 10px 9px;
-                            display: flex;
-                            align-items: center;
-                            .name-left{
-                                height: 100%;
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: space-between;
-                                .name1{
-                                    font-size: 18px;
-                                    color: #333333;
-                                }
-                                .position{
-                                    font-size: 12px;
-                                    color: #333333;
-                                }
-                            }
-                            .company-image{
-                                width: 100px;
-                                height: 36px;
-                            }
-                        }
                     }
 
+                    .interviewer-bottom {
+                        width: 200px;
+                        height: 62px;
+                        background: rgba(255, 255, 255, 0.85);
+                        position: absolute;
+                        margin: 0 10px;
+                        bottom: 8px;
+                        padding: 10px 5px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .name-left {
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+
+                            .name1 {
+                                font-size: 18px;
+                                color: #333333;
+                            }
+
+                            .position {
+                                font-size: 12px;
+                                color: #333333;
+                            }
+                        }
+
+                        .company-image {
+                            width: 100px;
+                            height: 62px;
+                        }
+                    }
                 }
-
             }
-
-
-
-
-
-
-
-
         }
     }
 </style>

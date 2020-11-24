@@ -211,8 +211,26 @@ const constantRoutes = [
         component: () => import('@/views/WebRTC'),
         meta: {title: '寰球菁英-模拟面试'}
     },
-    {
+  
+{
         path: '/mock/promise',
+
+        path: '/mock/interview',
+        component: () => import('@/views/MockHomePage'),
+        meta: {title: '寰球菁英-模拟面试'}
+    },
+    {
+        path: '/mock/interviewer/more',
+        component: () => import('@/views/MoreInterviewer'),
+        meta: {title: '寰球菁英-更多面试官'}
+    },
+    {
+        path: '/mock/interviewer/:id',
+        component: () => import('@/views/MockDetailPage'),
+        meta: {title: '寰球菁英-面试官详情'}
+    },
+    {
+        path: '/mock/promise/:id',
         component: () => import('@/views/MockPromisePage'),
         meta: {title: '寰球菁英-预约'}
     },

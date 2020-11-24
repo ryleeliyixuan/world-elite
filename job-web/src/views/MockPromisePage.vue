@@ -63,6 +63,7 @@
                 <div style="width:100%; height:1px; background:#C9DAFB;margin-bottom: 18px;"></div>
                 <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：<span style="color:#3D6FF4;">￥{{'400.00'}}</span></div>
                 <el-image class="qrcode" src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2973432407,1075552176&fm=26&gp=0.jpg"></el-image>
+                <div id="qrcode"></div>
                 <div class="footer">
                     <el-button @click="step=1" round style="width: 100px;" size="small">上一步</el-button>
                     <el-button type="primary" @click="onSave" round style="width: 100px; margin-left: 20px;" size="small">确定</el-button>
@@ -81,6 +82,7 @@
     import FullCalendar from '@fullcalendar/vue'
     import dayGridPlugin from '@fullcalendar/daygrid'
     import interactionPlugin from '@fullcalendar/interaction'
+    import QRCode from 'qrcodejs2'
 
     export default {
         name: "MockPromisePage",
@@ -98,6 +100,13 @@
                 type: undefined, // 要预约的类型
                 typeList: [{label: "HR面试（通用）", value: "HR面试（通用）"}], // 可选的预约类型
                 step: 1, // 当前预约步骤
+
+                query:{
+                    beginTime:undefined,
+                    endTime:undefined,
+                    id:undefined,
+                    interviewerId:undefined
+                },
 
                 calendarOptions: {
                     // 语言
@@ -145,6 +154,8 @@
             }
         },
         mounted() {
+            this.query.interviewerId = this.$route.params.id;
+            this.getData();
             this.calendarApi = this.$refs.fullCalendar.getApi()
             this.calendarApi.addEvent({
                 start: new Date(2020, 10, 17, 10).getTime(),
@@ -177,6 +188,20 @@
 
             // 请求服务器获取二维码
             onSave() {
+
+                // this.$nextTick(()=>{
+                //     let qrCode = new QRCode('qrcode', {
+                //         width: 100,             // 宽度
+                //         height: 100,            // 高度
+                //         text: "https://www.feihangkeji.com", // 二维码内容
+                //         render: 'canvas',       // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+                //         colorDark : "#000000",     //二维码颜色
+                //         colorLight : "#ffffff"  //二维码背景色
+                //     });
+
+                    // qrCode.makeCode("another code"); // make another code.
+                // })
+
                 let startTime = this.getDate(this.date, this.startTime);
                 let endTime = this.getDate(this.date, this.endTime);
                 let type = this.type;
@@ -222,6 +247,10 @@
                 let t = time.split(":");
                 date.setHours(t[0], t[1])
                 return date.getTime();
+            },
+
+            getData() {
+                this.$axios.post("/mock/interview/time/query",this.query)
             }
         }
     }
