@@ -25,7 +25,7 @@ let im = {
                 let timer;
 
                 // 打开一个 web socket
-                this.ws = new WebSocket(process.env.WS_BASE_API + "/im/ws/");
+                this.ws = new WebSocket(process.env.VUE_APP_WS_API + "/im/ws/");
 
                 this.ws.onopen = () => {
                     // Web Socket 已连接上，使用 send() 方法发送数据

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import ba from 'vue-ba';
+
 Vue.use(ba, process.env.VUE_APP_SITE_ID);
 
 Vue.use(Router)
