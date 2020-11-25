@@ -930,7 +930,7 @@ export default {
 
     .intro-product-image {
       width: 100%;
-      height: auto;
+      height: 300px;
       object-fit: contain;
     }
 
