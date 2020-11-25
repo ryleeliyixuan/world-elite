@@ -58,21 +58,6 @@ const constantRoutes = [
         meta: {title: '寰球菁英-职位列表'}
     },
     {
-        path: '/mock-interview',
-        component: () => import('@/views/MockInterview'),
-        meta: {title: '寰球菁英-模拟面试'}
-    },
-    {
-        path: '/more-interviewer',
-        component: () => import('@/views/MoreInterviewer'),
-        meta: {title: '寰球菁英-更多面试官'}
-    },
-    {
-        path: '/interviewer-detail',
-        component: () => import('@/views/InterviewerDetail'),
-        meta: {title: '寰球菁英-面试官详情'}
-    },
-    {
         path: '/apply-jobs',
         component: () => import('@/views/ApplyJobListPage'),
         meta: {title: '寰球菁英-我的投递'}
@@ -211,10 +196,7 @@ const constantRoutes = [
         component: () => import('@/views/WebRTC'),
         meta: {title: '寰球菁英-模拟面试'}
     },
-  
-{
-        path: '/mock/promise',
-
+    {
         path: '/mock/interview',
         component: () => import('@/views/MockHomePage'),
         meta: {title: '寰球菁英-模拟面试'}
