@@ -17,6 +17,7 @@
                 <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
                 <el-menu-item class="nav-item" index="/wiki-card">百科</el-menu-item>
                 <el-menu-item class="nav-item" index="/activity-list">活动</el-menu-item>
+                <el-menu-item class="nav-item" index="/interviewSecretPage">模拟面试</el-menu-item>
             </el-menu>
         </div>
 
@@ -165,7 +166,7 @@
             },
             isHomeListPage() {
                 const cur_path = this.$route.path;
-                return cur_path === "/job-list" || cur_path === "/activity-list" || cur_path === "/wiki-card" || cur_path === "/wiki-list";
+                return cur_path === "/job-list" || cur_path === "/activity-list" || cur_path === "/wiki-card" || cur_path === "/wiki-list"||cur_path=="/interviewSecretPage";
             },
             handleSelect() {
                 this.keyword = "";
