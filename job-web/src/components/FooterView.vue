@@ -44,9 +44,6 @@
 </template>
 
 <script>
-    import {mapGetters, mapMutations} from "vuex";
-    import {getUnReadMessageCount, getMessageList} from "@/api/message_api";
-
     export default {
         name: "FooterView",
         data() {

@@ -43,7 +43,8 @@
                     <el-image :src="require('../assets/mock/mock'+index+'.png')" class="right-item1-img1" fit="cover"/>
                     <el-image :src="interviewer.avatar" class="right-item1-img2" fit="cover"/>
                     <div class="right-item1-name">{{interviewer.nickName}}</div>
-                    <el-image :src="interviewer.companyLogo" class="right-item1-img3" fit="scale-down"/>
+                    <div class="right-item1-img3">{{interviewer.company.fullName}}</div>
+<!--                    <el-image :src="interviewer.companyLogo" class="right-item1-img3" fit="scale-down"/>-->
                     <div class="right-item1-position">{{interviewer.position}}</div>
                     <div class="right-item1-score">{{interviewer.avgScore | toFixed1}}</div>
                     <div class="right-item-tip" v-if="interviewer.hot>5">HOT</div>
@@ -243,7 +244,7 @@
 
 <style scoped lang="scss">
     .mock-container {
-        max-width: 1200px;
+        width: 1200px;
         margin: 0 auto;
         padding: 20px;
 
@@ -460,6 +461,7 @@
                     position: relative;
                     margin: 0 18px;
                     display: inline-block;
+                    cursor: pointer;
 
                     .interviewer-img {
                         width: 220px;

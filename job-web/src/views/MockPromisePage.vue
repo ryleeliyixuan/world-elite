@@ -17,7 +17,8 @@
 
         <el-dialog title="预约面试时间"
                    :visible.sync="dialogVisible"
-                   class="dialog">
+                   class="dialog"
+                   :before-close="onDialogClose">
             <div v-if="step===1">
                 <div class="dialog-text">请选择您想预约的时间段</div>
                 <el-time-select
@@ -44,12 +45,12 @@
                     }">
                 </el-time-select>
                 <div class="dialog-text" style="margin-top: 20px;">请选择您想预约的类型</div>
-                <el-select v-model="type" placeholder="预约类型" class="select">
+                <el-select v-model="directionId" placeholder="预约类型" class="select">
                     <el-option size="small"
-                               v-for="item in typeList"
-                               :key="item.value"
-                               :label="item.label"
-                               :value="item.value">
+                               v-for="item in directionList"
+                               :key="item.id"
+                               :label="item.direction"
+                               :value="item.id">
                     </el-option>
                 </el-select>
                 <div class="footer">
@@ -59,14 +60,22 @@
             </div>
             <div v-else-if="step===2">
                 <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的时间为：</span><span class="dialog-text2">{{startTime}}至{{endTime}}</span></div>
-                <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{type}}</span></div>
+                <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{directionList.find(item => item.id===directionId).direction}}</span>
+                </div>
                 <div style="width:100%; height:1px; background:#C9DAFB;margin-bottom: 18px;"></div>
                 <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：<span style="color:#3D6FF4;">￥{{'400.00'}}</span></div>
-                <el-image class="qrcode" src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2973432407,1075552176&fm=26&gp=0.jpg"></el-image>
-                <div id="qrcode"></div>
+                <div class="pay-type" :style="{flexDirection:payType==='WEIXIN_NATIVE'?'row-reverse':'row'}">
+                    <el-button v-if="payType!=='WEIXIN_NATIVE'" type="primary" round @click="onWeChat" style="width: 200px;">{{payType?'切换为微信支付':'使用微信支付'}}
+                    </el-button>
+                    <el-button v-if="payType!=='ALIPAY_NATIVE'" type="primary" round @click="onAliPay" style="width: 200px;">{{payType?'切换为支付宝支付':'使用支付宝支付'}}
+                    </el-button>
+                    <div v-if="payType" id="qrcode" v-loading="qrcodeLoading" style="width: 200px;"></div>
+                </div>
                 <div class="footer">
                     <el-button @click="step=1" round style="width: 100px;" size="small">上一步</el-button>
-                    <el-button type="primary" @click="onSave" round style="width: 100px; margin-left: 20px;" size="small">确定</el-button>
+                    <el-button type="primary" @click="onPaymentCompleted" round style="width: 100px; margin-left: 20px;" size="small" :disabled="!payType">
+                        {{payType?'我已支付':'选择支付方式'}}
+                    </el-button>
                 </div>
             </div>
             <div v-else-if="step===3">
@@ -92,20 +101,27 @@
         data() {
             return {
                 dialogVisible: false, // 对话框是否可见
+
                 date: 0, // 预约日期
                 startTime: 0, // 预约起始时间
                 endTime: 0, // 预约结束时间
                 start: '00:00', // 预约最小时间
                 end: '24:00', // 预约最大时间
-                type: undefined, // 要预约的类型
-                typeList: [{label: "HR面试（通用）", value: "HR面试（通用）"}], // 可选的预约类型
+                interviewerTimeId: undefined, // 预约时间id
+                directionId: undefined, // 要预约的方向Id
+                directionList: [], // 可选的预约类型
                 step: 1, // 当前预约步骤
 
-                query:{
-                    beginTime:undefined,
-                    endTime:undefined,
-                    id:undefined,
-                    interviewerId:undefined
+                payType: undefined, // WEIXIN_NATIVE,  ALIPAY_NATIVE
+                qrCode: undefined, // 二维码对象
+                qrcodeLoading: false, // 二维码加载中
+                orderId: undefined, // 订单id
+
+                query: {
+                    beginTime: undefined,
+                    endTime: undefined,
+                    id: undefined,
+                    interviewerId: undefined
                 },
 
                 calendarOptions: {
@@ -154,23 +170,22 @@
             }
         },
         mounted() {
-            this.query.interviewerId = this.$route.params.id;
-            this.getData();
             this.calendarApi = this.$refs.fullCalendar.getApi()
-            this.calendarApi.addEvent({
-                start: new Date(2020, 10, 17, 10).getTime(),
-                end: new Date(2020, 10, 17, 16).getTime(),
-                eventBorderColor: '#D3F261', // 块边框颜色
-                eventBackgroundColor: '#D3F261', // 块背景色
-            })
+            this.query.interviewerId = this.$route.params.id;
+            this.getEvent();
+            this.getDirection();
         },
         methods: {
+            // 上一月
             onPrev() {
                 this.calendarApi.prev()
+                this.getEvent();
             },
 
+            // 下一月
             onNext() {
                 this.calendarApi.next()
+                this.getEvent();
             },
 
             // 检查参数，跳转下一步
@@ -179,34 +194,83 @@
                     this.$message.warning("请选择预约开始时间")
                 } else if (!this.endTime) {
                     this.$message.warning("请选择预约结束时间")
-                } else if (!this.type) {
+                } else if (!this.directionId) {
                     this.$message.warning("请选择预约类型")
                 } else {
-                    this.step = 2;
+                    // 添加预约
+                    this.$axios.post("/mock/interview/reservation", {
+                        beginTime: this.getDate(this.date, this.startTime),
+                        directionId: this.directionId,
+                        endTime: this.getDate(this.date, this.endTime),
+                        interviewTimeId: this.interviewerTimeId
+                    }).then(data => {
+                        this.step = 2;
+                    })
                 }
             },
 
-            // 请求服务器获取二维码
-            onSave() {
+            // 关闭对话框，清楚参数
+            onDialogClose(done) {
+                this.startTime = undefined;
+                this.endTime = undefined;
+                this.directionId = undefined;
+                done();
+            },
 
-                // this.$nextTick(()=>{
-                //     let qrCode = new QRCode('qrcode', {
-                //         width: 100,             // 宽度
-                //         height: 100,            // 高度
-                //         text: "https://www.feihangkeji.com", // 二维码内容
-                //         render: 'canvas',       // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
-                //         colorDark : "#000000",     //二维码颜色
-                //         colorLight : "#ffffff"  //二维码背景色
-                //     });
+            // 点击微信支付
+            onWeChat() {
+                this.payType = 'WEIXIN_NATIVE';
+                this.getQrCode();
+            },
 
-                    // qrCode.makeCode("another code"); // make another code.
-                // })
+            // 点击支付宝支付
+            onAliPay() {
+                this.payType = 'ALIPAY_NATIVE';
+                this.getQrCode();
+            },
 
-                let startTime = this.getDate(this.date, this.startTime);
-                let endTime = this.getDate(this.date, this.endTime);
-                let type = this.type;
-                console.log(startTime, endTime, type);
-                this.step = 3;
+            // 获取支付链接
+            getQrCode() {
+                this.qrcodeLoading = true;
+                let direction = this.directionList.find(item => item.id === this.directionId);
+                this.$axios.get("/pay/goods/buy", {
+                    params: {
+                        amount: direction.price,
+                        goodsId: direction.id,
+                        goodsName: direction.direction,
+                        userId: this.query.interviewerId,
+                        type: this.payType
+                    }
+                }).then(data => {
+                    this.orderId = data.data.payOrderId;
+                    if (this.qrCode) {
+                        this.qrCode.makeCode(data.data.qrCodeUrl);
+                    } else {
+                        this.qrCode = new QRCode('qrcode', {
+                            width: 200,             // 宽度
+                            height: 200,            // 高度
+                            text: data.data.qrCodeUrl, // 二维码内容
+                            render: 'canvas',       // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+                            colorDark: "#000000",     //二维码颜色
+                            colorLight: "#ffffff"  //二维码背景色
+                        });
+                    }
+                    this.qrcodeLoading = false;
+                })
+            },
+
+            // 我已支付
+            onPaymentCompleted() {
+                // 检查支付状态
+                this.$axios(`/pay/order/status/${this.orderId}`).then(data => {
+                    if (data.data === 1) { // 已付款
+                        this.step = 3;
+                    } else if (data.data === 0) {
+                        this.$message.warning("暂未支付")
+                    } else if (data.data === -1) {
+                        this.$message.warning("支付失败")
+                    }
+                })
             },
 
             // 返回到我的模拟面试
@@ -216,41 +280,66 @@
                 this.$router.push("/mock/mine");
             },
 
+            // 日期时间
             onDateClick(info) {
-                console.log('Clicked on: ' + info.dateStr);
-                console.log('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                console.log('Current view: ' + info.view.type);
-                // change the day's background color just for fun
-                info.dayEl.style.backgroundColor = 'red'; // 改变背景颜色
             },
 
+            // 点击事件，显示对话框，进行预约
             onEventClick(info) {
-                console.log("info : ", info);
-                console.log('Event: ' + info.event.title);
-                console.log('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                console.log('View: ' + info.view.type);
-
-                // change the border color just for fun
-                // info.el.style.borderColor = 'red';
-                console.log(info.event.start);
+                this.interviewerTimeId = info.event.extendedProps.interviewerTimeId;
                 this.date = new Date(info.event.start);
                 this.start = this.getHourMinutes(info.event.start);
                 this.end = this.getHourMinutes(info.event.end);
                 this.dialogVisible = true;
             },
 
-            getHourMinutes(time) {
-                return time ? `${time.getHours()}:${time.getMinutes() < 10 ? '0' : ''}${time.getMinutes()}` : '00:00';
+            // 获取可预约事件
+            getEvent() {
+                this.query.beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
+                this.query.endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
+                this.$axios.post("/mock/interview/time/query", this.query).then(data => {
+                    this.calendarOptions.events = data.data.map(item => {
+                        return {
+                            interviewerTimeId: item.id,
+                            reservationList: item.reservationList,
+                            start: item.beginTime,
+                            end: item.endTime,
+                            borderColor: '#D3F261', // 块边框颜色
+                            backgroundColor: '#D3F261', // 块背景色
+                        }
+                    });
+                })
             },
 
+            getDirection() {
+                this.$axios.get(`/mock/interviewer/direction/${this.query.interviewerId}`).then(data => {
+                    this.directionList = data.data;
+                })
+            },
+
+            // 以下工具函数
+            getHourMinutes(time) {
+                return time ? `${time.getHours() < 10 ? '0' : ''}${time.getHours()}:${time.getMinutes() < 10 ? '0' : ''}${time.getMinutes()}` : '00:00';
+            },
+
+            // Date + "12:00"  => (Date 12:00).getTime();
             getDate(date, time) {
                 let t = time.split(":");
                 date.setHours(t[0], t[1])
                 return date.getTime();
             },
 
-            getData() {
-                this.$axios.post("/mock/interview/time/query",this.query)
+            getFirstDayOfMonth(date) {
+                const temp = new Date(date.getTime());
+                temp.setDate(1)
+                return temp.getTime();
+            },
+
+            getLastDayOfMonth(date) {
+                const temp = new Date(date.getTime());
+                temp.setMonth(temp.getMonth() + 1);
+                temp.setDate(1)
+                return temp.getTime() - 1;
             }
         }
     }
@@ -417,11 +506,11 @@
                 }
             }
 
-            .qrcode {
-                width: 200px;
+            .pay-type {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
                 height: 200px;
-                margin: 0 auto;
-                display: block;
             }
 
             .image-success {

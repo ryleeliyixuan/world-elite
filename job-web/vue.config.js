@@ -35,8 +35,7 @@ module.exports = {
     open: false,
     host: "0.0.0.0",
     https: true,
-    https: true,
-    hotOnly: true,
+    hotOnly: false,
     proxy: {
       "/api": {
         target: "https://api.test.myworldelite.com/api",

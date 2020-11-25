@@ -14,30 +14,30 @@
         <div class="content-container">
             <div class="button-container">
                 <el-avatar :src="avatar" :size="117" cover class="avatar"></el-avatar>
-                <div class="username">Yuumi</div>
-                <div :class="['button', {'select':button===1}]" @click="onMineCalendar">
-                    <el-image v-if="button===1" style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar.png')"></el-image>
+                <div class="username">{{name}}</div>
+                <div :class="['button', {'select':menu===1}]" @click="onMineCalendar">
+                    <el-image v-if="menu===1" style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar.png')"></el-image>
                     <el-image v-else style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar2.png')"></el-image>
                     我的日历
                 </div>
-                <div :class="['button', {'select':button===2}]" @click="onMockRecord">
-                    <el-image v-if="button===2" style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record.png')"></el-image>
+                <div :class="['button', {'select':menu===2}]" @click="onMockRecord">
+                    <el-image v-if="menu===2" style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record.png')"></el-image>
                     <el-image v-else style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record2.png')"></el-image>
                     面试记录
                 </div>
-                <div :class="['button', {'select':button===3}]" @click="onSettleIn" v-if="userIdentity!==2 && identity===1">
-                    <el-image v-if="button===3" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
+                <div :class="['button', {'select':menu===3}]" @click="onSettleIn" v-if="userIdentity!==2 && identity===1">
+                    <el-image v-if="menu===3" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
                     <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
                     立即入住
                 </div>
-                <div :class="['button', {'select':button===4}]" @click="onIncome" v-if="userIdentity===2 && identity===2">
-                    <el-image v-if="button===4" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income.png')"></el-image>
+                <div :class="['button', {'select':menu===4}]" @click="onIncome" v-if="userIdentity===2 && identity===2">
+                    <el-image v-if="menu===4" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income.png')"></el-image>
                     <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income2.png')"></el-image>
                     我的收益
                 </div>
             </div>
             <!--面试者-->
-            <div class="calendar-container" v-if="identity===1 && button===1">
+            <div class="calendar-container" v-if="identity===1 && menu===1">
                 <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
                 <div class="additive-container">
                     <div class="tag"/>
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <!--面试官-->
-            <div class="calendar-container" v-if="identity===2 && button===1">
+            <div class="calendar-container" v-if="identity===2 && menu===1">
                 <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
                 <div class="additive-container">
                     <div class="tag2"/>
@@ -67,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="record-container" v-show="identity===1 && button===2">
+            <div class="record-container" v-show="identity===1 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="intervieweeRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
                     <el-table-column prop="type" label="面试类别" width="260">
@@ -101,7 +101,7 @@
                 <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="50" :page-size="5"
                                :current-page.sync="intervieweePage"></el-pagination>
             </div>
-            <div class="record-container" v-show="identity===2 && button===2">
+            <div class="record-container" v-show="identity===2 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="interviewerRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
                     <el-table-column prop="type" label="面试类别" width="260">
@@ -135,7 +135,7 @@
                 <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="interviewerTotal" :page-size="5"
                                :current-page.sync="interviewerPage"></el-pagination>
             </div>
-            <div class="record-container" v-show="identity===2 && button===4">
+            <div class="record-container" v-show="identity===2 && menu===4">
                 <div class="title" style="margin-bottom: 20px;">我的收益</div>
                 <el-table class="table" :data="incomeList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}" :show-header="false">
                     <el-table-column width="120">
@@ -187,7 +187,7 @@
                         size="small"
                         class="select"
                         placeholder="起始时间"
-                        v-model="startTime"
+                        v-model="beginTime"
                         :picker-options="{
                       start: start,
                       step: '00:30',
@@ -201,7 +201,7 @@
                         placeholder="结束时间"
                         v-model="endTime"
                         :picker-options="{
-                      start: startTime || start,
+                      start: beginTime || start,
                       step: '00:30',
                       end: end
                     }">
@@ -221,6 +221,16 @@
                 </div>
             </div>
         </el-dialog>
+
+        <el-dialog :visible.sync="eventDialogVisible" width="200px" :show-close="false" top="30%">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进度视频面视</el-button>
+                <el-button type="info" plain size="mini"
+                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
+                           @click="onCancelInterview">取消面视预约
+                </el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -228,7 +238,6 @@
     import FullCalendar from '@fullcalendar/vue'
     import dayGridPlugin from '@fullcalendar/daygrid'
     import interactionPlugin from '@fullcalendar/interaction'
-    import {timestampToDateTime} from '@/filters/filters'
 
     export default {
         name: "MockMinePage",
@@ -241,14 +250,18 @@
                 date: 0, // 预约日期
                 start: '00:00', // 预约最小时间
                 end: '24:00', // 预约最大时间
-                startTime: 0, // 预约起始时间
+                beginTime: 0, // 预约起始时间
                 endTime: 0, // 预约结束时间
                 repeat: "1", // 要预约的类型
                 typeList: [{label: "不重复", value: "1"},
                     {label: "按周重复", value: "2"},
-                    {label: "按月重复", value: "3"}], // 重复类型  1=不重复，2=按周重复，3=按月重复
-
+                    {label: "按月重复", value: "3"}
+                ], // 重复类型  1=不重复，2=按周重复，3=按月重复
                 step: 1, // 当前预约步骤
+
+                webRTCEventId: undefined, // 即将进入视频的事件id
+                eventDialogVisible: false, // 事件对话框
+
                 calendarOptions: {
                     // 语言
                     locale: "zh-cn",
@@ -294,7 +307,7 @@
                 calendarApi: undefined, // 日历api
                 userIdentity: 2, // 用户身份   1：面试者    2：面试官
                 identity: 1, // 当前选择的身份  1：面试者    2：面试官
-                button: 1, // 选中按钮  1：我的日历   2：面试记录
+                menu: 1, // 选中按钮  1：我的日历   2：面试记录
                 intervieweeRecordList: [{type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
                     {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
                     {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
@@ -319,56 +332,38 @@
         computed: {
             avatar() {
                 return this.$store.state.user.avatar;
+            },
+
+            name() {
+                return this.$store.state.user.name;
             }
         },
         mounted() {
-            this.calendarApi = this.$refs.fullCalendar.getApi()
+            this.calendarApi = this.$refs.fullCalendar.getApi();
+            this.getInterviewerInfo();
+            this.onInterviewee();
         },
         methods: {
+            // 获取面试官信息，判断面试官身份
+            getInterviewerInfo() {
+                this.$axios.get("/mock/interviewer/my-info").then(data => {
+                    this.userIdentity = data.data ? 2 : 1;
+                })
+            },
+
             // 面试者
             onInterviewee() {
+                // 切换身份为面视者
                 this.identity = 1;
-
-                // 面试者预约成功事件
-                this.calendarOptions.events = [{
-                    start: new Date(2020, 10, 17, 10).getTime(),
-                    end: new Date(2020, 10, 17, 16).getTime(),
-                    borderColor: '#FFE58F', // 块边框颜色
-                    backgroundColor: '#FFE58F', // 块背景色
-                }]
-
-                // this.calendarApi.addEvent({
-                //     start: new Date(2020, 10, 17, 10).getTime(),
-                //     end: new Date(2020, 10, 17, 16).getTime(),
-                //     eventBorderColor: '#FFE58F', // 块边框颜色
-                //     eventBackgroundColor: '#FFE58F', // 块背景色
-                // })
+                this.getIntervieweeEvent();
             },
 
             // 面试官
             onInterviewer() {
                 if (this.userIdentity === 2) {
-                    this.getEvent()
-
+                    // 切换身份为面视官
                     this.identity = 2;
-
-
-                    this.calendarOptions.events = [
-                        // 面试官预约成功事件
-                        {
-                            start: new Date(2020, 10, 17, 10).getTime(),
-                            end: new Date(2020, 10, 17, 16).getTime(),
-                            borderColor: '#FFE58F', // 块边框颜色
-                            backgroundColor: '#FFE58F', // 块背景色
-                        },
-                        // 面试管可预约时间
-                        {
-                            start: new Date(2020, 10, 18, 10).getTime(),
-                            end: new Date(2020, 10, 18, 16).getTime(),
-                            borderColor: '#D3F261', // 块边框颜色
-                            backgroundColor: '#D3F261', // 块背景色
-                        }
-                    ]
+                    this.getInterviewerEvent();
                 } else {
                     this.$message.warning("您当前还未认证面试官，请先认证后操作!");
                 }
@@ -376,32 +371,48 @@
 
             // 上月
             onPrev() {
-                this.calendarApi.prev()
+                this.calendarApi.prev();
+                if (this.identity === 1) {
+                    this.getIntervieweeEvent();
+                } else {
+                    this.getInterviewerEvent();
+                }
+
             },
 
             // 下月
             onNext() {
-                this.calendarApi.next()
+                this.calendarApi.next();
+                if (this.identity === 1) {
+                    this.getIntervieweeEvent();
+                } else {
+                    this.getInterviewerEvent();
+                }
             },
 
             // 点击我的日历
             onMineCalendar() {
-                this.button = 1;
+                this.menu = 1;
+                if (this.identity === 1) {
+                    this.getIntervieweeEvent();
+                } else {
+                    this.getInterviewerEvent();
+                }
             },
 
             // 点击面试记录
             onMockRecord() {
-                this.button = 2;
+                this.menu = 2;
             },
 
             // 点击立即入住
             onSettleIn() {
-                this.button = 3;
+                this.menu = 3;
             },
 
             // 我的收益
             onIncome() {
-                this.button = 4;
+                this.menu = 4;
             },
 
             // 查看评价
@@ -414,69 +425,141 @@
                 console.log(item);
             },
 
-            // 检查参数，跳转下一步
+            // 添加可预约时间确认
             onConfirm() {
-                if (!this.startTime) {
+                if (!this.beginTime) {
                     this.$message.warning("请选择预约开始时间")
                 } else if (!this.endTime) {
                     this.$message.warning("请选择预约结束时间")
                 } else if (!this.repeat) {
                     this.$message.warning("请选择预约类型")
                 } else {
-                    let startTime = this.getDate(this.date, this.startTime);
+                    let beginTime = this.getDate(this.date, this.beginTime);
                     let endTime = this.getDate(this.date, this.endTime);
                     let repeat = this.repeat;
-                    if (endTime <= startTime) {
+                    if (endTime <= beginTime) {
                         this.$message.warning("结束时间必须大于开始时间")
                     } else {
-                        console.log(startTime, endTime, repeat);
-                        this.$axios.post("/mock/interview/time", {startTime, endTime, repeat}).then(data => {
-                            console.log(data);
+                        console.log(beginTime, endTime, repeat);
+                        this.$axios.post("/mock/interview/time", {beginTime, endTime, repeat}).then(data => {
+                            let event = data.data;
+                            this.calendarOptions.events.push({
+                                id: event.id,
+                                interviewerId: event.id,
+                                start: parseInt(event.beginTime),
+                                end: parseInt(event.endTime),
+                                borderColor: '#D3F261', // 块边框颜色
+                                backgroundColor: '#D3F261', // 块背景色
+                            });
+                            this.beginTime = undefined;
+                            this.endTime = undefined;
+                            this.dialogVisible = false;
                         })
                     }
                 }
             },
 
+            // 面试官点击日期，添加可预约时间
             onDateClick(info) {
-                // console.log('Clicked on: ' + info.dateStr);
-                // console.log('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                // console.log('Current view: ' + info.view.type);
-                // // change the day's background color just for fun
-                // info.dayEl.style.backgroundColor = 'red'; // 改变背景颜色
-
-                console.log()
-                // 面试官点击日期，添加可预约时间
-                if (this.identity === 2 && info.date > new Date()) {
-                    this.step = 1;
-                    this.start = '00:00';
-                    this.end = '24:00';
-                    this.date = info.date;
-                    this.dialogVisible = true;
+                if (this.identity === 2) {
+                    if (info.date > this.getNextDay()) {
+                        this.step = 1;
+                        this.start = '00:00';
+                        this.end = '24:00';
+                        this.date = info.date;
+                        this.dialogVisible = true;
+                    } else if (info.date >= this.getZeroOfToday()) {
+                        this.step = 1;
+                        let date = new Date();
+                        date.setHours(date.getHours() + 1, 0, 0);
+                        this.start = `${this.getDoubleValue(date.getHours())}:${this.getDoubleValue(date.getMinutes())}`;
+                        this.end = '24:00';
+                        this.date = info.date;
+                        this.dialogVisible = true;
+                    }
                 }
             },
 
+            // 点击事件
             onEventClick(info) {
-                console.log("info : ", info);
-                console.log('Event: ' + info.event.title);
-                console.log('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                console.log('View: ' + info.view.type);
-
-                // change the border color just for fun
-                // info.el.style.borderColor = 'red';
-                console.log(info.event.start);
-                this.date = new Date(info.event.start);
-                this.start = this.getHourMinutes(info.event.start);
-                this.end = this.getHourMinutes(info.event.end);
-                this.dialogVisible = true;
+                if (this.identity === 1) {
+                    if (info.event.end < Date.now()) {
+                        this.$message.warning("面试已结束");
+                    } else if (info.event.start > Date.now() - 15 * 60 * 1000) {
+                        this.$message.warning("开始前15分钟可以进入房间等待");
+                        this.eventDialogVisible = true; // TODO 删除
+                        this.webRTCEventId = true; // TODO 删除
+                    } else {
+                        this.eventDialogVisible = true;
+                        this.webRTCEventId = true;
+                    }
+                } else if (this.identity === 2 && info.event.extendedProps.reservationList.length > 0) {
+                    if (info.event.end < Date.now()) {
+                        this.$message.warning("面试已结束");
+                    } else if (info.event.start > Date.now() - 15 * 60 * 1000) {
+                        this.$message.warning("开始前15分钟可以进入房间等待");
+                        this.eventDialogVisible = true; // TODO 删除
+                        this.webRTCEventId = true; // TODO 删除
+                    } else {
+                        this.eventDialogVisible = true;
+                        this.webRTCEventId = true;
+                    }
+                }
             },
 
+            // 进入视频面试
+            onEntryWebRTC() {
+                this.$route.push(`/a/a/a/${this.webRTCEventId}`); // TODO 修改route
+            },
+
+            // 取消预约面试
+            onCancelInterview() {
+                // TODO
+            },
+
+
             // 获取数据
-            // 获取我的预约列表（当前月）
-            getEvent() {
+            // 面试官获取我的可预约事件（当前月）
+            getInterviewerEvent() {
+                this.calendarOptions.events = [];
                 let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
                 let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
                 this.$axios.get(`/mock/interview/time/my/${beginTime}/${endTime}`).then(data => {
-                    console.log(data);
+                    this.calendarOptions.events = data.data.map(item => {
+                        let event = {
+                            id: item.id,
+                            interviewerId: item.interviewerId,
+                            reservationList: item.reservationList,
+                            start: parseInt(item.beginTime),
+                            end: parseInt(item.endTime),
+                            borderColor: '#D3F261', // 块边框颜色
+                            backgroundColor: '#D3F261', // 块背景色
+                        };
+                        if (item.reservationList.length > 0) {
+                            event.borderColor = '#FFE58F';
+                            event.backgroundColor = '#FFE58F';
+                        }
+                        return event;
+                    });
+                })
+            },
+
+            // 面试者获取我的预约成功事件
+            getIntervieweeEvent() {
+                let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
+                let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
+                this.$axios.get(`/mock/interview/reservation/my/${beginTime}/${endTime}`).then(data => {
+                    this.calendarOptions.events = data.data.map(item => {
+                        return {
+                            id: item.id,
+                            interviewerId: item.interviewerId,
+                            reservationList: item.reservationList,
+                            start: parseInt(item.beginTime),
+                            end: parseInt(item.endTime),
+                            borderColor: '#FFE58F', // 块边框颜色
+                            backgroundColor: '#FFE58F', // 块背景色
+                        }
+                    });
                 })
             },
 
@@ -491,6 +574,18 @@
                 return date.getTime();
             },
 
+            getZeroOfToday() {
+                const temp = new Date();
+                temp.setHours(0, 0, 0, 0);
+                return temp.getTime();
+            },
+
+            getNextDay() {
+                const temp = new Date();
+                temp.setHours(0, 0, 0, 0);
+                return temp.getTime() + 24 * 60 * 60 * 1000;
+            },
+
             getFirstDayOfMonth(date) {
                 const temp = new Date(date.getTime());
                 temp.setDate(1)
@@ -502,6 +597,10 @@
                 temp.setMonth(temp.getMonth() + 1);
                 temp.setDate(1)
                 return temp.getTime() - 1;
+            },
+
+            getDoubleValue(num) {
+                return num < 10 ? '0' + num : num
             }
         }
     }
@@ -510,7 +609,7 @@
 <style scoped lang="scss">
 
     .app-container {
-        width: 1100px;
+        width: 1175px;
         margin: 0 auto;
 
         .title-container {
@@ -626,7 +725,7 @@
             }
 
             .calendar-container {
-                width: 925px;
+                width: 1000px;
                 position: relative;
                 box-shadow: 0 5px 13px 0 rgba(19, 67, 123, 0.2);
                 padding: 16px 10px 16px;

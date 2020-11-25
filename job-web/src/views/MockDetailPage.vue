@@ -26,7 +26,7 @@
                     </div>
                 </div>
             </div>
-            <el-image :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
+            <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
         </div>
                 <div class="label-container">
                     <div class="label-circle">
@@ -42,8 +42,8 @@
         </div>
         <div class="user-info">个人信息</div>
         <div class="brief-introduction">
-            <el-image :src="require('@/assets/mock/icon9.png')" class="brief-icon1" fit="fill"></el-image>
-            <div class="brief-title">公司：{{interviewer.company.name}}</div>
+            <el-image v-if="interviewer.company" :src="require('@/assets/mock/icon9.png')" class="brief-icon1" fit="fill"></el-image>
+            <div v-if="interviewer.company" class="brief-title">公司：{{interviewer.company.name}}</div>
             <el-image :src="require('@/assets/mock/icon10.png')" class="brief-icon1" fit="fill" style="margin-left: 62px"></el-image>
             <div class="brief-title">行业：{{interviewer.industry.name}}</div>
             <el-image :src="require('@/assets/mock/icon12.png')" class="brief-icon1" fit="fill" style="margin-left: 62px"></el-image>
@@ -57,7 +57,7 @@
         <div class="user-info">和TA预约</div>
 
         <el-collapse class="reservation-container">
-            <el-collapse-item class="reservation-item-container" v-for="reservation in reservationList">
+            <el-collapse-item class="reservation-item-container" v-for="reservation in reservationList" :key="reservation.id">
                 <template slot="title">
                     <div class="reservation-top-container">
                         <div class="reservation-left">
@@ -97,7 +97,7 @@
         methods: {
             // 预约
             onPromise(reservation) {
-                this.$router.push(`/mock/promise/${reservation.id}`);
+                this.$router.push(`/mock/promise/${reservation.interviewerId}`);
             },
 
             // 加载数据
@@ -115,7 +115,7 @@
 
 <style scoped lang="scss">
     .app-container {
-        max-width: 1200px;
+        width: 1200px;
         margin: 0 auto;
         height: auto;
         padding: 20px;

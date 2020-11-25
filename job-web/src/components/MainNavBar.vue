@@ -136,7 +136,7 @@
         watch: {
             $route() {
                 this.activeIndex = this.$route.path === "/wiki-list" ? "/wiki-card" : this.$route.path;
-                this.getUnReadMessageCount();
+                // this.getUnReadMessageCount();
                 if (this.isHomeListPage()) {
                     this.keyword = this.$route.query.keyword;
                     this.$store.commit("setting/SET_KEYWORD", this.keyword);
@@ -145,7 +145,7 @@
         },
         created() {
             this.activeIndex = this.$route.path;
-            this.getUnReadMessageCount();
+            // this.getUnReadMessageCount();
         },
         methods: {
             ...mapMutations({

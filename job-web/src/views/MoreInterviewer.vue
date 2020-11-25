@@ -43,15 +43,15 @@
                     <div class="interviewer-message">
                         <div class="message-top">
                             <div class="message-text">{{interviewer.nickName}}</div>
-                            <el-image :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
+                            <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
                         </div>
                         <div class="message-bottom">
                             <el-image :src="require('@/assets/mock/icon5.png')" class="tip-image" fit="fill"></el-image>
-                            <div class="tip-text">{{interviewer.industry.name}}</div>
+                            <div v-if="interviewer.industry" class="tip-text">{{interviewer.industry.name}}</div>
                             <el-image :src="require('@/assets/mock/icon3.png')" class="tip-image" fit="fill"></el-image>
                             <div class="tip-text">{{interviewer.position}}</div>
                             <el-image :src="require('@/assets/mock/icon4.png')" class="tip-image" fit="fill"></el-image>
-                            <div class="tip-text">已从业{{interviewer.experienceTime.name}}</div>
+                            <div v-if="interviewer.experienceTime" class="tip-text">已从业{{interviewer.experienceTime.name}}</div>
                         </div>
                     </div>
                 </div>
@@ -63,8 +63,9 @@
                     <div class="reservation" @click.stop="onPromise(interviewer)">马上预约</div>
                 </div>
             </div>
-            <div v-if="interviewerList.length===0">
-                暂无结果
+            <div v-if="interviewerList.length===0 && loading===false" style="display: flex; flex-direction: column; align-items: center;">
+                <el-image :src="require('@/assets/mock/empty.png')" style="width:297px; height: 285px;"></el-image>
+                <div style="font-size: 36px;font-weight: 600;color: #3D6FF4;line-height: 50px;margin-top: 30px;">Sorry，暂无匹配面试官。</div>
             </div>
         </div>
         <el-pagination
@@ -82,6 +83,7 @@
         name: "MoreInterviewer",
         data() {
             return {
+                loading: true,
                 industryList: [], // 行业标签列表
                 experienceTimeList: [], // 从业时长标签列表
                 reservationList: [], // 可预约时间标签列表
@@ -92,7 +94,7 @@
                 listQuery: {
                     industryId: undefined, // 行业Id
                     experienceTimeId: undefined, // 从业时长Id
-                    appointAbleTimeId:undefined, // 可预约时长
+                    appointAbleTimeId: undefined, // 可预约时长
                     sortField: undefined, // 排序字段[SCORE-按分数, PRICE-按价格, HOT-按热度]
                     orderBy: "desc", // 降序
                     page: 1,
@@ -191,7 +193,9 @@
             },
 
             getList() {
+                this.loading = true;
                 this.$axios.get("/mock/interviewer/list", {params: this.listQuery}).then(data => {
+                    // this.loading = false;
                     this.interviewerList = data.data.list;
                     this.total = data.data.total;
                 })
