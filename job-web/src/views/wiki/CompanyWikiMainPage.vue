@@ -19,11 +19,12 @@
             />
           </div>
           <div class="company-info-description">
-            <el-avatar
-              class="company-info-logo"
-              :src="company.logo"
-              :alt="company.fullName"
-            ></el-avatar>
+              <img
+                class="company-info-logo"
+                :src="company.logo"
+                :alt="company.fullName"
+                fit="fill"
+              />
             <h5 class="mt-2" v-if="company.name">{{ company.name }}</h5>
             <h5 class="mt-2" v-else>{{ company.fullName }}</h5>
             <p class="mb-2">
@@ -313,6 +314,7 @@ export default {
       .company-info-logo {
         width: 100px;
         height: 100px;
+        border-radius: 50%;
         border: 2px solid white;
       }
 

@@ -847,7 +847,6 @@
                 placeholder="选择日期"
                 value-format="yyyy-MM-dd"
                 v-model="recruitEditForm.time"
-                :picker-options="oldDatePickerOptions"
                 style="width: 100%"
               ></el-date-picker>
             </el-form-item>

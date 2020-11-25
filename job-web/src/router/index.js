@@ -160,6 +160,18 @@ const constantRoutes = [
                         path: "post",
                         name: "wiki-community-post",
                         component: () => import("@/views/wiki/WikiCommunityPostPage"),
+                        // children: [
+                        //     {
+                        //         path: "detail",
+                        //         name: "wiki-community-post-detail",
+                        //         component: () => import("@/views/wiki/WikiCommunityPostDetailPage"),
+                        //     },
+                        // ],
+                    },
+                    {
+                        path: "postdetail",
+                        name: "wiki-community-post-detail",
+                        component: () => import("@/views/wiki/WikiCommunityPostDetailPage"),
                     },
                     {
                         path: "score",

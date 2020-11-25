@@ -111,7 +111,8 @@
             :xl="12"
           >
             <h5 class="mt-4 mb-4">
-              <i class="el-icon-s-flag" style="color: #1e90ff"></i> 旗下产品
+              <i class="el-icon-s-flag" style="color: #1e90ff"></i>
+              旗下产品/子公司
             </h5>
             <el-carousel height="380px" :interval="2500" arrow="always">
               <el-carousel-item
@@ -125,9 +126,9 @@
                   :alt="product.description"
                   v-on:click="select(product)"
                 />
-                <h5 v-else>
+                <div class="intro-product-description">
                   {{ product.description }}
-                </h5>
+                </div>
               </el-carousel-item>
             </el-carousel>
           </el-col>
@@ -326,7 +327,7 @@
                 :key="image.id"
               >
                 <img
-                  class="intro-product-image"
+                  class="intro-environment-image"
                   :src="image.imageUrl"
                   :alt="image.name"
                   v-on:click="select(image)"
@@ -928,6 +929,16 @@ export default {
     }
 
     .intro-product-image {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .intro-product-description{
+      margin: 12px;
+    }
+
+    .intro-environment-image {
       width: 100%;
       height: 100%;
       object-fit: contain;

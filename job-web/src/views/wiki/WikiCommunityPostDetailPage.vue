@@ -1,471 +1,470 @@
 <template>
-  <div class="community-post-container" v-if="postPage">
-    <div v-if="postPage.list.length > 0" class="community-post-display">
-      <div class="community-post-switch mb-4 d-flex justify-content-end">
-        <el-switch
-          v-if="hasDetailOpen == false"
-          v-model="listQuery.sort"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-          active-text="最新"
-          inactive-text="最热"
-          active-value="-id"
-          inactive-value="-hots"
-          @change="getPostList"
-        >
-        </el-switch>
-      </div>
-      <el-row>
-        <el-col :span="24" v-for="post in postPage.list" :key="post.id">
-          <el-card
-            class="mb-2"
-            :body-style="{ padding: '0px' }"
-            shadow="hover"
-            :id="post.id"
-          >
-            <div class="community-post-item">
-              <div class="community-post-item-title">
-                <div class="community-post-item-title-text">
-                  {{ post.title }}
-                </div>
-                <div class="community-post-item-title-stats">
-                  <el-tag size="medium" type="danger"
-                    ><i class="el-icon-s-opportunity"></i> 热度: {{ post.hots }}
-                  </el-tag>
-                  <el-tag size="medium" type="success">
-                    <i class="el-icon-time"></i> {{ post.updateTime }}
-                  </el-tag>
-                  <el-button
-                    type="text"
-                    size="mini"
-                    @click="handleCollapse(post.id)"
-                  >
-                    {{ hasDetailOpen == true ? "返回列表" : "查看详情" }}
-                  </el-button>
-                </div>
+  <div class="community-post-container" v-if="postDetail">
+    <el-row>
+      <el-col :span="18">
+        <div class="community-post-item mr-2">
+          <el-card class="mb-4 p-3" :body-style="{ padding: '0px' }">
+            <div class="community-post-item community-post-item-title">
+              <div class="community-post-item-title-user">
+                <el-avatar
+                  class="mr-2"
+                  :src="postDetail.fromUser.avatar"
+                  size="small"
+                ></el-avatar>
+                {{ postDetail.fromUser.name }} (楼主)
               </div>
-              <div v-if="postDetail && hasDetailOpen == true" class="community-post-detail">
-                <el-divider></el-divider>
-                <div class="mb-4 d-flex align-items-center" v-if="postDetail.fromUser">
-                  <el-avatar
-                    class="mr-2"
-                    :src="postDetail.fromUser.avatar"
-                    size="small"
-                  ></el-avatar>
-                  <small
-                    >{{ postDetail.fromUser.name }} 发布于
-                    {{ postDetail.createTime }}</small
-                  >
-                </div>
-                <div class="mb-4">{{ postDetail.content }}</div>
-                <div
-                  class="community-post-detail-action mb-4 d-flex justify-content-end"
-                  v-if="postDetail.fromUser"
+              <h4 class="community-post-item-title-text">
+                {{ postDetail.title }}
+              </h4>
+              <div class="community-post-item-title-stats text-secondary">
+                <small class="mr-4"> 点赞数 {{ postDetail.likes }} </small>
+                <small class="mr-4"> 评论数 {{ postDetail.comments }} </small>
+                <small class="mr-4"> 浏览量 {{ postDetail.comments }} </small>
+                <el-button
+                  class="text-secondary"
+                  type="text"
+                  size="mini"
+                  @click="reportDialogVisible = true"
+                  icon="el-icon-s-flag"
+                  >举报</el-button
                 >
-                  <div v-if="postDetail.like">
-                    <el-button
-                      class="likeButton"
-                      type="text"
-                      size="mini"
-                      @click="likePost(postDetail.id)"
-                    >
-                      <font-awesome-icon
-                        style="color: #409eff"
-                        :icon="['fa', 'thumbs-up']"
-                        size="sm"
-                      />
-                      点赞
-                      {{ postDetail.likes === 0 ? "" : postDetail.likes }}
-                    </el-button>
-                  </div>
-                  <div v-else>
-                    <el-button
-                      class="likeButton text-secondary"
-                      type="text"
-                      size="mini"
-                      @click="likePost(postDetail.id)"
-                    >
-                      <font-awesome-icon
-                        style="color: grey"
-                        :icon="['fa', 'thumbs-up']"
-                        size="sm"
-                      />
-                      点赞
-                      {{ postDetail.likes === 0 ? "" : postDetail.likes }}
-                    </el-button>
-                  </div>
-                  <el-button type="text" size="mini" icon="el-icon-s-comment"
-                    >评论 {{ postDetail.comments }}
-                  </el-button>
-                  <el-button
-                    type="text"
-                    size="mini"
-                    @click="reportPost(postDetail.id)"
-                    icon="el-icon-s-flag"
-                    >举报</el-button
+                <small class="mr-4"> {{ dayDiff }} </small>
+                <el-button
+                  icon="el-icon-delete-solid"
+                  class="text-secondary"
+                  type="text"
+                  size="mini"
+                  @click="deletePost(postDetail.id)"
+                  v-if="postDetail.fromUser.userId === userId"
+                  >删除我的发帖</el-button
+                >
+              </div>
+              <!-- 举报框 -->
+              <el-dialog
+                title="举报理由"
+                :visible.sync="reportDialogVisible"
+                width="30%"
+              >
+                <span>这是一段信息</span>
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="reportDialogVisible = false"
+                    >取 消</el-button
                   >
                   <el-button
-                    icon="el-icon-delete-solid"
-                    type="text"
-                    size="mini"
-                    @click="deletePost(postDetail.id)"
-                    v-if="postDetail.fromUser.userId === userId"
-                    >删除我的发帖</el-button
+                    type="primary"
+                    @click="
+                      (reportDialogVisible = false), reportPost(postDetail.id)
+                    "
+                    >确 定</el-button
                   >
-                </div>
-                <div class="community-post-detail-commentbox">
-                  <el-form
-                    ref="commentForm"
-                    :rules="commentFormRules"
-                    :model="commentForm"
-                    label-width="80px"
-                    label-position="top"
-                  >
-                    <el-form-item label="" prop="content">
-                      <el-input
-                        type="textarea"
-                        :rows="3"
-                        placeholder="发表评论"
-                        v-model="commentForm.content"
-                        style="margin-bottom: 12px"
-                        resize="none"
-                      >
-                      </el-input>
-                    </el-form-item>
-                  </el-form>
-                  <div class="d-flex justify-content-end">
-                    <el-button
-                      type="primary"
-                      @click="commentPost(postDetail.id)"
-                      >发布</el-button
-                    >
-                  </div>
-                </div>
-                <div
-                  class="community-post-detail-comment"
-                  v-if="commentPage && commentPage.list.length > 0"
-                >
-                  <el-row>
-                    <el-divider></el-divider>
-                    <el-col
-                      :span="24"
-                      v-for="comment in commentPage.list"
-                      :key="comment.id"
-                    >
-                      <el-card
-                        class="mb-2"
-                        :body-style="{ padding: '12px' }"
-                        shadow="hover"
-                      >
-                        <div class="mb-3 d-flex align-items-center">
-                          <el-avatar
-                            v-if="comment.fromUser.avatar"
-                            style="margin-right: 12px"
-                            :src="comment.fromUser.avatar"
-                            size="small"
-                          ></el-avatar>
-                          <div class="mr-2 font-weight-bold">
-                            {{ comment.fromUser.name }}
-                          </div>
-                          <small class="text-secondary">{{
-                            comment.createTime
-                          }}</small>
-                        </div>
-                        <div>{{ comment.content }}</div>
-                        <div
-                          class="community-post-item-comment-action d-flex justify-content-end"
-                        >
-                          <div v-if="comment.like">
-                            <el-button
-                              type="text"
-                              size="mini"
-                              class="likeButton"
-                              @click="likeComment(comment.id)"
-                            >
-                              <font-awesome-icon
-                                style="color: #409eff"
-                                :icon="['fa', 'thumbs-up']"
-                                size="sm"
-                              />
-                              点赞
-                              {{ comment.likes === 0 ? "" : comment.likes }}
-                            </el-button>
-                          </div>
-                          <div v-else>
-                            <el-button
-                              type="text"
-                              size="mini"
-                              class="likeButton text-secondary"
-                              @click="likeComment(comment.id)"
-                            >
-                              <font-awesome-icon
-                                style="color: grey"
-                                :icon="['fa', 'thumbs-up']"
-                                size="sm"
-                              />
-                              点赞
-                              {{ comment.likes === 0 ? "" : comment.likes }}
-                            </el-button>
-                          </div>
-                          <el-button
-                            type="text"
-                            size="small"
-                            icon="el-icon-s-comment"
-                            @click="openReplybox(comment.id)"
-                            >回复 {{ comment.comments }}
-                          </el-button>
-                          <el-button
-                            type="text"
-                            size="small"
-                            @click="reportComment(comment.id)"
-                            icon="el-icon-s-flag"
-                            >举报</el-button
-                          >
-                          <el-button
-                            icon="el-icon-delete-solid"
-                            type="text"
-                            size="small"
-                            @click="deleteComment(comment.id, 1)"
-                            v-if="comment.fromUser.userId === userId"
-                            >删除</el-button
-                          >
-                        </div>
-                        <div
-                          class="community-post-detail-comment-reply"
-                          v-if="replyList && replyList.length > 0"
-                        >
-                          <el-row>
-                            <el-col
-                              :span="24"
-                              v-for="reply in replyList"
-                              :key="reply.id"
-                            >
-                              <div v-if="reply.ownerId == comment.id">
-                                <el-card
-                                  :body-style="{ padding: '12px' }"
-                                  shadow="never"
-                                >
-                                  <div
-                                    class="mb-2 d-flex align-items-center"
-                                    style="font-size: 10px; font-weight: bold"
-                                  >
-                                    <el-avatar
-                                      style="margin-right: 8px"
-                                      :src="reply.fromUser.avatar"
-                                      :size="20"
-                                    ></el-avatar>
-                                    {{ reply.fromUser.name }}
-                                    <i class="el-icon-caret-right"></i>
-                                    {{ reply.toUser.name }}
-                                  </div>
-                                  {{ reply.content }}
-                                  <div
-                                    class="community-post-item-reply-action d-flex justify-content-end"
-                                  >
-                                    <div v-if="reply.like">
-                                      <el-button
-                                        type="text"
-                                        size="mini"
-                                        class="likeButton"
-                                        @click="likeComment(reply.id)"
-                                      >
-                                        <font-awesome-icon
-                                          style="color: #409eff"
-                                          :icon="['fa', 'thumbs-up']"
-                                          size="sm"
-                                        />
-                                        点赞
-                                        {{
-                                          reply.likes === 0 ? "" : reply.likes
-                                        }}
-                                      </el-button>
-                                    </div>
-                                    <div v-else>
-                                      <el-button
-                                        type="text"
-                                        size="mini"
-                                        class="likeButton text-secondary"
-                                        @click="likeComment(reply.id)"
-                                      >
-                                        <font-awesome-icon
-                                          style="color: grey"
-                                          :icon="['fa', 'thumbs-up']"
-                                          size="sm"
-                                        />
-                                        点赞
-                                        {{
-                                          reply.likes === 0 ? "" : reply.likes
-                                        }}
-                                      </el-button>
-                                    </div>
-                                    <el-button
-                                      type="text"
-                                      size="small"
-                                      icon="el-icon-s-comment"
-                                      @click="openSecondaryReplybox(reply.id)"
-                                      >回复
-                                    </el-button>
-                                    <el-button
-                                      type="text"
-                                      size="small"
-                                      @click="reportComment(comment.id)"
-                                      icon="el-icon-s-flag"
-                                      >举报</el-button
-                                    >
-                                    <el-button
-                                      icon="el-icon-delete-solid"
-                                      type="text"
-                                      size="mini"
-                                      @click="deleteComment(reply.id, 1)"
-                                      v-if="reply.fromUser.userId === userId"
-                                      >删除</el-button
-                                    >
-                                  </div>
-                                  <div
-                                    v-if="
-                                      secondaryRepyOpen &&
-                                      reply.id == replyCommentId
-                                    "
-                                    class="reply-box mt-2"
-                                  >
-                                    <el-form
-                                      ref="replyForm"
-                                      :rules="replyFormRules"
-                                      :model="replyForm"
-                                      label-width="80px"
-                                      label-position="top"
-                                    >
-                                      <el-form-item label="" prop="content">
-                                        <el-input
-                                          type="textarea"
-                                          :rows="3"
-                                          placeholder="发表回复"
-                                          resize="none"
-                                          v-model="replyForm.content"
-                                          style="margin-bottom: 12px"
-                                        >
-                                        </el-input>
-                                      </el-form-item>
-                                    </el-form>
-                                    <div class="d-flex justify-content-end">
-                                      <el-button
-                                        type="primary"
-                                        size="mini"
-                                        @click="replyComment(comment.id)"
-                                        >回复</el-button
-                                      >
-                                    </div>
-                                  </div>
-                                </el-card>
-                              </div>
-                            </el-col>
-                          </el-row>
-                        </div>
-                        <div
-                          v-if="replyOpen && comment.id == replyCommentId"
-                          class="reply-box mt-2"
-                        >
-                          <el-form
-                            ref="replyForm"
-                            :rules="replyFormRules"
-                            :model="replyForm"
-                            label-width="80px"
-                            label-position="top"
-                          >
-                            <el-form-item label="" prop="content">
-                              <el-input
-                                type="textarea"
-                                :rows="3"
-                                placeholder="发表回复"
-                                resize="none"
-                                v-model="replyForm.content"
-                                style="margin-bottom: 12px"
-                              >
-                              </el-input>
-                            </el-form-item>
-                          </el-form>
-                          <div class="d-flex justify-content-end">
-                            <el-button
-                              type="primary"
-                              size="mini"
-                              @click="replyComment(comment.id)"
-                              >回复</el-button
-                            >
-                          </div>
-                        </div>
-                      </el-card>
-                    </el-col>
-                  </el-row>
-                </div>
+                </span>
+              </el-dialog>
+            </div>
+            <el-divider></el-divider>
+            <div class="mb-4 mt-4" v-html="postDetail.content"></div>
+            <div
+              class="post-tags mb-4"
+              v-if="postDetail.tags && postDetail.tags.length > 0"
+            >
+              <el-tag type="info" v-for="tag in postDetail.tags" :key="tag">{{
+                tag
+              }}</el-tag>
+            </div>
+            <div class="detail-card-footer">
+              <div class="share-button">
+                <el-avatar
+                  shape="circle"
+                  size="medium"
+                  icon="el-icon-share"
+                ></el-avatar>
+                <!-- <small class="text-secondary"> 快给朋友分享吧！</small> -->
+              </div>
+              <el-button
+                class="main-action main-button"
+                type="primary"
+                size="medium"
+                round
+                @click="likePost(postDetail.id)"
+              >
+                <font-awesome-icon
+                  style="color: #ffffff"
+                  :icon="['fa', 'thumbs-up']"
+                  size="sm"
+                />
+                点 赞
+                {{ postDetail.likes === 0 ? "" : postDetail.likes }}
+              </el-button>
+              <small class="text-secondary">
+                发布于 {{ postDetail.createTime }}</small
+              >
+            </div>
+            <div
+              class="community-post-detail-action mb-4 d-flex justify-content-end"
+              v-if="postDetail.fromUser"
+            ></div>
+          </el-card>
+          <div v-if="token" class="community-post-detail-commentbox mb-4">
+            <div class="d-flex mb-2">
+              <strong class="mr-3">发布评论</strong>
+              <div style="color: grey; font-size: 14px">
+                文明上网理性发言，请遵守用户服务协议
               </div>
             </div>
-          </el-card>
-        </el-col>
-      </el-row>
-      <div v-if="hasDetailOpen == false" class="load-more">
-        <div
-          class="community-load-more-post mt-2 d-flex justify-content-center"
-          v-if="hasMorePost == true"
-        >
-          <el-button round @click="loadMorePost"> 加 载 更 多 </el-button>
-        </div>
-        <div v-else class="mt-2 d-flex justify-content-center">
-          <el-button round disabled> 没 有 更 多 了 </el-button>
-        </div>
-      </div>
-    </div>
-    <div v-else class="noInfoMsgBox">暂无帖子，快来发表你的帖子吧！</div>
-    <el-divider></el-divider>
-    <div class="community-post-comment">
-      <div class="d-flex mb-2">
-        <h5 class="mr-3">发布留言</h5>
-        <div style="color: grey; font-size: 14px">
-          文明上网理性发言，请遵守用户服务协议
-        </div>
-      </div>
-      <el-form
-        ref="postForm"
-        :model="postForm"
-        :rules="postFormRules"
-        label-width="100px"
-        class="mt-4"
-        label-position="left"
-        hide-required-asterisk
-      >
-        <el-form-item label="标题" prop="title">
-          <el-input
-            type="textarea"
-            :rows="1"
-            placeholder="请输入标题（登录后可以发表留言）"
-            v-model="postForm.title"
-            style="margin-bottom: 12px"
-            maxlength="50"
-            show-word-limit
+            <el-form
+              ref="commentForm"
+              :rules="commentFormRules"
+              :model="commentForm"
+              label-width="80px"
+              label-position="top"
+            >
+              <el-form-item label="" prop="content">
+                <el-input
+                  type="textarea"
+                  :rows="3"
+                  placeholder="登录后可以发表评论"
+                  v-model="commentForm.content"
+                  style="margin-bottom: 12px"
+                  resize="none"
+                >
+                </el-input>
+              </el-form-item>
+            </el-form>
+            <div class="d-flex justify-content-end">
+              <el-button type="primary" @click="commentPost(postDetail.id)"
+                >发布</el-button
+              >
+            </div>
+          </div>
+          <div v-else class="noInfoMsgBox">
+            <el-button
+              type="primary"
+              icon="el-icon-user-solid"
+              @click="onLoginClick"
+            >
+              登录后可发表评分，点此登录
+            </el-button>
+          </div>
+          <div class="comment-header">
+            <strong>全部评论 {{ postDetail.comments }} </strong>
+            <div class="d-flex justify-content-end">
+              <el-tabs
+                v-model="activeCommentTabName"
+                @tab-click="handleCommentClick"
+              >
+                <el-tab-pane label="最新" name="-id"></el-tab-pane>
+                <el-tab-pane label="最热" name="-hots"></el-tab-pane>
+              </el-tabs>
+            </div>
+          </div>
+          <div
+            class="community-post-detail-comment"
+            v-if="commentPage && commentPage.list.length > 0"
           >
-          </el-input>
-        </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <el-input
-            type="textarea"
-            :rows="5"
-            placeholder="请输入内容（登录后可以发表留言）"
-            v-model="postForm.content"
-            style="margin-bottom: 12px"
-          >
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <div class="d-flex justify-content-end">
-        <el-button type="primary" @click="savePost">提交</el-button>
-      </div>
-    </div>
+            <el-row>
+              <el-col
+                :span="24"
+                v-for="comment in commentPage.list"
+                :key="comment.id"
+              >
+                <el-card
+                  class="mb-2"
+                  :body-style="{ padding: '12px' }"
+                  shadow="hover"
+                >
+                  <div class="mb-3 d-flex align-items-center">
+                    <el-avatar
+                      v-if="comment.fromUser.avatar"
+                      style="margin-right: 12px"
+                      :src="comment.fromUser.avatar"
+                      size="small"
+                    ></el-avatar>
+                    <div class="mr-2 font-weight-bold">
+                      {{ comment.fromUser.name }}
+                    </div>
+                    <small class="text-secondary">{{
+                      comment.createTime
+                    }}</small>
+                  </div>
+                  <div>{{ comment.content }}</div>
+                  <div
+                    class="community-post-item-comment-action d-flex justify-content-end"
+                  >
+                    <div v-if="comment.like">
+                      <el-button
+                        type="text"
+                        size="mini"
+                        class="main-action"
+                        @click="likeComment(comment.id)"
+                      >
+                        <font-awesome-icon
+                          style="color: #409eff"
+                          :icon="['fa', 'thumbs-up']"
+                          size="sm"
+                        />
+                        点赞
+                        {{ comment.likes === 0 ? "" : comment.likes }}
+                      </el-button>
+                    </div>
+                    <div v-else>
+                      <el-button
+                        type="text"
+                        size="mini"
+                        class="main-action text-secondary"
+                        @click="likeComment(comment.id)"
+                      >
+                        <font-awesome-icon
+                          style="color: grey"
+                          :icon="['fa', 'thumbs-up']"
+                          size="sm"
+                        />
+                        点赞
+                        {{ comment.likes === 0 ? "" : comment.likes }}
+                      </el-button>
+                    </div>
+                    <el-button
+                      type="text"
+                      size="small"
+                      icon="el-icon-s-comment"
+                      @click="
+                        openReplybox(comment.id), getReplyList(comment.id)
+                      "
+                      >回复 {{ comment.comments }}
+                    </el-button>
+                    <el-button
+                      type="text"
+                      size="small"
+                      @click="reportComment(comment.id)"
+                      icon="el-icon-s-flag"
+                      >举报</el-button
+                    >
+                    <el-button
+                      icon="el-icon-delete-solid"
+                      type="text"
+                      size="small"
+                      @click="deleteComment(comment.id, 1)"
+                      v-if="comment.fromUser.userId === userId"
+                      >删除</el-button
+                    >
+                  </div>
+                  <div
+                    class="community-post-detail-comment-reply"
+                    v-if="
+                      replyList &&
+                      replyList.length > 0 &&
+                      CommentBoxOpen &&
+                      comment.id == commentId
+                    "
+                  >
+                    <el-row>
+                      <el-col
+                        :span="24"
+                        v-for="reply in replyList"
+                        :key="reply.id"
+                      >
+                        <div v-if="reply.ownerId == comment.id">
+                          <el-card
+                            :body-style="{ padding: '12px' }"
+                            shadow="never"
+                          >
+                            <div
+                              class="mb-2 d-flex align-items-center"
+                              style="font-size: 10px; font-weight: bold"
+                            >
+                              <el-avatar
+                                style="margin-right: 8px"
+                                :src="reply.fromUser.avatar"
+                                :size="20"
+                              ></el-avatar>
+                              {{ reply.fromUser.name }}
+                              <i class="el-icon-caret-right"></i>
+                              {{ reply.toUser.name }}
+                            </div>
+                            {{ reply.content }}
+                            <div
+                              class="community-post-item-reply-action d-flex justify-content-end"
+                            >
+                              <div v-if="reply.like">
+                                <el-button
+                                  type="text"
+                                  size="mini"
+                                  class="main-action"
+                                  @click="likeComment(reply.id)"
+                                >
+                                  <font-awesome-icon
+                                    style="color: #409eff"
+                                    :icon="['fa', 'thumbs-up']"
+                                    size="sm"
+                                  />
+                                  点赞
+                                  {{ reply.likes === 0 ? "" : reply.likes }}
+                                </el-button>
+                              </div>
+                              <div v-else>
+                                <el-button
+                                  type="text"
+                                  size="mini"
+                                  class="main-action text-secondary"
+                                  @click="likeComment(reply.id)"
+                                >
+                                  <font-awesome-icon
+                                    style="color: grey"
+                                    :icon="['fa', 'thumbs-up']"
+                                    size="sm"
+                                  />
+                                  点赞
+                                  {{ reply.likes === 0 ? "" : reply.likes }}
+                                </el-button>
+                              </div>
+                              <el-button
+                                type="text"
+                                size="small"
+                                icon="el-icon-s-comment"
+                                @click="openSecondaryReplybox(reply.id)"
+                                >回复
+                              </el-button>
+                              <el-button
+                                type="text"
+                                size="small"
+                                @click="reportComment(comment.id)"
+                                icon="el-icon-s-flag"
+                                >举报</el-button
+                              >
+                              <el-button
+                                icon="el-icon-delete-solid"
+                                type="text"
+                                size="mini"
+                                @click="deleteComment(reply.id, 1)"
+                                v-if="reply.fromUser.userId === userId"
+                                >删除</el-button
+                              >
+                            </div>
+                            <div
+                              v-if="
+                                secondaryRepyOpen && reply.id === replyCommentId
+                              "
+                              class="reply-box mt-2"
+                            >
+                              <el-form
+                                ref="replyForm"
+                                :rules="replyFormRules"
+                                :model="replyForm"
+                                label-width="80px"
+                                label-position="top"
+                              >
+                                <el-form-item label="" prop="content">
+                                  <el-input
+                                    type="textarea"
+                                    :rows="3"
+                                    placeholder="发表回复"
+                                    resize="none"
+                                    v-model="replyForm.content"
+                                    style="margin-bottom: 12px"
+                                  >
+                                  </el-input>
+                                </el-form-item>
+                              </el-form>
+                              <div class="d-flex justify-content-end">
+                                <el-button
+                                  type="primary"
+                                  size="mini"
+                                  @click="replyComment(comment.id)"
+                                  >回复</el-button
+                                >
+                              </div>
+                            </div>
+                          </el-card>
+                        </div>
+                      </el-col>
+                    </el-row>
+                  </div>
+                  <div
+                    v-if="replyOpen && comment.id == commentId"
+                    class="reply-box mt-2"
+                  >
+                    <el-form
+                      ref="replyForm"
+                      :rules="replyFormRules"
+                      :model="replyForm"
+                      label-width="80px"
+                      label-position="top"
+                    >
+                      <el-form-item label="" prop="content">
+                        <el-input
+                          type="textarea"
+                          :rows="3"
+                          placeholder="发表回复"
+                          resize="none"
+                          v-model="replyForm.content"
+                          style="margin-bottom: 12px"
+                        >
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                    <div class="d-flex justify-content-end">
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="replyComment(comment.id)"
+                        >回复</el-button
+                      >
+                    </div>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-row>
+            <div class="load-more">
+              <div
+                class="community-load-more-post mt-2 d-flex justify-content-center"
+                v-if="hasMoreComment == true"
+              >
+                <el-button round @click="loadMoreComment">
+                  加 载 更 多
+                </el-button>
+              </div>
+              <div v-else class="mt-2 d-flex justify-content-center">
+                <el-button round disabled> 没 有 更 多 了 </el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <el-card :body-style="{ padding: '0px' }">
+          <div slot="header" class="hotest-post-header">
+            <strong>热门帖子</strong>
+            <el-button
+              type="text"
+              class="text-secondary"
+              @click="handleGetMoreHottest"
+              >换一批</el-button
+            >
+          </div>
+          <el-row>
+            <el-col :span="24" v-for="post in postPage.list" :key="post.id">
+              <el-card class="hotest-post" :body-style="{ padding: '0px' }">
+                <el-row>
+                  <el-col :span="6"> </el-col>
+                  <el-col :span="18">
+                    <div class="d-flex flex-column">
+                      <strong>{{ post.title }}</strong>
+                      <small class="text-secondary">{{
+                        post.createTime
+                      }}</small>
+                    </div>
+                  </el-col>
+                </el-row>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import VueAMap from "vue-amap";
-import Pagination from "@/components/Pagination";
 import { formatListQuery, parseListQuery } from "@/utils/common";
 
 import { library, parse } from "@fortawesome/fontawesome-svg-core";
@@ -497,7 +496,6 @@ import {
 
 export default {
   name: "WikiCommunityPostPage",
-  components: { Pagination },
   props: {
     //接受父组件传递来的数据
     // companyId: {
@@ -507,10 +505,24 @@ export default {
   data() {
     return {
       //COMMUNITY ATTRIBUTES
+      activeCommentTabName: "-id",
       activeCommName: "1",
       companyId: undefined,
+      dayDiff: undefined,
+      postId: undefined,
+      reportDialogVisible: false,
+      commentId: undefined,
+      CommentBoxOpen: false,
+      commentQuery: {
+        page: 1,
+        limit: 5,
+        sort: "-id",
+        fromId: undefined,
+        toId: undefined,
+        ownerId: undefined,
+      },
       //COMMUNITY POST ATTRIBUTES
-      hasMorePost: false,
+      hasMoreComment: false,
       postPage: {
         list: [],
       },
@@ -523,25 +535,10 @@ export default {
         cliqueId: undefined,
         title: "",
       },
-      postForm: {
-        id: undefined, //帖子ID
-        companyId: undefined, //企业ID
-        cliqueId: undefined, //圈子ID
-        title: "", //帖子标题
-        content: "", //帖子内容
-        tags: [], //标签列表
-      },
-      postFormRules: {
-        title: [
-          { required: true, message: "请填写您的帖子标题", trigger: "blur" },
-        ],
-        content: [
-          { required: true, message: "请填写您的帖子内容", trigger: "blur" },
-        ],
-      },
-      hasDetailOpen: false,
       //post detail
-      postDetail: {},
+      postDetail: {
+        fromUser: undefined,
+      },
       postContent: "",
       //post comment
       commentForm: {
@@ -586,15 +583,12 @@ export default {
   },
   methods: {
     initData() {
-      const { id } = this.$route.params;
-      this.companyId = id;
-      this.postForm.companyId = id;
-      this.listQuery.companyId = id;
-      // console.log("post - companyid", id);
-      // console.log("initData -> this.$route", this.listQuery);
-      // debugger;
+      this.postId = this.$route.query.postId;
+      this.commentQuery.ownerId = this.postId;
       parseListQuery(this.$route.query, this.listQuery);
+      this.getPostDetail();
       this.getPostList();
+      this.getCommentList();
     },
     //POST METHODS
     handleRouteList() {
@@ -603,58 +597,86 @@ export default {
         query: formatListQuery(this.listQuery),
       });
     },
+    getPostDetail() {
+      getPostDetail(this.postId).then((response) => {
+        this.postDetail = response.data;
+        if (this.postDetail.createTime) {
+          this.showtime(this.postDetail.createTime);
+        }
+      });
+    },
     getPostList() {
       getPostList(this.listQuery).then((response) => {
         this.postPage = response.data;
-        this.hasMorePost = response.data.hasMore;
-        this.handleRouteList();
-        if (this.listQuery.id != undefined) {
-          this.hasDetailOpen = true;
-          this.getPostDetail();
-        }
       });
     },
-    savePost() {
-      this.$refs["postForm"].validate((valid) => {
-        if (valid) {
-          savePost(this.postForm).then(() => {
-            Toast.success("成功发布帖子");
-            this.postForm.title = "";
-            this.postForm.content = "";
-            this.getPostList();
-          });
-        }
-      });
+    handleGetMoreHottest() {
+      if (this.postPage.hasMore === false) {
+        this.listQuery.page = 1;
+      } else {
+        this.listQuery.page++;
+      }
+      this.getPostList();
     },
-    getPostDetail() {
-      getPostDetail(this.listQuery.id).then((response) => {
-        this.postDetail = response.data;
+    handleCommentClick() {
+      if (this.activeCommentTabName === "-id") {
+        this.commentQuery.sort = "-id";
         this.getCommentList();
-        // console.log("params", this.$route.path);
-        // console.log("params", this.$route.params);
-        // this.$router.push({
-        //   name: this.$route.path,
-        //   params: this.listQuery.id,
-        // });
-      });
+      } else {
+        this.commentQuery.sort = "-hots";
+        this.getCommentList();
+      }
+    },
+    loadMoreComment() {
+      this.commentQuery.limit += 5;
+      this.getCommentList();
+    },
+    showtime(time) {
+      let date =
+        typeof time === "number"
+          ? new Date(time)
+          : new Date((time || "").replace(/-/g, "/"));
+      let diff = (new Date().getTime() - date.getTime()) / 1000;
+      let dayDiff = Math.floor(diff / 86400);
+
+      let isValidDate =
+        Object.prototype.toString.call(date) === "[object Date]" &&
+        !isNaN(date.getTime());
+
+      if (!isValidDate) {
+        window.console.error("不是有效日期格式");
+      }
+      const formatDate = function (date) {
+        let today = new Date(date);
+        let year = today.getFullYear();
+        let month = ("0" + (today.getMonth() + 1)).slice(-2);
+        let day = ("0" + today.getDate()).slice(-2);
+        let hour = today.getHours();
+        let minute = today.getMinutes();
+        let second = today.getSeconds();
+        return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+      };
+
+      if (isNaN(dayDiff) || dayDiff < 0 || dayDiff >= 31) {
+        return formatDate(date);
+      }
+      return (
+        (dayDiff === 0 &&
+          ((diff < 60 && "刚刚") ||
+            (diff < 120 && "1分钟前") ||
+            (diff < 3600 && Math.floor(diff / 60) + "分钟前") ||
+            (diff < 7200 && "1小时前") ||
+            (diff < 86400 && Math.floor(diff / 3600) + "小时前"))) ||
+        (dayDiff === 1 && "昨天") ||
+        (dayDiff < 7 && dayDiff + "天前") ||
+        (dayDiff < 31 && Math.ceil(dayDiff / 7) + "周前")
+      );
     },
     deletePost(id) {
       deletePost(id).then(() => {
         Toast.success("成功删除帖子");
         this.getPostList();
       });
-    },
-    //open and close post detail
-    handleCollapse(id) {
-      if (this.hasDetailOpen == true) {
-        this.hasDetailOpen = false;
-        this.listQuery.id = undefined;
-        this.handleRouteList();
-      } else {
-        this.hasDetailOpen = true;
-        this.listQuery.id = id;
-      }
-      this.getPostList();
     },
     likePost(id) {
       likePost(id).then((response) => {
@@ -676,7 +698,7 @@ export default {
     commentPost(id) {
       this.commentForm.ownerId = id;
       this.postDetail.comments++;
-      this.$refs["commentForm"][0].validate((valid) => {
+      this.$refs["commentForm"].validate((valid) => {
         if (valid) {
           commentPost(this.commentForm).then(() => {
             Toast.success("评论成功");
@@ -685,10 +707,6 @@ export default {
           });
         }
       });
-    },
-    loadMorePost() {
-      this.listQuery.limit += 5;
-      this.getPostList();
     },
     //POST METHODS END
 
@@ -699,52 +717,31 @@ export default {
       });
     },
     getCommentList() {
+      getCommentList(this.commentQuery).then((response) => {
+        this.commentPage = response.data;
+        this.commentPage.list = response.data.list;
+        this.hasMoreComment = response.data.hasMore;
+      });
+      this.$emit("complete");
+    },
+    getReplyList(ownerId) {
       let data = {
         page: 1,
         limit: 10,
         sort: "-id",
         fromId: undefined,
         toId: undefined,
-        ownerId: undefined,
+        ownerId: ownerId,
       };
       getCommentList(data).then((response) => {
-        let temp_list = response.data.list;
-        let actual_list = [];
-        let reply_list = [];
-        let comment_id_list = [];
-        let score_comment_list = [];
-
-        for (let i = 0; i < temp_list.length; i++) {
-          let comment = temp_list[i];
-          comment_id_list.push(comment.id);
-          //帖子的评论
-          if (comment.type === 1 && comment.ownerId === this.postDetail.id) {
-            actual_list.push(comment);
-          }
-        }
-
-        //评论的评论 二级评论
-        for (let i = 0; i < temp_list.length; i++) {
-          let comment = temp_list[i];
-          if (
-            comment.type === 3 &&
-            comment_id_list.indexOf(comment.ownerId) != -1
-          ) {
-            reply_list.push(comment);
-          }
-        }
-
-        this.commentPage = response.data;
-        this.commentPage.list = actual_list;
-        this.replyList = reply_list;
+        this.replyList = response.data.list;
       });
-      this.$emit("complete");
     },
-    getRepyList() {},
     deleteComment(id, type) {
       deleteComment(id).then(() => {
         Toast.success("成功删除评论");
         this.getCommentList();
+        this.getReplyList();
       });
     },
     reportComment(id) {
@@ -764,19 +761,24 @@ export default {
           replyComment(this.replyForm).then(() => {
             Toast.success("回复成功");
             this.replyForm.content = "";
-            this.getCommentList();
+            this.getReplyList();
           });
         }
       });
     },
     openReplybox(id) {
-      if (this.replyCommentId === id) {
+      if (this.commentId === id) {
         //如果是上次点击
         this.replyOpen = !this.replyOpen;
       } else {
         this.replyOpen = true;
       }
-      this.replyCommentId = id;
+      this.CommentBoxOpen = this.replyOpen;
+      this.commentId = id;
+
+      if (this.secondaryRepyOpen == true) {
+        this.secondaryRepyOpen = false;
+      }
     },
     openSecondaryReplybox(id) {
       this.replyOpen = false;
@@ -793,6 +795,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.hotest-post-header {
+  height: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.hotest-post {
+  min-height: 80px;
+}
+
 .noInfoMsgBox {
   line-height: 80px;
   text-align: center;
@@ -800,35 +812,67 @@ export default {
   width: 100%;
 }
 
-.likeButton {
+.comment-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.main-action {
   width: 60px;
   padding: 10px;
+}
+
+.el-tag + .el-tag {
+  margin-left: 12px;
+}
+
+.detail-card-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  .share-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.main-button {
+  width: 100px;
 }
 
 .community-container {
   width: 100%;
   .community-post-item {
-    padding: 14px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     .community-post-item-title {
       height: auto;
       min-height: 75px;
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      justify-content: flex-start;
+      .community-post-item-title-user {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 8px;
+      }
       .community-post-item-title-text {
         height: 100%;
         margin: 12px 20px 12px 8px;
         padding: 8px 0 8px 0;
       }
       .community-post-item-title-stats {
-        min-width: 350px;
+        width: 75%;
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 8px;
       }
     }
   }
@@ -842,12 +886,6 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        .community-post-item-title-stats {
-          width: 350px;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-around;
-        }
       }
     }
   }
@@ -865,13 +903,6 @@ export default {
           height: 100%;
           margin: 8px;
           padding: 8px 0 8px 0;
-        }
-        .community-post-item-title-stats {
-          width: 280px;
-          min-width: 280px;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-around;
         }
       }
     }
