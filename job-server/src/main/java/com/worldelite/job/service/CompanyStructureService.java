@@ -78,9 +78,9 @@ public class CompanyStructureService extends BaseService{
         List<CompanyStructureVo> roots = new ArrayList<>();
         for(Integer id:nodeMap.keySet()){
             CompanyStructureVo structureVo = nodeMap.get(id);
-            if(structureVo.getParentId()==null || structureVo.getParentId()==0){
+            if(structureVo.getParentId()==null || structureVo.getParentId()==0 ||
+                    nodeMap.get(structureVo.getParentId())==null){
                 //添加根节点
-                structureVo.setParentId(0);
                 roots.add(structureVo);
             }else{
                 //添加子节点

@@ -59,8 +59,8 @@ public class CompanyDepartmentService extends BaseService{
 		List<CompanyDepartmentVo> roots = new ArrayList<>();
 		for(Integer id:nodes.keySet()){
 			CompanyDepartmentVo department = nodes.get(id);
-			if(department.getParentId()==null || department.getParentId()==0){
-				department.setParentId(0);
+			if(department.getParentId()==null || department.getParentId()==0 ||
+					nodes.get(department.getParentId())==null){
 				roots.add(department);
 			}else{
 				CompanyDepartmentVo parent = nodes.get(department.getParentId());
