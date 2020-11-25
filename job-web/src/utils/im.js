@@ -25,7 +25,7 @@ let im = {
                 let timer;
 
                 // 打开一个 web socket
-                this.ws = new WebSocket("ws://im.websocket.test.myworldelite.com/im");
+                this.ws = new WebSocket(process.env.VUE_APP_WS_API + "/im/ws/");
 
                 this.ws.onopen = () => {
                     // Web Socket 已连接上，使用 send() 方法发送数据
@@ -36,7 +36,8 @@ let im = {
                     let {email, password} = storage.getLoginInfo();
                     this.login(email, password, 1).then((data) => {
                         resolve(data);
-                    }).catch(() => {
+                    }).catch((error) => {
+                        console.log(error)
                         reject();
                     })
                 };
@@ -102,7 +103,7 @@ let im = {
                     resolve(data);
                 }
             }).catch((error) => {
-                // Message.error(error);
+                Message.error(error);
                 reject()
             });
         })

@@ -36,11 +36,11 @@ module.exports = {
     port: port,
     open: false,
     host: '0.0.0.0',
-    https: false,
+    https: true,
     hotOnly: false,
     proxy: {
       '/api': {
-        target: 'http://api.test.myworldelite.com',
+        target: 'https://api.test.myworldelite.com',
         changeOrigin: true,
         ws: true,
         pathRewrite: {

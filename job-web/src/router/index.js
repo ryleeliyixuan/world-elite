@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import ba from 'vue-ba';
+
+Vue.use(ba, process.env.VUE_APP_SITE_ID);
+
 Vue.use(Router)
 
 const constantRoutes = [
@@ -206,3 +210,10 @@ const createRouter = () => new Router({
 const router = createRouter()
 
 export default router
+
+router.beforeEach((to, from, next) => {
+    if (to.path) {
+        ba.trackPageview(to.fullPath);
+    }
+    next();
+});

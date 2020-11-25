@@ -103,6 +103,17 @@ public class UserApplicantApi extends BaseController {
     }
 
     /**
+     * 获取用户信息
+     * @return
+     */
+    @GetMapping("user-info")
+    @ApiDoc
+    public ApiResult<UserApplicantVo> getUserInfo(long userId){
+        UserApplicantVo loginUser = userApplicantService.getUserInfo(userId);
+        return ApiResult.ok(loginUser);
+    }
+
+    /**
      * 修改邮箱
      * @param session
      * @param modifyEmailForm
