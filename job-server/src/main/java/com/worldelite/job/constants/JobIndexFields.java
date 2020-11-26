@@ -13,6 +13,13 @@ public interface JobIndexFields {
     String JOB_ID = "job_id";
 
     /**
+     * 工作名称
+     */
+    String JOB_NAME = "job_name";
+
+    String JOB_NAME_MARK = "job_name_mark";
+
+    /**
      * 索引ID
      */
     String JOB_ID_INDEX = "job_id_index";

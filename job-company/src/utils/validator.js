@@ -24,7 +24,7 @@ const checkPassword = (rule, value, callback) => {
         } else if(pwdRegx.test(value)){
             callback();
         } else{
-            callback(new Error('密码需要同时包含数字和字母'))
+            callback(new Error('密码需同时包含字母和数字，不支持特殊符号'))
         }
     }, 100)
 }

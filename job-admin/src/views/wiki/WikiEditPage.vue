@@ -187,7 +187,8 @@
       <el-col class="intro-product intro-module-element" :span="24">
         <div class="d-flex justify-content-start align-items-center">
           <h2 style="margin-right: 18px">
-            <i class="el-icon-s-flag" style="color: #1e90ff"></i> 旗下产品
+            <i class="el-icon-s-flag" style="color: #1e90ff"></i>
+            旗下产品/子公司
           </h2>
           <span>
             启用该模块：
@@ -235,6 +236,21 @@
             <el-table-column label="操作" width="160">
               <template slot-scope="scope">
                 <el-button
+                  type="primary"
+                  size="mini"
+                  @click="
+                    handleUpdateProduct(
+                      scope.row.id,
+                      scope.row.name,
+                      scope.row.description,
+                      scope.row.imageName,
+                      scope.row.url
+                    )
+                  "
+                >
+                  编 辑
+                </el-button>
+                <el-button
                   type="danger"
                   size="mini"
                   @click="delCompanyProduct(scope.row.id)"
@@ -279,6 +295,10 @@
               <el-input v-model="productForm.description"></el-input>
             </el-form-item>
             <el-form-item label="产品图片">
+              <el-input
+                v-if="productForm.url && productForm.url.length > 0"
+                v-model="productForm.url"
+              ></el-input>
               <el-upload
                 class="thumbnail-uploader"
                 :action="uploadPicOptions.action"
@@ -453,7 +473,9 @@
             label-width="80px"
             :model="historyEditForm"
           >
-            <el-form-item label="时间 (输入格式范例：1.纯年份 2020 2.年份+月份 2020-12 3.年份+月份+日期 2020-12-03)">
+            <el-form-item
+              label="时间 (输入格式范例：1.纯年份 2020 2.年份+月份 2020-12 3.年份+月份+日期 2020-12-03)"
+            >
               <!-- <el-date-picker
                 type="date"
                 placeholder="选择日期"
@@ -1285,7 +1307,7 @@ export default {
         this.companyWiki = response.data;
         if (response.data.wikiModule) {
           this.wikiModule = response.data.wikiModule;
-        } 
+        }
         if (
           this.companyWiki.market &&
           this.companyWiki.market.url &&
@@ -1821,6 +1843,15 @@ export default {
       this.$message.success("图片上传成功");
       const len = this.companyWiki.productList.length;
       this.productForm.position = len > 0 ? len : 0;
+    },
+    //product
+    handleUpdateProduct(id, name, description, imageName, url) {
+      this.productForm.id = id;
+      this.productForm.url = url;
+      this.productForm.imageName = imageName;
+      this.productForm.name = name;
+      this.productForm.description = description;
+      this.showProductDialog = true;
     },
     saveCompanyProduct() {
       // console.log("---productform----", this.productForm);

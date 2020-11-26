@@ -124,7 +124,7 @@ public class CompanyCommentServiceTest {
         CompanyComment comment1 = newComment(companyComment.getId(), CommentType.COMMENT.value);
         CompanyComment comment2 = newComment(comment1.getId(), CommentType.COMMENT.value);
         //删除子评论
-        companyCommentService.deleteById(comment1.getId());
+//        companyCommentService.deleteById(comment1.getId());
         //评论数应该为1
         companyComment = companyCommentService.getById(companyComment.getId());
         Assert.isTrue(companyComment.getComments()==1,"帖子评论的评论数不正确");
