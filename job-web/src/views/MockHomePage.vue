@@ -55,7 +55,7 @@
 
         <div class="title-container" style="margin-top: 70px">
             <div class="title-left">本月新入驻面试官</div>
-            <div class="title-right">立即入驻
+            <div class="title-right" @click="registerInterviewer">立即入驻
                 <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon">
             </div>
         </div>
@@ -110,6 +110,9 @@
         methods: {
             onMoreInterviewer() {
                 this.$router.push("/mock/interviewer/more");
+            },
+            registerInterviewer(){
+                this.$router.push("/interviewSecretPage");
             },
 
             onInterviewer(interviewer) {
