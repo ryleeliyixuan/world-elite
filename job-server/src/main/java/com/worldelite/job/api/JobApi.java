@@ -8,6 +8,7 @@ import com.worldelite.job.entity.ScanResult;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.DictService;
 import com.worldelite.job.service.IContentScanner;
+import com.worldelite.job.service.JobNameSearchService;
 import com.worldelite.job.service.JobService;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.vo.*;
@@ -47,6 +48,9 @@ public class JobApi extends BaseApi {
 
     @Autowired
     private IContentScanner contentScanner;
+
+    @Autowired
+    private JobNameSearchService jobNameSearchServiceImpl;
 
     /**
      * 保存职位
@@ -303,4 +307,31 @@ public class JobApi extends BaseApi {
         jobService.recommendResumeForJob(jobId, resumeId);
         return ApiResult.ok();
     }
+
+
+    /**
+     * 创建或刷新职位名索引
+     *
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("create-or-refresh-job-name-index")
+    public ApiResult createOrRefreshJobNameIndex() {
+        jobNameSearchServiceImpl.createOrRefreshJobNameIndex();
+        return ApiResult.ok();
+    }
+
+
+    /**
+     * 根据名字搜索job
+     *
+     * @param searchJobNameForm
+     * @return
+     */
+    @GetMapping("search-job-name")
+    public ApiResult<PageResult<String>> searchJobName(@RequestBody SearchJobNameForm searchJobNameForm) {
+        PageResult<String> result = jobNameSearchServiceImpl.searchJobName(searchJobNameForm);
+        return ApiResult.ok(result);
+    }
+
 }

@@ -49,10 +49,10 @@
     -->
     insert into t_message (id, from_user, to_user, 
       content, url, read_flag, 
-      create_time, update_time)
+      create_time, update_time, msg_type)
     values (#{id,jdbcType=INTEGER}, #{fromUser,jdbcType=BIGINT}, #{toUser,jdbcType=BIGINT}, 
       #{content,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{readFlag,jdbcType=TINYINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{msg_type,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.worldelite.job.entity.Message">
     <!--
@@ -85,6 +85,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="msgType != null">
+        msg_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -110,6 +113,9 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msgType != null">
+        #{msg_type,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -141,6 +147,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="msgType != null">
+        msg_type = #{msg_type,jdbcType=TINYINT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -156,7 +165,8 @@
       url = #{url,jdbcType=VARCHAR},
       read_flag = #{readFlag,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      msg_type = #{msgType, jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
