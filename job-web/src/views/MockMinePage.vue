@@ -223,13 +223,23 @@
         </el-dialog>
 
         <el-dialog :visible.sync="eventDialogVisible" width="200px" :show-close="false" top="30%">
-            <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail">
                 <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进度视频面视</el-button>
                 <el-button type="info" plain size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
                            @click="onCancelInterview">取消面视预约
                 </el-button>
             </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="showContactEmail">
+                <div style="font-weight: bold;font-size: 18px">请联系人工客服：</div>
+                <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
+                <el-button type="primary" primary size="mini"
+                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
+                           @click="onRequire">确认
+                </el-button>
+            </div>
+
         </el-dialog>
     </div>
 </template>
@@ -247,9 +257,10 @@
         data() {
             return {
                 dialogVisible: false, // 对话框是否可见
+                showContactEmail: false,
                 date: 0, // 预约日期
                 start: '00:00', // 预约最小时间
-                end: '24:00', // 预约最大时间
+                end: '23:59', // 预约最大时间
                 beginTime: 0, // 预约起始时间
                 endTime: 0, // 预约结束时间
                 repeat: "1", // 要预约的类型
@@ -259,7 +270,7 @@
                 ], // 重复类型  1=不重复，2=按周重复，3=按月重复
                 step: 1, // 当前预约步骤
 
-                webRTCEventId: undefined, // 即将进入视频的事件id
+                eventItem: undefined, // 选中的事件
                 eventDialogVisible: false, // 事件对话框
 
                 calendarOptions: {
@@ -462,10 +473,10 @@
             // 面试官点击日期，添加可预约时间
             onDateClick(info) {
                 if (this.identity === 2) {
-                    if (info.date > this.getNextDay()) {
+                    if (info.date >= this.getNextDay()) {
                         this.step = 1;
                         this.start = '00:00';
-                        this.end = '24:00';
+                        this.end = '23:59';
                         this.date = info.date;
                         this.dialogVisible = true;
                     } else if (info.date >= this.getZeroOfToday()) {
@@ -473,7 +484,7 @@
                         let date = new Date();
                         date.setHours(date.getHours() + 1, 0, 0);
                         this.start = `${this.getDoubleValue(date.getHours())}:${this.getDoubleValue(date.getMinutes())}`;
-                        this.end = '24:00';
+                        this.end = '23:59';
                         this.date = info.date;
                         this.dialogVisible = true;
                     }
@@ -482,41 +493,36 @@
 
             // 点击事件
             onEventClick(info) {
-                if (this.identity === 1) {
-                    if (info.event.end < Date.now()) {
-                        this.$message.warning("面试已结束");
-                    } else if (info.event.start > Date.now() - 15 * 60 * 1000) {
-                        this.$message.warning("开始前15分钟可以进入房间等待");
-                        this.eventDialogVisible = true; // TODO 删除
-                        this.webRTCEventId = true; // TODO 删除
-                    } else {
-                        this.eventDialogVisible = true;
-                        this.webRTCEventId = true;
-                    }
-                } else if (this.identity === 2 && info.event.extendedProps.reservationList.length > 0) {
-                    if (info.event.end < Date.now()) {
-                        this.$message.warning("面试已结束");
-                    } else if (info.event.start > Date.now() - 15 * 60 * 1000) {
-                        this.$message.warning("开始前15分钟可以进入房间等待");
-                        this.eventDialogVisible = true; // TODO 删除
-                        this.webRTCEventId = true; // TODO 删除
-                    } else {
-                        this.eventDialogVisible = true;
-                        this.webRTCEventId = true;
-                    }
-                }
+                this.eventItem = {
+                    id: info.event.id,
+                    start: info.event.start,
+                    end: info.event.end,
+                    interviewerId: info.event.extendedProps.interviewerId
+                };
+                this.showContactEmail = false;
+                this.eventDialogVisible = true;
             },
 
             // 进入视频面试
             onEntryWebRTC() {
-                this.$route.push(`/a/a/a/${this.webRTCEventId}`); // TODO 修改route
+                if (this.eventItem.end < Date.now()) {
+                    this.$message.warning("面试已结束");
+                } else if (this.eventItem.start > Date.now() - 15 * 60 * 1000) {
+                    this.$message.warning("开始前15分钟可以进入房间等待");
+                } else {
+                    this.$router.push(`/webRTC/${this.eventItem.id}/${this.eventItem.interviewerId}`);
+                }
             },
 
             // 取消预约面试
             onCancelInterview() {
-                // TODO
+                this.showContactEmail = true;
             },
 
+            // 联系客服确认
+            onRequire() {
+                this.eventDialogVisible = false;
+            },
 
             // 获取数据
             // 面试官获取我的可预约事件（当前月）
@@ -525,22 +531,69 @@
                 let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
                 let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
                 this.$axios.get(`/mock/interview/time/my/${beginTime}/${endTime}`).then(data => {
-                    this.calendarOptions.events = data.data.map(item => {
-                        let event = {
-                            id: item.id,
-                            interviewerId: item.interviewerId,
-                            reservationList: item.reservationList,
-                            start: parseInt(item.beginTime),
-                            end: parseInt(item.endTime),
-                            borderColor: '#D3F261', // 块边框颜色
-                            backgroundColor: '#D3F261', // 块背景色
-                        };
-                        if (item.reservationList.length > 0) {
-                            event.borderColor = '#FFE58F';
-                            event.backgroundColor = '#FFE58F';
+                    let events = [];
+                    data.data.forEach(item => {
+                        if (item.reservationList.length === 0) { // 没有被任何人预约，即可预约事件
+                            events.push({
+                                interviewerId: item.interviewerId,
+                                start: parseInt(item.beginTime),
+                                end: parseInt(item.endTime),
+                                borderColor: '#D3F261', // 块边框颜色
+                                backgroundColor: '#D3F261', // 块背景色
+                            })
+                        } else {
+
+                            if (item.beginTime === 1606539600000) {
+                                console.log(item);
+                            }
+                            let eventList = [ // 保留被人预约剩余的可预约事件，默认为我的总预约时间段
+                                {
+                                    start: item.beginTime,
+                                    end: item.endTime,
+                                    borderColor: '#D3F261', // 块边框颜色
+                                    backgroundColor: '#D3F261', // 块背景色
+                                }
+                            ];
+
+                            // 遍历被预约事件
+                            item.reservationList.forEach(reservation => { // 被预约事件
+                                // 在可预约时间段内，去除被预约时间段，保留分散的可预约事件
+                                let event = eventList.find(event => {
+                                    return reservation.beginTime >= event.start && reservation.endTime <= event.end;
+                                })
+
+                                if (event) {
+                                    if (event.start === reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的开头
+                                        event.start = reservation.endTime; // 将可预约开始时间延迟至被预约时间结束
+                                    } else if (event.end === reservation.endTime && event.start !== reservation.beginTime) {  // 被预约时间段为可预约时间段的结尾
+                                        event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
+                                    } else if (event.start !== reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的中间部分
+                                        event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
+                                        eventList.push({ // 追加可预约时间段，从被预约结束时间，至可预约时间的结束
+                                            start: reservation.endTime,
+                                            end: item.endTime,
+                                            borderColor: '#D3F261', // 块边框颜色
+                                            backgroundColor: '#D3F261', // 块背景色
+                                        })
+                                    }
+                                }
+
+
+                                // 添加被预约事件
+                                events.push({
+                                    id: reservation.id, // 被预约的id，可预约不需要
+                                    interviewerId: reservation.userId, // 预约人
+                                    start: parseInt(reservation.beginTime),
+                                    end: parseInt(reservation.endTime),
+                                    borderColor: '#FFE58F',
+                                    backgroundColor: '#FFE58F'
+                                })
+                            })
+
+                            events = events.concat(eventList);
                         }
-                        return event;
-                    });
+                    })
+                    this.calendarOptions.events = events;
                 })
             },
 

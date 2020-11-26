@@ -60,21 +60,30 @@
             </div>
             <div v-else-if="step===2">
                 <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的时间为：</span><span class="dialog-text2">{{startTime}}至{{endTime}}</span></div>
-                <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{directionList.find(item => item.id===directionId).direction}}</span>
+                <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{findDirection()}}</span>
                 </div>
                 <div style="width:100%; height:1px; background:#C9DAFB;margin-bottom: 18px;"></div>
-                <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：<span style="color:#3D6FF4;">￥{{'400.00'}}</span></div>
-                <div class="pay-type" :style="{flexDirection:payType==='WEIXIN_NATIVE'?'row-reverse':'row'}">
-                    <el-button v-if="payType!=='WEIXIN_NATIVE'" type="primary" round @click="onWeChat" style="width: 200px;">{{payType?'切换为微信支付':'使用微信支付'}}
-                    </el-button>
-                    <el-button v-if="payType!=='ALIPAY_NATIVE'" type="primary" round @click="onAliPay" style="width: 200px;">{{payType?'切换为支付宝支付':'使用支付宝支付'}}
-                    </el-button>
-                    <div v-if="payType" id="qrcode" v-loading="qrcodeLoading" style="width: 200px;"></div>
+                <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：
+                    <span style="color:#3D6FF4;">￥{{findPrice()}}</span>
+                    <span style="color:#bdbdbd; font-size: 12px; padding-left: 8px;">请使用微信扫描下方二维码进行支付，10分钟内有效</span>
                 </div>
+
+                <!-- <div class="pay-type" :style="{flexDirection:payType==='WEIXIN_NATIVE'?'row-reverse':'row'}">-->
+                <!--     <el-button v-if="payType!=='WEIXIN_NATIVE'" type="primary" round @click="onWeChat" style="width: 200px;">{{payType?'切换为微信支付':'使用微信支付'}}-->
+                <!--     </el-button>-->
+                <!--     <el-button v-if="payType!=='ALIPAY_NATIVE'" type="primary" round @click="onAliPay" style="width: 200px;">{{payType?'切换为支付宝支付':'使用支付宝支付'}}-->
+                <!--     </el-button>-->
+                <!--     <div v-if="payType" id="qrcode" v-loading="qrcodeLoading" style="width: 200px;"></div>-->
+                <!-- </div>-->
+
+                <div id="qrcode" v-loading="qrcodeLoading" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+
                 <div class="footer">
                     <el-button @click="step=1" round style="width: 100px;" size="small">上一步</el-button>
-                    <el-button type="primary" @click="onPaymentCompleted" round style="width: 100px; margin-left: 20px;" size="small" :disabled="!payType">
-                        {{payType?'我已支付':'选择支付方式'}}
+                    <!--                    <el-button type="primary" @click="onPaymentCompleted" round style="width: 100px; margin-left: 20px;" size="small" :disabled="!payType">-->
+                    <!--                        {{payType?'我已支付':'选择支付方式'}}-->
+                    <!--                    </el-button>-->
+                    <el-button type="primary" @click="onPaymentCompleted" round style="width: 100px; margin-left: 20px;" size="small">{{orderId?'我已支付':'关闭'}}
                     </el-button>
                 </div>
             </div>
@@ -106,7 +115,7 @@
                 startTime: 0, // 预约起始时间
                 endTime: 0, // 预约结束时间
                 start: '00:00', // 预约最小时间
-                end: '24:00', // 预约最大时间
+                end: '23:59', // 预约最大时间
                 interviewerTimeId: undefined, // 预约时间id
                 directionId: undefined, // 要预约的方向Id
                 directionList: [], // 可选的预约类型
@@ -205,6 +214,9 @@
                         interviewTimeId: this.interviewerTimeId
                     }).then(data => {
                         this.step = 2;
+                        this.$nextTick(() => {
+                            this.onAliPay();
+                        })
                     })
                 }
             },
@@ -256,21 +268,27 @@
                         });
                     }
                     this.qrcodeLoading = false;
+                }).catch(() => {
+                    this.qrcodeLoading = false;
                 })
             },
 
             // 我已支付
             onPaymentCompleted() {
-                // 检查支付状态
-                this.$axios(`/pay/order/status/${this.orderId}`).then(data => {
-                    if (data.data === 1) { // 已付款
-                        this.step = 3;
-                    } else if (data.data === 0) {
-                        this.$message.warning("暂未支付")
-                    } else if (data.data === -1) {
-                        this.$message.warning("支付失败")
-                    }
-                })
+                if (this.orderId) {
+                    // 检查支付状态
+                    this.$axios(`/pay/order/status/${this.orderId}`).then(data => {
+                        if (data.data === 1) { // 已付款
+                            this.step = 3;
+                        } else if (data.data === 0) {
+                            this.$message.warning("暂未支付")
+                        } else if (data.data === -1) {
+                            this.$message.warning("支付失败")
+                        }
+                    })
+                } else {
+                    this.dialogVisible = false;
+                }
             },
 
             // 返回到我的模拟面试
@@ -289,7 +307,8 @@
                 this.interviewerTimeId = info.event.extendedProps.interviewerTimeId;
                 this.date = new Date(info.event.start);
                 this.start = this.getHourMinutes(info.event.start);
-                this.end = this.getHourMinutes(info.event.end);
+                this.end = "23:30";//this.getHourMinutes(info.event.end);
+                this.step = 1;
                 this.dialogVisible = true;
             },
 
@@ -316,6 +335,17 @@
                     this.directionList = data.data;
                 })
             },
+
+            findDirection() {
+                let item = this.directionList.find(item => item.id === this.directionId);
+                return item && item.direction;
+            },
+
+            findPrice() {
+                let item = this.directionList.find(item => item.id === this.directionId);
+                return item && item.price;
+            },
+
 
             // 以下工具函数
             getHourMinutes(time) {
