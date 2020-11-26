@@ -8,5 +8,5 @@ public class CompanySalaryForm {
     private Long companyId;
     private Long jobId; //岗位ID
     private Integer salaryId; //薪资范围ID
-    private Integer percent; //百分比
+    private Float percent; //百分比
 }

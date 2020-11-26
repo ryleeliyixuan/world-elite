@@ -63,7 +63,7 @@ public class CompanySalary {
      *
      * @mbg.generated
      */
-    private Integer percent;
+    private Float percent;
 
     /**
      * Database Column Remarks:
@@ -191,7 +191,7 @@ public class CompanySalary {
      *
      * @mbg.generated
      */
-    public Integer getPercent() {
+    public Float getPercent() {
         return percent;
     }
 
@@ -203,7 +203,7 @@ public class CompanySalary {
      *
      * @mbg.generated
      */
-    public void setPercent(Integer percent) {
+    public void setPercent(Float percent) {
         this.percent = percent;
     }
 

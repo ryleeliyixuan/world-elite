@@ -10,7 +10,7 @@ public class CompanySalaryVo implements VoConvertable<CompanySalaryVo, CompanySa
     private String companyId; //公司ID
     private JobVo job; //岗位
     private DictVo salary; //薪资范围
-    private Integer percent; //百分比
+    private Float percent; //百分比
 
     @Override
     public CompanySalaryVo asVo(CompanySalary companySalary) {
