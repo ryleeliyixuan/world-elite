@@ -18,11 +18,34 @@ const constantRoutes = [
         component: () => import('@/views/LoginPage'),
         meta: {title: '寰球菁英-登录'}
     },
+	{
+	    path: '/interviewSecretPage',
+	    component: () => import('@/views/InterviewSecretPage'),
+	    meta: {title: '寰球菁英-用户隐私协议'}
+	},
+    {
+        path: '/registerInterviewerPage',
+        component: () => import('@/views/RegisterInterviewerPage'),
+        meta: {title: '寰球菁英-面试官注册'}
+    },
+    {
+        path: '/registerInterviewerSuccess',
+        component: () => import('@/views/RegisterInterviewerSuccess'),
+        meta: {title: '寰球菁英-注册成功'}
+    },
+    {
+        path: '/registerOther',
+        component: () => import('@/views/RegisterOther'),
+        meta: {title: '寰球菁英-其他方式注册'}
+    },
+
     {
         path: '/register',
         component: () => import('@/views/RegisterPage'),
         meta: {title: '寰球菁英-注册'}
     },
+
+
     {
         path: '/edit-resume',
         component: () => import('@/views/EditResumePage'),
@@ -221,6 +244,7 @@ const constantRoutes = [
         component: () => import('@/views/MockMinePage'),
         meta: {title: '寰球菁英-我的模拟面试'}
     }
+
 ]
 
 const createRouter = () => new Router({

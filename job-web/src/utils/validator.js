@@ -29,6 +29,16 @@ const checkPassword = (rule, value, callback) => {
     }, 100)
 }
 
+export function isIdNumber(idNumber) {
+    const reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[0-2])(([0-2][1-9])|10|20|30|31)\d{3}(\d|X|x)$/;
+    //18位从1900到2099年中间的范围验证
+    return reg.test(idNumber)
+}
+export function isPrice(price) {
+    var reg = /^-?\d{1,4}(?:\.\d{1,2})?$/;
+    return reg.test(price)
+}
+
 export default {
     checkEmail: checkEmail,
     checkPassword: checkPassword
