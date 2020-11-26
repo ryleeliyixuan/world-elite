@@ -18,3 +18,5 @@ ALTER TABLE `t_company_salary`
 	ADD COLUMN `salary_id` INT(11) UNSIGNED NOT NULL COMMENT '薪资范围ID' AFTER `job_id`;
 ALTER TABLE `t_company_salary`
 	CHANGE COLUMN `job_id` `job_id` BIGINT UNSIGNED ZEROFILL NOT NULL DEFAULT 0 COMMENT '岗位ID' AFTER `company_id`;
+
+ALTER TABLE db_worldelite.t_company_salary MODIFY COLUMN percent FLOAT NOT NULL COMMENT '百分比';
