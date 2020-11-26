@@ -47,4 +47,13 @@ public class SmartTipsApi extends BaseApi {
         return smartTipsService.searchJobTips(keyword);
     }
 
+    /**
+     * Nuo Xu
+     * smart tip for activity
+     */
+    @GetMapping("search-activity-tips")
+    @ApiDoc
+    public List<SearchActivityTipsVo> searchActivityTips(@RequestParam  String keyword){
+        return smartTipsService.searchActivityTips(keyword);
+    }
 }
