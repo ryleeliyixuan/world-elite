@@ -44,7 +44,7 @@
                     <el-image :src="interviewer.avatar" class="right-item1-img2" fit="cover"/>
                     <div class="right-item1-name">{{interviewer.nickName}}</div>
                     <div class="right-item1-img3">{{interviewer.company.fullName}}</div>
-<!--                    <el-image :src="interviewer.companyLogo" class="right-item1-img3" fit="scale-down"/>-->
+                    <!--                    <el-image :src="interviewer.companyLogo" class="right-item1-img3" fit="scale-down"/>-->
                     <div class="right-item1-position">{{interviewer.position}}</div>
                     <div class="right-item1-score">{{interviewer.avgScore | toFixed1}}</div>
                     <div class="right-item-tip" v-if="interviewer.hot>5">HOT</div>
@@ -73,7 +73,8 @@
                             <div class="name1">{{interviewer.nickName}}</div>
                             <div class="position">{{interviewer.position}}</div>
                         </div>
-                        <el-image :src="interviewer.companyLogo" class="company-image" fit="scale-down"></el-image>
+<!--                        <el-image :src="interviewer.companyLogo" class="company-image" fit="scale-down"></el-image>-->
+                        <div v-if="interviewer.company">{{interviewer.company.name}}</div>
                     </div>
                 </div>
             </div>
@@ -111,7 +112,7 @@
             onMoreInterviewer() {
                 this.$router.push("/mock/interviewer/more");
             },
-            registerInterviewer(){
+            registerInterviewer() {
                 this.$router.push("/interviewSecretPage");
             },
 
@@ -177,48 +178,38 @@
                     params: {limit: 8}
                 }).then(data => {
                     this.$emit("complete");
-                    let interviewerList = [];
-                    // TODO
-                    for (let i = 0; i < 8; i++) {
-                        interviewerList.push({...data.data.list[0]});
+                    let list = data.data.list;
+                    if (list.length < 8) {
+                        for (let i = list.length; i < 8; i++) {
+                            list.push({...list[0]})
+                        }
                     }
 
-                    // this.interviewerList = data.data.list;
-                    // TODO END
-
-                    for (let i = 0; i < interviewerList.length; i++) {
-                        interviewerList[i].key = i;
+                    for (let i = 0; i < list.length; i++) {
+                        list[i].key = i;
                     }
-                    this.interviewerList = interviewerList;
+                    this.interviewerList = list;
                 })
             },
             getNewArrivalInterviewerList() {
                 this.$axios.get('/mock/interviewer/newarrival', {
                     params: {limit: 8}
                 }).then(data => {
-                    this.$emit("onComplete");
-                    let newArrivalInterviewerList = [];
 
-                    // TODO
-                    for (let i = 0; i < 8; i++) {
-                        newArrivalInterviewerList.push({...data.data.list[0]});
+                    let list = data.data.list;
+                    if (list.length < 4) {
+                        for (let i = list.length; i < 4; i++) {
+                            list.push({...list[0]})
+                        }
                     }
-                    newArrivalInterviewerList.unshift({...newArrivalInterviewerList[newArrivalInterviewerList.length - 1]});
-                    newArrivalInterviewerList.unshift({...newArrivalInterviewerList[newArrivalInterviewerList.length - 2]});
-                    newArrivalInterviewerList.unshift({...newArrivalInterviewerList[newArrivalInterviewerList.length - 3]});
-                    newArrivalInterviewerList.push({...newArrivalInterviewerList[0]});
-                    newArrivalInterviewerList.push({...newArrivalInterviewerList[1]});
-                    newArrivalInterviewerList.push({...newArrivalInterviewerList[2]});
-
-
-                    // newArrivalInterviewerList = data.data.list;
-                    // newArrivalInterviewerList.unshift(data.data.list[data.data.list.length-1]);
-                    // newArrivalInterviewerList.unshift(data.data.list[data.data.list.length-2]);
-                    // newArrivalInterviewerList.unshift(data.data.list[data.data.list.length-3]);
-                    // newArrivalInterviewerList.push(data.data.list[0]);
-                    // newArrivalInterviewerList.push(data.data.list[1]);
-                    // newArrivalInterviewerList.push(data.data.list[2]);
-                    // TODO END
+                    this.$emit("onComplete");
+                    let newArrivalInterviewerList = list;
+                    newArrivalInterviewerList.unshift({...list[list.length - 1]});
+                    newArrivalInterviewerList.unshift({...list[list.length - 2]});
+                    newArrivalInterviewerList.unshift({...list[list.length - 3]});
+                    newArrivalInterviewerList.push({...list[0]});
+                    newArrivalInterviewerList.push({...list[1]});
+                    newArrivalInterviewerList.push({...list[2]});
 
                     for (let i = 0; i < newArrivalInterviewerList.length; i++) {
                         newArrivalInterviewerList[i].key = i;
