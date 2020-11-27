@@ -471,6 +471,7 @@
                     <el-autocomplete
                             v-model="resumeEduForm.schoolName"
                             :fetch-suggestions="searchSchoolName"
+                            :trigger-on-focus="false"
                             value-key="name"
                             placeholder="请输入学校名称"
                             class="w-100"
@@ -520,6 +521,7 @@
                     <el-autocomplete
                             v-model="resumeExpForm.company"
                             :fetch-suggestions="searchCompanyName"
+                            :trigger-on-focus="false"
                             value-key="fullName"
                             placeholder="请输入公司名称"
                             class="w-100"

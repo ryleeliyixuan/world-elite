@@ -120,6 +120,7 @@
                 directionId: undefined, // 要预约的方向Id
                 directionList: [], // 可选的预约类型
                 step: 1, // 当前预约步骤
+                attachParam: undefined, // 预约id
 
                 payType: undefined, // WEIXIN_NATIVE,  ALIPAY_NATIVE
                 qrCode: undefined, // 二维码对象
@@ -213,9 +214,10 @@
                         endTime: this.getDate(this.date, this.endTime),
                         interviewTimeId: this.interviewerTimeId
                     }).then(data => {
+                        this.attachParam = data.data.id;
                         this.step = 2;
                         this.$nextTick(() => {
-                            this.onAliPay();
+                            this.onWeChat();
                         })
                     })
                 }
@@ -251,7 +253,8 @@
                         goodsId: direction.id,
                         goodsName: direction.direction,
                         userId: this.query.interviewerId,
-                        type: this.payType
+                        type: this.payType,
+                        attachParam: this.attachParam
                     }
                 }).then(data => {
                     this.orderId = data.data.payOrderId;
@@ -295,7 +298,7 @@
             onBack() {
                 this.dialogVisible = false;
                 this.step = 1;
-                this.$router.push("/mock/mine");
+                this.$router.push("/mock-mine");
             },
 
             // 日期时间

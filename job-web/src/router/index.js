@@ -215,7 +215,7 @@ const constantRoutes = [
         meta: {title: '寰球菁英-预约'}
     },
     {
-        path: '/mock/mine',
+        path: '/mock-mine',
         component: () => import('@/views/MockMinePage'),
         meta: {title: '寰球菁英-我的模拟面试'}
     }, {

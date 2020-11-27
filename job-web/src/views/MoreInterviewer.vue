@@ -73,7 +73,8 @@
                 size="medium" class="pagination"
                 layout="prev, pager, next, jumper"
                 :total="total" :page-size="10"
-                :current-page.sync="listQuery.page">
+                :current-page.sync="listQuery.page"
+                @current-change="getList">
         </el-pagination>
     </div>
 </template>
@@ -101,7 +102,7 @@
                     limit: 10,
                 },
                 interviewerList: [], // 面试官列表
-                total: 50,
+                total: 0,
             }
         },
         created() {
@@ -114,8 +115,8 @@
             initData() {
 
                 // 行业标签
-                this.$axios.get("/jobindustry/list").then(data => {
-                    this.industryList = data.data.map(item => {
+                this.$axios.get("/dict/list", {params: {type: 18, limit: 99}}).then(data => {
+                    this.industryList = data.data.list.map(item => {
                         item.select = false;
                         return item;
                     })
@@ -229,6 +230,7 @@
                     min-width: 120px;
                     font-size: 21px;
                     color: #333333;
+                    margin-top: 10px;
                 }
 
                 .filter {

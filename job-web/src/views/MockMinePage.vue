@@ -70,18 +70,18 @@
             <div class="record-container" v-show="identity===1 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="intervieweeRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
-                    <el-table-column prop="type" label="面试类别" width="260">
+                    <el-table-column prop="directionName" label="面试类别" width="260">
                         <template slot-scope="scope">
                             <div class="type">
                                 <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
-                                {{scope.row.type}}
+                                {{scope.row.directionName}}
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interviewer" label="面试官" width="190">
+                    <el-table-column prop="interviewerName" label="面试官" width="190">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.interviewer}}
+                                {{scope.row.interviewerName}}
                             </div>
                         </template>
                     </el-table-column>
@@ -97,25 +97,33 @@
                             <div class="view" @click="onView(scope.row)">查看评价</div>
                         </template>
                     </el-table-column>
+                    <template slot="empty">
+                        <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
+                            <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+                            <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无面试记录</div>
+                        </div>
+                    </template>
                 </el-table>
-                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="50" :page-size="5"
-                               :current-page.sync="intervieweePage"></el-pagination>
+                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="intervieweeTotal" :page-size="5"
+                               v-if="intervieweeTotal>0"
+                               :current-page.sync="intervieweePage"
+                               @current-change="getInterviewRecord"></el-pagination>
             </div>
             <div class="record-container" v-show="identity===2 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="interviewerRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
-                    <el-table-column prop="type" label="面试类别" width="260">
+                    <el-table-column prop="directionName" label="面试类别" width="260">
                         <template slot-scope="scope">
                             <div class="type">
                                 <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
-                                {{scope.row.type}}
+                                {{scope.row.directionName}}
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interviewer" label="面试官" width="190">
+                    <el-table-column prop="interviewerName" label="面试官" width="190">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.interviewer}}
+                                {{scope.row.interviewerName}}
                             </div>
                         </template>
                     </el-table-column>
@@ -131,9 +139,18 @@
                             <div class="view" @click="onView(scope.row)">查看评价</div>
                         </template>
                     </el-table-column>
+                    <template slot="empty">
+                        <div style="display: flex; flex-direction: column; align-items: center; margin: 20px auto;">
+                            <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+                            <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px; padding-bottom: 50px">当前暂无面试记录
+                            </div>
+                        </div>
+                    </template>
                 </el-table>
                 <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="interviewerTotal" :page-size="5"
-                               :current-page.sync="interviewerPage"></el-pagination>
+                               v-if="interviewerTotal>0"
+                               :current-page.sync="interviewerPage"
+                               @current-change="getInterviewRecord"></el-pagination>
             </div>
             <div class="record-container" v-show="identity===2 && menu===4">
                 <div class="title" style="margin-bottom: 20px;">我的收益</div>
@@ -141,28 +158,28 @@
                     <el-table-column width="120">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.date}}
+                                {{scope.row.month}}
                             </div>
                         </template>
                     </el-table-column>
                     <el-table-column width="200">
                         <template slot-scope="scope">
                             <div class="type">
-                                总收入：{{scope.row.income}}元
+                                总收入：{{scope.row.receivable}}元
                             </div>
                         </template>
                     </el-table-column>
                     <el-table-column width="200">
                         <template slot-scope="scope">
                             <div class="type">
-                                实际收入：{{scope.row.realIncome}}元
+                                实际收入：{{scope.row.receipts}}元
                             </div>
                         </template>
                     </el-table-column>
                     <el-table-column prop="time" width="130">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.settlement}}
+                                {{scope.row.status===0?'月底结算':scope.row.status===1?'已到账':''}}
                             </div>
                         </template>
                     </el-table-column>
@@ -173,7 +190,9 @@
                     </el-table-column>
                 </el-table>
                 <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="incomeTotal" :page-size="5"
-                               :current-page.sync="incomePage"></el-pagination>
+                               v-if="incomeTotal>0"
+                               :current-page.sync="incomePage"
+                               @current-change="getIncomeRecord"></el-pagination>
             </div>
         </div>
 
@@ -316,27 +335,19 @@
                 },
 
                 calendarApi: undefined, // 日历api
-                userIdentity: 2, // 用户身份   1：面试者    2：面试官
+                userIdentity: 1, // 用户身份   1：面试者    2：面试官
                 identity: 1, // 当前选择的身份  1：面试者    2：面试官
                 menu: 1, // 选中按钮  1：我的日历   2：面试记录
-                intervieweeRecordList: [{type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"}], // 面试者记录
+                intervieweeRecordList: [], // 面试者记录
                 intervieweePage: 1, // 面试者记录页码
-                intervieweeTotal: 50, // 面试者记录总数
-                interviewerRecordList: [{type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"}], // 面试官记录
+                intervieweeTotal: 0, // 面试者记录总数
+                interviewerRecordList: [], // 面试官记录
                 interviewerPage: 1, // 面试官记录页码
-                interviewerTotal: 40, // 面试官记录总数
+                interviewerTotal: 0, // 面试官记录总数
 
-                incomeList: [{date: '2020/11', income: '800', realIncome: '800', settlement: '月底结算'}], // 收益列表
+                incomeList: [], // 收益列表
                 incomePage: 1, // 面试官记录页码
-                incomeTotal: 30, // 面试官记录总数
+                incomeTotal: 0, // 面试官记录总数
             }
         },
 
@@ -414,6 +425,7 @@
             // 点击面试记录
             onMockRecord() {
                 this.menu = 2;
+                this.getInterviewRecord();
             },
 
             // 点击立即入住
@@ -424,6 +436,7 @@
             // 我的收益
             onIncome() {
                 this.menu = 4;
+                this.getIncomeRecord();
             },
 
             // 查看评价
@@ -614,6 +627,29 @@
                         }
                     });
                 })
+            },
+            //获取我的面试记录
+            getInterviewRecord() {
+                if (this.identity === 2) {
+                    this.$axios.get('/mock/interview/records/interviewer', {params: {page: this.interviewerPage, limit: 5}}).then(data => {
+                        this.interviewerRecordList = data.data.list;
+                        this.interviewerTotal = data.data.total;
+                    })
+                } else {
+                    this.$axios.get('/mock/interview/records/user', {params: {page: this.intervieweePage, limit: 5}}).then(data => {
+                        this.intervieweeRecordList = data.data.list;
+                        this.intervieweeTotal = data.data.total;
+                    })
+                }
+            },
+            //获取我的面试记录
+            getIncomeRecord() {
+                if (this.identity === 2) {
+                    this.$axios.get('/mock/interviewer/income/my', {params: {page: this.incomePage, limit: 5}}).then(data => {
+                        this.incomeList = data.data.list;
+                        this.incomeTotal = data.data.total;
+                    })
+                }
             },
 
             // 工具方法
