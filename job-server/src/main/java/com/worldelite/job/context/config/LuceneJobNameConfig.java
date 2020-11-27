@@ -13,6 +13,7 @@ import org.lionsoul.jcseg.analyzer.JcsegAnalyzer;
 import org.lionsoul.jcseg.dic.ADictionary;
 import org.lionsoul.jcseg.dic.DictionaryFactory;
 import org.lionsoul.jcseg.segmenter.SegmenterConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,7 @@ import java.nio.file.Paths;
  * @author yeguozhong yedaxia.github.com
  */
 @Configuration
-public class LuceneConfig {
+public class LuceneJobNameConfig {
 
     /**
      * lucene索引,存放位置
@@ -36,19 +37,22 @@ public class LuceneConfig {
     @Value(value = "${search.index.job}")
     private String LUCENE_INDEX_DIR;
 
-    /**
-     * 创建一个 Analyzer 实例
-     *
-     * @return
-     */
-    @Bean
-    public Analyzer registerAnalyser() {
-        SegmenterConfig config = new SegmenterConfig(true);
-        ADictionary dictionary = DictionaryFactory.createDefaultDictionary(config);
-        //重置同义词网络
-        dictionary.resetSynonymsNet();
-        return new JcsegAnalyzer(ISegment.COMPLEX, config, dictionary);
-    }
+    @Autowired
+    private Analyzer analyzer;
+
+//    /**
+//     * 创建一个 Analyzer 实例
+//     *
+//     * @return
+//     */
+//    @Bean
+//    public Analyzer registerAnalyser() {
+//        SegmenterConfig config = new SegmenterConfig(true);
+//        ADictionary dictionary = DictionaryFactory.createDefaultDictionary(config);
+//        //重置同义词网络
+//        dictionary.resetSynonymsNet();
+//        return new JcsegAnalyzer(ISegment.COMPLEX, config, dictionary);
+//    }
 
 
     /**
@@ -57,7 +61,7 @@ public class LuceneConfig {
      * @return
      * @throws IOException
      */
-    @Bean
+    @Bean(name = "jobDirectory")
     public Directory directory() throws IOException {
 
         Path path = Paths.get(LUCENE_INDEX_DIR);
@@ -73,15 +77,15 @@ public class LuceneConfig {
     /**
      * 创建indexWriter
      *
-     * @param directory
+     * @param jobDirectory
      * @param analyzer
      * @return
      * @throws IOException
      */
-    @Bean
-    public IndexWriter indexWriter(Directory directory, Analyzer analyzer) throws IOException {
+    @Bean("jobIndexWriter")
+    public IndexWriter indexWriter(Directory jobDirectory, Analyzer analyzer) throws IOException {
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-        IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig);
+        IndexWriter indexWriter = new IndexWriter(jobDirectory, indexWriterConfig);
         // 清空索引
         indexWriter.deleteAll();
         indexWriter.commit();
@@ -94,10 +98,10 @@ public class LuceneConfig {
      *
      * @throws IOException
      */
-    @Bean
-    public SearcherManager searcherManager(IndexWriter indexWriter) throws IOException {
-        SearcherManager searcherManager = new SearcherManager(indexWriter, false, false, new SearcherFactory());
-        ControlledRealTimeReopenThread cRTReopenThead = new ControlledRealTimeReopenThread(indexWriter, searcherManager,
+    @Bean("jobSearcherManager")
+    public SearcherManager searcherManager(IndexWriter jobIndexWriter) throws IOException {
+        SearcherManager searcherManager = new SearcherManager(jobIndexWriter, false, false, new SearcherFactory());
+        ControlledRealTimeReopenThread cRTReopenThead = new ControlledRealTimeReopenThread(jobIndexWriter, searcherManager,
                 5.0, 0.025);
         cRTReopenThead.setDaemon(true);
         //线程名称

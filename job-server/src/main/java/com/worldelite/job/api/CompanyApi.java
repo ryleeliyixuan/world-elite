@@ -76,6 +76,9 @@ public class CompanyApi extends BaseApi {
 
     @Autowired
     private WikiModuleService wikiModuleService;
+
+    @Autowired
+    private CompanyNameSearchService companyNameSearchService;
     /**
      * 搜索公司
      *
@@ -748,6 +751,33 @@ public class CompanyApi extends BaseApi {
     public ApiResult<List<CompanyRecommendVo>> listJob(@RequestParam Long companyId){
         List<CompanyRecommendVo> recommendVoList = companyRecommendService.listVoByCompanyId(companyId);
         return ApiResult.ok(recommendVoList);
+    }
+
+
+    /**
+     * 创建或刷新职位名索引
+     *
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("create-or-refresh-company-name-index")
+    public ApiResult createOrRefreshJobNameIndex() {
+        companyNameSearchService.createOrRefreshJobNameIndex();
+        return ApiResult.ok();
+    }
+
+
+    /**
+     * 根据名字搜索job
+     *
+     * @param searchNameForm
+     * @return
+     */
+    @GetMapping("search-company-name")
+    public ApiResult<PageResult<String>> searchJobName(@RequestBody SearchNameForm searchNameForm) {
+        companyNameSearchService.createOrRefreshJobNameIndex();
+        PageResult<String> result = companyNameSearchService.searchJobName(searchNameForm);
+        return ApiResult.ok(result);
     }
 
 }

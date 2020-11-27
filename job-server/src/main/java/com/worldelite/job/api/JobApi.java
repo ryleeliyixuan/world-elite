@@ -325,12 +325,13 @@ public class JobApi extends BaseApi {
     /**
      * 根据名字搜索job
      *
-     * @param searchJobNameForm
+     * @param searchNameForm
      * @return
      */
     @GetMapping("search-job-name")
-    public ApiResult<PageResult<String>> searchJobName(@RequestBody SearchJobNameForm searchJobNameForm) {
-        PageResult<String> result = jobNameSearchServiceImpl.searchJobName(searchJobNameForm);
+    public ApiResult<PageResult<String>> searchJobName(@RequestBody SearchNameForm searchNameForm) {
+        jobNameSearchServiceImpl.createOrRefreshJobNameIndex();
+        PageResult<String> result = jobNameSearchServiceImpl.searchJobName(searchNameForm);
         return ApiResult.ok(result);
     }
 

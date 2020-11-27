@@ -1,6 +1,9 @@
 package com.worldelite.job.form;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author twz
@@ -8,7 +11,10 @@ import lombok.Data;
  * @Desc TODO
  */
 @Data
-public class SearchJobNameForm {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class SearchNameForm {
     /**
      * 关键字
      */
