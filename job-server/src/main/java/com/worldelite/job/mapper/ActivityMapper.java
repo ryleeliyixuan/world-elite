@@ -67,4 +67,6 @@ public interface ActivityMapper {
     List<Activity> selectAndList(ActivityOptions options);
 
     List<Activity> selectSimpleByIdAndStatus(String where);
+
+    List<Activity> selectSmartTips(Activity record);
 }

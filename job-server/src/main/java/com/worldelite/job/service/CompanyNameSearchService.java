@@ -1,18 +1,16 @@
 package com.worldelite.job.service;
 
-import com.worldelite.job.constants.JobIndexFields;
-import com.worldelite.job.entity.Job;
-import com.worldelite.job.entity.JobOptions;
+import com.worldelite.job.constants.CompanyIndexFields;
+import com.worldelite.job.entity.Company;
+import com.worldelite.job.entity.CompanyOptions;
 import com.worldelite.job.form.SearchNameForm;
-import com.worldelite.job.mapper.JobMapper;
+import com.worldelite.job.mapper.CompanyMapper;
 import com.worldelite.job.vo.PageResult;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
@@ -20,50 +18,66 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author twz
- * @Date 2020/11/26 0026
+ * @Date 2020/11/27 0027
  * @Desc TODO
  */
-@Slf4j
 @Service
-//@AllArgsConstructor
-public class JobNameSearchService {
+@Slf4j
+public class CompanyNameSearchService {
+
     @Autowired
-    private JobMapper jobMapper;
+    private CompanyMapper companyMapper;
 
     @Autowired
     private Analyzer analyzer;
 
-    @Resource(name = "jobIndexWriter")
+    @Resource(name = "companyIndexWriter")
     private IndexWriter indexWriter;
 
-    @Resource(name = "jobSearcherManager")
+    @Resource(name = "companySearcherManager")
     private SearcherManager searcherManager;
 
+
+    /**
+     * 刷新职位名索引
+     */
+    @SneakyThrows
+    public void createOrRefreshJobNameIndex() {
+        List<Document> docs = new ArrayList<>();
+        CompanyOptions options = new CompanyOptions();
+        List<Company> companies = companyMapper.selectAndList(options);
+        companies.forEach(company -> {
+            Document doc = new Document();
+            doc.add(new TextField(CompanyIndexFields.COMPANY_FULL_NAME, company.getFullName(), Field.Store.YES));
+            docs.add(doc);
+        });
+
+        try {
+            indexWriter.deleteDocuments(new Term(CompanyIndexFields.COMPANY_FULL_NAME));
+            indexWriter.commit();
+
+            indexWriter.addDocuments(docs);
+            indexWriter.commit();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 
     @SneakyThrows
     public PageResult<String> searchJobName(SearchNameForm searchNameForm) {
         return searchJobName(searchNameForm.getKeyWords(), searchNameForm.getPage(), searchNameForm.getSize());
     }
 
-    /**
-     * 按职位名搜索
-     *
-     * @param keyWords
-     * @param page
-     * @param size
-     * @return
-     */
+
     @SneakyThrows
     public PageResult<String> searchJobName(String keyWords, int page, int size) {
         List<String> arrayList = new ArrayList<>();
@@ -73,14 +87,14 @@ public class JobNameSearchService {
             indexSearcher = searcherManager.acquire();
 
             BooleanQuery.Builder builder = new BooleanQuery.Builder();
-            builder.add(new QueryParser(JobIndexFields.JOB_NAME, analyzer).parse(keyWords), BooleanClause.Occur.MUST);
+            builder.add(new QueryParser(CompanyIndexFields.COMPANY_FULL_NAME, analyzer).parse(keyWords), BooleanClause.Occur.MUST);
 
             ScoreDoc lastScoreDoc = getLastScoreDoc(builder.build(), indexSearcher, page, size);
             final TopDocs topDocs = indexSearcher.searchAfter(lastScoreDoc, builder.build(), size);
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 final Document doc = indexSearcher.doc(scoreDoc.doc);
 
-                arrayList.add(doc.get(JobIndexFields.JOB_NAME));
+                arrayList.add(doc.get(CompanyIndexFields.COMPANY_FULL_NAME));
             }
 
             PageResult<String> pageResult = new PageResult<>();
@@ -98,36 +112,6 @@ public class JobNameSearchService {
                 searcherManager.release(indexSearcher);
         }
         return new PageResult<String>().emptyResult();
-    }
-
-    /**
-     * 刷新职位名索引
-     */
-    @SneakyThrows
-    public void createOrRefreshJobNameIndex() {
-        List<Document> docs = new ArrayList<>();
-//        final Map<Object, Object> maps = redisTemplate.opsForHash().entries(RedisAttr.ATTR_JOB_NAME_INFO);
-        JobOptions options = new JobOptions();
-        List<Job> jobs = jobMapper.selectAndList(options);
-        jobs.forEach(job -> {
-            Document doc = new Document();
-            doc.add(new TextField(JobIndexFields.JOB_NAME, job.getName(), Field.Store.YES));
-
-            docs.add(doc);
-        });
-
-        try {
-            //删除旧的,虽然delete会自动提交,但是防止删除操作延迟到添加新的以后执行把新加的给删了 这里还是强制提交一次
-            //将删除操作flush
-            indexWriter.deleteDocuments(new Term(JobIndexFields.JOB_NAME));
-            indexWriter.commit();
-
-            //添加新的
-            indexWriter.addDocuments(docs);
-            indexWriter.commit();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
     }
 
 

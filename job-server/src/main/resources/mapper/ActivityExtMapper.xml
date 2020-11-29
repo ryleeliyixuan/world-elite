@@ -39,4 +39,11 @@
       </if>
     </where>
   </select>
+
+  <select id="selectSmartTips" resultMap="BaseResultMap" parameterType="String">
+    select
+    <include refid="Base_Column_List" />
+    from t_activity
+    where title like CONCAT('%',#{title},'%') limit 10
+  </select>
 </mapper>

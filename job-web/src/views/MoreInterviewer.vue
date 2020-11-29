@@ -43,7 +43,8 @@
                     <div class="interviewer-message">
                         <div class="message-top">
                             <div class="message-text">{{interviewer.nickName}}</div>
-                            <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
+<!--                            <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>-->
+                            <div v-if="interviewer.company" style="margin-left: 20px;">{{interviewer.company.name}}</div>
                         </div>
                         <div class="message-bottom">
                             <el-image :src="require('@/assets/mock/icon5.png')" class="tip-image" fit="fill"></el-image>
@@ -73,7 +74,8 @@
                 size="medium" class="pagination"
                 layout="prev, pager, next, jumper"
                 :total="total" :page-size="10"
-                :current-page.sync="listQuery.page">
+                :current-page.sync="listQuery.page"
+                @current-change="getList">
         </el-pagination>
     </div>
 </template>
@@ -101,7 +103,7 @@
                     limit: 10,
                 },
                 interviewerList: [], // 面试官列表
-                total: 50,
+                total: 0,
             }
         },
         created() {
@@ -114,8 +116,8 @@
             initData() {
 
                 // 行业标签
-                this.$axios.get("/jobindustry/list").then(data => {
-                    this.industryList = data.data.map(item => {
+                this.$axios.get("/dict/list", {params: {type: 18, limit: 99}}).then(data => {
+                    this.industryList = data.data.list.map(item => {
                         item.select = false;
                         return item;
                     })
@@ -229,6 +231,7 @@
                     min-width: 120px;
                     font-size: 21px;
                     color: #333333;
+                    margin-top: 10px;
                 }
 
                 .filter {

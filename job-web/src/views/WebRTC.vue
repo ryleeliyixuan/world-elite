@@ -4,45 +4,71 @@
 
             <div class="main-container">
                 <div class="video-container" :style="{height:videoHeight+'px'}">
-                    <video :class="[{'major':remoteVideo && !waiting},{'minor':!remoteVideo || waiting}]" autoplay playsinline ref="remote" @play="calculateHeight"
+                    <video :class="[{'major':remoteVideo && !waiting},{'minor':!remoteVideo || waiting}]" autoplay playsinline ref="remote"
+                           @play="calculateHeight"
                            @click="changeVideo"/>
-                    <video :class="[{'major':!remoteVideo || waiting},{'minor':remoteVideo && !waiting}]" autoplay playsinline ref="preview" @play="calculateHeight"
+                    <video :class="[{'major':!remoteVideo || waiting},{'minor':remoteVideo && !waiting}]" autoplay playsinline ref="preview"
+                           @play="calculateHeight"
                            @click="changeVideo"/>
-                    <div v-if="waiting" style="text-align: center; z-index: 100; line-height: 300px; background: #cccccccc; border-radius: 20px;">等待对方加入...
+                    <div v-if="waiting" style="text-align: center; z-index: 100; line-height: 600px; background: #cccccc;">等待加入...
                     </div>
                 </div>
                 <div class="chat-container" :style="{height:videoHeight+'px'}">
-                    <div class="header">
-                        <el-avatar :size="35" :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
-                                   style="border: 1px solid #3D6FF4;"></el-avatar>
+                    <div class="header" v-if="conversationItem">
+                        <el-avatar :size="35" :src="conversationItem.friendVo.avatar" style="border: 1px solid #3D6FF4;"></el-avatar>
                         <div>
-                            <div class="name">Cathy Liu</div>
-                            <div class="tags">互联网/战略分析师/经验丰富</div>
+                            <div class="name">{{conversationItem.friendVo.name}}</div>
+                            <div class="tags" v-if="interviewer">{{interviewer.position}}</div>
                         </div>
                     </div>
-                    <div class="content"></div>
+                    <el-scrollbar ref="receive" class="content-container" wrap-style="overflow: hidden auto; padding-right: 10px;">
+                        <div v-for="item in messageList">
+                            <div class="self-container" v-if="item.fromUser===userId">
+                                <div class="self-text-content" v-if="item.payload.contentType===1">
+                                    {{item.payload.content}}
+                                </div>
+                                <div class="self-image-content" v-else-if="item.payload.contentType===3">
+                                    <el-image :src="item.payload.remoteMediaUrl" @load="scrollBottom"/>
+                                </div>
+                                <div class="self-text-content" v-else-if="item.payload.contentType===5">
+                                    <el-link type="primary" :href="item.payload.remoteMediaUrl" target="_blank">{{item.payload.content}}</el-link>
+                                </div>
+                                <el-image :src="$store.state.user.avatar" class="avatar">
+                                    <div slot="error">
+                                        <i class="el-icon-picture-outline"></i>
+                                    </div>
+                                </el-image>
+                            </div>
+                            <div class="others-container" v-else>
+                                <el-image :src="conversationItem.friendVo.avatar" class="avatar">
+                                    <div slot="error">
+                                        <i class="el-icon-picture-outline"></i>
+                                    </div>
+                                </el-image>
+                                <div class="others-text-content" v-if="item.payload.contentType===1">
+                                    {{item.payload.content}}
+                                </div>
+                                <div class="others-image-content" v-else-if="item.payload.contentType===3">
+                                    <el-image :src="item.payload.remoteMediaUrl" @load="scrollBottom"/>
+                                </div>
+                                <div class="others-text-content" v-else-if="item.payload.contentType===5">
+                                    <el-link type="primary" :href="item.payload.remoteMediaUrl" target="_blank">{{item.payload.content}}</el-link>
+                                </div>
+                            </div>
+                        </div>
+                    </el-scrollbar>
                     <div class="footer">
-                        <el-input
-                                type="text"
-                                placeholder="请输入内容"
-                                v-model="message"
-                                maxlength="150"
-                                :show-word-limit="false"/>
-                        <el-button class="send-button" type="primary" icon="el-icon-message" size="small" circle></el-button>
+                        <el-input type="text"
+                                  placeholder="请输入内容"
+                                  v-model="content"
+                                  maxlength="150"
+                                  @keyup.enter.native="onSend"
+                                  :show-word-limit="false"/>
+                        <el-button class="send-button" type="primary" icon="el-icon-message" size="small" circle @click="onSend"></el-button>
                     </div>
                 </div>
             </div>
             <div class="finish-button" @click="leaveRoom">结 束</div>
-            <el-dialog title="提示"
-                       :visible.sync="dialogVisible"
-                       width="30%">
-                <el-input v-model="userId" placeholder="请输入用户Id"></el-input>
-                <el-input v-model="userName" placeholder="请输入用户名"></el-input>
-                <el-input v-model="channelId" placeholder="请输入频道id"></el-input>
-                <span slot="footer">
-                <el-button type="primary" @click="onConfirm">确 定</el-button>
-            </span>
-            </el-dialog>
         </div>
     </div>
 
@@ -52,24 +78,40 @@
     import "aliyun-webrtc-sdk"
     import "@/utils/rtcUtils"
     import {sha256} from "@/utils/sha256"
+    import im from "@/utils/im"
 
     export default {
         name: "InterviewPage",
         data() {
             return {
-                userId: Date.now(), // 用户Id
-                userName: "test", // 用户名
-                channelId: 1, // 频道
+                eventId: undefined, // 预约事件Id
+                interviewerId: undefined, // 对方id
+                interviewer: undefined, // 对方信息
+                userId: undefined, // 用户Id（自己）
+                conversationItem: undefined, // 会话
+                content: "", // 要发送得消息
+                messageList: [], // 消息列表
+
                 aliWebRTC: undefined, // webRTC对象
                 streamState: "", // 流状态
                 remoteVideo: false, // 默认主显示远程视频
                 waiting: true, // 等待远程加入
-                dialogVisible: true, // 输入对话框
-                videoHeight: 0, // 视频高度
-                message: "", // 要发送得消息
+                videoHeight: 600, // 视频高度
+            }
+        },
+
+        computed: {
+            userName() {
+                return this.$store.state.user.name;
             }
         },
         mounted() {
+            this.eventId = this.$route.params.id;
+            this.interviewerId = this.$route.params.interviewerId;
+
+            // 获取对方信息（主要获取面试官的信息）
+            this.getInterviewerInfo(this.interviewerId);
+
             /**
              * 创建webRTC对象
              */
@@ -78,32 +120,35 @@
              * AliWebRTC isSupport检测
              */
             this.aliWebRTC.isSupport().then(re => {
-                console.log(re);
                 this.init();
+                this.joinRoom();   // TODO  需要取消注释
             }).catch(error => {
                 this.$message.error(error.message);
             })
 
+            /**
+             * 初始化webSocket
+             */
+            im.init(this.receiveMessage).then((data) => {
+                this.userId = data.userId;
+                this.token = data.token;
+                im.addConversation(this.interviewerId, 0).then(() => {
+                    im.getConversation(this.interviewerId, 0).then((conversation) => {
+                        this.conversationItem = conversation[0];
+                    })
+                })
+            }).catch(() => {
+                this.$router.push({path: "/login", query: {...this.$route.query, redirect: "/chat"}});
+            });
             this.$emit("complete");
         },
 
         destroy() {
+            im.close();
             this.leaveRoom();
         },
 
         methods: {
-            /**
-             * 对话框确认
-             */
-            onConfirm() {
-                if (!this.userId || !this.channelId) {
-                    this.$message.warning("请正确输入用户名和频道")
-                } else {
-                    this.dialogVisible = false;
-                    this.joinRoom();
-                }
-            },
-
             changeVideo() {
                 if (!this.waiting) {
                     this.remoteVideo = !this.remoteVideo;
@@ -114,7 +159,7 @@
              * 监听视频播放，获取视频最大高度
              */
             calculateHeight() {
-                setTimeout(()=> {
+                setTimeout(() => {
                     let videoHeight;
                     if (this.$refs.remote && this.$refs.preview) {
                         videoHeight = Math.max(this.$refs.remote.offsetHeight, this.$refs.preview.offsetHeight);
@@ -126,7 +171,7 @@
                         videoHeight = 0;
                     }
                     this.videoHeight = videoHeight;
-                },100)
+                }, 100)
             },
 
             /**
@@ -277,21 +322,21 @@
                     this.$message.warning("[开启预览失败]" + error.message);
                 });
                 //2. 获取频道鉴权令牌参数 为了防止被盗用建议该方法在服务端获取
-                this.$axios.post("/webrtc/token", {channelId: this.channelId}).then(data => {
+                this.$axios.post(`/mock/webrtc/token/${this.eventId}`).then(data => {
                     let authInfo;
-                    if (process.env.NODE_ENV === 'development') {
-                        authInfo = this.GenerateAliRtcAuthInfo(this.channelId);
-                    } else {
-                        authInfo = {
-                            appid: data.data.appId,
-                            userid: data.data.userId,
-                            timestamp: data.data.timestamp,
-                            nonce: data.data.nonce,
-                            token: data.data.token,
-                            gslb: ["https://rgslb.rtc.aliyuncs.com"],
-                            channel: data.data.channelId
-                        };
-                    }
+                    // if (process.env.NODE_ENV === 'development') {
+                    //     authInfo = this.GenerateAliRtcAuthInfo(this.eventId);
+                    // } else {
+                    authInfo = {
+                        appid: data.data.appId,
+                        userid: data.data.userId,
+                        timestamp: data.data.timestamp,
+                        nonce: data.data.nonce,
+                        token: data.data.token,
+                        gslb: ["https://rgslb.rtc.aliyuncs.com"],
+                        channel: data.data.channelId
+                    };
+                    // }
                     // 记录用户id
                     this.userId = authInfo.userid;
 
@@ -320,8 +365,9 @@
              */
             leaveRoom() {
                 this.remoteVideo = false;
-                this.calculateHeight();
+                // this.calculateHeight();
                 this.aliWebRTC.leaveChannel().then(() => {
+                    this.$router.go(-1);
                 }, (error) => {
                     console.log(error.message);
                 });
@@ -461,6 +507,75 @@
                     isSubVideo: isSubVideo
                 };
             },
+
+            getInterviewerInfo(id) {
+                this.$axios.get(`/mock/interviewer/${id}`).then(data => {
+                    this.interviewer = data.data;
+                })
+            },
+
+            // 接收消息处理
+            receiveMessage(value) {
+                if (this.$route.path === "/chat") {
+                    // 消息来自已经打开的窗口
+                    if (value.fromUser === this.conversationItem.friendVo.friendUserId) {
+                        im.msgAsReadMessage(value.fromUser, value.toUser, [value.messageId], value.conversation.conversationId);
+
+                        // 构建消息对象，插入接收框
+                        value.timestamp = Date.now();
+                        this.messageList.push(value);
+                        this.scrollBottom();
+
+                        // 更新会话列表
+                        this.conversationItem.lastMessage = value;
+                    }
+                }
+            },
+
+            // 发送
+            onSend() {
+                if (this.content !== '') {
+                    // 保存消息，并清空发送框
+                    let content = this.content;
+                    this.content = '';
+
+                    // 构建消息对象，插入接收框
+                    let message = {
+                        fromUser: this.userId,
+                        messageId: undefined,
+                        payload: {
+                            content: content,
+                            contentType: 1,
+                            expireDuration: 0,
+                            extra: null,
+                            remoteMediaUrl: null,
+                        },
+                        status: 1,
+                        timestamp: Date.now(),
+                        toUser: this.conversationItem.friendVo.friendUserId,
+                    }
+                    this.messageList.push(message);
+
+                    // 接收框滚动到底部
+                    this.scrollBottom();
+
+                    // 发送消息
+                    im.chatMessage(this.userId, this.conversationItem.friendVo.friendUserId, this.conversationItem.id, content, 1).then(data => {
+                        message.messageId = data.messageId;
+                        this.conversationItem.lastMessage = message;
+                    });
+                } else {
+                    this.$message.warning("消息不能为空");
+                }
+            },
+
+            // 接收框滚动到底部
+            scrollBottom() {
+                // 滚动到底部
+                this.$nextTick(() => {
+                    this.$refs.receive.wrap.scrollTop = this.$refs.receive.wrap.scrollHeight;
+                })
+            },
         }
     }
 </script>
@@ -478,19 +593,22 @@
 
             .main-container {
                 display: flex;
+                justify-content: center;
 
                 .video-container {
-                    flex: 7;
-                    height: auto;
+                    width: 700px;
+                    min-width: 700px;
                     position: relative;
                     display: inline-block;
-                    min-height: 300px;
+                    height: 600px;
+                    border-radius: 20px;
+                    overflow: hidden;
+                    background: black;
 
                     .major {
                         position: absolute;
                         width: 100%;
-                        height: auto;
-                        border-radius: 20px;
+                        height: 600px;
                     }
 
                     .minor {
@@ -500,16 +618,16 @@
                         top: 0;
                         height: auto;
                         z-index: 99;
-                        border-radius: 20px;
                     }
                 }
 
                 .chat-container {
-                    flex: 3;
+                    width: 300px;
+                    min-width: 300px;
                     display: inline-flex;
                     flex-direction: column;
                     justify-content: space-between;
-                    min-height: 300px;
+                    height: 500px;
                     border: 10px solid #D7E6FE;
                     border-radius: 20px;
                     background: white;
@@ -538,11 +656,107 @@
                             font-weight: 500;
                             color: #999999;
                             line-height: 9px;
+                            margin-left: 10px;
                         }
                     }
 
-                    .content {
+                    .content-container {
                         flex: 1;
+                        width: 100%;
+                        padding: 10px 0;
+
+                        .self-container {
+                            width: 100%;
+                            height: auto;
+                            display: flex;
+                            justify-content: flex-end;
+                            margin-top: 10px;
+                            padding: 0 15px;
+
+                            .self-text-content {
+                                max-width: 70%;
+                                height: auto;
+                                padding: 8px;
+                                font-size: 14px;
+                                word-wrap: break-word;
+                                word-break: break-all;
+                                background-color: #9eea6a;
+                                border-radius: 6px;
+                                position: relative;
+                                margin-right: 16px;
+
+
+                                &:hover {
+                                    background: #98e165;
+                                }
+
+                                &::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 16px;
+                                    right: -8px;
+                                    border-top: 8px solid transparent;
+                                    border-bottom: 8px solid transparent;
+                                    border-left: 8px solid #9eea6a;
+                                }
+
+                                &:hover::before {
+                                    border-left: 8px solid #98e165;
+                                }
+                            }
+
+                            .self-image-content {
+                                max-width: 70%;
+                                height: auto;
+                                margin-right: 8px;
+                            }
+                        }
+
+                        .others-container {
+                            width: 100%;
+                            height: auto;
+                            display: flex;
+                            align-items: flex-start;
+                            margin-top: 20px;
+                            padding: 0 15px;
+
+                            .others-text-content {
+                                max-width: 70%;
+                                height: auto;
+                                padding: 8px;
+                                font-size: 14px;
+                                word-wrap: break-word;
+                                word-break: break-all;
+                                background-color: #ffffff;
+                                border-radius: 6px;
+                                position: relative;
+                                margin-left: 16px;
+
+                                &:hover {
+                                    background: #fbfbfb;
+                                }
+
+                                &::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 16px;
+                                    left: -8px;
+                                    border-top: 8px solid transparent;
+                                    border-bottom: 8px solid transparent;
+                                    border-right: 8px solid rgba(255, 255, 255, 0.99);
+                                }
+
+                                &:hover::before {
+                                    border-right: 8px solid #fbfbfb;
+                                }
+                            }
+
+                            .others-image-content {
+                                max-width: 70%;
+                                height: auto;
+                                margin-left: 8px;
+                            }
+                        }
                     }
 
                     .footer {
@@ -585,5 +799,14 @@
             }
         }
 
+        .avatar {
+            min-width: 40px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
     }
 </style>

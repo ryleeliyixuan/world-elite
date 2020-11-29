@@ -1,11 +1,14 @@
 package com.worldelite.job.service;
 
+import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.Job;
 import com.worldelite.job.entity.JobCategory;
+import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.JobCategoryMapper;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.vo.JobCategoryVo;
 import com.worldelite.job.vo.JobVo;
+import com.worldelite.job.vo.SearchActivityTipsVo;
 import com.worldelite.job.vo.SearchJobTipsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ public class SmartTipsService extends BaseService{
 
     @Autowired
     private JobCategoryMapper jobCategoryMapper;
+
+    @Autowired
+    private ActivityMapper activityMapper;
 
     /**
      * 职位搜索输入框的智能提示功能
@@ -42,6 +48,22 @@ public class SmartTipsService extends BaseService{
             jobCategoryVoList.add(new JobCategoryVo().asVo(jobCategory));
         }
         return new SearchJobTipsVo().asVo(jobVoList,jobCategoryVoList);
+    }
+
+    /**
+     * Nuo Xu
+     * @param keyword
+     * @return
+     */
+    public List<SearchActivityTipsVo> searchActivityTips(String keyword){
+        Activity options = new Activity();
+        options.setTitle(keyword);
+        List<Activity>activities = activityMapper.selectSmartTips(options);
+        List<SearchActivityTipsVo>searchActivityTipsVos = new ArrayList<>();
+        for (Activity activity:activities){
+            searchActivityTipsVos.add(new SearchActivityTipsVo().asVo(activity));
+        }
+        return searchActivityTipsVos;
     }
 
 }

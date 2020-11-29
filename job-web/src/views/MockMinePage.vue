@@ -70,18 +70,18 @@
             <div class="record-container" v-show="identity===1 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="intervieweeRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
-                    <el-table-column prop="type" label="面试类别" width="260">
+                    <el-table-column prop="directionName" label="面试类别" width="260">
                         <template slot-scope="scope">
                             <div class="type">
                                 <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
-                                {{scope.row.type}}
+                                {{scope.row.directionName}}
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interviewer" label="面试官" width="190">
+                    <el-table-column prop="interviewerName" label="面试官" width="190">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.interviewer}}
+                                {{scope.row.interviewerName}}
                             </div>
                         </template>
                     </el-table-column>
@@ -97,25 +97,33 @@
                             <div class="view" @click="onView(scope.row)">查看评价</div>
                         </template>
                     </el-table-column>
+                    <template slot="empty">
+                        <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
+                            <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+                            <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无面试记录</div>
+                        </div>
+                    </template>
                 </el-table>
-                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="50" :page-size="5"
-                               :current-page.sync="intervieweePage"></el-pagination>
+                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="intervieweeTotal" :page-size="5"
+                               v-if="intervieweeTotal>0"
+                               :current-page.sync="intervieweePage"
+                               @current-change="getInterviewRecord"></el-pagination>
             </div>
             <div class="record-container" v-show="identity===2 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="interviewerRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
-                    <el-table-column prop="type" label="面试类别" width="260">
+                    <el-table-column prop="directionName" label="面试类别" width="260">
                         <template slot-scope="scope">
                             <div class="type">
                                 <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
-                                {{scope.row.type}}
+                                {{scope.row.directionName}}
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interviewer" label="面试官" width="190">
+                    <el-table-column prop="interviewerName" label="面试官" width="190">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.interviewer}}
+                                {{scope.row.interviewerName}}
                             </div>
                         </template>
                     </el-table-column>
@@ -131,9 +139,18 @@
                             <div class="view" @click="onView(scope.row)">查看评价</div>
                         </template>
                     </el-table-column>
+                    <template slot="empty">
+                        <div style="display: flex; flex-direction: column; align-items: center; margin: 20px auto;">
+                            <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+                            <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px; padding-bottom: 50px">当前暂无面试记录
+                            </div>
+                        </div>
+                    </template>
                 </el-table>
                 <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="interviewerTotal" :page-size="5"
-                               :current-page.sync="interviewerPage"></el-pagination>
+                               v-if="interviewerTotal>0"
+                               :current-page.sync="interviewerPage"
+                               @current-change="getInterviewRecord"></el-pagination>
             </div>
             <div class="record-container" v-show="identity===2 && menu===4">
                 <div class="title" style="margin-bottom: 20px;">我的收益</div>
@@ -141,28 +158,28 @@
                     <el-table-column width="120">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.date}}
+                                {{scope.row.month}}
                             </div>
                         </template>
                     </el-table-column>
                     <el-table-column width="200">
                         <template slot-scope="scope">
                             <div class="type">
-                                总收入：{{scope.row.income}}元
+                                总收入：{{scope.row.receivable}}元
                             </div>
                         </template>
                     </el-table-column>
                     <el-table-column width="200">
                         <template slot-scope="scope">
                             <div class="type">
-                                实际收入：{{scope.row.realIncome}}元
+                                实际收入：{{scope.row.receipts}}元
                             </div>
                         </template>
                     </el-table-column>
                     <el-table-column prop="time" width="130">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.settlement}}
+                                {{scope.row.status===0?'月底结算':scope.row.status===1?'已到账':''}}
                             </div>
                         </template>
                     </el-table-column>
@@ -173,7 +190,9 @@
                     </el-table-column>
                 </el-table>
                 <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="incomeTotal" :page-size="5"
-                               :current-page.sync="incomePage"></el-pagination>
+                               v-if="incomeTotal>0"
+                               :current-page.sync="incomePage"
+                               @current-change="getIncomeRecord"></el-pagination>
             </div>
         </div>
 
@@ -223,13 +242,23 @@
         </el-dialog>
 
         <el-dialog :visible.sync="eventDialogVisible" width="200px" :show-close="false" top="30%">
-            <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail">
                 <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进度视频面视</el-button>
                 <el-button type="info" plain size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
                            @click="onCancelInterview">取消面视预约
                 </el-button>
             </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="showContactEmail">
+                <div style="font-weight: bold;font-size: 18px">请联系人工客服：</div>
+                <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
+                <el-button type="primary" primary size="mini"
+                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
+                           @click="onRequire">确认
+                </el-button>
+            </div>
+
         </el-dialog>
     </div>
 </template>
@@ -247,9 +276,10 @@
         data() {
             return {
                 dialogVisible: false, // 对话框是否可见
+                showContactEmail: false,
                 date: 0, // 预约日期
                 start: '00:00', // 预约最小时间
-                end: '24:00', // 预约最大时间
+                end: '23:59', // 预约最大时间
                 beginTime: 0, // 预约起始时间
                 endTime: 0, // 预约结束时间
                 repeat: "1", // 要预约的类型
@@ -259,7 +289,7 @@
                 ], // 重复类型  1=不重复，2=按周重复，3=按月重复
                 step: 1, // 当前预约步骤
 
-                webRTCEventId: undefined, // 即将进入视频的事件id
+                eventItem: undefined, // 选中的事件
                 eventDialogVisible: false, // 事件对话框
 
                 calendarOptions: {
@@ -305,27 +335,19 @@
                 },
 
                 calendarApi: undefined, // 日历api
-                userIdentity: 2, // 用户身份   1：面试者    2：面试官
+                userIdentity: 1, // 用户身份   1：面试者    2：面试官
                 identity: 1, // 当前选择的身份  1：面试者    2：面试官
                 menu: 1, // 选中按钮  1：我的日历   2：面试记录
-                intervieweeRecordList: [{type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"}], // 面试者记录
+                intervieweeRecordList: [], // 面试者记录
                 intervieweePage: 1, // 面试者记录页码
-                intervieweeTotal: 50, // 面试者记录总数
-                interviewerRecordList: [{type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"},
-                    {type: "HR面试（通用）", interviewer: "Cathy", time: "2020-04-05 5:00~11:00am"}], // 面试官记录
+                intervieweeTotal: 0, // 面试者记录总数
+                interviewerRecordList: [], // 面试官记录
                 interviewerPage: 1, // 面试官记录页码
-                interviewerTotal: 40, // 面试官记录总数
+                interviewerTotal: 0, // 面试官记录总数
 
-                incomeList: [{date: '2020/11', income: '800', realIncome: '800', settlement: '月底结算'}], // 收益列表
+                incomeList: [], // 收益列表
                 incomePage: 1, // 面试官记录页码
-                incomeTotal: 30, // 面试官记录总数
+                incomeTotal: 0, // 面试官记录总数
             }
         },
 
@@ -403,6 +425,7 @@
             // 点击面试记录
             onMockRecord() {
                 this.menu = 2;
+                this.getInterviewRecord();
             },
 
             // 点击立即入住
@@ -413,6 +436,7 @@
             // 我的收益
             onIncome() {
                 this.menu = 4;
+                this.getIncomeRecord();
             },
 
             // 查看评价
@@ -462,10 +486,10 @@
             // 面试官点击日期，添加可预约时间
             onDateClick(info) {
                 if (this.identity === 2) {
-                    if (info.date > this.getNextDay()) {
+                    if (info.date >= this.getNextDay()) {
                         this.step = 1;
                         this.start = '00:00';
-                        this.end = '24:00';
+                        this.end = '23:59';
                         this.date = info.date;
                         this.dialogVisible = true;
                     } else if (info.date >= this.getZeroOfToday()) {
@@ -473,7 +497,7 @@
                         let date = new Date();
                         date.setHours(date.getHours() + 1, 0, 0);
                         this.start = `${this.getDoubleValue(date.getHours())}:${this.getDoubleValue(date.getMinutes())}`;
-                        this.end = '24:00';
+                        this.end = '23:59';
                         this.date = info.date;
                         this.dialogVisible = true;
                     }
@@ -482,41 +506,36 @@
 
             // 点击事件
             onEventClick(info) {
-                if (this.identity === 1) {
-                    if (info.event.end < Date.now()) {
-                        this.$message.warning("面试已结束");
-                    } else if (info.event.start > Date.now() - 15 * 60 * 1000) {
-                        this.$message.warning("开始前15分钟可以进入房间等待");
-                        this.eventDialogVisible = true; // TODO 删除
-                        this.webRTCEventId = true; // TODO 删除
-                    } else {
-                        this.eventDialogVisible = true;
-                        this.webRTCEventId = true;
-                    }
-                } else if (this.identity === 2 && info.event.extendedProps.reservationList.length > 0) {
-                    if (info.event.end < Date.now()) {
-                        this.$message.warning("面试已结束");
-                    } else if (info.event.start > Date.now() - 15 * 60 * 1000) {
-                        this.$message.warning("开始前15分钟可以进入房间等待");
-                        this.eventDialogVisible = true; // TODO 删除
-                        this.webRTCEventId = true; // TODO 删除
-                    } else {
-                        this.eventDialogVisible = true;
-                        this.webRTCEventId = true;
-                    }
-                }
+                this.eventItem = {
+                    id: info.event.id,
+                    start: info.event.start,
+                    end: info.event.end,
+                    interviewerId: info.event.extendedProps.interviewerId
+                };
+                this.showContactEmail = false;
+                this.eventDialogVisible = true;
             },
 
             // 进入视频面试
             onEntryWebRTC() {
-                this.$route.push(`/a/a/a/${this.webRTCEventId}`); // TODO 修改route
+                if (this.eventItem.end < Date.now()) {
+                    this.$message.warning("面试已结束");
+                } else if (this.eventItem.start > Date.now() - 15 * 60 * 1000) {
+                    this.$message.warning("开始前15分钟可以进入房间等待");
+                } else {
+                    this.$router.push(`/webRTC/${this.eventItem.id}/${this.eventItem.interviewerId}`);
+                }
             },
 
             // 取消预约面试
             onCancelInterview() {
-                // TODO
+                this.showContactEmail = true;
             },
 
+            // 联系客服确认
+            onRequire() {
+                this.eventDialogVisible = false;
+            },
 
             // 获取数据
             // 面试官获取我的可预约事件（当前月）
@@ -525,22 +544,69 @@
                 let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
                 let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
                 this.$axios.get(`/mock/interview/time/my/${beginTime}/${endTime}`).then(data => {
-                    this.calendarOptions.events = data.data.map(item => {
-                        let event = {
-                            id: item.id,
-                            interviewerId: item.interviewerId,
-                            reservationList: item.reservationList,
-                            start: parseInt(item.beginTime),
-                            end: parseInt(item.endTime),
-                            borderColor: '#D3F261', // 块边框颜色
-                            backgroundColor: '#D3F261', // 块背景色
-                        };
-                        if (item.reservationList.length > 0) {
-                            event.borderColor = '#FFE58F';
-                            event.backgroundColor = '#FFE58F';
+                    let events = [];
+                    data.data.forEach(item => {
+                        if (item.reservationList.length === 0) { // 没有被任何人预约，即可预约事件
+                            events.push({
+                                interviewerId: item.interviewerId,
+                                start: parseInt(item.beginTime),
+                                end: parseInt(item.endTime),
+                                borderColor: '#D3F261', // 块边框颜色
+                                backgroundColor: '#D3F261', // 块背景色
+                            })
+                        } else {
+
+                            if (item.beginTime === 1606539600000) {
+                                console.log(item);
+                            }
+                            let eventList = [ // 保留被人预约剩余的可预约事件，默认为我的总预约时间段
+                                {
+                                    start: item.beginTime,
+                                    end: item.endTime,
+                                    borderColor: '#D3F261', // 块边框颜色
+                                    backgroundColor: '#D3F261', // 块背景色
+                                }
+                            ];
+
+                            // 遍历被预约事件
+                            item.reservationList.forEach(reservation => { // 被预约事件
+                                // 在可预约时间段内，去除被预约时间段，保留分散的可预约事件
+                                let event = eventList.find(event => {
+                                    return reservation.beginTime >= event.start && reservation.endTime <= event.end;
+                                })
+
+                                if (event) {
+                                    if (event.start === reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的开头
+                                        event.start = reservation.endTime; // 将可预约开始时间延迟至被预约时间结束
+                                    } else if (event.end === reservation.endTime && event.start !== reservation.beginTime) {  // 被预约时间段为可预约时间段的结尾
+                                        event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
+                                    } else if (event.start !== reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的中间部分
+                                        event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
+                                        eventList.push({ // 追加可预约时间段，从被预约结束时间，至可预约时间的结束
+                                            start: reservation.endTime,
+                                            end: item.endTime,
+                                            borderColor: '#D3F261', // 块边框颜色
+                                            backgroundColor: '#D3F261', // 块背景色
+                                        })
+                                    }
+                                }
+
+
+                                // 添加被预约事件
+                                events.push({
+                                    id: reservation.id, // 被预约的id，可预约不需要
+                                    interviewerId: reservation.userId, // 预约人
+                                    start: parseInt(reservation.beginTime),
+                                    end: parseInt(reservation.endTime),
+                                    borderColor: '#FFE58F',
+                                    backgroundColor: '#FFE58F'
+                                })
+                            })
+
+                            events = events.concat(eventList);
                         }
-                        return event;
-                    });
+                    })
+                    this.calendarOptions.events = events;
                 })
             },
 
@@ -561,6 +627,29 @@
                         }
                     });
                 })
+            },
+            //获取我的面试记录
+            getInterviewRecord() {
+                if (this.identity === 2) {
+                    this.$axios.get('/mock/interview/records/interviewer', {params: {page: this.interviewerPage, limit: 5}}).then(data => {
+                        this.interviewerRecordList = data.data.list;
+                        this.interviewerTotal = data.data.total;
+                    })
+                } else {
+                    this.$axios.get('/mock/interview/records/user', {params: {page: this.intervieweePage, limit: 5}}).then(data => {
+                        this.intervieweeRecordList = data.data.list;
+                        this.intervieweeTotal = data.data.total;
+                    })
+                }
+            },
+            //获取我的面试记录
+            getIncomeRecord() {
+                if (this.identity === 2) {
+                    this.$axios.get('/mock/interviewer/income/my', {params: {page: this.incomePage, limit: 5}}).then(data => {
+                        this.incomeList = data.data.list;
+                        this.incomeTotal = data.data.total;
+                    })
+                }
             },
 
             // 工具方法

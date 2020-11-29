@@ -11,6 +11,8 @@ let im = {
             this.token = storage.getData("imInfo").token;
             this.userId = storage.getData("imInfo").userId;
 
+            eventBus.clearEvent();
+
             eventBus.addEvent("-1", (value) => {
                 console.log(value);
                 Message.error(value.errorMsg);
@@ -57,6 +59,10 @@ let im = {
                 Message.error("您的浏览器不支持 WebSocket!")
             }
         })
+    },
+
+    close() {
+        this.ws.close();
     },
 
     // 发送消息
@@ -135,6 +141,26 @@ let im = {
     getConversationList() {
         return new Promise((resolve, reject) => {
             this.sendMessage({messageType: "15"}).then(data => {
+                if (data.code) {
+                    if (data.errorMsg === "没有数据") {
+                        resolve([]);
+                    } else {
+                        Message.error(data.errorMsg);
+                        reject(data.errorMsg);
+                    }
+                } else {
+                    resolve(data.conversationVoList);
+                }
+            }).catch(error => {
+                Message.error(error);
+            })
+        })
+    },
+
+    // 获取会话
+    getConversation(targetUserId, jobId) {
+        return new Promise((resolve, reject) => {
+            this.sendMessage({messageType: "15", targetUserId, jobId}).then(data => {
                 if (data.code) {
                     if (data.errorMsg === "没有数据") {
                         resolve([]);

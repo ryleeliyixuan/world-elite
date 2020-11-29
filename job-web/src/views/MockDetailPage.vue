@@ -28,15 +28,15 @@
             </div>
             <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
         </div>
-                <div class="label-container">
-                    <div class="label-circle">
-                        <el-image :src="require('@/assets/mock/icon13.png')" class="label-icon" fit="fill"></el-image>
-                    </div>
-                    <div class="label-text">“{{interviewer.introduction}}”</div>
-                </div>
-                <!-- <div class="tip-container">-->
-                <!--     <div class="tip-item">经验丰富</div>-->
-                <!-- </div>-->
+        <div class="label-container">
+            <div class="label-circle">
+                <el-image :src="require('@/assets/mock/icon13.png')" class="label-icon" fit="fill"></el-image>
+            </div>
+            <div class="label-text">“{{interviewer.introduction}}”</div>
+        </div>
+        <!-- <div class="tip-container">-->
+        <!--     <div class="tip-item">经验丰富</div>-->
+        <!-- </div>-->
         <div class="introduce-container">
             {{interviewer.description}}
         </div>
@@ -208,10 +208,9 @@
             }
 
             .message-image {
-                width: 376px;
-                height: 98px;
+                width: 400px;
+                height: 300px;
             }
-
         }
 
         .label-container {

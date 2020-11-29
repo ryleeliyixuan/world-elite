@@ -89,6 +89,9 @@
                             <el-link :underline="false" href="/my-activities">我的活动</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
+                            <el-link :underline="false" href="/mock-mine">我的面试</el-link>
+                        </el-dropdown-item>
+                        <el-dropdown-item>
                             <el-link :underline="false" href="/modify-pwd">修改密码</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item @click.native="handleLogout" class="text-danger">退出登录</el-dropdown-item>
