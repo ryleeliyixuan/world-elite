@@ -90,4 +90,43 @@ public class CompanyPostServiceTest {
         companyPostForm.setTags(new String[]{"abc","def"});
         return companyPostService.save(companyPostForm);
     }
+
+    /**
+     * 获取图片路径测试
+     * 正常情况
+     */
+    @Test
+    public void testGetContentImage1(){
+        String content = "<p><strong>测试测试测试测试</strong></p>\n" +
+                "<ul>\n" +
+                "<li>测试\n" +
+                "<ul>\n" +
+                "<li>测试2</li>\n" +
+                "</ul>\n" +
+                "</li>\n" +
+                "</ul>\n" +
+                "<p><img class=\"wscnph\" " +
+                "src=\"https://worldelite-prod.oss-us-west-1.aliyuncs.com/pic/10bc527cb1094c819bcfe2b9d08fe1dc.png\" " +
+                "/><!-- pagebreak --></p>";
+        String image = companyPostService.getContentImage(content);
+        System.out.println(image);
+        Assert.isTrue(image.equals("https://worldelite-prod.oss-us-west-1.aliyuncs.com/pic/10bc527cb1094c819bcfe2b9d08fe1dc.png"));
+    }
+
+    /**
+     * 获取图片路径测试
+     * 内容为空或者不包含图片路径的情况
+     */
+    @Test
+    public void testGetContentImage2(){
+        //内容为null
+        String content = null;
+        String image = companyPostService.getContentImage(content);
+        Assert.isNull(image);
+
+        //内容不包含图片字符串
+        content = "";
+        image = companyPostService.getContentImage(content);
+        Assert.isNull(image);
+    }
 }

@@ -18,12 +18,15 @@ import com.worldelite.job.vo.CompanyPostVo;
 import com.worldelite.job.vo.CompanyVo;
 import com.worldelite.job.vo.PageResult;
 import lombok.extern.slf4j.Slf4j;
+import me.zhyd.oauth.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 企业帖子服务类
@@ -64,6 +67,12 @@ public class CompanyPostService extends BaseService{
         }
         //保存基本数据
         BeanUtil.copyProperties(companyPostForm,companyPost,"id");
+        //如果没有设置图片数据
+        //从内容中获取第一张图片做为图片数据
+        if(StringUtils.isEmpty(companyPost.getImage())){
+            String image = getContentImage(companyPost.getContent());
+            companyPost.setImage(image);
+        }
         //更新数据
         companyPostMapper.updateByPrimaryKeySelective(companyPost);
         //计算热度
@@ -234,5 +243,27 @@ public class CompanyPostService extends BaseService{
     public void hotCalc(Long postId){
         CompanyPost companyPost = getById(postId);
         hotCalc(companyPost);
+    }
+
+    /**
+     * 从内容中提取第一张图片
+     * @param content
+     * @return
+     */
+    public String getContentImage(String content){
+        if(content==null) return null;
+        String regEx_img = "<img.*src\\s*=\\s*(.*?)[^>]*?>";
+        Pattern pattern = Pattern.compile(regEx_img, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(content);
+        if(matcher.find()){
+            // 得到<img />数据
+            String img = matcher.group();
+            // 匹配<img>中的src数据
+            Matcher m = Pattern.compile("src\\s*=\\s*\"?(.*?)(\"|>|\\s+)").matcher(img);
+            if(m.find()){
+                return m.group(1);
+            }
+        }
+        return null;
     }
 }
