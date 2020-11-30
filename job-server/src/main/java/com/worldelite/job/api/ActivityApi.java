@@ -4,7 +4,9 @@ import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
+import com.worldelite.job.form.SearchNameForm;
 import com.worldelite.job.service.ActivityService;
+import com.worldelite.job.service.ActivityTitleSearchService;
 import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
@@ -31,6 +33,12 @@ public class ActivityApi {
 
     @Autowired
     private ActivityService activityService;
+
+    /**
+     * Nuo Xu
+     */
+    @Autowired
+    private ActivityTitleSearchService activityTitleSearchService;
 
     /**
      * 活动列表
@@ -93,5 +101,31 @@ public class ActivityApi {
     public ApiResult deleteActivity(@RequestParam Integer id){
         activityService.deleteActivity(id);
         return ApiResult.ok();
+    }
+
+    /**
+     * Nuo Xu
+     * create or refresh activity index
+     *
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("create-or-refresh-activity-title-index")
+    public ApiResult createOrRefreshActivityTitleIndex() {
+        activityTitleSearchService.createOrRefreshActivityTitleIndex();
+        return ApiResult.ok();
+    }
+
+
+    /**
+     * Nuo Xu
+     * @param searchNameForm
+     * @return
+     */
+    @GetMapping("search-activity-title")
+    public ApiResult<PageResult<String>> searchActivityTitle(@RequestBody SearchNameForm searchNameForm) {
+        activityTitleSearchService.createOrRefreshActivityTitleIndex();
+        PageResult<String> result = activityTitleSearchService.searchActivityTitle(searchNameForm);
+        return ApiResult.ok(result);
     }
 }
