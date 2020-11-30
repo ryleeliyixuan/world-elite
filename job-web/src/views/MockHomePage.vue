@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <div class="title-container" style="margin-top: 70px">
+        <div class="title-container" style="margin-top: 48px">
             <div class="title-left">本月新入驻面试官</div>
             <div class="title-right" @click="registerInterviewer">立即入驻
                 <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon">
@@ -282,11 +282,11 @@
 
                 .left-item {
                     width: 100%;
-                    height: 157px;
+                    height: 137px;
                     display: flex;
                     align-items: center;
                     position: relative;
-                    margin-top: 12px;
+                    /*margin-top: 12px;*/
                     cursor: pointer;
 
                     .item-left-container {
@@ -295,14 +295,14 @@
                         padding: 20px 20px 20px 40px;
 
                         .item-title {
-                            font-size: 28px;
+                            font-size: 21px;
                             font-weight: bold;
                             color: #FFFFFF;
                             margin-left: 95px;
                         }
 
                         .item-rate {
-                            margin: 17px 0 7px 0;
+                            margin: 14px 0 7px 0;
                         }
 
                         .item-bottom {
@@ -324,29 +324,29 @@
                     }
 
                     .right-image {
-                        width: 112px;
-                        height: 112px;
+                        width: 98px;
+                        height: 98px;
                         border-radius: 50%;
                         overflow: hidden;
                         position: absolute;
-                        top: 23px;
+                        top: 18px;
                         right: 28px;
                     }
                 }
 
                 .index0 {
                     background: url("../assets/mock/mock0.png") no-repeat;
-                    background-size: 453px 157px;
+                    background-size: 453px 137px;
                 }
 
                 .index1 {
                     background: url("../assets/mock/mock1.png") no-repeat;
-                    background-size: 453px 157px;
+                    background-size: 453px 137px;
                 }
 
                 .index2 {
                     background: url("../assets/mock/mock2.png") no-repeat;
-                    background-size: 453px 157px;
+                    background-size: 453px 137px;
                 }
             }
 
@@ -360,19 +360,19 @@
                 .right-item {
                     width: 100%;
                     display: flex;
-                    height: 77px;
+                    height: 59px;
                     align-items: center;
                     margin-top: 23px;
                     cursor: pointer;
 
                     .right-item1-img1 {
-                        width: 100px;
-                        height: 36px;
+                        width: 86px;
+                        height: 29px;
                     }
 
                     .right-item1-img2 {
-                        width: 77px;
-                        height: 77px;
+                        width: 59px;
+                        height: 59px;
                         border-radius: 50%;
                         overflow: hidden;
                         margin-left: 12px;
@@ -431,7 +431,7 @@
         .new-interviewer-container {
             margin-top: 22px;
             width: 100%;
-            height: 303px;
+            height: 233px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -450,7 +450,7 @@
                 white-space: nowrap;
 
                 .item-detail {
-                    width: 220px;
+                    width: 189px;
                     height: 100%;
                     position: relative;
                     margin: 0 18px;
@@ -458,13 +458,13 @@
                     cursor: pointer;
 
                     .interviewer-img {
-                        width: 220px;
+                        width: 189px;
                         height: 100%;
                     }
 
                     .interviewer-bottom {
-                        width: 200px;
-                        height: 62px;
+                        width: 174px;
+                        height: 57px;
                         background: rgba(255, 255, 255, 0.85);
                         position: absolute;
                         margin: 0 10px;

@@ -740,6 +740,10 @@
 </script>
 
 <style scoped lang="scss">
+    .align-center {
+        max-width: 800px;
+        margin-left: 300px;
+        margin-bottom: 100px;
     .app-container {
         max-width: 1140px;
         margin: 0 auto;

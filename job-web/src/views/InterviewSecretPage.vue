@@ -79,8 +79,13 @@
                     color: #FFFFFF;
                     line-height: 25px;
 
-
-                }
+    }
+    .align-center {
+        width: 885px;
+        background: #F5F5F5;
+        border-radius: 17px;
+        margin: 0 auto;
+    }
 
                 .ab {
 
