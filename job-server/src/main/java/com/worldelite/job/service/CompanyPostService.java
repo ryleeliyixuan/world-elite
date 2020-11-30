@@ -145,7 +145,7 @@ public class CompanyPostService extends BaseService{
         CompanyPost companyPost = new CompanyPost();
         BeanUtil.copyProperties(listForm,companyPost);
         AppUtils.setPage(listForm);
-        Page<CompanyPost> companyPostPage = (Page<CompanyPost>) companyPostMapper.selectAndListSimple(companyPost);
+        Page<CompanyPost> companyPostPage = (Page<CompanyPost>) companyPostMapper.selectAndList(companyPost);
         PageResult<CompanyPost> pageResult = new PageResult<>(companyPostPage);
         List<CompanyPost> companyPostList = (List<CompanyPost>) companyPostPage;
         pageResult.setList(companyPostList);
@@ -164,7 +164,9 @@ public class CompanyPostService extends BaseService{
         BeanUtil.copyProperties(companyPostPageResult,pageResult,"list");
         List<CompanyPostVo> postVoList = new ArrayList<>(postList.size());
         for(CompanyPost companyPost:postList){
-            postVoList.add(getPostVo(companyPost));
+            CompanyPostVo vo = getPostVo(companyPost);
+            vo.setContent(null);
+            postVoList.add(vo);
         }
         pageResult.setList(postVoList);
         return pageResult;
