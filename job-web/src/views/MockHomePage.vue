@@ -73,8 +73,8 @@
                             <div class="name1">{{interviewer.nickName}}</div>
                             <div class="position">{{interviewer.position}}</div>
                         </div>
-<!--                        <el-image :src="interviewer.companyLogo" class="company-image" fit="scale-down"></el-image>-->
-                        <div v-if="interviewer.company">{{interviewer.company.name}}</div>
+                        <!--                        <el-image :src="interviewer.companyLogo" class="company-image" fit="scale-down"></el-image>-->
+                        <div class="company-name" v-if="interviewer.company">{{interviewer.company.name}}</div>
                     </div>
                 </div>
             </div>
@@ -150,8 +150,8 @@
                     this.stepTimer = setInterval(() => {
                         try {
                             if (this.index === this.newArrivalInterviewerList.length - 4) {
-                                this.$refs.scrollbar.scrollLeft = 256 * 3;
-                                this.index = 3;
+                                this.$refs.scrollbar.scrollLeft = 256 * 2;
+                                this.index = 2;
                             }
                             let offset = (256 * (this.index + 1) - this.$refs.scrollbar.scrollLeft) * 0.1;
                             offset = offset > 0 ? Math.ceil(offset) : Math.floor(offset);
@@ -207,9 +207,9 @@
                     newArrivalInterviewerList.unshift({...list[list.length - 1]});
                     newArrivalInterviewerList.unshift({...list[list.length - 2]});
                     newArrivalInterviewerList.unshift({...list[list.length - 3]});
-                    newArrivalInterviewerList.push({...list[0]});
-                    newArrivalInterviewerList.push({...list[1]});
-                    newArrivalInterviewerList.push({...list[2]});
+                    newArrivalInterviewerList.push({...newArrivalInterviewerList[3]});
+                    newArrivalInterviewerList.push({...newArrivalInterviewerList[4]});
+                    newArrivalInterviewerList.push({...newArrivalInterviewerList[5]});
 
                     for (let i = 0; i < newArrivalInterviewerList.length; i++) {
                         newArrivalInterviewerList[i].key = i;
@@ -450,20 +450,20 @@
                 white-space: nowrap;
 
                 .item-detail {
-                    width: 189px;
+                    width: 190px;
                     height: 100%;
                     position: relative;
-                    margin: 0 18px;
+                    margin: 0 33px;
                     display: inline-block;
                     cursor: pointer;
 
                     .interviewer-img {
-                        width: 189px;
+                        width: 190px;
                         height: 100%;
                     }
 
                     .interviewer-bottom {
-                        width: 174px;
+                        width: 170px;
                         height: 57px;
                         background: rgba(255, 255, 255, 0.85);
                         position: absolute;
@@ -494,6 +494,12 @@
                         .company-image {
                             width: 100px;
                             height: 62px;
+                        }
+
+                        .company-name {
+                            font-size: 18px;
+                            color: #3D6FF4;
+                            line-height: 25px;
                         }
                     }
                 }

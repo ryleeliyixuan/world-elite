@@ -121,6 +121,7 @@
                 directionList: [], // 可选的预约类型
                 step: 1, // 当前预约步骤
                 attachParam: undefined, // 预约id
+                amount: undefined, // 预约id
 
                 payType: undefined, // WEIXIN_NATIVE,  ALIPAY_NATIVE
                 qrCode: undefined, // 二维码对象
@@ -215,6 +216,7 @@
                         interviewTimeId: this.interviewerTimeId
                     }).then(data => {
                         this.attachParam = data.data.id;
+                        this.amount = data.data.amount;
                         this.step = 2;
                         this.$nextTick(() => {
                             this.onWeChat();
@@ -249,7 +251,7 @@
                 let direction = this.directionList.find(item => item.id === this.directionId);
                 this.$axios.get("/pay/goods/buy", {
                     params: {
-                        amount: direction.price,
+                        amount: this.amount,
                         goodsId: direction.id,
                         goodsName: direction.direction,
                         userId: this.query.interviewerId,

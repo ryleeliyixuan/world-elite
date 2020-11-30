@@ -253,3 +253,12 @@ button.active.focus {
   webkit-box-shadow: none;
   box-shadow: none;
 }
+
+
+.fc .fc-daygrid-day.fc-day-today {
+  background: #EDF3FF !important;
+
+  & .fc-daygrid-day-number {
+    color: #3D6FF4;
+  }
+}

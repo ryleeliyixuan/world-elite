@@ -744,112 +744,112 @@
         max-width: 800px;
         margin-left: 300px;
         margin-bottom: 100px;
-    .app-container {
-        max-width: 1140px;
-        margin: 0 auto;
-        min-height: calc(100vh - 477px);
-        padding-bottom: 200px;
 
-        .main-container {
-            padding-left: 200px;
-            overflow-y: auto;
-            width: 1000px;
+        .app-container {
+            max-width: 1140px;
+            margin: 0 auto;
+            min-height: calc(100vh - 477px);
+            padding-bottom: 200px;
 
-            .avatar-uploader .el-upload {
-                cursor: pointer;
-                position: relative;
-                overflow: hidden;
-            }
+            .main-container {
+                padding-left: 200px;
+                overflow-y: auto;
+                width: 1000px;
 
-            .avatar-uploader .el-upload:hover {
-                border-color: #3a8ee6;
-            }
+                .avatar-uploader .el-upload {
+                    cursor: pointer;
+                    position: relative;
+                    overflow: hidden;
+                }
 
-            $avatarSize: 120px;
+                .avatar-uploader .el-upload:hover {
+                    border-color: #3a8ee6;
+                }
 
-            .avatar-uploader .avatar-uploader-icon {
-                border: 1px dashed #d9d9d9;
-                font-size: 28px;
-                color: #8c939d;
-                width: $avatarSize;
-                height: $avatarSize;
-                line-height: $avatarSize;
-                text-align: center;
-            }
+                $avatarSize: 120px;
 
-            .avatar-uploader .avatar-uploader-icon1 {
-                border: 1px dashed #d9d9d9;
-                font-size: 28px;
-                color: #3a8ee6;
-                width: 161px;
-                height: 111px;
-                line-height: 120px;
-                text-align: center;
-                background-image: url("../assets/idcard1.png");
-            }
+                .avatar-uploader .avatar-uploader-icon {
+                    border: 1px dashed #d9d9d9;
+                    font-size: 28px;
+                    color: #8c939d;
+                    width: $avatarSize;
+                    height: $avatarSize;
+                    line-height: $avatarSize;
+                    text-align: center;
+                }
 
-            .avatar-uploader .avatar-uploader-icon2 {
-                border: 1px dashed #d9d9d9;
-                font-size: 28px;
-                color: #3a8ee6;
-                width: 161px;
-                height: 111px;
-                line-height: 120px;
-                text-align: center;
-                background-image: url("../assets/idcard2.png");
-            }
+                .avatar-uploader .avatar-uploader-icon1 {
+                    border: 1px dashed #d9d9d9;
+                    font-size: 28px;
+                    color: #3a8ee6;
+                    width: 161px;
+                    height: 111px;
+                    line-height: 120px;
+                    text-align: center;
+                    background-image: url("../assets/idcard1.png");
+                }
 
-            .avatar-uploader .avatar-uploader-icon3 {
-                border: 1px dashed #d9d9d9;
-                font-size: 28px;
-                color: #3a8ee6;
-                width: 161px;
-                height: 111px;
-                line-height: 121px;
-                text-align: center;
-                background-image: url("../assets/idcard3.png");
-            }
+                .avatar-uploader .avatar-uploader-icon2 {
+                    border: 1px dashed #d9d9d9;
+                    font-size: 28px;
+                    color: #3a8ee6;
+                    width: 161px;
+                    height: 111px;
+                    line-height: 120px;
+                    text-align: center;
+                    background-image: url("../assets/idcard2.png");
+                }
+
+                .avatar-uploader .avatar-uploader-icon3 {
+                    border: 1px dashed #d9d9d9;
+                    font-size: 28px;
+                    color: #3a8ee6;
+                    width: 161px;
+                    height: 111px;
+                    line-height: 121px;
+                    text-align: center;
+                    background-image: url("../assets/idcard3.png");
+                }
 
 
-            .avatar-uploader .avatar1 {
-                width: 161px;
-                height: 121px;
-                display: block;
-            }
+                .avatar-uploader .avatar1 {
+                    width: 161px;
+                    height: 121px;
+                    display: block;
+                }
 
-            .avatar-uploader .avatar {
-                width: $avatarSize;
-                height: 120px;
-                display: block;
-            }
+                .avatar-uploader .avatar {
+                    width: $avatarSize;
+                    height: 120px;
+                    display: block;
+                }
 
-            .upload-attach-box .el-upload {
-                display: block;
-            }
+                .upload-attach-box .el-upload {
+                    display: block;
+                }
 
-            .upload-attach-box .el-upload button {
-                width: 100%;
-                font-size: 18px;
-                padding: 12px;
-            }
+                .upload-attach-box .el-upload button {
+                    width: 100%;
+                    font-size: 18px;
+                    padding: 12px;
+                }
 
-            .section1-select {
-                flex: 1;
-                width: 300px;
-                margin: 0 5px 5px;
-                height: 100%;
-            }
+                .section1-select {
+                    flex: 1;
+                    width: 300px;
+                    margin: 0 5px 5px;
+                    height: 100%;
+                }
 
-            .Btn {
-                margin-left: 400px;
-                margin-top: 12px;
-            }
+                .Btn {
+                    margin-left: 400px;
+                    margin-top: 12px;
+                }
 
-            .mb-3, .my-3 {
-                margin-bottom: 0px;
+                .mb-3, .my-3 {
+                    margin-bottom: 0px;
+                }
             }
         }
-
-
     }
 </style>
