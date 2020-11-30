@@ -20,6 +20,9 @@
       <if test="cliqueId != null">
         and clique_id = #{cliqueId}
       </if>
+      <if test="recommend != null">
+        and recommend = #{recommend}
+      </if>
       <if test="title != null and title != ''">
         and title like concat('%',#{title},'%')
       </if>
@@ -45,6 +48,9 @@
       </if>
       <if test="title != null and title != ''">
         and title like concat('%',#{title},'%')
+      </if>
+      <if test="recommend != null">
+        and recommend = #{recommend}
       </if>
     </where>
   </select>

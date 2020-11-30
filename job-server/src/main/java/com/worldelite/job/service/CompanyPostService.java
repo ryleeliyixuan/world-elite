@@ -67,12 +67,6 @@ public class CompanyPostService extends BaseService{
         }
         //保存基本数据
         BeanUtil.copyProperties(companyPostForm,companyPost,"id");
-        //如果没有设置图片数据
-        //从内容中获取第一张图片做为图片数据
-        if(StringUtils.isEmpty(companyPost.getImage())){
-            String image = getContentImage(companyPost.getContent());
-            companyPost.setImage(image);
-        }
         //更新数据
         companyPostMapper.updateByPrimaryKeySelective(companyPost);
         //计算热度
@@ -179,6 +173,12 @@ public class CompanyPostService extends BaseService{
     public CompanyPostVo getPostVo(CompanyPost companyPost){
         CompanyPostVo companyPostVo = new CompanyPostVo().asVo(companyPost);
         companyPostVo.setFromUser(userApplicantService.getUserInfo(companyPost.getFromId()));
+        //如果没有设置图片数据
+        //从内容中获取第一张图片做为图片数据
+        if(StringUtils.isEmpty(companyPost.getImage())){
+            String image = getContentImage(companyPost.getContent());
+            companyPostVo.setImage(image);
+        }
         //登录后才有点赞和举报
         if(curUser() != null) {
             companyPostVo.setLike(companyLikeService.hasLike(companyPost.getId()));
