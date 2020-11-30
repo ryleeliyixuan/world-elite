@@ -35,7 +35,7 @@ public class CompanyPostApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("save")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyPostVo> save(@RequestBody CompanyPostForm form){
         CompanyPost companyPost = companyPostService.save(form);
         return ApiResult.ok(companyPostService.getPostVo(companyPost));
@@ -47,7 +47,7 @@ public class CompanyPostApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("delete")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult delete(@RequestParam Long postId){
         companyPostService.delete(postId);
         return ApiResult.ok();
@@ -59,7 +59,7 @@ public class CompanyPostApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("like")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyPostVo> like(@RequestParam Long postId){
         CompanyPostVo companyPostVo = companyPostService.like(postId);
         return ApiResult.ok(companyPostVo);
@@ -72,7 +72,7 @@ public class CompanyPostApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("report")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyPostVo> report(@RequestBody CompanyReportForm companyReportForm){
         CompanyPostVo companyPostVo = companyPostService.report(companyReportForm);
         return ApiResult.ok(companyPostVo);
@@ -85,7 +85,7 @@ public class CompanyPostApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("comment")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyCommentVo> comment(@RequestBody CompanyCommentForm companyCommentForm){
         CompanyCommentVo commentVo = companyPostService.comment(companyCommentForm);
         return ApiResult.ok(commentVo);

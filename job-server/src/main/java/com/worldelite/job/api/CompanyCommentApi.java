@@ -31,7 +31,7 @@ public class CompanyCommentApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("delete")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult delete(@RequestParam Long commentId){
         companyCommentService.delete(commentId);
         return ApiResult.ok();
@@ -43,7 +43,7 @@ public class CompanyCommentApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("like")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyCommentVo> like(@RequestParam Long commentId){
         CompanyCommentVo companyCommentVo = companyCommentService.like(commentId);
         return ApiResult.ok(companyCommentVo);
@@ -56,7 +56,7 @@ public class CompanyCommentApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("report")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyCommentVo> report(@RequestBody CompanyReportForm companyReportForm){
         CompanyCommentVo companyCommentVo = companyCommentService.report(companyReportForm);
         return ApiResult.ok(companyCommentVo);
@@ -69,7 +69,7 @@ public class CompanyCommentApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("comment")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyCommentVo> comment(@RequestBody CompanyCommentForm companyCommentForm){
         CompanyCommentVo commentVo = companyCommentService.comment(companyCommentForm);
         return ApiResult.ok(commentVo);

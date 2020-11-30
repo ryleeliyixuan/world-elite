@@ -35,7 +35,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("save")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyScoreVo> save(@RequestBody CompanyScoreForm form){
         CompanyScore companyScore = companyScoreService.save(form);
         return ApiResult.ok(companyScoreService.getScoreVo(companyScore));
@@ -47,7 +47,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("delete")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult delete(@RequestParam Long scoreId){
         companyScoreService.delete(scoreId);
         return ApiResult.ok();
@@ -59,7 +59,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("like")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyScoreVo> like(@RequestParam Long scoreId){
         CompanyScoreVo companyScoreVo = companyScoreService.like(scoreId);
         return ApiResult.ok(companyScoreVo);
@@ -72,7 +72,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("report")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyScoreVo> report(@RequestBody CompanyReportForm companyReportForm){
         CompanyScoreVo companyScoreVo = companyScoreService.report(companyReportForm);
         return ApiResult.ok(companyScoreVo);
@@ -85,7 +85,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("comment")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyCommentVo> comment(@RequestBody CompanyCommentForm companyCommentForm){
         CompanyCommentVo commentVo = companyScoreService.comment(companyCommentForm);
         return ApiResult.ok(commentVo);
@@ -110,7 +110,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @GetMapping("my-score-info")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyScoreVo> getMyScoreInfo(@RequestParam Long companyId){
         CompanyScoreVo companyScoreVo = companyScoreService.myScoreInfoVo(companyId);
         return ApiResult.ok(companyScoreVo);
