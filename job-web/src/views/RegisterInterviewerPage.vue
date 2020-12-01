@@ -2,11 +2,11 @@
 
     <div class="app-container">
         <div class="main-container">
-            <p style="font-size: 25px">面试官注册</p>
-            <el-steps :active="active">
-                <el-step title="个人信息"></el-step>
-                <el-step title="面试信息"></el-step>
-                <el-step title="信息认证"></el-step>
+            <div class="title">面试官注册</div>
+            <el-steps :active="active" class="steps">
+                <el-step></el-step>
+                <el-step></el-step>
+                <el-step></el-step>
             </el-steps>
 
             <div v-if="active==1">
@@ -740,116 +740,146 @@
 </script>
 
 <style scoped lang="scss">
-    .align-center {
-        max-width: 800px;
-        margin-left: 300px;
-        margin-bottom: 100px;
+    .app-container {
+        width: 1140px;
+        padding: 20px 20px 200px 20px;
+        margin: 0 auto;
+        min-height: calc(100vh - 477px);
 
-        .app-container {
-            max-width: 1140px;
-            margin: 0 auto;
-            min-height: calc(100vh - 477px);
-            padding-bottom: 200px;
+        .main-container {
+            overflow-y: auto;
 
-            .main-container {
-                padding-left: 200px;
-                overflow-y: auto;
-                width: 1000px;
+            .title {
+                font-size: 36px;
+                color: #333333;
+                line-height: 50px;
+                margin-bottom: 30px;
+            }
 
-                .avatar-uploader .el-upload {
-                    cursor: pointer;
-                    position: relative;
-                    overflow: hidden;
+            .steps {
+                width: 722px;
+                margin-bottom: 50px;
+
+                ::v-deep .el-step__line {
+                    top: 29px;
+                    left: 15px;
                 }
 
-                .avatar-uploader .el-upload:hover {
-                    border-color: #3a8ee6;
+                ::v-deep .el-step__icon {
+                    width: 60px;
+                    height: 60px;
+                    font-size: 24px;
+                    background: #EDF3FF;
+                    border-radius: 50%;
+                    border: none;
                 }
 
-                $avatarSize: 120px;
+                ::v-deep .el-step__head {
+                    &.is-process, &.is-wait {
+                        color: #999999;
+                        border: none;
 
-                .avatar-uploader .avatar-uploader-icon {
-                    border: 1px dashed #d9d9d9;
-                    font-size: 28px;
-                    color: #8c939d;
-                    width: $avatarSize;
-                    height: $avatarSize;
-                    line-height: $avatarSize;
-                    text-align: center;
+                        .el-step__icon {
+                            background: #EEEEEE;
+                        }
+                    }
                 }
+            }
 
-                .avatar-uploader .avatar-uploader-icon1 {
-                    border: 1px dashed #d9d9d9;
-                    font-size: 28px;
-                    color: #3a8ee6;
-                    width: 161px;
-                    height: 111px;
-                    line-height: 120px;
-                    text-align: center;
-                    background-image: url("../assets/idcard1.png");
-                }
+            .avatar-uploader .el-upload {
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+            }
 
-                .avatar-uploader .avatar-uploader-icon2 {
-                    border: 1px dashed #d9d9d9;
-                    font-size: 28px;
-                    color: #3a8ee6;
-                    width: 161px;
-                    height: 111px;
-                    line-height: 120px;
-                    text-align: center;
-                    background-image: url("../assets/idcard2.png");
-                }
+            .avatar-uploader .el-upload:hover {
+                border-color: #3a8ee6;
+            }
 
-                .avatar-uploader .avatar-uploader-icon3 {
-                    border: 1px dashed #d9d9d9;
-                    font-size: 28px;
-                    color: #3a8ee6;
-                    width: 161px;
-                    height: 111px;
-                    line-height: 121px;
-                    text-align: center;
-                    background-image: url("../assets/idcard3.png");
-                }
+            $avatarSize: 120px;
+
+            .avatar-uploader .avatar-uploader-icon {
+                border: 1px dashed #d9d9d9;
+                font-size: 28px;
+                color: #8c939d;
+                width: $avatarSize;
+                height: $avatarSize;
+                line-height: $avatarSize;
+                text-align: center;
+            }
+
+            .avatar-uploader .avatar-uploader-icon1 {
+                border: 1px dashed #d9d9d9;
+                font-size: 28px;
+                color: #3a8ee6;
+                width: 161px;
+                height: 111px;
+                line-height: 120px;
+                text-align: center;
+                background-image: url("../assets/idcard1.png");
+            }
+
+            .avatar-uploader .avatar-uploader-icon2 {
+                border: 1px dashed #d9d9d9;
+                font-size: 28px;
+                color: #3a8ee6;
+                width: 161px;
+                height: 111px;
+                line-height: 120px;
+                text-align: center;
+                background-image: url("../assets/idcard2.png");
+            }
+
+            .avatar-uploader .avatar-uploader-icon3 {
+                border: 1px dashed #d9d9d9;
+                font-size: 28px;
+                color: #3a8ee6;
+                width: 161px;
+                height: 111px;
+                line-height: 121px;
+                text-align: center;
+                background-image: url("../assets/idcard3.png");
+            }
 
 
-                .avatar-uploader .avatar1 {
-                    width: 161px;
-                    height: 121px;
-                    display: block;
-                }
+            .avatar-uploader .avatar1 {
+                width: 161px;
+                height: 121px;
+                display: block;
+            }
 
-                .avatar-uploader .avatar {
-                    width: $avatarSize;
-                    height: 120px;
-                    display: block;
-                }
+            .avatar-uploader .avatar {
+                width: $avatarSize;
+                height: 120px;
+                display: block;
+            }
 
-                .upload-attach-box .el-upload {
-                    display: block;
-                }
+            .upload-attach-box .el-upload {
+                display: block;
+            }
 
-                .upload-attach-box .el-upload button {
-                    width: 100%;
-                    font-size: 18px;
-                    padding: 12px;
-                }
+            .upload-attach-box .el-upload button {
+                width: 100%;
+                font-size: 18px;
+                padding: 12px;
+            }
 
-                .section1-select {
-                    flex: 1;
-                    width: 300px;
-                    margin: 0 5px 5px;
-                    height: 100%;
-                }
+            .section1-select {
+                flex: 1;
+                width: 300px;
+                margin: 0 5px 5px;
+                height: 100%;
+            }
 
-                .Btn {
-                    margin-left: 400px;
-                    margin-top: 12px;
-                }
+            .Btn {
+                margin-left: 400px;
+                margin-top: 12px;
+            }
 
-                .mb-3, .my-3 {
-                    margin-bottom: 0px;
-                }
+            .mb-3, .my-3 {
+                margin-bottom: 0px;
             }
         }
     }
+
 </style>

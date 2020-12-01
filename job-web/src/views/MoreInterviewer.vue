@@ -186,6 +186,7 @@
             },
 
             onInterviewer(interviewer) {
+                this.$storage.setData("interviewerFrom", {home:false});
                 this.$router.push(`/mock/interviewer/${interviewer.id}`);
             },
 

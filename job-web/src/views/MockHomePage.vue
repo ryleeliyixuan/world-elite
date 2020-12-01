@@ -55,7 +55,7 @@
 
         <div class="title-container" style="margin-top: 48px">
             <div class="title-left">本月新入驻面试官</div>
-            <div class="title-right" @click="registerInterviewer">立即入驻
+            <div class="title-right" @click="registerInterviewer" v-if="userIdentity!==2">立即入驻
                 <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon">
             </div>
         </div>
@@ -93,6 +93,7 @@
                 stepTimer: undefined, // 滚动列表定时器
                 autoTimer: undefined,
                 index: 3, // 滚动列表索引
+                userIdentity:undefined,//用户身份
             }
         },
         mounted() {
@@ -101,6 +102,7 @@
             this.autoTimer = setInterval(() => {
                 this.onRight();
             }, 2000);
+            this.getInterviewerInfo()
         },
         unmount() {
             this.clearTime();
@@ -117,7 +119,13 @@
             },
 
             onInterviewer(interviewer) {
+                this.$storage.setData("interviewerFrom", {home:true});
                 this.$router.push(`/mock/interviewer/${interviewer.id}`);
+            },
+            getInterviewerInfo() {
+                this.$axios.get("/mock/interviewer/my-info").then(data => {
+                    this.userIdentity = data.data ? 2 : 1;
+                })
             },
 
             onLeft() {

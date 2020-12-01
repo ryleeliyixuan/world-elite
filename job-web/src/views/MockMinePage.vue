@@ -120,10 +120,10 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interviewerName" label="面试官" width="190">
+                    <el-table-column prop="interviewerName" label="面试者" width="190">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.interviewerName}}
+                                {{scope.row.userName}}
                             </div>
                         </template>
                     </el-table-column>
