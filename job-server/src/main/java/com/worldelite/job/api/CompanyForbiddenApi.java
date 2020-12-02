@@ -14,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 企业评分接口
+ * 企业禁言接口
  */
 @RestController
 @RequestMapping("/api/company-forbidden/")
