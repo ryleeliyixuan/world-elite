@@ -3,15 +3,9 @@ package com.worldelite.job.api;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.CompanyPost;
-import com.worldelite.job.form.CompanyCommentForm;
-import com.worldelite.job.form.CompanyPostForm;
-import com.worldelite.job.form.CompanyPostListForm;
-import com.worldelite.job.form.CompanyReportForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.service.CompanyPostService;
-import com.worldelite.job.vo.ApiResult;
-import com.worldelite.job.vo.CompanyCommentVo;
-import com.worldelite.job.vo.CompanyPostVo;
-import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.*;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -43,13 +37,25 @@ public class CompanyPostApi extends BaseApi {
 
     /**
      * 删除帖子
-     * @param postId 帖子ID
+     * @param deleteForm 帖子删除表单
      */
     @ApiDoc
     @PostMapping("delete")
     @RequireLogin
-    public ApiResult delete(@RequestParam Long postId){
-        companyPostService.delete(postId);
+    public ApiResult delete(@RequestBody CompanyPostDeleteForm deleteForm){
+        companyPostService.delete(deleteForm.getPostId());
+        return ApiResult.ok();
+    }
+
+    /**
+     * 批量删除帖子
+     * @param deleteForm 帖子删除表单
+     */
+    @ApiDoc
+    @PostMapping("delete-all")
+    @RequireLogin
+    public ApiResult deleteAll(@RequestBody CompanyPostDeleteForm deleteForm){
+        companyPostService.deleteAll(deleteForm.getPostIds());
         return ApiResult.ok();
     }
 
@@ -113,5 +119,18 @@ public class CompanyPostApi extends BaseApi {
     public ApiResult getDetail(@RequestParam Long postId){
         CompanyPostVo postVo = companyPostService.getPostVo(postId);
         return ApiResult.ok(postVo);
+    }
+
+    /**
+     * 查询帖子
+     * @param listForm
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("search")
+    @RequireLogin
+    public ApiResult<PageResult<CompanyPostVo>> search(@RequestBody CompanyPostListForm listForm){
+        PageResult<CompanyPostVo> pageResult = companyPostService.search(listForm);
+        return ApiResult.ok(pageResult);
     }
 }

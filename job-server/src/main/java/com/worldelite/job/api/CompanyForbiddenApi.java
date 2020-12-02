@@ -25,7 +25,7 @@ public class CompanyForbiddenApi extends BaseApi {
     private CompanyForbiddenService companyForbiddenService;
 
     /**
-     * 禁言或者解禁用户
+     * 禁言用户
      * @param companyForbiddenForm
      * @return
      */
@@ -38,27 +38,42 @@ public class CompanyForbiddenApi extends BaseApi {
     }
 
     /**
-     * 查询用户是否被禁言
-     * @param userId
+     * 解禁用户
+     * @param companyForbiddenForm
      * @return
      */
     @ApiDoc
-    @GetMapping("get-forbidden")
-    @RequireLogin
-    public ApiResult<CompanyForbiddenVo> getForbidden(@RequestParam Long userId){
-        CompanyForbiddenVo forbidden = companyForbiddenService.getForbidden(userId);
-        return ApiResult.ok(forbidden);
+    @PostMapping("un-forbidden")
+    @RequireLogin(allow = UserType.ADMIN)
+    public ApiResult unForbidden(@RequestBody CompanyForbiddenForm companyForbiddenForm){
+        companyForbiddenService.unForbidden(companyForbiddenForm);
+        return ApiResult.ok();
     }
 
     /**
-     * 查询自己是否被禁言
+     * 批量禁言用户
+     * @param companyForbiddenForm
      * @return
      */
     @ApiDoc
-    @GetMapping("my-forbidden")
-    @RequireLogin
-    public ApiResult<CompanyForbiddenVo> myForbidden(){
-        CompanyForbiddenVo forbidden = companyForbiddenService.myForbidden();
-        return ApiResult.ok(forbidden);
+    @PostMapping("forbidden-all")
+    @RequireLogin(allow = UserType.ADMIN)
+    public ApiResult forbiddenAll(@RequestBody CompanyForbiddenForm companyForbiddenForm){
+        companyForbiddenService.forbiddenAll(companyForbiddenForm);
+        return ApiResult.ok();
     }
+
+    /**
+     * 批量解禁用户
+     * @param companyForbiddenForm
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("un-forbidden-all")
+    @RequireLogin(allow = UserType.ADMIN)
+    public ApiResult unForbiddenAll(@RequestBody CompanyForbiddenForm companyForbiddenForm){
+        companyForbiddenService.unForbiddenAll(companyForbiddenForm);
+        return ApiResult.ok();
+    }
+
 }

@@ -13,4 +13,5 @@ public class CompanyScoreForm {
     private Integer score; //分数
     private String content; //评分内容
     private Byte anonymous; //是否匿名
+    private Byte recommend; //是否优质
 }

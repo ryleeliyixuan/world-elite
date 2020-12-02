@@ -24,33 +24,62 @@ public class CompanyForbiddenService extends BaseService {
         if(userId==null){
             throw new ServiceException(message("api.error.invalid.param"));
         }
-        if(isForbidden(userId)){
-            deleteForbidden(userId);
-        }else{
-            addForbidden(userId);
+        if(!isForbidden(userId)){
+            addForbidden(userId,companyForbiddenForm.getDaysId(),companyForbiddenForm.getContent());
+            if(companyForbiddenForm.getNotice()!=0){
+                //notice user;
+            }
         }
     }
 
-    /**
-     * 判读当前登陆用户是否被禁言
-     * @return
-     */
-    public CompanyForbiddenVo myForbidden(){
-        Long userId = curUser().getId();
-        CompanyForbiddenVo companyForbiddenVo = new CompanyForbiddenVo();
-        companyForbiddenVo.setForbidden(isForbidden(userId));
-        return companyForbiddenVo;
+    public void unForbidden(CompanyForbiddenForm companyForbiddenForm){
+        Long userId = companyForbiddenForm.getUserId();
+        if(userId==null){
+            throw new ServiceException(message("api.error.invalid.param"));
+        }
+        if(isForbidden(userId)){
+            deleteForbidden(userId);
+            if(companyForbiddenForm.getNotice()!=0){
+                //notice user;
+            }
+        }
     }
 
-    public CompanyForbiddenVo getForbidden(Long userId){
-        CompanyForbiddenVo companyForbiddenVo = new CompanyForbiddenVo();
-        companyForbiddenVo.setForbidden(isForbidden(userId));
-        return companyForbiddenVo;
+    public void forbiddenAll(CompanyForbiddenForm companyForbiddenForm){
+        Long[] userIds = companyForbiddenForm.getUserIds();
+        if(userIds==null){
+            throw new ServiceException(message("api.error.invalid.param"));
+        }
+        for(int i=0;i<userIds.length;i++){
+            if(!isForbidden(userIds[i])){
+                addForbidden(userIds[i],companyForbiddenForm.getDaysId(),companyForbiddenForm.getContent());
+                if(companyForbiddenForm.getNotice()!=0){
+                    //notice user;
+                }
+            }
+        }
     }
 
-    public void addForbidden(Long userId){
+    public void unForbiddenAll(CompanyForbiddenForm companyForbiddenForm){
+        Long[] userIds = companyForbiddenForm.getUserIds();
+        if(userIds==null){
+            throw new ServiceException(message("api.error.invalid.param"));
+        }
+        for(int i=0;i<userIds.length;i++){
+            if(isForbidden(userIds[i])){
+                deleteForbidden(userIds[i]);
+                if(companyForbiddenForm.getNotice()!=0){
+                    //notice user;
+                }
+            }
+        }
+    }
+
+    public void addForbidden(Long userId,Integer daysId,String content){
         CompanyForbidden companyForbidden = new CompanyForbidden();
         companyForbidden.setUserId(userId);
+        companyForbidden.setDaysId(daysId);
+        companyForbidden.setContent(content);
         companyForbiddenMapper.insertSelective(companyForbidden);
     }
 

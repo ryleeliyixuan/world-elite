@@ -10,3 +10,7 @@ COMMENT='公司禁言表'
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
+
+ALTER TABLE db_worldelite.t_company_forbidden ADD days INT DEFAULT 0 NOT NULL COMMENT '禁言天数';
+ALTER TABLE db_worldelite.t_company_forbidden ADD content varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' NOT NULL;
+ALTER TABLE db_worldelite.t_company_forbidden CHANGE days days_id int(11) DEFAULT 0 NOT NULL COMMENT '禁言天数';

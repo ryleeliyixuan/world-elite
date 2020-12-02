@@ -38,6 +38,9 @@ public class CompanyPostVo implements VoConvertable<CompanyPostVo, CompanyPost>{
     private String image; //帖子图片
     private Byte recommend; //是否设为精品/优质
 
+    private Byte forbidden; //是否禁言
+    private CompanyVo company; //企业信息
+
     private UserApplicantVo fromUser; //发帖人
     private Boolean like; //是否点赞
     private CompanyReportVo report; //举报信息
