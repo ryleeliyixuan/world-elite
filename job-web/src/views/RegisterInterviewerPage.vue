@@ -11,56 +11,62 @@
 
             <div v-if="active==1">
                 <el-form ref="formOne" :model="formOne" :rules="rules">
-                    <div style="margin-top: 20px">
-                        <el-form-item label="昵称" label-width="100px" prop="nickName">
-                            <el-input style="width: 300px" v-model="formOne.nickName" placeholder="请输入您的昵称"></el-input>
-                        </el-form-item>
-                        <el-form-item label="头像" label-width="100px" prop="avatar">
-                            <b-media class="resume col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                                <div class="resume-basicinfo row mt-3">
-                                    <div class="avatorHolder col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                                        <el-upload
-                                                class="avatar-uploader mb-3"
-                                                :action="uploadPicOptions.action"
-                                                :data="uploadPicOptions.params"
-                                                :accept="uploadPicOptions.acceptFileType"
-                                                :show-file-list="false"
-                                                :on-success="handleAvatarSuccess"
-                                                :before-upload="beforeAvatarUpload"
-                                        >
-                                            <img
-                                                    v-if="(resumeForm.avatarUrl && resumeForm.avatarUrl !== '')"
-                                                    :src="resumeForm.avatarUrl"
-                                                    class="avatar"
-                                            />
-                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                            <div slot="tip" class="el-upload__tip">建议大小：500 x 500</div>
-                                        </el-upload>
-                                    </div>
+                    <div class="import-container">
+                        <div class="import-button" @click="onImport">一键导入信息</div>
+                    </div>
+                    <div class="step-title">个人信息</div>
+                    <div style="margin-top: 35px">
+                        <el-form-item label="昵称：" prop="nickName">
+                            <div class="nickname-container">
+                                <el-input style="width: 360px" v-model="formOne.nickName" placeholder="请输入您的昵称"></el-input>
+                                <div class="warn-tip">
+                                    <el-image :src="require('@/assets/mock/warn.png')" class="warn-icon"></el-image>
+                                    <div class="warn-introduce">头像与昵称是您希望呈现在面试者预约页面的形象，可以使用化名或者卡通形象。</div>
                                 </div>
-                            </b-media>
+                            </div>
                         </el-form-item>
-
+                        <el-form-item label="头像：" prop="avatar">
+                                <div>
+                                    <el-image v-for="item in avatarList"
+                                              :src="item.avatarUrl"
+                                              @click="resumeForm.avatarUrl = item.avatarUrl; formOne.avatar= item.avatarUrl;"
+                                              style="width: 100px; height: 100px; margin-right: 13px; cursor: pointer;"></el-image>
+                                </div>
+                                <el-upload class="avatar-uploader"
+                                           style="margin-left: 180px;"
+                                           :action="uploadPicOptions.action"
+                                           :data="uploadPicOptions.params"
+                                           :accept="uploadPicOptions.acceptFileType"
+                                           :show-file-list="false"
+                                           :on-success="handleAvatarSuccess"
+                                           :before-upload="beforeAvatarUpload">
+                                    <el-image v-if="resumeForm.avatarUrl"
+                                              :src="resumeForm.avatarUrl"
+                                              v-loading="loading"
+                                              class="avatar"/>
+                                    <el-image v-else class="avatar-uploader-icon" :src="require('@/assets/mock/img-upload.png')"></el-image>
+                                    <div slot="tip" class="avatar-uploader-tip">建议大小500*500</div>
+                                </el-upload>
+                        </el-form-item>
                         <div>
-                            <el-form-item label="从事行业" label-width="100px" prop="industryId">
+                            <el-form-item label="从事行业：" prop="industryId">
                                 <el-select v-model="formOne.industryId"
                                            clearable
                                            placeholder="行业"
                                            @change="handleFilter"
                                            class="section1-select">
-                                    <el-option v-for="item in industryOptions" :key="item.industryId" :label="item.name"
-                                               :value="item.id"></el-option>
+                                    <el-option v-for="item in industryOptions" :key="item.industryId" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
                         </div>
                         <div>
-                            <el-form-item label="所在公司" label-width="100px" prop="companyName">
-                                <el-input style="width: 305px" v-model="formOne.companyName"
+                            <el-form-item label="所在公司：" prop="companyName">
+                                <el-input style="width: 300px" v-model="formOne.companyName"
                                           placeholder="请输入您的公司名称"></el-input>
                             </el-form-item>
                         </div>
                         <div>
-                            <el-form-item label="从业时间" label-width="100px" prop="experienceTimeId">
+                            <el-form-item label="从业时间：" prop="experienceTimeId">
                                 <el-select v-model="formOne.experienceTimeId" clearable placeholder="请选择您的工作经验年限"
                                            @change="handleFilter" class="section1-select">
                                     <el-option v-for="item in experienceTimeOptions" :key="item.experienceTimeId"
@@ -69,15 +75,23 @@
                             </el-form-item>
                         </div>
                         <div>
-                            <el-form-item label="从业经历" label-width="100px" prop="experience">
-                                <el-input style="width: 300px" type="textarea" v-model="formOne.experience "
-                                          placeholder="字数不超过150字" :autosize="{minRows: 8,maxRows: 10}"></el-input>
+                            <el-form-item label="从业经历：" prop="experience">
+                                <div class="textarea-container">
+                                    <div class="textarea-item">
+                                        <span class="experience-title">1.</span>
+                                        <el-input class="experience" type="textarea" v-model="formOne.experience "
+                                                  placeholder="字数不超过150字" resize="none" :autosize="{minRows: 2,maxRows: 10}"></el-input>
+                                    </div>
+                                    <div class="add-experience-button">添加经历</div>
+
+                                </div>
+
                             </el-form-item>
                         </div>
                         <div>
-                            <el-form-item label="面试官自述" label-width="100px" prop="description">
-                                <el-input type="textarea" style="width: 300px" v-model="formOne.description"
-                                          placeholder="字数不超过150字" :autosize="{minRows: 8,maxRows: 10}"></el-input>
+                            <el-form-item label="面试官自述：" prop="description">
+                                <el-input type="textarea" style="width: 360px" v-model="formOne.description"
+                                          placeholder="字数不超过150字" resize="none" :autosize="{minRows: 8,maxRows: 10}"></el-input>
                             </el-form-item>
                         </div>
                     </div>
@@ -150,9 +164,9 @@
                         <el-input style="width: 300px" v-model="formThree.idNumber" placeholder="请输入您的身份证号"></el-input>
                     </el-form-item>
                     <el-form-item label="身份证照片" label-width="100px" prop="avatarUrl">
-                        <b-media class="resume col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                            <div class="resume-basicinfo row mt-3">
-                                <div class="avatorHolder col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                        <b-media class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                            <div class="row mt-3">
+                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
                                     <el-upload
                                             class="avatar-uploader mb-3"
                                             :action="uploadPicOptions.action"
@@ -196,9 +210,9 @@
                                 </div>
                             </div>
                         </b-media>
-                        <b-media class="resume col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                            <div class="resume-basicinfo row mt-3">
-                                <div class="avatorHolder col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                        <b-media class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                            <div class="row mt-3">
+                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
                                     <el-upload
                                             class="avatar-uploader mb-3"
                                             :action="uploadPicOptions.action"
@@ -249,7 +263,7 @@
             <div class="Btn">
                 <el-row>
                     <el-button type="primary" @click="prev1" v-if="active==1">上一步</el-button>
-                    <el-button type="primary" @click="next2" v-if="active==1">下一步</el-button>
+                    <el-button type="primary" @click="next2" v-if="active==1" class="next-button">下一步</el-button>
                     <el-button type="primary" @click="prev" v-if="active==2">上一步</el-button>
                     <el-button type="primary" @click="next3" v-if="active==2">下一步</el-button>
                 </el-row>
@@ -266,7 +280,7 @@
     import {formatListQuery, parseListQuery} from "@/utils/common";
     import {addInterview, addInterviewDirection, addInterviewAuth} from "@/api/interview_api";
     import Toast from "@/utils/toast";
-    import {getResumeInfo, saveResumeBasic} from "@/api/interview_api";
+    import {getResumeInfo} from "@/api/interview_api";
     import {getUploadPicToken} from "@/api/upload_api";
     import {checkPicSize} from "@/utils/common";
 
@@ -316,6 +330,7 @@
                     fileUrl: "",
                     acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
                 },
+                loading: false,
                 resume: {},
                 posting: false,
                 listQuery: {
@@ -409,7 +424,6 @@
                     avatar: [
                         {required: true, message: "请上传头像", trigger: "change"}
                     ],
-
                     industryId: [
                         {required: true, message: "请选择行业", trigger: "change"}
                     ],
@@ -475,17 +489,24 @@
                 listByType(18).then(
                     response => (this.industryOptions = response.data.list)
                 );
-                listByType(10).then(
+                listByType(13).then(
                     response => (this.experienceTimeOptions = response.data.list)
                 );
                 this.getList();
                 this.getResumeInfo();
+
+                this.$axios.get("/mock/avatar").then(data => {
+                    this.avatarList = data.data;
+                })
             },
             beforeAvatarUpload(file) {
                 return new Promise((resolve, reject) => {
                     if (checkPicSize(file)) {
                         reject();
                     } else {
+                        this.loading = true;
+                        this.resumeForm.avatarUrl = URL.createObjectURL(file);
+                        this.formOne.avatar = URL.createObjectURL(file);
                         getUploadPicToken(file.name)
                             .then((response) => {
                                 const {data} = response;
@@ -558,27 +579,22 @@
                 });
             },
             handleAvatarSuccess() {
-                this.resumeForm.avatarUrl = this.uploadPicOptions.fileUrl;
-                this.formOne.avatar = this.uploadPicOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
+                this.loading = false;
                 console.log(this.formOne.avatar);
             },
             handleAvatarSuccess1() {
                 this.resumeForm1.avatarUrl = this.uploadPicOptions.fileUrl;
                 this.formThree.faceUrl = this.uploadPicOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
                 console.log(this.formThree.emblemUrl);
             },
             handleAvatarSuccess2() {
                 this.resumeForm2.avatarUrl = this.uploadPicOptions.fileUrl;
                 this.formThree.emblemUrl = this.uploadPicOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
                 console.log(this.formThree.emblemUrl);
             },
             handleAvatarSuccess3() {
                 this.resumeForm3.avatarUrl = this.uploadPicOptions.fileUrl;
                 this.formThree.holdUrl = this.uploadPicOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
                 console.log(this.formThree.holdUrl);
             },
             getResumeInfo() {
@@ -586,55 +602,8 @@
                     this.resume = response.data;
                 });
             },
-            handleSaveResumeBasic(validation = false) {
-                if (validation) {
-                    this.$refs["resumeForm", "resumeForm1", "resumeForm2", "resumeForm3"].validate((valid) => {
-                        if (valid) {
-                            this.postSaveResumeBasic();
-
-                        }
-                    });
-                } else {
-                    this.postSaveResumeBasic();
-                }
-            },
-            postSaveResumeBasic() {
-                this.posting = true;
-                saveResumeBasic(this.resumeForm).then(() => {
-                    this.getResumeInfo();
-                    Toast.success("保存成功");
-                }).finally(() => {
-                    this.posting = false;
-                });
-            },
-            postSaveResumeBasic1() {
-                saveResumeBasic(this.resumeForm1).then(() => {
-                    this.getResumeInfo();
-                    Toast.success("保存成功");
-                }).finally(() => {
-                    this.posting = false;
-                });
-            },
-            postSaveResumeBasic2() {
-                saveResumeBasic(this.resumeForm2).then(() => {
-                    this.getResumeInfo();
-                    Toast.success("保存成功");
-                }).finally(() => {
-                    this.posting = false;
-                });
-            },
-            postSaveResumeBasic3() {
-                saveResumeBasic(this.resumeForm3).then(() => {
-                    this.getResumeInfo();
-                    Toast.success("保存成功");
-                }).finally(() => {
-                    this.posting = false;
-                });
-            },
 
             getList() {
-                this.loading = true;
-
                 this.showNoResult = false;
                 parseListQuery(this.$route.query, this.listQuery);
             },
@@ -734,6 +703,10 @@
                     query
                 });
             },
+            //一键导入
+            onImport() {
+
+            },
 
         }
     }
@@ -786,6 +759,135 @@
                 }
             }
 
+            .import-container {
+                width: 722px;
+                height: auto;
+                display: flex;
+                justify-content: center;
+                margin-bottom: 62px;
+
+                .import-button {
+                    width: 379px;
+                    height: 40px;
+                    background: #FFFFFF;
+                    border-radius: 21px;
+                    border: 1px solid #3D6FF4;
+                    text-align: center;
+                    line-height: 40px;
+                    font-size: 18px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #3D6FF4;
+                    box-sizing: content-box;
+                }
+
+            }
+
+            .step-title {
+                font-size: 30px;
+                color: #333333;
+            }
+
+            ::v-deep .el-form-item {
+                margin-top: 30px;
+            }
+            ::v-deep .el-form-item__label {
+                font-size: 24px;
+                color: #333333;
+                line-height: 33px;
+                width: 180px;
+                margin: 5px 0 0 0;
+            }
+
+            ::v-deep .el-form-item__error {
+                margin-left: 180px;
+            }
+
+            ::v-deep .el-input__inner , ::v-deep .el-textarea__inner{
+                width: 360px;
+                height: 43px;
+                background: #FFFFFF;
+                border-radius: 22px;
+                border: 1px solid #CCCCCC;
+                font-size: 18px;
+                color: #999999;
+                line-height: 25px;
+            }
+
+            .nickname-container {
+                display: flex;
+                flex-direction: row;
+                align-items: self-start;
+
+                .warn-tip {
+                    display: flex;
+                    flex-direction: row;
+                    align-content: flex-start;
+
+                    .warn-icon {
+                        width: 17px;
+                        height: 17px;
+                        margin-left: 13px;
+                    }
+
+                    .warn-introduce {
+                        width: 209px;
+                        height: 100px;
+                        font-size: 18px;
+                        color: #999999;
+                        line-height: 25px;
+                    }
+                }
+            }
+
+            .textarea-container {
+                width: 360px;
+                height: auto;
+                display: inline-block;
+
+                .textarea-item {
+                    width: 100%;
+                    height: auto;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: flex-start;
+
+                    .experience-title {
+                        font-size: 20px;
+                        color: #333333;
+                        line-height: 48px;
+                    }
+
+                    .experience {
+                        ::v-deep .el-textarea__inner{
+                            width: 332px;
+                            margin-left: 10px;
+                        }
+                    }
+
+                    /deep/ .el-textarea__inner {
+                        border-radius: 13px;
+                    }
+                }
+
+                .add-experience-button {
+                    width: 136px;
+                    height: 40px;
+                    background: #EDF3FF;
+                    border-radius: 21px;
+                    line-height: 40px;
+                    text-align: center;
+                    font-size: 18px;
+                    color: #3D6FF4;
+                    margin: 13px auto 0;
+                    cursor: pointer;
+                }
+            }
+
+            /deep/ .el-textarea__inner {
+                border-radius: 13px;
+            }
+
             .avatar-uploader .el-upload {
                 cursor: pointer;
                 position: relative;
@@ -796,16 +898,26 @@
                 border-color: #3a8ee6;
             }
 
-            $avatarSize: 120px;
+            $avatarSize: 100px;
 
             .avatar-uploader .avatar-uploader-icon {
-                border: 1px dashed #d9d9d9;
+                border: 1px solid #333333;
+                border-radius: 50%;
                 font-size: 28px;
                 color: #8c939d;
                 width: $avatarSize;
                 height: $avatarSize;
                 line-height: $avatarSize;
                 text-align: center;
+                padding: 36px 31px;
+            }
+
+            .avatar-uploader .avatar-uploader-tip {
+                font-size: 18px;
+                font-weight: 400;
+                color: #999999;
+                line-height: 25px;
+                margin-top: -3px;
             }
 
             .avatar-uploader .avatar-uploader-icon1 {
@@ -850,7 +962,7 @@
 
             .avatar-uploader .avatar {
                 width: $avatarSize;
-                height: 120px;
+                height: $avatarSize;
                 display: block;
             }
 
@@ -866,14 +978,34 @@
 
             .section1-select {
                 flex: 1;
-                width: 300px;
-                margin: 0 5px 5px;
+                width: 360px;
+                /*margin: 0 5px 5px;*/
                 height: 100%;
             }
 
             .Btn {
                 margin-left: 400px;
                 margin-top: 12px;
+
+                /deep/ .el-button--primary {
+                    width: 136px;
+                    height: 40px;
+                    background: #FFFFFF;
+                    border-radius: 21px;
+                    border: 1px solid #3D6FF4;
+                    font-size: 18px;
+                    color: #3D6FF4;
+                }
+
+                .next-button {
+                    width: 136px;
+                    height: 40px;
+                    background: #EDF3FF;
+                    border-radius: 21px;
+                    font-size: 18px;
+                    border: 1px solid #EDF3FF;
+                    color: #3D6FF4;
+                }
             }
 
             .mb-3, .my-3 {

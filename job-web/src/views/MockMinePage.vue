@@ -28,7 +28,7 @@
                 <div :class="['button', {'select':menu===3}]" @click="onSettleIn" v-if="userIdentity!==2 && identity===1">
                     <el-image v-if="menu===3" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
                     <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
-                    立即入住
+                    立即入驻
                 </div>
                 <div :class="['button', {'select':menu===4}]" @click="onIncome" v-if="userIdentity===2 && identity===2">
                     <el-image v-if="menu===4" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income.png')"></el-image>
@@ -243,7 +243,7 @@
 
         <el-dialog :visible.sync="eventDialogVisible" width="200px" :show-close="false" top="30%">
             <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail">
-                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进度视频面视</el-button>
+                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面视</el-button>
                 <el-button type="info" plain size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
                            @click="onCancelInterview">取消面视预约
@@ -361,7 +361,6 @@
             }
         },
         mounted() {
-            this.calendarApi = this.$refs.fullCalendar.getApi();
             this.getInterviewerInfo();
             this.onInterviewee();
         },
@@ -393,6 +392,7 @@
 
             // 上月
             onPrev() {
+                this.calendarApi = this.$refs.fullCalendar.getApi();
                 this.calendarApi.prev();
                 if (this.identity === 1) {
                     this.getIntervieweeEvent();
@@ -404,6 +404,7 @@
 
             // 下月
             onNext() {
+                this.calendarApi = this.$refs.fullCalendar.getApi();
                 this.calendarApi.next();
                 if (this.identity === 1) {
                     this.getIntervieweeEvent();
@@ -431,6 +432,7 @@
             // 点击立即入住
             onSettleIn() {
                 this.menu = 3;
+                this.$router.push("/interviewSecretPage");
             },
 
             // 我的收益
@@ -612,6 +614,7 @@
 
             // 面试者获取我的预约成功事件
             getIntervieweeEvent() {
+                this.calendarApi = this.$refs.fullCalendar.getApi();
                 let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
                 let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
                 this.$axios.get(`/mock/interview/reservation/my/${beginTime}/${endTime}`).then(data => {
