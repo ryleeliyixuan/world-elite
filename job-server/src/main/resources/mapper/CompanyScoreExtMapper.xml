@@ -20,4 +20,44 @@
   <select id="selectCompanyScore" parameterType="java.lang.Long" resultType="java.lang.Integer">
     select avg(score) from t_company_score where company_id = #{companyId}
   </select>
+
+  <select id="search" parameterType="com.worldelite.job.entity.CompanyScore" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_company_score
+    <where>
+      <if test="id != null">
+        and id like concat('%',#{id}, '%')
+      </if>
+      <if test="scores != null and scores != ''">
+        and score in (${scores})
+      </if>
+      <if test="companyNames != null and companyNames != ''">
+        and company_id in (select id from t_company where name regexp '${companyNames}'
+          or full_name regexp '${companyNames}')
+      </if>
+      <if test="fromNames != null and fromNames != ''">
+        and from_id in (select id from t_user_applicant where name regexp '${fromNames}')
+      </if>
+      <if test="beginTime != null">
+        and create_time &gt;= #{beginTime}
+      </if>
+      <if test="endTime != null">
+        and create_time &lt;= #{endTime}
+      </if>
+      <if test="keyword != null and keyword != ''">
+        and content like concat('%',#{keyword},'%')
+      </if>
+      <if test="recommend != null">
+        and recommend = #{recommend}
+      </if>
+      <if test="anonymous != null">
+        and anonymous = #{anonymous}
+      </if>
+    </where>
+  </select>
+
+  <delete id="deleteAll" parameterType="com.worldelite.job.entity.CompanyScore">
+    delete from t_company_score where id in (${scoreIds})
+  </delete>
 </mapper>

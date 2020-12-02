@@ -3,10 +3,7 @@ package com.worldelite.job.api;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.CompanyScore;
-import com.worldelite.job.form.CompanyCommentForm;
-import com.worldelite.job.form.CompanyReportForm;
-import com.worldelite.job.form.CompanyScoreForm;
-import com.worldelite.job.form.CompanyScoreListForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.service.CompanyScoreService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.CompanyCommentVo;
@@ -35,7 +32,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("save")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyScoreVo> save(@RequestBody CompanyScoreForm form){
         CompanyScore companyScore = companyScoreService.save(form);
         return ApiResult.ok(companyScoreService.getScoreVo(companyScore));
@@ -43,13 +40,21 @@ public class CompanyScoreApi extends BaseApi {
 
     /**
      * 删除评分
-     * @param scoreId 评分ID
+     * @param deleteForm 评分删除表单
      */
     @ApiDoc
     @PostMapping("delete")
-    @RequireLogin(allow = UserType.GENERAL)
-    public ApiResult delete(@RequestParam Long scoreId){
-        companyScoreService.delete(scoreId);
+    @RequireLogin
+    public ApiResult delete(@RequestBody CompanyScoreDeleteForm deleteForm){
+        companyScoreService.delete(deleteForm.getScoreId());
+        return ApiResult.ok();
+    }
+
+    @ApiDoc
+    @PostMapping("delete-all")
+    @RequireLogin
+    public ApiResult deleteAll(@RequestBody CompanyScoreDeleteForm deleteForm){
+        companyScoreService.deleteAll(deleteForm.getScoreIds());
         return ApiResult.ok();
     }
 
@@ -59,10 +64,23 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("like")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyScoreVo> like(@RequestParam Long scoreId){
         CompanyScoreVo companyScoreVo = companyScoreService.like(scoreId);
         return ApiResult.ok(companyScoreVo);
+    }
+
+    /**
+     * 查询评分
+     * @param listForm
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("search")
+    @RequireLogin
+    public ApiResult<PageResult<CompanyScoreVo>> search(@RequestBody CompanyScoreListForm listForm){
+        PageResult<CompanyScoreVo> pageResult = companyScoreService.search(listForm);
+        return ApiResult.ok(pageResult);
     }
 
     /**
@@ -72,7 +90,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("report")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyScoreVo> report(@RequestBody CompanyReportForm companyReportForm){
         CompanyScoreVo companyScoreVo = companyScoreService.report(companyReportForm);
         return ApiResult.ok(companyScoreVo);
@@ -85,7 +103,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("comment")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyCommentVo> comment(@RequestBody CompanyCommentForm companyCommentForm){
         CompanyCommentVo commentVo = companyScoreService.comment(companyCommentForm);
         return ApiResult.ok(commentVo);
@@ -110,7 +128,7 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @GetMapping("my-score-info")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyScoreVo> getMyScoreInfo(@RequestParam Long companyId){
         CompanyScoreVo companyScoreVo = companyScoreService.myScoreInfoVo(companyId);
         return ApiResult.ok(companyScoreVo);

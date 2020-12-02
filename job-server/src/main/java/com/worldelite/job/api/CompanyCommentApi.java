@@ -2,13 +2,9 @@ package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
-import com.worldelite.job.form.CompanyCommentForm;
-import com.worldelite.job.form.CompanyCommentListForm;
-import com.worldelite.job.form.CompanyReportForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.service.CompanyCommentService;
-import com.worldelite.job.vo.ApiResult;
-import com.worldelite.job.vo.CompanyCommentVo;
-import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.*;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -27,13 +23,21 @@ public class CompanyCommentApi extends BaseApi {
 
     /**
      * 删除评论
-     * @param commentId 评论ID
+     * @param deleteForm 评论删除表单
      */
     @ApiDoc
     @PostMapping("delete")
-    @RequireLogin(allow = UserType.GENERAL)
-    public ApiResult delete(@RequestParam Long commentId){
-        companyCommentService.delete(commentId);
+    @RequireLogin
+    public ApiResult delete(@RequestBody CompanyCommentDeleteForm deleteForm){
+        companyCommentService.delete(deleteForm.getCommentId());
+        return ApiResult.ok();
+    }
+
+    @ApiDoc
+    @PostMapping("delete-all")
+    @RequireLogin
+    public ApiResult deleteAll(@RequestBody CompanyCommentDeleteForm deleteForm){
+        companyCommentService.deleteAll(deleteForm.getCommentIds());
         return ApiResult.ok();
     }
 
@@ -43,7 +47,7 @@ public class CompanyCommentApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("like")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyCommentVo> like(@RequestParam Long commentId){
         CompanyCommentVo companyCommentVo = companyCommentService.like(commentId);
         return ApiResult.ok(companyCommentVo);
@@ -56,7 +60,7 @@ public class CompanyCommentApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("report")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyCommentVo> report(@RequestBody CompanyReportForm companyReportForm){
         CompanyCommentVo companyCommentVo = companyCommentService.report(companyReportForm);
         return ApiResult.ok(companyCommentVo);
@@ -69,7 +73,7 @@ public class CompanyCommentApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("comment")
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     public ApiResult<CompanyCommentVo> comment(@RequestBody CompanyCommentForm companyCommentForm){
         CompanyCommentVo commentVo = companyCommentService.comment(companyCommentForm);
         return ApiResult.ok(commentVo);
@@ -85,5 +89,31 @@ public class CompanyCommentApi extends BaseApi {
     public ApiResult<PageResult<CompanyCommentVo>> list(@RequestBody CompanyCommentListForm listForm){
         PageResult<CompanyCommentVo> companyCommentPageResult = companyCommentService.listVo(listForm);
         return ApiResult.ok(companyCommentPageResult);
+    }
+
+    /**
+     * 查询帖子的评论
+     * @param listForm
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("search-in-post")
+    @RequireLogin
+    public ApiResult<PageResult<PostCommentVo>> searchInPost(@RequestBody CompanyCommentListForm listForm){
+        PageResult<PostCommentVo> pageResult = companyCommentService.searchInPost(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 查询评分的评论
+     * @param listForm
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("search-in-score")
+    @RequireLogin
+    public ApiResult<PageResult<ScoreCommentVo>> searchInScore(@RequestBody CompanyCommentListForm listForm){
+        PageResult<ScoreCommentVo> pageResult = companyCommentService.searchInScore(listForm);
+        return ApiResult.ok(pageResult);
     }
 }

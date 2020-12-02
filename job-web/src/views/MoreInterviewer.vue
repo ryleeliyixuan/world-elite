@@ -43,8 +43,8 @@
                     <div class="interviewer-message">
                         <div class="message-top">
                             <div class="message-text">{{interviewer.nickName}}</div>
-<!--                            <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>-->
-                            <div v-if="interviewer.company" style="margin-left: 20px;">{{interviewer.company.name}}</div>
+                            <!--                            <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>-->
+                            <div class="message-name" v-if="interviewer.company">{{interviewer.company.name}}</div>
                         </div>
                         <div class="message-bottom">
                             <el-image :src="require('@/assets/mock/icon5.png')" class="tip-image" fit="fill"></el-image>
@@ -186,6 +186,7 @@
             },
 
             onInterviewer(interviewer) {
+                this.$storage.setData("interviewerFrom", {home:false});
                 this.$router.push(`/mock/interviewer/${interviewer.id}`);
             },
 
@@ -219,19 +220,22 @@
 
         .filter-container {
             width: 100%;
+            margin-top: 27px;
 
             .filter-item {
                 width: 100%;
                 display: flex;
                 align-items: center;
-                margin-top: 20px;
+                margin-top: 9px;
 
                 .filter-title {
-                    width: 120px;
-                    min-width: 120px;
-                    font-size: 21px;
+                    width: 80px;
+                    min-width: 80px;
+                    font-size: 16px;
                     color: #333333;
-                    margin-top: 10px;
+                    margin-top: 4px;
+                    margin-right: 40px;
+                    text-align: right;
                 }
 
                 .filter {
@@ -240,17 +244,17 @@
                     flex-wrap: wrap;
 
                     .select-item {
-                        margin-top: 10px;
-                        width: 150px;
-                        height: 33px;
+                        margin-top: 4px;
+                        width: 86px;
+                        height: 25px;
                         background: #F5F5F5;
                         border-radius: 17px;
                         border: 1px solid #F5F5F5;
-                        font-size: 18px;
+                        font-size: 14px;
                         color: #333333;
-                        margin-right: 17px;
+                        margin-right: 16px;
                         cursor: pointer;
-                        line-height: 33px;
+                        line-height: 25px;
                         text-align: center;
                     }
 
@@ -265,16 +269,16 @@
 
         .interviewer-container {
             width: 100%;
-            margin-top: 60px;
+            margin-top: 31px;
 
             .interviewer-item {
                 width: 100%;
                 height: 118px;
-                padding: 16px 32px 20px 11px;
+                padding: 16px 44px 16px 6px;
                 display: flex;
                 align-items: center;
                 box-shadow: 0 3px 13px 1px #DEE5F4;
-                margin-bottom: 21px;
+                margin-bottom: 31px;
                 justify-content: space-between;
                 cursor: pointer;
 
@@ -300,7 +304,7 @@
                             align-items: center;
 
                             .message-text {
-                                font-size: 28px;
+                                font-size: 24px;
                                 color: #333333;
                             }
 
@@ -309,6 +313,11 @@
                                 height: 31px;
                                 margin-left: 17px;
                             }
+
+                            .message-name {
+                                margin-left: 22px;
+                                color: #3D6FF4;
+                            }
                         }
 
                         .message-bottom {
@@ -316,22 +325,22 @@
                             align-items: center;
 
                             .tip-image {
-                                width: 25px;
-                                height: 25px;
+                                width: 23px;
+                                height: 23px;
                                 margin-right: 8px;
                             }
 
                             .tip-text {
-                                font-size: 18px;
+                                font-size: 16px;
                                 color: #333333;
-                                margin-right: 38px;
+                                margin-right: 33px;
                             }
                         }
                     }
                 }
 
                 .interviewer-right {
-                    height: 87px;
+                    height: 72px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -349,19 +358,19 @@
                         .rate-text {
                             font-size: 21px;
                             color: #999999;
-                            margin-left: 5px;
+                            margin-left: 7px;
                         }
                     }
 
                     .reservation {
-                        width: 136px;
-                        height: 41px;
+                        width: 123px;
+                        height: 31px;
                         background: rgba(255, 189, 105, 0.3);
                         border-radius: 21px;
                         border: 1px solid #F78259;
-                        font-size: 18px;
+                        font-size: 16px;
                         color: #F78259;
-                        line-height: 41px;
+                        line-height: 31px;
                         text-align: center;
                     }
                 }

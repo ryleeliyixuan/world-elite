@@ -56,4 +56,8 @@ public interface CompanyScoreMapper {
     List<CompanyScore> selectAndList(CompanyScore companyScore);
 
     Integer selectCompanyScore(Long companyId);
+
+    void deleteAll(CompanyScore companyScore);
+
+    List<CompanyScore> search(CompanyScore companyScore);
 }

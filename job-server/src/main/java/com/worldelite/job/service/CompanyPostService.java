@@ -3,20 +3,12 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.CommentType;
-import com.worldelite.job.entity.Company;
-import com.worldelite.job.entity.CompanyComment;
-import com.worldelite.job.entity.CompanyPost;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
-import com.worldelite.job.form.CompanyCommentForm;
-import com.worldelite.job.form.CompanyPostForm;
-import com.worldelite.job.form.CompanyPostListForm;
-import com.worldelite.job.form.CompanyReportForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.CompanyPostMapper;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.CompanyCommentVo;
-import com.worldelite.job.vo.CompanyPostVo;
-import com.worldelite.job.vo.CompanyVo;
-import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +42,12 @@ public class CompanyPostService extends BaseService{
     @Autowired
     private UserApplicantService userApplicantService;
 
+    @Autowired
+    private CompanyForbiddenService companyForbiddenService;
+
+    @Autowired
+    private CompanyService companyService;
+
     /**
      * 保存帖子
      * @param companyPostForm 帖子表单
@@ -67,12 +65,6 @@ public class CompanyPostService extends BaseService{
         }
         //保存基本数据
         BeanUtil.copyProperties(companyPostForm,companyPost,"id");
-        //如果没有设置图片数据
-        //从内容中获取第一张图片做为图片数据
-        if(StringUtils.isEmpty(companyPost.getImage())){
-            String image = getContentImage(companyPost.getContent());
-            companyPost.setImage(image);
-        }
         //更新数据
         companyPostMapper.updateByPrimaryKeySelective(companyPost);
         //计算热度
@@ -95,6 +87,15 @@ public class CompanyPostService extends BaseService{
         //删除评论
         companyCommentService.deleteByOwnerId(postId);
     }
+
+    @Transactional
+    public void deleteAll(Long[] postIds){
+        //批量删除帖子
+        CompanyPostOptions options = new CompanyPostOptions();
+        options.setPostIds(postIds);
+        companyPostMapper.deleteAll(options);
+    }
+
 
     /**
      * 点赞
@@ -151,7 +152,7 @@ public class CompanyPostService extends BaseService{
         CompanyPost companyPost = new CompanyPost();
         BeanUtil.copyProperties(listForm,companyPost);
         AppUtils.setPage(listForm);
-        Page<CompanyPost> companyPostPage = (Page<CompanyPost>) companyPostMapper.selectAndListSimple(companyPost);
+        Page<CompanyPost> companyPostPage = (Page<CompanyPost>) companyPostMapper.selectAndList(companyPost);
         PageResult<CompanyPost> pageResult = new PageResult<>(companyPostPage);
         List<CompanyPost> companyPostList = (List<CompanyPost>) companyPostPage;
         pageResult.setList(companyPostList);
@@ -170,7 +171,9 @@ public class CompanyPostService extends BaseService{
         BeanUtil.copyProperties(companyPostPageResult,pageResult,"list");
         List<CompanyPostVo> postVoList = new ArrayList<>(postList.size());
         for(CompanyPost companyPost:postList){
-            postVoList.add(getPostVo(companyPost));
+            CompanyPostVo vo = getPostVo(companyPost);
+            vo.setContent(null);
+            postVoList.add(vo);
         }
         pageResult.setList(postVoList);
         return pageResult;
@@ -179,6 +182,22 @@ public class CompanyPostService extends BaseService{
     public CompanyPostVo getPostVo(CompanyPost companyPost){
         CompanyPostVo companyPostVo = new CompanyPostVo().asVo(companyPost);
         companyPostVo.setFromUser(userApplicantService.getUserInfo(companyPost.getFromId()));
+        //如果没有设置图片数据
+        //从内容中获取第一张图片做为图片数据
+        if(StringUtils.isEmpty(companyPost.getImage())){
+            String image = getContentImage(companyPost.getContent());
+            companyPostVo.setImage(image);
+        }
+        //企业信息
+        CompanyVo company = companyService.getSimpleCompanyInfo(companyPost.getCompanyId());
+        companyPostVo.setCompany(company);
+        //禁言信息
+        boolean isForbidden = companyForbiddenService.isForbidden(companyPost.getFromId());
+        if(isForbidden){
+            companyPostVo.setForbidden((byte) 1);
+        }else{
+            companyPostVo.setForbidden((byte) 0);
+        }
         //登录后才有点赞和举报
         if(curUser() != null) {
             companyPostVo.setLike(companyLikeService.hasLike(companyPost.getId()));
@@ -265,5 +284,19 @@ public class CompanyPostService extends BaseService{
             }
         }
         return null;
+    }
+
+    public PageResult<CompanyPostVo> search(CompanyPostListForm listForm){
+        AppUtils.setPage(listForm);
+        CompanyPostOptions options = new CompanyPostOptions();
+        BeanUtil.copyProperties(listForm,options);
+        Page<CompanyPost> page = (Page<CompanyPost>) companyPostMapper.search(options);
+        PageResult<CompanyPostVo> pageResult = new PageResult<>(page);
+        List<CompanyPostVo> voList = new ArrayList<>();
+        for(CompanyPost Post:page){
+            voList.add(getPostVo(Post));
+        }
+        pageResult.setList(voList);
+        return pageResult;
     }
 }

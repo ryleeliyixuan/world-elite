@@ -2,6 +2,7 @@
     <div class="app-container" v-if="interviewer">
         <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb-container">
             <el-breadcrumb-item :to="{ path: '/mock/interview' }">模拟面试</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="!interviewerFromHome" :to="{ path: '/mock/interviewer/more' }">面试官列表</el-breadcrumb-item>
             <el-breadcrumb-item>{{interviewer.nickName}}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="title-detail">
@@ -28,12 +29,12 @@
             </div>
             <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
         </div>
-        <div class="label-container">
-            <div class="label-circle">
-                <el-image :src="require('@/assets/mock/icon13.png')" class="label-icon" fit="fill"></el-image>
-            </div>
-            <div class="label-text">“{{interviewer.introduction}}”</div>
-        </div>
+        <!--        <div class="label-container">-->
+        <!--            <div class="label-circle">-->
+        <!--                <el-image :src="require('@/assets/mock/icon13.png')" class="label-icon" fit="fill"></el-image>-->
+        <!--            </div>-->
+        <!--            <div class="label-text">“{{interviewer.introduction}}”</div>-->
+        <!--        </div>-->
         <!-- <div class="tip-container">-->
         <!--     <div class="tip-item">经验丰富</div>-->
         <!-- </div>-->
@@ -43,11 +44,11 @@
         <div class="user-info">个人信息</div>
         <div class="brief-introduction">
             <el-image v-if="interviewer.company" :src="require('@/assets/mock/icon9.png')" class="brief-icon1" fit="fill"></el-image>
-            <div v-if="interviewer.company" class="brief-title">公司：{{interviewer.company.name}}</div>
-            <el-image :src="require('@/assets/mock/icon10.png')" class="brief-icon1" fit="fill" style="margin-left: 62px"></el-image>
-            <div class="brief-title">行业：{{interviewer.industry.name}}</div>
-            <el-image :src="require('@/assets/mock/icon12.png')" class="brief-icon1" fit="fill" style="margin-left: 62px"></el-image>
-            <div class="brief-title">从业时间：{{interviewer.experienceTime.name}}</div>
+            <div v-if="interviewer.company" class="brief-title" style="margin-right: 62px">公司：{{interviewer.company.name}}</div>
+            <el-image :src="require('@/assets/mock/icon10.png')" class="brief-icon1" fit="fill"></el-image>
+            <div class="brief-title" style="margin-right: 62px">行业：{{interviewer.industry.name}}</div>
+            <el-image :src="require('@/assets/mock/icon12.png')" class="brief-icon1" fit="fill"></el-image>
+            <div class="brief-title" style="margin-right: 62px">从业时间：{{interviewer.experienceTime.name}}</div>
         </div>
         <div class="experience-container">
             <el-image :src="require('@/assets/mock/icon8.png')" class="brief-icon1" fit="fill"></el-image>
@@ -85,9 +86,12 @@
             return {
                 interviewer: undefined, // 面试官
                 reservationList: [], // 可预约列表
+                interviewerFromHome: undefined,
             }
         },
+
         mounted() {
+            this.interviewerFromHome = this.$storage.getData("interviewerFrom").home;
             if (this.$route.params.id) {
                 this.getData(this.$route.params.id);
             } else {
@@ -140,8 +144,8 @@
                 height: 100%;
 
                 .circle-background {
-                    width: 155px;
-                    height: 155px;
+                    width: 137px;
+                    height: 137px;
                     background: conic-gradient(#A2D6F9, #072AC8, #1E96FC, #A2D6F9);
                     border-radius: 50%;
                     display: flex;
@@ -149,8 +153,8 @@
                     justify-content: center;
 
                     .circle-image {
-                        height: 148px;
-                        width: 148px;
+                        height: 130px;
+                        width: 130px;
                         border-radius: 50%;
                     }
                 }
@@ -163,15 +167,16 @@
                     padding-top: 6px;
                     margin-left: 46px;
 
+
                     .basis1 {
-                        font-size: 48px;
+                        font-size: 28px;
                         font-weight: 500;
                         color: #333333;
                         line-height: 67px;
                     }
 
                     .basis2 {
-                        font-size: 24px;
+                        font-size: 21px;
                         font-weight: 400;
                         color: #666666;
                         line-height: 33px;
@@ -181,8 +186,12 @@
                         display: flex;
                         align-items: center;
 
+                        /deep/ .el-rate__icon {
+                            font-size: 27px;
+                        }
+
                         span {
-                            font-size: 21px;
+                            font-size: 18px;
                             color: #999999;
                             line-height: 29px;
                             padding-left: 5px;
@@ -199,7 +208,7 @@
                     }
 
                     ::v-deep .el-rate__text {
-                        font-size: 21px;
+                        font-size: 18px;
                         color: #999999;
                         line-height: 29px;
                         padding-left: 5px;
@@ -259,13 +268,13 @@
 
         .introduce-container {
             width: 100%;
-            font-size: 24px;
+            font-size: 18px;
             color: #333333;
             margin-top: 23px;
         }
 
         .user-info {
-            font-size: 36px;
+            font-size: 24px;
             color: #333333;
             margin-top: 30px;
             margin-bottom: 16px;
@@ -277,13 +286,13 @@
             align-items: center;
 
             .brief-title {
-                font-size: 24px;
+                font-size: 18px;
                 color: #333333;
             }
 
             .brief-icon1 {
-                width: 26px;
-                height: 25px;
+                width: 21px;
+                height: 20px;
                 margin-right: 8px;
             }
         }
@@ -291,26 +300,27 @@
         .experience-container {
             width: 100%;
             display: flex;
-            align-items: center;
+            flex-direction: row;
+            align-items: flex-start;
             margin-top: 13px;
 
+
             .brief-icon1 {
-                min-width: 27px;
-                width: 27px;
-                height: 27px;
+                min-width: 21px;
+                width: 21px;
+                height: 20px;
                 margin-right: 8px;
             }
 
             .experience-content {
-                font-size: 24px;
+                font-size: 18px;
                 color: #333333;
             }
 
             .experience-title {
-                font-size: 24px;
+                font-size: 18px;
                 color: #333333;
-                min-width: 120px;
-                margin-left: 3px;
+                min-width: 90px;
             }
         }
 
@@ -326,18 +336,18 @@
                 margin-bottom: 16px;
 
                 ::v-deep .el-collapse-item__header {
-                    height: 67px;
+                    height: 54px;
                 }
 
                 ::v-deep .el-collapse-item__arrow {
-                    font-size: 30px;
+                    font-size: 21px;
                     font-weight: 500;
                     color: #aaaaaa;
                 }
 
                 .reservation-top-container {
                     width: 100%;
-                    height: 67px;
+                    height: 54px;
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
@@ -347,14 +357,18 @@
                         align-items: center;
 
                         .reservation-title {
-                            font-size: 24px;
+                            font-size: 18px;
                             color: #333333;
                             margin-left: 12px;
                         }
 
                         .reservation-icon1 {
                             width: 53px;
-                            height: 67px;
+                            height: 54px;
+
+                            /deep/ .el-image__error {
+                                font-size: 12px;
+                            }
                         }
                     }
 
@@ -363,24 +377,24 @@
                         align-items: center;
 
                         .reservation-price {
-                            font-size: 24px;
+                            font-size: 18px;
                             color: #333333;
                             margin-right: 12px;
 
                             span {
-                                font-size: 16px;
+                                font-size: 12px;
                             }
                         }
 
                         .reservation-button {
-                            width: 136px;
-                            height: 41px;
+                            width: 109px;
+                            height: 32px;
                             background: rgba(255, 189, 105, 0.3);
                             border-radius: 21px;
                             border: 1px solid #F78259;
-                            line-height: 41px;
+                            line-height: 32px;
                             text-align: center;
-                            font-size: 18px;
+                            font-size: 16px;
                             color: #F78259;
                             margin-right: 30px;
                         }

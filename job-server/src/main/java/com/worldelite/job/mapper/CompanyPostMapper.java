@@ -1,6 +1,7 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.CompanyPost;
+import com.worldelite.job.entity.CompanyPostOptions;
 
 import java.util.List;
 
@@ -64,4 +65,8 @@ public interface CompanyPostMapper {
     List<CompanyPost> selectAndList(CompanyPost record);
 
     List<CompanyPost> selectAndListSimple(CompanyPost record);
+
+    void deleteAll(CompanyPost companyPost);
+
+    List<CompanyPost> search(CompanyPost companyPost);
 }

@@ -53,9 +53,9 @@
             </div>
         </div>
 
-        <div class="title-container" style="margin-top: 70px">
+        <div class="title-container" style="margin-top: 48px">
             <div class="title-left">本月新入驻面试官</div>
-            <div class="title-right" @click="registerInterviewer">立即入驻
+            <div class="title-right" @click="registerInterviewer" v-if="userIdentity!==2">立即入驻
                 <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon">
             </div>
         </div>
@@ -73,8 +73,8 @@
                             <div class="name1">{{interviewer.nickName}}</div>
                             <div class="position">{{interviewer.position}}</div>
                         </div>
-<!--                        <el-image :src="interviewer.companyLogo" class="company-image" fit="scale-down"></el-image>-->
-                        <div v-if="interviewer.company">{{interviewer.company.name}}</div>
+                        <!--                        <el-image :src="interviewer.companyLogo" class="company-image" fit="scale-down"></el-image>-->
+                        <div class="company-name" v-if="interviewer.company">{{interviewer.company.name}}</div>
                     </div>
                 </div>
             </div>
@@ -93,6 +93,7 @@
                 stepTimer: undefined, // 滚动列表定时器
                 autoTimer: undefined,
                 index: 3, // 滚动列表索引
+                userIdentity:undefined,//用户身份
             }
         },
         mounted() {
@@ -101,6 +102,7 @@
             this.autoTimer = setInterval(() => {
                 this.onRight();
             }, 2000);
+            this.getInterviewerInfo()
         },
         unmount() {
             this.clearTime();
@@ -117,7 +119,13 @@
             },
 
             onInterviewer(interviewer) {
+                this.$storage.setData("interviewerFrom", {home:true});
                 this.$router.push(`/mock/interviewer/${interviewer.id}`);
+            },
+            getInterviewerInfo() {
+                this.$axios.get("/mock/interviewer/my-info").then(data => {
+                    this.userIdentity = data.data ? 2 : 1;
+                })
             },
 
             onLeft() {
@@ -150,8 +158,8 @@
                     this.stepTimer = setInterval(() => {
                         try {
                             if (this.index === this.newArrivalInterviewerList.length - 4) {
-                                this.$refs.scrollbar.scrollLeft = 256 * 3;
-                                this.index = 3;
+                                this.$refs.scrollbar.scrollLeft = 256 * 2;
+                                this.index = 2;
                             }
                             let offset = (256 * (this.index + 1) - this.$refs.scrollbar.scrollLeft) * 0.1;
                             offset = offset > 0 ? Math.ceil(offset) : Math.floor(offset);
@@ -207,9 +215,9 @@
                     newArrivalInterviewerList.unshift({...list[list.length - 1]});
                     newArrivalInterviewerList.unshift({...list[list.length - 2]});
                     newArrivalInterviewerList.unshift({...list[list.length - 3]});
-                    newArrivalInterviewerList.push({...list[0]});
-                    newArrivalInterviewerList.push({...list[1]});
-                    newArrivalInterviewerList.push({...list[2]});
+                    newArrivalInterviewerList.push({...newArrivalInterviewerList[3]});
+                    newArrivalInterviewerList.push({...newArrivalInterviewerList[4]});
+                    newArrivalInterviewerList.push({...newArrivalInterviewerList[5]});
 
                     for (let i = 0; i < newArrivalInterviewerList.length; i++) {
                         newArrivalInterviewerList[i].key = i;
@@ -282,11 +290,11 @@
 
                 .left-item {
                     width: 100%;
-                    height: 157px;
+                    height: 137px;
                     display: flex;
                     align-items: center;
                     position: relative;
-                    margin-top: 12px;
+                    /*margin-top: 12px;*/
                     cursor: pointer;
 
                     .item-left-container {
@@ -295,14 +303,14 @@
                         padding: 20px 20px 20px 40px;
 
                         .item-title {
-                            font-size: 28px;
+                            font-size: 21px;
                             font-weight: bold;
                             color: #FFFFFF;
                             margin-left: 95px;
                         }
 
                         .item-rate {
-                            margin: 17px 0 7px 0;
+                            margin: 14px 0 7px 0;
                         }
 
                         .item-bottom {
@@ -324,29 +332,29 @@
                     }
 
                     .right-image {
-                        width: 112px;
-                        height: 112px;
+                        width: 98px;
+                        height: 98px;
                         border-radius: 50%;
                         overflow: hidden;
                         position: absolute;
-                        top: 23px;
+                        top: 18px;
                         right: 28px;
                     }
                 }
 
                 .index0 {
                     background: url("../assets/mock/mock0.png") no-repeat;
-                    background-size: 453px 157px;
+                    background-size: 453px 137px;
                 }
 
                 .index1 {
                     background: url("../assets/mock/mock1.png") no-repeat;
-                    background-size: 453px 157px;
+                    background-size: 453px 137px;
                 }
 
                 .index2 {
                     background: url("../assets/mock/mock2.png") no-repeat;
-                    background-size: 453px 157px;
+                    background-size: 453px 137px;
                 }
             }
 
@@ -360,19 +368,19 @@
                 .right-item {
                     width: 100%;
                     display: flex;
-                    height: 77px;
+                    height: 59px;
                     align-items: center;
                     margin-top: 23px;
                     cursor: pointer;
 
                     .right-item1-img1 {
-                        width: 100px;
-                        height: 36px;
+                        width: 86px;
+                        height: 29px;
                     }
 
                     .right-item1-img2 {
-                        width: 77px;
-                        height: 77px;
+                        width: 59px;
+                        height: 59px;
                         border-radius: 50%;
                         overflow: hidden;
                         margin-left: 12px;
@@ -431,7 +439,7 @@
         .new-interviewer-container {
             margin-top: 22px;
             width: 100%;
-            height: 303px;
+            height: 233px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -450,21 +458,21 @@
                 white-space: nowrap;
 
                 .item-detail {
-                    width: 220px;
+                    width: 190px;
                     height: 100%;
                     position: relative;
-                    margin: 0 18px;
+                    margin: 0 33px;
                     display: inline-block;
                     cursor: pointer;
 
                     .interviewer-img {
-                        width: 220px;
+                        width: 190px;
                         height: 100%;
                     }
 
                     .interviewer-bottom {
-                        width: 200px;
-                        height: 62px;
+                        width: 170px;
+                        height: 57px;
                         background: rgba(255, 255, 255, 0.85);
                         position: absolute;
                         margin: 0 10px;
@@ -494,6 +502,12 @@
                         .company-image {
                             width: 100px;
                             height: 62px;
+                        }
+
+                        .company-name {
+                            font-size: 18px;
+                            color: #3D6FF4;
+                            line-height: 25px;
                         }
                     }
                 }

@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.CommentType;
 import com.worldelite.job.entity.CompanyComment;
+import com.worldelite.job.entity.CompanyCommentOptions;
 import com.worldelite.job.entity.CompanyPost;
 import com.worldelite.job.entity.CompanyScore;
 import com.worldelite.job.exception.ServiceException;
@@ -12,8 +13,7 @@ import com.worldelite.job.form.CompanyCommentListForm;
 import com.worldelite.job.form.CompanyReportForm;
 import com.worldelite.job.mapper.CompanyCommentMapper;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.CompanyCommentVo;
-import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +46,9 @@ public class CompanyCommentService extends BaseService{
 
     @Autowired
     private UserApplicantService userApplicantService;
+
+    @Autowired
+    private CompanyService companyService;
 
     /**
      * 保存评论
@@ -100,6 +103,14 @@ public class CompanyCommentService extends BaseService{
         deleteByOwnerId(commentId);
         //更新父级热度
         ownerHotCalc(comment);
+    }
+
+    @Transactional
+    public void deleteAll(Long[] commentIds){
+        //删除评论
+        CompanyCommentOptions options = new CompanyCommentOptions();
+        options.setCommentIds(commentIds);
+        companyCommentMapper.deleteAll(options);
     }
 
     /**
@@ -332,5 +343,63 @@ public class CompanyCommentService extends BaseService{
                 companyComment.setOwnerIds(comment.getOwnerIds());
             }
         }
+    }
+
+    public PageResult<PostCommentVo> searchInPost(CompanyCommentListForm listForm){
+        AppUtils.setPage(listForm);
+        CompanyCommentOptions options = new CompanyCommentOptions();
+        BeanUtil.copyProperties(listForm,options);
+        Page<CompanyComment> page = (Page<CompanyComment>) companyCommentMapper.searchInPost(options);
+        PageResult<PostCommentVo> pageResult = new PageResult<>(page);
+        List<PostCommentVo> voList = new ArrayList<>();
+        for(CompanyComment Comment:page){
+            voList.add(getPostCommentVo(Comment));
+        }
+        pageResult.setList(voList);
+        return pageResult;
+    }
+
+    public PageResult<ScoreCommentVo> searchInScore(CompanyCommentListForm listForm){
+        AppUtils.setPage(listForm);
+        CompanyCommentOptions options = new CompanyCommentOptions();
+        BeanUtil.copyProperties(listForm,options);
+        Page<CompanyComment> page = (Page<CompanyComment>) companyCommentMapper.searchInScore(options);
+        PageResult<ScoreCommentVo> pageResult = new PageResult<>(page);
+        List<ScoreCommentVo> voList = new ArrayList<>();
+        for(CompanyComment Comment:page){
+            voList.add(getScoreCommentVo(Comment));
+        }
+        pageResult.setList(voList);
+        return pageResult;
+    }
+
+    public PostCommentVo getPostCommentVo(CompanyComment companyComment){
+        PostCommentVo commentVo = new PostCommentVo().asVo(companyComment);
+        commentVo.setFromUser(userApplicantService.getUserInfo(companyComment.getFromId()));
+        commentVo.setToUser(userApplicantService.getUserInfo(companyComment.getToId()));
+        CompanyPost post = companyPostService.getById(companyComment.getOwnerId());
+        CompanyVo company = companyService.getSimpleCompanyInfo(post.getCompanyId());
+        if(post!=null) {
+            commentVo.setTitle(post.getTitle());
+        }
+        if(company!=null) {
+            commentVo.setCompanyName(company.getName());
+        }
+        return commentVo;
+    }
+
+    public ScoreCommentVo getScoreCommentVo(CompanyComment companyComment){
+        ScoreCommentVo commentVo = new ScoreCommentVo().asVo(companyComment);
+        commentVo.setFromUser(userApplicantService.getUserInfo(companyComment.getFromId()));
+        commentVo.setToUser(userApplicantService.getUserInfo(companyComment.getToId()));
+        CompanyScore score = companyScoreService.getById(companyComment.getOwnerId());
+        CompanyVo company = companyService.getSimpleCompanyInfo(score.getCompanyId());
+        if(score!=null) {
+            commentVo.setScoreContent(score.getContent());
+        }
+        if(company!=null) {
+            commentVo.setCompanyName(company.getName());
+        }
+        return commentVo;
     }
 }

@@ -2,11 +2,11 @@
 
     <div class="app-container">
         <div class="main-container">
-            <p style="font-size: 25px">面试官注册</p>
-            <el-steps :active="active">
-                <el-step title="个人信息"></el-step>
-                <el-step title="面试信息"></el-step>
-                <el-step title="信息认证"></el-step>
+            <div class="title">面试官注册</div>
+            <el-steps :active="active" class="steps">
+                <el-step></el-step>
+                <el-step></el-step>
+                <el-step></el-step>
             </el-steps>
 
             <div v-if="active==1">
@@ -741,15 +741,50 @@
 
 <style scoped lang="scss">
     .app-container {
-        max-width: 1140px;
+        width: 1140px;
+        padding: 20px 20px 200px 20px;
         margin: 0 auto;
         min-height: calc(100vh - 477px);
-        padding-bottom: 200px;
 
         .main-container {
-            padding-left: 200px;
             overflow-y: auto;
-            width: 1000px;
+
+            .title {
+                font-size: 36px;
+                color: #333333;
+                line-height: 50px;
+                margin-bottom: 30px;
+            }
+
+            .steps {
+                width: 722px;
+                margin-bottom: 50px;
+
+                ::v-deep .el-step__line {
+                    top: 29px;
+                    left: 15px;
+                }
+
+                ::v-deep .el-step__icon {
+                    width: 60px;
+                    height: 60px;
+                    font-size: 24px;
+                    background: #EDF3FF;
+                    border-radius: 50%;
+                    border: none;
+                }
+
+                ::v-deep .el-step__head {
+                    &.is-process, &.is-wait {
+                        color: #999999;
+                        border: none;
+
+                        .el-step__icon {
+                            background: #EEEEEE;
+                        }
+                    }
+                }
+            }
 
             .avatar-uploader .el-upload {
                 cursor: pointer;
@@ -845,7 +880,6 @@
                 margin-bottom: 0px;
             }
         }
-
-
     }
+
 </style>
