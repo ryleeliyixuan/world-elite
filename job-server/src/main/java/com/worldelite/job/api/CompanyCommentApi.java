@@ -33,6 +33,11 @@ public class CompanyCommentApi extends BaseApi {
         return ApiResult.ok();
     }
 
+    /**
+     * 批量删除评论
+     * @param deleteForm
+     * @return
+     */
     @ApiDoc
     @PostMapping("delete-all")
     @RequireLogin

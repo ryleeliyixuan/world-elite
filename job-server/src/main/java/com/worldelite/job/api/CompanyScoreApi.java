@@ -50,6 +50,11 @@ public class CompanyScoreApi extends BaseApi {
         return ApiResult.ok();
     }
 
+    /**
+     * 批量删除
+     * @param deleteForm
+     * @return
+     */
     @ApiDoc
     @PostMapping("delete-all")
     @RequireLogin
