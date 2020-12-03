@@ -773,6 +773,7 @@ public class CompanyApi extends BaseApi {
      * @param searchNameForm
      * @return
      */
+    @ApiDoc
     @GetMapping("search-company-name")
     public ApiResult<PageResult<String>> searchJobName(@RequestBody SearchNameForm searchNameForm) {
         companyNameSearchService.createOrRefreshJobNameIndex();

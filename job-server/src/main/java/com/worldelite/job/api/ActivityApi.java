@@ -122,6 +122,7 @@ public class ActivityApi {
      * @param searchNameForm
      * @return
      */
+    @ApiDoc
     @GetMapping("search-activity-title")
     public ApiResult<PageResult<String>> searchActivityTitle(@RequestBody SearchNameForm searchNameForm) {
         activityTitleSearchService.createOrRefreshActivityTitleIndex();
