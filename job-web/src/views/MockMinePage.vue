@@ -523,7 +523,7 @@
                 console.log(this.eventItem.start);
                 if (this.eventItem.end < Date.now()) {
                     this.$message.warning("面试已结束");
-                } else if (this.eventItem.start < Date.now() - 15 * 60 * 1000) {
+                } else if (Date.now() < this.eventItem.start - 15 * 60 * 1000) {
                     this.$message.warning("开始前15分钟可以进入房间等待");
                 } else {
                     this.$router.push(`/webRTC/${this.eventItem.id}/${this.eventItem.interviewerId}`);

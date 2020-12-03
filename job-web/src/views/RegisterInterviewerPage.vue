@@ -11,9 +11,9 @@
 
             <div v-if="active==1">
                 <el-form ref="formOne" :model="formOne" :rules="rules">
-                    <div class="import-container">
-                        <div class="import-button" @click="onImport">一键导入信息</div>
-                    </div>
+                    <!--                    <div class="import-container">-->
+                    <!--                        <div class="import-button" @click="onImport">一键导入信息</div>-->
+                    <!--                    </div>-->
                     <div class="step-title">个人信息</div>
                     <div style="margin-top: 35px">
                         <el-form-item label="昵称：" prop="nickName">
@@ -26,28 +26,28 @@
                             </div>
                         </el-form-item>
                         <el-form-item label="头像：" prop="avatar">
-                                <div>
-                                    <el-image v-for="item in avatarList"
-                                              :key="item.id"
-                                              :src="item.avatarUrl"
-                                              @click="resumeForm.avatarUrl = item.avatarUrl; formOne.avatar= item.avatarUrl;"
-                                              style="width: 100px; height: 100px; margin-right: 13px; cursor: pointer;"></el-image>
-                                </div>
-                                <el-upload class="avatar-uploader"
-                                           style="margin-left: 180px;"
-                                           :action="uploadPicOptions.action"
-                                           :data="uploadPicOptions.params"
-                                           :accept="uploadPicOptions.acceptFileType"
-                                           :show-file-list="false"
-                                           :on-success="handleAvatarSuccess"
-                                           :before-upload="beforeAvatarUpload">
-                                    <el-image v-if="resumeForm.avatarUrl"
-                                              :src="resumeForm.avatarUrl"
-                                              v-loading="loading"
-                                              class="avatar"/>
-                                    <el-image v-else class="avatar-uploader-icon" :src="require('@/assets/mock/img-upload.png')"></el-image>
-                                    <div slot="tip" class="avatar-uploader-tip">建议大小500*500</div>
-                                </el-upload>
+                            <div>
+                                <el-image v-for="item in avatarList"
+                                          :key="item.id"
+                                          :src="item.avatarUrl"
+                                          @click="resumeForm.avatarUrl = item.avatarUrl; formOne.avatar= item.avatarUrl;"
+                                          style="width: 100px; height: 100px; margin-right: 13px; cursor: pointer;"></el-image>
+                            </div>
+                            <el-upload class="avatar-uploader"
+                                       style="margin-left: 180px;"
+                                       :action="uploadPicOptions.action"
+                                       :data="uploadPicOptions.params"
+                                       :accept="uploadPicOptions.acceptFileType"
+                                       :show-file-list="false"
+                                       :on-success="handleAvatarSuccess"
+                                       :before-upload="beforeAvatarUpload">
+                                <el-image v-if="resumeForm.avatarUrl"
+                                          :src="resumeForm.avatarUrl"
+                                          v-loading="loading"
+                                          class="avatar"/>
+                                <el-image v-else class="avatar-uploader-icon" :src="require('@/assets/mock/img-upload.png')"></el-image>
+                                <div slot="tip" class="avatar-uploader-tip">建议大小500*500</div>
+                            </el-upload>
                         </el-form-item>
                         <div>
                             <el-form-item label="从事行业：" prop="industryId">
@@ -76,15 +76,14 @@
                             </el-form-item>
                         </div>
                         <div>
-                            <el-form-item label="从业经历：" prop="experience">
+                            <el-form-item label="从业经历：" prop="experience.experienceItem">
                                 <div class="textarea-container">
-                                    <div class="textarea-item">
-                                        <span class="experience-title">1.</span>
-                                        <el-input class="experience" type="textarea" v-model="formOne.experience "
+                                    <div class="textarea-item" v-for="(item,index) in formOne.experience">
+                                        <span class="experience-title">{{index+1}}.</span>
+                                        <el-input class="experience" type="textarea" v-model="item.experienceItem "
                                                   placeholder="字数不超过150字" resize="none" :autosize="{minRows: 2,maxRows: 10}"></el-input>
                                     </div>
-                                    <div class="add-experience-button">添加经历</div>
-
+                                    <div class="add-experience-button" @click="addExperience">添加经历</div>
                                 </div>
 
                             </el-form-item>
@@ -390,7 +389,7 @@
                     experienceTimeId: '',
                     companyName: '',
                     description: '',
-                    experience: '',
+                    experience: [{experienceItem: ''}],
                     delFlag: 0,
                 },
 
@@ -579,6 +578,9 @@
                     }
                 });
             },
+            addExperience() {
+                this.formOne.experience.push({experienceItem: ''})
+            },
             handleAvatarSuccess() {
                 this.loading = false;
                 console.log(this.formOne.avatar);
@@ -668,6 +670,7 @@
             next2() {
                 this.$refs["formOne"].validate(valid => {
                     if (valid) {
+                        this.formOne.experience = this.formOne.experience.map(item => item.experienceItem)
                         addInterview(this.formOne).then(() => {
                             Toast.success("提交成功");
                         })
@@ -792,6 +795,7 @@
             ::v-deep .el-form-item {
                 margin-top: 30px;
             }
+
             ::v-deep .el-form-item__label {
                 font-size: 24px;
                 color: #333333;
@@ -804,7 +808,7 @@
                 margin-left: 180px;
             }
 
-            ::v-deep .el-input__inner , ::v-deep .el-textarea__inner{
+            ::v-deep .el-input__inner, ::v-deep .el-textarea__inner {
                 width: 360px;
                 height: 43px;
                 background: #FFFFFF;
@@ -852,6 +856,7 @@
                     display: flex;
                     flex-direction: row;
                     align-items: flex-start;
+                    margin-bottom: 13px;
 
                     .experience-title {
                         font-size: 20px;
@@ -860,7 +865,7 @@
                     }
 
                     .experience {
-                        ::v-deep .el-textarea__inner{
+                        ::v-deep .el-textarea__inner {
                             width: 332px;
                             margin-left: 10px;
                         }

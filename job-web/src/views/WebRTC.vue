@@ -131,7 +131,7 @@
              */
             this.aliWebRTC.isSupport().then(re => {
                 this.init();
-                this.joinRoom();   // TODO  需要取消注释
+                this.joinRoom();
             }).catch(error => {
                 this.$message.error(error.message);
             })
