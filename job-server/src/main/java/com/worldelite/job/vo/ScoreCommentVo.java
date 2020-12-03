@@ -33,6 +33,7 @@ public class ScoreCommentVo implements VoConvertable<ScoreCommentVo, CompanyComm
 
     private String scoreContent; //评价内容
     private String companyName; //公司名
+    private Byte forbidden; //是否禁言
 
     @Override
     public ScoreCommentVo asVo(CompanyComment companyComment) {

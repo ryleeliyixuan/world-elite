@@ -50,6 +50,9 @@ public class CompanyCommentService extends BaseService{
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private CompanyForbiddenService companyForbiddenService;
+
     /**
      * 保存评论
      * @param companyCommentForm 评论表单
@@ -379,6 +382,12 @@ public class CompanyCommentService extends BaseService{
         commentVo.setToUser(userApplicantService.getUserInfo(companyComment.getToId()));
         CompanyPost post = companyPostService.getById(companyComment.getOwnerId());
         CompanyVo company = companyService.getSimpleCompanyInfo(post.getCompanyId());
+        Boolean isForbidden = companyForbiddenService.isForbidden(companyComment.getFromId());
+        if(isForbidden){
+            commentVo.setForbidden((byte) 1);
+        }else{
+            commentVo.setForbidden((byte) 0);
+        }
         if(post!=null) {
             commentVo.setTitle(post.getTitle());
         }
@@ -394,6 +403,12 @@ public class CompanyCommentService extends BaseService{
         commentVo.setToUser(userApplicantService.getUserInfo(companyComment.getToId()));
         CompanyScore score = companyScoreService.getById(companyComment.getOwnerId());
         CompanyVo company = companyService.getSimpleCompanyInfo(score.getCompanyId());
+        Boolean isForbidden = companyForbiddenService.isForbidden(companyComment.getFromId());
+        if(isForbidden){
+            commentVo.setForbidden((byte) 1);
+        }else{
+            commentVo.setForbidden((byte) 0);
+        }
         if(score!=null) {
             commentVo.setScoreContent(score.getContent());
         }

@@ -33,6 +33,7 @@ public class PostCommentVo implements VoConvertable<PostCommentVo, CompanyCommen
 
     private String title; //帖子标题
     private String companyName; //企业名
+    private Byte forbidden; //是否禁言
 
     @Override
     public PostCommentVo asVo(CompanyComment companyComment) {
