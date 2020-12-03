@@ -28,6 +28,7 @@
                         <el-form-item label="头像：" prop="avatar">
                                 <div>
                                     <el-image v-for="item in avatarList"
+                                              :key="item.id"
                                               :src="item.avatarUrl"
                                               @click="resumeForm.avatarUrl = item.avatarUrl; formOne.avatar= item.avatarUrl;"
                                               style="width: 100px; height: 100px; margin-right: 13px; cursor: pointer;"></el-image>

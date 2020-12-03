@@ -116,40 +116,40 @@
             }
         },
         mounted() {
-            // this.eventId = this.$route.params.id;
-            // this.interviewerId = this.$route.params.interviewerId;
-            //
-            // // 获取对方信息（主要获取面试官的信息）
-            // this.getInterviewerInfo(this.interviewerId);
-            //
-            // /**
-            //  * 创建webRTC对象
-            //  */
-            // this.aliWebRTC = new AliRtcEngine();
-            // /**
-            //  * AliWebRTC isSupport检测
-            //  */
-            // this.aliWebRTC.isSupport().then(re => {
-            //     this.init();
-            //     this.joinRoom();   // TODO  需要取消注释
-            // }).catch(error => {
-            //     this.$message.error(error.message);
-            // })
-            //
-            // /**
-            //  * 初始化webSocket
-            //  */
-            // im.init(this.receiveMessage).then((data) => {
-            //     this.userId = data.userId;
-            //     this.token = data.token;
-            //     im.addConversation(this.interviewerId, 0).then(() => {
-            //         im.getConversation(this.interviewerId, 0).then((conversation) => {
-            //             this.conversationItem = conversation[0];
-            //         })
-            //     })
-            // }).catch(() => {
-            //     this.$router.push({path: "/login", query: {...this.$route.query, redirect: "/chat"}});
-            // });
+            this.eventId = this.$route.params.id;
+            this.interviewerId = this.$route.params.interviewerId;
+
+            // 获取对方信息（主要获取面试官的信息）
+            this.getInterviewerInfo(this.interviewerId);
+
+            /**
+             * 创建webRTC对象
+             */
+            this.aliWebRTC = new AliRtcEngine();
+            /**
+             * AliWebRTC isSupport检测
+             */
+            this.aliWebRTC.isSupport().then(re => {
+                this.init();
+                this.joinRoom();   // TODO  需要取消注释
+            }).catch(error => {
+                this.$message.error(error.message);
+            })
+
+            /**
+             * 初始化webSocket
+             */
+            im.init(this.receiveMessage).then((data) => {
+                this.userId = data.userId;
+                this.token = data.token;
+                im.addConversation(this.interviewerId, 0).then(() => {
+                    im.getConversation(this.interviewerId, 0).then((conversation) => {
+                        this.conversationItem = conversation[0];
+                    })
+                })
+            }).catch(() => {
+                this.$router.push({path: "/login", query: {...this.$route.query, redirect: "/chat"}});
+            });
             this.$emit("complete");
         },
 
