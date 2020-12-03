@@ -300,7 +300,7 @@
 
                     // 日历配置
                     initialView: 'dayGridMonth',
-                    initialDate: "2020-11-10",
+                    initialDate: Date.now(),
                     headerToolbar: {
                         start: 'title', // will normally be on the left. if RTL, will be on the right
                         center: '',
@@ -520,9 +520,10 @@
 
             // 进入视频面试
             onEntryWebRTC() {
+                console.log(this.eventItem.start);
                 if (this.eventItem.end < Date.now()) {
                     this.$message.warning("面试已结束");
-                } else if (this.eventItem.start > Date.now() - 15 * 60 * 1000) {
+                } else if (this.eventItem.start < Date.now() - 15 * 60 * 1000) {
                     this.$message.warning("开始前15分钟可以进入房间等待");
                 } else {
                     this.$router.push(`/webRTC/${this.eventItem.id}/${this.eventItem.interviewerId}`);
@@ -558,9 +559,6 @@
                             })
                         } else {
 
-                            if (item.beginTime === 1606539600000) {
-                                console.log(item);
-                            }
                             let eventList = [ // 保留被人预约剩余的可预约事件，默认为我的总预约时间段
                                 {
                                     start: item.beginTime,
@@ -590,6 +588,8 @@
                                             borderColor: '#D3F261', // 块边框颜色
                                             backgroundColor: '#D3F261', // 块背景色
                                         })
+                                    } else { // 被预约时间为可预约时间端的全部
+                                        eventList = eventList.filter(it => it.start !== event.start && it.end !== event.end);
                                     }
                                 }
 
@@ -681,6 +681,7 @@
             getFirstDayOfMonth(date) {
                 const temp = new Date(date.getTime());
                 temp.setDate(1)
+                temp.setHours(0, 0, 0, 0);
                 return temp.getTime();
             },
 
@@ -688,6 +689,7 @@
                 const temp = new Date(date.getTime());
                 temp.setMonth(temp.getMonth() + 1);
                 temp.setDate(1)
+                temp.setHours(0, 0, 0, 0);
                 return temp.getTime() - 1;
             },
 
