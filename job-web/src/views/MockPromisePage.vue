@@ -101,6 +101,7 @@
     import dayGridPlugin from '@fullcalendar/daygrid'
     import interactionPlugin from '@fullcalendar/interaction'
     import QRCode from 'qrcodejs2'
+    import {getUserId} from '@/utils/auth'
 
     export default {
         name: "MockPromisePage",
@@ -109,6 +110,7 @@
         },
         data() {
             return {
+                userId: getUserId(),
                 dialogVisible: false, // 对话框是否可见
 
                 date: 0, // 预约日期
@@ -262,7 +264,7 @@
                         amount: this.amount,
                         goodsId: direction.id,
                         goodsName: direction.direction,
-                        userId: this.query.interviewerId,
+                        userId: this.userId,
                         type: this.payType,
                         attachParam: this.attachParam
                     }
