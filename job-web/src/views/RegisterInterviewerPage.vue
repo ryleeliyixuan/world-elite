@@ -90,62 +90,47 @@
                 </div>
             </el-form>
         </div>
-        <div v-if="active===2">
+        <div v-if="active===2" class="interview-info">
             <div class="step-title">面试信息</div>
-            <el-form ref="formTwo" :model="formTwo" :rules="rules">
-                <el-form-item label="可提供面试内容：" label-width="150px">
-                    <el-checkbox v-model="checked1">HR面试（通用）</el-checkbox>
-                    <el-checkbox v-model="checked2">专业技术（测试）</el-checkbox>
-                    <el-checkbox v-model="checked3">行业经验</el-checkbox>
+            <div class="direction-container">
+                <div style="width: 340px; text-align: right;">可提供面试内容：</div>
+                <el-checkbox v-model="checked1">HR面试（通用）</el-checkbox>
+                <el-checkbox v-model="checked2">专业技术（测试）</el-checkbox>
+                <el-checkbox v-model="checked3">行业经验</el-checkbox>
+            </div>
+            <div v-if="!(checked1||checked2||checked3)" style="margin-top: 30px;">
+                <el-alert title="至少选择一个可提供面试的内容！"
+                          type="warning"
+                          center
+                          show-icon>
+                </el-alert>
+            </div>
+            <el-form ref="formTwo" :model="formTwo" :rules="rules" v-if="checked1===true">
+                <el-form-item label="HR通用面试理想咨询价格：" label-width="340px" prop="price">
+                    <el-input style="width: 300px" v-model="formTwo.price" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
                 </el-form-item>
-                <div v-if="checked1===true">
-                    <el-form-item label="HR通用面试理想咨询价格：" label-width="300px" style="margin-left: -100px"
-                                  prop="price">
-                        <el-input style="width: 300px" v-model="formTwo.price"
-                                  placeholder="请输入您理想资询价位(元/半小时)">
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item label="面试内容简介：" label-width="300px" style="margin-left: -100px"
-                                  prop="description">
-                        <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
-                                  placeholder="请对面试的内容进行具体描述，150字以内"
-                                  :autosize="{minRows: 8,maxRows: 10}"></el-input>
-                    </el-form-item>
-                </div>
-                <div v-if="checked2===true">
-                    <el-form-item label="专业技术测试理想咨询价格：" label-width="300px" style="margin-left: -100px"
-                                  prop="price">
-                        <el-input v-model="formTwo.price" style="width: 300px"
-                                  placeholder="请输入您理想资询价位(元/半小时)">
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item label="面试内容简介：" label-width="300px" style="margin-left: -100px"
-                                  prop="description">
-                        <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
-                                  placeholder="请对面试的内容进行具体描述，150字以内"
-                                  :autosize="{minRows: 8,maxRows: 10}"></el-input>
-                    </el-form-item>
-                </div>
-                <div v-if="checked3===true">
-                    <el-form-item label="职业规划理想咨询价格：" label-width="300px" style="margin-left: -100px" prop="price">
-                        <el-input v-model="formTwo.price" style="width: 300px"
-                                  placeholder="请输入您理想资询价位(元/半小时)">
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item label="面试内容简介：" label-width="300px" style="margin-left: -100px"
-                                  prop="description">
-                        <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
-                                  placeholder="请对面试的内容进行具体描述，150字以内"
-                                  :autosize="{minRows: 8,maxRows: 10}"></el-input>
-                    </el-form-item>
-                </div>
-                <div v-if="!(checked1||checked2||checked3)">
-                    <el-alert title="至少选择一个可提供面试的内容！"
-                              type="warning"
-                              center
-                              show-icon>
-                    </el-alert>
-                </div>
+                <el-form-item label="面试内容简介：" label-width="340px" prop="description">
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo.description" placeholder="请对面试的内容进行具体描述，150字以内"
+                              :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form ref="formTwo2" :model="formTwo2" :rules="rules" v-if="checked2===true">
+                <el-form-item label="专业技术测试理想咨询价格：" label-width="340px" prop="price">
+                    <el-input v-model="formTwo2.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
+                </el-form-item>
+                <el-form-item label="面试内容简介：" label-width="340px" prop="description">
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo2.description" placeholder="请对面试的内容进行具体描述，150字以内"
+                              :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form ref="formTwo3" :model="formTwo3" :rules="rules" v-if="checked3===true">
+                <el-form-item label="职业规划理想咨询价格：" label-width="340px" prop="price">
+                    <el-input v-model="formTwo3.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
+                </el-form-item>
+                <el-form-item label="面试内容简介：" label-width="340px" prop="description">
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo3.description" placeholder="请对面试的内容进行具体描述，150字以内"
+                              :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
+                </el-form-item>
             </el-form>
         </div>
         <div v-if="active===3">
@@ -241,10 +226,10 @@
         <div v-if="active===2"></div>
         <div v-if="active===3"></div>
         <div class="button-container">
-                <div class="button1" @click="prev1" v-if="active===1">上一步</div>
-                <div class="button2" @click="next2" v-if="active===1">下一步</div>
-                <div class="button1" @click="active = 1" v-if="active===2">上一步</div>
-                <div class="button2" @click="next3" v-if="active===2">下一步</div>
+            <div class="button1" @click="prev1" v-if="active===1">上一步</div>
+            <div class="button2" @click="next2" v-if="active===1">下一步</div>
+            <div class="button1" @click="active = 1" v-if="active===2">上一步</div>
+            <div class="button2" @click="next3" v-if="active===2">下一步</div>
         </div>
     </div>
 </template>
@@ -308,7 +293,7 @@
                     fileUrl: "",
                     acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
                 },
-                active: 2,
+                active: 1,
                 loading: false,
                 loading1: false,
                 loading2: false,
@@ -325,8 +310,23 @@
                     description: '',
                     experience: [{experienceItem: ''}],
                 },
+                //hr
                 formTwo: {
-                    direction: '',
+                    direction: 'HR面试（通用）',
+                    description: '',
+                    interviewerId: getUserId(),
+                    price: '',
+                },
+                //技术
+                formTwo2: {
+                    direction: '专业技术（测试）',
+                    description: '',
+                    interviewerId: getUserId(),
+                    price: '',
+                },
+                //经验
+                formTwo3: {
+                    direction: '行业经验',
                     description: '',
                     interviewerId: getUserId(),
                     price: '',
@@ -490,17 +490,45 @@
                 });
             },
 
+            validate(filedName) {
+                return new Promise((resolve) => {
+                    this.$refs[filedName].validate(valid => {
+                        resolve(valid)
+                    });
+                })
+            },
+
             next3() {
-                this.$refs["formTwo"].validate(valid => {
-                    if (valid) {
-                        addInterviewDirection(this.formTwo).then(() => {
+                let p = [];
+                if(this.checked1) {
+                    p.push(this.validate('formTwo'));
+                }
+                if(this.checked2) {
+                    p.push(this.validate('formTwo2'));
+                }
+                if(this.checked3) {
+                    p.push(this.validate('formTwo3'));
+                }
+                Promise.all(p).then(result => {
+                    let valid = result.find(item => !item);
+                    if(valid === undefined) {
+                        let request = [];
+                        if(this.checked1) {
+                            request.push(addInterviewDirection(this.formTwo));
+                        }
+                        if(this.checked2) {
+                            request.push(addInterviewDirection(this.formTwo2));
+                        }
+                        if(this.checked3) {
+                            request.push(addInterviewDirection(this.formTwo3));
+                        }
+
+                        Promise.all(request).then(() => {
                             Toast.success("提交成功");
+                            this.active = 3;
                         })
-                        this.active = 3;
-                    } else {
-                        console.log('error submit!!');
                     }
-                });
+                })
             },
 
             onSubmit() {
@@ -574,6 +602,12 @@
             }
         }
 
+        .interview-info {
+            /deep/ .el-form-item__error {
+                margin-left: 0;
+            }
+        }
+
         .import-container {
             width: 722px;
             height: auto;
@@ -601,6 +635,22 @@
         .step-title {
             font-size: 30px;
             color: #333333;
+        }
+
+        .direction-container {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+            line-height: 33px;
+            /deep/ .el-checkbox{
+                margin-right: 107px;
+                transform-origin: left;
+                transform: scale(1.7);
+                margin-bottom: 0;
+            }
         }
 
         .el-form {
