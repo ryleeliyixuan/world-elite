@@ -92,6 +92,14 @@ const actions = {
 
                 removeToken()
                 storage.removeUserInfo();
+
+                const hasToken = getToken()
+                console.log(hasToken);
+                if(hasToken) {
+                    console.log(true)
+                } else {
+                    console.log(false)
+                }
                 resolve()
             }).catch(error => {
                 reject(error)

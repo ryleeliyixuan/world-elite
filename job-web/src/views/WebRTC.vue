@@ -526,19 +526,16 @@
 
             // 接收消息处理
             receiveMessage(value) {
-                if (this.$route.path === "/chat") {
-                    // 消息来自已经打开的窗口
-                    if (value.fromUser === this.conversationItem.friendVo.friendUserId) {
-                        im.msgAsReadMessage(value.fromUser, value.toUser, [value.messageId], value.conversation.conversationId);
+                if (value.fromUser === this.conversationItem.friendVo.friendUserId) {
+                    im.msgAsReadMessage(value.fromUser, value.toUser, [value.messageId], value.conversation.conversationId);
 
-                        // 构建消息对象，插入接收框
-                        value.timestamp = Date.now();
-                        this.messageList.push(value);
-                        this.scrollBottom();
+                    // 构建消息对象，插入接收框
+                    value.timestamp = Date.now();
+                    this.messageList.push(value);
+                    this.scrollBottom();
 
-                        // 更新会话列表
-                        this.conversationItem.lastMessage = value;
-                    }
+                    // 更新会话列表
+                    this.conversationItem.lastMessage = value;
                 }
             },
 
