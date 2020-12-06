@@ -3,6 +3,8 @@ package com.worldelite.job.mapper;
 import com.worldelite.job.entity.User;
 import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.entity.UserOptions;
+import com.worldelite.job.form.CountForm;
+import com.worldelite.job.form.FlagPairForm;
 
 import java.util.List;
 
@@ -58,4 +60,8 @@ public interface UserApplicantMapper {
     UserApplicant selectByEmail(String email);
 
     List<UserApplicant> selectAndList(UserOptions options);
+
+    Integer countAll();
+
+    List<FlagPairForm> countFlagGroupBy();
 }

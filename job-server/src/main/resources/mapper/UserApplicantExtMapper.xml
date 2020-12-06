@@ -47,4 +47,13 @@
       </if>
     </where>
   </select>
+
+  <select id="countAll"  resultType="java.lang.Integer">
+    select count(*) from t_user_applicant
+  </select>
+
+  <select id="countFlagGroupBy" resultType="com.worldelite.job.form.FlagPairForm">
+    select subscribe_flag as flag, COUNT(*) as num from t_user_applicant group by subscribe_flag
+  </select>
+
 </mapper>

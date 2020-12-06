@@ -52,4 +52,17 @@
             </if>
         </where>
     </select>
+
+    <select id="countAll" resultType="java.lang.Integer">
+    select count(*) from t_resume
+  </select>
+
+    <select id="countPlaceGroupBy" resultType="com.worldelite.job.form.CountForm">
+        select cur_place as name, count(*) as num from t_resume where cur_place!=''group by cur_place;
+    </select>
+
+    <select id="countGraduateTimeGroupBy" resultType="com.worldelite.job.form.GraduateTimePairForm">
+        select graduate_time as time, COUNT(*) as num from t_resume where graduate_time IS NOT NULL group by graduate_time;
+    </select>
+
 </mapper>

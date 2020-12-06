@@ -23,4 +23,16 @@
       </if>
     </where>
   </select>
+
+  <select id="countSchool" resultType="java.lang.Integer">
+    select COUNT(distinct school_name)from t_resume_edu;
+  </select>
+
+  <select id="countSchoolGroupBy" resultType="com.worldelite.job.form.CountForm">
+    select school_name as name, COUNT(*) as num from t_resume_edu group by school_name;
+  </select>
+
+  <select id="countMajorGroupBy" resultType="com.worldelite.job.form.CountForm">
+    select major_name as name, COUNT(*) as num from t_resume_edu group by major_name;
+  </select>
 </mapper>
