@@ -4,7 +4,9 @@ import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.entity.UserCorporate;
 import com.worldelite.job.entity.UserOptions;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface UserCorporateMapper {
     /**
@@ -58,4 +60,12 @@ public interface UserCorporateMapper {
     UserCorporate selectByEmail(String email);
 
     List<UserCorporate> selectAndList(UserOptions options);
+
+    List<Map<String, Object>> selectStatInfo(Integer days);
+
+    List<Map<String, Object>> selectSpecifyMonthStatInfo(String dateStr);
+
+    Date selectFirstCreateTime();
+
+    List<Map<String, Object>> selectSpecifyYearStatInfo(String dateStr);
 }

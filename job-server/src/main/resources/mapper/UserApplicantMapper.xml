@@ -263,4 +263,27 @@
       subscribe_flag = #{subscribeFlag,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+  <select id="selectStatInfo" parameterType="INTEGER" resultType="map">
+    select create_time,count(0) as count from t_user_applicant
+    where to_days(now()) - to_days(create_time) &lt; ${value}
+    group by(TO_DAYS(create_time))
+  </select>
+
+  <select id="selectSpecifyMonthStatInfo" parameterType="string" resultType="map">
+    SELECT create_time,COUNT(0) AS count FROM t_user_applicant
+    WHERE DATE_FORMAT(create_time,'%Y-%m') = #{value}
+    GROUP BY DATE(create_time)
+  </select>
+
+  <select id="selectSpecifyYearStatInfo" parameterType="string" resultType="map">
+    SELECT DATE_FORMAT(create_time,'%Y-%m') AS create_time,COUNT(0) AS count FROM t_user_applicant
+    WHERE DATE_FORMAT(create_time,'%Y') = #{value}
+    GROUP BY DATE_FORMAT(create_time,'%Y-%m')
+  </select>
+
+  <select id="selectFirstCreateTime" resultType="date">
+    SELECT create_time FROM t_user_applicant ORDER BY create_time ASC limit 1
+  </select>
 </mapper>

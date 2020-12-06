@@ -29,4 +29,81 @@
     delete from t_company_comment
     where owner_ids like concat('%',#{ownerId},'%')
   </delete>
+
+  <delete id="deleteAll" parameterType="com.worldelite.job.entity.CompanyComment">
+    delete from t_company_comment where id in (${commentIds})
+  </delete>
+
+  <select id="searchInPost" parameterType="com.worldelite.job.entity.CompanyComment" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_company_comment
+    <where>
+      <if test="id != null">
+        and id like concat('%',#{id}, '%')
+      </if>
+      <if test="ownerId != null">
+        and owner_id = #{ownerId}
+      </if>
+      <if test="title != null and title != ''">
+        and owner_id in (select id from t_company_post where title like concat('%',#{title},'%'))
+      </if>
+      <if test="companyNames != null and companyNames != ''">
+        and owner_id in (select id from t_company_post where company_id in (select id from t_company
+          where name regexp '${companyNames}' or full_name regexp '${companyNames}'))
+      </if>
+      <if test="fromNames != null and fromNames != ''">
+        and from_id in (select id from t_user_applicant where name regexp '${fromNames}')
+      </if>
+      <if test="toNames != null and toNames != ''">
+        and to_id in (select id from t_user_applicant where name regexp '${toNames}')
+      </if>
+      <if test="beginTime != null">
+        and create_time &gt;= #{beginTime}
+      </if>
+      <if test="endTime != null">
+        and create_time &lt;= #{endTime}
+      </if>
+      <if test="keyword != null and keyword != ''">
+        and content like concat('%',#{keyword},'%')
+      </if>
+      and owner_id in (select id from t_company_post)
+      and `type` = 1
+    </where>
+  </select>
+
+  <select id="searchInScore" parameterType="com.worldelite.job.entity.CompanyComment" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_company_comment
+    <where>
+      <if test="id != null">
+        and id like concat('%',#{id}, '%')
+      </if>
+      <if test="ownerId != null">
+        and owner_id = #{ownerId}
+      </if>
+      <if test="companyNames != null and companyNames != ''">
+        and owner_id in (select id from t_company_score where company_id in (select id from t_company
+        where name regexp '${companyNames}' or full_name regexp '${companyNames}'))
+      </if>
+      <if test="fromNames != null and fromNames != ''">
+        and from_id in (select id from t_user_applicant where name regexp '${fromNames}')
+      </if>
+      <if test="toNames != null and toNames != ''">
+        and to_id in (select id from t_user_applicant where name regexp '${toNames}')
+      </if>
+      <if test="beginTime != null">
+        and create_time &gt;= #{beginTime}
+      </if>
+      <if test="endTime != null">
+        and create_time &lt;= #{endTime}
+      </if>
+      <if test="keyword != null and keyword != ''">
+        and content like concat('%',#{keyword},'%')
+      </if>
+      and owner_id in (select id from t_company_score)
+      and `type` = 2
+    </where>
+  </select>
 </mapper>

@@ -28,6 +28,10 @@ public class CompanyScoreVo implements VoConvertable<CompanyScoreVo, CompanyScor
     private String content; //评分内容
     private Integer score; //评分
     private Byte anonymous; //是否匿名
+    private Byte recommend; //是否优质
+
+    private Byte forbidden; //是否禁言
+    private CompanyVo company; //企业信息
 
     private UserApplicantVo fromUser; //评分人
     private Boolean like; //是否点赞

@@ -3,19 +3,14 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.CommentType;
-import com.worldelite.job.entity.CompanyComment;
-import com.worldelite.job.entity.CompanyPost;
-import com.worldelite.job.entity.CompanyScore;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.entity.CompanyScore;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.CompanyScoreMapper;
 import com.worldelite.job.mapper.CompanyScoreMapper;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.CompanyCommentVo;
-import com.worldelite.job.vo.CompanyScoreVo;
-import com.worldelite.job.vo.PageResult;
-import com.worldelite.job.vo.UserApplicantVo;
+import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +41,12 @@ public class CompanyScoreService extends BaseService{
 
     @Autowired
     private UserApplicantService userApplicantService;
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private CompanyForbiddenService companyForbiddenService;
 
     /**
      * 保存评分
@@ -86,6 +87,15 @@ public class CompanyScoreService extends BaseService{
         //删除评论
         companyCommentService.deleteByOwnerId(scoreId);
     }
+
+    @Transactional
+    public void deleteAll(Long[] scoreIds){
+        //删除评分
+        CompanyScoreOptions options = new CompanyScoreOptions();
+        options.setScoreIds(scoreIds);
+        companyScoreMapper.deleteAll(options);
+    }
+
 
     /**
      * 点赞
@@ -177,6 +187,37 @@ public class CompanyScoreService extends BaseService{
             userVo.setAvatar("");
             companyScoreVo.setFromUser(userVo);
         }
+        //公司信息
+        CompanyVo companyVo = companyService.getSimpleCompanyInfo(companyScore.getCompanyId());
+        companyScoreVo.setCompany(companyVo);
+        //禁言信息
+        boolean isForbidden = companyForbiddenService.isForbidden(companyScore.getFromId());
+        if(isForbidden){
+            companyScoreVo.setForbidden((byte) 1);
+        }else{
+            companyScoreVo.setForbidden((byte) 0);
+        }
+        //登录用户显示点赞和举报信息
+        if(curUser() != null) {
+            companyScoreVo.setLike(companyLikeService.hasLike(companyScore.getId()));
+            companyScoreVo.setReport(companyReportService.getReportVo(companyScore.getId()));
+        }
+        return companyScoreVo;
+    }
+
+    public CompanyScoreVo getScoreVoNoAnonymous(CompanyScore companyScore){
+        CompanyScoreVo companyScoreVo = new CompanyScoreVo().asVo(companyScore);
+        companyScoreVo.setFromUser(userApplicantService.getUserInfo(companyScore.getFromId()));
+        //公司信息
+        CompanyVo companyVo = companyService.getSimpleCompanyInfo(companyScore.getCompanyId());
+        companyScoreVo.setCompany(companyVo);
+        //禁言信息
+        boolean isForbidden = companyForbiddenService.isForbidden(companyScore.getFromId());
+        if(isForbidden){
+            companyScoreVo.setForbidden((byte) 1);
+        }else{
+            companyScoreVo.setForbidden((byte) 0);
+        }
         //登录用户显示点赞和举报信息
         if(curUser() != null) {
             companyScoreVo.setLike(companyLikeService.hasLike(companyScore.getId()));
@@ -263,5 +304,19 @@ public class CompanyScoreService extends BaseService{
         companyScoreVo.setLike(companyLikeService.hasLike(companyScore.getId()));
         companyScoreVo.setReport(companyReportService.getReportVo(companyScore.getId()));
         return companyScoreVo;
+    }
+
+    public PageResult<CompanyScoreVo> search(CompanyScoreListForm listForm){
+        AppUtils.setPage(listForm);
+        CompanyScoreOptions options = new CompanyScoreOptions();
+        BeanUtil.copyProperties(listForm,options);
+        Page<CompanyScore> page = (Page<CompanyScore>) companyScoreMapper.search(options);
+        PageResult<CompanyScoreVo> pageResult = new PageResult<>(page);
+        List<CompanyScoreVo> voList = new ArrayList<>();
+        for(CompanyScore score:page){
+            voList.add(getScoreVoNoAnonymous(score));
+        }
+        pageResult.setList(voList);
+        return pageResult;
     }
 }

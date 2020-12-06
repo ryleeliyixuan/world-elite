@@ -28,7 +28,7 @@
                 <div :class="['button', {'select':menu===3}]" @click="onSettleIn" v-if="userIdentity!==2 && identity===1">
                     <el-image v-if="menu===3" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
                     <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
-                    立即入住
+                    立即入驻
                 </div>
                 <div :class="['button', {'select':menu===4}]" @click="onIncome" v-if="userIdentity===2 && identity===2">
                     <el-image v-if="menu===4" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income.png')"></el-image>
@@ -120,10 +120,10 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interviewerName" label="面试官" width="190">
+                    <el-table-column prop="interviewerName" label="面试者" width="190">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.interviewerName}}
+                                {{scope.row.userName}}
                             </div>
                         </template>
                     </el-table-column>
@@ -243,7 +243,7 @@
 
         <el-dialog :visible.sync="eventDialogVisible" width="200px" :show-close="false" top="30%">
             <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail">
-                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进度视频面视</el-button>
+                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面视</el-button>
                 <el-button type="info" plain size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
                            @click="onCancelInterview">取消面视预约
@@ -300,7 +300,7 @@
 
                     // 日历配置
                     initialView: 'dayGridMonth',
-                    initialDate: "2020-11-10",
+                    initialDate: Date.now(),
                     headerToolbar: {
                         start: 'title', // will normally be on the left. if RTL, will be on the right
                         center: '',
@@ -361,7 +361,6 @@
             }
         },
         mounted() {
-            this.calendarApi = this.$refs.fullCalendar.getApi();
             this.getInterviewerInfo();
             this.onInterviewee();
         },
@@ -393,6 +392,7 @@
 
             // 上月
             onPrev() {
+                this.calendarApi = this.$refs.fullCalendar.getApi();
                 this.calendarApi.prev();
                 if (this.identity === 1) {
                     this.getIntervieweeEvent();
@@ -404,6 +404,7 @@
 
             // 下月
             onNext() {
+                this.calendarApi = this.$refs.fullCalendar.getApi();
                 this.calendarApi.next();
                 if (this.identity === 1) {
                     this.getIntervieweeEvent();
@@ -431,6 +432,7 @@
             // 点击立即入住
             onSettleIn() {
                 this.menu = 3;
+                this.$router.push("/interviewSecretPage");
             },
 
             // 我的收益
@@ -518,9 +520,10 @@
 
             // 进入视频面试
             onEntryWebRTC() {
+                console.log(this.eventItem.start);
                 if (this.eventItem.end < Date.now()) {
                     this.$message.warning("面试已结束");
-                } else if (this.eventItem.start > Date.now() - 15 * 60 * 1000) {
+                } else if (Date.now() < this.eventItem.start - 15 * 60 * 1000) {
                     this.$message.warning("开始前15分钟可以进入房间等待");
                 } else {
                     this.$router.push(`/webRTC/${this.eventItem.id}/${this.eventItem.interviewerId}`);
@@ -556,9 +559,6 @@
                             })
                         } else {
 
-                            if (item.beginTime === 1606539600000) {
-                                console.log(item);
-                            }
                             let eventList = [ // 保留被人预约剩余的可预约事件，默认为我的总预约时间段
                                 {
                                     start: item.beginTime,
@@ -588,6 +588,8 @@
                                             borderColor: '#D3F261', // 块边框颜色
                                             backgroundColor: '#D3F261', // 块背景色
                                         })
+                                    } else { // 被预约时间为可预约时间端的全部
+                                        eventList = eventList.filter(it => it.start !== event.start && it.end !== event.end);
                                     }
                                 }
 
@@ -612,6 +614,7 @@
 
             // 面试者获取我的预约成功事件
             getIntervieweeEvent() {
+                this.calendarApi = this.$refs.fullCalendar.getApi();
                 let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
                 let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
                 this.$axios.get(`/mock/interview/reservation/my/${beginTime}/${endTime}`).then(data => {
@@ -678,6 +681,7 @@
             getFirstDayOfMonth(date) {
                 const temp = new Date(date.getTime());
                 temp.setDate(1)
+                temp.setHours(0, 0, 0, 0);
                 return temp.getTime();
             },
 
@@ -685,6 +689,7 @@
                 const temp = new Date(date.getTime());
                 temp.setMonth(temp.getMonth() + 1);
                 temp.setDate(1)
+                temp.setHours(0, 0, 0, 0);
                 return temp.getTime() - 1;
             },
 

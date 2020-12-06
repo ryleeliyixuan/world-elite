@@ -1,259 +1,235 @@
 <template>
-
     <div class="app-container">
-        <div class="main-container">
-            <p style="font-size: 25px">面试官注册</p>
-            <el-steps :active="active">
-                <el-step title="个人信息"></el-step>
-                <el-step title="面试信息"></el-step>
-                <el-step title="信息认证"></el-step>
-            </el-steps>
+        <div class="title">面试官注册</div>
+        <el-steps :active="active" class="steps">
+            <el-step></el-step>
+            <el-step></el-step>
+            <el-step></el-step>
+        </el-steps>
 
-            <div v-if="active==1">
-                <el-form ref="formOne" :model="formOne" :rules="rules">
-                    <div style="margin-top: 20px">
-                        <el-form-item label="昵称" label-width="100px" prop="nickName">
-                            <el-input style="width: 300px" v-model="formOne.nickName" placeholder="请输入您的昵称"></el-input>
-                        </el-form-item>
-                        <el-form-item label="头像" label-width="100px" prop="avatar">
-                            <b-media class="resume col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                                <div class="resume-basicinfo row mt-3">
-                                    <div class="avatorHolder col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                                        <el-upload
-                                                class="avatar-uploader mb-3"
-                                                :action="uploadPicOptions.action"
-                                                :data="uploadPicOptions.params"
-                                                :accept="uploadPicOptions.acceptFileType"
-                                                :show-file-list="false"
-                                                :on-success="handleAvatarSuccess"
-                                                :before-upload="beforeAvatarUpload"
-                                        >
-                                            <img
-                                                    v-if="(resumeForm.avatarUrl && resumeForm.avatarUrl !== '')"
-                                                    :src="resumeForm.avatarUrl"
-                                                    class="avatar"
-                                            />
-                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                            <div slot="tip" class="el-upload__tip">建议大小：500 x 500</div>
-                                        </el-upload>
-                                    </div>
-                                </div>
-                            </b-media>
-                        </el-form-item>
-
-                        <div>
-                            <el-form-item label="从事行业" label-width="100px" prop="industryId">
-                                <el-select v-model="formOne.industryId"
-                                           clearable
-                                           placeholder="行业"
-                                           @change="handleFilter"
-                                           class="section1-select">
-                                    <el-option v-for="item in industryOptions" :key="item.industryId" :label="item.name"
-                                               :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </div>
-                        <div>
-                            <el-form-item label="所在公司" label-width="100px" prop="companyName">
-                                <el-input style="width: 305px" v-model="formOne.companyName"
-                                          placeholder="请输入您的公司名称"></el-input>
-                            </el-form-item>
-                        </div>
-                        <div>
-                            <el-form-item label="从业时间" label-width="100px" prop="experienceTimeId">
-                                <el-select v-model="formOne.experienceTimeId" clearable placeholder="请选择您的工作经验年限"
-                                           @change="handleFilter" class="section1-select">
-                                    <el-option v-for="item in experienceTimeOptions" :key="item.experienceTimeId"
-                                               :label="item.name" :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </div>
-                        <div>
-                            <el-form-item label="从业经历" label-width="100px" prop="experience">
-                                <el-input style="width: 300px" type="textarea" v-model="formOne.experience "
-                                          placeholder="字数不超过150字" :autosize="{minRows: 8,maxRows: 10}"></el-input>
-                            </el-form-item>
-                        </div>
-                        <div>
-                            <el-form-item label="面试官自述" label-width="100px" prop="description">
-                                <el-input type="textarea" style="width: 300px" v-model="formOne.description"
-                                          placeholder="字数不超过150字" :autosize="{minRows: 8,maxRows: 10}"></el-input>
-                            </el-form-item>
+        <div v-if="active===1">
+            <!-- <div class="import-container">-->
+            <!--     <div class="import-button" @click="onImport">一键导入信息</div>-->
+            <!-- </div>-->
+            <div class="step-title">个人信息</div>
+            <el-form ref="formOne" :model="formOne" :rules="rules">
+                <el-form-item label="昵称：" prop="nickName">
+                    <div class="nickname-container">
+                        <el-input style="width: 360px" v-model="formOne.nickName" placeholder="请输入您的昵称"></el-input>
+                        <div class="warn-tip">
+                            <el-image :src="require('@/assets/mock/warn.png')" class="warn-icon"></el-image>
+                            <div class="warn-introduce">头像与昵称是您希望呈现在面试者预约页面的形象，可以使用化名或者卡通形象。</div>
                         </div>
                     </div>
-                </el-form>
-            </div>
-            <div v-if="active==2">
-                <el-form ref="formTwo" :model="formTwo" :rules="rules">
-                    <el-form-item label="可提供面试内容：" label-width="150px" :model="formTwo.direction">
-                        <el-checkbox v-model="checked1">HR面试（通用）</el-checkbox>
-                        <el-checkbox v-model="checked2">专业技术（测试）</el-checkbox>
-                        <el-checkbox v-model="checked3">行业经验</el-checkbox>
+                </el-form-item>
+                <el-form-item label="头像：" prop="avatar">
+                    <div>
+                        <el-image v-for="item in avatarList"
+                                  :key="item.id"
+                                  :src="item.avatarUrl"
+                                  @click="formOne.avatar= item.avatarUrl;"
+                                  style="width: 100px; height: 100px; margin-right: 13px; cursor: pointer;"/>
+                    </div>
+                    <el-upload class="avatar-uploader"
+                               style="margin-left: 180px;"
+                               :action="uploadPicOptions.action"
+                               :data="uploadPicOptions.params"
+                               :accept="uploadPicOptions.acceptFileType"
+                               :show-file-list="false"
+                               :on-success="handleUploadSuccess"
+                               :before-upload="beforeUpload">
+                        <el-image v-if="formOne.avatar"
+                                  :src="formOne.avatar"
+                                  v-loading="loading"
+                                  class="avatar"/>
+                        <el-image v-else class="avatar-uploader-icon" :src="require('@/assets/mock/img-upload.png')"></el-image>
+                        <div slot="tip" class="avatar-uploader-tip">建议大小500*500</div>
+                    </el-upload>
+                </el-form-item>
+                <div>
+                    <el-form-item label="从事行业：" prop="industryId">
+                        <el-select v-model="formOne.industryId"
+                                   clearable
+                                   placeholder="行业"
+                                   class="section1-select">
+                            <el-option v-for="item in industryOptions" :key="item.industryId" :label="item.name" :value="item.id"></el-option>
+                        </el-select>
                     </el-form-item>
-                    <div v-if="checked1===true">
-                        <el-form-item label="HR通用面试理想咨询价格：" label-width="300px" style="margin-left: -100px"
-                                      prop="price">
-                            <el-input style="width: 300px" v-model="formTwo.price"
-                                      placeholder="请输入您理想资询价位(元/半小时)">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="面试内容简介：" label-width="300px" style="margin-left: -100px"
-                                      prop="description">
-                            <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
-                                      placeholder="请对面试的内容进行具体描述，150字以内"
-                                      :autosize="{minRows: 8,maxRows: 10}"></el-input>
-                        </el-form-item>
-                    </div>
-                    <div v-if="checked2===true">
-                        <el-form-item label="专业技术测试理想咨询价格：" label-width="300px" style="margin-left: -100px"
-                                      prop="price">
-                            <el-input v-model="formTwo.price" style="width: 300px"
-                                      placeholder="请输入您理想资询价位(元/半小时)">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="面试内容简介：" label-width="300px" style="margin-left: -100px"
-                                      prop="description">
-                            <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
-                                      placeholder="请对面试的内容进行具体描述，150字以内"
-                                      :autosize="{minRows: 8,maxRows: 10}"></el-input>
-                        </el-form-item>
-                    </div>
-                    <div v-if="checked3===true">
-                        <el-form-item label="职业规划理想咨询价格：" label-width="300px" style="margin-left: -100px" prop="price">
-                            <el-input v-model="formTwo.price" style="width: 300px"
-                                      placeholder="请输入您理想资询价位(元/半小时)">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="面试内容简介：" label-width="300px" style="margin-left: -100px"
-                                      prop="description">
-                            <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
-                                      placeholder="请对面试的内容进行具体描述，150字以内"
-                                      :autosize="{minRows: 8,maxRows: 10}"></el-input>
-                        </el-form-item>
-                    </div>
-                    <div v-if="checked1==false&&checked2===false&&checked3===false">
-                        <el-alert title="至少选择一个可提供面试的内容！"
-                                  type="warning"
-                                  center
-                                  show-icon>
-                        </el-alert>
-                    </div>
-                </el-form>
-            </div>
-
-            <div v-if="active==3">
-                <el-form ref="formThree" :model="formThree" :rules="rules">
-                    <el-form-item label="您的姓名：" label-width="100px" prop="name">
-                        <el-input style="width: 300px" v-model="formThree.name" placeholder="请输入您的真实姓名"></el-input>
+                </div>
+                <div>
+                    <el-form-item label="所在公司：" prop="companyName">
+                        <el-input style="width: 300px" v-model="formOne.companyName"
+                                  placeholder="请输入您的公司名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="身份证号：" label-width="100px" prop="idNumber">
-                        <el-input style="width: 300px" v-model="formThree.idNumber" placeholder="请输入您的身份证号"></el-input>
+                </div>
+                <div>
+                    <el-form-item label="从业时间：" prop="experienceTimeId">
+                        <el-select v-model="formOne.experienceTimeId" clearable placeholder="请选择您的工作经验年限" class="section1-select">
+                            <el-option v-for="item in experienceTimeOptions" :key="item.experienceTimeId"
+                                       :label="item.name" :value="item.id"></el-option>
+                        </el-select>
                     </el-form-item>
-                    <el-form-item label="身份证照片" label-width="100px" prop="avatarUrl">
-                        <b-media class="resume col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                            <div class="resume-basicinfo row mt-3">
-                                <div class="avatorHolder col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                                    <el-upload
-                                            class="avatar-uploader mb-3"
-                                            :action="uploadPicOptions.action"
-                                            :data="uploadPicOptions.params"
-                                            :accept="uploadPicOptions.acceptFileType"
-                                            :show-file-list="false"
-                                            :on-success="handleAvatarSuccess1"
-                                            :before-upload="beforeAvatarUpload1"
-                                    >
-                                        <img
-                                                v-if="(resumeForm1.avatarUrl && resumeForm1.avatarUrl !== '')"
-                                                :src="resumeForm1.avatarUrl"
-                                                class="avatar1"
-                                        />
-                                        <i v-else class="el-icon-plus avatar-uploader-icon1"></i>
-                                        <div slot="tip" class="el-upload__tip">*身份证人面像*</div>
-                                    </el-upload>
-                                </div>
+                </div>
+                <div>
+                    <el-form-item label="从业经历：" prop="experience.experienceItem">
+                        <div class="textarea-container">
+                            <div class="textarea-item" v-for="(item,index) in formOne.experience">
+                                <span class="experience-title">{{index+1}}.</span>
+                                <el-input class="experience" type="textarea" v-model="item.experienceItem "
+                                          placeholder="字数不超过150字" resize="none" :autosize="{minRows: 2,maxRows: 10}"></el-input>
                             </div>
-                        </b-media>
-                        <b-media class="resume col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                            <div class="resume-basicinfo row mt-3">
-                                <div class="avatorHolder col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                                    <el-upload
-                                            class="avatar-uploader mb-3"
-                                            :action="uploadPicOptions.action"
-                                            :data="uploadPicOptions.params"
-                                            :accept="uploadPicOptions.acceptFileType"
-                                            :show-file-list="false"
-                                            :on-success="handleAvatarSuccess2"
-                                            :before-upload="beforeAvatarUpload2"
-                                    >
-                                        <img
-                                                v-if="(resumeForm2.avatarUrl && resumeForm2.avatarUrl !== '')"
-                                                :src="resumeForm2.avatarUrl"
-                                                class="avatar1"
-                                        />
-                                        <i v-else class="el-icon-plus avatar-uploader-icon2"></i>
-                                        <div slot="tip" class="el-upload__tip">*身份证国徽面*</div>
-                                    </el-upload>
-                                </div>
-                            </div>
-                        </b-media>
-                        <b-media class="resume col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                            <div class="resume-basicinfo row mt-3">
-                                <div class="avatorHolder col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                                    <el-upload
-                                            class="avatar-uploader mb-3"
-                                            :action="uploadPicOptions.action"
-                                            :data="uploadPicOptions.params"
-                                            :accept="uploadPicOptions.acceptFileType"
-                                            :show-file-list="false"
-                                            :on-success="handleAvatarSuccess3"
-                                            :before-upload="beforeAvatarUpload3"
-                                    >
-                                        <img
-                                                v-if="(resumeForm3.avatarUrl && resumeForm3.avatarUrl !== '')"
-                                                :src="resumeForm3.avatarUrl"
-                                                class="avatar1"
-                                        />
-                                        <i v-else class="el-icon-plus avatar-uploader-icon3"></i>
-                                        <div slot="tip" class="el-upload__tip">*手持身份证正面照*</div>
-                                    </el-upload>
-                                </div>
-                            </div>
-                        </b-media>
-                    </el-form-item>
-                    <el-form-item label="注意事项：" label-width="100px">
-                        <div style="line-height: 20px">
-                            <p> 1、同一个身份证号只能认证一个账号；</p>
-                            <p> 2、身份证国徽面与正面信息应为同一身份证的信息且在有效期内；</p>
-                            <p> 3、所有上传照片需清晰且未遮挡，请勿进行美化和修改，以免认证失败；</p>
-                            <p> 4、 上传本人手持身份证信息面照片中应含有本人头部或上半身；</p>
-                            <p> 5、手持身份证照中本人形象需为免冠且并未化妆，五官清晰；</p>
-                            <p> 6、拍照手持身份证照时对焦点请置于身份证上，保证身份证信息清晰且未遮挡；</p>
-                            <p> 7、上传图片文件格式支持png，jpg和bmp；</p>
-                            <p> 8、单张图片大小不超过3MB，尺寸最小为500px * 500px；</p>
-                            <p> 9、所有上传信息均会被妥善保管，不会用于其他商业用途或传输给其他第三方；</p>
+                            <div class="add-experience-button" @click="addExperience">添加经历</div>
                         </div>
                     </el-form-item>
-                    <div class="Btn">
-                        <el-form-item>
-                            <el-row>
-                                <el-button type="primary" @click="onSubmit">提交认证信息</el-button>
-                                <el-button type="primary" @click="onSubmit4">其他认证方式</el-button>
-                            </el-row>
-                        </el-form-item>
+                </div>
+                <div>
+                    <el-form-item label="面试官自述：" prop="description">
+                        <el-input type="textarea" style="width: 360px" v-model="formOne.description"
+                                  placeholder="字数不超过150字" resize="none" :autosize="{minRows: 8,maxRows: 10}"></el-input>
+                    </el-form-item>
+                </div>
+            </el-form>
+        </div>
+        <div v-if="active===2" class="interview-info">
+            <div class="step-title">面试信息</div>
+            <div class="direction-container">
+                <div style="width: 340px; text-align: right;">可提供面试内容：</div>
+                <el-checkbox v-model="checked1">HR面试（通用）</el-checkbox>
+                <el-checkbox v-model="checked2">专业技术（测试）</el-checkbox>
+                <el-checkbox v-model="checked3">行业经验</el-checkbox>
+            </div>
+            <div v-if="!(checked1||checked2||checked3)" style="margin-top: 30px;">
+                <el-alert title="至少选择一个可提供面试的内容！"
+                          type="warning"
+                          center
+                          show-icon>
+                </el-alert>
+            </div>
+            <el-form ref="formTwo" :model="formTwo" :rules="rules" v-if="checked1===true">
+                <el-form-item label="HR通用面试理想咨询价格：" label-width="340px" prop="price">
+                    <el-input style="width: 300px" v-model="formTwo.price" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
+                </el-form-item>
+                <el-form-item label="面试内容简介：" label-width="340px" prop="description">
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo.description" placeholder="请对面试的内容进行具体描述，150字以内"
+                              :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form ref="formTwo2" :model="formTwo2" :rules="rules" v-if="checked2===true">
+                <el-form-item label="专业技术测试理想咨询价格：" label-width="340px" prop="price">
+                    <el-input v-model="formTwo2.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
+                </el-form-item>
+                <el-form-item label="面试内容简介：" label-width="340px" prop="description">
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo2.description" placeholder="请对面试的内容进行具体描述，150字以内"
+                              :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form ref="formTwo3" :model="formTwo3" :rules="rules" v-if="checked3===true">
+                <el-form-item label="职业规划理想咨询价格：" label-width="340px" prop="price">
+                    <el-input v-model="formTwo3.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
+                </el-form-item>
+                <el-form-item label="面试内容简介：" label-width="340px" prop="description">
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo3.description" placeholder="请对面试的内容进行具体描述，150字以内"
+                              :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div v-if="active===3">
+            <div class="step-title">提交认证信息</div>
+            <el-form ref="formThree" :model="formThree" :rules="rules">
+                <el-form-item label="您的姓名：" prop="name">
+                    <el-input style="width: 360px" v-model="formThree.name" placeholder="请输入您的真实姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="身份证号：" prop="idNumber">
+                    <el-input style="width: 360px" v-model="formThree.idNumber" placeholder="请输入您的身份证号"></el-input>
+                </el-form-item>
+                <el-form-item label="身份证照片：" prop="identity">
+                    <div style="display: flex;">
+                        <div class="card-container">
+                            <el-upload class="card-uploader"
+                                       :action="uploadPicOptions.action"
+                                       :data="uploadPicOptions.params"
+                                       :accept="uploadPicOptions.acceptFileType"
+                                       :show-file-list="false"
+                                       :on-success="handleUploadSuccess1"
+                                       :before-upload="beforeUpload1">
+                                <el-image v-if="formThree.faceUrl"
+                                          :src="formThree.faceUrl"
+                                          v-loading="loading1"
+                                          fit="scale-down"
+                                          class="card"/>
+                                <div v-else class="card-face">
+                                    <el-image :src="require('@/assets/mock/add.png')" class="card-add"/>
+                                </div>
+                            </el-upload>
+                            <div class="card-name">身份证人面像</div>
+                        </div>
+                        <div class="card-container">
+                            <el-upload class="card-uploader"
+                                       :action="uploadPicOptions.action"
+                                       :data="uploadPicOptions.params"
+                                       :accept="uploadPicOptions.acceptFileType"
+                                       :show-file-list="false"
+                                       :on-success="handleUploadSuccess2"
+                                       :before-upload="beforeUpload2">
+                                <el-image v-if="formThree.emblemUrl"
+                                          :src="formThree.emblemUrl"
+                                          v-loading="loading2"
+                                          fit="scale-down"
+                                          class="card"/>
+                                <div v-else class="card-emblem">
+                                    <el-image :src="require('@/assets/mock/add.png')" class="card-add"/>
+                                </div>
+                            </el-upload>
+                            <div class="card-name">身份证国徽面</div>
+                        </div>
+                        <div class="card-container">
+                            <el-upload class="card-uploader"
+                                       :action="uploadPicOptions.action"
+                                       :data="uploadPicOptions.params"
+                                       :accept="uploadPicOptions.acceptFileType"
+                                       :show-file-list="false"
+                                       :on-success="handleUploadSuccess3"
+                                       :before-upload="beforeUpload3">
+                                <el-image v-if="formThree.holdUrl"
+                                          :src="formThree.holdUrl"
+                                          v-loading="loading3"
+                                          fit="scale-down"
+                                          class="card"/>
+                                <div v-else class="card-hold">
+                                    <el-image :src="require('@/assets/mock/add.png')" class="card-add"/>
+                                </div>
+                            </el-upload>
+                            <div class="card-name">手持身份证正面<br/>(确保身份证清晰)</div>
+                        </div>
                     </div>
-                </el-form>
+                </el-form-item>
+                <el-form-item label="注意事项：">
+                    <div style="line-height: 35px;color: #333333; font-size:18px;margin-left: 48px; margin-top: 50px;">
+                        <p> 1、同一个身份证号只能认证一个账号；</p>
+                        <p> 2、身份证国徽面与正面信息应为同一身份证的信息且在有效期内；</p>
+                        <p> 3、所有上传照片需清晰且未遮挡，请勿进行美化和修改，以免认证失败；</p>
+                        <p> 4、 上传本人手持身份证信息面照片中应含有本人头部或上半身；</p>
+                        <p> 5、手持身份证照中本人形象需为免冠且并未化妆，五官清晰；</p>
+                        <p> 6、拍照手持身份证照时对焦点请置于身份证上，保证身份证信息清晰且未遮挡；</p>
+                        <p> 7、上传图片文件格式支持png，jpg和bmp；</p>
+                        <p> 8、单张图片大小不超过3MB，尺寸最小为500px * 500px；</p>
+                        <p> 9、所有上传信息均会被妥善保管，不会用于其他商业用途或传输给其他第三方；</p>
+                    </div>
+                </el-form-item>
+            </el-form>
+            <div class="button-container">
+                <div class="button1" @click="onOtherAuth">其他认证方式</div>
+                <div class="button2" @click="onSubmit">提交认证信息</div>
             </div>
-            <div v-if="active===1"></div>
-            <div v-if="active===2"></div>
-            <div v-if="active===3"></div>
-            <div class="Btn">
-                <el-row>
-                    <el-button type="primary" @click="prev1" v-if="active==1">上一步</el-button>
-                    <el-button type="primary" @click="next2" v-if="active==1">下一步</el-button>
-                    <el-button type="primary" @click="prev" v-if="active==2">上一步</el-button>
-                    <el-button type="primary" @click="next3" v-if="active==2">下一步</el-button>
-                </el-row>
-            </div>
+        </div>
+        <div v-if="active===1"></div>
+        <div v-if="active===2"></div>
+        <div v-if="active===3"></div>
+        <div class="button-container">
+            <div class="button1" @click="prev1" v-if="active===1">上一步</div>
+            <div class="button2" @click="next2" v-if="active===1">下一步</div>
+            <div class="button1" @click="active = 1" v-if="active===2">上一步</div>
+            <div class="button2" @click="next3" v-if="active===2">下一步</div>
         </div>
     </div>
 </template>
@@ -261,30 +237,19 @@
 <script>
     import {listByType} from "@/api/dict_api";
     import Pagination from "@/components/Pagination";
-    import {mapGetters} from "vuex";
-    import {getUserId, getToken} from '@/utils/auth'
-    import {formatListQuery, parseListQuery} from "@/utils/common";
+    import {getUserId} from '@/utils/auth'
     import {addInterview, addInterviewDirection, addInterviewAuth} from "@/api/interview_api";
     import Toast from "@/utils/toast";
-    import {getResumeInfo, saveResumeBasic} from "@/api/interview_api";
     import {getUploadPicToken} from "@/api/upload_api";
     import {checkPicSize} from "@/utils/common";
 
     export default {
+        name: "registerInterviewerPage",
         components: {
             Pagination
         },
-        computed: {
-            ...mapGetters(["keyword"])
-        },
         data() {
-            const state = {
-                token: getToken(),
-                userId: getUserId(),
-            }
-            console.log(state.userId)
-            console.log(state.token)
-            var isIdNumber = (rule, value, callback) => {
+            let isIdNumber = (rule, value, callback) => {
                 if (!value) {
                     callback(new Error("请输入身份证号"));
                 } else {
@@ -297,11 +262,11 @@
                     }
                 }
             };
-            var isPrice = (rule, value, callback) => {
+            let isPrice = (rule, value, callback) => {
                 if (!value) {
                     callback();
                 } else {
-                    var reg = /^-?\d{1,4}(?:\.\d{1,2})?$/;
+                    let reg = /^-?\d{1,4}(?:\.\d{1,2})?$/;
                     if (reg.test(value)) {
                         callback();
                     } else {
@@ -309,6 +274,18 @@
                     }
                 }
             };
+
+            let identity = (rule, value, callback) => {
+                if (!this.formThree.faceUrl) {
+                    callback("请上传身份证人面像");
+                } else if (!this.formThree.emblemUrl) {
+                    callback("请上传身份证国徽面");
+                } else if (!this.formThree.holdUrl) {
+                    callback("请上传手持身份证正面照");
+                } else {
+                    callback();
+                }
+            }
             return {
                 uploadPicOptions: {
                     action: "",
@@ -316,57 +293,14 @@
                     fileUrl: "",
                     acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
                 },
-                resume: {},
-                posting: false,
-                listQuery: {
-                    keyword: "",
-                    page: 1,
-                    limit: 10,
-                    industryId: '',
-                    experienceTimeId: ''
-                },
-                dialogImageUrl: '',
-                dialogVisible: false,
+                active: 1,
+                loading: false,
+                loading1: false,
+                loading2: false,
+                loading3: false,
                 checked1: true,
                 checked2: false,
                 checked3: false,
-                active: 1,
-                total: 0,
-                industryOptions: [],
-                experienceTimeOptions: [],
-                showNoResult: false,
-                resumeForm: {
-                    "avatarUrl": "",
-                    "createTime": "",
-                    "delFlag": "0",
-                    "id": "",
-                    "type": "",
-                    "updateTime": ""
-                },
-                resumeForm1: {
-                    "avatarUrl": "",
-                    "createTime": "",
-                    "delFlag": "0",
-                    "id": "",
-                    "type": "",
-                    "updateTime": ""
-                },
-                resumeForm2: {
-                    "avatarUrl": "",
-                    "createTime": "",
-                    "delFlag": "0",
-                    "id": "",
-                    "type": "",
-                    "updateTime": ""
-                },
-                resumeForm3: {
-                    "avatarUrl": "",
-                    "createTime": "",
-                    "delFlag": "0",
-                    "id": "",
-                    "type": "",
-                    "updateTime": ""
-                },
                 formOne: {
                     nickName: '',
                     avatar: '',
@@ -374,14 +308,27 @@
                     experienceTimeId: '',
                     companyName: '',
                     description: '',
-                    experience: '',
-                    delFlag: 0,
+                    experience: [{experienceItem: ''}],
                 },
-
+                //hr
                 formTwo: {
-                    direction: '',
+                    direction: 'HR面试（通用）',
                     description: '',
-                    interviewerId: state.userId,
+                    interviewerId: getUserId(),
+                    price: '',
+                },
+                //技术
+                formTwo2: {
+                    direction: '专业技术（测试）',
+                    description: '',
+                    interviewerId: getUserId(),
+                    price: '',
+                },
+                //经验
+                formTwo3: {
+                    direction: '行业经验',
+                    description: '',
+                    interviewerId: getUserId(),
                     price: '',
                 },
                 formThree: {
@@ -392,288 +339,204 @@
                     holdUrl: ''
                 },
                 rules: {
-                    nickName: [
-                        {required: true, message: '请输入用户昵称', trigger: 'blur'},
-                        {max: 20, message: '昵称不超过20字符'},
-
-                    ],
-                    faceUrl: [
-                        {required: true, message: '请上传身份证人面像', trigger: 'change'},
-                    ],
-                    emblemUrl: [
-                        {required: true, message: '请上传身份证国徽面', trigger: 'change'},
-                    ],
-                    holdUrl: [
-                        {required: true, message: '请上传手持身份证正面照', trigger: 'change'},
-                    ],
-                    avatar: [
-                        {required: true, message: "请上传头像", trigger: "change"}
-                    ],
-
-                    industryId: [
-                        {required: true, message: "请选择行业", trigger: "change"}
-                    ],
-                    experienceTimeId: [
-                        {required: true, message: "请选择从业时间", trigger: "change"}
-                    ],
-                    name: [
-                        {required: true, message: '请输入您的姓名', trigger: 'blur'},
-                    ],
-                    idNumber: [{
-                        required: true,
-                        trigger: 'blur',
-                        validator: isIdNumber
-                    }
-                    ],
-
-                    companyName: [
-                        {required: true, message: '请输入您的公司名称', trigger: 'blur'},
-                    ],
-                    description: [{required: true, message: '请输入面试官自述', trigger: 'blur'},
-                        {max: 150, message: '长度不超过150个字'}
-                    ],
-                    experience: [{
-                        required: true,
-                        message: '请输入从业经历',
-                        trigger: 'blur'
-                    },
-                        {
-                            max: 150,
-                            message: '长度不超过150个字',
-                        }
-                    ],
-                    price: [{
-                        required: true,
-                        message: '请输入您理想资询价位',
-                        trigger: 'blur'
-                    },
-                        {
-                            validator: isPrice,
-                            trigger: 'blur'
-                        }
-                    ]
+                    nickName: [{required: true, message: '请输入用户昵称', trigger: 'blur'}, {max: 20, message: '昵称不超过20字符'}],
+                    identity: [{validator: identity, trigger: 'blur'}],
+                    avatar: [{required: true, message: "请上传头像", trigger: "change"}],
+                    industryId: [{required: true, message: "请选择行业", trigger: "change"}],
+                    experienceTimeId: [{required: true, message: "请选择从业时间", trigger: "change"}],
+                    name: [{required: true, message: '请输入您的姓名', trigger: 'blur'}],
+                    idNumber: [{required: true, trigger: 'blur', validator: isIdNumber}],
+                    companyName: [{required: true, message: '请输入您的公司名称', trigger: 'blur'}],
+                    description: [{required: true, message: '请输入面试官自述', trigger: 'blur'}, {max: 150, message: '长度不超过150个字'}],
+                    experience: [{required: true, message: '请输入从业经历', trigger: 'blur'}, {max: 150, message: '长度不超过150个字'}],
+                    price: [{required: true, message: '请输入您理想资询价位', trigger: 'blur'}, {validator: isPrice, trigger: 'blur'}]
                 },
                 avatarList: [],
+                industryOptions: [],
+                experienceTimeOptions: [],
             };
         },
         created() {
-            this.$emit("complete");
             this.initData();
-            this.getList();
-        },
-        watch: {
-            $route() {
-                this.getList();
-            },
-            keyword() {
-                this.library.keyword = this.keyword;
-                this.handleRouteList();
-            }
+            this.$emit("complete");
         },
         methods: {
             initData() {
                 listByType(18).then(
                     response => (this.industryOptions = response.data.list)
                 );
-                listByType(10).then(
+
+                listByType(13).then(
                     response => (this.experienceTimeOptions = response.data.list)
                 );
-                this.getList();
-                this.getResumeInfo();
-            },
-            beforeAvatarUpload(file) {
-                return new Promise((resolve, reject) => {
-                    if (checkPicSize(file)) {
-                        reject();
-                    } else {
-                        getUploadPicToken(file.name)
-                            .then((response) => {
-                                const {data} = response;
-                                this.uploadPicOptions.action = data.host;
-                                this.uploadPicOptions.params = data;
-                                this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
-                                resolve(data);
-                            })
-                            .catch((error) => {
-                                reject(error);
-                            });
-                    }
-                });
-            },
-            beforeAvatarUpload1(file) {
-                return new Promise((resolve, reject) => {
-                    if (checkPicSize(file)) {
-                        reject();
-                    } else {
-                        getUploadPicToken(file.name)
-                            .then((response) => {
-                                const {data} = response;
-                                this.uploadPicOptions.action = data.host;
-                                this.uploadPicOptions.params = data;
-                                this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
-                                resolve(data);
-                            })
-                            .catch((error) => {
-                                reject(error);
-                            });
-                    }
-                });
-            },
-            beforeAvatarUpload2(file) {
-                return new Promise((resolve, reject) => {
-                    if (checkPicSize(file)) {
-                        reject();
-                    } else {
-                        getUploadPicToken(file.name)
-                            .then((response) => {
-                                const {data} = response;
-                                this.uploadPicOptions.action = data.host;
-                                this.uploadPicOptions.params = data;
-                                this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
-                                resolve(data);
-                            })
-                            .catch((error) => {
-                                reject(error);
-                            });
-                    }
-                });
-            },
-            beforeAvatarUpload3(file) {
-                return new Promise((resolve, reject) => {
-                    if (checkPicSize(file)) {
-                        reject();
-                    } else {
-                        getUploadPicToken(file.name)
-                            .then((response) => {
-                                const {data} = response;
-                                this.uploadPicOptions.action = data.host;
-                                this.uploadPicOptions.params = data;
-                                this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
-                                resolve(data);
-                            })
-                            .catch((error) => {
-                                reject(error);
-                            });
-                    }
-                });
-            },
-            handleAvatarSuccess() {
-                this.resumeForm.avatarUrl = this.uploadPicOptions.fileUrl;
-                this.formOne.avatar = this.uploadPicOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
-                console.log(this.formOne.avatar);
-            },
-            handleAvatarSuccess1() {
-                this.resumeForm1.avatarUrl = this.uploadPicOptions.fileUrl;
-                this.formThree.faceUrl = this.uploadPicOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
-                console.log(this.formThree.emblemUrl);
-            },
-            handleAvatarSuccess2() {
-                this.resumeForm2.avatarUrl = this.uploadPicOptions.fileUrl;
-                this.formThree.emblemUrl = this.uploadPicOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
-                console.log(this.formThree.emblemUrl);
-            },
-            handleAvatarSuccess3() {
-                this.resumeForm3.avatarUrl = this.uploadPicOptions.fileUrl;
-                this.formThree.holdUrl = this.uploadPicOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
-                console.log(this.formThree.holdUrl);
-            },
-            getResumeInfo() {
-                getResumeInfo().then((response) => {
-                    this.resume = response.data;
-                });
-            },
-            handleSaveResumeBasic(validation = false) {
-                if (validation) {
-                    this.$refs["resumeForm", "resumeForm1", "resumeForm2", "resumeForm3"].validate((valid) => {
-                        if (valid) {
-                            this.postSaveResumeBasic();
 
-                        }
-                    });
-                } else {
-                    this.postSaveResumeBasic();
-                }
+                this.$axios.get("/mock/avatar").then(data => {
+                    this.avatarList = data.data;
+                })
             },
-            postSaveResumeBasic() {
-                this.posting = true;
-                saveResumeBasic(this.resumeForm).then(() => {
-                    this.getResumeInfo();
-                    Toast.success("保存成功");
-                }).finally(() => {
-                    this.posting = false;
+
+            beforeUpload(file) {
+                return new Promise((resolve, reject) => {
+                    if (checkPicSize(file)) {
+                        reject();
+                    } else {
+                        this.loading = true;
+                        this.formOne.avatar = URL.createObjectURL(file);
+                        getUploadPicToken(file.name).then((response) => {
+                            const {data} = response;
+                            this.uploadPicOptions.action = data.host;
+                            this.uploadPicOptions.params = data;
+                            this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            resolve(data);
+                        }).catch((error) => {
+                            reject(error);
+                        });
+                    }
                 });
             },
-            postSaveResumeBasic1() {
-                saveResumeBasic(this.resumeForm1).then(() => {
-                    this.getResumeInfo();
-                    Toast.success("保存成功");
-                }).finally(() => {
-                    this.posting = false;
+            beforeUpload1(file) {
+                return new Promise((resolve, reject) => {
+                    if (checkPicSize(file)) {
+                        reject();
+                    } else {
+                        this.loading1 = true;
+                        this.formThree.faceUrl = URL.createObjectURL(file);
+                        getUploadPicToken(file.name).then((response) => {
+                            const {data} = response;
+                            this.uploadPicOptions.action = data.host;
+                            this.uploadPicOptions.params = data;
+                            this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            resolve(data);
+                        }).catch((error) => {
+                            reject(error);
+                        });
+                    }
                 });
             },
-            postSaveResumeBasic2() {
-                saveResumeBasic(this.resumeForm2).then(() => {
-                    this.getResumeInfo();
-                    Toast.success("保存成功");
-                }).finally(() => {
-                    this.posting = false;
+            beforeUpload2(file) {
+                return new Promise((resolve, reject) => {
+                    if (checkPicSize(file)) {
+                        reject();
+                    } else {
+                        this.loading2 = true;
+                        this.formThree.emblemUrl = URL.createObjectURL(file);
+                        getUploadPicToken(file.name).then((response) => {
+                            const {data} = response;
+                            this.uploadPicOptions.action = data.host;
+                            this.uploadPicOptions.params = data;
+                            this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            resolve(data);
+                        }).catch((error) => {
+                            reject(error);
+                        });
+                    }
                 });
             },
-            postSaveResumeBasic3() {
-                saveResumeBasic(this.resumeForm3).then(() => {
-                    this.getResumeInfo();
-                    Toast.success("保存成功");
-                }).finally(() => {
-                    this.posting = false;
+            beforeUpload3(file) {
+                return new Promise((resolve, reject) => {
+                    if (checkPicSize(file)) {
+                        reject();
+                    } else {
+                        this.loading3 = true;
+                        this.formThree.holdUrl = URL.createObjectURL(file);
+                        getUploadPicToken(file.name).then((response) => {
+                            const {data} = response;
+                            this.uploadPicOptions.action = data.host;
+                            this.uploadPicOptions.params = data;
+                            this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            resolve(data);
+                        }).catch((error) => {
+                            reject(error);
+                        });
+                    }
                 });
             },
 
-            getList() {
-                this.loading = true;
+            handleUploadSuccess() {
+                this.loading = false;
+            },
+            handleUploadSuccess1() {
+                this.$refs["formThree"].validateField('identity');
+                this.loading1 = false;
+            },
+            handleUploadSuccess2() {
+                this.$refs["formThree"].validateField('identity');
+                this.loading2 = false;
+            },
+            handleUploadSuccess3() {
+                this.$refs["formThree"].validateField('identity');
+                this.loading3 = false;
+            },
 
-                this.showNoResult = false;
-                parseListQuery(this.$route.query, this.listQuery);
+            addExperience() {
+                this.formOne.experience.push({experienceItem: ''})
             },
-            handleFilter() {
-                this.listQuery.page = 1;
-                this.handleRouteList();
-            },
-            handleRouteList() {
-                this.$router.replace({
-                    path: this.$route.path,
-                    query: formatListQuery(this.listQuery)
-                });
-            },
-            prev() {
-                --this.active;
-                if (this.active < 0) this.active = 0;
-            },
+
             prev1() {
-                let query = {
-                    ...this.$route.query
-                };
-                this.$router.push({
-                    path: this.redirect || "/InterviewSecretPage",
-                    query
+                this.$router.push("/InterviewSecretPage");
+            },
+
+            next2() {
+                this.$refs["formOne"].validate(valid => {
+                    if (valid) {
+                        this.formOne.experience = this.formOne.experience.map(item => item.experienceItem)
+                        addInterview(this.formOne).then(() => {
+                            Toast.success("提交成功");
+                        })
+                        this.active = 2;
+                    } else {
+                        console.log('error submit!!');
+                    }
                 });
             },
+
+            validate(filedName) {
+                return new Promise((resolve) => {
+                    this.$refs[filedName].validate(valid => {
+                        resolve(valid)
+                    });
+                })
+            },
+
+            next3() {
+                let p = [];
+                if(this.checked1) {
+                    p.push(this.validate('formTwo'));
+                }
+                if(this.checked2) {
+                    p.push(this.validate('formTwo2'));
+                }
+                if(this.checked3) {
+                    p.push(this.validate('formTwo3'));
+                }
+                Promise.all(p).then(result => {
+                    let valid = result.find(item => !item);
+                    if(valid === undefined) {
+                        let request = [];
+                        if(this.checked1) {
+                            request.push(addInterviewDirection(this.formTwo));
+                        }
+                        if(this.checked2) {
+                            request.push(addInterviewDirection(this.formTwo2));
+                        }
+                        if(this.checked3) {
+                            request.push(addInterviewDirection(this.formTwo3));
+                        }
+
+                        Promise.all(request).then(() => {
+                            Toast.success("提交成功");
+                            this.active = 3;
+                        })
+                    }
+                })
+            },
+
             onSubmit() {
                 this.$refs["formThree"].validate(valid => {
                     if (valid) {
                         addInterviewAuth(this.formThree).then(() => {
-
                                 Toast.success("提交成功");
-                                let query = {
-                                    ...this.$route.query
-                                };
-                                this.$router.push({
-                                    path: this.redirect || "/RegisterOther",
-                                    query
-                                });
+                                this.$router.push("/RegisterOther");
                             }
                         )
                     } else {
@@ -682,170 +545,359 @@
                     }
                 })
             },
-            onSubmit1() {
-                this.$refs["formOne"].validate(valid => {
-                    if (valid) {
-                        addInterview(this.formOne).then(() => {
-                            Toast.success("提交成功，请点击下一步");
-                        })
 
-                    } else {
-                        console.log('error submit!!');
-
-                    }
-                })
-            },
-            next2() {
-                this.$refs["formOne"].validate(valid => {
-                    if (valid) {
-                        addInterview(this.formOne).then(() => {
-                            Toast.success("提交成功");
-                        })
-                        this.active++;
-                    } else {
-                        console.log('error submit!!');
-
-                    }
-                });
-            },
-            next3() {
-                this.$refs["formTwo"].validate(valid => {
-                    if (valid) {
-                        addInterviewDirection(this.formTwo).then(() => {
-                                Toast.success("提交成功");
-                            }
-                        )
-                        this.active++;
-                    } else {
-                        console.log('error submit!!');
-
-                    }
-                });
+            onOtherAuth() {
+                this.$router.push("/RegisterInterviewerSuccess");
             },
 
-            onSubmit4(evt) {
-                evt.preventDefault();
-                let query = {
-                    ...this.$route.query
-                };
-                delete query.redirect;
-                this.$router.push({
-                    path: this.redirect || "/RegisterInterviewerSuccess",
-                    query
-                });
-            },
+            //一键导入
+            onImport() {
 
+            },
         }
     }
 </script>
 
 <style scoped lang="scss">
     .app-container {
-        max-width: 1140px;
+        width: 1140px;
+        padding: 20px 20px 200px 20px;
         margin: 0 auto;
         min-height: calc(100vh - 477px);
-        padding-bottom: 200px;
 
-        .main-container {
-            padding-left: 200px;
-            overflow-y: auto;
-            width: 1000px;
+        .title {
+            font-size: 36px;
+            color: #333333;
+            line-height: 50px;
+            margin-bottom: 30px;
+        }
 
-            .avatar-uploader .el-upload {
-                cursor: pointer;
-                position: relative;
-                overflow: hidden;
+        .steps {
+            width: 722px;
+            margin-bottom: 50px;
+
+            ::v-deep .el-step__line {
+                top: 29px;
+                left: 15px;
             }
 
-            .avatar-uploader .el-upload:hover {
-                border-color: #3a8ee6;
+            ::v-deep .el-step__icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+                background: #EDF3FF;
+                border-radius: 50%;
+                border: none;
             }
 
-            $avatarSize: 120px;
+            ::v-deep .el-step__head {
+                &.is-process, &.is-wait {
+                    color: #999999;
+                    border: none;
 
-            .avatar-uploader .avatar-uploader-icon {
-                border: 1px dashed #d9d9d9;
-                font-size: 28px;
-                color: #8c939d;
-                width: $avatarSize;
-                height: $avatarSize;
-                line-height: $avatarSize;
-                text-align: center;
-            }
-
-            .avatar-uploader .avatar-uploader-icon1 {
-                border: 1px dashed #d9d9d9;
-                font-size: 28px;
-                color: #3a8ee6;
-                width: 161px;
-                height: 111px;
-                line-height: 120px;
-                text-align: center;
-                background-image: url("../assets/idcard1.png");
-            }
-
-            .avatar-uploader .avatar-uploader-icon2 {
-                border: 1px dashed #d9d9d9;
-                font-size: 28px;
-                color: #3a8ee6;
-                width: 161px;
-                height: 111px;
-                line-height: 120px;
-                text-align: center;
-                background-image: url("../assets/idcard2.png");
-            }
-
-            .avatar-uploader .avatar-uploader-icon3 {
-                border: 1px dashed #d9d9d9;
-                font-size: 28px;
-                color: #3a8ee6;
-                width: 161px;
-                height: 111px;
-                line-height: 121px;
-                text-align: center;
-                background-image: url("../assets/idcard3.png");
-            }
-
-
-            .avatar-uploader .avatar1 {
-                width: 161px;
-                height: 121px;
-                display: block;
-            }
-
-            .avatar-uploader .avatar {
-                width: $avatarSize;
-                height: 120px;
-                display: block;
-            }
-
-            .upload-attach-box .el-upload {
-                display: block;
-            }
-
-            .upload-attach-box .el-upload button {
-                width: 100%;
-                font-size: 18px;
-                padding: 12px;
-            }
-
-            .section1-select {
-                flex: 1;
-                width: 300px;
-                margin: 0 5px 5px;
-                height: 100%;
-            }
-
-            .Btn {
-                margin-left: 400px;
-                margin-top: 12px;
-            }
-
-            .mb-3, .my-3 {
-                margin-bottom: 0px;
+                    .el-step__icon {
+                        background: #EEEEEE;
+                    }
+                }
             }
         }
 
+        .interview-info {
+            /deep/ .el-form-item__error {
+                margin-left: 0;
+            }
+        }
 
+        .import-container {
+            width: 722px;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 62px;
+
+            .import-button {
+                width: 379px;
+                height: 40px;
+                background: #FFFFFF;
+                border-radius: 21px;
+                border: 1px solid #3D6FF4;
+                text-align: center;
+                line-height: 40px;
+                font-size: 18px;
+                font-family: PingFangSC-Medium, PingFang SC;
+                font-weight: 500;
+                color: #3D6FF4;
+                box-sizing: content-box;
+            }
+
+        }
+
+        .step-title {
+            font-size: 30px;
+            color: #333333;
+        }
+
+        .direction-container {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+            line-height: 33px;
+            /deep/ .el-checkbox{
+                margin-right: 107px;
+                transform-origin: left;
+                transform: scale(1.7);
+                margin-bottom: 0;
+            }
+        }
+
+        .el-form {
+            .el-form-item {
+                margin-top: 30px;
+
+                ::v-deep .el-form-item__label {
+                    font-size: 24px;
+                    color: #333333;
+                    line-height: 33px;
+                    width: 180px;
+                    margin: 5px 0 0 0;
+                }
+
+                ::v-deep .el-form-item__error {
+                    margin-left: 180px;
+                }
+
+                ::v-deep .el-input__inner, ::v-deep .el-textarea__inner {
+                    width: 360px;
+                    height: 43px;
+                    background: #FFFFFF;
+                    border-radius: 22px;
+                    border: 1px solid #CCCCCC;
+                    font-size: 18px;
+                    color: #999999;
+                    line-height: 25px;
+                }
+
+                .nickname-container {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: self-start;
+
+                    .warn-tip {
+                        display: flex;
+                        flex-direction: row;
+                        align-content: flex-start;
+
+                        .warn-icon {
+                            width: 17px;
+                            height: 17px;
+                            margin-left: 13px;
+                        }
+
+                        .warn-introduce {
+                            width: 209px;
+                            height: 100px;
+                            font-size: 18px;
+                            color: #999999;
+                            line-height: 25px;
+                        }
+                    }
+                }
+
+                .textarea-container {
+                    width: 360px;
+                    height: auto;
+                    display: inline-block;
+
+                    .textarea-item {
+                        width: 100%;
+                        height: auto;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: flex-start;
+                        margin-bottom: 13px;
+
+                        .experience-title {
+                            font-size: 20px;
+                            color: #333333;
+                            line-height: 48px;
+                        }
+
+                        .experience {
+                            ::v-deep .el-textarea__inner {
+                                width: 332px;
+                                margin-left: 10px;
+                            }
+                        }
+
+                        /deep/ .el-textarea__inner {
+                            border-radius: 13px;
+                        }
+                    }
+
+                    .add-experience-button {
+                        width: 136px;
+                        height: 40px;
+                        background: #EDF3FF;
+                        border-radius: 21px;
+                        line-height: 40px;
+                        text-align: center;
+                        font-size: 18px;
+                        color: #3D6FF4;
+                        margin: 13px auto 0;
+                        cursor: pointer;
+                    }
+
+                    /deep/ .el-textarea__inner {
+                        border-radius: 13px;
+                    }
+                }
+
+                .avatar-uploader {
+                    .avatar {
+                        width: 100px;
+                        height: 100px;
+                        display: block;
+                    }
+
+                    .avatar-uploader-icon {
+                        border: 1px solid #333333;
+                        border-radius: 50%;
+                        font-size: 28px;
+                        color: #8c939d;
+                        width: 100px;
+                        height: 100px;
+                        line-height: 100px;
+                        text-align: center;
+                        padding: 36px 31px;
+                    }
+
+                    .avatar-uploader-tip {
+                        font-size: 18px;
+                        font-weight: 400;
+                        color: #999999;
+                        line-height: 25px;
+                        margin-top: -3px;
+                    }
+                }
+
+                .card-container {
+                    display: flex;
+                    align-items: center;
+                    flex-direction: column;
+                    margin-right: 30px;
+
+                    .card-uploader {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 229px;
+                        height: 154px;
+                        background: #FFFFFF;
+                        border-radius: 7px;
+                        border: 1px solid #CCCCCC;
+
+                        .el-upload {
+                            width: 229px;
+                            height: 154px;
+                        }
+
+                        .card {
+                            width: 229px;
+                            height: 154px;
+                            display: flex;
+                        }
+
+                        .card-face {
+                            background-image: url("../assets/idcard1.png");
+                            width: 161px;
+                            height: 111px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .card-emblem {
+                            background-image: url("../assets/idcard2.png");
+                            width: 161px;
+                            height: 111px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .card-hold {
+                            background-image: url("../assets/idcard3.png");
+                            width: 121px;
+                            height: 121px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .card-add {
+                            width: 45px;
+                            height: 45px;
+                        }
+                    }
+
+                    .card-name {
+                        font-size: 18px;
+                        color: #333333;
+                        line-height: 25px;
+                        margin-top: 13px;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 80px;
+
+            .button1 {
+                width: 227px;
+                height: 41px;
+                background: #FFFFFF;
+                border-radius: 21px;
+                border: 1px solid #3D6FF4;
+                font-size: 18px;
+                color: #3D6FF4;
+                line-height: 41px;
+                text-align: center;
+                margin: 0 15px;
+                padding: 0;
+                cursor: pointer;
+
+                &:hover {
+                    color: #0d46f3;
+                    border: 1px solid #0d46f3;
+                }
+            }
+
+            .button2 {
+                width: 227px;
+                height: 41px;
+                background: #EDF3FF;
+                border-radius: 21px;
+                font-size: 18px;
+                color: #3D6FF4;
+                line-height: 41px;
+                text-align: center;
+                margin: 0 15px;
+                padding: 0;
+                cursor: pointer;
+
+                &:hover {
+                    color: #0d46f3;
+                    border: 1px solid #0d46f3;
+                }
+            }
+        }
     }
 </style>

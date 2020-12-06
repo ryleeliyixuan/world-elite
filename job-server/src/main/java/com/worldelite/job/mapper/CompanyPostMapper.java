@@ -1,6 +1,7 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.CompanyPost;
+import com.worldelite.job.entity.CompanyPostOptions;
 
 import java.util.List;
 
@@ -61,17 +62,11 @@ public interface CompanyPostMapper {
      */
     int updateByPrimaryKey(CompanyPost record);
 
-    /**
-     * 查询完整数据
-     * @param companyPost
-     * @return
-     */
-    List<CompanyPost> selectAndList(CompanyPost companyPost);
+    List<CompanyPost> selectAndList(CompanyPost record);
 
-    /**
-     * 查询不带content字段的数据
-     * @param companyPost
-     * @return
-     */
-    List<CompanyPost> selectAndListSimple(CompanyPost companyPost);
+    List<CompanyPost> selectAndListSimple(CompanyPost record);
+
+    void deleteAll(CompanyPost companyPost);
+
+    List<CompanyPost> search(CompanyPost companyPost);
 }

@@ -14,6 +14,8 @@ public class CompanyPostForm {
     private String title; //帖子标题
     private String content; //帖子内容
     private String[] tags; //标签列表
+    private String image; //帖子图片
+    private Byte recommend; //是否设为精品/优质
 
     public String getTags(){
         return StringUtils.join(tags,',');

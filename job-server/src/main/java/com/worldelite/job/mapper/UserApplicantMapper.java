@@ -6,7 +6,9 @@ import com.worldelite.job.entity.UserOptions;
 import com.worldelite.job.form.CountForm;
 import com.worldelite.job.form.FlagPairForm;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface UserApplicantMapper {
     /**
@@ -64,4 +66,13 @@ public interface UserApplicantMapper {
     Integer countAll();
 
     List<FlagPairForm> countFlagGroupBy();
+
+    List<Map<String, Object>> selectStatInfo(Integer days);
+
+    List<Map<String, Object>> selectSpecifyMonthStatInfo(String date);
+
+    Date selectFirstCreateTime();
+
+    List<Map<String, Object>> selectSpecifyYearStatInfo(String dateStr);
+
 }
