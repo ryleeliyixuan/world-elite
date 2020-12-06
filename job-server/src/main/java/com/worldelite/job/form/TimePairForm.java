@@ -8,7 +8,7 @@ import java.util.Date;
  * Nuo Xu
  */
 @Data
-public class GraduateTimePairForm {
+public class TimePairForm {
      private Date time;
      private int num;
 }
