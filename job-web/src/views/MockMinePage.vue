@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-
+            <!--           用户身份-->
             <div class="record-container" v-show="identity===1 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="intervieweeRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
@@ -92,6 +92,13 @@
                             </div>
                         </template>
                     </el-table-column>
+                    <el-table-column prop="status" label="面试状态" width="280">
+                        <template slot-scope="scope">
+                            <div class="type">
+                                {{getInterViewerProgress(scope.row.status)}}
+                            </div>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="time" label="操作" width="110">
                         <template slot-scope="scope">
                             <div class="view" @click="onView(scope.row)">查看评价</div>
@@ -109,6 +116,7 @@
                                :current-page.sync="intervieweePage"
                                @current-change="getInterviewRecord"></el-pagination>
             </div>
+            <!--            面试官身份-->
             <div class="record-container" v-show="identity===2 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="interviewerRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
@@ -382,6 +390,23 @@
                     this.userIdentity = data.data ? 2 : 1;
                     this.status = data.data.status;
                 })
+            },
+            getInterViewerProgress(status) {
+                switch (status) {
+                    case 1:
+                        return '待支付';
+                    case 2:
+                        return '待面试';
+                    case 3:
+                        return '面试中';
+                    case 4:
+                        return '已面试';
+                    case 5:
+                        return '支付失败';
+                    case 6:
+                        return '已退款';
+                }
+
             },
 
             // 面试者
