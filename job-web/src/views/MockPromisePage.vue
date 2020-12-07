@@ -351,6 +351,7 @@
 
                             let eventList = [ // 保留被人预约剩余的可预约事件，默认为我的总预约时间段
                                 {
+                                    interviewerTimeId: item.id,
                                     start: item.beginTime,
                                     end: item.endTime,
                                     borderColor: '#D3F261', // 块边框颜色
