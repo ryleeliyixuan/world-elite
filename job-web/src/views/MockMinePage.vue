@@ -241,8 +241,8 @@
             </div>
         </el-dialog>
 
-        <el-dialog :visible.sync="eventDialogVisible" width="200px" :show-close="false" top="30%">
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail">
+        <el-dialog :visible.sync="eventDialogVisible" width="310px" :show-close="false" top="20%">
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail && status==='1'">
                 <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面视</el-button>
                 <el-button type="info" plain size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
@@ -250,12 +250,22 @@
                 </el-button>
             </div>
 
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="showContactEmail">
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="showContactEmail && status==='1'">
                 <div style="font-weight: bold;font-size: 18px">请联系人工客服：</div>
                 <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
                 <el-button type="primary" primary size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
                            @click="onRequire">确认
+                </el-button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="status!=='1'">
+                <div style="font-weight: bold;font-size: 18px">抱歉，您目前无法提供面试预约：</div>
+                <div style="font-weight: bold;font-size: 18px">详情请联系客服：</div>
+                <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
+                <el-button type="primary" primary size="mini"
+                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
+                           @click="onRequire2">确认
                 </el-button>
             </div>
 
@@ -348,6 +358,7 @@
                 incomeList: [], // 收益列表
                 incomePage: 1, // 面试官记录页码
                 incomeTotal: 0, // 面试官记录总数
+                status: undefined,//面试官身份状态
             }
         },
 
@@ -369,6 +380,7 @@
             getInterviewerInfo() {
                 this.$axios.get("/mock/interviewer/my-info").then(data => {
                     this.userIdentity = data.data ? 2 : 1;
+                    this.status = data.data.status;
                 })
             },
 
@@ -378,6 +390,7 @@
                 this.identity = 1;
                 this.getIntervieweeEvent();
             },
+
 
             // 面试官
             onInterviewer() {
@@ -487,7 +500,7 @@
 
             // 面试官点击日期，添加可预约时间
             onDateClick(info) {
-                if (this.identity === 2) {
+                if (this.identity === 2 && this.status === 1) {
                     if (info.date >= this.getNextDay()) {
                         this.step = 1;
                         this.start = '00:00';
@@ -503,6 +516,8 @@
                         this.date = info.date;
                         this.dialogVisible = true;
                     }
+                } else {
+
                 }
             },
 
@@ -537,6 +552,10 @@
 
             // 联系客服确认
             onRequire() {
+                this.eventDialogVisible = false;
+            },
+            //面试官下架弹窗
+            onRequire2() {
                 this.eventDialogVisible = false;
             },
 
