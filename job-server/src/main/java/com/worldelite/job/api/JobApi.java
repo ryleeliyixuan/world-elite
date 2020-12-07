@@ -328,8 +328,9 @@ public class JobApi extends BaseApi {
      * @param searchNameForm
      * @return
      */
+    @ApiDoc
     @GetMapping("search-job-name")
-    public ApiResult<PageResult<String>> searchJobName(@RequestBody SearchNameForm searchNameForm) {
+    public ApiResult<PageResult<String>> searchJobName(SearchNameForm searchNameForm) {
         jobNameSearchServiceImpl.createOrRefreshJobNameIndex();
         PageResult<String> result = jobNameSearchServiceImpl.searchJobName(searchNameForm);
         return ApiResult.ok(result);

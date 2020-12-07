@@ -68,10 +68,17 @@
                     </div>
                 </div>
             </div>
-            <div class="finish-button" @click="leaveRoom">结 束</div>
+            <div class="button-container">
+                <div class="finish-button" @click="leaveRoom">结束面试</div>
+                <div class="service-button" @click="onService">人工客服</div>
+            </div>
         </div>
-    </div>
 
+        <el-dialog :visible.sync="dialogVisible" center top="35vh" :show-close="false">
+            <span class="text" v-html="dialogText"/>
+            <div class="button" @click="dialogVisible=false">确认</div>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
@@ -97,6 +104,9 @@
                 remoteVideo: false, // 默认主显示远程视频
                 waiting: true, // 等待远程加入
                 videoHeight: 600, // 视频高度
+
+                dialogVisible: true, // 显示对话框
+                dialogText: "如果面试官15分钟内未出现请联系人工客服。"
             }
         },
 
@@ -121,7 +131,7 @@
              */
             this.aliWebRTC.isSupport().then(re => {
                 this.init();
-                this.joinRoom();   // TODO  需要取消注释
+                this.joinRoom();
             }).catch(error => {
                 this.$message.error(error.message);
             })
@@ -516,19 +526,16 @@
 
             // 接收消息处理
             receiveMessage(value) {
-                if (this.$route.path === "/chat") {
-                    // 消息来自已经打开的窗口
-                    if (value.fromUser === this.conversationItem.friendVo.friendUserId) {
-                        im.msgAsReadMessage(value.fromUser, value.toUser, [value.messageId], value.conversation.conversationId);
+                if (value.fromUser === this.conversationItem.friendVo.friendUserId) {
+                    im.msgAsReadMessage(value.fromUser, value.toUser, [value.messageId], value.conversation.conversationId);
 
-                        // 构建消息对象，插入接收框
-                        value.timestamp = Date.now();
-                        this.messageList.push(value);
-                        this.scrollBottom();
+                    // 构建消息对象，插入接收框
+                    value.timestamp = Date.now();
+                    this.messageList.push(value);
+                    this.scrollBottom();
 
-                        // 更新会话列表
-                        this.conversationItem.lastMessage = value;
-                    }
+                    // 更新会话列表
+                    this.conversationItem.lastMessage = value;
                 }
             },
 
@@ -576,6 +583,12 @@
                     this.$refs.receive.wrap.scrollTop = this.$refs.receive.wrap.scrollHeight;
                 })
             },
+
+            // 人工客服
+            onService() {
+                this.dialogText = "请联系人工客服：<br/>xiaokefu@we.com";
+                this.dialogVisible = true;
+            }
         }
     }
 </script>
@@ -776,27 +789,57 @@
             }
 
 
-            .finish-button {
-                width: 136px;
-                height: 41px;
-                background: #F9E3E1;
-                border-radius: 21px;
-                border: 1px solid #F44336;
-                font-size: 18px;
-                font-family: PingFangSC-Regular, PingFang SC;
-                font-weight: 400;
-                color: #F44336;
-                line-height: 41px;
-                text-align: center;
-                margin: 20px auto;
-                z-index: 120;
+            .button-container {
+                width: 300px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
 
-                &:hover {
-                    cursor: pointer;
-                    color: #db4d42;
-                    border-color: #db4d42;
+                .finish-button {
+                    width: 136px;
+                    height: 41px;
+                    background: #F9E3E1;
+                    border-radius: 21px;
+                    border: 1px solid #F44336;
+                    font-size: 18px;
+                    font-family: PingFangSC-Regular, PingFang SC;
+                    font-weight: 400;
+                    color: #F44336;
+                    line-height: 41px;
+                    text-align: center;
+                    margin: 20px auto;
+                    z-index: 120;
+
+                    &:hover {
+                        cursor: pointer;
+                        color: #db4d42;
+                        border-color: #db4d42;
+                    }
+                }
+
+                .service-button {
+                    width: 136px;
+                    height: 41px;
+                    background: #EDF3FF;
+                    border-radius: 21px;
+                    border: 1px solid #3D6FF4;
+                    font-size: 18px;
+                    font-weight: 400;
+                    color: #3D6FF4;;
+                    line-height: 41px;
+                    text-align: center;
+                    margin: 20px auto;
+                    z-index: 120;
+
+                    &:hover {
+                        cursor: pointer;
+                        color: #0b51f6;
+                        border-color: #0b51f6;
+                    }
                 }
             }
+
         }
 
         .avatar {
@@ -807,6 +850,36 @@
             align-items: center;
             justify-content: center;
             border-radius: 50%;
+        }
+
+        ::v-deep .el-dialog {
+            width: 411px;
+            height: 234px;
+            background: #FFFFFF;
+            border-radius: 17px;
+
+            .el-dialog__body {
+                padding: 18px 73px 40px;
+
+                .text {
+                    font-size: 21px;
+                    color: #333333;
+                    line-height: 29px;
+                }
+
+                .button {
+                    width: 207px;
+                    height: 41px;
+                    background: #EDF3FF;
+                    border-radius: 21px;
+                    font-size: 18px;
+                    color: #3D6FF4;
+                    line-height: 41px;
+                    text-align: center;
+                    margin: 40px auto 0;
+                    cursor: pointer;
+                }
+            }
         }
     }
 </style>

@@ -18,15 +18,17 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -304,5 +306,171 @@ public class UserCorporateService extends BaseService {
 
     public UserCorporate selectByPrimaryKey(Long userId) {
         return userCorporateMapper.selectByPrimaryKey(userId);
+    }
+
+    /**
+     * 获取n天前的企业用户统计数据
+     *
+     * @param days 天数
+     * @return
+     */
+    public List<Long> selectStatInfo(Integer days) {
+        List<Map<String, Object>> maps = userCorporateMapper.selectStatInfo(days);
+        return formatStatInfo(maps, days);
+    }
+
+    /**
+     *  获取指定月份的学生统计数据
+     *
+     * @param dateStr 日期
+     * @return
+     */
+    public List<Long> selectSpecifyMonthStatInfo(String dateStr) {
+        List<Map<String, Object>> maps = userCorporateMapper.selectSpecifyMonthStatInfo(dateStr);
+        return formatStatInfo(maps, dateStr);
+    }
+
+
+    /**
+     * 获取指定年份的学生统计数据
+     *
+     * @param dateStr 日期
+     * @return
+     */
+    public List<Long> selectSpecifyYearStatInfo(String dateStr) {
+        List<Map<String, Object>> maps = userCorporateMapper.selectSpecifyYearStatInfo(dateStr);
+        return formatYearStatInfo(maps, dateStr);
+    }
+
+
+    /**
+     * 获取最早注册时间
+     *
+     * @return
+     */
+    public Date selectFirstCreateTime() {
+        return userCorporateMapper.selectFirstCreateTime();
+    }
+
+
+    /**
+     * 将map按照规则转换为list
+     * 如果某一天没有用户注册，则list中元素为null
+     *
+     * @param maps
+     * @param days
+     * @return
+     */
+    private List<Long> formatStatInfo(List<Map<String, Object>> maps, Integer days) {
+        List<Long> stats = new ArrayList<>();
+
+        Date end = new Date(System.currentTimeMillis()); // 当前时间
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(end);
+        calendar.add(Calendar.DAY_OF_YEAR, -days); // 多少天前
+
+        Date indexDate = null;
+        for (int i = 0; (indexDate = calendar.getTime()).before(end) ;) {
+            LocalDate l1 = new LocalDate(new DateTime(indexDate));
+            LocalDate l2 = new LocalDate(new DateTime(maps.get(i).get("create_time")));
+
+            if (l1.equals(l2)) { // 相等
+                stats.add((Long) maps.get(i).get("count"));
+                if (i < maps.size() - 1) i++;
+            } else { // 不相等
+                stats.add(0L);
+            }
+
+            calendar.add(Calendar.DAY_OF_YEAR, 1); // start + 1天
+        }
+        return stats;
+    }
+
+
+
+    private List<Long> formatStatInfo(List<Map<String, Object>> maps, String date) {
+        List<Long> stats = new ArrayList<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date start = null;
+        Date end = null;
+        try {
+            String days = getDaysOfMonth(date);
+            start = sdf.parse(date + "-1");
+            end = sdf.parse(date + "-" + days);
+        } catch (ParseException e) {
+            throw new ServiceException(message("api.error.data.date"));
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(start);
+
+        Date indexDate = null;
+        for (int i = 0; (indexDate = calendar.getTime()).before(end) ;) {
+            LocalDate l1 = new LocalDate(new DateTime(indexDate));
+            LocalDate l2 = new LocalDate(new DateTime(maps.get(i).get("create_time")));
+            if (l1.equals(l2)) { // 相等
+                stats.add((Long) maps.get(i).get("count"));
+                if (i < maps.size() - 1) i++;
+            } else {
+                stats.add(0L);
+            }
+            calendar.add(Calendar.DAY_OF_YEAR, 1); // start + 1天
+        }
+
+        return stats;
+    }
+
+
+    private List<Long> formatYearStatInfo(List<Map<String, Object>> maps, String date) {
+        List<Long> stats = new ArrayList<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        Date start = null;
+        Date end = null;
+        try {
+            start = sdf.parse(date + "-1");
+            end = sdf.parse(date + "-12");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(start);
+
+            Date indexDate = null;
+            for (int i = 0; (indexDate = calendar.getTime()).before(end) ;) {
+//                LocalDate l1 = new LocalDate(new DateTime(indexDate));
+//                LocalDate l2 = new LocalDate(new DateTime(maps.get(i).get("create_time")));
+//                if (l1.equals(l2)) { // 相等
+//                    stats.add((Long) maps.get(i).get("count"));
+//                    if (i < maps.size() - 1) i++;
+//                } else {
+//                    stats.add(0L);
+//                }
+
+                Date d2 = sdf.parse(String.valueOf(maps.get(i).get("create_time")));
+                if (indexDate.compareTo(d2) == 0) {
+                    stats.add((Long) maps.get(i).get("count"));
+                    if (i < maps.size() - 1) i++;
+                } else {
+                    stats.add(0L);
+                }
+                calendar.add(Calendar.MONTH, 1); // start + 1月
+            }
+
+            return stats;
+        } catch (ParseException e) {
+            throw new ServiceException(message("api.error.data.date"));
+        }
+    }
+
+
+    /**
+     * 获取某个月有多少天
+     *
+     * @param date
+     * @return
+     * @throws ParseException
+     */
+    private String getDaysOfMonth(String date) throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new SimpleDateFormat("yyyy-MM").parse(date));
+        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH) + "";
     }
 }

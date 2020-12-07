@@ -29,7 +29,7 @@
                         :picker-options="{
                       start: start,
                       step: '00:30',
-                      end: end
+                      end: endFirst
                  }">
                 </el-time-select>
                 <span class="dialog-text" style="padding: 0 11px;">至</span>
@@ -39,9 +39,9 @@
                         placeholder="结束时间"
                         v-model="endTime"
                         :picker-options="{
-                      start: startTime || start,
+                      start: secondTime,
                       step: '00:30',
-                      end: end
+                      end: endSecond
                     }">
                 </el-time-select>
                 <div class="dialog-text" style="margin-top: 20px;">请选择您想预约的类型</div>
@@ -64,7 +64,7 @@
                 </div>
                 <div style="width:100%; height:1px; background:#C9DAFB;margin-bottom: 18px;"></div>
                 <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：
-                    <span style="color:#3D6FF4;">￥{{findPrice()}}</span>
+                    <span style="color:#3D6FF4;">￥{{amount}}</span>
                     <span style="color:#bdbdbd; font-size: 12px; padding-left: 8px;">请使用微信扫描下方二维码进行支付，10分钟内有效</span>
                 </div>
 
@@ -101,6 +101,7 @@
     import dayGridPlugin from '@fullcalendar/daygrid'
     import interactionPlugin from '@fullcalendar/interaction'
     import QRCode from 'qrcodejs2'
+    import {getUserId} from '@/utils/auth'
 
     export default {
         name: "MockPromisePage",
@@ -109,18 +110,21 @@
         },
         data() {
             return {
+                userId: getUserId(),
                 dialogVisible: false, // 对话框是否可见
 
                 date: 0, // 预约日期
-                startTime: 0, // 预约起始时间
-                endTime: 0, // 预约结束时间
+                startTime: '00:00', // 预约起始时间
+                endTime: '00:00', // 预约结束时间
                 start: '00:00', // 预约最小时间
-                end: '23:59', // 预约最大时间
+                endFirst: '23:59', // 预约最大时间
+                endSecond: '23:59', // 预约最大时间
                 interviewerTimeId: undefined, // 预约时间id
                 directionId: undefined, // 要预约的方向Id
                 directionList: [], // 可选的预约类型
                 step: 1, // 当前预约步骤
                 attachParam: undefined, // 预约id
+                amount: undefined, // 预约id
 
                 payType: undefined, // WEIXIN_NATIVE,  ALIPAY_NATIVE
                 qrCode: undefined, // 二维码对象
@@ -142,7 +146,7 @@
 
                     // 日历配置
                     initialView: 'dayGridMonth',
-                    initialDate: "2020-11-10",
+                    initialDate: Date.now(),
                     headerToolbar: {
                         start: 'title', // will normally be on the left. if RTL, will be on the right
                         center: '',
@@ -179,6 +183,13 @@
                 calendarApi: undefined, // 日历api
             }
         },
+
+
+        computed: {
+            secondTime() {
+                return this.getHourMinutes(new Date(this.getDateTime(this.date, this.startTime || this.start) + 30 * 60 * 1000));
+            }
+        },
         mounted() {
             this.calendarApi = this.$refs.fullCalendar.getApi()
             this.query.interviewerId = this.$route.params.id;
@@ -209,12 +220,13 @@
                 } else {
                     // 添加预约
                     this.$axios.post("/mock/interview/reservation", {
-                        beginTime: this.getDate(this.date, this.startTime),
+                        beginTime: this.getDateTime(this.date, this.startTime),
                         directionId: this.directionId,
-                        endTime: this.getDate(this.date, this.endTime),
+                        endTime: this.getDateTime(this.date, this.endTime),
                         interviewTimeId: this.interviewerTimeId
                     }).then(data => {
                         this.attachParam = data.data.id;
+                        this.amount = data.data.amount;
                         this.step = 2;
                         this.$nextTick(() => {
                             this.onWeChat();
@@ -249,10 +261,10 @@
                 let direction = this.directionList.find(item => item.id === this.directionId);
                 this.$axios.get("/pay/goods/buy", {
                     params: {
-                        amount: direction.price,
+                        amount: this.amount,
                         goodsId: direction.id,
                         goodsName: direction.direction,
-                        userId: this.query.interviewerId,
+                        userId: this.userId,
                         type: this.payType,
                         attachParam: this.attachParam
                     }
@@ -307,10 +319,14 @@
 
             // 点击事件，显示对话框，进行预约
             onEventClick(info) {
+                console.log(info);
                 this.interviewerTimeId = info.event.extendedProps.interviewerTimeId;
                 this.date = new Date(info.event.start);
                 this.start = this.getHourMinutes(info.event.start);
-                this.end = "23:30";//this.getHourMinutes(info.event.end);
+                this.startTime = this.getHourMinutes(info.event.start);
+                this.endFirst = this.getHourMinutes(new Date(info.event.end.getTime() - 30 * 60 * 1000));
+                this.endSecond = this.getHourMinutes(info.event.end);
+                this.endTime = this.getHourMinutes(new Date(info.event.start.getTime() + 30 * 60 * 1000));
                 this.step = 1;
                 this.dialogVisible = true;
             },
@@ -320,16 +336,71 @@
                 this.query.beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
                 this.query.endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
                 this.$axios.post("/mock/interview/time/query", this.query).then(data => {
-                    this.calendarOptions.events = data.data.map(item => {
-                        return {
-                            interviewerTimeId: item.id,
-                            reservationList: item.reservationList,
-                            start: item.beginTime,
-                            end: item.endTime,
-                            borderColor: '#D3F261', // 块边框颜色
-                            backgroundColor: '#D3F261', // 块背景色
+                    let events = [];
+                    data.data.forEach(item => {
+                        if (item.reservationList.length === 0) { // 没有被任何人预约，即可预约事件
+                            events.push({
+                                interviewerTimeId: item.id,
+                                interviewerId: item.interviewerId,
+                                start: parseInt(item.beginTime),
+                                end: parseInt(item.endTime),
+                                borderColor: '#D3F261', // 块边框颜色
+                                backgroundColor: '#D3F261', // 块背景色
+                            })
+                        } else {
+
+                            let eventList = [ // 保留被人预约剩余的可预约事件，默认为我的总预约时间段
+                                {
+                                    start: item.beginTime,
+                                    end: item.endTime,
+                                    borderColor: '#D3F261', // 块边框颜色
+                                    backgroundColor: '#D3F261', // 块背景色
+                                }
+                            ];
+
+                            // 遍历被预约事件
+                            item.reservationList.forEach(reservation => { // 被预约事件
+                                // 在可预约时间段内，去除被预约时间段，保留分散的可预约事件
+                                let event = eventList.find(event => {
+                                    return reservation.beginTime >= event.start && reservation.endTime <= event.end;
+                                })
+
+                                if (event) {
+                                    if (event.start === reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的开头
+                                        event.start = reservation.endTime; // 将可预约开始时间延迟至被预约时间结束
+                                    } else if (event.end === reservation.endTime && event.start !== reservation.beginTime) {  // 被预约时间段为可预约时间段的结尾
+                                        event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
+                                    } else if (event.start !== reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的中间部分
+                                        event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
+                                        eventList.push({ // 追加可预约时间段，从被预约结束时间，至可预约时间的结束
+                                            interviewerTimeId: item.id,
+                                            interviewerId: item.interviewerId,
+                                            start: reservation.endTime,
+                                            end: item.endTime,
+                                            borderColor: '#D3F261', // 块边框颜色
+                                            backgroundColor: '#D3F261', // 块背景色
+                                        })
+                                    } else { // 被预约时间为可预约时间端的全部
+                                        eventList = eventList.filter(it => it.start !== event.start && it.end !== event.end);
+                                    }
+                                }
+
+
+                                // 添加被预约事件
+                                // events.push({
+                                //     id: reservation.id, // 被预约的id，可预约不需要
+                                //     interviewerId: reservation.userId, // 预约人
+                                //     start: parseInt(reservation.beginTime),
+                                //     end: parseInt(reservation.endTime),
+                                //     borderColor: '#FFE58F',
+                                //     backgroundColor: '#FFE58F'
+                                // })
+                            })
+
+                            events = events.concat(eventList);
                         }
-                    });
+                    })
+                    this.calendarOptions.events = events;
                 })
             },
 
@@ -344,22 +415,20 @@
                 return item && item.direction;
             },
 
-            findPrice() {
-                let item = this.directionList.find(item => item.id === this.directionId);
-                return item && item.price;
-            },
-
-
             // 以下工具函数
             getHourMinutes(time) {
                 return time ? `${time.getHours() < 10 ? '0' : ''}${time.getHours()}:${time.getMinutes() < 10 ? '0' : ''}${time.getMinutes()}` : '00:00';
             },
 
             // Date + "12:00"  => (Date 12:00).getTime();
-            getDate(date, time) {
-                let t = time.split(":");
-                date.setHours(t[0], t[1])
-                return date.getTime();
+            getDateTime(date, time) {
+                if (date) {
+                    let t = time.split(":");
+                    date.setHours(t[0], t[1])
+                    return date.getTime();
+                } else {
+                    return Date.now();
+                }
             },
 
             getFirstDayOfMonth(date) {
