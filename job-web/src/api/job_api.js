@@ -1,5 +1,14 @@
 import request from '@/utils/request'
 
+export function searchJobName(data) {
+    return request({
+        url: '/job/search-job-name',
+        method: 'get',
+        params: data
+    })
+}
+
+
 export function getCompanyJobList(data) {
     return request({
         url: '/job/company-job-list',
@@ -8,23 +17,23 @@ export function getCompanyJobList(data) {
     })
 }
 
-export function getJobInfo(id){
+export function getJobInfo(id) {
     return request({
         url: '/job/get-job-info',
         method: 'get',
-        params: {id: id}
+        params: { id: id }
     })
 }
 
-export function applyJob(id){
+export function applyJob(id) {
     return request({
         url: '/job/apply-job',
         method: 'post',
-        params: {id: id}
+        params: { id: id }
     })
 }
 
-export function searchJob(data){
+export function searchJob(data) {
     return request({
         url: '/job/search-job',
         method: 'post',
@@ -32,7 +41,7 @@ export function searchJob(data){
     })
 }
 
-export function myApplyJobList(data){
+export function myApplyJobList(data) {
     return request({
         url: '/job/my-apply-jobs',
         method: 'get',
@@ -44,6 +53,6 @@ export function getJobRecruitCount(id) {
     return request({
         url: '/job/job-recruit-count',
         method: 'get',
-        params: {companyId: id}
+        params: { companyId: id }
     })
 }

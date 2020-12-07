@@ -8,7 +8,6 @@
     >
       <el-menu-item index="post">帖子</el-menu-item>
       <el-menu-item index="comment">评论</el-menu-item>
-      <el-menu-item index="report">举报</el-menu-item>
     </el-menu>
     <router-view></router-view>
   </div>

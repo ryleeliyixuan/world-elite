@@ -5,17 +5,15 @@
       class="community-post-display"
     >
       <div class="community-post-switch mb-4 d-flex justify-content-end">
-        <el-switch
-          v-model="listQuery.sort"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-          active-text="最新"
-          inactive-text="最热"
-          active-value="-id"
-          inactive-value="-hots"
-          @change="getPostList"
-        >
-        </el-switch>
+        <!-- <el-button type="text" @click="listQuery.sort = `-id`">最新</el-button>
+        <el-button type="text" @click="listQuery.sort = `-hots`"
+          >最热</el-button
+        > -->
+        <el-tabs v-model="activeSortName" @tab-click="handleClick">
+          <el-tab-pane label="最新" name="1"></el-tab-pane>
+          <el-tab-pane label="最热" name="2"></el-tab-pane>
+          <el-tab-pane label="精品区" name="3"></el-tab-pane>
+        </el-tabs>
       </div>
       <el-row>
         <el-col :span="24" v-for="post in postPage.list" :key="post.id">
@@ -28,7 +26,13 @@
             <div class="community-post-item">
               <div class="community-post-item-title">
                 <div class="community-post-item-title-text">
-                  {{ post.title }}
+                  <span class="mr-2"> {{ post.title }} </span>
+                  <el-tag
+                    v-if="post.recommend === 1"
+                    size="medium"
+                    type="warning"
+                    ><i class="el-icon-magic-stick"></i> 精品
+                  </el-tag>
                 </div>
                 <div class="community-post-item-title-stats">
                   <el-tag size="medium" type="danger"
@@ -92,38 +96,37 @@
           >
           </el-input>
         </el-form-item>
-        <el-form-item label="标签">
-          <div>
-            <el-tag
-              :key="tag"
-              v-for="tag in dynamicTags"
-              closable
-              :disable-transitions="false"
-              @close="handleClose(tag)"
-            >
-              {{ tag }}
-            </el-tag>
-            <el-input
-              class="input-new-tag"
-              v-if="inputVisible"
-              v-model="inputValue"
-              ref="saveTagInput"
-              size="small"
-              @blur="handleInputConfirm"
-            >
-            </el-input>
-            <el-button
-              v-else
-              class="button-new-tag"
-              size="small"
-              icon="el-icon-circle-plus"
-              @click="showInput"
-            >
-              添 加 新 标 签
-            </el-button>
-          </div>
-        </el-form-item>
       </el-form>
+      <div class="mb-4">
+        <el-tag
+          :key="tag"
+          v-for="tag in dynamicTags"
+          closable
+          :disable-transitions="false"
+          @close="handleClose(tag)"
+        >
+          {{ tag }}
+        </el-tag>
+        <el-input
+          class="input-new-tag"
+          v-if="inputVisible"
+          v-model="inputValue"
+          ref="saveTagInput"
+          size="small"
+          @keyup.enter.native="handleInputConfirm()"
+          @blur="handleInputConfirm"
+        >
+        </el-input>
+        <el-button
+          v-else
+          class="button-new-tag"
+          size="small"
+          icon="el-icon-circle-plus"
+          @click="showInput"
+        >
+          添 加 新 标 签
+        </el-button>
+      </div>
       <tinymce
         v-loading="loading"
         v-model="postForm.content"
@@ -177,6 +180,7 @@ export default {
   components: { Pagination, tinymce },
   data() {
     return {
+      activeSortName: "1",
       //tag
       dynamicTags: [],
       inputVisible: false,
@@ -195,7 +199,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 5,
-        sort: "-hots",
+        sort: "-create_time",
         id: undefined,
         companyId: undefined,
         cliqueId: undefined,
@@ -240,6 +244,20 @@ export default {
       // console.log("initData -> this.$route", this.listQuery);
       // debugger;
       parseListQuery(this.$route.query, this.listQuery);
+      this.getPostList();
+    },
+    handleClick(tab, event) {
+      const status = parseInt(tab.name);
+      if (status == 1) {
+        this.listQuery.sort = "-create_time";
+        this.listQuery.recommend = undefined;
+      } else if (status == 2) {
+        this.listQuery.sort = "-hots";
+        this.listQuery.recommend = undefined;
+      } else {
+        this.listQuery.recommend = 1;
+        this.listQuery.sort = "-create_time";
+      }
       this.getPostList();
     },
     //tags

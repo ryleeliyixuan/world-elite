@@ -9,11 +9,11 @@ export function savePost(data) {
   })
 }
 
-export function deletePost(postId) {
+export function deletePost(data) {
   return request({
     url: '/company-post/delete',
     method: 'post',
-    params: { postId: postId }
+    data
   })
 }
 
@@ -66,11 +66,11 @@ export function saveScore(data) {
   })
 }
 
-export function deleteScore(scoreId) {
+export function deleteScore(data) {
   return request({
     url: '/company-score/delete',
     method: 'post',
-    params: { scoreId: scoreId }
+    data
   })
 }
 
@@ -123,11 +123,11 @@ export function getCommentList(data) {
   })
 }
 
-export function deleteComment(commentId) {
+export function deleteComment(data) {
   return request({
     url: '/company-comment/delete',
     method: 'post',
-    params: { commentId: commentId }
+    data
   })
 }
 
