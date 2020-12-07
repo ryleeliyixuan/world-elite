@@ -20,3 +20,6 @@ ALTER TABLE `t_company_salary`
 	CHANGE COLUMN `job_id` `job_id` BIGINT UNSIGNED ZEROFILL NOT NULL DEFAULT 0 COMMENT '岗位ID' AFTER `company_id`;
 
 ALTER TABLE db_worldelite.t_company_salary MODIFY COLUMN percent FLOAT NOT NULL COMMENT '百分比';
+
+ALTER TABLE db_worldelite.t_company_salary CHANGE salary_id salary VARCHAR(20) NOT NULL COMMENT '薪资范围';
+ALTER TABLE db_worldelite.t_company_salary MODIFY COLUMN salary VARCHAR(20) NOT NULL COMMENT '薪资范围';
