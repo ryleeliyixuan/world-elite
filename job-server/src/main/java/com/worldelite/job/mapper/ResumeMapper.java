@@ -1,8 +1,9 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.Resume;
+import com.worldelite.job.entity.ResumeOptions;
 import com.worldelite.job.form.CountForm;
-import com.worldelite.job.form.GraduateTimePairForm;
+import com.worldelite.job.form.TimePairForm;
 
 import java.util.List;
 
@@ -69,6 +70,12 @@ public interface ResumeMapper {
 
     List<CountForm>countPlaceGroupBy();
 
-    List<GraduateTimePairForm>countGraduateTimeGroupBy();
+    List<TimePairForm>countGraduateTimeGroupBy();
+
+    TimePairForm countAllByTime(ResumeOptions record);
+
+    TimePairForm countOpResumeByTime(ResumeOptions record);
+
+    TimePairForm countUserResumeByTime(ResumeOptions record);
 
 }
