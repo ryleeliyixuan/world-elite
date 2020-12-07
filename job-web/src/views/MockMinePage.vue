@@ -500,7 +500,7 @@
 
             // 面试官点击日期，添加可预约时间
             onDateClick(info) {
-                if (this.identity === 2 && this.status === 1) {
+                if (this.identity === 2 && this.status === '1') {
                     if (info.date >= this.getNextDay()) {
                         this.step = 1;
                         this.start = '00:00';
