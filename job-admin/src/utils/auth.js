@@ -1,5 +1,5 @@
 import Cookies from 'universal-cookie';
- 
+
 const cookies = new Cookies();
 
 const TokenKey = 'world_elite_admin_token'
@@ -13,7 +13,7 @@ export function setToken(token,  rememberFlag) {
     cookies.set(TokenKey, token, {maxAge: 864000})
   }else{
     cookies.set(TokenKey, token)
-  } 
+  }
 }
 
 export function removeToken() {

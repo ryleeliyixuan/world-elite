@@ -189,6 +189,29 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/mock',
+    component: Layout,
+    redirect: '/mock/interviewer',
+    meta: { title: 'MOCK管理', icon: 'mock' },
+    children: [
+      {
+      path: 'interviewer',
+      component: () => import('@/views/mock/InterviewerList'),
+      meta: { title: '面试官列表' }
+      },
+      {
+        path: 'records',
+        component: () => import('@/views/mock/InterviewRecords'),
+        meta: { title: '面试记录列表' }
+      },
+      {
+        path: 'registerInterviewer',
+        hidden: true,
+        component: () => import('@/views/mock/RegisterInterviewer'),
+        meta: { title: '创建面试官' },
+      }]
+  },
+  {
     path: '/dict',
     component: Layout,
     redirect: '/dict/index',
