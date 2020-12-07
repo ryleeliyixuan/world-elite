@@ -27,7 +27,7 @@
     </div>
 
     <div class="nav_right_container">
-      <el-autocomplete
+      <!-- <el-autocomplete
         v-model="keyword"
         class="input-search"
         :placeholder="searchPlaceHolder"
@@ -40,7 +40,19 @@
           class="el-input__icon el-icon-search"
           @click="handleSearch"
         ></i>
-      </el-autocomplete>
+      </el-autocomplete> -->
+      <el-input
+        v-model="keyword"
+        class="input-search"
+        :placeholder="searchPlaceHolder"
+        @keyup.enter.native="handleSearch"
+      >
+        <i
+          slot="suffix"
+          class="el-input__icon el-icon-search"
+          @click="handleSearch"
+        ></i
+      ></el-input>
 
       <!-- 未登录 -->
       <div class="user_container" v-if="token === undefined || token === ''">
@@ -160,7 +172,10 @@ export default {
     searchPlaceHolder() {
       if (this.activeIndex === "/activity-list") {
         return "搜索活动";
-      } else if (this.activeIndex === "/wiki-card") {
+      } else if (
+        this.activeIndex === "/wiki-card" ||
+        this.activeIndex.indexOf("/company") != -1
+      ) {
         return "搜索百科";
       } else {
         return "搜索职位";
@@ -182,7 +197,6 @@ export default {
       companyHomeUrl: process.env.VUE_APP_COMPANY_URL,
 
       jobCategoryOptions: [],
-
     };
   },
   watch: {
@@ -196,12 +210,13 @@ export default {
         this.$store.commit("setting/SET_KEYWORD", this.keyword);
       }
     },
-    keyword: function (val, oldval) {
-      this.getJobList();
-    },
+    // keyword: function (val, oldval) {
+    //   this.getJobList();
+    // },
   },
   created() {
     this.activeIndex = this.$route.path;
+    console.log("=====", this.$route);
     this.getSuggestionList();
     this.querySearch();
     this.getUnReadMessageCount();
@@ -220,15 +235,14 @@ export default {
       // }
     },
     querySearch(queryString, cb) {
-      var suggestionWords = this.suggestionWords;
-      var results = queryString
-        ? suggestionWords.filter(this.createFilter(queryString))
-        : suggestionWords;
-
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        cb(results);
-      }, 3000 * Math.random());
+      // var suggestionWords = this.suggestionWords;
+      // var results = queryString
+      //   ? suggestionWords.filter(this.createFilter(queryString))
+      //   : suggestionWords;
+      // clearTimeout(this.timeout);
+      // this.timeout = setTimeout(() => {
+      //   cb(results);
+      // }, 3000 * Math.random());
     },
     createFilter(queryString) {
       return (suggestionWord) => {
@@ -255,8 +269,6 @@ export default {
           this.suggestionWords.push({ value: word });
         }
       });
-      
-      
     },
     getWikiList() {
       let data = {
@@ -303,6 +315,11 @@ export default {
     handleSearch() {
       if (this.isHomeListPage()) {
         this.$store.commit("setting/SET_KEYWORD", this.keyword);
+      } else if (this.activeIndex.indexOf("/company") != -1) {
+        this.$router.push({
+          path: "/wiki-list",
+          query: { keyword: this.keyword },
+        });
       } else {
         this.$router.push({
           path: "/job-list",
