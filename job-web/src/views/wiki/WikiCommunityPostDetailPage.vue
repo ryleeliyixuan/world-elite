@@ -1,9 +1,13 @@
 <template>
   <div class="community-post-container" v-if="postDetail">
-    <el-row>
+    <el-row :gutter="20">
       <el-col :span="18">
         <div class="community-post-item mr-2">
-          <el-card class="mb-4 p-3" :body-style="{ padding: '0px' }">
+          <el-card
+            class="mb-4 p-3"
+            :body-style="{ padding: '0px' }"
+            shadow="never"
+          >
             <div class="community-post-item community-post-item-title">
               <div class="community-post-item-title-user">
                 <el-avatar
@@ -11,7 +15,15 @@
                   :src="postDetail.fromUser.avatar"
                   size="small"
                 ></el-avatar>
-                {{ postDetail.fromUser.name }} (楼主)
+                <span class="mr-2">
+                  {{ postDetail.fromUser.name }} (楼主)
+                </span>
+                <el-tag
+                  v-if="postDetail.recommend === 1"
+                  size="medium"
+                  type="warning"
+                  ><i class="el-icon-magic-stick"></i> 精品
+                </el-tag>
               </div>
               <h4 class="community-post-item-title-text">
                 {{ postDetail.title }}
@@ -19,7 +31,8 @@
               <div class="community-post-item-title-stats text-secondary">
                 <small class="mr-4"> 点赞数 {{ postDetail.likes }} </small>
                 <small class="mr-4"> 评论数 {{ postDetail.comments }} </small>
-                <small class="mr-4"> 浏览量 {{ postDetail.comments }} </small>
+                <!-- 缺接口 -->
+                <!-- <small class="mr-4"> 浏览量 {{ postDetail.comments }} </small> -->
                 <el-button
                   class="text-secondary"
                   type="text"
@@ -28,7 +41,7 @@
                   icon="el-icon-s-flag"
                   >举报</el-button
                 >
-                <small class="mr-4"> {{ dayDiff }} </small>
+                <!-- <small class="mr-4"> {{ dayDiff }} </small> -->
                 <el-button
                   icon="el-icon-delete-solid"
                   class="text-secondary"
@@ -61,7 +74,10 @@
               </el-dialog>
             </div>
             <el-divider></el-divider>
-            <div class="mb-4 mt-4" v-html="postDetail.content"></div>
+            <div
+              class="mb-4 mt-4 post-content"
+              v-html="postDetail.content"
+            ></div>
             <div
               class="post-tags mb-4"
               v-if="postDetail.tags && postDetail.tags.length > 0"
@@ -71,14 +87,14 @@
               }}</el-tag>
             </div>
             <div class="detail-card-footer">
-              <div class="share-button">
+              <!-- <div class="share-button">
                 <el-avatar
                   shape="circle"
                   size="medium"
                   icon="el-icon-share"
                 ></el-avatar>
-                <!-- <small class="text-secondary"> 快给朋友分享吧！</small> -->
-              </div>
+                <small class="text-secondary"> 快给朋友分享吧！</small>
+              </div> -->
               <el-button
                 class="main-action main-button"
                 type="primary"
@@ -94,7 +110,7 @@
                 点 赞
                 {{ postDetail.likes === 0 ? "" : postDetail.likes }}
               </el-button>
-              <small class="text-secondary">
+              <small class="text-secondary detail-card-footer-time">
                 发布于 {{ postDetail.createTime }}</small
               >
             </div>
@@ -144,7 +160,7 @@
               登录后可发表评分，点此登录
             </el-button>
           </div>
-          <div class="comment-header">
+          <div class="comment-header d-flex align-items-center">
             <strong>全部评论 {{ postDetail.comments }} </strong>
             <div class="d-flex justify-content-end">
               <el-tabs
@@ -166,20 +182,30 @@
                 v-for="comment in commentPage.list"
                 :key="comment.id"
               >
-                <el-card
-                  class="mb-2"
-                  :body-style="{ padding: '12px' }"
-                  shadow="hover"
-                >
+                <el-card :body-style="{ padding: '12px' }" shadow="never">
                   <div class="mb-3 d-flex align-items-center">
                     <el-avatar
-                      v-if="comment.fromUser.avatar"
+                      v-if="
+                        comment.fromUser.avatar &&
+                        comment.fromUser.avatar.length > 0
+                      "
                       style="margin-right: 12px"
                       :src="comment.fromUser.avatar"
                       size="small"
                     ></el-avatar>
+                    <el-avatar
+                      v-else
+                      style="margin-right: 12px"
+                      src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+                      size="small"
+                    >
+                    </el-avatar>
                     <div class="mr-2 font-weight-bold">
-                      {{ comment.fromUser.name }}
+                      {{
+                        comment.fromUser.name.length > 0
+                          ? comment.fromUser.name
+                          : "新注册用户"
+                      }}
                     </div>
                     <small class="text-secondary">{{
                       comment.createTime
@@ -271,13 +297,34 @@
                               style="font-size: 10px; font-weight: bold"
                             >
                               <el-avatar
+                                v-if="
+                                  reply.fromUser.avatar &&
+                                  reply.fromUser.avatar.length > 0
+                                "
                                 style="margin-right: 8px"
                                 :src="reply.fromUser.avatar"
                                 :size="20"
                               ></el-avatar>
-                              {{ reply.fromUser.name }}
+                              <el-avatar
+                                v-else
+                                style="margin-right: 12px"
+                                src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+                                size="small"
+                              >
+                              </el-avatar>
+                              {{
+                                reply.fromUser.name &&
+                                reply.fromUser.name.length > 0
+                                  ? reply.fromUser.name
+                                  : "新注册用户"
+                              }}
                               <i class="el-icon-caret-right"></i>
-                              {{ reply.toUser.name }}
+                              {{
+                                reply.toUser.name &&
+                                reply.toUser.name.length > 0
+                                  ? reply.toUser.name
+                                  : "新注册用户"
+                              }}
                             </div>
                             {{ reply.content }}
                             <div
@@ -426,11 +473,12 @@
               </div>
             </div>
           </div>
+          <div v-else class="noInfoMsgBox">暂无评论</div>
         </div>
       </el-col>
       <el-col :span="6">
-        <el-card :body-style="{ padding: '0px' }">
-          <div slot="header" class="hotest-post-header">
+        <el-card :body-style="{ padding: '0px' }" shadow="never">
+          <div slot="header" class="hotest-post-header align-items-center">
             <strong>热门帖子</strong>
             <el-button
               type="text"
@@ -441,10 +489,25 @@
           </div>
           <el-row>
             <el-col :span="24" v-for="post in postPage.list" :key="post.id">
-              <el-card class="hotest-post" :body-style="{ padding: '0px' }">
-                <el-row>
-                  <el-col :span="6"> </el-col>
-                  <el-col :span="18">
+              <el-card
+                class="hotest-post"
+                :body-style="{ padding: '8px' }"
+                shadow="never"
+              >
+                <el-row :gutter="8">
+                  <el-col :span="10">
+                    <img
+                      v-if="post.image && post.image.length > 0"
+                      class="hotest-post-thumbnail"
+                      :src="post.image"
+                    />
+                    <img
+                      v-else
+                      class="hotest-post-thumbnail"
+                      :src="post.company.logo"
+                    />
+                  </el-col>
+                  <el-col :span="14">
                     <div class="d-flex flex-column">
                       <strong>{{ post.title }}</strong>
                       <small class="text-secondary">{{
@@ -528,7 +591,7 @@ export default {
       },
       listQuery: {
         page: 1,
-        limit: 5,
+        limit: 10,
         sort: "-hots",
         id: undefined,
         companyId: undefined,
@@ -583,6 +646,7 @@ export default {
   },
   methods: {
     initData() {
+      this.companyId = this.$route.params.id;
       this.postId = this.$route.query.postId;
       this.commentQuery.ownerId = this.postId;
       parseListQuery(this.$route.query, this.listQuery);
@@ -631,51 +695,11 @@ export default {
       this.commentQuery.limit += 5;
       this.getCommentList();
     },
-    showtime(time) {
-      let date =
-        typeof time === "number"
-          ? new Date(time)
-          : new Date((time || "").replace(/-/g, "/"));
-      let diff = (new Date().getTime() - date.getTime()) / 1000;
-      let dayDiff = Math.floor(diff / 86400);
-
-      let isValidDate =
-        Object.prototype.toString.call(date) === "[object Date]" &&
-        !isNaN(date.getTime());
-
-      if (!isValidDate) {
-        window.console.error("不是有效日期格式");
-      }
-      const formatDate = function (date) {
-        let today = new Date(date);
-        let year = today.getFullYear();
-        let month = ("0" + (today.getMonth() + 1)).slice(-2);
-        let day = ("0" + today.getDate()).slice(-2);
-        let hour = today.getHours();
-        let minute = today.getMinutes();
-        let second = today.getSeconds();
-        return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-      };
-
-      if (isNaN(dayDiff) || dayDiff < 0 || dayDiff >= 31) {
-        return formatDate(date);
-      }
-      return (
-        (dayDiff === 0 &&
-          ((diff < 60 && "刚刚") ||
-            (diff < 120 && "1分钟前") ||
-            (diff < 3600 && Math.floor(diff / 60) + "分钟前") ||
-            (diff < 7200 && "1小时前") ||
-            (diff < 86400 && Math.floor(diff / 3600) + "小时前"))) ||
-        (dayDiff === 1 && "昨天") ||
-        (dayDiff < 7 && dayDiff + "天前") ||
-        (dayDiff < 31 && Math.ceil(dayDiff / 7) + "周前")
-      );
-    },
     deletePost(id) {
-      deletePost(id).then(() => {
+      let data = { postId: id };
+      deletePost(data).then(() => {
         Toast.success("成功删除帖子");
-        this.getPostList();
+        this.$router.push(`/company/${this.companyId}/community/post`);
       });
     },
     likePost(id) {
@@ -714,6 +738,7 @@ export default {
     likeComment(id) {
       likeComment(id).then((response) => {
         this.getCommentList();
+        this.getReplyList();
       });
     },
     getCommentList() {
@@ -738,7 +763,8 @@ export default {
       });
     },
     deleteComment(id, type) {
-      deleteComment(id).then(() => {
+      let data = { commentId: id };
+      deleteComment(data).then(() => {
         Toast.success("成功删除评论");
         this.getCommentList();
         this.getReplyList();
@@ -762,6 +788,7 @@ export default {
             Toast.success("回复成功");
             this.replyForm.content = "";
             this.getReplyList();
+            this.getCommentList();
           });
         }
       });
@@ -795,6 +822,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.post-content {
+  width: 100%;
+}
 .hotest-post-header {
   height: 18px;
   display: flex;
@@ -803,6 +833,12 @@ export default {
 }
 .hotest-post {
   min-height: 80px;
+  width: auto;
+  .hotest-post-thumbnail {
+    height: 60px;
+    width: 90px;
+    object-fit: fill;
+  }
 }
 
 .noInfoMsgBox {
@@ -819,7 +855,7 @@ export default {
 }
 
 .main-action {
-  width: 60px;
+  width: 70px;
   padding: 10px;
 }
 
@@ -828,15 +864,21 @@ export default {
 }
 
 .detail-card-footer {
+  position: relative;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 12px;
   .share-button {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+  .detail-card-footer-time {
+    position: absolute;
+    right: 0;
+    top: 25px;
   }
 }
 

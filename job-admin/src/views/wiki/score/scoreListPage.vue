@@ -5,19 +5,25 @@
         <el-input
           style="width: 400px"
           class="p-2"
-          placeholder="帖子ID"
+          placeholder="评价ID"
           v-model="listQuery.id"
           clearable
         >
         </el-input>
-        <el-input
-          style="width: 400px"
+        <el-select
           class="p-2"
-          placeholder="标题"
-          v-model="listQuery.title"
-          clearable
+          v-model="listQuery.scores"
+          multiple
+          placeholder="请选择评分"
         >
-        </el-input>
+          <el-option
+            v-for="item in scoreOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
         <el-select
           style="width: 300px"
           class="p-2"
@@ -26,7 +32,7 @@
           filterable
           allow-create
           default-first-option
-          placeholder="发帖人用户名"
+          placeholder="用户名"
         >
           <el-option
             v-for="item in fromNamesOptions"
@@ -48,6 +54,15 @@
           <el-option
             v-for="item in companyNamesOptions"
             :key="item.value"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <el-select class="p-2" v-model="listQuery.anonymous" placeholder="请选择用户状态">
+          <el-option
+            v-for="item in statusOptions"
+            :key="item.value"
+            :label="item.label"
             :value="item.value"
           >
           </el-option>
@@ -82,7 +97,7 @@
           clearable
         >
         </el-input>
-        <el-button class="m-2" type="primary" @click="searchPost"
+        <el-button class="m-2" type="primary" @click="searchScore"
           >搜索</el-button
         >
         <el-button type="text" @click="emptyPostListQuery"
@@ -106,13 +121,19 @@
           @click="deleteAllDialogVisible = true"
           >批量删除</el-button
         >
-        <el-button size="medium" type="warning" plain @click="forbiddenAllDialogVisible = true">批量禁言</el-button>
+        <el-button
+          size="medium"
+          type="warning"
+          plain
+          @click="forbiddenAllDialogVisible = true"
+          >批量禁言</el-button
+        >
       </div>
       <div>
         <el-tabs v-model="activeSort" @tab-click="handleClick">
           <el-tab-pane label="时间顺序" name="1"></el-tab-pane>
           <el-tab-pane label="时间倒序" name="2"></el-tab-pane>
-          <el-tab-pane label="只看精品" name="3"></el-tab-pane>
+          <el-tab-pane label="只看优质" name="3"></el-tab-pane>
         </el-tabs>
       </div>
     </div>
@@ -125,9 +146,8 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column prop="id" label="帖子ID" width="120"> </el-table-column>
-      <el-table-column prop="title" label="帖子标题" width="120">
-      </el-table-column>
+      <el-table-column prop="id" label="评分ID" width="120"> </el-table-column>
+      <el-table-column prop="score" label="评分" width="120"> </el-table-column>
       <el-table-column prop="company.name" label="企业" show-overflow-tooltip>
       </el-table-column>
       <el-table-column
@@ -135,6 +155,11 @@
         label="用户名"
         show-overflow-tooltip
       >
+      </el-table-column>
+      <el-table-column label="用户状态">
+        <template slot-scope="scope">
+          {{ scope.row.anonymous === 1 ? "匿名" : "公开" }}
+        </template>
       </el-table-column>
       <el-table-column prop="createTime" label="发帖时间" show-overflow-tooltip>
       </el-table-column>
@@ -148,14 +173,14 @@
           <el-button
             type="primary"
             size="mini"
-            @click="handleViewPost(scope.row.companyId, scope.row.id)"
+            @click="handleViewPost(scope.row.companyId)"
             icon="el-icon-edit"
             >查看</el-button
           >
           <el-button
             type="danger"
             size="mini"
-            @click="handeDeletePost(scope.row.id, scope.row.title)"
+            @click="handeDeletePost(scope.row.id, scope.row.company.name, scope.row.fromUser.name, scope.row.score)"
             icon="el-icon-edit"
             >删除</el-button
           >
@@ -168,7 +193,7 @@
             @click="
               handleManageComment(scope.row.id)
             "
-            >评论管理</el-button
+            >回复管理</el-button
           >
           <el-button
             v-if="scope.row.forbidden == 0"
@@ -201,23 +226,24 @@
             type="danger"
             size="mini"
             icon="el-icon-star-off"
-            @click="handleSetRecommend(scope.row.id, 1)"
-            >设为精品</el-button
+            @click="handleSetRecommend(scope.row.id, scope.row.anonymous, 1)"
+            >设为优质</el-button
           >
           <el-button
             v-else
             type="danger"
             size="mini"
             icon="el-icon-star-on"
-            @click="handleSetRecommend(scope.row.id, 0)"
-            >取消精品</el-button
+            @click="handleSetRecommend(scope.row.id, scope.row.anonymous, 0)"
+            >取消优质</el-button
           >
         </template>
       </el-table-column>
     </el-table>
+    <!-- delete -->
     <el-dialog :visible.sync="deleteDialogVisible" width="30%">
       <div>
-        您确定要删除帖子"{{ deletedTitle }}"吗？（帖子内的评论也将被删除）
+        您确定要删除 {{deletedUserName}} 对 {{ deletedTitle}} 的"{{ deletedScore }}分"评分吗？（评分对应回复也将被删除）
       </div>
       <el-input
         v-model="deleteForm.content"
@@ -226,17 +252,18 @@
       <span slot="footer" class="dialog-footer">
         <el-button
           type="primary"
-          @click="(deleteDialogVisible = false), deletePost()"
+          @click="(deleteDialogVisible = false), deleteScore()"
           >确 定</el-button
         >
         <el-button @click="deleteDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
+    <!-- delete all -->
     <el-dialog :visible.sync="deleteAllDialogVisible" width="30%">
       <div>
         您确定要删除{{
           multipleSelection.length
-        }}个帖子吗？（帖子内的评论也将被删除）
+        }}个评分吗？（帖子内的评分也将被删除）
       </div>
       <el-input
         v-model="deleteForm.content"
@@ -255,16 +282,16 @@
     <el-dialog :visible.sync="forbiddenDialogVisible" width="30%">
       <div class="mb-2">您将对 {{ forbiddenName }} 进行禁言</div>
       <div class="d-flex justify-content-between align-items-center mb-2">
-      <el-select v-model="forbiddenForm.daysId" placeholder="请选择禁言天数">
-        <el-option
-          v-for="item in forbiddenDaysOptions"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        >
-        </el-option>
-      </el-select>
-      <el-checkbox v-model="forbiddenForm.notice">通知用户</el-checkbox>
+        <el-select v-model="forbiddenForm.daysId" placeholder="请选择禁言天数">
+          <el-option
+            v-for="item in forbiddenDaysOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+        <el-checkbox v-model="forbiddenForm.notice">通知用户</el-checkbox>
       </div>
       <el-input
         v-model="forbiddenForm.content"
@@ -300,18 +327,20 @@
     </el-dialog>
     <!-- forbidden all -->
     <el-dialog :visible.sync="forbiddenAllDialogVisible" width="30%">
-      <div class="mb-2">您将禁言已选的 {{ multipleSelection.length }} 名用户</div>
+      <div class="mb-2">
+        您将禁言已选的 {{ multipleSelection.length }} 名用户
+      </div>
       <div class="d-flex justify-content-between align-items-center mb-2">
-      <el-select v-model="forbiddenForm.daysId" placeholder="请选择禁言天数">
-        <el-option
-          v-for="item in forbiddenDaysOptions"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        >
-        </el-option>
-      </el-select>
-      <el-checkbox v-model="forbiddenForm.notice">通知用户</el-checkbox>
+        <el-select v-model="forbiddenForm.daysId" placeholder="请选择禁言天数">
+          <el-option
+            v-for="item in forbiddenDaysOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+        <el-checkbox v-model="forbiddenForm.notice">通知用户</el-checkbox>
       </div>
       <el-input
         v-model="forbiddenForm.content"
@@ -343,12 +372,8 @@ import Pagination from "@/components/Pagination";
 import Toast from "@/utils/toast";
 import {
   //post
-  searchPost,
-  getPostList,
-  deletePost,
-  getPostDetail,
-  savePost,
-  deleteAll,
+  searchScore,
+  saveScore,
   //forbidden
   forbiddenUser,
   unforbiddenUser,
@@ -356,16 +381,51 @@ import {
   //comment
   getCommentList,
   deleteComment,
+  deleteScore,
+  deleteAllScore,
 } from "@/api/community_api";
 import { listByType } from "@/api/dict_api";
 import { formatListQuery, parseListQuery } from "@/utils/common";
 
 export default {
-  name: "PostListPage",
+  name: "CommentListPage",
   components: { Pagination },
   directives: { waves },
   data() {
     return {
+      statusOptions: [
+        {
+          value: "1",
+          label: "匿名",
+        },
+        {
+          value: "0",
+          label: "公开",
+        },
+      ],
+      scoreOptions: [
+        {
+          value: "1",
+          label: "1",
+        },
+        {
+          value: "2",
+          label: "2",
+        },
+        {
+          value: "3",
+          label: "3",
+        },
+        {
+          value: "4",
+          label: "4",
+        },
+        {
+          value: "5",
+          label: "5",
+        },
+      ],
+
       total: 0,
       listLoading: true,
       postList: [],
@@ -375,6 +435,8 @@ export default {
       deleteDialogVisible: false,
       deleteAllDialogVisible: false,
       deletedTitle: "",
+      deletedUserName: "",
+      deletedScore: undefined,
       multipleSelection: [],
       activeSort: "1",
 
@@ -403,8 +465,8 @@ export default {
       forbiddenAllDialogVisible: false,
 
       deleteForm: {
-        postId: undefined,
-        postIds: [],
+        scoreId: undefined,
+        scoreIds: [],
         content: "",
       },
       listQuery: {
@@ -412,12 +474,13 @@ export default {
         limit: 20,
         sort: "+create_time",
         id: undefined,
+        fromId: undefined,
         companyId: undefined,
-        cliqueId: undefined,
         recommend: undefined,
-        title: "",
+        scores: [],
         fromNames: [],
         companyNames: [],
+        anonymous: undefined,
         beginTime: undefined,
         endTime: undefined,
         keyword: "",
@@ -455,7 +518,7 @@ export default {
   },
   watch: {
     $route() {
-      this.searchPost();
+      this.searchScore();
     },
   },
   methods: {
@@ -471,24 +534,28 @@ export default {
       if (query.limit) {
         this.listQuery.limit = parseInt(query.limit);
       }
-      listByType(20).then(response => (this.forbiddenDaysOptions = response.data.list));
-      searchPost(this.listQuery).then((response) => {
+      listByType(20).then(
+        (response) => (this.forbiddenDaysOptions = response.data.list)
+      );
+      searchScore(this.listQuery).then((response) => {
         parseListQuery(this.$route.query, this.listQuery);
         this.postPage = response.data;
         const { total, list } = response.data;
         this.postList = list;
         this.total = total;
-        this.listLoading = false;
         this.getFromNamesFilterOptions();
         this.getCompanyNameFilterOptions();
+        this.listLoading = false;
       });
     },
-    searchPost() {
-      searchPost(this.listQuery).then((response) => {
+    searchScore() {
+      searchScore(this.listQuery).then((response) => {
         this.postPage = response.data;
         const { total, list } = response.data;
         this.postList = list;
         this.total = total;
+        this.getFromNamesFilterOptions();
+        this.getCompanyNameFilterOptions();
         this.listLoading = false;
       });
     },
@@ -523,18 +590,25 @@ export default {
       }
       this.companyNamesOptions = Array.from(tempCompNameSet);
     },
-    handeDeletePost(id, title) {
+    handeDeletePost(id, title, name, score) {
       this.deleteDialogVisible = true;
-      this.deleteForm.postId = id;
+      this.deleteForm.scoreId = id;
       this.deletedTitle = title;
+      this.deletedUserName = name;
+      this.deletedScore = score;
+      
     },
     emptyPostListQuery() {
       this.listQuery.id = undefined;
-      this.listQuery.title = "";
+      this.listQuery.scores = [];
+      this.listQuery.anonymous = undefined;
       this.listQuery.fromNames = [];
       this.listQuery.companyNames = [];
-      this.listQuery.companyId = undefined;
-      this.searchPost();
+      this.listQuery.beginTime = undefined;
+      this.listQuery.endTime = undefined;
+      this.listQuery.keyword = "";
+      this.listQuery.ownerId = undefined;
+      this.searchScore();
     },
     handleRouteList() {
       this.$router.push({
@@ -542,10 +616,11 @@ export default {
         query: formatListQuery(this.listQuery),
       });
     },
-    handleViewPost(companyId, postId) {
+    handleViewPost(companyId) {
+      //https://localhost:8081/company/1253557897332019200/community/score
       let url =
         process.env.VUE_APP_WEB_HOST +
-        `/company/${companyId}/community/postdetail?postId=${postId}`;
+        `/company/${companyId}/community/score`;
       window.open(url);
     },
     forbiddenUser() {
@@ -590,12 +665,14 @@ export default {
         this.initData();
       });
     },
-    deletePost() {
-      deletePost(this.deleteForm).then(() => {
-        Toast.success("成功删除该帖子");
+    deleteScore() {
+      deleteScore(this.deleteForm).then(() => {
+        Toast.success("成功删除");
         this.deletedTitle = "";
-        this.deleteForm.postId = undefined;
-        this.deleteForm.postIds = [];
+        this.deletedUserName = "";
+        this.deletedScore = undefined;
+        this.deleteForm.scoreId = undefined;
+        this.deleteForm.scoreIds = [];
         this.deleteForm.content = "";
         this.initData();
       });
@@ -603,28 +680,31 @@ export default {
     deleteAll() {
       for (let i = 0; i < this.multipleSelection.length; i++) {
         let id = this.multipleSelection[i].id;
-        this.deleteForm.postIds.push(id);
+        this.deleteForm.scoreIds.push(id);
       }
-      deleteAll(this.deleteForm).then(() => {
-        Toast.success("成功批量删除帖子");
+      deleteAllScore(this.deleteForm).then(() => {
+        Toast.success("成功批量删除");
         this.deletedTitle = "";
-        this.deleteForm.postId = undefined;
-        this.deleteForm.postIds = [];
+        this.deletedUserName = "";
+        this.deletedScore = undefined;
+        this.deleteForm.scoreId = undefined;
+        this.deleteForm.scoreIds = [];
         this.deleteForm.content = "";
         this.initData();
       });
     },
     handleManageComment(id) {
-      this.$router.push({ path: "/wiki/community-post/comment/", query: { ownerId: id } });
+      this.$router.push({ path: "/wiki/community-score/reply/", query: { ownerId: id } });
     },
-    handleSetRecommend(id, recommend) {
+    handleSetRecommend(id, anonymous, recommend) {
       let data = {
         id: id,
+        anonymous: anonymous,
         recommend: recommend,
       };
-      savePost(data).then(() => {
+      saveScore(data).then(() => {
         Toast.success("成功修改精品属性");
-        this.searchPost();
+        this.searchScore();
       });
     },
     handleClick(tab, event) {
@@ -639,7 +719,7 @@ export default {
         this.listQuery.recommend = 1;
         this.listQuery.sort = "+create_time";
       }
-      this.searchPost();
+      this.searchScore();
     },
   },
 };

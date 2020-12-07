@@ -79,17 +79,25 @@ export const constantRoutes = [
             component: () => import('@/views/wiki/post/commentListPage'),
             meta: { title: '评论列表' },
           },
-          {
-            path: 'report',
-            component: () => import('@/views/wiki/post/reportListPage'),
-            meta: { title: '举报列表' },
-          },
         ]
       },
       {
         path: 'community-score',
-        component: () => import('@/views/wiki/CommunityScorePage'),
+        component: () => import('@/views/wiki/score/index'),
+        redirect: '/wiki/community-score/score',
         meta: { title: '评分圈' },
+        children: [
+          {
+            path: 'score',
+            component: () => import('@/views/wiki/score/scoreListPage'),
+            meta: { title: '评分列表' },
+          },
+          {
+            path: 'reply',
+            component: () => import('@/views/wiki/score/replyListPage'),
+            meta: { title: '回复列表' },
+          },
+        ]
       },
     ]
   },
