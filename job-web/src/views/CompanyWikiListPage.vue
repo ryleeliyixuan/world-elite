@@ -1,12 +1,12 @@
 <template>
     <div class="app-container">
-        <div class="section1-container">
+   <!--     <div class="section1-container">
             <pagination v-show="total"
                         :total="total"
                         :page.sync="listQuery.page"
                         :limit.sync="listQuery.limit"
                         @pagination="handleRouteList"/>
-        </div>
+        </div> -->
         <div class="section2-container" v-if="list.length !== 0">
             <el-card shadow="hover"
                      v-for="company in list"
@@ -142,7 +142,8 @@
                     display: flex;
 
                     .section2-left-container {
-                        width: 100px;
+                        max-width: 100px;
+						max-height: 100px;
                         margin-right: 20px;
                     }
 
