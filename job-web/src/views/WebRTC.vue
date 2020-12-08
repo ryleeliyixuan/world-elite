@@ -10,7 +10,7 @@
                     <video :class="[{'major':!remoteVideo || waiting},{'minor':remoteVideo && !waiting}]" autoplay playsinline ref="preview"
                            @play="calculateHeight"
                            @click="changeVideo"/>
-                    <div v-if="waiting" style="text-align: center; z-index: 100; line-height: 600px; background: #cccccc;">等待加入...
+                    <div v-if="waiting" style="text-align: center; z-index: 100; line-height: 600px; background: #cccccc;">{{tips}}
                     </div>
                 </div>
                 <div class="chat-container" :style="{height:videoHeight+'px'}">
@@ -106,7 +106,8 @@
                 videoHeight: 600, // 视频高度
 
                 dialogVisible: true, // 显示对话框
-                dialogText: "如果面试官15分钟内未出现请联系人工客服。"
+                dialogText: "如果面试官15分钟内未出现请联系人工客服。",
+                tips: "等待加入...",
             }
         },
 
@@ -133,6 +134,7 @@
                 this.init();
                 this.joinRoom();
             }).catch(error => {
+                this.tips = error.message;
                 this.$message.error(error.message);
             })
 

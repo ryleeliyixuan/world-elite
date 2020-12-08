@@ -251,14 +251,14 @@
 
         <el-dialog :visible.sync="eventDialogVisible" width="310px" :show-close="false" top="20%">
             <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail">
-                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面视</el-button>
+                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面试</el-button>
                 <el-button type="info" plain size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
-                           @click="onCancelInterview">取消面视预约
+                           @click="onCancelInterview">取消面试预约
                 </el-button>
             </div>
 
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="showContactEmail && status==='1'">
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="showContactEmail">
                 <div style="font-weight: bold;font-size: 18px">请联系人工客服：</div>
                 <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
                 <el-button type="primary" primary size="mini"
@@ -428,7 +428,7 @@
 
             // 面试者
             onInterviewee() {
-                // 切换身份为面视者
+                // 切换身份为面试者
                 this.identity = 1;
                 this.getIntervieweeEvent();
             },

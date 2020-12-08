@@ -366,7 +366,7 @@
                     response => (this.industryOptions = response.data.list)
                 );
 
-                listByType(13).then(
+                listByType(21).then(
                     response => (this.experienceTimeOptions = response.data.list)
                 );
 
