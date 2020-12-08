@@ -39,7 +39,7 @@ export default {
       //提炼接收到的数据
       let salaryData = [];
       this.items.forEach((el) => {
-        let salary = { name: el.salary.name, value: el.percent };
+        let salary = { name: el.salary, value: el.percent };
         salaryData.push(salary);
       });
       // 基于准备好的dom，初始化echarts实例

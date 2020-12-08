@@ -5,19 +5,28 @@
         <el-input
           style="width: 400px"
           class="p-2"
-          placeholder="帖子ID"
+          placeholder="回复ID"
           v-model="listQuery.id"
           clearable
         >
         </el-input>
-        <el-input
-          style="width: 400px"
+        <el-select
+          style="width: 300px"
           class="p-2"
-          placeholder="标题"
-          v-model="listQuery.title"
-          clearable
+          v-model="listQuery.toNames"
+          multiple
+          filterable
+          allow-create
+          default-first-option
+          placeholder="原评价用户"
         >
-        </el-input>
+          <el-option
+            v-for="item in toNamesOptions"
+            :key="item.value"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
         <el-select
           style="width: 300px"
           class="p-2"
@@ -26,7 +35,7 @@
           filterable
           allow-create
           default-first-option
-          placeholder="发帖人用户名"
+          placeholder="回复用户名"
         >
           <el-option
             v-for="item in fromNamesOptions"
@@ -82,10 +91,10 @@
           clearable
         >
         </el-input>
-        <el-button class="m-2" type="primary" @click="searchPost"
+        <el-button class="m-2" type="primary" @click="searchReplyInScore"
           >搜索</el-button
         >
-        <el-button type="text" @click="emptyPostListQuery"
+        <el-button type="text" @click="emptyCommentQuery"
           >清空搜索条件</el-button
         >
       </div>
@@ -106,35 +115,46 @@
           @click="deleteAllDialogVisible = true"
           >批量删除</el-button
         >
-        <el-button size="medium" type="warning" plain @click="forbiddenAllDialogVisible = true">批量禁言</el-button>
+        <el-button
+          size="medium"
+          type="warning"
+          plain
+          @click="forbiddenAllDialogVisible = true"
+          >批量禁言</el-button
+        >
       </div>
       <div>
         <el-tabs v-model="activeSort" @tab-click="handleClick">
           <el-tab-pane label="时间顺序" name="1"></el-tab-pane>
           <el-tab-pane label="时间倒序" name="2"></el-tab-pane>
-          <el-tab-pane label="只看精品" name="3"></el-tab-pane>
         </el-tabs>
       </div>
     </div>
     <el-table
       ref="multipleTable"
-      :data="postList"
+      :data="commentList"
       tooltip-effect="dark"
       style="width: 100%"
       border
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column prop="id" label="帖子ID" width="120"> </el-table-column>
-      <el-table-column prop="title" label="帖子标题" width="120">
-      </el-table-column>
-      <el-table-column prop="company.name" label="企业" show-overflow-tooltip>
-      </el-table-column>
+      <el-table-column prop="id" label="评论ID" width="120"> </el-table-column>
       <el-table-column
         prop="fromUser.name"
-        label="用户名"
+        label="回复用户"
         show-overflow-tooltip
       >
+      </el-table-column>
+      <el-table-column
+        prop="toUser.name"
+        label="原评价用户"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column prop="content" label="评价详情" width="120">
+      </el-table-column>
+      <el-table-column prop="companyName" label="企业" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="createTime" label="发帖时间" show-overflow-tooltip>
       </el-table-column>
@@ -146,29 +166,11 @@
       >
         <template slot-scope="scope">
           <el-button
-            type="primary"
-            size="mini"
-            @click="handleViewPost(scope.row.companyId, scope.row.id)"
-            icon="el-icon-edit"
-            >查看</el-button
-          >
-          <el-button
             type="danger"
             size="mini"
-            @click="handeDeletePost(scope.row.id, scope.row.title)"
+            @click="handedeletePost(scope.row.id, scope.row.fromUser.name)"
             icon="el-icon-edit"
             >删除</el-button
-          >
-          <el-button
-            type="success"
-            size="mini"
-            confirmButtonText="删除"
-            icon="el-icon-delete "
-            slot="reference"
-            @click="
-              handleManageComment(scope.row.id)
-            "
-            >评论管理</el-button
           >
           <el-button
             v-if="scope.row.forbidden == 0"
@@ -196,29 +198,12 @@
             "
             >取消禁言</el-button
           >
-          <el-button
-            v-if="scope.row.recommend == 0"
-            type="danger"
-            size="mini"
-            icon="el-icon-star-off"
-            @click="handleSetRecommend(scope.row.id, 1)"
-            >设为精品</el-button
-          >
-          <el-button
-            v-else
-            type="danger"
-            size="mini"
-            icon="el-icon-star-on"
-            @click="handleSetRecommend(scope.row.id, 0)"
-            >取消精品</el-button
-          >
         </template>
       </el-table-column>
     </el-table>
+    <!-- delete -->
     <el-dialog :visible.sync="deleteDialogVisible" width="30%">
-      <div>
-        您确定要删除帖子"{{ deletedTitle }}"吗？（帖子内的评论也将被删除）
-      </div>
+      <div>您确定要删除"{{ deletedTitle }}"的回复吗？</div>
       <el-input
         v-model="deleteForm.content"
         placeholder="请输入删帖理由"
@@ -233,11 +218,7 @@
       </span>
     </el-dialog>
     <el-dialog :visible.sync="deleteAllDialogVisible" width="30%">
-      <div>
-        您确定要删除{{
-          multipleSelection.length
-        }}个帖子吗？（帖子内的评论也将被删除）
-      </div>
+      <div>您确定要删除{{ multipleSelection.length }}个评论吗？</div>
       <el-input
         v-model="deleteForm.content"
         placeholder="请输入删帖理由"
@@ -255,16 +236,16 @@
     <el-dialog :visible.sync="forbiddenDialogVisible" width="30%">
       <div class="mb-2">您将对 {{ forbiddenName }} 进行禁言</div>
       <div class="d-flex justify-content-between align-items-center mb-2">
-      <el-select v-model="forbiddenForm.daysId" placeholder="请选择禁言天数">
-        <el-option
-          v-for="item in forbiddenDaysOptions"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        >
-        </el-option>
-      </el-select>
-      <el-checkbox v-model="forbiddenForm.notice">通知用户</el-checkbox>
+        <el-select v-model="forbiddenForm.daysId" placeholder="请选择禁言天数">
+          <el-option
+            v-for="item in forbiddenDaysOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+        <el-checkbox v-model="forbiddenForm.notice">通知用户</el-checkbox>
       </div>
       <el-input
         v-model="forbiddenForm.content"
@@ -300,18 +281,20 @@
     </el-dialog>
     <!-- forbidden all -->
     <el-dialog :visible.sync="forbiddenAllDialogVisible" width="30%">
-      <div class="mb-2">您将禁言已选的 {{ multipleSelection.length }} 名用户</div>
+      <div class="mb-2">
+        您将禁言已选的 {{ multipleSelection.length }} 名用户
+      </div>
       <div class="d-flex justify-content-between align-items-center mb-2">
-      <el-select v-model="forbiddenForm.daysId" placeholder="请选择禁言天数">
-        <el-option
-          v-for="item in forbiddenDaysOptions"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        >
-        </el-option>
-      </el-select>
-      <el-checkbox v-model="forbiddenForm.notice">通知用户</el-checkbox>
+        <el-select v-model="forbiddenForm.daysId" placeholder="请选择禁言天数">
+          <el-option
+            v-for="item in forbiddenDaysOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+        <el-checkbox v-model="forbiddenForm.notice">通知用户</el-checkbox>
       </div>
       <el-input
         v-model="forbiddenForm.content"
@@ -343,12 +326,7 @@ import Pagination from "@/components/Pagination";
 import Toast from "@/utils/toast";
 import {
   //post
-  searchPost,
-  getPostList,
-  deletePost,
-  getPostDetail,
-  savePost,
-  deleteAll,
+  searchReplyInScore,
   //forbidden
   forbiddenUser,
   unforbiddenUser,
@@ -356,21 +334,22 @@ import {
   //comment
   getCommentList,
   deleteComment,
+  deleteAllComment,
 } from "@/api/community_api";
 import { listByType } from "@/api/dict_api";
 import { formatListQuery, parseListQuery } from "@/utils/common";
 
 export default {
-  name: "PostListPage",
+  name: "CommentListPage",
   components: { Pagination },
   directives: { waves },
   data() {
     return {
       total: 0,
       listLoading: true,
-      postList: [],
-      activeName: "1",
+      commentList: [],
       fromNamesOptions: [],
+      toNamesOptions: [],
       companyNamesOptions: [],
       deleteDialogVisible: false,
       deleteAllDialogVisible: false,
@@ -403,20 +382,21 @@ export default {
       forbiddenAllDialogVisible: false,
 
       deleteForm: {
-        postId: undefined,
-        postIds: [],
+        commentId: undefined,
+        commentIds: [],
         content: "",
       },
       listQuery: {
         page: 1,
         limit: 20,
-        sort: "+create_time",
+        sort: "-id",
         id: undefined,
-        companyId: undefined,
-        cliqueId: undefined,
-        recommend: undefined,
+        fromId: undefined,
+        toId: undefined,
+        ownerId: undefined,
         title: "",
         fromNames: [],
+        toNames: [],
         companyNames: [],
         beginTime: undefined,
         endTime: undefined,
@@ -455,7 +435,7 @@ export default {
   },
   watch: {
     $route() {
-      this.searchPost();
+      this.searchReplyInScore();
     },
   },
   methods: {
@@ -471,24 +451,32 @@ export default {
       if (query.limit) {
         this.listQuery.limit = parseInt(query.limit);
       }
-      listByType(20).then(response => (this.forbiddenDaysOptions = response.data.list));
-      searchPost(this.listQuery).then((response) => {
+      listByType(20).then(
+        (response) => (this.forbiddenDaysOptions = response.data.list)
+      );
+      searchReplyInScore(this.listQuery).then((response) => {
         parseListQuery(this.$route.query, this.listQuery);
-        this.postPage = response.data;
+        this.commentPage = response.data;
         const { total, list } = response.data;
-        this.postList = list;
+        this.commentList = list;
         this.total = total;
-        this.listLoading = false;
+        this.handleRouteList();
         this.getFromNamesFilterOptions();
         this.getCompanyNameFilterOptions();
+        this.getToNamesFilterOptions();
+        this.listLoading = false;
       });
     },
-    searchPost() {
-      searchPost(this.listQuery).then((response) => {
-        this.postPage = response.data;
+    searchReplyInScore() {
+      searchReplyInScore(this.listQuery).then((response) => {
+        this.commentPage = response.data;
         const { total, list } = response.data;
-        this.postList = list;
+        this.commentList = list;
         this.total = total;
+
+        this.getFromNamesFilterOptions();
+        this.getCompanyNameFilterOptions();
+        this.getToNamesFilterOptions();
         this.listLoading = false;
       });
     },
@@ -499,8 +487,8 @@ export default {
       this.fromNamesOptions = [];
       let tempFromNameSet = new Set();
       let nameSet = new Set();
-      for (let i = 0; i < this.postList.length; i++) {
-        let name = this.postList[i].fromUser.name;
+      for (let i = 0; i < this.commentList.length; i++) {
+        let name = this.commentList[i].fromUser.name;
         if (name.length > 0 && !nameSet.has(name)) {
           tempFromNameSet.add({ value: name });
           nameSet.add(name);
@@ -508,13 +496,26 @@ export default {
       }
       this.fromNamesOptions = Array.from(tempFromNameSet);
     },
+    getToNamesFilterOptions() {
+      this.toNamesOptions = [];
+      let tempFromNameSet = new Set();
+      let nameSet = new Set();
+      for (let i = 0; i < this.commentList.length; i++) {
+        let name = this.commentList[i].toUser.name;
+        if (name.length > 0 && !nameSet.has(name)) {
+          tempFromNameSet.add({ value: name });
+          nameSet.add(name);
+        }
+      }
+      this.toNamesOptions = Array.from(tempFromNameSet);
+    },
     getCompanyNameFilterOptions() {
       this.companyNamesOptions = [];
       let tempCompNameSet = new Set();
       let compNameSet = new Set();
 
-      for (let i = 0; i < this.postList.length; i++) {
-        let companyName = this.postList[i].company.name;
+      for (let i = 0; i < this.commentList.length; i++) {
+        let companyName = this.commentList[i].companyName;
 
         if (!compNameSet.has(companyName)) {
           tempCompNameSet.add({ value: companyName });
@@ -523,30 +524,28 @@ export default {
       }
       this.companyNamesOptions = Array.from(tempCompNameSet);
     },
-    handeDeletePost(id, title) {
+    handedeletePost(id, name) {
       this.deleteDialogVisible = true;
-      this.deleteForm.postId = id;
-      this.deletedTitle = title;
+      this.deleteForm.commentId = id;
+      this.deletedTitle = name;
     },
-    emptyPostListQuery() {
+    emptyCommentQuery() {
       this.listQuery.id = undefined;
       this.listQuery.title = "";
       this.listQuery.fromNames = [];
+      this.listQuery.toNames = [];
       this.listQuery.companyNames = [];
+      this.listQuery.beginTime = undefined;
+      this.listQuery.endTime = undefined;
+      this.listQuery.keyword = "";
       this.listQuery.companyId = undefined;
-      this.searchPost();
+      this.searchReplyInScore();
     },
     handleRouteList() {
       this.$router.push({
         path: this.$route.path,
         query: formatListQuery(this.listQuery),
       });
-    },
-    handleViewPost(companyId, postId) {
-      let url =
-        process.env.VUE_APP_WEB_HOST +
-        `/company/${companyId}/community/postdetail?postId=${postId}`;
-      window.open(url);
     },
     forbiddenUser() {
       this.forbiddenForm.notice = Number(this.forbiddenForm.notice);
@@ -591,11 +590,11 @@ export default {
       });
     },
     deletePost() {
-      deletePost(this.deleteForm).then(() => {
-        Toast.success("成功删除该帖子");
+      deleteComment(this.deleteForm).then(() => {
+        Toast.success("成功删除");
         this.deletedTitle = "";
-        this.deleteForm.postId = undefined;
-        this.deleteForm.postIds = [];
+        this.deleteForm.commentId = undefined;
+        this.deleteForm.commentIds = [];
         this.deleteForm.content = "";
         this.initData();
       });
@@ -603,28 +602,15 @@ export default {
     deleteAll() {
       for (let i = 0; i < this.multipleSelection.length; i++) {
         let id = this.multipleSelection[i].id;
-        this.deleteForm.postIds.push(id);
+        this.deleteForm.commentIds.push(id);
       }
-      deleteAll(this.deleteForm).then(() => {
-        Toast.success("成功批量删除帖子");
+      deleteAllComment(this.deleteForm).then(() => {
+        Toast.success("成功批量删除");
         this.deletedTitle = "";
-        this.deleteForm.postId = undefined;
-        this.deleteForm.postIds = [];
+        this.deleteForm.commentId = undefined;
+        this.deleteForm.commentIds = [];
         this.deleteForm.content = "";
         this.initData();
-      });
-    },
-    handleManageComment(id) {
-      this.$router.push({ path: "/wiki/community-post/comment/", query: { ownerId: id } });
-    },
-    handleSetRecommend(id, recommend) {
-      let data = {
-        id: id,
-        recommend: recommend,
-      };
-      savePost(data).then(() => {
-        Toast.success("成功修改精品属性");
-        this.searchPost();
       });
     },
     handleClick(tab, event) {
@@ -635,11 +621,8 @@ export default {
       } else if (status == 2) {
         this.listQuery.sort = "-create_time";
         this.listQuery.recommend = undefined;
-      } else {
-        this.listQuery.recommend = 1;
-        this.listQuery.sort = "+create_time";
       }
-      this.searchPost();
+      this.searchReplyInScore();
     },
   },
 };

@@ -27,9 +27,6 @@ public class CompanySalaryService extends BaseService{
 	@Autowired
 	private JobService jobService;
 
-	@Autowired
-	private DictService dictService;
-
 	public CompanySalary save(CompanySalaryForm companySalaryForm){
 		Integer id = companySalaryForm.getId();
 		CompanySalary companySalary = new CompanySalary();
@@ -57,10 +54,6 @@ public class CompanySalaryService extends BaseService{
 		if(companySalary.getJobId() != null){
 			JobVo job = jobService.getJobInfo(companySalary.getJobId(),false);
 			companySalaryVo.setJob(job);
-		}
-		if(companySalary.getSalaryId() != null){
-			DictVo salary = dictService.getById(companySalary.getSalaryId());
-			companySalaryVo.setSalary(salary);
 		}
 		return companySalaryVo;
 	}

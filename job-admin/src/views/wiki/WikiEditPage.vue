@@ -595,11 +595,16 @@
           style="width: 100%"
           max-height="350"
         >
-          <el-table-column prop="salary.name" label="薪资范围">
-          </el-table-column>
+          <el-table-column prop="salary" label="薪资范围"> </el-table-column>
           <el-table-column prop="percent" label="比例"> </el-table-column>
           <el-table-column label="操作" width="160">
             <template slot-scope="scope">
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleSaveCompanySalary(scope.row.id, scope.row.salary, scope.row.percent)"
+                >编辑
+              </el-button>
               <el-button
                 type="danger"
                 size="mini"
@@ -631,16 +636,19 @@
             ref="salaryForm"
             :rules="salaryFormRules"
           >
-            <el-form-item label="薪资范围">
+            <el-form-item label="薪资范围（可自行输入）">
               <el-select
-                v-model="salaryForm.salaryId"
+                v-model="salaryForm.salary"
                 placeholder="请选择薪资范围"
+                filterable
+                allow-create
+                default-first-option
               >
                 <el-option
                   v-for="item in salaryOptions"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id"
+                  :value="item.name"
                 >
                 </el-option>
               </el-select>
@@ -1136,14 +1144,15 @@ export default {
       showSalaryDialog: false,
       salaryOptions: [],
       salaryForm: {
+        id: undefined,
         percent: undefined,
-        salaryId: undefined,
+        salary: "",
       },
       salaryFormRules: {
         percent: [
           { required: true, message: "请填写所占比例", trigger: "blur" },
         ],
-        salaryId: [
+        salary: [
           { required: true, message: "请选择薪资范围", trigger: "blur" },
         ],
       },
@@ -1922,6 +1931,13 @@ export default {
         });
       }
     },
+    //salary methods
+    handleSaveCompanySalary(id, salary, percent){
+      this.showSalaryDialog = true;
+      this.salaryForm.salary = salary;
+      this.salaryForm.percent = percent;
+      this.salaryForm.id = id;
+    },
     saveCompanySalary() {
       this.$refs["salaryForm"].validate((valid) => {
         if (valid) {
@@ -1929,7 +1945,8 @@ export default {
             Toast.success("薪资待遇上传成功");
             this.initData();
             this.salaryForm.percent = undefined;
-            this.salaryForm.salaryId = undefined;
+            this.salaryForm.salary = "";
+            this.salaryForm.id = undefined
           });
         }
       });

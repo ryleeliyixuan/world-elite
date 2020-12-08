@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function searchActivityTitle(data) {
+    return request({
+        url: '/activity/search-activity-title',
+        method: 'get',
+        params: data
+    })
+}
+
 export function getActivityList(data) {
     return request({
         url: '/activity/list',

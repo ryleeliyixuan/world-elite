@@ -53,7 +53,11 @@
         <div class="experience-container">
             <el-image :src="require('@/assets/mock/icon8.png')" class="brief-icon1" fit="fill"></el-image>
             <div class="experience-title">从业经历：</div>
-            <div class="experience-content">{{interviewer.experience}}</div>
+            <div class="experience-content-container">
+                <div class="experience-content" v-for="(item,index) in interviewer.experience">{{(index+1)+'.'+item}}</div>
+            </div>
+
+
         </div>
         <div class="user-info">和TA预约</div>
 
@@ -315,6 +319,8 @@
             .experience-content {
                 font-size: 18px;
                 color: #333333;
+                display: block;
+                margin-bottom: 7px;
             }
 
             .experience-title {

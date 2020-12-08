@@ -1,7 +1,6 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.CompanySalary;
-
 import java.util.List;
 
 public interface CompanySalaryMapper {

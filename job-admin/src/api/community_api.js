@@ -1,5 +1,62 @@
 import request from '@/utils/request'
 
+
+export function searchCommentInPost(data) {
+  return request({
+    url: '/company-comment/search-in-post',
+    method: 'post',
+    data
+  })
+}
+
+export function searchPost(data) {
+  return request({
+    url: '/company-post/search',
+    method: 'post',
+    data
+  })
+}
+
+export function searchScore(data) {
+  return request({
+    url: '/company-score/search',
+    method: 'post',
+    data
+  })
+}
+
+export function searchReplyInScore(data) {
+  return request({
+    url: '/company-comment/search-in-score',
+    method: 'post',
+    data
+  })
+}
+
+export function forbiddenUser(data) {
+  return request({
+    url: '/company-forbidden/forbidden',
+    method: 'post',
+    data
+  })
+}
+
+export function unforbiddenUser(data) {
+  return request({
+    url: '/company-forbidden/un-forbidden',
+    method: 'post',
+    data
+  })
+}
+
+export function forbiddenAllUser(data) {
+  return request({
+    url: '/company-forbidden/forbidden-all',
+    method: 'post',
+    data
+  })
+}
+
 //post
 export function savePost(data) {
   return request({
@@ -9,11 +66,19 @@ export function savePost(data) {
   })
 }
 
-export function deletePost(postId) {
+export function deletePost(data) {
   return request({
     url: '/company-post/delete',
     method: 'post',
-    params: { postId: postId }
+    data
+  })
+}
+
+export function deleteAll(data) {
+  return request({
+    url: '/company-post/delete-all',
+    method: 'post',
+    data
   })
 }
 
@@ -66,11 +131,19 @@ export function saveScore(data) {
   })
 }
 
-export function deleteScore(scoreId) {
+export function deleteScore(data) {
   return request({
     url: '/company-score/delete',
     method: 'post',
-    params: { scoreId: scoreId }
+    data
+  })
+}
+
+export function deleteAllScore(data) {
+  return request({
+    url: '/company-score/delete-all',
+    method: 'post',
+    data
   })
 }
 
@@ -123,11 +196,19 @@ export function getCommentList(data) {
   })
 }
 
-export function deleteComment(commentId) {
+export function deleteComment(data) {
   return request({
     url: '/company-comment/delete',
     method: 'post',
-    params: { commentId: commentId }
+    data
+  })
+}
+
+export function deleteAllComment(data) {
+  return request({
+    url: '/company-comment/delete-all',
+    method: 'post',
+    data
   })
 }
 

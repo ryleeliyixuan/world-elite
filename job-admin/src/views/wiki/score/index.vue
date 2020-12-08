@@ -1,13 +1,13 @@
 <template>
-  <div class="community-post-container">
+  <div class="community-score-container">
     <el-menu
       class="mt-2 mb-4"
       :default-active="tabIndex"
       mode="horizontal"
       @select="handleSelectTab"
     >
-      <el-menu-item index="post">帖子</el-menu-item>
-      <el-menu-item index="comment">评论</el-menu-item>
+      <el-menu-item index="score">评价</el-menu-item>
+      <el-menu-item index="reply">回复</el-menu-item>
     </el-menu>
     <router-view></router-view>
   </div>
@@ -17,11 +17,11 @@
 import waves from "@/directive/waves"; // waves directive
 
 export default {
-  name: "CommunityPostIndexPage",
+  name: "CommunityScoreIndexPage",
   directives: { waves },
   data() {
     return {
-      tabIndex: "post",
+      tabIndex: "score",
     };
   },
   created() {
@@ -38,7 +38,7 @@ export default {
       }
     },
     handleSelectTab(tabIndex) {
-      const urlRootPath = `/wiki/community-post/`;
+      const urlRootPath = `/wiki/community-score/`;
       this.$router.push({
         path: urlRootPath + tabIndex,
       });
@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.community-post-container {
+.community-score-container {
   width: 100%;
 }
 </style>

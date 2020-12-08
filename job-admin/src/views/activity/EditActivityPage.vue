@@ -17,8 +17,8 @@
           :before-upload="beforeUpload"
         >
           <el-image
-            v-if="activityForm.thumbnail && activityForm.thumbnail !== ''"
-            :src="activityForm.thumbnail"
+            v-if="thumbnail || activityForm.thumbnail"
+            :src="thumbnail || activityForm.thumbnail"
             v-loading="uploadPicOptions.loading"
             class="thumbnail"
           />
@@ -92,6 +92,7 @@ export default {
   },
   data() {
     return {
+      thumbnail: undefined,
       activityForm: {
         id: undefined,
         title: undefined,
@@ -199,10 +200,12 @@ export default {
         getUploadPicToken(file.name)
           .then(response => {
             const { data } = response;
+            console.log(data)
             this.uploadPicOptions.action = data.host;
             this.uploadPicOptions.params = data;
             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
-            this.activityForm.thumbnail = URL.createObjectURL(file);
+            this.activityForm.thumbnail = data.host + "/" + data.key;
+            this.thumbnail = URL.createObjectURL(file);
             resolve(data);
           })
           .catch(error => {

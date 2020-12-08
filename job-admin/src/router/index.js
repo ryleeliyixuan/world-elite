@@ -96,17 +96,25 @@ export const constantRoutes = [
             component: () => import('@/views/wiki/post/commentListPage'),
             meta: { title: '评论列表' },
           },
-          {
-            path: 'report',
-            component: () => import('@/views/wiki/post/reportListPage'),
-            meta: { title: '举报列表' },
-          },
         ]
       },
       {
         path: 'community-score',
-        component: () => import('@/views/wiki/CommunityScorePage'),
+        component: () => import('@/views/wiki/score/index'),
+        redirect: '/wiki/community-score/score',
         meta: { title: '评分圈' },
+        children: [
+          {
+            path: 'score',
+            component: () => import('@/views/wiki/score/scoreListPage'),
+            meta: { title: '评分列表' },
+          },
+          {
+            path: 'reply',
+            component: () => import('@/views/wiki/score/replyListPage'),
+            meta: { title: '回复列表' },
+          },
+        ]
       },
     ]
   },
@@ -196,6 +204,29 @@ export const constantRoutes = [
       meta: { title: '活动编辑' },
       hidden: true
     }]
+  },
+  {
+    path: '/mock',
+    component: Layout,
+    redirect: '/mock/interviewer',
+    meta: { title: 'MOCK管理', icon: 'mock' },
+    children: [
+      {
+      path: 'interviewer',
+      component: () => import('@/views/mock/InterviewerList'),
+      meta: { title: '面试官列表' }
+      },
+      {
+        path: 'records',
+        component: () => import('@/views/mock/InterviewRecords'),
+        meta: { title: '面试记录列表' }
+      },
+      {
+        path: 'registerInterviewer',
+        hidden: true,
+        component: () => import('@/views/mock/RegisterInterviewer'),
+        meta: { title: '创建面试官' },
+      }]
   },
   {
     path: '/dict',

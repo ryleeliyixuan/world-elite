@@ -32,7 +32,11 @@
                   size="small"
                 ></el-avatar>
                 <div style="font-weight: bold; font-size: 14px">
-                  {{ score.fromUser.name }}
+                  {{
+                    score.fromUser.name && score.fromUser.name.length > 0
+                      ? score.fromUser.name
+                      : "新注册用户"
+                  }}
                 </div>
                 <div
                   style="
@@ -118,6 +122,10 @@
               </div>
               <div
                 class="community-score-comment-list"
+                v-loading="loading"
+                element-loading-text="拼命加载评论中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"
                 v-if="
                   scoreCommentboxOpen &&
                   scoreItemOpened.id == score.id &&
@@ -150,7 +158,12 @@
                               font-weight: bold;
                               font-size: 10px;
                             "
-                            >{{ comment.fromUser.name }}</span
+                            >{{
+                              comment.fromUser.name &&
+                              comment.fromUser.name.length > 0
+                                ? comment.fromUser.name
+                                : "新注册用户"
+                            }}</span
                           >
                           <span style="color: grey; font-size: 8px">{{
                             comment.createTime
@@ -225,7 +238,7 @@
                               v-for="reply in replyList"
                               :key="reply.id"
                             >
-                              <div v-if="reply.ownerId == comment.id">
+                              <div v-if="reply.ownerId === comment.id">
                                 <el-card
                                   :body-style="{ padding: '12px' }"
                                   shadow="never"
@@ -573,6 +586,8 @@ export default {
       //COMMUNITY ATTRIBUTES
       companyId: undefined,
 
+      loading: true,
+
       //COMMUNITY COMMENT AND REPLY
       // commentPage: { list: [] },
       replyList: [],
@@ -669,53 +684,40 @@ export default {
         this.getCommentList();
       });
     },
-    getCommentList() {
+    getCommentList(id) { 
+      this.loading = true;
       let data = {
         page: 1,
         limit: 10,
         sort: "-id",
         fromId: undefined,
         toId: undefined,
-        ownerId: undefined,
+        ownerId: id,
       };
       getCommentList(data).then((response) => {
-        let temp_list = response.data.list;
-        let actual_list = [];
-        let reply_list = [];
-        let comment_id_list = [];
-        let score_comment_list = [];
-        let score_reply_list = [];
-
-        for (let i = 0; i < temp_list.length; i++) {
-          let comment = temp_list[i];
-          comment_id_list.push(comment.id);
-          //评分的评论
-          if (
-            comment.type === 2 &&
-            this.scorePostId.indexOf(comment.ownerId) != -1
-          ) {
-            score_comment_list.push(comment);
-          }
-        }
-
-        //评论的评论 二级评论
-        for (let i = 0; i < temp_list.length; i++) {
-          let comment = temp_list[i];
-          if (
-            comment.type === 3 &&
-            comment_id_list.indexOf(comment.ownerId) != -1
-          ) {
-            reply_list.push(comment);
-          }
-        }
-
-        this.replyList = reply_list;
-        this.scoreCommentList = score_comment_list;
+        this.scoreCommentList = response.data.list;
+        this.getReplyList();
       });
-      this.$emit("complete");
+      this.loading = false;
+    },
+    getReplyList() {
+      this.replyList = [];
+      for (let i = 0; i < this.scoreCommentList.length; i++) {
+        let id = this.scoreCommentList[i].id;
+        let data = { ownerId: id };
+        getCommentList(data).then((response) => {
+          let temp_list = response.data.list;
+          for (let i = 0; i < temp_list.length; i++) {
+            this.replyList.push(temp_list[i]);
+          }
+        });
+      }
     },
     deleteComment(id, type) {
-      deleteComment(id).then(() => {
+      let data = {
+        commentId: id,
+      };
+      deleteComment(data).then(() => {
         Toast.success("成功删除评论");
         this.getCommentList();
         if (type === 2) {
@@ -801,7 +803,8 @@ export default {
       });
     },
     deleteScore(id) {
-      deleteScore(id).then(() => {
+      let data = { scoreId: id };
+      deleteScore(data).then(() => {
         Toast.success("成功删除评论");
         this.hasMyScore = false;
         this.myScoreId = undefined;
@@ -857,7 +860,7 @@ export default {
       this.scoreItemOpened.id = id;
       this.scoreItemOpened.likes = likes;
       this.scoreItemOpened.comments = comments;
-      this.getCommentList();
+      this.getCommentList(id);
     },
     onLoginClick() {
       this.$router.push("/login");

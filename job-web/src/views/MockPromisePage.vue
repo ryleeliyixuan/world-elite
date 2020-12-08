@@ -319,6 +319,7 @@
 
             // 点击事件，显示对话框，进行预约
             onEventClick(info) {
+                console.log(info);
                 this.interviewerTimeId = info.event.extendedProps.interviewerTimeId;
                 this.date = new Date(info.event.start);
                 this.start = this.getHourMinutes(info.event.start);
@@ -339,6 +340,7 @@
                     data.data.forEach(item => {
                         if (item.reservationList.length === 0) { // 没有被任何人预约，即可预约事件
                             events.push({
+                                interviewerTimeId: item.id,
                                 interviewerId: item.interviewerId,
                                 start: parseInt(item.beginTime),
                                 end: parseInt(item.endTime),
@@ -349,6 +351,7 @@
 
                             let eventList = [ // 保留被人预约剩余的可预约事件，默认为我的总预约时间段
                                 {
+                                    interviewerTimeId: item.id,
                                     start: item.beginTime,
                                     end: item.endTime,
                                     borderColor: '#D3F261', // 块边框颜色
@@ -371,6 +374,8 @@
                                     } else if (event.start !== reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的中间部分
                                         event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
                                         eventList.push({ // 追加可预约时间段，从被预约结束时间，至可预约时间的结束
+                                            interviewerTimeId: item.id,
+                                            interviewerId: item.interviewerId,
                                             start: reservation.endTime,
                                             end: item.endTime,
                                             borderColor: '#D3F261', // 块边框颜色

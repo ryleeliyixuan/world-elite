@@ -9,7 +9,7 @@ public class CompanySalaryVo implements VoConvertable<CompanySalaryVo, CompanySa
     private Integer id; //ID
     private String companyId; //公司ID
     private JobVo job; //岗位
-    private DictVo salary; //薪资范围
+    private String salary; //薪资范围
     private Float percent; //百分比
 
     @Override
@@ -18,6 +18,7 @@ public class CompanySalaryVo implements VoConvertable<CompanySalaryVo, CompanySa
         setId(companySalary.getId());
         setCompanyId(String.valueOf(companySalary.getCompanyId()));
         setPercent(companySalary.getPercent());
+        setSalary(companySalary.getSalary());
         return this;
     }
 }
