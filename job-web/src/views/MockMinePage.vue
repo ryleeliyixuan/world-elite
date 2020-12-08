@@ -66,11 +66,11 @@
                     </div>
                 </div>
             </div>
-
+            <!--           用户身份-->
             <div class="record-container" v-show="identity===1 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="intervieweeRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
-                    <el-table-column prop="directionName" label="面试类别" width="260">
+                    <el-table-column prop="directionName" label="面试类别" width="180">
                         <template slot-scope="scope">
                             <div class="type">
                                 <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
@@ -78,7 +78,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interviewerName" label="面试官" width="190">
+                    <el-table-column prop="interviewerName" label="面试官" width="120">
                         <template slot-scope="scope">
                             <div class="type">
                                 {{scope.row.interviewerName}}
@@ -88,13 +88,20 @@
                     <el-table-column prop="time" label="面试时间" width="280">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.time}}
+                                {{scope.row.beginTime | timestampToDateTime}}
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="time" label="操作" width="110">
+                    <el-table-column prop="status" label="面试状态" width="120">
                         <template slot-scope="scope">
-                            <div class="view" @click="onView(scope.row)">查看评价</div>
+                            <div class="type">
+                                {{statusList[scope.row.status]}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="time" label="操作" width="130">
+                        <template slot-scope="scope">
+                            <div class="view" @click="onView(scope.row)">{{operationList[scope.row.status]}}</div>
                         </template>
                     </el-table-column>
                     <template slot="empty">
@@ -109,6 +116,7 @@
                                :current-page.sync="intervieweePage"
                                @current-change="getInterviewRecord"></el-pagination>
             </div>
+            <!--            面试官身份-->
             <div class="record-container" v-show="identity===2 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="interviewerRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
@@ -130,7 +138,7 @@
                     <el-table-column prop="time" label="面试时间" width="280">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.time}}
+                                {{scope.row.time | timestampToDateTime}}
                             </div>
                         </template>
                     </el-table-column>
@@ -242,7 +250,7 @@
         </el-dialog>
 
         <el-dialog :visible.sync="eventDialogVisible" width="310px" :show-close="false" top="20%">
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail && status==='1'">
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail">
                 <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面视</el-button>
                 <el-button type="info" plain size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
@@ -259,7 +267,7 @@
                 </el-button>
             </div>
 
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="status!=='1'">
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="status!=='1' && identity===2">
                 <div style="font-weight: bold;font-size: 18px">抱歉，您目前无法提供面试预约：</div>
                 <div style="font-weight: bold;font-size: 18px">详情请联系客服：</div>
                 <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
@@ -268,7 +276,31 @@
                            @click="onRequire2">确认
                 </el-button>
             </div>
+        </el-dialog>
 
+        <el-dialog title="提示" :visible.sync="payDialogVisible" width="600px">
+            <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的时间为：</span><span class="dialog-text2">{{orderInfo.beginTime|timestampToMonthDateHoursMinutes}}至{{orderInfo.endTime|timestampToMonthDateHoursMinutes}}</span>
+            </div>
+            <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{orderInfo.directionName}}</span>
+            </div>
+            <div style="width:100%; height:1px; background:#C9DAFB;margin-bottom: 18px;"></div>
+            <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：
+                <span style="color:#3D6FF4;">￥{{orderInfo.amount}}</span>
+                <span style="color:#bdbdbd; font-size: 12px; padding-left: 8px;">请使用微信扫描下方二维码进行支付，10分钟内有效</span>
+            </div>
+
+            <!-- <div class="pay-type" :style="{flexDirection:payType==='WEIXIN_NATIVE'?'row-reverse':'row'}">-->
+            <!--     <el-button v-if="payType!=='WEIXIN_NATIVE'" type="primary" round @click="onWeChat" style="width: 200px;">{{payType?'切换为微信支付':'使用微信支付'}}-->
+            <!--     </el-button>-->
+            <!--     <el-button v-if="payType!=='ALIPAY_NATIVE'" type="primary" round @click="onAliPay" style="width: 200px;">{{payType?'切换为支付宝支付':'使用支付宝支付'}}-->
+            <!--     </el-button>-->
+            <!--     <div v-if="payType" id="qrcode" v-loading="qrcodeLoading" style="width: 200px;"></div>-->
+            <!-- </div>-->
+
+            <div id="qrcode" v-loading="qrcodeLoading" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <el-button type="primary" @click="onPaymentCompleted" round style="width: 100px; margin-left: 20px;" size="small">我已支付</el-button>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -277,6 +309,7 @@
     import FullCalendar from '@fullcalendar/vue'
     import dayGridPlugin from '@fullcalendar/daygrid'
     import interactionPlugin from '@fullcalendar/interaction'
+    import QRCode from "qrcodejs2";
 
     export default {
         name: "MockMinePage",
@@ -358,7 +391,16 @@
                 incomeList: [], // 收益列表
                 incomePage: 1, // 面试官记录页码
                 incomeTotal: 0, // 面试官记录总数
-                status: undefined,//面试官身份状态
+
+                status: undefined, // 面试官身份状态
+                statusList: ['', '待支付', '待面试', '面试中', '已面试', '支付失败', '已退款'],
+                operationList: ['', '去支付', '进入面试间', '', '', '', ''],
+
+                payDialogVisible: false, // 支付对话框
+                payType: undefined, // WEIXIN_NATIVE,  ALIPAY_NATIVE
+                qrCode: undefined, // 二维码对象
+                qrcodeLoading: false, // 二维码加载中
+                orderInfo: {}, // 订单信息
             }
         },
 
@@ -380,7 +422,7 @@
             getInterviewerInfo() {
                 this.$axios.get("/mock/interviewer/my-info").then(data => {
                     this.userIdentity = data.data ? 2 : 1;
-                    this.status = data.data.status;
+                    this.status = data.data && data.data.status;
                 })
             },
 
@@ -457,6 +499,34 @@
             // 查看评价
             onView(item) {
                 console.log(item);
+                if (item.status === 1) { // 去支付
+                    this.orderInfo = item;
+                    this.payDialogVisible = true;
+                    this.qrcodeLoading = true;
+                    this.$axios.get(`/pay/goods/order/${item.orderId}`).then(data => {
+                        if (this.qrCode) {
+                            this.qrCode.makeCode(data.data.qrCodeUrl);
+                        } else {
+                            this.qrCode = new QRCode('qrcode', {
+                                width: 200,             // 宽度
+                                height: 200,            // 高度
+                                text: data.data.qrCodeUrl, // 二维码内容
+                                render: 'canvas',       // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+                                colorDark: "#000000",     //二维码颜色
+                                colorLight: "#ffffff"  //二维码背景色
+                            });
+                        }
+                        this.qrcodeLoading = false;
+                    })
+                } else if (item.status === 2) { // 进入面时间
+                    if (item.endTime < Date.now()) {
+                        this.$message.warning("面试已结束");
+                    } else if (Date.now() < item.beginTime - 15 * 60 * 1000) {
+                        this.$message.warning("开始前15分钟可以进入房间等待");
+                    } else {
+                        this.$router.push(`/webRTC/${item.reservationId}/${item.interviewerId}`);
+                    }
+                }
             },
 
             // 查看收益明细
@@ -500,24 +570,26 @@
 
             // 面试官点击日期，添加可预约时间
             onDateClick(info) {
-                if (this.identity === 2 && this.status === '1') {
-                    if (info.date >= this.getNextDay()) {
-                        this.step = 1;
-                        this.start = '00:00';
-                        this.end = '23:59';
-                        this.date = info.date;
-                        this.dialogVisible = true;
-                    } else if (info.date >= this.getZeroOfToday()) {
-                        this.step = 1;
-                        let date = new Date();
-                        date.setHours(date.getHours() + 1, 0, 0);
-                        this.start = `${this.getDoubleValue(date.getHours())}:${this.getDoubleValue(date.getMinutes())}`;
-                        this.end = '23:59';
-                        this.date = info.date;
-                        this.dialogVisible = true;
+                if (this.identity === 2) { // 选择了面试官
+                    if (this.status === '1') {
+                        if (info.date >= this.getNextDay()) {
+                            this.step = 1;
+                            this.start = '00:00';
+                            this.end = '23:59';
+                            this.date = info.date;
+                            this.dialogVisible = true;
+                        } else if (info.date >= this.getZeroOfToday()) {
+                            this.step = 1;
+                            let date = new Date();
+                            date.setHours(date.getHours() + 1, 0, 0);
+                            this.start = `${this.getDoubleValue(date.getHours())}:${this.getDoubleValue(date.getMinutes())}`;
+                            this.end = '23:59';
+                            this.date = info.date;
+                            this.dialogVisible = true;
+                        }
+                    } else {
+                        this.eventDialogVisible = true;
                     }
-                } else {
-
                 }
             },
 
@@ -650,7 +722,8 @@
                     });
                 })
             },
-            //获取我的面试记录
+
+            // 获取我的面试记录
             getInterviewRecord() {
                 if (this.identity === 2) {
                     this.$axios.get('/mock/interview/records/interviewer', {params: {page: this.interviewerPage, limit: 5}}).then(data => {
@@ -664,7 +737,8 @@
                     })
                 }
             },
-            //获取我的面试记录
+
+            // 获取我的面试记录
             getIncomeRecord() {
                 if (this.identity === 2) {
                     this.$axios.get('/mock/interviewer/income/my', {params: {page: this.incomePage, limit: 5}}).then(data => {
@@ -672,6 +746,21 @@
                         this.incomeTotal = data.data.total;
                     })
                 }
+            },
+
+            // 我已支付
+            onPaymentCompleted() {
+                // 检查支付状态
+                this.$axios(`/pay/order/status/${this.orderInfo.goodsOrderId}`).then(data => {
+                    if (data.data === 1) { // 已付款
+                        this.$message.success("已付款")
+                        this.payDialogVisible = false;
+                    } else if (data.data === 0) {
+                        this.$message.warning("暂未支付")
+                    } else if (data.data === -1) {
+                        this.$message.warning("支付失败")
+                    }
+                })
             },
 
             // 工具方法
