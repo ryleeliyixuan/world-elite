@@ -234,6 +234,7 @@
 
             .main-scrollbar {
                 height: 100%;
+                padding-bottom: 150px;
 
                 /deep/ .el-scrollbar__view {
                     height: 100%;
