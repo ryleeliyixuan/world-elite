@@ -250,7 +250,7 @@
         </el-dialog>
 
         <el-dialog :visible.sync="eventDialogVisible" width="310px" :show-close="false" top="20%">
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail && status==='1'">
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail">
                 <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面视</el-button>
                 <el-button type="info" plain size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
@@ -267,7 +267,7 @@
                 </el-button>
             </div>
 
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="status!=='1'">
+            <div style="display: flex; flex-direction: column; align-items: center;" v-if="status!=='1' && identity===2">
                 <div style="font-weight: bold;font-size: 18px">抱歉，您目前无法提供面试预约：</div>
                 <div style="font-weight: bold;font-size: 18px">详情请联系客服：</div>
                 <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
@@ -503,7 +503,7 @@
                     this.orderInfo = item;
                     this.payDialogVisible = true;
                     this.qrcodeLoading = true;
-                    this.$axios.get(`/pay/goods/order/${item.goodsOrderId}`).then(data => {
+                    this.$axios.get(`/pay/goods/order/${item.orderId}`).then(data => {
                         if (this.qrCode) {
                             this.qrCode.makeCode(data.data.qrCodeUrl);
                         } else {

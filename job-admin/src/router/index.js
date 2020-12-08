@@ -47,6 +47,23 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/stat',
+    component: Layout,
+    redirect: '/stat/user',
+    meta: { title: '数据统计', icon: 'user' },
+    children: [
+      {
+        path: 'foreign',
+        component: () => import('@/views/stat/ForeignStatPage'),
+        meta: { title: '外链统计' }
+      },
+      {
+        path: 'user',
+        component: () => import('@/views/stat/UserStatPage'),
+        meta: { title: '用户统计' }
+      }]
+  },
+  {
     path: '/wiki',
     component: Layout,
     meta: { title: '百科模块', icon: 'company' },
