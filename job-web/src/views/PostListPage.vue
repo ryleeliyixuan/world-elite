@@ -49,12 +49,8 @@
             </el-button>
             <el-link @click="clearOptions" :underline="false" style="color: #b4bbc5;">清空搜索条件</el-link>
         </div>
-      <div class="non-post-tip"
-            v-if="showNoResult">
-        <span>很抱歉，该公司暂无岗位发布哦。</span>
-      </div>
 
-      <div style="display: inline-block;" v-show="!showNoResult">
+      <div style="display: inline-block;">
           <el-tabs v-model="listQuery.recruitId"
                    @tab-click="handleFilter"
                    style="padding-left: 25px;">
@@ -65,6 +61,11 @@
               <el-tab-pane :label="'热招 ' + this.recruitCountResult.hot" name="171"></el-tab-pane>
               <el-tab-pane :label="'内推 ' + this.recruitCountResult.inner" name="172"></el-tab-pane>
           </el-tabs>
+      </div>
+
+      <div class="non-post-tip"
+           v-if="showNoResult">
+        <span>很抱歉，该公司暂无岗位发布哦。</span>
       </div>
 
       <div class="sort-options" v-show="!showNoResult">
@@ -131,7 +132,6 @@
         },
         data() {
             return {
-                //companyId: "1253552062077882368", // 1254648303499104256
                 listQuery: {
                     companyId: undefined,
                     keyword: "",
@@ -204,8 +204,6 @@
                 if (this.isHomeListPage()) {
                     this.$store.commit("setting/SET_KEYWORD", this.queryStr);
                 } else {
-                    console.log("asdsadas: " + this.listQuery.companyId)
-                    console.log("dasdasda: " + this.queryStr);
                     this.listQuery.keyword = this.queryStr;
                     this.$router.push({
                         path: "/post-list/" + this.listQuery.companyId,
@@ -223,17 +221,8 @@
                 searchJob(this.listQuery).then(response => {
                     if (!response.data.list || response.data.list.length === 0) {
                         this.showNoResult = true;
-                        // this.total = 20;
-                        // getRecommendList({
-                        //     objectType: 1, // 职位
-                        //     page: 1,
-                        //     limit: 20,
-                        //     sort: "+position"
-                        // }).then(response => {
-                        //     this.pageResult.list = response.data.list.map(item => item.object);
-                        //     this.total = response.data.total;
-                        //     this.$emit("complete");
-                        // });
+                        this.pageResult = {};
+                        this.total = 0;
                     } else {
                         this.pageResult = response.data;
                         this.total = this.pageResult.total;
@@ -261,7 +250,6 @@
                                                   + this.recruitCountResult.urgency
                                                   + this.recruitCountResult.hot;
                   }
-                  // console.log("getJobRecruitCount this.recruitCountResult: " + JSON.stringify(this.recruitCountResult));
               });
 
             },
