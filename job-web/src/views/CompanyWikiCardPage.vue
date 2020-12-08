@@ -206,7 +206,7 @@
         min-height: calc(100vh - 477px);
 
         .left-container {
-            position: absolute;
+            position: fixed;
             top: 200px;
             left: 30px;
             height: calc(100% - 238px);
