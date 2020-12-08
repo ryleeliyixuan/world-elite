@@ -11,7 +11,7 @@ public class CompanyRecruitVo implements VoConvertable<CompanyRecruitVo, Company
 
     private Integer id; //ID
     private String companyId; //公司ID
-    @JSONField(format = "yyyy-MM-dd hh:mm:ss")
+    @JSONField(format = "yyyy-MM-dd")
     private Date time; //时间
     private String event; //进度事件
 
