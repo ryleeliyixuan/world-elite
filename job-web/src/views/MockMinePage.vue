@@ -70,7 +70,7 @@
             <div class="record-container" v-show="identity===1 && menu===2">
                 <div class="title">面试记录</div>
                 <el-table class="table" :data="intervieweeRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
-                    <el-table-column prop="directionName" label="面试类别" width="260">
+                    <el-table-column prop="directionName" label="面试类别" width="180">
                         <template slot-scope="scope">
                             <div class="type">
                                 <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
@@ -78,7 +78,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interviewerName" label="面试官" width="190">
+                    <el-table-column prop="interviewerName" label="面试官" width="120">
                         <template slot-scope="scope">
                             <div class="type">
                                 {{scope.row.interviewerName}}
@@ -92,14 +92,14 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="status" label="面试状态" width="280">
+                    <el-table-column prop="status" label="面试状态" width="120">
                         <template slot-scope="scope">
                             <div class="type">
                                 {{statusList[scope.row.status]}}
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="time" label="操作" width="110">
+                    <el-table-column prop="time" label="操作" width="130">
                         <template slot-scope="scope">
                             <div class="view" @click="onView(scope.row)">{{operationList[scope.row.status]}}</div>
                         </template>
