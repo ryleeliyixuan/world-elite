@@ -8,8 +8,8 @@
       <FooterView @complete="onComplete" v-if="show" />
     </transition>
     <el-backtop></el-backtop>
-    <svg-icon @click="handlerChat" icon-class="chat3" class="chat" />
-    <div class="red-dot" v-if="showRedDot" />
+<!--    <svg-icon @click="handlerChat" icon-class="chat3" class="chat" />-->
+<!--    <div class="red-dot" v-if="showRedDot" />-->
   </div>
 </template>
 

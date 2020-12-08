@@ -751,7 +751,7 @@
             // 我已支付
             onPaymentCompleted() {
                 // 检查支付状态
-                this.$axios(`/pay/order/status/${this.orderInfo.goodsOrderId}`).then(data => {
+                this.$axios(`/pay/order/status/${this.orderInfo.orderId}`).then(data => {
                     if (data.data === 1) { // 已付款
                         this.$message.success("已付款")
                         this.payDialogVisible = false;

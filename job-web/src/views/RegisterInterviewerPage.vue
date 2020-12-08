@@ -479,8 +479,9 @@
             next2() {
                 this.$refs["formOne"].validate(valid => {
                     if (valid) {
-                        this.formOne.experience = this.formOne.experience.map(item => item.experienceItem)
-                        addInterview(this.formOne).then(() => {
+                        let formOne = {...this.formOne};
+                        formOne.experience = formOne.experience.map(item => item.experienceItem)
+                        addInterview(formOne).then(() => {
                             Toast.success("提交成功");
                         })
                         this.active = 2;
@@ -500,26 +501,26 @@
 
             next3() {
                 let p = [];
-                if(this.checked1) {
+                if (this.checked1) {
                     p.push(this.validate('formTwo'));
                 }
-                if(this.checked2) {
+                if (this.checked2) {
                     p.push(this.validate('formTwo2'));
                 }
-                if(this.checked3) {
+                if (this.checked3) {
                     p.push(this.validate('formTwo3'));
                 }
                 Promise.all(p).then(result => {
                     let valid = result.find(item => !item);
-                    if(valid === undefined) {
+                    if (valid === undefined) {
                         let request = [];
-                        if(this.checked1) {
+                        if (this.checked1) {
                             request.push(addInterviewDirection(this.formTwo));
                         }
-                        if(this.checked2) {
+                        if (this.checked2) {
                             request.push(addInterviewDirection(this.formTwo2));
                         }
-                        if(this.checked3) {
+                        if (this.checked3) {
                             request.push(addInterviewDirection(this.formTwo3));
                         }
 
@@ -645,7 +646,8 @@
             font-weight: 500;
             color: #333333;
             line-height: 33px;
-            /deep/ .el-checkbox{
+
+            /deep/ .el-checkbox {
                 margin-right: 107px;
                 transform-origin: left;
                 transform: scale(1.7);
