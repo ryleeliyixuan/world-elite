@@ -503,7 +503,7 @@
                     this.orderInfo = item;
                     this.payDialogVisible = true;
                     this.qrcodeLoading = true;
-                    this.$axios.get(`/pay/goods/order/${item.goodsOrderId}`).then(data => {
+                    this.$axios.get(`/pay/goods/order/${item.orderId}`).then(data => {
                         if (this.qrCode) {
                             this.qrCode.makeCode(data.data.qrCodeUrl);
                         } else {
