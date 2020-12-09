@@ -503,35 +503,40 @@
 
             next3() {
                 let p = [];
-                if (this.checked1) {
-                    p.push(this.validate('formTwo'));
-                }
-                if (this.checked2) {
-                    p.push(this.validate('formTwo2'));
-                }
-                if (this.checked3) {
-                    p.push(this.validate('formTwo3'));
-                }
-                Promise.all(p).then(result => {
-                    let valid = result.find(item => !item);
-                    if (valid === undefined) {
-                        let request = [];
-                        if (this.checked1) {
-                            request.push(addInterviewDirection(this.formTwo));
-                        }
-                        if (this.checked2) {
-                            request.push(addInterviewDirection(this.formTwo2));
-                        }
-                        if (this.checked3) {
-                            request.push(addInterviewDirection(this.formTwo3));
-                        }
-
-                        Promise.all(request).then(() => {
-                            Toast.success("提交成功");
-                            this.active = 3;
-                        })
+                if(!this.checked1 && !this.checked2 && !this.checked3){
+                    Toast.error("请至少选择一项");
+                }else {
+                    if (this.checked1) {
+                        p.push(this.validate('formTwo'));
                     }
-                })
+                    if (this.checked2) {
+                        p.push(this.validate('formTwo2'));
+                    }
+                    if (this.checked3) {
+                        p.push(this.validate('formTwo3'));
+                    }
+                    Promise.all(p).then(result => {
+                        let valid = result.find(item => !item);
+                        if (valid === undefined) {
+                            let request = [];
+                            if (this.checked1) {
+                                request.push(addInterviewDirection(this.formTwo));
+                            }
+                            if (this.checked2) {
+                                request.push(addInterviewDirection(this.formTwo2));
+                            }
+                            if (this.checked3) {
+                                request.push(addInterviewDirection(this.formTwo3));
+                            }
+
+                            Promise.all(request).then(() => {
+                                Toast.success("提交成功");
+                                this.active = 3;
+                            })
+                        }
+                    })
+                }
+
             },
 
             onSubmit() {
