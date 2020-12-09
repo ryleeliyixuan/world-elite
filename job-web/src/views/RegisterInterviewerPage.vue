@@ -75,7 +75,7 @@
                         <div class="textarea-container">
                             <div class="textarea-item" v-for="(item,index) in formOne.experience">
                                 <span class="experience-title">{{index+1}}.</span>
-                                <el-input class="experience" type="textarea" v-model="item.experienceItem "
+                                <el-input class="experience" type="textarea" v-model="item.experienceItem " maxlength="150"
                                           placeholder="字数不超过150字" resize="none" :autosize="{minRows: 2,maxRows: 10}"></el-input>
                             </div>
                             <div class="add-experience-button" @click="addExperience">添加经历</div>
@@ -341,7 +341,7 @@
                 },
                 rules: {
                     nickName: [{required: true, message: '请输入用户昵称', trigger: 'blur'}, {max: 20, message: '昵称不超过20字符'}],
-                    identity: [{validator: identity, trigger: 'blur'}],
+                    identity: [{required: true,validator: identity, trigger: 'blur'}],
                     avatar: [{required: true, message: "请上传头像", trigger: "change"}],
                     industryId: [{required: true, message: "请选择行业", trigger: "change"}],
                     experienceTimeId: [{required: true, message: "请选择从业时间", trigger: "change"}],

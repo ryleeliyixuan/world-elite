@@ -69,7 +69,8 @@
             <!--           用户身份-->
             <div class="record-container" v-show="identity===1 && menu===2">
                 <div class="title">面试记录</div>
-                <el-table class="table" :data="intervieweeRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
+                <el-table class="table" v-if="intervieweeRecordList" :data="intervieweeRecordList" :row-style="{height:'86px'}"
+                          :header-row-style="{height:'86px'}">
                     <el-table-column prop="directionName" label="面试类别" width="180">
                         <template slot-scope="scope">
                             <div class="type">
@@ -119,7 +120,8 @@
             <!--            面试官身份-->
             <div class="record-container" v-show="identity===2 && menu===2">
                 <div class="title">面试记录</div>
-                <el-table class="table" :data="interviewerRecordList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}">
+                <el-table class="table" v-if="interviewerRecordList" :data="interviewerRecordList" :row-style="{height:'86px'}"
+                          :header-row-style="{height:'86px'}">
                     <el-table-column prop="directionName" label="面试类别" width="260">
                         <template slot-scope="scope">
                             <div class="type">
@@ -138,7 +140,7 @@
                     <el-table-column prop="time" label="面试时间" width="280">
                         <template slot-scope="scope">
                             <div class="type">
-                                {{scope.row.time | timestampToDateTime}}
+                                {{scope.row.beginTime | timestampToDateTime}}
                             </div>
                         </template>
                     </el-table-column>
@@ -162,7 +164,8 @@
             </div>
             <div class="record-container" v-show="identity===2 && menu===4">
                 <div class="title" style="margin-bottom: 20px;">我的收益</div>
-                <el-table class="table" :data="incomeList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}" :show-header="false">
+                <el-table class="table" v-if="incomeList" :data="incomeList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}"
+                          :show-header="false">
                     <el-table-column width="120">
                         <template slot-scope="scope">
                             <div class="type">
@@ -196,6 +199,12 @@
                             <div class="detail" @click="onDetail(scope.row)">查看当月明细</div>
                         </template>
                     </el-table-column>
+                    <template slot="empty">
+                        <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
+                            <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+                            <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无收益记录</div>
+                        </div>
+                    </template>
                 </el-table>
                 <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="incomeTotal" :page-size="5"
                                v-if="incomeTotal>0"
@@ -302,6 +311,35 @@
                 <el-button type="primary" @click="onPaymentCompleted" round style="width: 100px; margin-left: 20px;" size="small">我已支付</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="我的收益" :visible.sync="incomeDialogVisible" width="690px">
+            <div class="title"></div>
+            <el-table class="table" v-if="incomeDetailList" :data="incomeDetailList" >
+                <el-table-column width="120" label="面试者" prop="username">
+                </el-table-column>
+                <el-table-column width="200" label="日期">
+                    <template slot-scope="scope">
+                        <div class="type">
+                           {{scope.row.beginTime | timestampToMonthDateHoursMinutes }}
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column width="200" label="面试类型" prop="direction">
+                </el-table-column>
+                <el-table-column  width="130" label="金额" prop="amount">
+                </el-table-column>
+                <template slot="empty">
+                    <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
+                        <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+                        <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无收益记录</div>
+                    </div>
+                </template>
+            </el-table>
+            <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="incomeDetailTotal" :page-size="5"
+                           v-if="incomeDetailTotal>0"
+                           :current-page.sync="incomeDetailPage"
+                           @current-change="getIncomeDetail"></el-pagination>
+        </el-dialog>
     </div>
 </template>
 
@@ -381,26 +419,32 @@
                 userIdentity: 1, // 用户身份   1：面试者    2：面试官
                 identity: 1, // 当前选择的身份  1：面试者    2：面试官
                 menu: 1, // 选中按钮  1：我的日历   2：面试记录
-                intervieweeRecordList: [], // 面试者记录
+                intervieweeRecordList: undefined, // 面试者记录
                 intervieweePage: 1, // 面试者记录页码
                 intervieweeTotal: 0, // 面试者记录总数
-                interviewerRecordList: [], // 面试官记录
+                interviewerRecordList: undefined, // 面试官记录
                 interviewerPage: 1, // 面试官记录页码
                 interviewerTotal: 0, // 面试官记录总数
 
-                incomeList: [], // 收益列表
+                incomeList: undefined, // 收益列表
                 incomePage: 1, // 面试官记录页码
                 incomeTotal: 0, // 面试官记录总数
 
                 status: undefined, // 面试官身份状态
                 statusList: ['', '待支付', '待面试', '面试中', '已面试', '支付失败', '已退款'],
-                operationList: ['', '去支付', '进入面试间', '', '', '', ''],
+                operationList: ['', '去支付', '进入面试间', '进入面试间', '', '', ''],
 
                 payDialogVisible: false, // 支付对话框
                 payType: undefined, // WEIXIN_NATIVE,  ALIPAY_NATIVE
                 qrCode: undefined, // 二维码对象
                 qrcodeLoading: false, // 二维码加载中
                 orderInfo: {}, // 订单信息
+
+                incomeDialogVisible: false, // 收益明细对话框
+                incomeDetailId: undefined, // 查看收益的id
+                incomeDetailList: undefined, // 收益明细记录
+                incomeDetailPage: 1, // 收益明细记录页码
+                incomeDetailTotal: 0, // 收益明细记录总数
             }
         },
 
@@ -496,7 +540,7 @@
                 this.getIncomeRecord();
             },
 
-            // 查看评价
+            // 操作面试记录
             onView(item) {
                 console.log(item);
                 if (item.status === 1) { // 去支付
@@ -518,7 +562,7 @@
                         }
                         this.qrcodeLoading = false;
                     })
-                } else if (item.status === 2) { // 进入面时间
+                } else if (item.status === 2 || item.status===3) { // 进入面时间
                     if (item.endTime < Date.now()) {
                         this.$message.warning("面试已结束");
                     } else if (Date.now() < item.beginTime - 15 * 60 * 1000) {
@@ -531,7 +575,8 @@
 
             // 查看收益明细
             onDetail(item) {
-                console.log(item);
+                this.incomeDetailId = item.id;
+                this.getIncomeDetail();
             },
 
             // 添加可预约时间确认
@@ -709,6 +754,8 @@
                 let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
                 let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
                 this.$axios.get(`/mock/interview/reservation/my/${beginTime}/${endTime}`).then(data => {
+                    console.log(1111)
+                    console.log(data)
                     this.calendarOptions.events = data.data.map(item => {
                         return {
                             id: item.id,
@@ -726,12 +773,12 @@
             // 获取我的面试记录
             getInterviewRecord() {
                 if (this.identity === 2) {
-                    this.$axios.get('/mock/interview/records/interviewer', {params: {page: this.interviewerPage, limit: 5}}).then(data => {
+                    this.$axios.get('/mock/interview/records/interviewer', {params: {page: this.interviewerPage, limit: 5,sort:"-id"}}).then(data => {
                         this.interviewerRecordList = data.data.list;
                         this.interviewerTotal = data.data.total;
                     })
                 } else {
-                    this.$axios.get('/mock/interview/records/user', {params: {page: this.intervieweePage, limit: 5}}).then(data => {
+                    this.$axios.get('/mock/interview/records/user', {params: {page: this.intervieweePage, limit: 5,sort:"-id"}}).then(data => {
                         this.intervieweeRecordList = data.data.list;
                         this.intervieweeTotal = data.data.total;
                     })
@@ -746,6 +793,16 @@
                         this.incomeTotal = data.data.total;
                     })
                 }
+            },
+
+            // 获取收益明细
+            getIncomeDetail() {
+                this.incomeDialogVisible = true;
+                this.$axios.get(`/mock/interviewer/income/my-detail/${this.incomeDetailId}`, {params: {page: this.incomeDetailPage, limit: 5}}).then(data => {
+                    this.incomeDetailTotal = data.data.total;
+                    this.incomeDetailList = data.data.list;
+                    console.log(data);
+                })
             },
 
             // 我已支付
@@ -1226,6 +1283,67 @@
                 height: 200px;
                 margin: 0 auto;
                 display: block;
+            }
+
+        }
+        .pagination {
+            align-self: center;
+            margin-top: 20px;
+            align-items: center;
+            justify-content:center;
+
+            ::v-deep .number, ::v-deep .more {
+                width: 37px;
+                height: 37px;
+                border-radius: 50%;
+                background: #EEEEEE;
+                box-shadow: 0 5px 11px 0 #CCCCCC;
+                line-height: 37px;
+                text-align: center;
+                margin: 0 6px;
+                color: #999999;
+
+                &.active {
+                    color: white;
+                    background: #4C90FC;
+                    box-shadow: 0 5px 11px 0 rgba(30, 150, 252, 0.5);
+                }
+            }
+
+            ::v-deep .btn-prev, ::v-deep .btn-next {
+                width: 37px;
+                height: 37px;
+                border-radius: 50%;
+                background: #EEEEEE;
+                box-shadow: 0 5px 11px 0 #CCCCCC;
+                line-height: 37px;
+                text-align: center;
+                margin: 0 6px;
+                color: #999999;
+                padding: 0;
+
+                & .el-icon {
+                    font-size: 18px;
+                }
+            }
+
+            ::v-deep .el-pagination__jump {
+                font-size: 18px;
+                color: #999999;
+                line-height: 25px;
+                height: 37px;
+
+                .el-input {
+                    width: 66px;
+                    height: 37px;
+                    margin: 0 6px;
+
+                    .el-input__inner {
+                        width: 66px;
+                        height: 37px;
+                        font-size: 18px;
+                    }
+                }
             }
         }
     }

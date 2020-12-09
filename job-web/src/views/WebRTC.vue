@@ -13,11 +13,12 @@
                     <div v-if="waiting" style="text-align: center; z-index: 100; line-height: 600px; background: #cccccc;">{{tips}}
                     </div>
                 </div>
+
                 <div class="chat-container" :style="{height:videoHeight+'px'}">
                     <div class="header" v-if="conversationItem">
-                        <el-avatar :size="35" :src="conversationItem.friendVo.avatar" style="border: 1px solid #3D6FF4;"></el-avatar>
+                        <el-avatar :size="35" :src="interviewer.avatar" style="border: 1px solid #3D6FF4;"></el-avatar>
                         <div>
-                            <div class="name">{{conversationItem.friendVo.name}}</div>
+                            <div class="name">{{interviewer.nickName}}</div>
                             <div class="tags" v-if="interviewer">{{interviewer.position}}</div>
                         </div>
                     </div>
