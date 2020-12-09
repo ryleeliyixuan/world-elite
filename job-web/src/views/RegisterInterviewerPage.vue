@@ -38,8 +38,8 @@
                                :show-file-list="false"
                                :on-success="handleUploadSuccess"
                                :before-upload="beforeUpload">
-                        <el-image v-if="formOne.avatar"
-                                  :src="formOne.avatar"
+                        <el-image v-if="localAvatar || formOne.avatar"
+                                  :src="localAvatar || formOne.avatar"
                                   v-loading="loading"
                                   class="avatar"/>
                         <el-image v-else class="avatar-uploader-icon" :src="require('@/assets/mock/img-upload.png')"></el-image>
@@ -301,6 +301,7 @@
                 checked1: true,
                 checked2: false,
                 checked3: false,
+                localAvatar: '',
                 formOne: {
                     nickName: '',
                     avatar: '',
@@ -381,12 +382,13 @@
                         reject();
                     } else {
                         this.loading = true;
-                        this.formOne.avatar = URL.createObjectURL(file);
+                        this.localAvatar = URL.createObjectURL(file);
                         getUploadPicToken(file.name).then((response) => {
                             const {data} = response;
                             this.uploadPicOptions.action = data.host;
                             this.uploadPicOptions.params = data;
                             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            this.formOne.avatar = data.host + "/" + data.key;
                             resolve(data);
                         }).catch((error) => {
                             reject(error);

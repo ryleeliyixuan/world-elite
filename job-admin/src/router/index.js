@@ -52,11 +52,11 @@ export const constantRoutes = [
     redirect: '/stat/user',
     meta: { title: '数据统计', icon: 'user' },
     children: [
-      {
-        path: 'foreign',
-        component: () => import('@/views/stat/ForeignStatPage'),
-        meta: { title: '外链统计' }
-      },
+      // {
+      //   path: 'foreign',
+      //   component: () => import('@/views/stat/ForeignStatPage'),
+      //   meta: { title: '外链统计' }
+      // },
       {
         path: 'user',
         component: () => import('@/views/stat/UserStatPage'),
