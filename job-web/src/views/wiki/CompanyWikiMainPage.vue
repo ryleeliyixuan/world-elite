@@ -79,12 +79,12 @@
               size="mini"
             >
               <!-- 缺接口 -->
-              <el-col>
+              <!-- <el-col v-if="company.listed && company.listed.length >= 50">
                 <el-tag type="info" effect="dark"
                   >已进驻： <span>{{ company.listed || "0" }}</span></el-tag
                 >
-              </el-col>
-              <el-col :span="12">
+              </el-col> -->
+              <el-col :span="12" v-if="favoriteCount && favoriteCount >= 50">
                 <el-tag type="info" effect="dark"
                   >已订阅：
                   <span>{{ favoriteCount || "0" }}</span>

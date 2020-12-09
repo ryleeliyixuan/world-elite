@@ -68,7 +68,8 @@
     </div>
     <div v-else class="noInfoMsgBox">暂无帖子，快来发表你的帖子吧！</div>
     <el-divider></el-divider>
-    <div class="community-post-comment">
+    <!-- 如果登录，显示评分界面 -->
+    <div v-if="token" class="community-post-comment">
       <div class="d-flex mb-2">
         <h5 class="mr-3">发布帖子</h5>
         <div style="color: grey; font-size: 14px">
@@ -137,6 +138,12 @@
           >发 布 帖 子</el-button
         >
       </div>
+    </div>
+    <!-- 如果未登录，跳转至登录界面 -->
+    <div v-else class="noInfoMsgBox">
+      <el-button type="primary" icon="el-icon-user-solid" @click="onLoginClick">
+        登录后可发表帖子，点此登录
+      </el-button>
     </div>
   </div>
 </template>
@@ -324,6 +331,9 @@ export default {
       this.getPostList();
     },
     //POST METHODS END
+    onLoginClick() {
+      this.$router.push("/login");
+    },
   },
 };
 </script>

@@ -114,7 +114,7 @@
               <i class="el-icon-s-flag" style="color: #1e90ff"></i>
               旗下产品/子公司
             </h5>
-            <el-carousel height="380px" :interval="2500" arrow="always">
+            <el-carousel height="380px" :interval="5000" arrow="always">
               <el-carousel-item
                 v-for="product in companyWiki.productList"
                 :key="product.id"
@@ -321,7 +321,7 @@
             <h5 class="mt-4 mb-4">
               <i class="el-icon-s-home" style="color: #1e90ff"></i> 工作环境
             </h5>
-            <el-carousel height="380px" :interval="2500" arrow="always">
+            <el-carousel height="380px" :interval="5000" arrow="always">
               <el-carousel-item
                 v-for="image in companyWiki.environmentList"
                 :key="image.id"
