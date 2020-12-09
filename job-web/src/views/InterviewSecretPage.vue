@@ -49,8 +49,8 @@
             this.$emit("complete");
         },
         methods: {
-            onAgree(){
-                this.checked=!this.checked
+            onAgree() {
+                this.checked = !this.checked
             },
             onSubmit(evt) {
                 evt.preventDefault();
@@ -62,6 +62,12 @@
                     path: this.redirect || "/RegisterInterviewerPage",
                     query
                 });
+                // chrome
+                document.body.scrollTop = 0;
+                // firefox
+                document.documentElement.scrollTop = 0;
+                // safari
+                window.pageYOffset = 0;
             },
         }
     }
