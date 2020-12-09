@@ -1,36 +1,19 @@
 <template>
     <div class="app-container">
         <div class=" main-container">
-
-            <div class="main-scrollbar">
-                <el-form class="a">
-                    <ul v-html="agreement1" style="overflow:auto">
-                        <li v-for="i in agreement1" class="infinite-list-item">{{ i }}</li>
-                    </ul>
-                </el-form>
-                <el-form class="ab">
-                    <ul v-html="agreement1" style="overflow:auto">
-                        <li v-for="i in agreement1" class="infinite-list-item">{{ i }}</li>
-                    </ul>
-                </el-form>
-                <el-form class="b">
-                    <ul v-html="agreement2" style="overflow:auto">
-                        <li v-for="j in agreement2" class="infinite-list-item">{{ j }}</li>
-                    </ul>
-                </el-form>
-            </div>
+            <div class="a" v-html="agreement1"/>
+            <div class="ab" v-html="agreement1"/>
+            <div class="b" v-html="agreement2"/>
         </div>
-        <!--            <el-checkbox v-model="checked" size="medium" class="CheckBox">我已阅读并同意以上协议。</el-checkbox>-->
         <div class="check-container" @click="onAgree">
             <div class="check-circle">
                 <div class="inner-circle" v-if="checked"></div>
             </div>
             <div class="check-text">我已阅读并同意以上协议。</div>
         </div>
-
         <div class="bottom-button">
             <el-button class="Btn" @click="onSubmit" v-if="checked===true">确定</el-button>
-            <el-button class="Btn1" @click="onSubmit" v-if="checked===false" disabled>确定</el-button>
+            <el-button class="Btn1" v-if="checked===false" disabled>确定</el-button>
         </div>
     </div>
 </template>
@@ -52,22 +35,8 @@
             onAgree() {
                 this.checked = !this.checked
             },
-            onSubmit(evt) {
-                evt.preventDefault();
-                let query = {
-                    ...this.$route.query
-                };
-                delete query.redirect;
-                this.$router.push({
-                    path: this.redirect || "/RegisterInterviewerPage",
-                    query
-                });
-                // chrome
-                document.body.scrollTop = 0;
-                // firefox
-                document.documentElement.scrollTop = 0;
-                // safari
-                window.pageYOffset = 0;
+            onSubmit() {
+                this.$router.push("/RegisterInterviewerPage");
             },
         }
     }
@@ -110,31 +79,19 @@
             }
         }
 
-        .CheckBox {
-            margin-left: 20px;
-            margin-top: 20px;
-
-            /deep/ .el-checkbox__inner {
-                border-radius: 50%;
-
-            }
-        }
-
         .main-container {
-            overflow-y: auto;
             background: #F5F5F5;
 
             .a {
                 /*margin-left: 100px;*/
                 height: 41px;
                 background: #3D6FF4;
-                border-radius: 17px 17px 0px 0px;
+                border-radius: 17px 17px 0 0;
                 font-size: 18px;
                 font-family: PingFangSC-Medium, PingFang SC;
-                font-weight: 500;
                 color: #FFFFFF;
-                line-height: 25px;
-
+                line-height: 41px;
+                padding-left: 10px;
             }
 
             .align-center {
@@ -152,34 +109,36 @@
                 font-weight: 500;
                 color: #333333;
                 line-height: 33px;
+            }
 
+            .b {
+                padding: 20px;
             }
         }
     }
 
     .bottom-button {
         text-align: center;
-    }
 
-    .Btn {
-        width: 332px;
-        background: #EDF3FF;
-        border-radius: 24px;
-        font-size: 24px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        color: #999999;
-        line-height: 25px;
-    }
+        .Btn {
+            width: 332px;
+            background: #EDF3FF;
+            border-radius: 24px;
+            font-size: 24px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            color: #999999;
+            line-height: 25px;
+        }
 
-    .Btn1 {
-        width: 332px;
-        background: #FFFFFF;
-        border-radius: 24px;
-        font-size: 24px;
-        color: #999999;
-        line-height: 25px;
+        .Btn1 {
+            width: 332px;
+            background: #FFFFFF;
+            border-radius: 24px;
+            font-size: 24px;
+            color: #999999;
+            line-height: 25px;
+        }
     }
-
 
     @media screen and (max-width: 850px) {
         .app-container {
@@ -189,3 +148,4 @@
         }
     }
 </style>
+

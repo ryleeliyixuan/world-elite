@@ -238,6 +238,7 @@ export default {
         cb(results);
       }, 3000 * Math.random());
     },
+    EmptyQuery(){},
     createFilter(queryString) {
       return (suggestionWord) => {
         return (

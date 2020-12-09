@@ -225,9 +225,9 @@
                         placeholder="起始时间"
                         v-model="beginTime"
                         :picker-options="{
-                      start: start,
+                      start: startFirst,
                       step: '00:30',
-                      end: end
+                      end: endFirst
                  }">
                 </el-time-select>
                 <span class="dialog-text" style="padding: 0 11px;">至</span>
@@ -237,9 +237,9 @@
                         placeholder="结束时间"
                         v-model="endTime"
                         :picker-options="{
-                      start: beginTime || start,
+                      start: startSecond,
                       step: '00:30',
-                      end: end
+                      end: endSecond
                     }">
                 </el-time-select>
                 <div class="dialog-text" style="margin: 20px 20px 0 0; display: inline-block;">此时间段添加在</div>
@@ -314,19 +314,19 @@
 
         <el-dialog title="我的收益" :visible.sync="incomeDialogVisible" width="690px">
             <div class="title"></div>
-            <el-table class="table" v-if="incomeDetailList" :data="incomeDetailList" >
+            <el-table class="table" v-if="incomeDetailList" :data="incomeDetailList">
                 <el-table-column width="120" label="面试者" prop="username">
                 </el-table-column>
                 <el-table-column width="200" label="日期">
                     <template slot-scope="scope">
                         <div class="type">
-                           {{scope.row.beginTime | timestampToMonthDateHoursMinutes }}
+                            {{scope.row.beginTime | timestampToMonthDateHoursMinutes }}
                         </div>
                     </template>
                 </el-table-column>
                 <el-table-column width="200" label="面试类型" prop="direction">
                 </el-table-column>
-                <el-table-column  width="130" label="金额" prop="amount">
+                <el-table-column width="130" label="金额" prop="amount">
                 </el-table-column>
                 <template slot="empty">
                     <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
@@ -359,10 +359,11 @@
                 dialogVisible: false, // 对话框是否可见
                 showContactEmail: false,
                 date: 0, // 预约日期
-                start: '00:00', // 预约最小时间
-                end: '23:59', // 预约最大时间
+                startFirst: '00:00', // 预约最小开始时间
                 beginTime: 0, // 预约起始时间
+                endFirst: '23:30', // 预约最大开始时间
                 endTime: 0, // 预约结束时间
+                endSecond:'24:00', // 预约最大结束时间
                 repeat: "1", // 要预约的类型
                 typeList: [{label: "不重复", value: "1"},
                     {label: "按周重复", value: "2"},
@@ -447,7 +448,17 @@
                 incomeDetailTotal: 0, // 收益明细记录总数
             }
         },
-
+        watch: {
+            beginTime() {
+                if (this.beginTime && this.endTime) {
+                    let time1 = this.getDateTime(this.date, this.beginTime);
+                    let time2 = this.getDateTime(this.date, this.endTime);
+                    if (time1 >= time2) {
+                        this.endTime = this.getHourMinutes(new Date(time1 + 30 * 60 * 1000));
+                    }
+                }
+            }
+        },
         computed: {
             avatar() {
                 return this.$store.state.user.avatar;
@@ -455,6 +466,10 @@
 
             name() {
                 return this.$store.state.user.name;
+            },
+
+            startSecond() {
+                return this.getHourMinutes(new Date(this.getDateTime(this.date, this.beginTime || this.startFirst) + 30 * 60 * 1000));
             }
         },
         mounted() {
@@ -562,7 +577,7 @@
                         }
                         this.qrcodeLoading = false;
                     })
-                } else if (item.status === 2 || item.status===3) { // 进入面时间
+                } else if (item.status === 2 || item.status === 3) { // 进入面时间
                     if (item.endTime < Date.now()) {
                         this.$message.warning("面试已结束");
                     } else if (Date.now() < item.beginTime - 15 * 60 * 1000) {
@@ -620,7 +635,7 @@
                         if (info.date >= this.getNextDay()) {
                             this.step = 1;
                             this.start = '00:00';
-                            this.end = '23:59';
+                            this.end = '24:00';
                             this.date = info.date;
                             this.dialogVisible = true;
                         } else if (info.date >= this.getZeroOfToday()) {
@@ -628,7 +643,7 @@
                             let date = new Date();
                             date.setHours(date.getHours() + 1, 0, 0);
                             this.start = `${this.getDoubleValue(date.getHours())}:${this.getDoubleValue(date.getMinutes())}`;
-                            this.end = '23:59';
+                            this.end = '24:00';
                             this.date = info.date;
                             this.dialogVisible = true;
                         }
@@ -685,64 +700,53 @@
                 this.$axios.get(`/mock/interview/time/my/${beginTime}/${endTime}`).then(data => {
                     let events = [];
                     data.data.forEach(item => {
-                        if (item.reservationList.length === 0) { // 没有被任何人预约，即可预约事件
-                            events.push({
+                        let eventList = [ // 保留被人预约剩余的可预约事件，默认为我的总预约时间段
+                            {
                                 interviewerId: item.interviewerId,
-                                start: parseInt(item.beginTime),
-                                end: parseInt(item.endTime),
+                                start: item.beginTime,
+                                end: item.endTime,
                                 borderColor: '#D3F261', // 块边框颜色
                                 backgroundColor: '#D3F261', // 块背景色
-                            })
-                        } else {
+                            }
+                        ];
 
-                            let eventList = [ // 保留被人预约剩余的可预约事件，默认为我的总预约时间段
-                                {
-                                    start: item.beginTime,
-                                    end: item.endTime,
-                                    borderColor: '#D3F261', // 块边框颜色
-                                    backgroundColor: '#D3F261', // 块背景色
-                                }
-                            ];
-
-                            // 遍历被预约事件
-                            item.reservationList.forEach(reservation => { // 被预约事件
-                                // 在可预约时间段内，去除被预约时间段，保留分散的可预约事件
-                                let event = eventList.find(event => {
-                                    return reservation.beginTime >= event.start && reservation.endTime <= event.end;
-                                })
-
-                                if (event) {
-                                    if (event.start === reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的开头
-                                        event.start = reservation.endTime; // 将可预约开始时间延迟至被预约时间结束
-                                    } else if (event.end === reservation.endTime && event.start !== reservation.beginTime) {  // 被预约时间段为可预约时间段的结尾
-                                        event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
-                                    } else if (event.start !== reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的中间部分
-                                        event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
-                                        eventList.push({ // 追加可预约时间段，从被预约结束时间，至可预约时间的结束
-                                            start: reservation.endTime,
-                                            end: item.endTime,
-                                            borderColor: '#D3F261', // 块边框颜色
-                                            backgroundColor: '#D3F261', // 块背景色
-                                        })
-                                    } else { // 被预约时间为可预约时间端的全部
-                                        eventList = eventList.filter(it => it.start !== event.start && it.end !== event.end);
-                                    }
-                                }
-
-
-                                // 添加被预约事件
-                                events.push({
-                                    id: reservation.id, // 被预约的id，可预约不需要
-                                    interviewerId: reservation.userId, // 预约人
-                                    start: parseInt(reservation.beginTime),
-                                    end: parseInt(reservation.endTime),
-                                    borderColor: '#FFE58F',
-                                    backgroundColor: '#FFE58F'
-                                })
+                        // 遍历被预约事件
+                        item.reservationList.forEach(reservation => { // 被预约事件
+                            // 在可预约时间段内，去除被预约时间段，保留分散的可预约事件
+                            let event = eventList.find(event => {
+                                return reservation.beginTime >= event.start && reservation.endTime <= event.end;
                             })
 
-                            events = events.concat(eventList);
-                        }
+                            if (event) {
+                                if (event.start === reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的开头
+                                    event.start = reservation.endTime; // 将可预约开始时间延迟至被预约时间结束
+                                } else if (event.end === reservation.endTime && event.start !== reservation.beginTime) {  // 被预约时间段为可预约时间段的结尾
+                                    event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
+                                } else if (event.start !== reservation.beginTime && event.end !== reservation.endTime) { // 被预约时间段为可预约时间段的中间部分
+                                    event.end = reservation.beginTime; // 将可预约结束时间提前至被预约时间开始
+                                    eventList.push({ // 追加可预约时间段，从被预约结束时间，至可预约时间的结束
+                                        start: reservation.endTime,
+                                        end: item.endTime,
+                                        borderColor: '#D3F261', // 块边框颜色
+                                        backgroundColor: '#D3F261', // 块背景色
+                                    })
+                                } else { // 被预约时间为可预约时间端的全部
+                                    eventList = eventList.filter(it => it.start !== event.start && it.end !== event.end);
+                                }
+                            }
+
+                            // 添加被预约事件
+                            events.push({
+                                id: reservation.id, // 被预约的id，可预约不需要
+                                interviewerId: reservation.userId, // 预约人
+                                start: parseInt(reservation.beginTime),
+                                end: parseInt(reservation.endTime),
+                                borderColor: '#FFE58F',
+                                backgroundColor: '#FFE58F'
+                            })
+                        })
+
+                        events = events.concat(eventList);
                     })
                     this.calendarOptions.events = events;
                 })
@@ -754,8 +758,6 @@
                 let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
                 let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
                 this.$axios.get(`/mock/interview/reservation/my/${beginTime}/${endTime}`).then(data => {
-                    console.log(1111)
-                    console.log(data)
                     this.calendarOptions.events = data.data.map(item => {
                         return {
                             id: item.id,
@@ -773,12 +775,12 @@
             // 获取我的面试记录
             getInterviewRecord() {
                 if (this.identity === 2) {
-                    this.$axios.get('/mock/interview/records/interviewer', {params: {page: this.interviewerPage, limit: 5,sort:"-id"}}).then(data => {
+                    this.$axios.get('/mock/interview/records/interviewer', {params: {page: this.interviewerPage, limit: 5, sort: "-id"}}).then(data => {
                         this.interviewerRecordList = data.data.list;
                         this.interviewerTotal = data.data.total;
                     })
                 } else {
-                    this.$axios.get('/mock/interview/records/user', {params: {page: this.intervieweePage, limit: 5,sort:"-id"}}).then(data => {
+                    this.$axios.get('/mock/interview/records/user', {params: {page: this.intervieweePage, limit: 5, sort: "-id"}}).then(data => {
                         this.intervieweeRecordList = data.data.list;
                         this.intervieweeTotal = data.data.total;
                     })
@@ -821,8 +823,31 @@
             },
 
             // 工具方法
-            getHourMinutes(time) {
-                return time ? `${time.getHours()}:${time.getMinutes() < 10 ? '0' : ''}${time.getMinutes()}` : '00:00';
+            // Date + "12:00"  => (Date 12:00).getTime();
+            getDateTime(date, time) {
+                if (date) {
+                    let t = time.split(":");
+                    const temp = new Date(date);
+                    temp.setHours(t[0], t[1])
+                    return temp.getTime();
+                } else {
+                    return Date.now();
+                }
+            },
+
+            getHourMinutes(time, zero) {
+                if (time) {
+                    let minutes = time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes();
+                    if (!zero && time.getHours() === 0 && time.getMinutes() === 0) {
+                        return "24:00";
+                    } else if (time.getHours() < 10) {
+                        return '0' + time.getHours() + ":" + minutes;
+                    } else {
+                        return time.getHours() + ":" + minutes;
+                    }
+                } else {
+                    return "00:00";
+                }
             },
 
             getDate(date, time) {
@@ -1286,11 +1311,12 @@
             }
 
         }
+
         .pagination {
             align-self: center;
             margin-top: 20px;
             align-items: center;
-            justify-content:center;
+            justify-content: center;
 
             ::v-deep .number, ::v-deep .more {
                 width: 37px;

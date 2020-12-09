@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import ba from 'vue-ba';
+
 Vue.use(ba, process.env.VUE_APP_SITE_ID);
 Vue.use(Router)
 const constantRoutes = [
@@ -238,15 +239,10 @@ const constantRoutes = [
         component: () => import('@/views/RegisterOther'),
         meta: {title: '寰球菁英-其他方式注册'}
     },
-
 ]
 
 const createRouter = () => new Router({
     mode: 'history', // require service support
-    scrollBehavior: (to, from, savedPosition) => {
-        if (to.hash)
-            return {selector: to.hash}
-    },
     routes: constantRoutes
 })
 

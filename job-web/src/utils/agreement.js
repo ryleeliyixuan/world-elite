@@ -1,5 +1,5 @@
 export const agreement={
-title:'<p style="margin-top: 10px;font-family: PingFangSC-Medium, PingFang SC;font-size: 18px;font-width: 300;">用户隐私和服务条款</p>',
+title:'<p style="font-family: PingFangSC-Medium, PingFang SC;font-size: 18px;font-width: 300;">用户隐私和服务条款</p>',
     content:'<div style="\n' +
         'font-family: PingFangSC-Medium, PingFang SC;font-size: 18px;line-height: 25px;margin-top: 20px"><p style="font-size: 18px">一、总则</p>' +
         '<p style="font-weight: 400">1.1　用户应当同意本协议的条款并按照页面上的提示完成全部的注册程序。用户在进行注册程序过程中勾选"我已阅读并接受"模块即表示用户与产品名称达成协议，完全接受本协议项下的全部条款。</p>' +

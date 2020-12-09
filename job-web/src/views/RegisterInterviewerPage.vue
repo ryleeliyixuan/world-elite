@@ -27,7 +27,7 @@
                         <el-image v-for="item in avatarList"
                                   :key="item.id"
                                   :src="item.avatarUrl"
-                                  @click="formOne.avatar= item.avatarUrl"
+                                  @click="onDefaultAvatar(item)"
                                   style="width: 100px; height: 100px; margin-right: 13px; cursor: pointer;"/>
                     </div>
                     <el-upload class="avatar-uploader"
@@ -38,12 +38,10 @@
                                :show-file-list="false"
                                :on-success="handleUploadSuccess"
                                :before-upload="beforeUpload">
-                        <el-image v-if="formOne.avatar"
-                                  :src="formOne.avatar"
+                                  :src="localAvatar || formOne.avatar"
                                   v-loading="loading"
                                   class="avatar"/>
-                        <el-image v-else class="avatar-uploader-icon"
-                                  :src="require('@/assets/mock/img-upload.png')"></el-image>
+                        <el-image v-else class="avatar-uploader-icon" :src="require('@/assets/mock/img-upload.png')"></el-image>
                         <div slot="tip" class="avatar-uploader-tip">建议大小500*500</div>
                     </el-upload>
                 </el-form-item>
@@ -53,8 +51,7 @@
                                    clearable
                                    placeholder="行业"
                                    class="section1-select">
-                            <el-option v-for="item in industryOptions" :key="item.industryId" :label="item.name"
-                                       :value="item.id"></el-option>
+                            <el-option v-for="item in industryOptions" :key="item.industryId" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
@@ -66,8 +63,7 @@
                 </div>
                 <div>
                     <el-form-item label="从业时间：" prop="experienceTimeId">
-                        <el-select v-model="formOne.experienceTimeId" clearable placeholder="请选择您的工作经验年限"
-                                   class="section1-select">
+                        <el-select v-model="formOne.experienceTimeId" clearable placeholder="请选择您的工作经验年限" class="section1-select">
                             <el-option v-for="item in experienceTimeOptions" :key="item.experienceTimeId"
                                        :label="item.name" :value="item.id"></el-option>
                         </el-select>
@@ -78,10 +74,7 @@
                         <div class="textarea-container">
                             <div class="textarea-item" v-for="(item,index) in formOne.experience">
                                 <span class="experience-title">{{index+1}}.</span>
-                                <el-input class="experience" type="textarea" v-model="item.experienceItem"
-                                          maxlength="150"
-                                          placeholder="字数不超过150字" resize="none"
-                                          :autosize="{minRows: 2,maxRows: 10}"></el-input>
+                                          placeholder="字数不超过150字" resize="none" :autosize="{minRows: 2,maxRows: 10}"></el-input>
                             </div>
                             <div class="add-experience-button" @click="addExperience">添加经历</div>
                         </div>
@@ -115,8 +108,7 @@
                     <el-input style="width: 300px" v-model="formTwo.price" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
                 </el-form-item>
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
-                    <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
-                              placeholder="请对面试的内容进行具体描述，150字以内"
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo.description" placeholder="请对面试的内容进行具体描述，150字以内"
                               :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
                 </el-form-item>
             </el-form>
@@ -125,8 +117,7 @@
                     <el-input v-model="formTwo2.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
                 </el-form-item>
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
-                    <el-input type="textarea" style="width: 300px" v-model="formTwo2.description"
-                              placeholder="请对面试的内容进行具体描述，150字以内"
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo2.description" placeholder="请对面试的内容进行具体描述，150字以内"
                               :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
                 </el-form-item>
             </el-form>
@@ -135,8 +126,7 @@
                     <el-input v-model="formTwo3.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
                 </el-form-item>
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
-                    <el-input type="textarea" style="width: 300px" v-model="formTwo3.description"
-                              placeholder="请对面试的内容进行具体描述，150字以内"
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo3.description" placeholder="请对面试的内容进行具体描述，150字以内"
                               :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
                 </el-form-item>
             </el-form>
@@ -358,14 +348,7 @@
                     name: [{required: true, message: '请输入您的姓名', trigger: 'blur'}],
                     idNumber: [{required: true, trigger: 'blur', validator: isIdNumber}],
                     companyName: [{required: true, message: '请输入您的公司名称', trigger: 'blur'}],
-                    description: [{required: true, message: '请输入面试官自述', trigger: 'blur'},
-                        {max: 150, message: '长度不超过150个字'}],
-                    experience: [{required: true, message: '请输入从业经历', trigger: 'blur'}, {
-                        max: 150,
-                        message: '长度不超过150个字'
-                    }],
-                    price: [{required: true, message: '请输入您理想资询价位', trigger: 'blur'}, {validator: isPrice, trigger: 'blur'
-                    }]
+                    price: [{required: true, message: '请输入您理想资询价位', trigger: 'blur'}, {validator: isPrice, trigger: 'blur'}]
                 },
                 avatarList: [],
                 industryOptions: [],
@@ -397,7 +380,8 @@
                         reject();
                     } else {
                         this.loading = true;
-                        this.formOne.avatar = URL.createObjectURL(file);
+                        this.localAvatar = URL.createObjectURL(file);
+                        this.$refs["formOne"].validateField("avatar");
                         getUploadPicToken(file.name).then((response) => {
                             const {data} = response;
                             this.uploadPicOptions.action = data.host;
@@ -484,27 +468,16 @@
                 this.loading3 = false;
             },
 
+            onDefaultAvatar(item) {
+                this.formOne.avatar = item.avatarUrl;
+                this.$refs["formOne"].validateField("avatar");
+            },
             addExperience() {
                 this.formOne.experience.push({experienceItem: ''})
             },
-            prev() {
-                --this.active;
-                if (this.active < 0) this.active = 0;
-                // chrome
-                document.body.scrollTop = 0;
-                // firefox
-                document.documentElement.scrollTop = 0;
-                // safari
-                window.pageYOffset = 0;
-            },
+
             prev1() {
-                this.$router.push("/InterviewSecretPage");
-                // chrome
-                document.body.scrollTop = 0;
-                // firefox
-                document.documentElement.scrollTop = 0;
-                // safari
-                window.pageYOffset = 0;
+                this.$router.go(-1);
             },
 
             next2() {
@@ -514,18 +487,13 @@
                         formOne.experience = formOne.experience.map(item => item.experienceItem)
                         addInterview(formOne).then(() => {
                             Toast.success("提交成功");
+                            console.log('form one submit!!');
                         })
                         this.active = 2;
                     } else {
                         console.log('error submit!!');
                     }
                 });
-                // chrome
-                document.body.scrollTop = 0;
-                // firefox
-                document.documentElement.scrollTop = 0;
-                // safari
-                window.pageYOffset = 0;
             },
 
             validate(filedName) {
@@ -540,7 +508,7 @@
                 let p = [];
                 if (!this.checked1 && !this.checked2 && !this.checked3) {
                     Toast.error("请至少选择一项");
-                } else {
+                }else {
                     if (this.checked1) {
                         p.push(this.validate('formTwo'));
                     }
@@ -571,12 +539,6 @@
                         }
                     })
                 }
-                // chrome
-                document.body.scrollTop = 0;
-                // firefox
-                document.documentElement.scrollTop = 0;
-                // safari
-                window.pageYOffset = 0;
             },
 
             onSubmit() {
@@ -592,22 +554,10 @@
                         return false;
                     }
                 })
-                // chrome
-                document.body.scrollTop = 0;
-                // firefox
-                document.documentElement.scrollTop = 0;
-                // safari
-                window.pageYOffset = 0;
             },
 
             onOtherAuth() {
                 this.$router.push("/RegisterInterviewerSuccess");
-                // chrome
-                document.body.scrollTop = 0;
-                // firefox
-                document.documentElement.scrollTop = 0;
-                // safari
-                window.pageYOffset = 0;
             },
 
             //一键导入
