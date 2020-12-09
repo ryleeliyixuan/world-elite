@@ -27,33 +27,23 @@
     </div>
 
     <div class="nav_right_container">
-      <!-- <el-autocomplete
+      <el-autocomplete
         v-model="keyword"
         class="input-search"
         :placeholder="searchPlaceHolder"
         @keyup.enter.native="handleSearch"
-        :fetch-suggestions="querySearch"
+        :fetch-suggestions="
+          keyword && keyword.length > 0 ? querySearch : EmptyQuery
+        "
         @select="handleSelectFilter"
+        :trigger-on-focus="false"
       >
         <i
           slot="suffix"
           class="el-input__icon el-icon-search"
           @click="handleSearch"
         ></i>
-      </el-autocomplete> -->
-      <el-input
-        v-model="keyword"
-        class="input-search"
-        :placeholder="searchPlaceHolder"
-        @keyup.enter.native="handleSearch"
-      >
-        <i
-          slot="suffix"
-          class="el-input__icon el-icon-search"
-          @click="handleSearch"
-        ></i
-      ></el-input>
-
+      </el-autocomplete>
       <!-- 未登录 -->
       <div class="user_container" v-if="token === undefined || token === ''">
         <el-link
@@ -162,7 +152,6 @@ import { getUnReadMessageCount, getMessageList } from "@/api/message_api";
 import { getActivityList, searchActivityTitle } from "@/api/activity_api";
 import { searchJob, searchJobName } from "@/api/job_api";
 import { getWikiList, serachByName } from "@/api/company_api";
-import { getCategoryTree } from "@/api/category_api";
 import { storage } from "@/utils/storage";
 
 export default {
@@ -182,6 +171,9 @@ export default {
       }
     },
   },
+  // mounted() {
+  //   this.restaurants = this.loadAll();
+  // },
   data() {
     return {
       activeIndex: "",
@@ -203,46 +195,48 @@ export default {
     $route() {
       this.activeIndex =
         this.$route.path === "/wiki-list" ? "/wiki-card" : this.$route.path;
-      this.getSuggestionList();
       this.getUnReadMessageCount();
       if (this.isHomeListPage()) {
         this.keyword = this.$route.query.keyword;
         this.$store.commit("setting/SET_KEYWORD", this.keyword);
       }
     },
-    // keyword: function (val, oldval) {
-    //   this.getJobList();
-    // },
+    keyword: function (val, oldval) {
+      if (this.keyword && this.keyword.length > 0) {
+        this.loadAll();
+      }
+    },
   },
   created() {
     this.activeIndex = this.$route.path;
-    console.log("=====", this.$route);
-    this.getSuggestionList();
-    this.querySearch();
     this.getUnReadMessageCount();
   },
   methods: {
     ...mapMutations({
       setMessageCount: "setting/MESSAGE_COUNT",
     }),
-    getSuggestionList() {
-      // if (this.activeIndex === "/activity-list") {
-      //   this.getActivityList();
-      // } else if (this.activeIndex === "/wiki-card") {
-      //   this.getWikiList();
-      // } else {
-      //   this.getJobList();
-      // }
+    loadAll() {
+      if (this.activeIndex === "/activity-list") {
+        this.getActivityList();
+      } else if (
+        this.activeIndex === "/wiki-card" ||
+        this.activeIndex === "/wiki-list" ||
+        this.activeIndex.indexOf("/company") != -1
+      ) {
+        this.getWikiList();
+      } else {
+        this.getJobList();
+      }
     },
     querySearch(queryString, cb) {
-      // var suggestionWords = this.suggestionWords;
-      // var results = queryString
-      //   ? suggestionWords.filter(this.createFilter(queryString))
-      //   : suggestionWords;
-      // clearTimeout(this.timeout);
-      // this.timeout = setTimeout(() => {
-      //   cb(results);
-      // }, 3000 * Math.random());
+      var suggestionWords = this.suggestionWords;
+      var results = queryString
+        ? suggestionWords.filter(this.createFilter(queryString))
+        : suggestionWords;
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        cb(results);
+      }, 3000 * Math.random());
     },
     createFilter(queryString) {
       return (suggestionWord) => {
@@ -256,16 +250,15 @@ export default {
     handleSelectFilter(item) {},
     getActivityList() {
       let data = {
-        keyWords: "test",
+        keyWords: this.keyword,
         page: 1,
-        size: 1000,
+        size: 100000,
       };
-
       searchActivityTitle(data).then((response) => {
-        this.suggestionList = response.data.list;
+        this.suggestionList = [];
         this.suggestionWords = [];
-        for (let i = 0; i < this.suggestionList.length; i++) {
-          let word = this.suggestionList[i].title;
+        this.suggestionList = response.data.list;
+        for (const word of this.suggestionList) {
           this.suggestionWords.push({ value: word });
         }
       });
@@ -294,14 +287,11 @@ export default {
         page: 1,
         size: 100,
       };
-      getCategoryTree().then(
-        (response) => (this.jobCategoryOptions = response.data)
-      );
       searchJobName(data).then((response) => {
-        this.suggestionList = response.data.list;
+        this.suggestionList = [];
         this.suggestionWords = [];
-        for (let i = 0; i < this.suggestionList.length; i++) {
-          let word = this.suggestionList[i].name;
+        this.suggestionList = response.data.list;
+        for (const word of this.suggestionList) {
           this.suggestionWords.push({ value: word });
         }
       });
