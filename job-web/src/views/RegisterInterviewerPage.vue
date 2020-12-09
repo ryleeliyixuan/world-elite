@@ -38,6 +38,7 @@
                                :show-file-list="false"
                                :on-success="handleUploadSuccess"
                                :before-upload="beforeUpload">
+                        <el-image v-if="localAvatar || formOne.avatar"
                                   :src="localAvatar || formOne.avatar"
                                   v-loading="loading"
                                   class="avatar"/>
@@ -74,6 +75,7 @@
                         <div class="textarea-container">
                             <div class="textarea-item" v-for="(item,index) in formOne.experience">
                                 <span class="experience-title">{{index+1}}.</span>
+                                <el-input class="experience" type="textarea" v-model="item.experienceItem" maxlength="150"
                                           placeholder="字数不超过150字" resize="none" :autosize="{minRows: 2,maxRows: 10}"></el-input>
                             </div>
                             <div class="add-experience-button" @click="addExperience">添加经历</div>
@@ -216,7 +218,7 @@
                 </el-form-item>
             </el-form>
             <div class="button-container">
-                <div class="button1" @click="prev">上一步</div>
+                <div class="button1" @click="active=2">上一步</div>
                 <div class="button1" @click="onOtherAuth">其他认证方式</div>
                 <div class="button2" @click="onSubmit">提交认证信息</div>
             </div>
@@ -227,7 +229,7 @@
         <div class="button-container">
             <div class="button1" @click="prev1" v-if="active===1">上一步</div>
             <div class="button2" @click="next2" v-if="active===1">下一步</div>
-            <div class="button1" @click="prev" v-if="active===2">上一步</div>
+            <div class="button1" @click="active=1" v-if="active===2">上一步</div>
             <div class="button2" @click="next3" v-if="active===2">下一步</div>
         </div>
     </div>
@@ -275,7 +277,7 @@
             };
 
             let identity = (rule, value, callback) => {
-                if(!this.formThree.faceUrl&&!this.formThree.emblemUrl&&!this.formThree.holdUrl){
+                if (!this.formThree.faceUrl && !this.formThree.emblemUrl && !this.formThree.holdUrl) {
                     callback("请按要求上传三张身份证照片");
                 } else if (!this.formThree.faceUrl) {
                     callback("请上传身份证人面像");
@@ -311,6 +313,7 @@
                     description: '',
                     experience: [{experienceItem: ''}],
                 },
+                localAvatar: undefined,
                 //hr
                 formTwo: {
                     direction: 'HR面试（通用）',
@@ -341,7 +344,7 @@
                 },
                 rules: {
                     nickName: [{required: true, message: '请输入用户昵称', trigger: 'blur'}, {max: 20, message: '昵称不超过20字符'}],
-                    identity: [{required: true,validator: identity, trigger: 'blur'}],
+                    identity: [{required: true, validator: identity, trigger: 'blur'}],
                     avatar: [{required: true, message: "请上传头像", trigger: "change"}],
                     industryId: [{required: true, message: "请选择行业", trigger: "change"}],
                     experienceTimeId: [{required: true, message: "请选择从业时间", trigger: "change"}],
@@ -508,7 +511,7 @@
                 let p = [];
                 if (!this.checked1 && !this.checked2 && !this.checked3) {
                     Toast.error("请至少选择一项");
-                }else {
+                } else {
                     if (this.checked1) {
                         p.push(this.validate('formTwo'));
                     }
