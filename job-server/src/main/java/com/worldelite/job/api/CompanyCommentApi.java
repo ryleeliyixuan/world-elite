@@ -103,7 +103,6 @@ public class CompanyCommentApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("search-in-post")
-    @RequireLogin
     public ApiResult<PageResult<PostCommentVo>> searchInPost(@RequestBody CompanyCommentListForm listForm){
         PageResult<PostCommentVo> pageResult = companyCommentService.searchInPost(listForm);
         return ApiResult.ok(pageResult);
@@ -116,7 +115,6 @@ public class CompanyCommentApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("search-in-score")
-    @RequireLogin
     public ApiResult<PageResult<ScoreCommentVo>> searchInScore(@RequestBody CompanyCommentListForm listForm){
         PageResult<ScoreCommentVo> pageResult = companyCommentService.searchInScore(listForm);
         return ApiResult.ok(pageResult);

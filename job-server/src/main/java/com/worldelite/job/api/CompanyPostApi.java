@@ -128,7 +128,6 @@ public class CompanyPostApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("search")
-    @RequireLogin
     public ApiResult<PageResult<CompanyPostVo>> search(@RequestBody CompanyPostListForm listForm){
         PageResult<CompanyPostVo> pageResult = companyPostService.search(listForm);
         return ApiResult.ok(pageResult);

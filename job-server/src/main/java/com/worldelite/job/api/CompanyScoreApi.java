@@ -82,7 +82,6 @@ public class CompanyScoreApi extends BaseApi {
      */
     @ApiDoc
     @PostMapping("search")
-    @RequireLogin
     public ApiResult<PageResult<CompanyScoreVo>> search(@RequestBody CompanyScoreListForm listForm){
         PageResult<CompanyScoreVo> pageResult = companyScoreService.search(listForm);
         return ApiResult.ok(pageResult);

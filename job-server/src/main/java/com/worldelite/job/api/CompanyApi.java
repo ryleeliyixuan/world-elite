@@ -271,7 +271,6 @@ public class CompanyApi extends BaseApi {
      * @param companyId 公司ID
      * @return
      */
-    @RequireLogin
     @GetMapping("get-company-wiki")
     @ApiDoc
     public ApiResult<CompanyWikiVo> getCompanyWiki(@RequestParam Long companyId){
