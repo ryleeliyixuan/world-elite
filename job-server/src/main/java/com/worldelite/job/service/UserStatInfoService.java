@@ -223,8 +223,8 @@ public class UserStatInfoService extends BaseService {
         List<BigDecimal> companyDayGrowthStat = getGrowthStat(studentStat); // 企业日增率
 
         return StatUserVo.builder()
-                .userTotalNums(studentStat)
                 .userTotalNums(userTotalStat)
+                .studentNums(studentStat)
                 .companyNums(companyStat)
                 .totalDayGrowthNums(totalDayGrowthNumStat)
                 .studentDayGrowthNums(studentDayGrowthNumStat)
@@ -328,7 +328,7 @@ public class UserStatInfoService extends BaseService {
         for (int i = 0; i < stat.size() - 1; i++) {
             int j = i + 1;
             if (stat.get(i) == 0) {
-                growthStat.add(null);
+                growthStat.add(BigDecimal.ZERO);
             } else {
                 BigDecimal value = BigDecimal.valueOf((stat.get(j) - stat.get(i)) /
                         Double.parseDouble(stat.get(i).toString()))

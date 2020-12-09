@@ -622,13 +622,16 @@ public class UserApplicantService extends BaseService {
      * @return
      */
     private List<Long> formatStatInfo(List<Map<String, Object>> maps, String date) {
+        Integer days = getDaysOfMonth(date);
+        if (maps == null || maps.size() == 0) {
+            return getEmptyList(days);
+        }
         List<Long> stats = new ArrayList<>();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date start = null;
         Date end = null;
         try {
-            String days = getDaysOfMonth(date);
             start = sdf.parse(date + "-1");
             end = sdf.parse(date + "-" + days);
         } catch (ParseException e) {
@@ -655,6 +658,9 @@ public class UserApplicantService extends BaseService {
 
 
     private List<Long> formatYearStatInfo(List<Map<String, Object>> maps, String date) {
+        if (maps == null || maps.size() == 0) {
+            return getEmptyList(12);
+        }
         List<Long> stats = new ArrayList<>();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
@@ -694,6 +700,9 @@ public class UserApplicantService extends BaseService {
      * @return
      */
     private List<Long> formatStatInfo(List<Map<String, Object>> maps, Integer days) {
+        if (maps == null || maps.size() == 0) {
+            return getEmptyList(days);
+        }
         List<Long> stats = new ArrayList<>();
 
         Date end = new Date(System.currentTimeMillis()); // 当前时间
@@ -702,7 +711,7 @@ public class UserApplicantService extends BaseService {
         calendar.add(Calendar.DAY_OF_YEAR, -days); // 多少天前
 
         Date indexDate = null;
-        for (int i = 0; (indexDate = calendar.getTime()).before(end) ;) {
+        for (int i = 0; (indexDate = calendar.getTime()).before(end); ) {
             LocalDate l1 = new LocalDate(new DateTime(indexDate));
             LocalDate l2 = new LocalDate(new DateTime(maps.get(i).get("create_time")));
 
@@ -726,9 +735,22 @@ public class UserApplicantService extends BaseService {
      * @return
      * @throws ParseException
      */
-    private String getDaysOfMonth(String date) throws ParseException {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new SimpleDateFormat("yyyy-MM").parse(date));
-        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH) + "";
+    private Integer getDaysOfMonth(String date) {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new SimpleDateFormat("yyyy-MM").parse(date));
+            return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private List<Long> getEmptyList(Integer days) {
+        List<Long> list = new ArrayList<>();
+        for (int i = 0; i < days; i++) {
+            list.add(0L);
+        }
+        return list;
     }
 }
