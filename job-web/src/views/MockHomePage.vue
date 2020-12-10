@@ -56,7 +56,8 @@
         <div class="title-container" style="margin-top: 48px">
             <div class="title-left">本月新入驻面试官</div>
 <!--            v-if="userIdentity!==2"-->
-            <div class="title-right" @click="registerInterviewer" v-if="userIdentity===1" >立即入驻
+<!--            -->
+            <div class="title-right" @click="registerInterviewer"  v-if="userIdentity===1" >立即入驻
                 <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon">
             </div>
         </div>

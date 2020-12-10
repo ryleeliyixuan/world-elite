@@ -191,7 +191,7 @@ const constantRoutes = [
         meta: {title: '寰球菁英-聊一聊'}
     },
     {
-        path: '/webRTC/:id/:interviewerId',
+        path: '/webRTC/:id/:interviewerId/:identity',
         component: () => import('@/views/WebRTC'),
         meta: {title: '寰球菁英-模拟面试'}
     },

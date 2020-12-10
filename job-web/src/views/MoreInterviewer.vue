@@ -124,8 +124,8 @@
                 })
 
                 // 从业时长
-                this.$axios.get("/dict/list", {params: {type: 13, limit: 99}}).then(data => {
-                    this.experienceTimeList = data.data.list.filter(item => item.name !== '不限').map(item => {
+                this.$axios.get("/dict/list", {params: {type: 21, limit: 99}}).then(data => {
+                    this.experienceTimeList = data.data.list.map(item => {
                         item.select = false;
                         return item;
                     })

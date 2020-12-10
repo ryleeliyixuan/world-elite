@@ -11,8 +11,9 @@
                     <el-image :src="interviewer.avatar" class="circle-image" fit="cover"></el-image>
                 </div>
                 <div class="basis-detail">
-                    <div class="basis1">{{interviewer.nickName}}</div>
-                    <div class="basis2">{{interviewer.industry.name}}·{{interviewer.position}}</div>
+                    <div class="basis1">{{interviewer.nickName}}
+                    </div>
+                    <div class="basis2">{{interviewer.industry.name}}<span v-if="interviewer.position">·</span>{{interviewer.position}}</div>
                     <div class="basis3">
                         <el-rate
                                 :value="interviewer.avgScore|toFixed1"
@@ -23,6 +24,7 @@
                                 score-template="{value}"
                                 class="item-rate">
                         </el-rate>
+
                         <span> of 5.0</span>
                     </div>
                 </div>
@@ -44,7 +46,7 @@
         <div class="user-info">个人信息</div>
         <div class="brief-introduction">
             <el-image v-if="interviewer.company" :src="require('@/assets/mock/icon9.png')" class="brief-icon1" fit="fill"></el-image>
-            <div v-if="interviewer.company" class="brief-title" style="margin-right: 62px">公司：{{interviewer.company.name}}</div>
+            <div  class="brief-title" style="margin-right: 62px">公司：{{interviewer.company?interviewer.company.name:interviewer.companyName}}</div>
             <el-image :src="require('@/assets/mock/icon10.png')" class="brief-icon1" fit="fill"></el-image>
             <div class="brief-title" style="margin-right: 62px">行业：{{interviewer.industry.name}}</div>
             <el-image :src="require('@/assets/mock/icon12.png')" class="brief-icon1" fit="fill"></el-image>
@@ -177,6 +179,7 @@
                         font-weight: 500;
                         color: #333333;
                         line-height: 67px;
+
                     }
 
                     .basis2 {

@@ -60,8 +60,8 @@
             </div>
             <div v-else-if="step===2">
                 <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的时间为：</span><span class="dialog-text2">{{startTime}}至{{endTime}}</span></div>
-                <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{findDirection()}}</span>
-                </div>
+                <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{findDirection()}}</span></div>
+                <div style="margin-bottom: 13px;font-size: 16px;color: #333333">为保证视频面试质量，请尽量在电脑端使用最新版本的Chrome浏览器进行面试。</div>
                 <div style="width:100%; height:1px; background:#C9DAFB;margin-bottom: 18px;"></div>
                 <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：
                     <span style="color:#3D6FF4;">￥{{amount}}</span>
@@ -90,6 +90,7 @@
             <div v-else-if="step===3">
                 <el-image class="image-success" :src="require('@/assets/pay-sucsses.png')"></el-image>
                 <div style="font-size: 28px; color: #333333; line-height: 40px;margin: 13px 0; text-align: center;">恭喜您，预约成功！</div>
+                <div style="font-size: 18px; color: #666666; line-height: 40px;margin: 13px 0;">请从头像悬浮菜单-我的面试-我的日历处单击成功预约时段进入面试间</div>
                 <el-button type="primary" @click="onBack" round style="width: 200px; margin: 0 auto; display: block;">返回</el-button>
             </div>
         </el-dialog>
