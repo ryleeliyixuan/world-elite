@@ -15,3 +15,10 @@ INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (192, '咨询', 18, '3', '2020-11-27 15:31:49', '2020-11-27 15:31:49', 0);
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (193, '媒体', 18, '4', '2020-11-27 15:32:01', '2020-11-27 15:32:01', 0);
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (194, '房地产', 18, '5', '2020-11-27 15:32:17', '2020-11-27 15:32:17', 0);
+
+-- Mock中面试官入驻经验年限
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (210, '1年以下', 21, '1', '2020-09-26 17:36:38', '2020-09-26 17:36:38', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (211, '1-3年', 21, '2', '2020-09-26 17:36:47', '2020-09-26 17:36:47', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (212, '3-5年', 21, '3', '2020-09-26 17:37:21', '2020-09-26 17:37:21', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (213, '5-10年', 21, '4', '2020-09-26 17:37:33', '2020-09-26 17:37:33', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (214, '10年以上', 21, '5', '2020-09-26 17:37:49', '2020-09-26 17:37:49', 0);
