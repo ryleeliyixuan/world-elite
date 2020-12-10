@@ -25,7 +25,7 @@
                     <el-image v-else style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record2.png')"></el-image>
                     面试记录
                 </div>
-                <div :class="['button', {'select':menu===3}]" @click="onSettleIn" v-if="userIdentity!==2 && identity===1">
+                <div :class="['button', {'select':menu===3}]" @click="onSettleIn" v-if="userIdentity===1 && identity===1">
                     <el-image v-if="menu===3" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
                     <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
                     立即入驻
@@ -146,7 +146,7 @@
                     </el-table-column>
                     <el-table-column label="操作" width="110">
                         <template slot-scope="scope">
-                            <div class="view" @click="onView(scope.row)">查看评价</div>
+<!--                            <div class="view" @click="onView(scope.row)">查看评价</div>-->
                         </template>
                     </el-table-column>
                     <template slot="empty">
@@ -259,23 +259,6 @@
         </el-dialog>
 
         <el-dialog :visible.sync="eventDialogVisible" width="310px" :show-close="false" top="20%">
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="!showContactEmail">
-                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面试</el-button>
-                <el-button type="info" plain size="mini"
-                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
-                           @click="onCancelInterview">取消面试预约
-                </el-button>
-            </div>
-
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="showContactEmail">
-                <div style="font-weight: bold;font-size: 18px">请联系人工客服：</div>
-                <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
-                <el-button type="primary" primary size="mini"
-                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
-                           @click="onRequire">确认
-                </el-button>
-            </div>
-
             <div style="display: flex; flex-direction: column; align-items: center;" v-if="status!=='1' && identity===2">
                 <div style="font-weight: bold;font-size: 18px">抱歉，您目前无法提供面试预约：</div>
                 <div style="font-weight: bold;font-size: 18px">详情请联系客服：</div>
@@ -283,6 +266,22 @@
                 <el-button type="primary" primary size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
                            @click="onRequire2">确认
+                </el-button>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center;" v-else-if="!showContactEmail">
+                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面试</el-button>
+                <el-button type="info" plain size="mini"
+                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
+                           @click="onCancelInterview">取消面试预约
+                </el-button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center;" v-else-if="showContactEmail">
+                <div style="font-weight: bold;font-size: 18px">请联系人工客服：</div>
+                <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
+                <el-button type="primary" primary size="mini"
+                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
+                           @click="onRequire">确认
                 </el-button>
             </div>
         </el-dialog>

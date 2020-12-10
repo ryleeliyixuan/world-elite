@@ -314,7 +314,8 @@
                     this.remoteVideo = false;
                     this.waiting = true;
                     this.initialization(publisher.userId);
-                    this.$message.success(publisher.displayName + "离开房间");
+                    // this.$message.success(publisher.displayName + "离开房间");
+                    this.$message.success( "对方已离开房间")
                 })
             },
 
