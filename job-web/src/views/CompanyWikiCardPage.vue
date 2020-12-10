@@ -10,7 +10,7 @@
                              :underline="false"
                              v-for="item in industryList" :key="item.id"
                              @click="onLink(item)">
-                        {{item.name + " " + (item.count||"")}}
+                        {{item.name + " " + (item.total||"")}}
                     </el-link>
                 </div>
             </el-scrollbar>
@@ -23,7 +23,7 @@
                           ref="scrollbar">
                 <div class="company-list-container" v-for="item in industryList" :key="item.id">
                     <div class="company-name-container" v-if="companyList[item.id] && companyList[item.id].length > 0">
-                        <div class="company-name" :ref="item.name">{{item.name}} 
+                        <div class="company-name" :ref="item.name">{{item.name}}
 					<!-- 	<span
                                 class="company-count">{{"共" + companyList[item.id].length + "家企业"}}</span> -->
 								</div>
@@ -169,7 +169,7 @@
                     params: {industryId: item.id, keyword: this.keyword}
                 }).then(data => {
                     this.$set(this.companyList, item.id, data.data.list);
-                    this.$set(item, "count", data.data.list.length);
+                    this.$set(item, "total", data.data.total);
                 })
             },
 
@@ -206,7 +206,7 @@
         min-height: calc(100vh - 477px);
 
         .left-container {
-            position: fixed;
+            position: absolute;
             top: 200px;
             left: 30px;
             height: calc(100% - 238px);
@@ -229,7 +229,7 @@
         }
 
         .main-container {
-          
+            /*height: calc(100vh - 38px);*/
             overflow-y: auto;
 
             .main-scrollbar {
