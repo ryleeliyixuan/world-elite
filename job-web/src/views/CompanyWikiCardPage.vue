@@ -98,21 +98,21 @@
                 this.handleWidthChange(window.innerWidth);
             }
 
-            this.$refs.scrollbar.wrap.onscroll = () => {
-                if (!this.timer) { // 自动滚动时不处理
-                    this.industryList.map(item => {
-                        this.$set(item, "select", false)
-                        return item;
-                    })
-                    for (let i = 0; i < this.industryList.length; i++) {
-                        let card = this.$refs[this.industryList[i].name];
-                        if (card && this.$refs.scrollbar.wrap.scrollTop <= card[0].offsetTop) {
-                            this.industryList[i].select = true;
-                            break;
-                        }
-                    }
-                }
-            }
+            // this.$refs.scrollbar.wrap.onscroll = () => {
+            //     if (!this.timer) { // 自动滚动时不处理
+            //         this.industryList.map(item => {
+            //             this.$set(item, "select", false)
+            //             return item;
+            //         })
+            //         for (let i = 0; i < this.industryList.length; i++) {
+            //             let card = this.$refs[this.industryList[i].name];
+            //             if (card && this.$refs.scrollbar.wrap.scrollTop <= card[0].offsetTop) {
+            //                 this.industryList[i].select = true;
+            //                 break;
+            //             }
+            //         }
+            //     }
+            // }
         },
         methods: {
             initData() {
@@ -136,22 +136,23 @@
 
                 let card = this.$refs[item.name];
                 if (card) {
-                    if (this.timer) {
-                        clearInterval(this.timer);
-                    }
-                    this.timer = setInterval(() => {
-                        let offset = (card[0].offsetTop - this.$refs.scrollbar.wrap.scrollTop) * 0.03;
-                        offset = offset > 0 ? Math.ceil(offset) : Math.floor(offset);
-                        this.$refs.scrollbar.wrap.scrollTop += offset;
-                        if (card[0].offsetTop === Math.round(this.$refs.scrollbar.wrap.scrollTop) // 到达位置
-                            || this.$refs.scrollbar.wrap.scrollHeight === Math.round(this.$refs.scrollbar.wrap.scrollTop + this.$refs.scrollbar.wrap.offsetHeight) // 滑到底部
-                        ) {
-                            clearInterval(this.timer);
-                            setTimeout(() => {
-                                this.timer = undefined;
-                            }, 50)
-                        }
-                    }, 10)
+                    document.getElementById("app").scrollTop = card[0].offsetTop + 200;
+                    // if (this.timer) {
+                    //     clearInterval(this.timer);
+                    // }
+                    // this.timer = setInterval(() => {
+                    //     let offset = (card[0].offsetTop - this.$refs.scrollbar.wrap.scrollTop) * 0.03;
+                    //     offset = offset > 0 ? Math.ceil(offset) : Math.floor(offset);
+                    //     this.$refs.scrollbar.wrap.scrollTop += offset;
+                    //     if (card[0].offsetTop === Math.round(this.$refs.scrollbar.wrap.scrollTop) // 到达位置
+                    //         || this.$refs.scrollbar.wrap.scrollHeight === Math.round(this.$refs.scrollbar.wrap.scrollTop + this.$refs.scrollbar.wrap.offsetHeight) // 滑到底部
+                    //     ) {
+                    //         clearInterval(this.timer);
+                    //         setTimeout(() => {
+                    //             this.timer = undefined;
+                    //         }, 50)
+                    //     }
+                    // }, 10)
                 }
 
             },
@@ -227,20 +228,20 @@
             }
         }
 
-        .main-container {
-            height: calc(100vh - 100px);
-            overflow-y: auto;
+        /*.main-container {*/
+        /*    height: calc(100vh - 100px);*/
+        /*    overflow-y: auto;*/
 
-            .main-scrollbar {
-                height: 100%;
-                padding-bottom: 150px;
+        /*    .main-scrollbar {*/
+        /*        height: 100%;*/
+        /*        padding-bottom: 150px;*/
 
-                /deep/ .el-scrollbar__view {
-                    height: 100%;
-                }
+        /*        /deep/ .el-scrollbar__view {*/
+        /*            height: 100%;*/
+        /*        }*/
 
-            }
-        }
+        /*    }*/
+        /*}*/
 
         .company-list-container {
 
