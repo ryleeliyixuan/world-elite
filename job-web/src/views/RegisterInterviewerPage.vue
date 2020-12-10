@@ -404,7 +404,6 @@
                     }
                 });
             },
-
             beforeUpload1(file) {
                 return new Promise((resolve, reject) => {
                     if (checkPicSize(file)) {
