@@ -229,7 +229,7 @@
         }
 
         .main-container {
-            /*height: calc(100vh - 38px);*/
+            height: calc(100vh - 100px);
             overflow-y: auto;
 
             .main-scrollbar {
