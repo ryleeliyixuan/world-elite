@@ -63,6 +63,12 @@
                     </el-form-item>
                 </div>
                 <div>
+                    <el-form-item label="所在职位：" prop="position">
+                        <el-input style="width: 300px" v-model="formOne.position"
+                                  placeholder="请输入您的职位名称"></el-input>
+                    </el-form-item>
+                </div>
+                <div>
                     <el-form-item label="从业时间：" prop="experienceTimeId">
                         <el-select v-model="formOne.experienceTimeId" clearable placeholder="请选择您的工作经验年限" class="section1-select">
                             <el-option v-for="item in experienceTimeOptions" :key="item.experienceTimeId"
@@ -351,6 +357,7 @@
                     name: [{required: true, message: '请输入您的姓名', trigger: 'blur'}],
                     idNumber: [{required: true, trigger: 'blur', validator: isIdNumber}],
                     companyName: [{required: true, message: '请输入您的公司名称', trigger: 'blur'}],
+                    position:[{required: true, message: '请输入您的职位名称', trigger: 'blur'},{max: 15, message: '职位不超过15字符'}],
                     price: [{required: true, message: '请输入您理想资询价位', trigger: 'blur'}, {validator: isPrice, trigger: 'blur'}]
                 },
                 avatarList: [],
