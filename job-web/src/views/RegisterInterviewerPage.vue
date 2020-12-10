@@ -383,7 +383,6 @@
                     this.avatarList = data.data;
                 })
             },
-
             beforeUpload(file) {
                 return new Promise((resolve, reject) => {
                     if (checkPicSize(file)) {
@@ -391,12 +390,13 @@
                     } else {
                         this.loading = true;
                         this.localAvatar = URL.createObjectURL(file);
-                        this.$refs["formOne"].validateField("avatar");
                         getUploadPicToken(file.name).then((response) => {
                             const {data} = response;
                             this.uploadPicOptions.action = data.host;
                             this.uploadPicOptions.params = data;
                             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            this.formOne.avatar = data.host + "/" + data.key;
+                            this.$refs["formOne"].validateField("avatar");
                             resolve(data);
                         }).catch((error) => {
                             reject(error);
@@ -404,6 +404,7 @@
                     }
                 });
             },
+
             beforeUpload1(file) {
                 return new Promise((resolve, reject) => {
                     if (checkPicSize(file)) {
