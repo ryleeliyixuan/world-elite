@@ -281,9 +281,9 @@
                     }
                 }).then(data => {
                     this.orderId = data.data.payOrderId;
-                    if (this.qrCode) {
-                        this.qrCode.makeCode(data.data.qrCodeUrl);
-                    } else {
+                    // if (this.qrCode) {
+                    //     this.qrCode.makeCode(data.data.qrCodeUrl);
+                    // } else {
                         this.qrCode = new QRCode('qrcode', {
                             width: 200,             // 宽度
                             height: 200,            // 高度
@@ -292,7 +292,7 @@
                             colorDark: "#000000",     //二维码颜色
                             colorLight: "#ffffff"  //二维码背景色
                         });
-                    }
+                    // }
                     this.qrcodeLoading = false;
                 }).catch(() => {
                     this.qrcodeLoading = false;

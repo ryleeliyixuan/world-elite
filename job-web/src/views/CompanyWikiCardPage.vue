@@ -143,7 +143,6 @@
                         let offset = (card[0].offsetTop - this.$refs.scrollbar.wrap.scrollTop) * 0.03;
                         offset = offset > 0 ? Math.ceil(offset) : Math.floor(offset);
                         this.$refs.scrollbar.wrap.scrollTop += offset;
-
                         if (card[0].offsetTop === Math.round(this.$refs.scrollbar.wrap.scrollTop) // 到达位置
                             || this.$refs.scrollbar.wrap.scrollHeight === Math.round(this.$refs.scrollbar.wrap.scrollTop + this.$refs.scrollbar.wrap.offsetHeight) // 滑到底部
                         ) {
