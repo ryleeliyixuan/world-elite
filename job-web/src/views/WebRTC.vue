@@ -120,6 +120,7 @@
         mounted() {
             this.eventId = this.$route.params.id;
             this.interviewerId = this.$route.params.interviewerId;
+            this.dialogText = this.$route.params.identity === "2" ? "如果面试者15分钟内未出现请联系人工客服。" : "如果面试官15分钟内未出现请联系人工客服。"
 
             // 获取对方信息（主要获取面试官的信息）
             this.getInterviewerInfo(this.interviewerId);
@@ -151,7 +152,8 @@
                     })
                 })
             }).catch(() => {
-                this.$router.push({path: "/login", query: {...this.$route.query, redirect: "/chat"}});
+                this.$message.warning("即时通信组件初始化失败，请重新登录");
+                this.$router.push({path: "/login", query: {...this.$route.query, redirect: `/webRTC/${this.$route.params.id}/${this.$route.params.interviewerId}/${this.$route.params.identity}`}});
             });
             this.$emit("complete");
         },
@@ -301,7 +303,7 @@
                             console.log("订阅断开 取消订阅失败", err)
                         });
                     }
-                    this.$message.warning(msg)
+                    // this.$message.warning(msg)
                 });
 
                 /**
@@ -315,7 +317,7 @@
                     this.waiting = true;
                     this.initialization(publisher.userId);
                     // this.$message.success(publisher.displayName + "离开房间");
-                    this.$message.success( "对方已离开房间")
+                    this.$message.success("对方已离开房间")
                 })
             },
 

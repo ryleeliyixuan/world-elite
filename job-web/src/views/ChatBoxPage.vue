@@ -222,7 +222,7 @@
                     "你好，看了你的招聘，非常感兴趣",
                     "您好，请问什么时候能安排面试？",
                     "您好，请问有消息了吗？"],
-            // 表情符
+                // 表情符
                 emojis: ["😋", "😠", "😩", "😡", "😲", "😱", "😞", "😏", "😵", "😰", "😋", "😒",
                     "😍", "😤", "😜", "😝", "😋", "😘", "😚", "😷", "😳", "😃", "😅", "😆",
                     "😁", "😂", "😄", "😢", "😭", "😨", "😪", "😏", "😓", "😥", "😉", "😺",
@@ -246,7 +246,7 @@
         mounted() {
             // 初始化webSocket
             im.init(this.receiveMessage).then((data) => {
-                if(this.$route.path==="/chat") {
+                if (this.$route.path === "/chat") {
                     this.userId = data.userId;
                     this.token = data.token;
                     this.getConversationList();
@@ -262,7 +262,7 @@
             // 获取会话列表
             getConversationList() {
                 im.getConversationList().then(data => {
-                    this.conversationList = data;
+                    this.conversationList = data.filter(item => item.jobId !== "0");
 
                     if (this.$route.query.toUser) { // 打开与指定联系人的会话
                         this.conversationList.forEach(item => {
@@ -497,7 +497,7 @@
 
             // 接收消息处理
             receiveMessage(value) {
-                if(this.$route.path==="/chat") {
+                if (this.$route.path === "/chat") {
                     // 消息来自已经打开的窗口
                     if (value.fromUser === this.conversationItem.friendVo.friendUserId) {
                         im.msgAsReadMessage(value.fromUser, value.toUser, [value.messageId], value.conversation.conversationId);

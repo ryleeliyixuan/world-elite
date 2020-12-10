@@ -13,8 +13,8 @@
         </div>
         <div class="content-container">
             <div class="button-container">
-                <el-avatar :src="avatar" :size="117" cover class="avatar"></el-avatar>
-                <div class="username">{{name}}</div>
+                <el-avatar :src="myInfo.avatar" :size="117" cover class="avatar"></el-avatar>
+                <div class="username">{{myInfo.name}}</div>
                 <div :class="['button', {'select':menu===1}]" @click="onMineCalendar">
                     <el-image v-if="menu===1" style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar.png')"></el-image>
                     <el-image v-else style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar2.png')"></el-image>
@@ -146,7 +146,7 @@
                     </el-table-column>
                     <el-table-column label="操作" width="110">
                         <template slot-scope="scope">
-<!--                            <div class="view" @click="onView(scope.row)">查看评价</div>-->
+                            <!--                            <div class="view" @click="onView(scope.row)">查看评价</div>-->
                         </template>
                     </el-table-column>
                     <template slot="empty">
@@ -362,7 +362,7 @@
                 beginTime: 0, // 预约起始时间
                 endFirst: '23:30', // 预约最大开始时间
                 endTime: 0, // 预约结束时间
-                endSecond:'24:00', // 预约最大结束时间
+                endSecond: '24:00', // 预约最大结束时间
                 repeat: "1", // 要预约的类型
                 typeList: [{label: "不重复", value: "1"},
                     {label: "按周重复", value: "2"},
@@ -445,6 +445,7 @@
                 incomeDetailList: undefined, // 收益明细记录
                 incomeDetailPage: 1, // 收益明细记录页码
                 incomeDetailTotal: 0, // 收益明细记录总数
+                myInfo: {},//面试官信息
             }
         },
         watch: {
@@ -459,12 +460,8 @@
             }
         },
         computed: {
-            avatar() {
-                return this.$store.state.user.avatar;
-            },
-
             name() {
-                return this.$store.state.user.name;
+                return this.myInfo.nickName ? this.myInfo.nickName : this.$store.state.user.name;
             },
 
             startSecond() {
@@ -481,6 +478,8 @@
                 this.$axios.get("/mock/interviewer/my-info").then(data => {
                     this.userIdentity = data.data ? 2 : 1;
                     this.status = data.data && data.data.status;
+                    this.myInfo.avatar = data.data && data.data.avatar || this.$store.state.user.avatar;
+                    this.myInfo.name = data.data && data.data.nickName || this.$store.state.user.name;
                 })
             },
 
@@ -582,7 +581,7 @@
                     } else if (Date.now() < item.beginTime - 15 * 60 * 1000) {
                         this.$message.warning("开始前15分钟可以进入房间等待");
                     } else {
-                        this.$router.push(`/webRTC/${item.reservationId}/${item.interviewerId}`);
+                        this.$router.push(`/webRTC/${item.reservationId}/${item.interviewerId}/${this.identity}`);
                     }
                 }
             },
@@ -654,14 +653,16 @@
 
             // 点击事件
             onEventClick(info) {
-                this.eventItem = {
-                    id: info.event.id,
-                    start: info.event.start,
-                    end: info.event.end,
-                    interviewerId: info.event.extendedProps.interviewerId
-                };
-                this.showContactEmail = false;
-                this.eventDialogVisible = true;
+                if (info.event.backgroundColor === '#FFE58F') {  // #FFE58F // 被预约  // #D3F261 // 可预约
+                    this.eventItem = {
+                        id: info.event.id,
+                        start: info.event.start,
+                        end: info.event.end,
+                        interviewerId: info.event.extendedProps.interviewerId
+                    };
+                    this.showContactEmail = false;
+                    this.eventDialogVisible = true;
+                }
             },
 
             // 进入视频面试
@@ -672,7 +673,7 @@
                 } else if (Date.now() < this.eventItem.start - 15 * 60 * 1000) {
                     this.$message.warning("开始前15分钟可以进入房间等待");
                 } else {
-                    this.$router.push(`/webRTC/${this.eventItem.id}/${this.eventItem.interviewerId}`);
+                    this.$router.push(`/webRTC/${this.eventItem.id}/${this.eventItem.interviewerId}/${this.identity}`);
                 }
             },
 

@@ -293,7 +293,7 @@
             // 获取会话列表
             getConversationList() {
                 im.getConversationList().then(data => {
-                    this.conversationList = data;
+                    this.conversationList = data.filter(item => item.jobId !== "0");
 
                     if (this.$route.query.toUser) { // 打开与指定联系人的会话
                         this.conversationList.forEach(item => {
