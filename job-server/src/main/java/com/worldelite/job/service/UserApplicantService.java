@@ -641,7 +641,7 @@ public class UserApplicantService extends BaseService {
         calendar.setTime(start);
 
         Date indexDate = null;
-        for (int i = 0; (indexDate = calendar.getTime()).before(end) ;) {
+        for (int i = 0; (indexDate = calendar.getTime()).compareTo(end) <= 0 ;) {
             LocalDate l1 = new LocalDate(new DateTime(indexDate));
             LocalDate l2 = new LocalDate(new DateTime(maps.get(i).get("create_time")));
             if (l1.equals(l2)) { // 相等
