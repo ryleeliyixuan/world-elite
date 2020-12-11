@@ -207,11 +207,11 @@
         margin: 0 auto;
         padding: 20px;
         min-height: calc(100vh - 477px);
-
+        position: relative;
         .left-container {
             position: absolute;
-            top: 200px;
-            left: 30px;
+            top: 25px;
+            left: -100px;
             height: calc(100% - 238px);
             overflow-y: auto;
 
