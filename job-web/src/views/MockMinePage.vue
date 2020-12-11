@@ -407,9 +407,9 @@
                     eventBackgroundColor: '#D3F261', // 块背景色
                     displayEventEnd: true, // 显示事件结束时间
                     eventTimeFormat: { // am / pm
-                        hour: 'numeric',
+                        hour: '2-digit',
                         minute: '2-digit',
-                        meridiem: 'short'
+                        hour12: false
                     },
 
                     eventClassNames: "event-text"
