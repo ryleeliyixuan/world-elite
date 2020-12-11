@@ -80,11 +80,14 @@
                     </el-form-item>
                 </div>
                 <div>
-                    <el-form-item label="从业经历：" prop="experience.experienceItem">
+                    <el-form-item label="从业经历："
+                                  prop="experienceIm">
                         <div class="textarea-container">
                             <div class="textarea-item" v-for="(item,index) in formOne.experience">
                                 <span class="experience-title">{{index+1}}.</span>
-                                <el-input class="experience" type="textarea" v-model="item.experienceItem"
+                                <el-input class="experience"
+                                          type="textarea"
+                                          v-model="item.experienceItem"
                                           maxlength="150"
                                           placeholder="字数不超过150字" resize="none"
                                           :autosize="{minRows: 2,maxRows: 10}"></el-input>
@@ -235,6 +238,7 @@
                 <div class="button1" @click="active=2">上一步</div>
                 <div>
                     <el-button class="button1" @click="dialogVisible = true">其他认证方式</el-button>
+
                     <el-dialog
                             title="提示"
                             :visible.sync="dialogVisible"
@@ -303,7 +307,13 @@
                     }
                 }
             };
-
+            let experienceIm = (rule,value,callback)=>{
+                if (!this.formOne.experience){
+                    callback("请输入从业经历")
+                }else{
+                    callback()
+                }
+            }
             let identity = (rule, value, callback) => {
                 if (!this.formThree.faceUrl && !this.formThree.emblemUrl && !this.formThree.holdUrl) {
                     callback("请按要求上传三张身份证照片");
@@ -378,7 +388,9 @@
                     industryId: [{required: true, message: "请选择行业", trigger: "change"}],
                     experienceTimeId: [{required: true, message: "请选择从业时间", trigger: "change"}],
                     name: [{required: true, message: '请输入您的姓名', trigger: 'blur'}],
+                    experienceIm:[{required: true, validator: experienceIm, trigger: 'blur'}],
                     idNumber: [{required: true, trigger: 'blur', validator: isIdNumber}],
+                    description:[{required:true,message:'请输入面试官自述',trigger: 'blur'}],
                     companyName: [{required: true, message: '请输入您的公司名称', trigger: 'blur'}],
                     position: [{required: true, message: '请输入您的职位名称', trigger: 'blur'}, {
                         max: 15,
@@ -447,17 +459,20 @@
                         reject();
                     } else {
                         this.loading1 = true;
-                        this.formThree.faceUrl = URL.createObjectURL(file);
+                        // this.formThree.faceUrl = URL.createObjectURL(file);
                         getUploadPicToken(file.name).then((response) => {
                             const {data} = response;
                             this.uploadPicOptions.action = data.host;
                             this.uploadPicOptions.params = data;
                             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            // this.formThree.faceUrl = data.host + "/" + data.key;
+                            this.$refs["formThree"].validateField("identity");
                             resolve(data);
                         }).catch((error) => {
                             reject(error);
                         });
                     }
+                    console.log(this.formThree.faceUrl);
                 });
             },
             beforeUpload2(file) {
@@ -466,12 +481,14 @@
                         reject();
                     } else {
                         this.loading2 = true;
-                        this.formThree.emblemUrl = URL.createObjectURL(file);
+
                         getUploadPicToken(file.name).then((response) => {
                             const {data} = response;
                             this.uploadPicOptions.action = data.host;
                             this.uploadPicOptions.params = data;
                             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+
+
                             resolve(data);
                         }).catch((error) => {
                             reject(error);
@@ -485,12 +502,14 @@
                         reject();
                     } else {
                         this.loading3 = true;
-                        this.formThree.holdUrl = URL.createObjectURL(file);
+
                         getUploadPicToken(file.name).then((response) => {
                             const {data} = response;
                             this.uploadPicOptions.action = data.host;
                             this.uploadPicOptions.params = data;
                             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            // this.formThree.holdUrl = data.host + "/" + data.key;
+                            this.$refs["formThree"].validateField("identity");
                             resolve(data);
                         }).catch((error) => {
                             reject(error);
@@ -503,16 +522,25 @@
                 this.loading = false;
             },
             handleUploadSuccess1() {
-                this.$refs["formThree"].validateField('identity');
                 this.loading1 = false;
+                this.formThree.faceUrl = this.uploadPicOptions.fileUrl;
+                this.$refs["formThree"].validateField("identity");
+                console.log(this.formThree.faceUrl)
+
             },
             handleUploadSuccess2() {
-                this.$refs["formThree"].validateField('identity');
+
                 this.loading2 = false;
+                this.formThree.emblemUrl = this.uploadPicOptions.fileUrl;
+                this.$refs["formThree"].validateField("identity");
+                console.log(this.formThree.emblemUrl)
             },
             handleUploadSuccess3() {
-                this.$refs["formThree"].validateField('identity');
+
                 this.loading3 = false;
+                this.formThree.holdUrl = this.uploadPicOptions.fileUrl;
+                this.$refs["formThree"].validateField("identity");
+                console.log(this.formThree.holdUrl)
             },
 
             onDefaultAvatar(item) {
