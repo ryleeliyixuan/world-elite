@@ -259,7 +259,6 @@
                     color: #000;
                 }
                 .company-name-text {
-                    width: 28px;
                     height: 20px;
                     font-size: 14px;
                     font-family: PingFangSC-Regular, PingFang SC;
@@ -269,7 +268,7 @@
                 }
                 .company-name-icon{
                     width: 8px;
-                    height: 14px;
+                    height: 12px;
                 }
 
                 .company-count {
