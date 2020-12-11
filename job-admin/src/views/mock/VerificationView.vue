@@ -3,16 +3,20 @@
     <h2>{{verification.name}}</h2>
     <p>
       <b>身份证：</b>
-      {{verification.idCard}}
+      {{verification.idNumber}}
     </p>
-    <el-image style="width: 300px;" :src="verification.idCardPic"></el-image>
-    <p>{{verification.company}} . {{verification.post}}</p>
-    <el-image style="width: 500px;" :src="verification.companyLicensePic"></el-image>
+
+    <p>身份证人像面</p>
+    <el-image style="width: 300px;" :src="verification.faceUrl"></el-image>
+    <p>身份证国徽面</p>
+    <el-image style="width: 500px;" :src="verification.emblemUrl"></el-image>
+    <p>手持身份证</p>
+    <el-image style="width: 500px;" :src="verification.holdUrl"></el-image>
   </div>
 </template>
 
 <script>
-import { getUserVerifyInfo } from "@/api/verify_api";
+import { getInterviewerVerifyInfo } from "@/api/verify_api";
 
 export default {
   name: "VerificationView",
@@ -28,16 +32,16 @@ export default {
   },
   watch: {
     userId() {
-      this.getUserVerifyInfo();
+      this.getInterviewerVerifyInfo();
     }
   },
   created() {
-    this.getUserVerifyInfo();
+    this.getInterviewerVerifyInfo();
   },
   methods: {
-    getUserVerifyInfo() {
+    getInterviewerVerifyInfo() {
       if (this.userId) {
-        getUserVerifyInfo(this.userId).then(response => {
+        getInterviewerVerifyInfo(this.userId).then(response => {
           this.verification = response.data;
         });
       }

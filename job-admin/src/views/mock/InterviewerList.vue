@@ -6,7 +6,8 @@
           <el-input v-model="listQuery.id" placeholder="用户ID" @keyup.enter.native="handleFilter" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="listQuery.nickName" placeholder="用户名" @keyup.enter.native="handleFilter" clearable></el-input>
+          <el-input v-model="listQuery.nickName" placeholder="用户名" @keyup.enter.native="handleFilter"
+                    clearable></el-input>
         </el-form-item>
         <el-form-item>
           <el-input v-model="listQuery.email" placeholder="Email" @keyup.enter.native="handleFilter"
@@ -42,7 +43,9 @@
       style="margin-top: 10px"
     >
       <el-table-column label="用户ID" prop="id" width="180">
-
+        <template slot-scope="{row}">
+          <el-button type="text" @click="showUserVerification(row)">{{ row.id }}</el-button>
+        </template>
       </el-table-column>
       <el-table-column label="用户名" prop="nickName"></el-table-column>
       <el-table-column label="状态" prop="status">
@@ -51,10 +54,18 @@
         </template>
       </el-table-column>
       <el-table-column label="从事行业" prop="industry.name"></el-table-column>
-      <el-table-column label="所在公司" prop="company.name"></el-table-column>
-      <el-table-column label="提供面试类型" prop="createTime"></el-table-column>
+      <el-table-column label="所在公司">
+        <template slot-scope="{row}">
+          {{row.company?row.company.name:row.companyName}}
+        </template>
+      </el-table-column>
+      <el-table-column label="提供面试类型" prop="interviewDirectionType" :show-overflow-tooltip='true'></el-table-column>
       <el-table-column label="经验年限" prop="experienceTime.name"></el-table-column>
-      <el-table-column label="已面试时长" prop="createTime" v-if="listQuery.status === '1'"></el-table-column>
+      <el-table-column label="已面试时长" v-if="listQuery.status === '1'">
+        <template slot-scope="{row}">
+          {{row.totalInterviewTime}}小时
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="350">
         <template slot-scope="{row}">
           <span v-if="row.status !== '0'">
@@ -95,13 +106,13 @@
               type="success"
               size="mini"
               icon="el-icon-check"
-              @click=""
+              @click="handleVerifyUser(row, 2)"
             >通过</el-button>
             <el-button
               type="warning"
               size="mini"
               icon="el-icon-close"
-              @click=""
+              @click="handleVerifyUser(row, 3)"
             >拒绝</el-button>
           </span>
         </template>
@@ -120,12 +131,12 @@
       <div
         class="drawer__footer"
         style="padding: 12px"
-        v-if="verifyUser && verifyUser.status === 0"
+        v-if="verifyUser && verifyUser.status === '0'"
       >
         <el-button type="success" icon="el-icon-check" @click="handleVerifyUser(verifyUser, 2)">通过</el-button>
         <el-button type="warning" icon="el-icon-close" @click="handleVerifyUser(verifyUser, 3)">拒绝</el-button>
       </div>
-      <VerificationView :userId="verifyUser?verifyUser.userId : undefined"></VerificationView>
+      <VerificationView :userId="verifyUser?verifyUser.id : undefined"></VerificationView>
     </el-drawer>
   </div>
 </template>
@@ -135,7 +146,7 @@
   import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
   import VerificationView from "./VerificationView";
   import {getInterviewerList, modifyCorporateStatus} from "@/api/mock_api";
-  import {verifyCompanyUser} from "@/api/verify_api";
+  import {verifyInterviewer} from "@/api/verify_api";
 
   export default {
     name: "InterviewerList",
@@ -156,7 +167,7 @@
           limit: 20,
         },
         statusForm: {
-          userId: undefined,
+          id: undefined,
           status: undefined,
           reason: undefined
         },
@@ -242,7 +253,7 @@
       },
       handleVerifyUser(user, status) {
         this.verifyDrawerVisible = false;
-        this.statusForm.userId = user.userId;
+        this.statusForm.id = user.id;
         this.statusForm.status = status;
         if (status === 2) {
           this.$confirm("此操作将通过审核, 是否继续?", "提示", {
@@ -250,7 +261,7 @@
             cancelButtonText: "取消",
             type: "warning"
           }).then(() => {
-            verifyCompanyUser(this.statusForm).then(response => {
+            verifyInterviewer(this.statusForm).then(response => {
               this.getList();
               this.$message("操作成功");
             });
@@ -261,16 +272,17 @@
             cancelButtonText: "取消"
           }).then(({value}) => {
             this.statusForm.reason = value;
-            verifyCompanyUser(this.statusForm).then(response => {
+            verifyInterviewer(this.statusForm).then(response => {
               this.getList();
               this.$message("操作成功");
             });
           });
         }
       },
-      showUserVerfication(user) {
+      showUserVerification(user) {
         this.verifyDrawerVisible = true;
         this.verifyUser = user;
+        console.log(this.verifyUser);
       },
       addInterviewer() {
         this.$router.push("/mock/registerInterviewer");

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getInterviewerList(data) {
   return request({
-    url: '/mock/interviewer/list',
+    url: '/mock/interviewer/admin/list',
     method: 'get',
     params: data
   })
