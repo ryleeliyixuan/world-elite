@@ -26,7 +26,7 @@
                         </el-rate>
                         <div class="item-bottom">
                             <img src="../assets/mock/icon1.png" alt="" class="item-bottom-icon1">
-                            <div class="item-bottom-text1" v-if="interviewer.company">{{interviewer.company.name}}</div>
+                            <div class="item-bottom-text1">{{interviewer.company?interviewer.company.name:interviewer.companyName}}</div>
                             <img src="../assets/mock/icon2.png" alt="" class="item-bottom-icon1" style="margin-left: 38px">
                             <div class="item-bottom-text1" v-if="interviewer.industry">{{interviewer.industry.name}}</div>
                         </div>
