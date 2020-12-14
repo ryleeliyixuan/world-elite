@@ -87,6 +87,9 @@
     import "@/utils/rtcUtils"
     import {sha256} from "@/utils/sha256"
     import im from "@/utils/im"
+    import store from "@/store";
+    import router from "@/router";
+    import {curRelativePath} from "@/utils/common";
 
     export default {
         name: "InterviewPage",
@@ -157,11 +160,13 @@
                 })
             }).catch(() => {
                 this.$message.warning("即时通信组件初始化失败，请重新登录");
-                this.$router.push({path: "/login",
-                    query: {
-                        ...this.$route.query,
-                        redirect: `/webRTC/${this.$route.params.id}/${this.$route.params.interviewerId}/${this.$route.params.identity}`
-                    }
+                store.dispatch('user/LOGOUT').then(() => {
+                    this.$router.push({path: "/login",
+                        query: {
+                            ...this.$route.query,
+                            redirect: `/webRTC/${this.$route.params.id}/${this.$route.params.interviewerId}/${this.$route.params.identity}`
+                        }
+                    });
                 });
             });
             this.$emit("complete");
