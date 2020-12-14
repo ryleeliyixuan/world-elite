@@ -30,9 +30,9 @@ public class CompanyPostVo implements VoConvertable<CompanyPostVo, CompanyPost>{
     private Integer comments; //评论数
     private Integer reports; //举报数
     private Integer hots; //热度
-    @JSONField(format = "yyyy-MM-dd")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime; //创建时间
-    @JSONField(format = "yyyy-MM-dd")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime; //更新时间
     private String content; //帖子内容
     private String image; //帖子图片

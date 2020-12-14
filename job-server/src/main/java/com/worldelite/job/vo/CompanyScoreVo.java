@@ -21,9 +21,9 @@ public class CompanyScoreVo implements VoConvertable<CompanyScoreVo, CompanyScor
     private Integer comments; //评论数
     private Integer reports; //举报数
     private Integer hots; //热度
-    @JSONField(format = "yyyy-MM-dd")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime; //创建时间
-    @JSONField(format = "yyyy-MM-dd")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime; //更新时间
     private String content; //评分内容
     private Integer score; //评分
