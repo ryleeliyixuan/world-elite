@@ -521,16 +521,18 @@
                   v-if="post.image && post.image.length > 0"
                   class="hotest-post-thumbnail"
                   :src="post.image"
+                  @click="handleGoToHotPost(post.companyId, post.id)"
                 />
                 <img
                   v-else
                   class="hotest-post-thumbnail"
                   :src="post.company.logo"
+                  @click="handleGoToHotPost(post.companyId, post.id)"
                 />
               </el-col>
               <el-col :span="14">
                 <div class="d-flex flex-column">
-                  <strong class="mb-1">{{ post.title }}</strong>
+                  <strong class="mb-1" @click="handleGoToHotPost(post.companyId, post.id)">{{ post.title }}</strong>
                   <el-tag class="mb-1"> 热度: {{ post.hots }} </el-tag>
                   <small style="color: #a1aebf">{{ post.createTime }}</small>
                 </div>
@@ -674,7 +676,7 @@ export default {
   },
   watch: {
     $route() {
-      // this.getPostList();
+      this.initData() 
     },
   },
   methods: {
@@ -686,6 +688,9 @@ export default {
       this.getPostDetail();
       this.getPostList();
       this.getCommentList();
+    },
+    handleGoToHotPost(companyId, id){
+      this.$router.push(`/company/${companyId}/postdetail?postId=${id}`);
     },
     onLoginClick() {
       this.$router.push("/login");
