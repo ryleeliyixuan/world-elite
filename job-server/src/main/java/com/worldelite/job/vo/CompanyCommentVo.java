@@ -23,9 +23,9 @@ public class CompanyCommentVo implements VoConvertable<CompanyCommentVo, Company
     private Integer reports; //举报数
     private Integer comments; //评论数
     private Integer hots; //热度
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm")
     private Date createTime; //创建时间
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm")
     private Date updateTime; //更新时间
     private String content; //评论内容
 
