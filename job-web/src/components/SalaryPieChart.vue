@@ -49,28 +49,27 @@ export default {
       myChart.setOption({
         title: {
           text: "薪资待遇分布图", //主标题
-          padding: [100, 100,100,100],
+          padding: [100, 100, 100, 100],
           subtext: this.name, //副标题
           x: "center", //x轴方向对齐方式
           y: "top",
         },
-
         tooltip: {
           trigger: "item",
           formatter: "{a} <br/>{b} : {c} ({d}%)",
         },
+        color: ["#2F54EB","#F5222D","#FA541C","#FFC53D","#95DE64","#00E5FF","#7C4DFF","#FA541C","#00E676","#1A237E"],
         series: [
           {
             name: "数据来源",
             type: "pie",
-            radius: "55%",
+            radius: ["25%", "50%"],
             center: ["50%", "60%"],
             data: salaryData,
             itemStyle: {
-              emphasis: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
+              normal: {
+                borderWidth: 4,
+                borderColor: "#fff",
               },
             },
           },

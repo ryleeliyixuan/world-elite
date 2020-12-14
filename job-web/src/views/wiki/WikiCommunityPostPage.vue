@@ -1,5 +1,12 @@
 <template>
   <div class="community-post-container" v-if="postPage">
+    <div class="d-flex align-items-center">
+      <el-link :underline="false" style="color: #4895ef">闲聊区</el-link>
+      <span class="mr-2 ml-2" style="color: #999999"> / </span>
+      <el-link :underline="false" style="color: #999999" @click="goToScore"
+        >评分区</el-link
+      >
+    </div>
     <div
       v-if="postPage.list && postPage.list.length > 0"
       class="community-post-display"
@@ -36,7 +43,8 @@
                 </div>
                 <div class="community-post-item-title-stats">
                   <el-tag size="medium" type="danger"
-                    ><i class="el-icon-s-opportunity"></i> 热度: {{ post.hots }}
+                    ><i class="el-icon-s-opportunity"></i> 热度:
+                    {{ post.hots }}
                   </el-tag>
                   <el-tag size="medium" type="success">
                     <i class="el-icon-time"></i> {{ post.updateTime }}
@@ -54,7 +62,7 @@
           </el-card>
         </el-col>
       </el-row>
-      <div class="load-more">
+      <div class="load-more mb-4">
         <div
           class="community-load-more-post mt-2 d-flex justify-content-center"
           v-if="hasMorePost == true"
@@ -66,10 +74,14 @@
         </div>
       </div>
     </div>
-    <div v-else class="noInfoMsgBox">暂无帖子，快来发表你的帖子吧！</div>
-    <el-divider></el-divider>
-    <!-- 如果登录，显示评分界面 -->
-    <div v-if="token" class="community-post-comment">
+    <div v-else class="noInfoMsgBox">
+      <svg-icon
+        icon-class="post-missing"
+        style="height: 265px; width: 344px; margin-top: 50px"
+      />
+      <div>来做第一个发帖子的人吧！</div>
+    </div>
+    <div class="community-post-comment" style="margin-bottom: 90px">
       <div class="d-flex mb-2">
         <h5 class="mr-3">发布帖子</h5>
         <div style="color: grey; font-size: 14px">
@@ -80,7 +92,7 @@
         ref="postForm"
         :model="postForm"
         :rules="postFormRules"
-        label-width="100px"
+        label-width="90px"
         class="mt-4"
         label-position="left"
         hide-required-asterisk
@@ -89,7 +101,7 @@
           <el-input
             type="textarea"
             :rows="1"
-            placeholder="请输入标题（登录后可以发表留言）"
+            placeholder="请输入标题"
             v-model="postForm.title"
             style="margin-bottom: 12px"
             maxlength="50"
@@ -97,53 +109,72 @@
           >
           </el-input>
         </el-form-item>
+        <el-form-item class="post-add-tag" label="标签">
+          <el-tag
+            :key="tag"
+            v-for="tag in dynamicTags"
+            closable
+            :disable-transitions="false"
+            @close="handleClose(tag)"
+          >
+            {{ tag }}
+          </el-tag>
+          <el-input
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="small"
+            @keyup.enter.native="handleInputConfirm()"
+            @blur="handleInputConfirm"
+          >
+          </el-input>
+          <el-button
+            v-else
+            class="button-new-tag"
+            size="small"
+            @click="showInput"
+            ><svg-icon icon-class="add-tag" style="height: 15px; width: 15px" />
+            添加新标签
+          </el-button>
+        </el-form-item>
       </el-form>
-      <div class="mb-4">
-        <el-tag
-          :key="tag"
-          v-for="tag in dynamicTags"
-          closable
-          :disable-transitions="false"
-          @close="handleClose(tag)"
-        >
-          {{ tag }}
-        </el-tag>
-        <el-input
-          class="input-new-tag"
-          v-if="inputVisible"
-          v-model="inputValue"
-          ref="saveTagInput"
-          size="small"
-          @keyup.enter.native="handleInputConfirm()"
-          @blur="handleInputConfirm"
-        >
-        </el-input>
-        <el-button
-          v-else
-          class="button-new-tag"
-          size="small"
-          icon="el-icon-circle-plus"
-          @click="showInput"
-        >
-          添 加 新 标 签
-        </el-button>
-      </div>
       <tinymce
+        v-if="token"
+        style="padding-left: 84px"
         v-loading="loading"
         v-model="postForm.content"
         :width="'100%'"
       ></tinymce>
-      <div class="mt-2 d-flex justify-content-end">
-        <el-button type="primary" @click="savePost" :loading="saveLoading"
-          >发 布 帖 子</el-button
+      <div
+        class="log-in-alert p-2"
+        v-else
+        style="font-size: 14px; color: #cccccc"
+      >
+        您还没有登陆哦~赶快<el-link
+          style="color: #568ed0; text-decoration: underline"
+          @click="onLoginClick"
+          >登录</el-link
         >
       </div>
-    </div>
-    <!-- 如果未登录，跳转至登录界面 -->
-    <div v-else class="noInfoMsgBox">
-      <el-button type="primary" icon="el-icon-user-solid" @click="onLoginClick">
-        登录后可发表帖子，点此登录
-      </el-button>
+      <div class="post-button mt-2 d-flex justify-content-end">
+        <el-button
+          v-if="token"
+          type="mini"
+          @click="savePost"
+          :loading="saveLoading"
+          >发布帖子</el-button
+        >
+        <div v-else class="disable">
+          <el-button
+            disabled
+            type="mini"
+            @click="savePost"
+            :loading="saveLoading"
+            >发布帖子</el-button
+          >
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -267,6 +298,10 @@ export default {
       }
       this.getPostList();
     },
+    //score
+    goToScore() {
+      this.$router.push(`/company/${this.companyId}/score`);
+    },
     //tags
     handleClose(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
@@ -320,7 +355,7 @@ export default {
       });
     },
     handleOpenPostDetail(id) {
-      const urlRootPath = `/company/${this.companyId}/community/postdetail`;
+      const urlRootPath = `/company/${this.companyId}/postdetail`;
       this.$router.push({
         path: urlRootPath,
         query: { postId: id },
@@ -339,6 +374,73 @@ export default {
 </script>
 
 <style scoped lang="scss">
+/deep/ .post-button .disable .el-button {
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #999999;
+  line-height: 22px;
+  width: 117px;
+  height: 33px;
+  background: #eeeeee;
+  border-radius: 5px;
+  border: 0px;
+}
+
+.log-in-alert {
+  margin-left: 85px;
+  height: 110px;
+  border-radius: 7px;
+  border: 1px solid #b4c4d0;
+}
+
+/deep/ .el-form-item__label {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 16px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #333333;
+  line-height: 25px;
+}
+
+//tag
+/deep/ .el-form-item {
+  display: flex;
+  align-items: center;
+}
+
+/deep/ .el-form-item__content {
+  width: 100%;
+  margin-left: 0px !important;
+}
+
+/deep/ .post-add-tag .el-tag {
+  background-color: #f1f6fd;
+  border: 0px;
+  border-radius: 7px;
+  color: #568ed0;
+  font-weight: 500;
+  position: relative;
+  padding: 0 20px;
+}
+
+/deep/ .post-add-tag .el-tag .el-icon-close {
+  position: absolute !important;
+  color: #fff;
+  background-color: #568ed0;
+  top: -3px;
+  right: -7px;
+}
+
+/deep/ .post-add-tag .el-button {
+  background: #f1f6fd;
+  border-radius: 7px;
+  border: 0px;
+  font-weight: 500;
+  color: #568ed0;
+  line-height: 22px;
+}
+
 .noInfoMsgBox {
   line-height: 80px;
   text-align: center;
@@ -357,7 +459,6 @@ export default {
 }
 
 .button-new-tag {
-  margin-left: 10px;
   height: 32px;
   line-height: 30px;
   padding-top: 0;
@@ -373,8 +474,17 @@ export default {
   margin-left: 10px;
 }
 
-.community-container {
+.el-tag + .button-new-tag {
+  margin-left: 10px;
+}
+
+.community-post-container {
   width: 100%;
+  box-shadow: 0px 18px 14px 3px rgba(205, 213, 224, 0.3);
+  background: #ffffff;
+  padding: 20px 50px 20px 50px;
+  margin-bottom: 80px;
+
   .community-post-item {
     padding: 14px;
     display: flex;

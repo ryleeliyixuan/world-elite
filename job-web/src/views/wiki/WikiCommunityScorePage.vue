@@ -1,5 +1,12 @@
 <template>
   <div class="community-score-container">
+    <div class="d-flex align-items-center">
+      <el-link :underline="false" style="color: #999999" @click="goToPost"
+        >闲聊区</el-link
+      >
+      <span class="mr-2 ml-2" style="color: #999999"> / </span>
+      <el-link :underline="false" style="color: #4895ef">评分区</el-link>
+    </div>
     <div
       class="community-score-display"
       v-if="scorePage && scorePage.list.length > 0"
@@ -476,13 +483,23 @@
         <el-button round disabled> 没 有 更 多 了 </el-button>
       </div>
     </div>
-    <div v-if="scorePage && scorePage.list.length === 0" class="noInfoMsgBox">
-      暂无评分，快来发表你的评分吧！
+    <div
+      v-if="scorePage && scorePage.list.length === 0"
+      class="score-missing"
+      style="margin-top: 60px"
+    >
+      <svg-icon
+        icon-class="score-missing"
+        style="height: 265px; width: 344px; margin-bottom: 17px"
+      />
+      <div>来做第一个评分的人吧</div>
     </div>
-    <el-divider></el-divider>
-    <div class="community-score-comment-container" id="save">
-      <!-- 如果登录，显示评分界面 -->
-      <div v-if="token" class="community-score-comment">
+    <div
+      class="community-score-comment-container"
+      style="margin-top: 80px"
+      id="save"
+    >
+      <div class="community-score-comment" style="margin-bottom: 90px">
         <div class="mb-4 d-flex">
           <h5 class="mr-3">
             {{ hasMyScore == true ? "修改我的" : "发布" }}评分
@@ -495,7 +512,7 @@
           ref="scoreForm"
           :model="scoreForm"
           :rules="scoreFormRules"
-          label-width="100px"
+          label-width="90px"
           class="mt-4"
           label-position="left"
           hide-required-asterisk
@@ -503,36 +520,26 @@
           <el-form-item label="评分" prop="score">
             <el-rate v-model="scoreForm.score"></el-rate>
           </el-form-item>
-          <el-form-item label="评论" prop="content">
+          <el-form-item class="save-score-box" label="评论" prop="content">
             <el-input
               type="textarea"
               :rows="5"
               resize="none"
-              placeholder="请输入评论（登录后可以发表评论）"
+              placeholder="请输入评论"
               v-model="scoreForm.content"
               style="margin-bottom: 12px"
             >
             </el-input>
           </el-form-item>
         </el-form>
-        <div class="d-flex justify-content-end align-items-end">
+        <div class="post-score d-flex justify-content-end align-items-end">
           <el-checkbox class="mr-4" v-model="scoreForm.anonymous">
             匿名发表
           </el-checkbox>
-          <el-button type="primary" @click="saveScore">
+          <el-button type="mini" @click="saveScore">
             {{ hasMyScore == true ? "修改我的评分" : "提交" }}
           </el-button>
         </div>
-      </div>
-      <!-- 如果未登录，跳转至登录界面 -->
-      <div v-else class="noInfoMsgBox">
-        <el-button
-          type="primary"
-          icon="el-icon-user-solid"
-          @click="onLoginClick"
-        >
-          登录后可发表评分，点此登录
-        </el-button>
       </div>
     </div>
   </div>
@@ -678,13 +685,16 @@ export default {
         }
       });
     },
+    goToPost() {
+      this.$router.push(`/company/${this.companyId}/post`);
+    },
     //COMMENT METHOD
     likeComment(id) {
       likeComment(id).then((response) => {
         this.getCommentList();
       });
     },
-    getCommentList(id) { 
+    getCommentList(id) {
       this.loading = true;
       let data = {
         page: 1,
@@ -870,6 +880,60 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.post-score {
+  margin-left: 90px;
+  padding: 4px 5px 4px 0px;
+  border-radius: 3px;
+  border: 1px solid #b4c4d0;
+  border-top: 0px;
+}
+
+/deep/ .save-score-box .el-textarea {
+  margin-bottom: 0px !important;
+}
+
+/deep/ .save-score-box .el-textarea__inner {
+  border-radius: 3px;
+  border: 1px solid #b4c4d0;
+  margin-bottom: 0px;
+}
+
+/deep/ .el-form-item__label {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 16px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #333333;
+  line-height: 25px;
+}
+
+/deep/ .el-form-item {
+  margin-bottom: 0px;
+}
+
+.el-form-item + .el-form-item {
+  margin-top: 16px;
+}
+
+/deep/ .post-score .el-button {
+  width: 117px;
+  background: #f1f6fd;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #568ed0;
+  line-height: 22px;
+  border: 0px;
+}
+
+.score-missing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .noInfoMsgBox {
   line-height: 80px;
   text-align: center;
@@ -884,6 +948,14 @@ export default {
 .community-score-header {
   display: flex;
   align-items: center;
+}
+
+.community-score-container {
+  width: 100%;
+  box-shadow: 0px 18px 14px 3px rgba(205, 213, 224, 0.3);
+  background: #ffffff;
+  padding: 20px 50px 20px 50px;
+  margin-bottom: 80px;
 }
 
 @media screen and (max-width: 768px) {

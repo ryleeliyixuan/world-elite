@@ -1,116 +1,120 @@
 <template>
-  <div class="app-container container">
-    <!-- 百科头页 -->
-    <div v-if="company" class="company-wiki-header-container">
-      <div class="company-info-container">
-        <div class="company-info">
-          <div class="company-info-banner-wrapper">
-            <img
-              class="company-info-banner"
-              v-if="banner && banner.length > 0"
-              :src="banner"
-              :alt="company.fullName"
-            />
-            <img
-              v-else
-              class="company-info-banner"
-              src="@/assets/defaultbanner.png"
-              alt=""
-            />
-          </div>
-          <div class="company-info-description">
+  <div class="background">
+    <div class="app-container container">
+      <!-- 百科头页 -->
+      <div v-if="company" class="company-wiki-header-container mt-4">
+        <div class="company-info-container">
+          <div class="company-info">
+            <div class="company-info-banner-wrapper">
+              <img
+                class="company-info-banner"
+                v-if="banner && banner.length > 0"
+                :src="banner"
+                :alt="company.fullName"
+              />
+              <img
+                v-else
+                class="company-info-banner"
+                src="@/assets/defaultbanner.png"
+                alt=""
+              />
+            </div>
+            <div class="company-info-description">
               <img
                 class="company-info-logo"
                 :src="company.logo"
                 :alt="company.fullName"
                 fit="fill"
               />
-            <h5 class="mt-2" v-if="company.name">{{ company.name }}</h5>
-            <h5 class="mt-2" v-else>{{ company.fullName }}</h5>
-            <p class="mb-2">
-              <span v-if="company.stage">{{ company.stage.name }} |</span>
-              <span v-if="company.property">
-                {{ company.property.name }} |</span
-              >
-              <span v-if="company.industry">
-                {{ company.industry.name }} |</span
-              >
-              <span v-if="company.scale"> {{ company.scale.name }}</span>
-            </p>
-            <div class="company-info-rating mb-2 d-flex">
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="星级呈现该企业在本网站的综评分"
-                placement="left"
-              >
-                <el-rate
-                  v-model="score"
-                  disabled
-                  show-score
-                  text-color="#ff9900"
-                  score-template="{value}"
+              <h5 class="mb-2" v-if="company.name">{{ company.name }}</h5>
+              <h5 class="mt-2" v-else>{{ company.fullName }}</h5>
+              <p class="mb-2">
+                <span v-if="company.stage">{{ company.stage.name }} |</span>
+                <span v-if="company.property">
+                  {{ company.property.name }} |</span
                 >
-                </el-rate>
-              </el-tooltip>
+                <span v-if="company.industry">
+                  {{ company.industry.name }} |</span
+                >
+                <span v-if="company.scale"> {{ company.scale.name }}</span>
+              </p>
+              <div class="company-info-rating mb-2 d-flex">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="星级呈现该企业在本网站的综评分"
+                  placement="left"
+                >
+                  <el-rate
+                    v-model="score"
+                    disabled
+                    show-score
+                    text-color="#ff9900"
+                    score-template="{value}"
+                  >
+                  </el-rate>
+                </el-tooltip>
+                <el-button
+                  v-if="tabIndex != 'community'"
+                  type="text"
+                  @click="goToSaveScore"
+                  size="mini"
+                  style="padding: 0; margin-left: 10px"
+                  >评分</el-button
+                >
+              </div>
               <el-button
-                v-if="tabIndex != 'community'"
-                type="text"
-                @click="goToSaveScore"
-                size="mini"
-                style="padding: 0; margin-left: 10px"
-                >评分</el-button
+                type="primary"
+                size="small"
+                :loading="favoriteLoading"
+                @click="handleFavorite"
+                round
+                style="width: 120px"
               >
+                {{ company.favoriteFlag === 1 ? "已订阅百科" : "订阅百科" }}
+              </el-button>
             </div>
-            <el-button
-              type="primary"
-              size="small"
-              :loading="favoriteLoading"
-              @click="handleFavorite"
-            >
-              {{ company.favoriteFlag === 1 ? "已订阅百科" : "订阅百科" }}
-            </el-button>
-          </div>
-          <div class="company-info-stat">
-            <el-row
-              type="flex"
-              class="row-bg"
-              justify="space-between"
-              size="mini"
-            >
-              <!-- 缺接口 -->
-              <!-- <el-col v-if="company.listed && company.listed.length >= 50">
+            <div class="company-info-stat">
+              <el-row
+                type="flex"
+                class="row-bg"
+                justify="space-between"
+                size="mini"
+              >
+                <!-- 缺接口 -->
+                <!-- <el-col v-if="company.listed && company.listed.length >= 50">
                 <el-tag type="info" effect="dark"
                   >已进驻： <span>{{ company.listed || "0" }}</span></el-tag
                 >
               </el-col> -->
-              <el-col :span="12" v-if="favoriteCount && favoriteCount >= 50">
-                <el-tag type="info" effect="dark"
-                  >已订阅：
-                  <span>{{ favoriteCount || "0" }}</span>
-                </el-tag>
-              </el-col>
-            </el-row>
+                <el-col :span="12" v-if="favoriteCount && favoriteCount >= 50">
+                  <el-tag type="info" effect="dark"
+                    >已订阅：
+                    <span>{{ favoriteCount || "0" }}</span>
+                  </el-tag>
+                </el-col>
+              </el-row>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- 百科内容 -->
-    <div v-if="company" class="company-wiki-content-container">
-      <el-menu
-        class="mt-2 mb-4"
-        :default-active="tabIndex"
-        mode="horizontal"
-        @select="handleSelectTab"
-      >
-        <el-menu-item index="intro">首页</el-menu-item>
-        <el-menu-item index="job">岗位</el-menu-item>
-        <el-menu-item @click="linkToActivity" index="activity"
-          >活动</el-menu-item
+      <!-- 百科内容 -->
+      <div v-if="company" class="company-wiki-content-container">
+        <el-menu
+          class="mt-2 mb-4"
+          :default-active="tabIndex"
+          mode="horizontal"
+          @select="handleSelectTab"
         >
-        <el-menu-item index="community">圈子</el-menu-item>
-      </el-menu>
-      <router-view> </router-view>
+          <el-menu-item index="intro">首页</el-menu-item>
+          <el-menu-item index="job">岗位</el-menu-item>
+          <el-menu-item @click="linkToActivity" index="activity"
+            >活动</el-menu-item
+          >
+          <el-menu-item index="post">圈子</el-menu-item>
+        </el-menu>
+        <router-view> </router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -120,11 +124,6 @@ import Vue from "vue";
 import VueAMap from "vue-amap";
 import Pagination from "@/components/Pagination";
 import { formatListQuery, parseListQuery } from "@/utils/common";
-
-import WikiActivityPage from "./WikiActivityPage";
-import WikiIntroPage from "./WikiIntroPage";
-import WikiCommunityPage from "./WikiCommunityPage";
-
 import { getCompanyInfo, getCompanyWiki } from "@/api/company_api";
 import { setPageTitle } from "@/utils/setting";
 import { doFavorite } from "@/api/favorite_api";
@@ -142,9 +141,6 @@ export default {
   name: "CompanyWikiMainPage",
   components: {
     Pagination,
-    WikiActivityPage,
-    WikiIntroPage,
-    WikiCommunityPage,
   },
   data() {
     return {
@@ -259,16 +255,46 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .el-menu {
+  background-color: #f6f8fb;
+}
+/deep/ .el-menu--horizontal > .el-menu-item:not(.is-disabled):focus,
+.el-menu--horizontal > .el-menu-item:not(.is-disabled):hover,
+.el-menu--horizontal > .el-submenu .el-submenu__title:hover {
+  background-color: #f6f8fb;
+}
+
+/deep/ .el-menu--horizontal > .el-menu-item.is-active {
+  color: #4895ef;
+  font-weight: 500;
+}
+
+/deep/ .el-menu--horizontal > .el-menu-item {
+  color: #333333;
+  font-weight: 500;
+}
+
+/deep/ .el-menu.el-menu--horizontal {
+  border-bottom: 0px;
+}
+
 .noInfoMsgBox {
   line-height: 80px;
   text-align: center;
   padding-bottom: 20px;
   width: 100%;
 }
+.background {
+  width: 100vw;
+  background-color: #f6f8fb;
+  padding-top: 20px;
+}
 
 .app-container {
   margin: 0 auto;
   min-height: calc(100vh - 477px);
+  width: 100%;
+  background-color: #f6f8fb;
 
   .company-wiki-header-container {
     // display: flex;
@@ -292,7 +318,7 @@ export default {
       justify-content: center;
 
       .company-info-banner-wrapper {
-        max-height: 335px;
+        max-height: 377px;
         width: 100%;
 
         .company-info-banner {
@@ -315,7 +341,9 @@ export default {
         width: 100px;
         height: 100px;
         border-radius: 50%;
-        border: 2px solid white;
+        // border: 2px solid white;
+        box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.35);
+        margin-bottom: 20px;
       }
 
       .company-info-description {
@@ -334,7 +362,6 @@ export default {
 
   .company-wiki-content-container {
     width: 100%;
-    padding: 0 20px 20px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="tree" class="treechart-container"></div>
+    <div id="structure-tree-fullscreen" class="treechart-container"></div>
   </div>
 </template>
 
@@ -13,7 +13,7 @@ import "echarts/lib/component/tooltip";
 import { faTemperatureHigh } from "@fortawesome/free-solid-svg-icons";
 
 export default {
-  name: "TreeChart",
+  name: "StructureTreeChartFullScreen",
   props: {
     //接受父组件传递来的数据
     items: {
@@ -40,7 +40,7 @@ export default {
     tree() {
       this.root.children = this.items;
       this.root.name = this.rootName;
-      const tr = this.$echarts.init(document.getElementById("tree"));
+      const tr = this.$echarts.init(document.getElementById("structure-tree-fullscreen"));
       window.onresize = tr.resize;
       tr.setOption({
         tooltip: {
@@ -61,7 +61,7 @@ export default {
             symbolSize: 43,
             symbol: "circle",
             top: 80,
-            edgeShape: "polyline",
+            edgeShape: "curve",
             initialTreeDepth: 10,
             lineStyle: {
               color: "#F4C062",
