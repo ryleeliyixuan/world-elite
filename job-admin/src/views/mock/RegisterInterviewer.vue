@@ -1,19 +1,20 @@
 <template>
   <div class="app-container">
     <h3>面试官信息</h3>
-    <div style="padding-left: 20px; padding-top: 5px; width: 40%">
+    <div style="padding-left: 20px; padding-top: 5px; width: 40%;">
       <el-form
         :model="interviewInfoForm"
-        :rules="interviewInfoFormRules"
+        :rules="rules"
         ref="interviewInfoForm"
         label-width="125px"
         label-position="left"
-      >
-        <el-form-item label="*用户ID" prop="interviewerId">
-          <el-input v-model="interviewInfoForm.interviewerId" placeholder="请填写用户ID" maxlength="30"
+        style="width: 100%">
+
+        <el-form-item label="用户ID" prop="id">
+          <el-input v-model="interviewInfoForm.id" placeholder="请填写用户ID" maxlength="30"
                     show-word-limit></el-input>
         </el-form-item>
-        <el-form-item label="*昵称" prop="nickName">
+        <el-form-item label="昵称" prop="nickName">
           <el-input v-model="interviewInfoForm.nickName" placeholder="请填写用户昵称" maxlength="10"
                     show-word-limit></el-input>
         </el-form-item>
@@ -22,7 +23,7 @@
             <el-image v-for="item in avatarList"
                       :key="item.id"
                       :src="item.avatarUrl"
-                      @click="interviewInfoForm.avatar= item.avatarUrl"
+                      @click="onDefaultAvatar(item)"
                       style="width: 100px; height: 100px; margin-right: 13px; cursor: pointer;"/>
           </div>
           <el-upload class="avatar-uploader"
@@ -30,63 +31,94 @@
                      :data="uploadPicOptions.params"
                      :accept="uploadPicOptions.acceptFileType"
                      :show-file-list="false"
-                     :on-success="handleUploadSuccess"
-                     :before-upload="beforeUpload">
-            <el-image v-if="interviewInfoForm.avatar"
-                      :src="interviewInfoForm.avatar"
-                      v-loading="loading"
+                     :on-success="handleUploadSuccessAvatar"
+                     :before-upload="beforeUploadAvatar">
+            <el-image v-if="localAvatar || interviewInfoForm.avatar"
+                      :src="localAvatar || interviewInfoForm.avatar"
+                      v-loading="loadingAvatar"
                       class="avatar"/>
-            <el-image v-else class="avatar-uploader-icon" :src="require('@/assets/img-upload.png')"></el-image>
+            <el-image v-else class="avatar-uploader-icon"
+                      :src="require('@/assets/img-upload.png')"></el-image>
             <div slot="tip" class="avatar-uploader-tip">建议大小500*500</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="从事行业：" prop="industryId">
-          <el-select v-model="interviewInfoForm.industryId"
-                     clearable
-                     placeholder="行业"
-                     class="section1-select">
+          <el-select v-model="interviewInfoForm.industryId" clearable placeholder="行业" style="width: 100%;">
             <el-option v-for="item in industryOptions" :key="item.industryId" :label="item.name"
                        :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所在公司：" prop="companyName">
-          <el-input style="width: 300px" v-model="interviewInfoForm.companyName"
+          <el-input v-model="interviewInfoForm.companyName"
                     placeholder="请输入您的公司名称"></el-input>
         </el-form-item>
+        <div>
+          <el-form-item label="所在职位：" prop="position">
+            <el-input v-model="interviewInfoForm.position"
+                      placeholder="请输入您的职位名称"></el-input>
+          </el-form-item>
+        </div>
         <el-form-item label="从业时间：" prop="experienceTimeId">
           <el-select v-model="interviewInfoForm.experienceTimeId" clearable placeholder="请选择您的工作经验年限"
-                     class="section1-select">
+                     style="width: 100%;">
             <el-option v-for="item in experienceTimeOptions" :key="item.experienceTimeId"
                        :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="从业经历：" prop="experience.experienceItem">
-          <div class="textarea-container">
-            <div class="textarea-item" v-for="(item,index) in interviewInfoForm.experience">
-              <span class="experience-title">{{index+1}}.</span>
-              <el-input class="experience" type="textarea" v-model="item.experienceItem "
-                        placeholder="字数不超过150字" resize="none" :autosize="{minRows: 2,maxRows: 10}"></el-input>
+        <el-form-item label="从业经历：" prop="experienceIm">
+          <div>
+            <div v-for="(item,index) in interviewInfoForm.experience">
+              <span>{{index+1}}.</span>
+              <el-input v-model="item.experienceItem "
+                        type="textarea"
+                        placeholder="字数不超过150字"
+                        style="margin-top: 5px; "
+                        :autosize="{minRows: 1,maxRows: 10}">
+              </el-input>
             </div>
-            <div class="add-experience-button" @click="addExperience">添加经历</div>
+            <el-button type="success" @click="addExperience" style="margin-top: 10px;">添加经历</el-button>
           </div>
         </el-form-item>
         <el-form-item label="面试官自述：" prop="description">
-          <el-input type="textarea" style="width: 360px" v-model="interviewInfoForm.description"
-                    placeholder="字数不超过150字" resize="none" :autosize="{minRows: 8,maxRows: 10}"></el-input>
+          <el-input type="textarea" v-model="interviewInfoForm.description"
+                    placeholder="字数不超过150字" :autosize="{minRows: 8,maxRows: 10}"></el-input>
         </el-form-item>
-        <el-form-item label="个人标签：" prop="companyName">
-          <el-input style="width: 300px" v-model="interviewInfoForm.tag"
-                    placeholder="请输入您的个人标签"></el-input>
-        </el-form-item>
-        <el-form-item label="一句话介绍：" prop="companyName">
-          <el-input style="width: 300px" v-model="interviewInfoForm.introduction"
+        <el-form-item label="一句话介绍：" prop="introduction">
+          <el-input v-model="interviewInfoForm.introduction"
                     placeholder="请输入您的一句话介绍"></el-input>
         </el-form-item>
-        <el-form-item label="可提供面试内容：" prop="companyName">
-          <el-checkbox v-model="checked1">HR面试（通用）</el-checkbox>
-          <el-checkbox v-model="checked2">专业技术（测试）</el-checkbox>
-          <el-checkbox v-model="checked3">行业经验</el-checkbox>
-        </el-form-item>
+      </el-form>
+    </div>
+
+    <h3 style="padding-top: 30px">面试信息</h3>
+    <div style="padding-left: 20px; padding-top: 5px; width: 40%">
+      <el-form ref="interviewDirection"
+               :model="interviewDirection"
+               :rules="rules"
+               label-width="125px"
+               label-position="left">
+        <div>
+          <div v-for="(item, index) in interviewDirectionArray">
+            <el-divider>{{item.direction}}</el-divider>
+            <el-form-item label="可供面试内容：" prop="direction">
+              <el-input v-model="item.direction" placeholder="请输入可提供面试内容"></el-input>
+            </el-form-item>
+            <el-form-item label="面试咨询价格：" prop="price">
+              <el-input v-model="item.price" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
+            </el-form-item>
+            <el-form-item label="面试内容简介：" prop="description">
+              <el-input type="textarea" v-model="item.description"
+                        placeholder="请对面试的内容进行具体描述，150字以内"
+                        :autosize="{minRows: 8,maxRows: 10}"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="danger" icon="el-icon-delete" size="small" @click="delDirection(index)"
+                         style="margin-top: 10px;margin-bottom: 30px;">删除 {{item.direction}}
+              </el-button>
+            </el-form-item>
+          </div>
+          <el-button type="success" @click="addDirection" style="margin-top: 10px;">添加面试方向信息</el-button>
+        </div>
       </el-form>
     </div>
 
@@ -94,17 +126,17 @@
     <div style="padding-left: 20px; padding-top: 5px; width: 40%">
       <el-form
         :model="idCardAuthForm"
-        :rules="idCardAuthFormRules"
+        :rules="rules"
         ref="idCardAuthForm"
         label-width="125px"
         label-position="left"
       >
 
         <el-form-item label="您的姓名：" prop="name">
-          <el-input style="width: 360px" v-model="idCardAuthForm.name" placeholder="请输入您的真实姓名"></el-input>
+          <el-input v-model="idCardAuthForm.name" placeholder="请输入您的真实姓名"></el-input>
         </el-form-item>
         <el-form-item label="身份证号：" prop="idNumber">
-          <el-input style="width: 360px" v-model="idCardAuthForm.idNumber" placeholder="请输入您的身份证号"></el-input>
+          <el-input v-model="idCardAuthForm.idNumber" placeholder="请输入您的身份证号"></el-input>
         </el-form-item>
 
         <el-form-item label="身份证照片：" prop="identity">
@@ -115,11 +147,11 @@
                          :data="uploadPicOptions.params"
                          :accept="uploadPicOptions.acceptFileType"
                          :show-file-list="false"
-                         :on-success="handleUploadSuccess"
-                         :before-upload="beforeUpload">
+                         :on-success="handleUploadSuccessFace"
+                         :before-upload="beforeUploadFacePic">
                 <el-image v-if="idCardAuthForm.faceUrl"
                           :src="idCardAuthForm.faceUrl"
-                          v-loading="loading"
+                          v-loading="loadingFace"
                           fit="scale-down"
                           class="card"/>
                 <div v-else class="card-face">
@@ -134,11 +166,11 @@
                          :data="uploadPicOptions.params"
                          :accept="uploadPicOptions.acceptFileType"
                          :show-file-list="false"
-                         :on-success="handleUploadSuccess"
-                         :before-upload="beforeUpload">
+                         :on-success="handleUploadSuccessEmblem"
+                         :before-upload="beforeUploadEmblemPic">
                 <el-image v-if="idCardAuthForm.emblemUrl"
                           :src="idCardAuthForm.emblemUrl"
-                          v-loading="loading"
+                          v-loading="loadingEmblem"
                           fit="scale-down"
                           class="card"/>
                 <div v-else class="card-emblem">
@@ -153,11 +185,11 @@
                          :data="uploadPicOptions.params"
                          :accept="uploadPicOptions.acceptFileType"
                          :show-file-list="false"
-                         :on-success="handleUploadSuccess"
-                         :before-upload="beforeUpload">
+                         :on-success="handleUploadSuccessHold"
+                         :before-upload="beforeUploadHoldPic">
                 <el-image v-if="idCardAuthForm.holdUrl"
                           :src="idCardAuthForm.holdUrl"
-                          v-loading="loading"
+                          v-loading="loadingHold"
                           fit="scale-down"
                           class="card"/>
                 <div v-else class="card-hold">
@@ -172,9 +204,9 @@
     </div>
 
     <div align="center" style="padding: 30px">
-      <el-button type="primary" @click="" icon="el-icon-plus">创建面试官</el-button>
-      <el-button type="warning" @click="" icon="el-icon-plus">保存后继续创建</el-button>
-      <el-button @click="" icon="el-icon-refresh-left">重置</el-button>
+      <el-button type="primary" @click="createInterviewer" icon="el-icon-plus">创建面试官</el-button>
+      <el-button type="warning" @click="createAndContinue" icon="el-icon-plus">保存后继续创建</el-button>
+      <el-button @click="resetForm" icon="el-icon-refresh-left">重置</el-button>
     </div>
 
   </div>
@@ -182,44 +214,114 @@
 
 <script>
   import {listByType} from "@/api/dict_api";
-  import {getAvatar} from "@/api/mock_api";
+  import {addInterview, addInterviewAuth, addInterviewDirection, getAvatar} from "@/api/mock_api";
   import {getUploadPicToken} from "@/api/upload_api";
   import {checkPicSize} from "@/utils/common";
+  import Toast from "@/utils/toast";
 
   export default {
     name: "registerInterviewer",
     data() {
+      let isIdNumber = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error("请输入身份证号"));
+        } else {
+          const reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[0-2])(([0-2][1-9])|10|20|30|31)\d{3}(\d|X|x)$/;
+          const card = reg.test(value);
+          if (!card) {
+            callback(new Error("身份证格式如:423024xxxx0216xxxx"));
+          } else {
+            callback();
+          }
+        }
+      };
+      let isPrice = (rule, value, callback) => {
+        if (!value) {
+          callback();
+        } else {
+          let reg = /^-?\d{1,4}(?:\.\d{1,2})?$/;
+          if (reg.test(value)) {
+            callback();
+          } else {
+            callback(new Error("数字格式:0-9999或小数点后可加1到2位"));//如:1 或1.8 或1.85
+          }
+        }
+      };
+      let experienceIm = (rule, value, callback) => {
+        if (!this.interviewInfoForm.experience) {
+          callback("请输入从业经历")
+        } else {
+          callback()
+        }
+      }
+      let identity = (rule, value, callback) => {
+        if (!this.idCardAuthForm.faceUrl && !this.idCardAuthForm.emblemUrl && !this.idCardAuthForm.holdUrl) {
+          callback("请按要求上传三张身份证照片");
+        } else if (!this.idCardAuthForm.faceUrl) {
+          callback("请上传身份证人面像");
+        } else if (!this.idCardAuthForm.emblemUrl) {
+          callback("请上传身份证国徽面");
+        } else if (!this.idCardAuthForm.holdUrl) {
+          callback("请上传手持身份证正面照");
+        } else {
+          callback();
+        }
+      }
       return {
         interviewInfoForm: {
-          // interviewerId: '',
-          // nickName: '',
-          // avatar: '',
-          // industryId: '',
-          // experienceTimeId: '',
-          // companyName: '',
-          // description: '',
-          // experience: [{experienceItem: ''}],
-          //
-          // direction: 'HR面试（通用）',
-          // direction_description: '',
-          // price: ''
+          id: '',
+          nickName: '',
+          avatar: '',
+          industryId: '',
+          experienceTimeId: '',
+          companyName: '',
+          position: '',
+          description: '',
+          introduction: '',
+          experience: [{experienceItem: ''}],
         },
-        interviewInfoFormRules: {
-          // interviewerId: [{required: true, message: '请输入用户ID', trigger: 'blur'}, {max: 20, message: 'ID不超过20字符'}],
-          // nickName: [{required: true, message: '请输入用户昵称', trigger: 'blur'}, {max: 20, message: '昵称不超过20字符'}],
-          // identity: [{validator: identity, trigger: 'blur'}],
-          // avatar: [{required: true, message: "请上传头像", trigger: "change"}],
-          // industryId: [{required: true, message: "请选择行业", trigger: "change"}],
-          // experienceTimeId: [{required: true, message: "请选择从业时间", trigger: "change"}],
-          // name: [{required: true, message: '请输入您的姓名', trigger: 'blur'}],
-          // idNumber: [{required: true, trigger: 'blur', validator: isIdNumber}],
-          // companyName: [{required: true, message: '请输入您的公司名称', trigger: 'blur'}],
-          // description: [{required: true, message: '请输入面试官自述', trigger: 'blur'}, {max: 150, message: '长度不超过150个字'}],
-          // experience: [{required: true, message: '请输入从业经历', trigger: 'blur'}, {max: 150, message: '长度不超过150个字'}],
-          // price: [{required: true, message: '请输入您理想资询价位', trigger: 'blur'}, {validator: isPrice, trigger: 'blur'}]
+        interviewDirectionArray: [],
+        interviewDirection: {
+          direction: '',
+          description: '',
+          interviewerId: '',
+          price: '',
         },
-        idCardAuthForm: {},
-        idCardAuthFormRules: {},
+
+        //身份证图片上传form
+        idCardAuthForm: {
+          name: '',
+          idNumber: '',
+          faceUrl: '',
+          emblemUrl: '',
+          holdUrl: ''
+        },
+        rules: {
+          id: [{required: true, message: '请输入用户ID', trigger: 'blur'}, {max: 20, message: 'ID不超过20字符'}],
+          nickName: [{required: true, message: '请输入用户昵称', trigger: 'blur'}, {max: 20, message: '昵称不超过20字符'}],
+          identity: [{validator: identity, trigger: 'blur'}],
+          avatar: [{required: true, message: "请上传头像", trigger: "change"}],
+          industryId: [{required: true, message: "请选择行业", trigger: "change"}],
+          experienceTimeId: [{required: true, message: "请选择从业时间", trigger: "change"}],
+          name: [{required: true, message: '请输入您的姓名', trigger: 'blur'}],
+          idNumber: [{required: true, trigger: 'blur', validator: isIdNumber}],
+          companyName: [{required: true, message: '请输入您的公司名称', trigger: 'blur'}],
+          description: [{required: true, message: '请输入面试官自述', trigger: 'blur'}, {max: 150, message: '长度不超过150个字'}],
+          introduction: [{required: true, message: '请输入一句话介绍', trigger: 'blur'}, {max: 150, message: '长度不超过150个字'}],
+          experienceIm: [{required: true, validator: experienceIm, trigger: 'blur'}],
+          position: [{required: true, message: '请输入您的职位名称', trigger: 'blur'}, {max: 15, message: '职位不超过15字符'}],
+          price: [{required: true, message: '请输入您理想资询价位', trigger: 'blur'}, {validator: isPrice, trigger: 'blur'}],
+          direction: [{required: true, message: '请输入面试方向', trigger: 'blur'}, {max: 15, message: '职位不超过15字符'}]
+        },
+
+
+        localAvatar: undefined,
+        loading: false,
+        loadingAvatar: false,
+        loadingFace: false,
+        loadingEmblem: false,
+        loadingHold: false,
+
         avatarList: [],
         industryOptions: [],
         experienceTimeOptions: [],
@@ -240,26 +342,106 @@
           response => (this.industryOptions = response.data.list)
         );
 
-        listByType(13).then(
+        listByType(21).then(
           response => (this.experienceTimeOptions = response.data.list)
         );
 
         getAvatar().then(
           response => (this.avatarList = response.data)
         );
+
+        this.interviewDirectionArray.push({
+          direction: 'HR面试（通用）',
+          description: '',
+          interviewerId: '',
+          price: '',
+        });
+
+        this.interviewDirectionArray.push({
+          direction: '专业技术（测试）',
+          description: '',
+          interviewerId: '',
+          price: '',
+        });
+
+        this.interviewDirectionArray.push({
+          direction: '行业经验',
+          description: '',
+          interviewerId: '',
+          price: '',
+        });
       },
-      beforeUpload(file) {
+      beforeUploadAvatar(file) {
         return new Promise((resolve, reject) => {
           if (checkPicSize(file)) {
             reject();
           } else {
-            this.loading = true;
-            this.formOne.avatar = URL.createObjectURL(file);
+            this.loadingAvatar = true;
+            this.localAvatar = URL.createObjectURL(file);
             getUploadPicToken(file.name).then((response) => {
               const {data} = response;
               this.uploadPicOptions.action = data.host;
               this.uploadPicOptions.params = data;
               this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+              this.interviewInfoForm.avatar = this.uploadPicOptions.fileUrl;
+              this.$refs["interviewInfoForm"].validateField("avatar");
+              resolve(data);
+            }).catch((error) => {
+              reject(error);
+            });
+          }
+        });
+      },
+      beforeUploadFacePic(file) {
+        return new Promise((resolve, reject) => {
+          if (checkPicSize(file)) {
+            reject();
+          } else {
+            this.loadingFace = true;
+            getUploadPicToken(file.name).then((response) => {
+              const {data} = response;
+              this.uploadPicOptions.action = data.host;
+              this.uploadPicOptions.params = data;
+              this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+              this.idCardAuthForm.faceUrl = this.uploadPicOptions.fileUrl;
+              resolve(data);
+            }).catch((error) => {
+              reject(error);
+            });
+          }
+        });
+      },
+      beforeUploadEmblemPic(file) {
+        return new Promise((resolve, reject) => {
+          if (checkPicSize(file)) {
+            reject();
+          } else {
+            this.loadingEmblem = true;
+            getUploadPicToken(file.name).then((response) => {
+              const {data} = response;
+              this.uploadPicOptions.action = data.host;
+              this.uploadPicOptions.params = data;
+              this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+              this.idCardAuthForm.emblemUrl = this.uploadPicOptions.fileUrl;
+              resolve(data);
+            }).catch((error) => {
+              reject(error);
+            });
+          }
+        });
+      },
+      beforeUploadHoldPic(file) {
+        return new Promise((resolve, reject) => {
+          if (checkPicSize(file)) {
+            reject();
+          } else {
+            this.loadingHold = true;
+            getUploadPicToken(file.name).then((response) => {
+              const {data} = response;
+              this.uploadPicOptions.action = data.host;
+              this.uploadPicOptions.params = data;
+              this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+              this.idCardAuthForm.holdUrl = this.uploadPicOptions.fileUrl;
               resolve(data);
             }).catch((error) => {
               reject(error);
@@ -270,13 +452,136 @@
       handleUploadSuccess() {
         this.loading = false;
       },
+      handleUploadSuccessAvatar() {
+        this.loadingAvatar = false;
+      },
+      handleUploadSuccessFace() {
+        this.loadingFace = false;
+      },
+      handleUploadSuccessEmblem() {
+        this.loadingEmblem = false;
+      },
+      handleUploadSuccessHold() {
+        this.loadingHold = false;
+      },
       addExperience() {
-        this.formOne.experience.push({experienceItem: ''})
+        this.interviewInfoForm.experience.push({experienceItem: ''})
+      },
+      addDirection() {
+        this.interviewDirectionArray.push({
+          direction: '',
+          description: '',
+          interviewerId: '',
+          price: '',
+        });
+      },
+      delDirection(index) {
+        Array.prototype.remove = function (from, to) {
+          const rest = this.slice((to || from) + 1 || this.length);
+          this.length = from < 0 ? this.length + from : from;
+          return this.push.apply(this, rest);
+        };
+
+        this.interviewDirectionArray.remove(index);
+      },
+      onDefaultAvatar(item) {
+        this.interviewInfoForm.avatar = item.avatarUrl;
+        this.$refs["interviewInfoForm"].validateField("avatar");
+        //选择头像后 滚动条会消失....
+        document.querySelector("body").setAttribute("style", "overflow: auto !important;")
+      },
+
+      validate(filedName) {
+        return new Promise((resolve) => {
+          this.$refs[filedName].validate(valid => {
+            resolve(valid)
+          });
+        })
+      },
+
+      createInterviewer() {
+        //提交面试官基础信息
+        let result = true;
+        this.$refs["interviewInfoForm"].validate(valid => {
+          if (valid) {
+            let interviewInfoForm = {...this.interviewInfoForm};
+            interviewInfoForm.experience = interviewInfoForm.experience.map(item => item.experienceItem)
+            addInterview(interviewInfoForm).then(() => {
+              Toast.success("提交面试官基础信息成功");
+            });
+          } else {
+            result = false;
+            Toast.error("请检查页面错误输入");
+          }
+        });
+
+        //提交面试方向信息
+        let request = [];
+        for (let i = 0; i < this.interviewDirectionArray.length; i++) {
+          this.interviewDirection = this.interviewDirectionArray[i];
+          this.interviewDirection.interviewerId = this.interviewInfoForm.id;
+          console.log(this.interviewDirection);
+
+          request.push(addInterviewDirection(this.interviewDirection));
+        }
+
+        Promise.all(request).then(() => {
+          Toast.success("提交面试方向信息成功");
+        })
+
+        //提交身份证信息
+        this.$refs["idCardAuthForm"].validate(valid => {
+          if (valid) {
+            addInterviewAuth(this.idCardAuthForm).then(() => {
+                Toast.success("提交面试官身份证信息成功");
+              }
+            )
+          }
+        })
+
+        /*console.log(result);
+        //添加后跳转回面试官列表页面. result仅校验数据输入是否正确
+        if (result)
+          this.$router.push("/mock/interviewer");*/
+      },
+
+      createAndContinue() {
+        this.createInterviewer();
+        this.$router.push("/mock/registerInterviewer");
+      },
+      resetForm() {
+        location.reload();
       },
     }
   }
 </script>
 <style scoped lang="scss">
+  .avatar-uploader {
+    .avatar {
+      width: 100px;
+      height: 100px;
+      display: block;
+    }
+
+    .avatar-uploader-icon {
+      border: 1px solid #333333;
+      border-radius: 50%;
+      font-size: 28px;
+      color: #8c939d;
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      text-align: center;
+      padding: 36px 31px;
+    }
+
+    .avatar-uploader-tip {
+      color: #999999;
+      line-height: 25px;
+      margin-top: -3px;
+    }
+  }
+
   .card-container {
     display: flex;
     align-items: center;
@@ -336,6 +641,5 @@
         height: 45px;
       }
     }
-
   }
 </style>

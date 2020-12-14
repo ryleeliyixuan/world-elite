@@ -28,10 +28,13 @@
                                 class="company-count">{{"共" + companyList[item.id].length + "家企业"}}</span> -->
 								</div>
                         <el-button :underline="false"
-                                   type="primary"
+                                   type="text"
+                                   class="company-name-text"
                                    v-if="companyList[item.id].length > companyCount"
                                    @click="onMore(item.id)">更多
+                            <el-image :src="require('@/assets/more.png')" class="company-name-icon"></el-image>
                         </el-button>
+
                     </div>
                     <div class="company-item-container" v-if="companyList[item.id] && companyList[item.id].length > 0">
                         <el-card shadow="hover"
@@ -204,11 +207,11 @@
         margin: 0 auto;
         padding: 20px;
         min-height: calc(100vh - 477px);
-
+        position: relative;
         .left-container {
             position: absolute;
-            top: 200px;
-            left: 30px;
+            top: 25px;
+            left: -100px;
             height: calc(100% - 238px);
             overflow-y: auto;
 
@@ -254,6 +257,18 @@
                     font-size: 18px;
                     font-weight: bold;;
                     color: #000;
+                }
+                .company-name-text {
+                    height: 20px;
+                    font-size: 14px;
+                    font-family: PingFangSC-Regular, PingFang SC;
+                    font-weight: 400;
+                    color: #999999;
+                    line-height: 20px;
+                }
+                .company-name-icon{
+                    width: 8px;
+                    height: 12px;
                 }
 
                 .company-count {

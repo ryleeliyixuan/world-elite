@@ -1,345 +1,345 @@
 <template>
-    <div class="app-container">
-        <div class="title-container">
-            <div class="title">我的模拟面试</div>
-            <div class="identity-change-container">
-                <div :class="['interviewee-container',{'select':identity===1}]" @click="onInterviewee">
-                    面试者
-                </div>
-                <div :class="['interviewer-container',{'select':identity===2}]" @click="onInterviewer">
-                    面试官
-                </div>
-            </div>
+  <div class="app-container">
+    <div class="title-container">
+      <div class="title">我的模拟面试</div>
+      <div class="identity-change-container">
+        <div :class="['interviewee-container',{'select':identity===1}]" @click="onInterviewee">
+          面试者
         </div>
-        <div class="content-container">
-            <div class="button-container">
-                <el-avatar :src="myInfo.avatar" :size="117" cover class="avatar"></el-avatar>
-                <div class="username">{{myInfo.name}}</div>
-                <div :class="['button', {'select':menu===1}]" @click="onMineCalendar">
-                    <el-image v-if="menu===1" style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar.png')"></el-image>
-                    <el-image v-else style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar2.png')"></el-image>
-                    我的日历
-                </div>
-                <div :class="['button', {'select':menu===2}]" @click="onMockRecord">
-                    <el-image v-if="menu===2" style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record.png')"></el-image>
-                    <el-image v-else style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record2.png')"></el-image>
-                    面试记录
-                </div>
-                <div :class="['button', {'select':menu===3}]" @click="onSettleIn" v-if="userIdentity===1 && identity===1">
-                    <el-image v-if="menu===3" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
-                    <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
-                    立即入驻
-                </div>
-                <div :class="['button', {'select':menu===4}]" @click="onIncome" v-if="userIdentity===2 && identity===2">
-                    <el-image v-if="menu===4" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income.png')"></el-image>
-                    <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income2.png')"></el-image>
-                    我的收益
-                </div>
-            </div>
-            <!--面试者-->
-            <div class="calendar-container" v-if="identity===1 && menu===1">
-                <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
-                <div class="additive-container">
-                    <div class="tag"/>
-                    <div class="tag-text">预约成功时间</div>
-                    <div class="left-container" @click="onPrev">
-                        <div class="left-arrow"/>
-                    </div>
-                    <div class="right-container" @click="onNext">
-                        <div class="right-arrow"/>
-                    </div>
-                </div>
-            </div>
-            <!--面试官-->
-            <div class="calendar-container" v-if="identity===2 && menu===1">
-                <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
-                <div class="additive-container">
-                    <div class="tag2"/>
-                    <div class="tag-text">可预约时间</div>
-                    <div class="tag"/>
-                    <div class="tag-text">预约成功时间</div>
-                    <div class="left-container" @click="onPrev">
-                        <div class="left-arrow"/>
-                    </div>
-                    <div class="right-container" @click="onNext">
-                        <div class="right-arrow"/>
-                    </div>
-                </div>
-            </div>
-            <!--           用户身份-->
-            <div class="record-container" v-show="identity===1 && menu===2">
-                <div class="title">面试记录</div>
-                <el-table class="table" v-if="intervieweeRecordList" :data="intervieweeRecordList" :row-style="{height:'86px'}"
-                          :header-row-style="{height:'86px'}">
-                    <el-table-column prop="directionName" label="面试类别" width="180">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
-                                {{scope.row.directionName}}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="interviewerName" label="面试官" width="120">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                {{scope.row.interviewerName}}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="time" label="面试时间" width="280">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                {{scope.row.beginTime | timestampToDateTime}}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="status" label="面试状态" width="120">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                {{statusList[scope.row.status]}}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="time" label="操作" width="130">
-                        <template slot-scope="scope">
-                            <div class="view" @click="onView(scope.row)">{{operationList[scope.row.status]}}</div>
-                        </template>
-                    </el-table-column>
-                    <template slot="empty">
-                        <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
-                            <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
-                            <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无面试记录</div>
-                        </div>
-                    </template>
-                </el-table>
-                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="intervieweeTotal" :page-size="5"
-                               v-if="intervieweeTotal>0"
-                               :current-page.sync="intervieweePage"
-                               @current-change="getInterviewRecord"></el-pagination>
-            </div>
-            <!--            面试官身份-->
-            <div class="record-container" v-show="identity===2 && menu===2">
-                <div class="title">面试记录</div>
-                <el-table class="table" v-if="interviewerRecordList" :data="interviewerRecordList" :row-style="{height:'86px'}"
-                          :header-row-style="{height:'86px'}">
-                    <el-table-column prop="directionName" label="面试类别" width="260">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
-                                {{scope.row.directionName}}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="interviewerName" label="面试者" width="190">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                {{scope.row.userName}}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="time" label="面试时间" width="280">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                {{scope.row.beginTime | timestampToDateTime}}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作" width="110">
-                        <template slot-scope="scope">
-                            <!--                            <div class="view" @click="onView(scope.row)">查看评价</div>-->
-                        </template>
-                    </el-table-column>
-                    <template slot="empty">
-                        <div style="display: flex; flex-direction: column; align-items: center; margin: 20px auto;">
-                            <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
-                            <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px; padding-bottom: 50px">当前暂无面试记录
-                            </div>
-                        </div>
-                    </template>
-                </el-table>
-                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="interviewerTotal" :page-size="5"
-                               v-if="interviewerTotal>0"
-                               :current-page.sync="interviewerPage"
-                               @current-change="getInterviewRecord"></el-pagination>
-            </div>
-            <div class="record-container" v-show="identity===2 && menu===4">
-                <div class="title" style="margin-bottom: 20px;">我的收益</div>
-                <el-table class="table" v-if="incomeList" :data="incomeList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}"
-                          :show-header="false">
-                    <el-table-column width="120">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                {{scope.row.month}}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="200">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                总收入：{{scope.row.receivable}}元
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="200">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                实际收入：{{scope.row.receipts}}元
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="time" width="130">
-                        <template slot-scope="scope">
-                            <div class="type">
-                                {{scope.row.status===0?'月底结算':scope.row.status===1?'已到账':''}}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="195">
-                        <template slot-scope="scope">
-                            <div class="detail" @click="onDetail(scope.row)">查看当月明细</div>
-                        </template>
-                    </el-table-column>
-                    <template slot="empty">
-                        <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
-                            <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
-                            <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无收益记录</div>
-                        </div>
-                    </template>
-                </el-table>
-                <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="incomeTotal" :page-size="5"
-                               v-if="incomeTotal>0"
-                               :current-page.sync="incomePage"
-                               @current-change="getIncomeRecord"></el-pagination>
-            </div>
+        <div :class="['interviewer-container',{'select':identity===2}]" @click="onInterviewer">
+          面试官
         </div>
+      </div>
+    </div>
+    <div class="content-container">
+      <div class="button-container">
+        <el-avatar :src="myInfo.avatar" :size="117" cover class="avatar"></el-avatar>
+        <div class="username">{{myInfo.name}}</div>
+        <div :class="['button', {'select':menu===1}]" @click="onMineCalendar">
+          <el-image v-if="menu===1" style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar.png')"></el-image>
+          <el-image v-else style="width:21px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/calendar2.png')"></el-image>
+          我的日历
+        </div>
+        <div :class="['button', {'select':menu===2}]" @click="onMockRecord">
+          <el-image v-if="menu===2" style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record.png')"></el-image>
+          <el-image v-else style="width:21px; height:23px; margin-right: 8px;" :src="require('@/assets/mock/record2.png')"></el-image>
+          面试记录
+        </div>
+        <div :class="['button', {'select':menu===3}]" @click="onSettleIn" v-if="userIdentity===1 && identity===1">
+          <el-image v-if="menu===3" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
+          <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/settle-in.png')"></el-image>
+          立即入驻
+        </div>
+        <div :class="['button', {'select':menu===4}]" @click="onIncome" v-if="userIdentity===2 && identity===2">
+          <el-image v-if="menu===4" style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income.png')"></el-image>
+          <el-image v-else style="width:19px; height:21px; margin-right: 8px;" :src="require('@/assets/mock/income2.png')"></el-image>
+          我的收益
+        </div>
+      </div>
+      <!--面试者-->
+      <div class="calendar-container" v-if="identity===1 && menu===1">
+        <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
+        <div class="additive-container">
+          <div class="tag"/>
+          <div class="tag-text">预约成功时间</div>
+          <div class="left-container" @click="onPrev">
+            <div class="left-arrow"/>
+          </div>
+          <div class="right-container" @click="onNext">
+            <div class="right-arrow"/>
+          </div>
+        </div>
+      </div>
+      <!--面试官-->
+      <div class="calendar-container" v-if="identity===2 && menu===1">
+        <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
+        <div class="additive-container">
+          <div class="tag2"/>
+          <div class="tag-text">可预约时间</div>
+          <div class="tag"/>
+          <div class="tag-text">预约成功时间</div>
+          <div class="left-container" @click="onPrev">
+            <div class="left-arrow"/>
+          </div>
+          <div class="right-container" @click="onNext">
+            <div class="right-arrow"/>
+          </div>
+        </div>
+      </div>
+      <!--           用户身份-->
+      <div class="record-container" v-show="identity===1 && menu===2">
+        <div class="title">面试记录</div>
+        <el-table class="table" v-if="intervieweeRecordList" :data="intervieweeRecordList" :row-style="{height:'86px'}"
+                  :header-row-style="{height:'86px'}">
+          <el-table-column prop="directionName" label="面试类别" width="180">
+            <template slot-scope="scope">
+              <div class="type">
+                <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
+                {{scope.row.directionName}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="interviewerName" label="面试官" width="120">
+            <template slot-scope="scope">
+              <div class="type">
+                {{scope.row.interviewerName}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="time" label="面试时间" width="280">
+            <template slot-scope="scope">
+              <div class="type">
+                {{scope.row.beginTime | timestampToDateTime}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="面试状态" width="120">
+            <template slot-scope="scope">
+              <div class="type">
+                {{statusList[scope.row.status]}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="time" label="操作" width="130">
+            <template slot-scope="scope">
+              <div class="view" @click="onView(scope.row)">{{operationList[scope.row.status]}}</div>
+            </template>
+          </el-table-column>
+          <template slot="empty">
+            <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
+              <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+              <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无面试记录</div>
+            </div>
+          </template>
+        </el-table>
+        <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="intervieweeTotal" :page-size="5"
+                       v-if="intervieweeTotal>0"
+                       :current-page.sync="intervieweePage"
+                       @current-change="getInterviewRecord"></el-pagination>
+      </div>
+      <!--            面试官身份-->
+      <div class="record-container" v-show="identity===2 && menu===2">
+        <div class="title">面试记录</div>
+        <el-table class="table" v-if="interviewerRecordList" :data="interviewerRecordList" :row-style="{height:'86px'}"
+                  :header-row-style="{height:'86px'}">
+          <el-table-column prop="directionName" label="面试类别" width="260">
+            <template slot-scope="scope">
+              <div class="type">
+                <el-image class="type-icon" :src="require('@/assets/mock/settings.png')"></el-image>
+                {{scope.row.directionName}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="interviewerName" label="面试者" width="190">
+            <template slot-scope="scope">
+              <div class="type">
+                {{scope.row.userName}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="time" label="面试时间" width="280">
+            <template slot-scope="scope">
+              <div class="type">
+                {{scope.row.beginTime | timestampToDateTime}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="110">
+            <template slot-scope="scope">
+              <!--                            <div class="view" @click="onView(scope.row)">查看评价</div>-->
+            </template>
+          </el-table-column>
+          <template slot="empty">
+            <div style="display: flex; flex-direction: column; align-items: center; margin: 20px auto;">
+              <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+              <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px; padding-bottom: 50px">当前暂无面试记录
+              </div>
+            </div>
+          </template>
+        </el-table>
+        <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="interviewerTotal" :page-size="5"
+                       v-if="interviewerTotal>0"
+                       :current-page.sync="interviewerPage"
+                       @current-change="getInterviewRecord"></el-pagination>
+      </div>
+      <div class="record-container" v-show="identity===2 && menu===4">
+        <div class="title" style="margin-bottom: 20px;">我的收益</div>
+        <el-table class="table" v-if="incomeList" :data="incomeList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}"
+                  :show-header="false">
+          <el-table-column width="120">
+            <template slot-scope="scope">
+              <div class="type">
+                {{scope.row.month}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column width="200">
+            <template slot-scope="scope">
+              <div class="type">
+                总收入：{{scope.row.receivable}}元
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column width="200">
+            <template slot-scope="scope">
+              <div class="type">
+                实际收入：{{scope.row.receipts}}元
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="time" width="130">
+            <template slot-scope="scope">
+              <div class="type">
+                {{scope.row.status===0?'月底结算':scope.row.status===1?'已到账':''}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column width="195">
+            <template slot-scope="scope">
+              <div class="detail" @click="onDetail(scope.row)">查看当月明细</div>
+            </template>
+          </el-table-column>
+          <template slot="empty">
+            <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
+              <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+              <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无收益记录</div>
+            </div>
+          </template>
+        </el-table>
+        <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="incomeTotal" :page-size="5"
+                       v-if="incomeTotal>0"
+                       :current-page.sync="incomePage"
+                       @current-change="getIncomeRecord"></el-pagination>
+      </div>
+    </div>
 
 
-        <el-dialog title="可供预约时间"
-                   :visible.sync="dialogVisible"
-                   class="dialog">
-            <div v-if="step===1">
-                <div class="dialog-text">请选择可供预约时间</div>
-                <el-time-select
-                        size="small"
-                        class="select"
-                        placeholder="起始时间"
-                        v-model="beginTime"
-                        :picker-options="{
+    <el-dialog title="可供预约时间"
+               :visible.sync="dialogVisible"
+               class="dialog">
+      <div v-if="step===1">
+        <div class="dialog-text">请选择可供预约时间</div>
+        <el-time-select
+            size="small"
+            class="select"
+            placeholder="起始时间"
+            v-model="beginTime"
+            :picker-options="{
                       start: startFirst,
                       step: '00:30',
                       end: endFirst
                  }">
-                </el-time-select>
-                <span class="dialog-text" style="padding: 0 11px;">至</span>
-                <el-time-select
-                        size="small"
-                        class="select"
-                        placeholder="结束时间"
-                        v-model="endTime"
-                        :picker-options="{
+        </el-time-select>
+        <span class="dialog-text" style="padding: 0 11px;">至</span>
+        <el-time-select
+            size="small"
+            class="select"
+            placeholder="结束时间"
+            v-model="endTime"
+            :picker-options="{
                       start: startSecond,
                       step: '00:30',
                       end: endSecond
                     }">
-                </el-time-select>
-                <div class="dialog-text" style="margin: 20px 20px 0 0; display: inline-block;">此时间段添加在</div>
-                <el-select v-model="repeat" placeholder="预约类型" class="select">
-                    <el-option size="small"
-                               v-for="item in typeList"
-                               :key="item.value"
-                               :label="item.label"
-                               :value="item.value">
-                    </el-option>
-                </el-select>
-                <div class="footer">
-                    <el-button @click="dialogVisible = false" round style="width: 100px;" size="small">取消</el-button>
-                    <el-button type="primary" @click="onConfirm" round style="width: 100px; margin-left: 20px;" size="small">确定</el-button>
-                </div>
-            </div>
-        </el-dialog>
+        </el-time-select>
+        <div class="dialog-text" style="margin: 20px 20px 0 0; display: inline-block;">此时间段添加在</div>
+        <el-select v-model="repeat" placeholder="预约类型" class="select">
+          <el-option size="small"
+                     v-for="item in typeList"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value">
+          </el-option>
+        </el-select>
+        <div class="footer">
+          <el-button @click="dialogVisible = false" round style="width: 100px;" size="small">取消</el-button>
+          <el-button type="primary" @click="onConfirm" round style="width: 100px; margin-left: 20px;" size="small">确定</el-button>
+        </div>
+      </div>
+    </el-dialog>
 
-        <el-dialog :visible.sync="eventDialogVisible" width="310px" :show-close="false" top="20%">
-            <div style="display: flex; flex-direction: column; align-items: center;" v-if="status!=='1' && identity===2">
-                <div style="font-weight: bold;font-size: 18px">抱歉，您目前无法提供面试预约：</div>
-                <div style="font-weight: bold;font-size: 18px">详情请联系客服：</div>
-                <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
-                <el-button type="primary" primary size="mini"
-                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
-                           @click="onRequire2">确认
-                </el-button>
-            </div>
-            <div style="display: flex; flex-direction: column; align-items: center;" v-else-if="!showContactEmail">
-                <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面试</el-button>
-                <el-button type="info" plain size="mini"
-                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
-                           @click="onCancelInterview">取消面试预约
-                </el-button>
-            </div>
+    <el-dialog :visible.sync="eventDialogVisible" width="310px" :show-close="false" top="20%">
+      <div style="display: flex; flex-direction: column; align-items: center;" v-if="status!=='1' && identity===2">
+        <div style="font-weight: bold;font-size: 18px">抱歉，您目前无法提供面试预约：</div>
+        <div style="font-weight: bold;font-size: 18px">详情请联系客服：</div>
+        <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
+        <el-button type="primary" primary size="mini"
+                   style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
+                   @click="onRequire2">确认
+        </el-button>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center;" v-else-if="!showContactEmail">
+        <el-button type="primary" size="medium" style="width: 150px; height: 50px;" @click="onEntryWebRTC">进入视频面试</el-button>
+        <el-button type="info" plain size="mini"
+                   style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
+                   @click="onCancelInterview">取消面试预约
+        </el-button>
+      </div>
 
-            <div style="display: flex; flex-direction: column; align-items: center;" v-else-if="showContactEmail">
-                <div style="font-weight: bold;font-size: 18px">请联系人工客服：</div>
-                <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
-                <el-button type="primary" primary size="mini"
-                           style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
-                           @click="onRequire">确认
-                </el-button>
-            </div>
-        </el-dialog>
+      <div style="display: flex; flex-direction: column; align-items: center;" v-else-if="showContactEmail">
+        <div style="font-weight: bold;font-size: 18px">请联系人工客服：</div>
+        <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
+        <el-button type="primary" primary size="mini"
+                   style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
+                   @click="onRequire">确认
+        </el-button>
+      </div>
+    </el-dialog>
 
-        <el-dialog title="提示" :visible.sync="payDialogVisible" width="600px">
-            <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的时间为：</span><span class="dialog-text2">{{orderInfo.beginTime|timestampToMonthDateHoursMinutes}}至{{orderInfo.endTime|timestampToMonthDateHoursMinutes}}</span>
-            </div>
-            <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{orderInfo.directionName}}</span>
-            </div>
-            <div style="width:100%; height:1px; background:#C9DAFB;margin-bottom: 18px;"></div>
-            <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：
-                <span style="color:#3D6FF4;">￥{{orderInfo.amount}}</span>
-                <span style="color:#bdbdbd; font-size: 12px; padding-left: 8px;">请使用微信扫描下方二维码进行支付，10分钟内有效</span>
-            </div>
+    <el-dialog title="提示" :visible.sync="payDialogVisible" width="600px">
+      <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的时间为：</span><span class="dialog-text2">{{orderInfo.beginTime|timestampToMonthDateHoursMinutes}}至{{orderInfo.endTime|timestampToMonthDateHoursMinutes}}</span>
+      </div>
+      <div style="margin-bottom: 18px;"><span class="dialog-text">您预约的类型为：</span><span class="dialog-text2">{{orderInfo.directionName}}</span>
+      </div>
+      <div style="width:100%; height:1px; background:#C9DAFB;margin-bottom: 18px;"></div>
+      <div style="font-size: 24px; color: #333333; line-height: 33px;margin-bottom: 18px;">共计：
+        <span style="color:#3D6FF4;">￥{{orderInfo.amount}}</span>
+        <span style="color:#bdbdbd; font-size: 12px; padding-left: 8px;">请使用微信扫描下方二维码进行支付，10分钟内有效</span>
+      </div>
 
-            <!-- <div class="pay-type" :style="{flexDirection:payType==='WEIXIN_NATIVE'?'row-reverse':'row'}">-->
-            <!--     <el-button v-if="payType!=='WEIXIN_NATIVE'" type="primary" round @click="onWeChat" style="width: 200px;">{{payType?'切换为微信支付':'使用微信支付'}}-->
-            <!--     </el-button>-->
-            <!--     <el-button v-if="payType!=='ALIPAY_NATIVE'" type="primary" round @click="onAliPay" style="width: 200px;">{{payType?'切换为支付宝支付':'使用支付宝支付'}}-->
-            <!--     </el-button>-->
-            <!--     <div v-if="payType" id="qrcode" v-loading="qrcodeLoading" style="width: 200px;"></div>-->
-            <!-- </div>-->
+      <!-- <div class="pay-type" :style="{flexDirection:payType==='WEIXIN_NATIVE'?'row-reverse':'row'}">-->
+      <!--     <el-button v-if="payType!=='WEIXIN_NATIVE'" type="primary" round @click="onWeChat" style="width: 200px;">{{payType?'切换为微信支付':'使用微信支付'}}-->
+      <!--     </el-button>-->
+      <!--     <el-button v-if="payType!=='ALIPAY_NATIVE'" type="primary" round @click="onAliPay" style="width: 200px;">{{payType?'切换为支付宝支付':'使用支付宝支付'}}-->
+      <!--     </el-button>-->
+      <!--     <div v-if="payType" id="qrcode" v-loading="qrcodeLoading" style="width: 200px;"></div>-->
+      <!-- </div>-->
 
-            <div id="qrcode" v-loading="qrcodeLoading" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-            <div style="text-align: center; margin-top: 20px;">
-                <el-button type="primary" @click="onPaymentCompleted" round style="width: 100px; margin-left: 20px;" size="small">我已支付</el-button>
+      <div id="qrcode" v-loading="qrcodeLoading" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+      <div style="text-align: center; margin-top: 20px;">
+        <el-button type="primary" @click="onPaymentCompleted" round style="width: 100px; margin-left: 20px;" size="small">我已支付</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="我的收益" :visible.sync="incomeDialogVisible" width="690px">
+      <div class="title"></div>
+      <el-table class="table" v-if="incomeDetailList" :data="incomeDetailList">
+        <el-table-column width="120" label="面试者" prop="username">
+        </el-table-column>
+        <el-table-column width="200" label="日期">
+          <template slot-scope="scope">
+            <div class="type">
+              {{scope.row.beginTime | timestampToMonthDateHoursMinutes }}
             </div>
-        </el-dialog>
-
-        <el-dialog title="我的收益" :visible.sync="incomeDialogVisible" width="690px">
-            <div class="title"></div>
-            <el-table class="table" v-if="incomeDetailList" :data="incomeDetailList">
-                <el-table-column width="120" label="面试者" prop="username">
-                </el-table-column>
-                <el-table-column width="200" label="日期">
-                    <template slot-scope="scope">
-                        <div class="type">
-                            {{scope.row.beginTime | timestampToMonthDateHoursMinutes }}
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column width="200" label="面试类型" prop="direction">
-                </el-table-column>
-                <el-table-column width="130" label="金额" prop="amount">
-                </el-table-column>
-                <template slot="empty">
-                    <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
-                        <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
-                        <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无收益记录</div>
-                    </div>
-                </template>
-            </el-table>
-            <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="incomeDetailTotal" :page-size="5"
-                           v-if="incomeDetailTotal>0"
-                           :current-page.sync="incomeDetailPage"
-                           @current-change="getIncomeDetail"></el-pagination>
-        </el-dialog>
-    </div>
+          </template>
+        </el-table-column>
+        <el-table-column width="200" label="面试类型" prop="direction">
+        </el-table-column>
+        <el-table-column width="130" label="金额" prop="amount">
+        </el-table-column>
+        <template slot="empty">
+          <div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
+            <el-image :src="require('@/assets/mock/empty2.png')" style="width:109px; height:156px;"></el-image>
+            <div style="font-size: 21px; font-weight: 600; color: #3D6FF4; line-height: 29px; margin-top: 20px;">当前暂无收益记录</div>
+          </div>
+        </template>
+      </el-table>
+      <el-pagination size="medium" class="pagination" layout="prev, pager, next, jumper" :total="incomeDetailTotal" :page-size="5"
+                     v-if="incomeDetailTotal>0"
+                     :current-page.sync="incomeDetailPage"
+                     @current-change="getIncomeDetail"></el-pagination>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -406,10 +406,10 @@
                     eventBorderColor: '#D3F261', // 块边框颜色
                     eventBackgroundColor: '#D3F261', // 块背景色
                     displayEventEnd: true, // 显示事件结束时间
-                    eventTimeFormat: { // am / pm
-                        hour: 'numeric',
+                    eventTimeFormat: {
+                        hour: '2-digit',
                         minute: '2-digit',
-                        meridiem: 'short'
+                        hour12: false
                     },
 
                     eventClassNames: "event-text"
@@ -892,485 +892,485 @@
 
 <style scoped lang="scss">
 
-    .app-container {
-        width: 1175px;
-        margin: 0 auto;
+  .app-container {
+    width: 1175px;
+    margin: 0 auto;
 
-        .title-container {
+    .title-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+
+      .title {
+        font-size: 24px;
+        color: #333333;
+        line-height: 50px;
+      }
+
+      .identity-change-container {
+        display: flex;
+        align-items: center;
+
+        .interviewee-container {
+          width: 110px;
+          height: 42px;
+          border-radius: 21px 0 0 21px;
+          border: 1px solid #FA8C16;
+          background: rgba(250, 140, 22, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-left: 8px;
+          font-size: 21px;
+          color: #FA8C16;
+          line-height: 29px;
+
+          &:hover {
+            cursor: pointer;
+            background: #D4771356;
+          }
+        }
+
+        .interviewer-container {
+          width: 110px;
+          height: 42px;
+          border-radius: 0 21px 21px 0;
+          border: 1px solid #FA8C16;
+          background: rgba(250, 140, 22, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-right: 8px;
+          font-size: 21px;
+          color: #FA8C16;
+          line-height: 29px;
+
+          &:hover {
+            cursor: pointer;
+            background: #D4771356;
+          }
+        }
+
+        .select {
+          background: #FA8C16;
+          color: #FFFFFF;
+
+          &:hover {
+            cursor: pointer;
+            background: #d7750c;
+          }
+        }
+      }
+    }
+
+    .content-container {
+      display: flex;
+      justify-content: space-between;
+
+      .button-container {
+        width: 140px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .avatar {
+          border: #5d9bfc 2px solid;
+        }
+
+        .username {
+          text-align: center;
+          margin-top: 11px;
+          font-size: 18px;
+          color: #1C2541;
+          line-height: 25px;
+          margin-bottom: 70px;
+        }
+
+        .button {
+          width: 140px;
+          height: 35px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 25px;
+          color: #3D6FF4;
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
+        .select {
+          background: #3D6FF4;
+          border-radius: 18px;
+          color: white;
+        }
+      }
+
+      .calendar-container {
+        width: 1000px;
+        position: relative;
+        box-shadow: 0 5px 13px 0 rgba(19, 67, 123, 0.2);
+        padding: 16px 10px 16px;
+
+        ::v-deep .fc-toolbar-title {
+          margin-left: 20px;
+        }
+
+        ::v-deep .event-text {
+          font-size: 12px;
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
+        ::v-deep .fc .fc-daygrid-day-top {
+          flex-direction: row;
+        }
+
+        .additive-container {
+          position: absolute;
+          right: 44px;
+          top: 20px;
+          display: flex;
+          align-items: center;
+
+          .tag2 {
+            width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            background: #D3F261;
+          }
+
+          .tag {
+            width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            background: #FFE58F;
+          }
+
+          .tag-text {
+            font-size: 18px;
+            color: #333333;
+            line-height: 25px;
+            margin-left: 4px;
+            margin-right: 31px;
+          }
+
+          .left-container {
+            width: 32px;
+            height: 26px;
+            border-radius: 13px 0 0 13px;
+            background: #F4F5F8;
+            border: 1px solid #7195CA;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 30px;
+            justify-content: center;
+            padding-left: 8px;
 
-            .title {
-                font-size: 24px;
-                color: #333333;
-                line-height: 50px;
+            &:hover {
+              cursor: pointer;
+              background: #d6d7d9;
             }
 
-            .identity-change-container {
-                display: flex;
-                align-items: center;
-
-                .interviewee-container {
-                    width: 110px;
-                    height: 42px;
-                    border-radius: 21px 0 0 21px;
-                    border: 1px solid #FA8C16;
-                    background: rgba(250, 140, 22, 0.1);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding-left: 8px;
-                    font-size: 21px;
-                    color: #FA8C16;
-                    line-height: 29px;
-
-                    &:hover {
-                        cursor: pointer;
-                        background: #D4771356;
-                    }
-                }
-
-                .interviewer-container {
-                    width: 110px;
-                    height: 42px;
-                    border-radius: 0 21px 21px 0;
-                    border: 1px solid #FA8C16;
-                    background: rgba(250, 140, 22, 0.1);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding-right: 8px;
-                    font-size: 21px;
-                    color: #FA8C16;
-                    line-height: 29px;
-
-                    &:hover {
-                        cursor: pointer;
-                        background: #D4771356;
-                    }
-                }
-
-                .select {
-                    background: #FA8C16;
-                    color: #FFFFFF;
-
-                    &:hover {
-                        cursor: pointer;
-                        background: #d7750c;
-                    }
-                }
+            .left-arrow {
+              width: 10px;
+              height: 10px;
+              border-left: 2px solid #7195CA;
+              border-bottom: 2px solid #7195CA;
+              transform: rotateZ(45deg);
             }
-        }
+          }
 
-        .content-container {
+          .right-container {
+            width: 32px;
+            height: 26px;
+            border-radius: 0 13px 13px 0;
+            background: #7195CA;
+            border: 1px solid #7195CA;
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            padding-right: 8px;
 
-            .button-container {
-                width: 140px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-
-                .avatar {
-                    border: #5d9bfc 2px solid;
-                }
-
-                .username {
-                    text-align: center;
-                    margin-top: 11px;
-                    font-size: 18px;
-                    color: #1C2541;
-                    line-height: 25px;
-                    margin-bottom: 70px;
-                }
-
-                .button {
-                    width: 140px;
-                    height: 35px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin-bottom: 25px;
-                    color: #3D6FF4;
-
-                    &:hover {
-                        cursor: pointer;
-                    }
-                }
-
-                .select {
-                    background: #3D6FF4;
-                    border-radius: 18px;
-                    color: white;
-                }
+            &:hover {
+              cursor: pointer;
+              background: #5677a1;
             }
 
-            .calendar-container {
-                width: 1000px;
-                position: relative;
-                box-shadow: 0 5px 13px 0 rgba(19, 67, 123, 0.2);
-                padding: 16px 10px 16px;
-
-                ::v-deep .fc-toolbar-title {
-                    margin-left: 20px;
-                }
-
-                ::v-deep .event-text {
-                    font-size: 12px;
-
-                    &:hover {
-                        cursor: pointer;
-                    }
-                }
-
-                ::v-deep .fc .fc-daygrid-day-top {
-                    flex-direction: row;
-                }
-
-                .additive-container {
-                    position: absolute;
-                    right: 44px;
-                    top: 20px;
-                    display: flex;
-                    align-items: center;
-
-                    .tag2 {
-                        width: 18px;
-                        height: 18px;
-                        border-radius: 9px;
-                        background: #D3F261;
-                    }
-
-                    .tag {
-                        width: 18px;
-                        height: 18px;
-                        border-radius: 9px;
-                        background: #FFE58F;
-                    }
-
-                    .tag-text {
-                        font-size: 18px;
-                        color: #333333;
-                        line-height: 25px;
-                        margin-left: 4px;
-                        margin-right: 31px;
-                    }
-
-                    .left-container {
-                        width: 32px;
-                        height: 26px;
-                        border-radius: 13px 0 0 13px;
-                        background: #F4F5F8;
-                        border: 1px solid #7195CA;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        padding-left: 8px;
-
-                        &:hover {
-                            cursor: pointer;
-                            background: #d6d7d9;
-                        }
-
-                        .left-arrow {
-                            width: 10px;
-                            height: 10px;
-                            border-left: 2px solid #7195CA;
-                            border-bottom: 2px solid #7195CA;
-                            transform: rotateZ(45deg);
-                        }
-                    }
-
-                    .right-container {
-                        width: 32px;
-                        height: 26px;
-                        border-radius: 0 13px 13px 0;
-                        background: #7195CA;
-                        border: 1px solid #7195CA;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        padding-right: 8px;
-
-                        &:hover {
-                            cursor: pointer;
-                            background: #5677a1;
-                        }
-
-                        .right-arrow {
-                            width: 10px;
-                            height: 10px;
-                            border-top: 2px solid #F4F5F8;
-                            border-right: 2px solid #F4F5F8;
-                            transform: rotateZ(45deg);
-                        }
-                    }
-                }
+            .right-arrow {
+              width: 10px;
+              height: 10px;
+              border-top: 2px solid #F4F5F8;
+              border-right: 2px solid #F4F5F8;
+              transform: rotateZ(45deg);
             }
+          }
+        }
+      }
 
-            .record-container {
-                width: 925px;
-                box-shadow: 0 5px 13px 0 rgba(19, 67, 123, 0.2);
-                padding: 21px 35px;
-                background: white;
-                display: flex;
-                flex-direction: column;
+      .record-container {
+        width: 925px;
+        box-shadow: 0 5px 13px 0 rgba(19, 67, 123, 0.2);
+        padding: 21px 35px;
+        background: white;
+        display: flex;
+        flex-direction: column;
 
-                .title {
-                    font-size: 36px;
-                    color: #333333;
-                    line-height: 50px;
-                }
-
-                .table {
-                    width: 100%;
-                    height: 430px;
-
-                    ::v-deep .is-leaf {
-                        border: none;
-                        vertical-align: middle;
-                        font-size: 21px;
-                        color: #999999;
-                        line-height: 29px;
-                        font-style: normal;
-                        font-weight: 500;
-                    }
-
-                    .type {
-                        display: flex;
-                        align-items: center;
-                        font-size: 21px;
-                        color: #333333;
-                        line-height: 29px;
-
-                        .type-icon {
-                            margin-right: 10px;
-                            width: 34px;
-                            height: 34px;
-                        }
-                    }
-
-                    .view {
-                        font-size: 21px;
-                        color: #3D6FF4;
-                        line-height: 29px;
-
-                        &:hover {
-                            cursor: pointer;
-                        }
-                    }
-
-                    .detail {
-                        width: 185px;
-                        height: 41px;
-                        background: rgba(255, 189, 105, 0.3);
-                        border-radius: 21px;
-                        border: 1px solid #F78259;
-                        font-size: 18px;
-                        color: #F78259;
-                        line-height: 41px;
-                        text-align: center;
-
-                        &:hover {
-                            cursor: pointer;
-                        }
-                    }
-                }
-
-                .pagination {
-                    align-self: center;
-                    margin-top: 20px;
-                    align-items: center;
-
-                    ::v-deep .number, ::v-deep .more {
-                        width: 37px;
-                        height: 37px;
-                        border-radius: 50%;
-                        background: #EEEEEE;
-                        box-shadow: 0 5px 11px 0 #CCCCCC;
-                        line-height: 37px;
-                        text-align: center;
-                        margin: 0 6px;
-                        color: #999999;
-
-                        &.active {
-                            color: white;
-                            background: #4C90FC;
-                            box-shadow: 0 5px 11px 0 rgba(30, 150, 252, 0.5);
-                        }
-                    }
-
-                    ::v-deep .btn-prev, ::v-deep .btn-next {
-                        width: 37px;
-                        height: 37px;
-                        border-radius: 50%;
-                        background: #EEEEEE;
-                        box-shadow: 0 5px 11px 0 #CCCCCC;
-                        line-height: 37px;
-                        text-align: center;
-                        margin: 0 6px;
-                        color: #999999;
-                        padding: 0;
-
-                        & .el-icon {
-                            font-size: 18px;
-                        }
-                    }
-
-                    ::v-deep .el-pagination__jump {
-                        font-size: 18px;
-                        color: #999999;
-                        line-height: 25px;
-                        height: 37px;
-
-                        .el-input {
-                            width: 66px;
-                            height: 37px;
-                            margin: 0 6px;
-
-                            .el-input__inner {
-                                width: 66px;
-                                height: 37px;
-                                font-size: 18px;
-                            }
-                        }
-                    }
-                }
-            }
+        .title {
+          font-size: 36px;
+          color: #333333;
+          line-height: 50px;
         }
 
+        .table {
+          width: 100%;
+          height: 430px;
 
-        .dialog {
-            ::v-deep .el-dialog {
-                width: 500px;
-                border-radius: 17px;
+          ::v-deep .is-leaf {
+            border: none;
+            vertical-align: middle;
+            font-size: 21px;
+            color: #999999;
+            line-height: 29px;
+            font-style: normal;
+            font-weight: 500;
+          }
+
+          .type {
+            display: flex;
+            align-items: center;
+            font-size: 21px;
+            color: #333333;
+            line-height: 29px;
+
+            .type-icon {
+              margin-right: 10px;
+              width: 34px;
+              height: 34px;
             }
+          }
 
-            ::v-deep .el-dialog__header {
-                padding: 20px 30px 10px;
+          .view {
+            font-size: 21px;
+            color: #3D6FF4;
+            line-height: 29px;
+
+            &:hover {
+              cursor: pointer;
             }
+          }
 
-            ::v-deep .el-dialog__body {
-                padding: 0 30px 20px;
+          .detail {
+            width: 185px;
+            height: 41px;
+            background: rgba(255, 189, 105, 0.3);
+            border-radius: 21px;
+            border: 1px solid #F78259;
+            font-size: 18px;
+            color: #F78259;
+            line-height: 41px;
+            text-align: center;
+
+            &:hover {
+              cursor: pointer;
             }
-
-            .footer {
-                text-align: center;
-                margin-top: 20px;
-            }
-
-
-            ::v-deep .el-dialog__title {
-                font-size: 24px;
-                color: #333333;
-                line-height: 33px;
-            }
-
-            .dialog-text {
-                font-size: 17px;
-                color: #999999;
-                line-height: 25px;
-                padding-bottom: 8px;
-            }
-
-            .dialog-text2 {
-                font-size: 17px;
-                color: #3D6FF4;
-                line-height: 25px;
-            }
-
-            .select {
-                width: 150px;
-
-                ::v-deep .el-input__inner {
-                    border-radius: 17px;
-                    height: 32px;
-                    min-height: 32px !important;
-                }
-
-                ::v-deep .el-input__icon {
-                    line-height: 32px !important;
-                }
-            }
-
-            .qrcode {
-                width: 200px;
-                height: 200px;
-                margin: 0 auto;
-                display: block;
-            }
-
-            .image-success {
-                width: 200px;
-                height: 200px;
-                margin: 0 auto;
-                display: block;
-            }
-
+          }
         }
 
         .pagination {
-            align-self: center;
-            margin-top: 20px;
-            align-items: center;
-            justify-content: center;
+          align-self: center;
+          margin-top: 20px;
+          align-items: center;
 
-            ::v-deep .number, ::v-deep .more {
-                width: 37px;
-                height: 37px;
-                border-radius: 50%;
-                background: #EEEEEE;
-                box-shadow: 0 5px 11px 0 #CCCCCC;
-                line-height: 37px;
-                text-align: center;
-                margin: 0 6px;
-                color: #999999;
+          ::v-deep .number, ::v-deep .more {
+            width: 37px;
+            height: 37px;
+            border-radius: 50%;
+            background: #EEEEEE;
+            box-shadow: 0 5px 11px 0 #CCCCCC;
+            line-height: 37px;
+            text-align: center;
+            margin: 0 6px;
+            color: #999999;
 
-                &.active {
-                    color: white;
-                    background: #4C90FC;
-                    box-shadow: 0 5px 11px 0 rgba(30, 150, 252, 0.5);
-                }
+            &.active {
+              color: white;
+              background: #4C90FC;
+              box-shadow: 0 5px 11px 0 rgba(30, 150, 252, 0.5);
             }
+          }
 
-            ::v-deep .btn-prev, ::v-deep .btn-next {
-                width: 37px;
-                height: 37px;
-                border-radius: 50%;
-                background: #EEEEEE;
-                box-shadow: 0 5px 11px 0 #CCCCCC;
-                line-height: 37px;
-                text-align: center;
-                margin: 0 6px;
-                color: #999999;
-                padding: 0;
+          ::v-deep .btn-prev, ::v-deep .btn-next {
+            width: 37px;
+            height: 37px;
+            border-radius: 50%;
+            background: #EEEEEE;
+            box-shadow: 0 5px 11px 0 #CCCCCC;
+            line-height: 37px;
+            text-align: center;
+            margin: 0 6px;
+            color: #999999;
+            padding: 0;
 
-                & .el-icon {
-                    font-size: 18px;
-                }
+            & .el-icon {
+              font-size: 18px;
             }
+          }
 
-            ::v-deep .el-pagination__jump {
+          ::v-deep .el-pagination__jump {
+            font-size: 18px;
+            color: #999999;
+            line-height: 25px;
+            height: 37px;
+
+            .el-input {
+              width: 66px;
+              height: 37px;
+              margin: 0 6px;
+
+              .el-input__inner {
+                width: 66px;
+                height: 37px;
                 font-size: 18px;
-                color: #999999;
-                line-height: 25px;
-                height: 37px;
-
-                .el-input {
-                    width: 66px;
-                    height: 37px;
-                    margin: 0 6px;
-
-                    .el-input__inner {
-                        width: 66px;
-                        height: 37px;
-                        font-size: 18px;
-                    }
-                }
+              }
             }
+          }
         }
+      }
     }
+
+
+    .dialog {
+      ::v-deep .el-dialog {
+        width: 500px;
+        border-radius: 17px;
+      }
+
+      ::v-deep .el-dialog__header {
+        padding: 20px 30px 10px;
+      }
+
+      ::v-deep .el-dialog__body {
+        padding: 0 30px 20px;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+
+      ::v-deep .el-dialog__title {
+        font-size: 24px;
+        color: #333333;
+        line-height: 33px;
+      }
+
+      .dialog-text {
+        font-size: 17px;
+        color: #999999;
+        line-height: 25px;
+        padding-bottom: 8px;
+      }
+
+      .dialog-text2 {
+        font-size: 17px;
+        color: #3D6FF4;
+        line-height: 25px;
+      }
+
+      .select {
+        width: 150px;
+
+        ::v-deep .el-input__inner {
+          border-radius: 17px;
+          height: 32px;
+          min-height: 32px !important;
+        }
+
+        ::v-deep .el-input__icon {
+          line-height: 32px !important;
+        }
+      }
+
+      .qrcode {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+        display: block;
+      }
+
+      .image-success {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+        display: block;
+      }
+
+    }
+
+    .pagination {
+      align-self: center;
+      margin-top: 20px;
+      align-items: center;
+      justify-content: center;
+
+      ::v-deep .number, ::v-deep .more {
+        width: 37px;
+        height: 37px;
+        border-radius: 50%;
+        background: #EEEEEE;
+        box-shadow: 0 5px 11px 0 #CCCCCC;
+        line-height: 37px;
+        text-align: center;
+        margin: 0 6px;
+        color: #999999;
+
+        &.active {
+          color: white;
+          background: #4C90FC;
+          box-shadow: 0 5px 11px 0 rgba(30, 150, 252, 0.5);
+        }
+      }
+
+      ::v-deep .btn-prev, ::v-deep .btn-next {
+        width: 37px;
+        height: 37px;
+        border-radius: 50%;
+        background: #EEEEEE;
+        box-shadow: 0 5px 11px 0 #CCCCCC;
+        line-height: 37px;
+        text-align: center;
+        margin: 0 6px;
+        color: #999999;
+        padding: 0;
+
+        & .el-icon {
+          font-size: 18px;
+        }
+      }
+
+      ::v-deep .el-pagination__jump {
+        font-size: 18px;
+        color: #999999;
+        line-height: 25px;
+        height: 37px;
+
+        .el-input {
+          width: 66px;
+          height: 37px;
+          margin: 0 6px;
+
+          .el-input__inner {
+            width: 66px;
+            height: 37px;
+            font-size: 18px;
+          }
+        }
+      }
+    }
+  }
 </style>

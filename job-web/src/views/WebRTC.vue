@@ -16,10 +16,10 @@
 
                 <div class="chat-container" :style="{height:videoHeight+'px'}">
                     <div class="header" v-if="conversationItem">
-                        <el-avatar :size="35" :src="interviewer.avatar" style="border: 1px solid #3D6FF4;"></el-avatar>
+                        <el-avatar :size="35" :src="interviewer.avatar || conversationItem.friendVo.avatar" style="border: 1px solid #3D6FF4;"></el-avatar>
                         <div>
-                            <div class="name">{{interviewer.nickName}}</div>
-                            <div class="tags" v-if="interviewer">{{interviewer.position}}</div>
+                            <div class="name">{{interviewer.nickName || conversationItem.friendVo.name}}</div>
+                            <div class="tags" v-if="interviewer.position">{{interviewer.position}}</div>
                         </div>
                     </div>
                     <el-scrollbar ref="receive" class="content-container" wrap-style="overflow: hidden auto; padding-right: 10px;">
@@ -34,14 +34,14 @@
                                 <div class="self-text-content" v-else-if="item.payload.contentType===5">
                                     <el-link type="primary" :href="item.payload.remoteMediaUrl" target="_blank">{{item.payload.content}}</el-link>
                                 </div>
-                                <el-image :src="$store.state.user.avatar" class="avatar">
+                                <el-image :src="interviewee.avatar || $store.state.user.avatar" class="avatar">
                                     <div slot="error">
                                         <i class="el-icon-picture-outline"></i>
                                     </div>
                                 </el-image>
                             </div>
                             <div class="others-container" v-else>
-                                <el-image :src="conversationItem.friendVo.avatar" class="avatar">
+                                <el-image :src="interviewer.avatar || conversationItem.friendVo.avatar" class="avatar">
                                     <div slot="error">
                                         <i class="el-icon-picture-outline"></i>
                                     </div>
@@ -87,6 +87,9 @@
     import "@/utils/rtcUtils"
     import {sha256} from "@/utils/sha256"
     import im from "@/utils/im"
+    import store from "@/store";
+    import router from "@/router";
+    import {curRelativePath} from "@/utils/common";
 
     export default {
         name: "InterviewPage",
@@ -94,8 +97,9 @@
             return {
                 eventId: undefined, // 预约事件Id
                 interviewerId: undefined, // 对方id
-                interviewer: undefined, // 对方信息
+                interviewer: {}, // 对方信息
                 userId: undefined, // 用户Id（自己）
+                interviewee: {}, // 自己信息
                 conversationItem: undefined, // 会话
                 content: "", // 要发送得消息
                 messageList: [], // 消息列表
@@ -109,6 +113,7 @@
                 dialogVisible: true, // 显示对话框
                 dialogText: "如果面试官15分钟内未出现请联系人工客服。",
                 tips: "等待加入...",
+                identity: undefined,
             }
         },
 
@@ -120,6 +125,7 @@
         mounted() {
             this.eventId = this.$route.params.id;
             this.interviewerId = this.$route.params.interviewerId;
+            this.identity = this.$route.params.identity;
             this.dialogText = this.$route.params.identity === "2" ? "如果面试者15分钟内未出现请联系人工客服。" : "如果面试官15分钟内未出现请联系人工客服。"
 
             // 获取对方信息（主要获取面试官的信息）
@@ -145,6 +151,7 @@
              */
             im.init(this.receiveMessage).then((data) => {
                 this.userId = data.userId;
+                this.getIntervieweeInfo(this.userId);
                 this.token = data.token;
                 im.addConversation(this.interviewerId, 0).then(() => {
                     im.getConversation(this.interviewerId, 0).then((conversation) => {
@@ -153,7 +160,14 @@
                 })
             }).catch(() => {
                 this.$message.warning("即时通信组件初始化失败，请重新登录");
-                this.$router.push({path: "/login", query: {...this.$route.query, redirect: `/webRTC/${this.$route.params.id}/${this.$route.params.interviewerId}/${this.$route.params.identity}`}});
+                store.dispatch('user/LOGOUT').then(() => {
+                    this.$router.push({path: "/login",
+                        query: {
+                            ...this.$route.query,
+                            redirect: `/webRTC/${this.$route.params.id}/${this.$route.params.interviewerId}/${this.$route.params.identity}`
+                        }
+                    });
+                });
             });
             this.$emit("complete");
         },
@@ -526,7 +540,15 @@
 
             getInterviewerInfo(id) {
                 this.$axios.get(`/mock/interviewer/${id}`).then(data => {
-                    this.interviewer = data.data;
+                    this.interviewer = data.data || {};
+                    console.log("----------", this.interviewer);
+                })
+            },
+
+            getIntervieweeInfo(id) {
+                this.$axios.get(`/mock/interviewer/${id}`).then(data => {
+                    this.interviewee = data.data || {};
+                    console.log("=======", this.interviewee);
                 })
             },
 

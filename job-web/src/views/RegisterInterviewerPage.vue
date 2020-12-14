@@ -42,7 +42,8 @@
                                   :src="localAvatar || formOne.avatar"
                                   v-loading="loading"
                                   class="avatar"/>
-                        <el-image v-else class="avatar-uploader-icon" :src="require('@/assets/mock/img-upload.png')"></el-image>
+                        <el-image v-else class="avatar-uploader-icon"
+                                  :src="require('@/assets/mock/img-upload.png')"></el-image>
                         <div slot="tip" class="avatar-uploader-tip">建议大小500*500</div>
                     </el-upload>
                 </el-form-item>
@@ -52,7 +53,8 @@
                                    clearable
                                    placeholder="行业"
                                    class="section1-select">
-                            <el-option v-for="item in industryOptions" :key="item.industryId" :label="item.name" :value="item.id"></el-option>
+                            <el-option v-for="item in industryOptions" :key="item.industryId" :label="item.name"
+                                       :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
@@ -70,19 +72,25 @@
                 </div>
                 <div>
                     <el-form-item label="从业时间：" prop="experienceTimeId">
-                        <el-select v-model="formOne.experienceTimeId" clearable placeholder="请选择您的工作经验年限" class="section1-select">
+                        <el-select v-model="formOne.experienceTimeId" clearable placeholder="请选择您的工作经验年限"
+                                   class="section1-select">
                             <el-option v-for="item in experienceTimeOptions" :key="item.experienceTimeId"
                                        :label="item.name" :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
                 <div>
-                    <el-form-item label="从业经历：" prop="experience.experienceItem">
+                    <el-form-item label="从业经历："
+                                  prop="experienceIm">
                         <div class="textarea-container">
                             <div class="textarea-item" v-for="(item,index) in formOne.experience">
                                 <span class="experience-title">{{index+1}}.</span>
-                                <el-input class="experience" type="textarea" v-model="item.experienceItem" maxlength="150"
-                                          placeholder="字数不超过150字" resize="none" :autosize="{minRows: 2,maxRows: 10}"></el-input>
+                                <el-input class="experience"
+                                          type="textarea"
+                                          v-model="item.experienceItem"
+                                          maxlength="150"
+                                          placeholder="字数不超过150字" resize="none"
+                                          :autosize="{minRows: 2,maxRows: 10}"></el-input>
                             </div>
                             <div class="add-experience-button" @click="addExperience">添加经历</div>
                         </div>
@@ -116,7 +124,8 @@
                     <el-input style="width: 300px" v-model="formTwo.price" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
                 </el-form-item>
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
-                    <el-input type="textarea" style="width: 300px" v-model="formTwo.description" placeholder="请对面试的内容进行具体描述，150字以内"
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
+                              placeholder="请对面试的内容进行具体描述，150字以内"
                               :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
                 </el-form-item>
             </el-form>
@@ -125,7 +134,8 @@
                     <el-input v-model="formTwo2.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
                 </el-form-item>
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
-                    <el-input type="textarea" style="width: 300px" v-model="formTwo2.description" placeholder="请对面试的内容进行具体描述，150字以内"
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo2.description"
+                              placeholder="请对面试的内容进行具体描述，150字以内"
                               :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
                 </el-form-item>
             </el-form>
@@ -134,7 +144,8 @@
                     <el-input v-model="formTwo3.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
                 </el-form-item>
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
-                    <el-input type="textarea" style="width: 300px" v-model="formTwo3.description" placeholder="请对面试的内容进行具体描述，150字以内"
+                    <el-input type="textarea" style="width: 300px" v-model="formTwo3.description"
+                              placeholder="请对面试的内容进行具体描述，150字以内"
                               :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
                 </el-form-item>
             </el-form>
@@ -225,8 +236,23 @@
             </el-form>
             <div class="button-container">
                 <div class="button1" @click="active=2">上一步</div>
-                <div class="button1" @click="onOtherAuth">其他认证方式</div>
+                <div>
+                    <el-button class="button1" @click="dialogVisible = true">其他认证方式</el-button>
+
+                    <el-dialog
+                            title="提示"
+                            :visible.sync="dialogVisible"
+                            width="30%"
+                            :before-close="handleClose">
+                        <span>其他认证方式将交与人工客服审核</span>
+                        <span slot="footer" class="dialog-footer">
+                        <el-button @click="dialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="onOtherAuth">确 定</el-button>
+  </span>
+                    </el-dialog>
+                </div>
                 <div class="button2" @click="onSubmit">提交认证信息</div>
+
             </div>
         </div>
         <div v-if="active===1"></div>
@@ -281,7 +307,13 @@
                     }
                 }
             };
-
+            let experienceIm = (rule,value,callback)=>{
+                if (!this.formOne.experience){
+                    callback("请输入从业经历")
+                }else{
+                    callback()
+                }
+            }
             let identity = (rule, value, callback) => {
                 if (!this.formThree.faceUrl && !this.formThree.emblemUrl && !this.formThree.holdUrl) {
                     callback("请按要求上传三张身份证照片");
@@ -296,6 +328,7 @@
                 }
             }
             return {
+                dialogVisible: false,
                 uploadPicOptions: {
                     action: "",
                     params: {},
@@ -355,10 +388,18 @@
                     industryId: [{required: true, message: "请选择行业", trigger: "change"}],
                     experienceTimeId: [{required: true, message: "请选择从业时间", trigger: "change"}],
                     name: [{required: true, message: '请输入您的姓名', trigger: 'blur'}],
+                    experienceIm:[{required: true, validator: experienceIm, trigger: 'blur'}],
                     idNumber: [{required: true, trigger: 'blur', validator: isIdNumber}],
+                    description:[{required:true,message:'请输入面试官自述',trigger: 'blur'}],
                     companyName: [{required: true, message: '请输入您的公司名称', trigger: 'blur'}],
-                    position:[{required: true, message: '请输入您的职位名称', trigger: 'blur'},{max: 15, message: '职位不超过15字符'}],
-                    price: [{required: true, message: '请输入您理想资询价位', trigger: 'blur'}, {validator: isPrice, trigger: 'blur'}]
+                    position: [{required: true, message: '请输入您的职位名称', trigger: 'blur'}, {
+                        max: 15,
+                        message: '职位不超过15字符'
+                    }],
+                    price: [{required: true, message: '请输入您理想资询价位', trigger: 'blur'}, {
+                        validator: isPrice,
+                        trigger: 'blur'
+                    }]
                 },
                 avatarList: [],
                 industryOptions: [],
@@ -370,6 +411,14 @@
             this.$emit("complete");
         },
         methods: {
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {
+                    });
+            },
             initData() {
                 listByType(18).then(
                     response => (this.industryOptions = response.data.list)
@@ -410,17 +459,20 @@
                         reject();
                     } else {
                         this.loading1 = true;
-                        this.formThree.faceUrl = URL.createObjectURL(file);
+                        // this.formThree.faceUrl = URL.createObjectURL(file);
                         getUploadPicToken(file.name).then((response) => {
                             const {data} = response;
                             this.uploadPicOptions.action = data.host;
                             this.uploadPicOptions.params = data;
                             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            // this.formThree.faceUrl = data.host + "/" + data.key;
+                            this.$refs["formThree"].validateField("identity");
                             resolve(data);
                         }).catch((error) => {
                             reject(error);
                         });
                     }
+                    console.log(this.formThree.faceUrl);
                 });
             },
             beforeUpload2(file) {
@@ -429,12 +481,14 @@
                         reject();
                     } else {
                         this.loading2 = true;
-                        this.formThree.emblemUrl = URL.createObjectURL(file);
+
                         getUploadPicToken(file.name).then((response) => {
                             const {data} = response;
                             this.uploadPicOptions.action = data.host;
                             this.uploadPicOptions.params = data;
                             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+
+
                             resolve(data);
                         }).catch((error) => {
                             reject(error);
@@ -448,12 +502,14 @@
                         reject();
                     } else {
                         this.loading3 = true;
-                        this.formThree.holdUrl = URL.createObjectURL(file);
+
                         getUploadPicToken(file.name).then((response) => {
                             const {data} = response;
                             this.uploadPicOptions.action = data.host;
                             this.uploadPicOptions.params = data;
                             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            // this.formThree.holdUrl = data.host + "/" + data.key;
+                            this.$refs["formThree"].validateField("identity");
                             resolve(data);
                         }).catch((error) => {
                             reject(error);
@@ -466,16 +522,25 @@
                 this.loading = false;
             },
             handleUploadSuccess1() {
-                this.$refs["formThree"].validateField('identity');
                 this.loading1 = false;
+                this.formThree.faceUrl = this.uploadPicOptions.fileUrl;
+                this.$refs["formThree"].validateField("identity");
+                console.log(this.formThree.faceUrl)
+
             },
             handleUploadSuccess2() {
-                this.$refs["formThree"].validateField('identity');
+
                 this.loading2 = false;
+                this.formThree.emblemUrl = this.uploadPicOptions.fileUrl;
+                this.$refs["formThree"].validateField("identity");
+                console.log(this.formThree.emblemUrl)
             },
             handleUploadSuccess3() {
-                this.$refs["formThree"].validateField('identity');
+
                 this.loading3 = false;
+                this.formThree.holdUrl = this.uploadPicOptions.fileUrl;
+                this.$refs["formThree"].validateField("identity");
+                console.log(this.formThree.holdUrl)
             },
 
             onDefaultAvatar(item) {
