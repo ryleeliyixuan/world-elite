@@ -286,6 +286,7 @@
           description: '',
           interviewerId: '',
           price: '',
+          logo: ''
         },
 
         //身份证图片上传form
@@ -355,6 +356,7 @@
           description: '',
           interviewerId: '',
           price: '',
+          logo: 'https://worldelite-prod.oss-us-west-1.aliyuncs.com/pic/hr.svg'
         });
 
         this.interviewDirectionArray.push({
@@ -362,6 +364,7 @@
           description: '',
           interviewerId: '',
           price: '',
+          logo: 'https://worldelite-prod.oss-us-west-1.aliyuncs.com/pic/expertise.svg'
         });
 
         this.interviewDirectionArray.push({
@@ -369,6 +372,7 @@
           description: '',
           interviewerId: '',
           price: '',
+          logo: 'https://worldelite-prod.oss-us-west-1.aliyuncs.com/pic/industry_experience.svg'
         });
       },
       beforeUploadAvatar(file) {
