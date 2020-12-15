@@ -17,10 +17,10 @@
                 <div class="section2-right-container">
                     <h5>{{company.fullName}}</h5>
                     <div class="text-label">
-                        <span v-if="company.stage">{{company.stage.name}} .</span>
-                        <span v-if="company.property">{{company.property.name}} .</span>
-                        <span v-if="company.industry">{{company.industry.name}} .</span>
-                        <span v-if="company.scale">{{company.scale.name}}</span>
+                        <span v-if="company.stage">{{company.stage.name}} |</span>
+                        <span v-if="company.property"> {{company.property.name}} |</span>
+                        <span v-if="company.industry"> {{company.industry.name}} |</span>
+                        <span v-if="company.scale"> {{company.scale.name}}</span>
                     </div>
                     <div class="text-desc">{{company.wikiSummary}}</div>
                 </div>

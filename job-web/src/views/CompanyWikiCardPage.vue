@@ -47,10 +47,10 @@
                             <div>
                                 <div class="text-small text-gray" style="margin-bottom: 4px">{{company.name}}</div>
                                 <div class="text-small text-gray" style="min-height: 42px">
-                                    <span v-if="company.stage">{{company.stage.name}} .</span>
-                                    <span v-if="company.property">{{company.property.name}} .</span>
-                                    <span v-if="company.industry">{{company.industry.name}} .</span>
-                                    <span v-if="company.scale">{{company.scale.name}}</span>
+                                    <span v-if="company.stage">{{company.stage.name}} |</span>
+                                    <span v-if="company.property"> {{company.property.name}} |</span>
+                                    <span v-if="company.industry"> {{company.industry.name}} |</span>
+                                    <span v-if="company.scale"> {{company.scale.name}}</span>
                                 </div>
                             </div>
                         </el-card>
@@ -205,13 +205,14 @@
     .app-container {
         max-width: 1140px;
         margin: 0 auto;
-        padding: 20px;
+        padding-left: 80px;
+        /*padding: 20px;*/
         min-height: calc(100vh - 477px);
         position: relative;
         .left-container {
             position: absolute;
-            top: 25px;
-            left: -100px;
+            top: 5px;
+            left: -50px;
             height: calc(100% - 238px);
             overflow-y: auto;
 
@@ -259,7 +260,7 @@
                     color: #000;
                 }
                 .company-name-text {
-                    height: 20px;
+                    height: 40px;
                     font-size: 14px;
                     font-family: PingFangSC-Regular, PingFang SC;
                     font-weight: 400;

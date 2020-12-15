@@ -65,7 +65,11 @@
 
       <div class="non-post-tip"
            v-if="showNoResult">
-        <span>很抱歉，该公司暂无岗位发布哦。</span>
+          <svg-icon
+                  icon-class="activity-missing"
+                  style="height: 265px; width: 344px; margin-bottom: 17px"
+          />
+          <div>很抱歉，该公司暂无岗位发布哦。</div>
       </div>
 
       <div class="sort-options" v-show="!showNoResult">
@@ -284,9 +288,10 @@
         min-height: calc(100vh - 477px);
 
         .non-post-tip {
-          text-align: center;
-          line-height: 30px;
-          height: 30px;
+            line-height: 80px;
+            text-align: center;
+            padding-bottom: 20px;
+            width: 100%;
         }
 
         .section1-container {

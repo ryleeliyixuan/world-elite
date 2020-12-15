@@ -73,17 +73,15 @@ export default {
                 verticalAlign: "bottom",
                 align: "center",
                 backgroundColor: "#F4C062",
-
                 color: "#fff",
                 shadowColor: "#F1CB85",
                 shadowBlur: 15,
-
-                width: 30,
+                // width: 30,
+                borderWidth:30,
                 height: 50,
-                padding: [32, 12, 32, 12],
+                padding: [32, 10, 32, 10],
                 borderRadius: 100,
                 fontWeight: 500,
-
                 formatter: function (v) {
                   // console.log("--------", v);
                   var text = v.name;
@@ -103,13 +101,16 @@ export default {
             leaves: {
               label: {
                 normal: {
+                  position: "bottom",
                   verticalAlign: "bottom",
                   align: "center",
                   backgroundColor: "#F4C062",
-
-                  width: 30,
+                  color: "#fff",
+                  shadowColor: "#F1CB85",
+                  shadowBlur: 15,
+                  borderWidth:20,
                   height: 50,
-                  padding: [22, 2, 22, 2],
+                  padding: [20, 8, 20, 8],
                   borderRadius: 100,
                   fontWeight: 500,
 

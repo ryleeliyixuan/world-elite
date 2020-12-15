@@ -73,14 +73,12 @@ export default {
                 verticalAlign: "bottom",
                 align: "center",
                 backgroundColor: "#F4C062",
-
                 color: "#fff",
                 shadowColor: "#F1CB85",
                 shadowBlur: 15,
-
                 width: 30,
                 height: 50,
-                padding: [32, 12, 32, 12],
+                padding: [32, 10, 32, 10],
                 borderRadius: 100,
                 fontWeight: 500,
 
@@ -109,7 +107,7 @@ export default {
 
                   width: 30,
                   height: 50,
-                  padding: [22, 2, 22, 2],
+                  padding: [30, 20, 30, 20],
                   borderRadius: 100,
                   fontWeight: 500,
 

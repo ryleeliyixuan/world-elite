@@ -1018,7 +1018,7 @@ export default {
 
     .timline-switch-button {
       position: absolute;
-      right: 0;
+      right: 6px;
       top: 0;
     }
   }
