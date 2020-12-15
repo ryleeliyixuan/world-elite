@@ -58,8 +58,8 @@
                 </div>
                 <div class="interviewer-right">
                     <div class="rate-top">
-                        <el-image :src="require('@/assets/mock/icon6.png')" class="rate-image" fit="fill"></el-image>
-                        <div class="rate-text">{{interviewer.avgScore|toFixed1}}</div>
+<!--                        <el-image :src="require('@/assets/mock/icon6.png')" class="rate-image" fit="fill"></el-image>-->
+<!--                        <div class="rate-text">{{interviewer.avgScore|toFixed1}}</div>-->
                     </div>
                     <div class="reservation" @click.stop="onPromise(interviewer)">马上预约</div>
                 </div>

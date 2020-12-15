@@ -402,7 +402,7 @@
                         // 处理剩余可预约时间段本地时区跨天问题
                         let eventListFinal = [];
                         eventList.forEach(item => {
-                            if (this.compareTime(item.start, item.end)) { // 开始和结束时间在不在同一天
+                            if (this.compareTime(item.start, item.end)) { // 开始和结束时间在同一天
                                 eventListFinal.push(item);
                             } else { // 开始和结束时间在不在同一天
                                 let item1 = {...item};
@@ -479,7 +479,7 @@
 
             // 比较2个时间戳是否为同一天
             compareTime(time1, time2) {
-                return new Date(time1).getDate() === new Date(time2).getDate();
+                return new Date(time1).getDate() === new Date(time2-1).getDate();
             },
 
             // 获取指定日期的最后一毫秒

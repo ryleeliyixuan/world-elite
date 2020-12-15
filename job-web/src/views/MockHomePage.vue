@@ -400,8 +400,9 @@
 
                     .right-item1-img3 {
                         width: 94px;
-                        height: 70px;
                         margin-left: 12px;
+                        color: #3D6FF4;
+                        font-size: 18px;
                     }
 
                     .right-item1-position {

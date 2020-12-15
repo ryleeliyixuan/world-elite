@@ -14,19 +14,19 @@
                     <div class="basis1">{{interviewer.nickName}}
                     </div>
                     <div class="basis2">{{interviewer.industry.name}}<span v-if="interviewer.position">·</span>{{interviewer.position}}</div>
-                    <div class="basis3">
-                        <el-rate
-                                :value="interviewer.avgScore|toFixed1"
-                                disabled
-                                show-score
-                                :colors="['#FFD740', '#FFD740', '#FFD740']"
-                                text-color="#999999"
-                                score-template="{value}"
-                                class="item-rate">
-                        </el-rate>
+<!--                    <div class="basis3">-->
+<!--                        <el-rate-->
+<!--                                :value="interviewer.avgScore|toFixed1"-->
+<!--                                disabled-->
+<!--                                show-score-->
+<!--                                :colors="['#FFD740', '#FFD740', '#FFD740']"-->
+<!--                                text-color="#999999"-->
+<!--                                score-template="{value}"-->
+<!--                                class="item-rate">-->
+<!--                        </el-rate>-->
 
-                        <span> of 5.0</span>
-                    </div>
+<!--                        <span> of 5.0</span>-->
+<!--                    </div>-->
                 </div>
             </div>
             <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
@@ -172,6 +172,7 @@
                     justify-content: space-between;
                     padding-top: 6px;
                     margin-left: 46px;
+                    padding-bottom: 30px;
 
 
                     .basis1 {
