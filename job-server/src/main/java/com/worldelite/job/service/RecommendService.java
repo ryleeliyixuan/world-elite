@@ -96,9 +96,15 @@ public class RecommendService {
             recommendVo.setPosition(recommend.getPosition());
             recommendVo.setCreateTime(recommend.getCreateTime());
             if(listForm.getObjectType() == ObjectType.JOB.value){
-                recommendVo.setObject(jobService.getJobInfo(recommend.getObjectId(), true));
+                final JobVo jobInfo = jobService.getJobInfo(recommend.getObjectId(), true);
+                if(jobInfo == null) continue;
+
+                recommendVo.setObject(jobInfo);
             }else if(listForm.getObjectType() == ObjectType.COMPANY.value || listForm.getObjectType() == ObjectType.COMPANY_WIKI.value){
-                recommendVo.setObject(companyService.getCompanyInfo(recommend.getObjectId()));
+                final CompanyVo companyInfo = companyService.getCompanyInfo(recommend.getObjectId());
+                if(companyInfo == null) continue;
+                
+                recommendVo.setObject(companyInfo);
             }
             recommendVoList.add(recommendVo);
         }
