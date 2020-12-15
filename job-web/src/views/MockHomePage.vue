@@ -1,7 +1,7 @@
 <template>
     <div class="mock-container">
         <div class="title-container">
-            <div class="title-left">面试官排行榜</div>
+            <div class="title-left">热门面试官</div>
             <div class="title-right" @click="onMoreInterviewer">
                 更多面试官
                 <img src="../assets/mock/arrow-gery.png" alt="" class="title-icon">
@@ -16,14 +16,14 @@
                      @click="onInterviewer(interviewer)">
                     <div class="item-left-container">
                         <div class="item-title">{{interviewer.nickName}}</div>
-                        <el-rate :value="interviewer.avgScore|toFixed1"
-                                 disabled
-                                 show-score
-                                 :colors="['#FFD740', '#FFD740', '#FFD740']"
-                                 text-color="#FFFFFF"
-                                 score-template="{value}"
-                                 class="item-rate">
-                        </el-rate>
+<!--                        <el-rate :value="interviewer.avgScore|toFixed1"-->
+<!--                                 disabled-->
+<!--                                 show-score-->
+<!--                                 :colors="['#FFD740', '#FFD740', '#FFD740']"-->
+<!--                                 text-color="#FFFFFF"-->
+<!--                                 score-template="{value}"-->
+<!--                                 class="item-rate">-->
+<!--                        </el-rate>-->
                         <div class="item-bottom">
                             <img src="../assets/mock/icon1.png" alt="" class="item-bottom-icon1">
                             <div class="item-bottom-text1">{{interviewer.company?interviewer.company.name:interviewer.companyName}}</div>
@@ -46,7 +46,7 @@
                     <div class="right-item1-img3" >{{interviewer.company?interviewer.company.fullName:interviewer.companyName}}</div>
                     <!--                    <el-image :src="interviewer.companyLogo" class="right-item1-img3" fit="scale-down"/>-->
                     <div class="right-item1-position">{{interviewer.position}}</div>
-                    <div class="right-item1-score">{{interviewer.avgScore | toFixed1}}</div>
+<!--                    <div class="right-item1-score">{{interviewer.avgScore | toFixed1}}</div>-->
                     <div class="right-item-tip" v-if="interviewer.hot>5">HOT</div>
                     <div class="right-item-tip2" v-else-if="new Date(interviewer.createTime).getTime()>Date.now()-2*7*24*60*60*1000">NEW</div>
                 </div>
@@ -302,7 +302,10 @@
                     .item-left-container {
                         height: 100%;
                         width: 100%;
-                        padding: 20px 20px 20px 40px;
+                        padding: 20px 20px 40px 40px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
 
                         .item-title {
                             font-size: 21px;

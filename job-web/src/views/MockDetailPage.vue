@@ -414,7 +414,7 @@
                     width: 100%;
                     height: auto;
                     padding: 0 50px 26px 65px;
-                    font-size: 21px;
+                    font-size: 16px;
                     font-weight: 400;
                     color: #333333;
                 }
