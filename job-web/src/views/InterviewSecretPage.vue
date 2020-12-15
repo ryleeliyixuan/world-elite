@@ -115,30 +115,34 @@
                 padding: 20px;
             }
         }
+        .bottom-button {
+            text-align: center;
+
+            .Btn {
+                width: 332px;
+                height: 47px;
+                border-color:#EDF3FF ;
+                background: #EDF3FF;
+                border-radius: 24px;
+                font-size: 24px;
+                font-family: PingFangSC-Medium, PingFang SC;
+                font-weight: 500;
+                color: #3D6FF4;
+                line-height: 23px;
+            }
+
+            .Btn1 {
+                width: 332px;
+                background: #EEEEEE;
+                border-radius: 24px;
+                font-size: 24px;
+                color: #999999;
+                line-height: 23px;
+            }
+        }
     }
 
-    .bottom-button {
-        text-align: center;
 
-        .Btn {
-            width: 332px;
-            background: #EDF3FF;
-            border-radius: 24px;
-            font-size: 24px;
-            font-family: PingFangSC-Medium, PingFang SC;
-            color: #999999;
-            line-height: 25px;
-        }
-
-        .Btn1 {
-            width: 332px;
-            background: #FFFFFF;
-            border-radius: 24px;
-            font-size: 24px;
-            color: #999999;
-            line-height: 25px;
-        }
-    }
 
     @media screen and (max-width: 850px) {
         .app-container {

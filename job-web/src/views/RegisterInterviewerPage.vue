@@ -121,31 +121,41 @@
             </div>
             <el-form ref="formTwo" :model="formTwo" :rules="rules" v-if="checked1===true">
                 <el-form-item label="HR通用面试理想咨询价格：" label-width="340px" prop="price">
-                    <el-input style="width: 300px" v-model="formTwo.price" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
+                    <el-input style="width: 300px" v-model="formTwo.price" placeholder="请输入您理想资询价位">
+                    </el-input>
+                    <span style="font-size: 24px;font-weight: 400;color: #333333;line-height: 33px;padding-left: 75px">元/半小时</span>
+
                 </el-form-item>
+                
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
                     <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
-                              placeholder="请对面试的内容进行具体描述，150字以内"
+                              placeholder="请做一个简要的自述"
                               :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
                 </el-form-item>
             </el-form>
             <el-form ref="formTwo2" :model="formTwo2" :rules="rules" v-if="checked2===true">
                 <el-form-item label="专业技术测试理想咨询价格：" label-width="340px" prop="price">
-                    <el-input v-model="formTwo2.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
+                    <el-input v-model="formTwo2.price" style="width: 300px" placeholder="请输入您理想资询价位">
+                    </el-input>
+                    <span style="font-size: 24px;font-weight: 400;color: #333333;line-height: 33px;padding-left: 75px">元/半小时</span>
+
                 </el-form-item>
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
                     <el-input type="textarea" style="width: 300px" v-model="formTwo2.description"
-                              placeholder="请对面试的内容进行具体描述，150字以内"
+                              placeholder="请做一个简要的自述"
                               :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
                 </el-form-item>
             </el-form>
             <el-form ref="formTwo3" :model="formTwo3" :rules="rules" v-if="checked3===true">
                 <el-form-item label="职业规划理想咨询价格：" label-width="340px" prop="price">
-                    <el-input v-model="formTwo3.price" style="width: 300px" placeholder="请输入您理想资询价位(元/半小时)"></el-input>
+                    <el-input v-model="formTwo3.price" style="width: 300px" placeholder="请输入您理想资询价位">
+                    </el-input>
+                    <span style="font-size: 24px;font-weight: 400;color: #333333;line-height: 33px;padding-left: 75px">元/半小时</span>
+
                 </el-form-item>
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
                     <el-input type="textarea" style="width: 300px" v-model="formTwo3.description"
-                              placeholder="请对面试的内容进行具体描述，150字以内"
+                              placeholder="请做一个简要的自述"
                               :autosize="{minRows: 8,maxRows: 10}" resize="none"></el-input>
                 </el-form-item>
             </el-form>
