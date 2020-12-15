@@ -393,7 +393,7 @@
 
                     .right-item1-name {
                         width: 110px;
-                        font-size: 21px;
+                        font-size: 18px;
                         color: #0F3057;
                         margin-left: 12px;
                     }
@@ -407,7 +407,7 @@
 
                     .right-item1-position {
                         width: 126px;
-                        font-size: 20px;
+                        font-size: 18px;
                         color: #333333;
                         margin-left: 12px;
                     }
