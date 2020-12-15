@@ -359,6 +359,7 @@
                     description: '',
                     interviewerId: getUserId(),
                     price: '',
+                    logo: 'https://worldelite-prod.oss-us-west-1.aliyuncs.com/pic/hr.svg'
                 },
                 //技术
                 formTwo2: {
@@ -366,6 +367,7 @@
                     description: '',
                     interviewerId: getUserId(),
                     price: '',
+                    logo: 'https://worldelite-prod.oss-us-west-1.aliyuncs.com/pic/expertise.svg'
                 },
                 //经验
                 formTwo3: {
@@ -373,6 +375,7 @@
                     description: '',
                     interviewerId: getUserId(),
                     price: '',
+                    logo: 'https://worldelite-prod.oss-us-west-1.aliyuncs.com/pic/industry_experience.svg'
                 },
                 formThree: {
                     name: '',
