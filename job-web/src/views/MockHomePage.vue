@@ -28,7 +28,7 @@
                             <img src="../assets/mock/icon1.png" alt="" class="item-bottom-icon1">
                             <div class="item-bottom-text1">{{interviewer.company?interviewer.company.name:interviewer.companyName}}</div>
                             <img src="../assets/mock/icon2.png" alt="" class="item-bottom-icon1" style="margin-left: 38px">
-                            <div class="item-bottom-text1" v-if="interviewer.industry">{{interviewer.industry.name}}</div>
+                            <div class="item-bottom-text1" v-if="interviewer.position">{{interviewer.position}}</div>
                         </div>
                     </div>
                     <el-image :src="interviewer.avatar" alt="" class="right-image" fit="cover"/>
@@ -43,7 +43,7 @@
                     <el-image :src="require('../assets/mock/mock'+index+'.png')" class="right-item1-img1" fit="cover"/>
                     <el-image :src="interviewer.avatar" class="right-item1-img2" fit="cover"/>
                     <div class="right-item1-name">{{interviewer.nickName}}</div>
-                    <div class="right-item1-img3" v-if="interviewer.company">{{interviewer.company.fullName}}</div>
+                    <div class="right-item1-img3" >{{interviewer.company?interviewer.company.fullName:interviewer.companyName}}</div>
                     <!--                    <el-image :src="interviewer.companyLogo" class="right-item1-img3" fit="scale-down"/>-->
                     <div class="right-item1-position">{{interviewer.position}}</div>
                     <div class="right-item1-score">{{interviewer.avgScore | toFixed1}}</div>
