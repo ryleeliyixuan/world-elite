@@ -59,13 +59,30 @@
                         </div>
                     </el-scrollbar>
                     <div class="footer">
-                        <el-input type="text"
-                                  placeholder="请输入内容"
-                                  v-model="content"
-                                  maxlength="150"
-                                  @keyup.enter.native="onSend"
-                                  :show-word-limit="false"/>
-                        <el-button class="send-button" type="primary" icon="el-icon-message" size="small" circle @click="onSend"></el-button>
+                        <div class="upload-container">
+                            <el-upload
+                                v-loading.fullscreen.lock="fullscreenLoading"
+                                ref="upload"
+                                :action="uploadAnnexOptions.action"
+                                :data="uploadAnnexOptions.params"
+                                :show-file-list="false"
+                                :on-success="handleEditorUploadSuccess"
+                                :on-error="handleEditorUploadError"
+                                :before-upload="beforeUpload">
+                                <div class="icon2">附件</div>
+                            </el-upload>
+                        </div>
+
+
+                        <div class="input-container">
+                            <el-input type="text"
+                                      placeholder="请输入内容"
+                                      v-model="content"
+                                      maxlength="150"
+                                      @keyup.enter.native="onSend"
+                                      :show-word-limit="false"/>
+                            <el-button class="send-button" type="primary" icon="el-icon-message" size="small" circle @click="onSend"></el-button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -90,6 +107,7 @@
     import store from "@/store";
     import router from "@/router";
     import {curRelativePath} from "@/utils/common";
+    import {getUploadPicToken} from "@/api/upload_api";
 
     export default {
         name: "InterviewPage",
@@ -114,6 +132,17 @@
                 dialogText: "如果面试官15分钟内未出现请联系人工客服。",
                 tips: "等待加入...",
                 identity: undefined,
+                // 上传附件
+                // 上传附件
+                fullscreenLoading: false,
+                uploadAnnexOptions: {
+                    action: '',
+                    params: {},
+                    fileUrl: '',
+                    acceptFileType: '.*',
+                    filename: '',
+                    localUrl: '',
+                },
             }
         },
 
@@ -616,7 +645,70 @@
             onService() {
                 this.dialogText = "请联系人工客服：<br/>xiaokefu@we.com";
                 this.dialogVisible = true;
-            }
+            },
+            // 上传资源
+            beforeUpload(file) {
+                this.fullscreenLoading = true;
+                return new Promise((resolve, reject) => {
+                    getUploadPicToken(file.name).then(response => {
+                        this.fullscreenLoading = false;
+                        const {data} = response;
+                        this.uploadAnnexOptions.action = data.host;
+                        this.uploadAnnexOptions.params = data;
+                        this.uploadAnnexOptions.fileUrl = data.host + '/' + data.key;
+                        this.uploadAnnexOptions.filename = file.name;
+                        const _URL = window.URL || window.webkitURL;
+                        this.uploadAnnexOptions.localUrl = _URL.createObjectURL(file);
+                        resolve(data)
+                    }).catch(error => {
+                        this.fullscreenLoading = false;
+                        reject(error)
+                    })
+                })
+            },
+            // 资源上传成功
+            handleEditorUploadSuccess() {
+                let contentType;
+                let names = this.uploadAnnexOptions.filename.split("\.");
+                let imageType = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
+                this.$message.success("资源上传成功");
+                if (names.length > 1 && imageType.includes(names[names.length - 1])) {
+                    contentType = 3;
+                } else {
+                    contentType = 5;
+                }
+
+                // 构建消息对象，插入接收框
+                let message = {
+                    fromUser: this.userId,
+                    messageId: undefined,
+                    payload: {
+                        content: this.uploadAnnexOptions.filename,
+                        contentType: contentType,
+                        expireDuration: 0,
+                        extra: null,
+                        remoteMediaUrl: this.uploadAnnexOptions.localUrl,
+                    },
+                    status: 1,
+                    timestamp: Date.now(),
+                    toUser: this.conversationItem.friendVo.friendUserId,
+                }
+                this.messageList.push(message);
+
+                // 接收框滚动到底部
+                this.scrollBottom();
+
+                // 发送消息
+                im.chatMessage(this.userId, this.conversationItem.friendVo.friendUserId, this.conversationItem.id, this.uploadAnnexOptions.filename, contentType, this.uploadAnnexOptions.fileUrl).then(data => {
+                    message.messageId = data.messageId;
+                    this.conversationItem.lastMessage = message;
+                });
+            },
+
+            // 资源上传失败
+            handleEditorUploadError() {
+                this.$message.error("资源上传失败")
+            },
         }
     }
 </script>
@@ -802,20 +894,42 @@
 
                     .footer {
                         width: 100%;
-                        margin: 10px;
                         height: auto;
-                        display: flex;
+                        background-color: #F5F6FA;
+                        .upload-container{
+                            width: 98%;
+                            margin: 5px auto;
+                            .icon2 {
+                                font-size: 14px;
+                                color: #606266;
+                                background: url("../assets/annex.png") no-repeat;
+                                background-size: 16px 16px;
+                                padding-left: 20px;
+                                margin-right: 12px;
+                                line-height: 16px;
 
-                        .send-button {
-                            min-width: 40px;
-                            margin-right: 20px;
-                            margin-left: 10px;
-                            font-size: 18px;
+                                &:hover {
+                                    color: #66b1ff;
+                                    cursor: pointer;
+                                }
+                            }
+
                         }
+                        .input-container{
+                            width: 98%;
+                            margin: 5px auto 10px;
+                            background-color: #fff;
+                            display: flex;
+                            .send-button {
+                                min-width: 40px;
+                                margin-left: 10px;
+                                font-size: 18px;
+                            }
+                        }
+
                     }
                 }
             }
-
 
             .button-container {
                 width: 300px;
