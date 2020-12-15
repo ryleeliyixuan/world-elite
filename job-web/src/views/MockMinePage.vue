@@ -166,7 +166,7 @@
         <div class="title" style="margin-bottom: 20px;">我的收益</div>
         <el-table class="table" v-if="incomeList" :data="incomeList" :row-style="{height:'86px'}" :header-row-style="{height:'86px'}"
                   :show-header="false">
-          <el-table-column width="130">
+          <el-table-column width="120">
             <template slot-scope="scope">
               <div class="type">
                 {{scope.row.month}}
@@ -194,7 +194,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column width="195">
+          <el-table-column width="196">
             <template slot-scope="scope">
               <div class="detail" @click="onDetail(scope.row)">查看当月明细</div>
             </template>
