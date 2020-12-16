@@ -1,4 +1,4 @@
-"use strict";
+ "use strict";
 const path = require("path");
 const OptimizeCSSPlugin = require("optimize-css-assets-webpack-plugin");
 const CompressionWebpackPlugin = require("compression-webpack-plugin");

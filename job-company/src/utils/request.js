@@ -71,18 +71,6 @@ service.interceptors.response.use(
         }
     },
     error => {
-        // if (error.message.startsWith("timeout")) { // 每点击1次，至多显示一次超时异常
-        //     if (!showTimeOutToast) {
-        //         showTimeOutToast = true;
-        //         Toast.error(error.message);
-        //         setTimeout(() => {
-        //             showTimeOutToast = false;
-        //         }, 2000);
-        //     }
-        // } else {
-        //     Toast.error(error.message);
-        // }
-
         Toast.close(); // 最多显示一个错误信息
         Toast.error(error.message);
 
