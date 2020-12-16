@@ -487,7 +487,14 @@
             onInterviewee() {
                 // 切换身份为面试者
                 this.identity = 1;
-                this.getIntervieweeEvent();
+                if (this.menu === 1) {
+                    this.getIntervieweeEvent();
+                } else if (this.menu === 2) {
+                    this.getInterviewRecord();
+                } else if (this.menu === 4) {
+                    this.menu = 1;
+                    this.getIntervieweeEvent();
+                }
             },
 
 
@@ -496,7 +503,11 @@
                 if (this.userIdentity === 2) {
                     // 切换身份为面视官
                     this.identity = 2;
-                    this.getInterviewerEvent();
+                    if (this.menu === 1) {
+                        this.getInterviewerEvent();
+                    } else if (this.menu === 2) {
+                        this.getInterviewRecord();
+                    }
                 } else {
                     this.$message.warning("您当前还未认证面试官，请先认证后操作!");
                 }
@@ -754,22 +765,24 @@
 
             // 面试者获取我的预约成功事件
             getIntervieweeEvent() {
-                this.calendarApi = this.$refs.fullCalendar.getApi();
-                let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
-                let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
-                this.$axios.get(`/mock/interview/reservation/my/${beginTime}/${endTime}`).then(data => {
-                    this.calendarOptions.events = data.data.map(item => {
-                        return {
-                            id: item.id,
-                            interviewerId: item.interviewerId,
-                            reservationList: item.reservationList,
-                            start: parseInt(item.beginTime),
-                            end: parseInt(item.endTime),
-                            borderColor: '#FFE58F', // 块边框颜色
-                            backgroundColor: '#FFE58F', // 块背景色
-                        }
-                    });
-                })
+                if (this.$refs.fullCalendar) {
+                    this.calendarApi = this.$refs.fullCalendar.getApi();
+                    let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
+                    let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
+                    this.$axios.get(`/mock/interview/reservation/my/${beginTime}/${endTime}`).then(data => {
+                        this.calendarOptions.events = data.data.map(item => {
+                            return {
+                                id: item.id,
+                                interviewerId: item.interviewerId,
+                                reservationList: item.reservationList,
+                                start: parseInt(item.beginTime),
+                                end: parseInt(item.endTime),
+                                borderColor: '#FFE58F', // 块边框颜色
+                                backgroundColor: '#FFE58F', // 块背景色
+                            }
+                        });
+                    })
+                }
             },
 
             // 获取我的面试记录
