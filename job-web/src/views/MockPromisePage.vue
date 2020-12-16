@@ -100,6 +100,7 @@
 <script>
     import FullCalendar from '@fullcalendar/vue'
     import dayGridPlugin from '@fullcalendar/daygrid'
+    import momentPlugin from '@fullcalendar/moment'
     import interactionPlugin from '@fullcalendar/interaction'
     import QRCode from 'qrcodejs2'
     import {getUserId} from '@/utils/auth'
@@ -143,7 +144,7 @@
                     // 语言
                     locale: "zh-cn",
 
-                    plugins: [dayGridPlugin, interactionPlugin],
+                    plugins: [dayGridPlugin, interactionPlugin, momentPlugin],
 
                     // 日历配置
                     initialView: 'dayGridMonth',
@@ -173,11 +174,8 @@
                     eventBackgroundColor: '#D3F261', // 块背景色
                     displayEventEnd: true, // 显示事件结束时间
 
-                    eventTimeFormat: {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                    },
+                    slotLabelFormat: 'HH:mm',
+                    eventTimeFormat: 'HH:mm',
 
                     eventClassNames: "event-text"
                 },
@@ -332,15 +330,21 @@
             // 点击事件，显示对话框，进行预约
             onEventClick(info) {
                 console.log(info);
-                this.interviewerTimeId = info.event.extendedProps.interviewerTimeId;
-                this.date = new Date(info.event.start); // 当前选中天
-                this.startFirst = this.getHourMinutes(info.event.start, true); // 最小开始时间
-                this.startTime = this.getHourMinutes(info.event.start, true); // 选中的开始时间
-                this.endFirst = this.getHourMinutes(new Date(info.event.end.getTime() - 30 * 60 * 1000)); // 最大开始时间
-                this.endSecond = this.getHourMinutes(info.event.end);  // 最大结束时间
-                this.endTime = this.getHourMinutes(new Date(info.event.start.getTime() + 30 * 60 * 1000)); // 选中的结束时间
-                this.step = 1;
-                this.dialogVisible = true;
+                console.log(info.event.end.getTime());
+                if (info.event.end.getTime() - 30 * 60 * 1000 > Date.now()) { // 结束时间必须大于当前时间半小时
+                    this.interviewerTimeId = info.event.extendedProps.interviewerTimeId;
+                    this.date = new Date(info.event.start); // 当前选中天
+                    console.log(Math.max(info.event.start, Date.now()));
+                    this.startFirst = this.getHourMinutes(new Date(Math.max(info.event.start, Date.now())), true); // 最小开始时间
+                    this.startTime = this.getHourMinutes(new Date(Math.max(info.event.start, Date.now())), true); // 选中的开始时间
+                    this.endFirst = this.getHourMinutes(new Date(info.event.end.getTime() - 30 * 60 * 1000)); // 最大开始时间
+                    this.endSecond = this.getHourMinutes(info.event.end);  // 最大结束时间
+                    this.endTime = this.getHourMinutes(new Date(info.event.start.getTime() + 30 * 60 * 1000)); // 选中的结束时间
+                    this.step = 1;
+                    this.dialogVisible = true;
+                } else {
+                    this.$message.warning("当前时间端不可被预约");
+                }
             },
 
             // 获取可预约事件
@@ -479,7 +483,7 @@
 
             // 比较2个时间戳是否为同一天
             compareTime(time1, time2) {
-                return new Date(time1).getDate() === new Date(time2-1).getDate();
+                return new Date(time1).getDate() === new Date(time2 - 1).getDate();
             },
 
             // 获取指定日期的最后一毫秒
