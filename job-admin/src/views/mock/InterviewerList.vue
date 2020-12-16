@@ -73,7 +73,7 @@
               type="primary"
               size="mini"
               icon="el-icon-document"
-              @click=""
+              @click="interviewDetails(row.id)"
               v-if="row.status === '1'"
             >查看</el-button>
 
@@ -145,7 +145,7 @@
   import waves from "@/directive/waves"; // waves directive
   import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
   import VerificationView from "./VerificationView";
-  import {getInterviewerList, modifyCorporateStatus} from "@/api/mock_api";
+  import {getInterviewerList} from "@/api/mock_api";
   import {verifyInterviewer} from "@/api/verify_api";
 
   export default {
@@ -224,33 +224,6 @@
         this.listQuery.page = 1;
         this.handleRouteList();
       },
-      handleModifyStatus(user, status) {
-        this.statusForm.userId = user.userId;
-        this.statusForm.status = status;
-        if (status === 1) {
-          this.$confirm("此操作将解禁该用户, 是否继续?", "提示", {
-            confirmButtonText: "继续",
-            cancelButtonText: "取消",
-            type: "warning"
-          }).then(() => {
-            modifyCorporateStatus(this.statusForm).then(response => {
-              user.status = status;
-              this.$message("操作成功");
-            });
-          });
-        } else {
-          this.$prompt("请输入禁用的原因", "提示", {
-            confirmButtonText: "提交",
-            cancelButtonText: "取消"
-          }).then(({value}) => {
-            this.statusForm.reason = value;
-            modifyCorporateStatus(this.statusForm).then(response => {
-              user.status = status;
-              this.$message("操作成功");
-            });
-          });
-        }
-      },
       handleVerifyUser(user, status) {
         this.verifyDrawerVisible = false;
         this.statusForm.id = user.id;
@@ -286,6 +259,9 @@
       },
       addInterviewer() {
         this.$router.push("/mock/registerInterviewer");
+      },
+      interviewDetails(id){
+        this.$router.push({path:'/mock/interviewDetails',query: {id: id}});
       },
     }
   };

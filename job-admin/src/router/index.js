@@ -226,7 +226,14 @@ export const constantRoutes = [
         hidden: true,
         component: () => import('@/views/mock/RegisterInterviewer'),
         meta: { title: '创建面试官' },
-      }]
+      },
+      {
+        path: 'interviewDetails',
+        hidden: true,
+        component: () => import('@/views/mock/InterviewDetails'),
+        meta: { title: '面试官信息' },
+      }
+    ]
   },
   {
     path: '/dict',

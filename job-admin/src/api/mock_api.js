@@ -46,3 +46,25 @@ export function addInterviewAuth(data) {
     data
   })
 }
+
+export function getInterviewerInfo(id){
+  return request({
+    url: '/mock/interviewer/'+id,
+    method: 'get'
+  })
+}
+
+export function getInterviewDirection(id){
+  return request({
+    url: '/mock/interviewer/direction/'+id,
+    method: 'get'
+  })
+}
+
+export function getInterviewerBaseInfo(id){
+  return request({
+    url: '/userapplicant/user-info',
+    method: 'get',
+    params: {userId: id}
+  })
+}
