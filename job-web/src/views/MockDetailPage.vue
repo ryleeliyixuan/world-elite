@@ -373,8 +373,8 @@
                         }
 
                         .reservation-icon1 {
-                            width: 53px;
-                            height: 54px;
+                            width: 48px;
+                            height: 48px;
 
                             /deep/ .el-image__error {
                                 font-size: 12px;

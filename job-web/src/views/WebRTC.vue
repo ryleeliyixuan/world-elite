@@ -81,7 +81,8 @@
                                       maxlength="150"
                                       @keyup.enter.native="onSend"
                                       :show-word-limit="false"/>
-                            <el-button class="send-button" type="primary" icon="el-icon-message" size="small" circle @click="onSend"></el-button>
+<!--                            <el-button class="send-button" type="primary" icon="el-icon-message" size="small" circle @click="onSend"></el-button>-->
+                            <el-image :src="require('@/assets/mock/send.png')" class="send-button" @click="onSend"></el-image>
                         </div>
                     </div>
                 </div>
@@ -918,12 +919,12 @@
                         .input-container{
                             width: 98%;
                             margin: 5px auto 10px;
-                            background-color: #fff;
                             display: flex;
                             .send-button {
-                                min-width: 40px;
+                                width: 40px;
                                 margin-left: 10px;
-                                font-size: 18px;
+                                height: 40px;
+                                min-width: 40px;
                             }
                         }
 
