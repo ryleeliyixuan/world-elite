@@ -149,7 +149,7 @@
                   >
                     <div v-if="scoreCommentList[index].ownerId === score.id">
                       <el-card
-                        style="mb-2"
+                        class="mb-2"
                         :body-style="{ padding: '12px' }"
                         shadow="hover"
                       >

@@ -13,11 +13,7 @@
                 >
             </div>
             <el-card
-                    style="
-          margin-bottom: 30px;
-          border: 1px solid #b4c4d0;
-          border-radius: 7px;
-        "
+                    style="margin-bottom: 30px;border: 1px solid #b4c4d0;border-radius: 7px"
                     :body-style="{ padding: '0px' }"
                     shadow="never"
             >
@@ -53,9 +49,7 @@
                             class="post-tags"
                             v-if="postDetail.tags && postDetail.tags.length > 0"
                     >
-                        <el-tag type="info" v-for="tag in postDetail.tags" :key="tag">{{
-                            tag
-                            }}
+                        <el-tag type="info" v-for="tag in postDetail.tags" :key="tag">{{                            tag }}
                         </el-tag>
                     </div>
                 </div>
@@ -78,7 +72,7 @@
                 </span>
               </el-button>
             </span>
-                        <span v-else>
+             <span v-else>
               <el-button
                       type="text"
                       size="mini"
@@ -118,13 +112,15 @@
                             <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">举报</span></el-button
                         >
                         <el-button
-                                icon="el-icon-delete-solid"
-                                style="color: #568ed0"
                                 type="text"
-                                size="mini"
                                 @click="deletePost(postDetail.id)"
                                 v-if="postDetail.fromUser.userId === userId"
-                        ><span style="color: #a1aebf">删除我的发帖</span></el-button
+                                style="padding-left: 30px;color: #568ed0"
+                        >
+                            <el-image :src="require('@/assets/delete.png')"
+                                      style="width: 16px;height: 16px"
+                            ></el-image>
+                            <span style="font-size: 16px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除我的发帖</span></el-button
                         >
                     </div>
                 </div>
@@ -294,25 +290,26 @@
                                     <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">举报</span></el-button
                                 >
                                 <el-button
-                                        icon="el-icon-delete-solid"
-                                        style="color: #568ed0"
                                         type="text"
-                                        size="small"
                                         @click="deleteComment(comment.id, 1)"
                                         v-if="comment.fromUser.userId === userId"
-                                ><span style="color: #a1aebf">删除</span></el-button
+                                        style="padding-left: 30px;color: #568ed0"
+                                >
+                                    <el-image :src="require('@/assets/delete.png')"
+                                              style="width: 16px;height: 16px;"
+                                    ></el-image>
+                                    <span style="font-size: 16px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span></el-button
                                 >
                             </div>
                             <div
                                     class="community-post-detail-comment-reply"
                                     style="padding: 0px 24px"
                                     v-if="
-                  replyList &&
-                  replyList.length > 0 &&
-                  CommentBoxOpen &&
-                  comment.id == commentId
-                "
-                            >
+                                        replyList &&
+                                        replyList.length > 0 &&
+                                        CommentBoxOpen &&
+                                        comment.id == commentId
+                                         ">
                                 <el-row>
                                     <el-col :span="24" v-for="reply in replyList" :key="reply.id">
                                         <div v-if="reply.ownerId == comment.id">
@@ -323,9 +320,8 @@
                                                 >
                                                     <el-avatar
                                                             v-if="
-                              reply.fromUser.avatar &&
-                              reply.fromUser.avatar.length > 0
-                            "
+                                                                reply.fromUser.avatar &&
+                                                                reply.fromUser.avatar.length > 0 "
                                                             style="margin-right: 8px"
                                                             :src="reply.fromUser.avatar"
                                                             :size="20"
@@ -371,9 +367,7 @@
                                                             <!--                                :icon="['fa', 'thumbs-up']"-->
                                                             <!--                                size="sm"-->
                                                             <!--                              />-->
-                                                            <span style="color: #a1aebf; margin-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">{{
-                                reply.likes
-                              }}</span>
+                                                            <span style="color: #a1aebf; margin-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">{{                                                                reply.likes}}</span>
                                                         </el-button>
                                                     </div>
                                                     <div v-else>
@@ -417,13 +411,15 @@
                                                         <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">举报</span></el-button
                                                     >
                                                     <el-button
-                                                            icon="el-icon-delete-solid"
                                                             type="text"
-                                                            size="mini"
-                                                            style="color: #568ed0"
                                                             @click="deleteComment(reply.id, 1)"
                                                             v-if="reply.fromUser.userId === userId"
-                                                    ><span style="color: #a1aebf">删除</span></el-button
+                                                            style="padding-left: 30px;color: #568ed0"
+                                                    >
+                                                        <el-image :src="require('@/assets/delete.png')"
+                                                                  style="width: 16px;height: 16px"
+                                                        ></el-image>
+                                                        <span style="font-size: 16px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span></el-button
                                                     >
                                                 </div>
                                                 <div
@@ -1033,6 +1029,10 @@
 
     .detail-card-header {
         padding: 25px 25px 0px 25px;
+        ::v-deep img{
+            max-width: 500px;
+            max-height: 500px;
+        }
     }
 
     .detail-card-header-time {

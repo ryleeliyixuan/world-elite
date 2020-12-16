@@ -28,11 +28,11 @@
   import 'tinymce/plugins/fullscreen'// 全屏
   import 'tinymce/plugins/help'// 帮助
   import 'tinymce/plugins/hr'// 水平分割线
-  import 'tinymce/plugins/image'// 插入上传图片插件
+  // import 'tinymce/plugins/image'// 插入上传图片插件
   import 'tinymce/plugins/insertdatetime'// 插入日期时间
   import 'tinymce/plugins/link'// 插入超链接
   import 'tinymce/plugins/lists'// 列表插件
-  import 'tinymce/plugins/media'// 插入视频插件
+  // import 'tinymce/plugins/media'// 插入视频插件
   import 'tinymce/plugins/pagebreak'// 插入分页符
   import 'tinymce/plugins/preview'// 预览
   import 'tinymce/plugins/print'// 打印
@@ -134,7 +134,7 @@
           link_default_protocol: 'http', // 默认协议
           default_link_target: '_blank', // 默认链接打开方式
           file_picker_callback: this.fileHandler, // 文件上传处理函数
-          file_picker_types: 'file image media', // 指定文件上传类型
+          // file_picker_types: 'file image media', // 指定文件上传类型
 
           // advlist - 高级列表插件
           advlist_bullet_styles: 'default,circle,disc,square',
@@ -208,13 +208,13 @@
           callback('mypage.html', { text: 'My text' })
         }
         // Provide image and alt text for the image dialog
-        if (meta.filetype === 'image') {
-          callback('myimage.jpg', { alt: 'My alt text' })
-        }
+        // if (meta.filetype === 'image') {
+        //   callback('myimage.jpg', { alt: 'My alt text' })
+        // }
         // Provide alternative source and posted for the media dialog
-        if (meta.filetype === 'media') {
-          callback('movie.mp4', { source2: 'alt.ogg', poster: 'image.jpg' })
-        }
+        // if (meta.filetype === 'media') {
+        //   callback('movie.mp4', { source2: 'alt.ogg', poster: 'image.jpg' })
+        // }
       },
 
       setup(editor) { // 初始化前执行
@@ -252,7 +252,7 @@
         tinymce.editors['tinymce'].getContent()
       },
       imageSuccessCBK(file) {
-        tinymce.editors['tinymce'].insertContent(`<img class="wscnph" src="${file.url}" >`)
+        tinymce.editors['tinymce'].insertContent(`<img style="max-width: 500px;max-height: 500px" src="${file.url}" >`)
       }
     }
   }
@@ -269,9 +269,7 @@
     right: 4pt;
     top: 4pt;
     z-index: 1300;
-    /*z-index: 2005;*/
   }
-
   .fullscreen .editor-custom-btn-container {
     z-index: 10000;
     position: fixed;
@@ -282,5 +280,6 @@
   .editor-upload-btn {
     display: inline-block;
   }
+
 
 </style>

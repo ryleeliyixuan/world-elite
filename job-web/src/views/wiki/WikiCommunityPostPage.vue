@@ -135,8 +135,8 @@
             size="small"
             @click="showInput"
             >
-            <svg-icon icon-class="add-tag" style="height: 15px; width: 15px" />
-            <span style="height: 22px;font-size: 16px;font-weight: 500;line-height: 22px;padding-left: 4px">添加新标签</span>
+            <svg-icon icon-class="add-tag" style="height: 23px; width: 23px" />
+            <span style="font-size: 16px;font-weight: 500;line-height: 22px;padding-left: 3px">添加新标签</span>
           </el-button>
         </el-form-item>
       </el-form>
@@ -485,7 +485,9 @@ export default {
   background: #ffffff;
   padding: 20px 50px 20px 50px;
   margin-bottom: 80px;
-
+.community-post-item-title:hover{
+  cursor: pointer;
+}
   .community-post-item {
     padding: 14px;
     display: flex;

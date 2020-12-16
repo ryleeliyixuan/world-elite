@@ -51,9 +51,9 @@
               <h5 class="mb-4">
                 <svg-icon
                   icon-class="address-on"
-                  style="height: 25px; width: 25px"
+                  style="height: 34px; width: 32px"
                 />
-                公司地址
+                <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">公司地址</span>
               </h5>
               <div
                 v-for="(addr, index) in companyWiki.company.addressList"
@@ -99,9 +99,9 @@
               <h5 class="mb-4">
                 <svg-icon
                   icon-class="employee"
-                  style="height: 25px; width: 25px"
+                  style="height: 34px; width: 34px"
                 />
-                雇员数量
+                <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">雇员数量</span>
               </h5>
               <BarChart
                 :items="companyWiki.employeeList"
@@ -127,9 +127,9 @@
               <h5 class="mb-4" style="padding: 16px 16px 0 16px">
                 <svg-icon
                   icon-class="product"
-                  style="height: 25px; width: 25px"
+                  style="height: 34px; width: 32px"
                 />
-                旗下产品/子公司
+                <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">旗下产品/子公司</span>
               </h5>
               <el-carousel
                 indicator-position="none"
@@ -243,9 +243,9 @@
                 <h5 class="mb-4">
                   <svg-icon
                     icon-class="history"
-                    style="height: 25px; width: 25px"
+                    style="height: 32px; width: 32px"
                   />
-                  发展路径
+                 <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">发展路径</span>
                 </h5>
                 <div class="timeline-switch mb-3">
                   <el-switch
@@ -301,9 +301,9 @@
                 <h5 class="mb-4">
                   <svg-icon
                     icon-class="structure"
-                    style="height: 25px; width: 25px"
+                    style="height: 32px; width: 31px"
                   />
-                  公司架构
+                  <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">公司架构</span>
                 </h5>
                 <el-button
                   round
@@ -354,9 +354,9 @@
                 <h5 class="mb-4" style="padding: 16px 16px 0 16px">
                   <svg-icon
                     icon-class="salary"
-                    style="height: 25px; width: 25px"
+                    style="height: 30px; width: 33px"
                   />
-                  薪资待遇
+                  <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 11px">薪资待遇</span>
                 </h5>
                 <div class="intro-salary-pie-container">
                   <SalaryPieChart
@@ -369,7 +369,7 @@
             </div>
           </el-col>
           <el-col
-            v-if="
+                  v-if="
               companyWiki.wikiModule &&
               companyWiki.wikiModule.environmentEnable == 1 &&
               companyWiki.environmentList &&
@@ -386,9 +386,9 @@
               <h5 class="mb-4" style="padding: 16px 16px 0 16px">
                 <svg-icon
                   icon-class="environment"
-                  style="height: 25px; width: 25px"
+                  style="height: 33px; width: 37px"
                 />
-                工作环境
+                <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">工作环境</span>
               </h5>
               <el-carousel
                 indicator-position="none"
@@ -437,9 +437,9 @@
                 <h5 class="mb-4">
                   <svg-icon
                     icon-class="timeline"
-                    style="height: 25px; width: 25px"
+                    style="height: 34px; width: 33px"
                   />
-                  招聘时间线
+                  <span style="padding-left: 9px;font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">招聘时间线</span>
                 </h5>
                 <div class="timeline-switch mb-4">
                   <el-switch
@@ -473,7 +473,7 @@
             </el-card>
           </el-col>
           <el-col
-            v-if="
+                  v-if="
               companyWiki.wikiModule &&
               companyWiki.wikiModule.honorEnable == 1 &&
               companyWiki.honorList &&
@@ -492,7 +492,10 @@
               :body-style="{ padding: '36px' }"
             >
               <h5 class="mb-4">
-                <i class="el-icon-medal-1" style="color: #1e90ff"></i> 企业荣誉
+                <svg-icon
+                        icon-class="honor"
+                        style=" width: 33px;height: 37px;"
+                /> <span style="line-height: 29px;font-size: 21px;min-height: 29px;padding-left: 7px">企业荣誉</span>
               </h5>
               <el-table
                 :data="companyWiki.honorList"
@@ -500,6 +503,8 @@
                 max-height="330"
               >
                 <el-table-column prop="year" label="年份" width="100">
+                </el-table-column>
+                <el-table-column prop="point" label="" width="10">
                 </el-table-column>
                 <el-table-column prop="honor" label="荣誉"> </el-table-column>
               </el-table>
@@ -1192,12 +1197,12 @@ export default {
       .intro-product-image {
         width: 340px;
         height: 290px;
-        object-fit: fit;
+        /*object-fit: fit;*/
         border-radius: 36px;
       }
       .intro-product-description {
         width: 340px;
-        word-wrap: break-all;
+        /*word-wrap: break-all;*/
         word-break: normal;
         overflow: hidden;
       }
@@ -1206,7 +1211,7 @@ export default {
     .intro-environment-image {
       width: 340px;
       height: 355px;
-      object-fit: fit;
+      /*object-fit: fit;*/
       border-radius: 36px;
     }
 

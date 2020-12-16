@@ -9,7 +9,7 @@
     :on-success="handleEditorUploadSuccess"
     :on-error="handleEditorUploadError"
     :before-upload="beforeUpload">
-    <el-button size="small" type="primary">
+    <el-button size="small" style="color: #568ed0;background-color: #f1f6fd;font-weight: 500">
       上传图片
     </el-button>
   </el-upload>
