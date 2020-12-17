@@ -261,7 +261,8 @@
         })
       },
       beforeUpload(file) {
-        document.querySelector("body").setAttribute("style", "overflow: auto !important;")
+        document.body.style.overflow='auto'
+        // document.querySelector("body").setAttribute("style", "overflow: auto !important;")
         return new Promise((resolve, reject) => {
           this.uploadPicOptions.loading = true
           getUploadPicToken(file.name)

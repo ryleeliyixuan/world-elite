@@ -329,17 +329,15 @@
 
             // 点击事件，显示对话框，进行预约
             onEventClick(info) {
-                console.log(info);
-                console.log(info.event.end.getTime());
                 if (info.event.end.getTime() - 30 * 60 * 1000 > Date.now()) { // 结束时间必须大于当前时间半小时
                     this.interviewerTimeId = info.event.extendedProps.interviewerTimeId;
                     this.date = new Date(info.event.start); // 当前选中天
-                    console.log(Math.max(info.event.start, Date.now()));
-                    this.startFirst = this.getHourMinutes(new Date(Math.max(info.event.start, Date.now())), true); // 最小开始时间
-                    this.startTime = this.getHourMinutes(new Date(Math.max(info.event.start, Date.now())), true); // 选中的开始时间
+                    let nowTime = Math.ceil(Date.now() / (30 * 60 * 1000)) * 30 * 60 * 1000;
+                    this.startFirst = this.getHourMinutes(new Date(Math.max(info.event.start, nowTime)), true); // 最小开始时间
+                    this.startTime = this.getHourMinutes(new Date(Math.max(info.event.start, nowTime)), true); // 选中的开始时间
                     this.endFirst = this.getHourMinutes(new Date(info.event.end.getTime() - 30 * 60 * 1000)); // 最大开始时间
                     this.endSecond = this.getHourMinutes(info.event.end);  // 最大结束时间
-                    this.endTime = this.getHourMinutes(new Date(info.event.start.getTime() + 30 * 60 * 1000)); // 选中的结束时间
+                    this.endTime = this.getHourMinutes(new Date(Math.max(info.event.start, nowTime) + 30 * 60 * 1000)); // 选中的结束时间
                     this.step = 1;
                     this.dialogVisible = true;
                 } else {
