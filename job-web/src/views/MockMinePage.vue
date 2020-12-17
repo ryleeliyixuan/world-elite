@@ -345,6 +345,7 @@
 <script>
     import FullCalendar from '@fullcalendar/vue'
     import dayGridPlugin from '@fullcalendar/daygrid'
+    import momentPlugin from '@fullcalendar/moment'
     import interactionPlugin from '@fullcalendar/interaction'
     import QRCode from "qrcodejs2";
 
@@ -377,7 +378,7 @@
                     // 语言
                     locale: "zh-cn",
 
-                    plugins: [dayGridPlugin, interactionPlugin],
+                    plugins: [dayGridPlugin, interactionPlugin, momentPlugin],
 
                     // 日历配置
                     initialView: 'dayGridMonth',
@@ -406,11 +407,9 @@
                     eventBorderColor: '#D3F261', // 块边框颜色
                     eventBackgroundColor: '#D3F261', // 块背景色
                     displayEventEnd: true, // 显示事件结束时间
-                    eventTimeFormat: {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                    },
+
+                    slotLabelFormat: 'HH:mm',
+                    eventTimeFormat: 'HH:mm',
 
                     eventClassNames: "event-text"
                 },
@@ -482,12 +481,18 @@
                     this.myInfo.name = data.data && data.data.nickName || this.$store.state.user.name;
                 })
             },
-
             // 面试者
             onInterviewee() {
                 // 切换身份为面试者
                 this.identity = 1;
-                this.getIntervieweeEvent();
+                if (this.menu === 1) {
+                    this.getIntervieweeEvent();
+                } else if (this.menu === 2) {
+                    this.getInterviewRecord();
+                } else if (this.menu === 4) {
+                    this.menu = 1;
+                    this.getIntervieweeEvent();
+                }
             },
 
 
@@ -496,7 +501,11 @@
                 if (this.userIdentity === 2) {
                     // 切换身份为面视官
                     this.identity = 2;
-                    this.getInterviewerEvent();
+                    if (this.menu === 1) {
+                        this.getInterviewerEvent();
+                    } else if (this.menu === 2) {
+                        this.getInterviewRecord();
+                    }
                 } else {
                     this.$message.warning("您当前还未认证面试官，请先认证后操作!");
                 }
@@ -602,12 +611,11 @@
                     this.$message.warning("请选择预约类型")
                 } else {
                     let beginTime = this.getDate(this.date, this.beginTime);
-                    let endTime = this.getDate(this.date, this.endTime);
+                    let endTime = this.getDate(this.date, this.endTime) - (this.endTime === "24:00" ? 1 : 0);
                     let repeat = this.repeat;
                     if (endTime <= beginTime) {
                         this.$message.warning("结束时间必须大于开始时间")
                     } else {
-                        console.log(beginTime, endTime, repeat);
                         this.$axios.post("/mock/interview/time", {beginTime, endTime, repeat}).then(data => {
                             let event = data.data;
                             this.calendarOptions.events.push({
@@ -632,16 +640,18 @@
                     if (this.status === '1') {
                         if (info.date >= this.getNextDay()) {
                             this.step = 1;
-                            this.start = '00:00';
-                            this.end = '24:00';
+                            this.startFirst = '00:00';
                             this.date = info.date;
                             this.dialogVisible = true;
                         } else if (info.date >= this.getZeroOfToday()) {
                             this.step = 1;
                             let date = new Date();
-                            date.setHours(date.getHours() + 1, 0, 0);
-                            this.start = `${this.getDoubleValue(date.getHours())}:${this.getDoubleValue(date.getMinutes())}`;
-                            this.end = '24:00';
+                            if (date.getMinutes() < 30) {
+                                date.setMinutes(30, 0);
+                            } else {
+                                date.setHours(date.getHours() + 1, 0, 0);
+                            }
+                            this.startFirst = `${this.getDoubleValue(date.getHours())}:${this.getDoubleValue(date.getMinutes())}`;
                             this.date = info.date;
                             this.dialogVisible = true;
                         }
@@ -754,22 +764,24 @@
 
             // 面试者获取我的预约成功事件
             getIntervieweeEvent() {
-                this.calendarApi = this.$refs.fullCalendar.getApi();
-                let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
-                let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
-                this.$axios.get(`/mock/interview/reservation/my/${beginTime}/${endTime}`).then(data => {
-                    this.calendarOptions.events = data.data.map(item => {
-                        return {
-                            id: item.id,
-                            interviewerId: item.interviewerId,
-                            reservationList: item.reservationList,
-                            start: parseInt(item.beginTime),
-                            end: parseInt(item.endTime),
-                            borderColor: '#FFE58F', // 块边框颜色
-                            backgroundColor: '#FFE58F', // 块背景色
-                        }
-                    });
-                })
+                if (this.$refs.fullCalendar) {
+                    this.calendarApi = this.$refs.fullCalendar.getApi();
+                    let beginTime = this.getFirstDayOfMonth(this.calendarApi.getDate());
+                    let endTime = this.getLastDayOfMonth(this.calendarApi.getDate());
+                    this.$axios.get(`/mock/interview/reservation/my/${beginTime}/${endTime}`).then(data => {
+                        this.calendarOptions.events = data.data.map(item => {
+                            return {
+                                id: item.id,
+                                interviewerId: item.interviewerId,
+                                reservationList: item.reservationList,
+                                start: parseInt(item.beginTime),
+                                end: parseInt(item.endTime),
+                                borderColor: '#FFE58F', // 块边框颜色
+                                backgroundColor: '#FFE58F', // 块背景色
+                            }
+                        });
+                    })
+                }
             },
 
             // 获取我的面试记录
@@ -852,7 +864,7 @@
 
             getDate(date, time) {
                 let t = time.split(":");
-                date.setHours(t[0], t[1])
+                date.setHours(t[0], t[1], 0, 0)
                 return date.getTime();
             },
 

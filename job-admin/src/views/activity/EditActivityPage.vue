@@ -140,7 +140,7 @@
             { required: true, message: '请输入主办方', trigger: 'blur' }
           ]
         },
-        cityOptions: [{ id: 1, name: '国内' }, { id: 2, name: '国外' }],
+        cityOptions: [{id: 1, name: "国内", children:[{id: 0, name: "加载中"}]}, {id: 2, name: "国外"}],
         uploadPicOptions: {
           action: '',
           params: {},
@@ -150,27 +150,27 @@
         },
         saveLoading: false,
         cityIdProps: {
-          lazy: true,
-          lazyLoad: (node, resolve) => {
-            if (node.level === 1) {
-              this.$axios.request({
-                url: '/city/list',
-                method: 'get',
-                params: { type: node.value }
-              }).then(data => {
-                console.log(data.data)
-                let nodes = data.data.map(second => {
-                  let children = second.children && second.children.map(third => {
-                    return { id: third.id, name: third.name, leaf: true }
-                  })
-                  return { id: second.id, name: second.name, children }
-                })
-                resolve(nodes)
-              })
-            } else {
-              resolve()
-            }
-          },
+          lazy: false,
+          // lazyLoad: (node, resolve) => {
+          //   if (node.level === 1) {
+          //     this.$axios.request({
+          //       url: '/city/list',
+          //       method: 'get',
+          //       params: { type: node.value }
+          //     }).then(data => {
+          //       console.log(data.data)
+          //       let nodes = data.data.map(second => {
+          //         let children = second.children && second.children.map(third => {
+          //           return { id: third.id, name: third.name, leaf: true }
+          //         })
+          //         return { id: second.id, name: second.name, children }
+          //       })
+          //       resolve(nodes)
+          //     })
+          //   } else {
+          //     resolve()
+          //   }
+          // },
           expandTrigger: 'hover',
           value: 'id',
           label: 'name',
@@ -181,6 +181,7 @@
     },
     created() {
       this.initData()
+
     },
     watch: {
       'activityForm.timeRange': function() {
@@ -200,6 +201,32 @@
       initData() {
         // listByType(2).then(response => (this.cityOptions = response.data.list));
         this.getActivityInfo()
+
+        this.$axios.request({
+          url: "/city/list",
+          method: "get",
+          params: {type: 1}
+        }).then(data => {
+          this.cityOptions[0].children = data.data.map(second => {
+            let children = second.children && second.children.map(third => {
+              return {id: third.id, name: third.name, leaf: true}
+            })
+            return {id: second.id, name: second.name, children}
+          });
+        })
+
+        this.$axios.request({
+          url: "/city/list",
+          method: "get",
+          params: {type: 2}
+        }).then(data => {
+          this.cityOptions[1].children = data.data.map(second => {
+            let children = second.children && second.children.map(third => {
+              return {id: third.id, name: third.name, leaf: true}
+            })
+            return {id: second.id, name: second.name, children}
+          });
+        })
       },
       getActivityInfo() {
         const activityId = this.$route.query.id
@@ -210,6 +237,7 @@
               this.activityForm[key] = data[key]
             })
             this.activityForm.cityId = data.city.id
+            console.log(this.activityForm)
             this.activityForm.timeRange = [
               this.activityForm.startTime,
               this.activityForm.finishTime
@@ -233,6 +261,8 @@
         })
       },
       beforeUpload(file) {
+        document.body.style.overflow='auto'
+        // document.querySelector("body").setAttribute("style", "overflow: auto !important;")
         return new Promise((resolve, reject) => {
           this.uploadPicOptions.loading = true
           getUploadPicToken(file.name)
@@ -253,6 +283,7 @@
         })
       },
       handleUploadSuccess() {
+        console.log(document.querySelector("body"))
         this.uploadPicOptions.loading = false
       }
     }
@@ -260,42 +291,45 @@
 </script>
 
 <style lang="scss">
-  .edit-activity {
-    .thumbnail-uploader .el-upload {
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+
+    .edit-activity {
+      .thumbnail-uploader .el-upload {
+        cursor: pointer;
+        position: relative;
+        overflow:hidden;
+      }
+
+      .thumbnail-uploader .el-upload:hover {
+        border-color: #ccc;
+      }
+
+      $avatarSize: 200px;
+
+      .thumbnail-uploader .thumbnail-uploader-icon {
+        border: 1px dashed #d9d9d9;
+        font-size: 28px;
+        color: #8c939d;
+        width: $avatarSize;
+        height: $avatarSize;
+        line-height: $avatarSize;
+        text-align: center;
+      }
+
+      .thumbnail-uploader .thumbnail {
+        width: $avatarSize;
+        height: $avatarSize;
+        display: block;
+      }
+
+      .ql-container .ql-editor {
+        height: calc(100vh - 220px);
+        font-size: 1rem;
+      }
+
+      .ql-toolbar {
+        line-height: normal;
+      }
     }
 
-    .thumbnail-uploader .el-upload:hover {
-      border-color: #ccc;
-    }
 
-    $avatarSize: 200px;
-
-    .thumbnail-uploader .thumbnail-uploader-icon {
-      border: 1px dashed #d9d9d9;
-      font-size: 28px;
-      color: #8c939d;
-      width: $avatarSize;
-      height: $avatarSize;
-      line-height: $avatarSize;
-      text-align: center;
-    }
-
-    .thumbnail-uploader .thumbnail {
-      width: $avatarSize;
-      height: $avatarSize;
-      display: block;
-    }
-
-    .ql-container .ql-editor {
-      height: calc(100vh - 220px);
-      font-size: 1rem;
-    }
-
-    .ql-toolbar {
-      line-height: normal;
-    }
-  }
 </style>

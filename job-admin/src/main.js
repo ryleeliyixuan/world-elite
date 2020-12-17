@@ -11,6 +11,10 @@ import App from './App'
 import store from './store'
 import router from './router'
 import echarts from "echarts";
+import * as filters from './filters/filters'
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 import '@/icons' // icon
 import '@/permission' // permission control

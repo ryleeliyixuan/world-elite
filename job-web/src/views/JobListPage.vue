@@ -198,7 +198,6 @@
                 listByType(9).then(
                     response => (this.salaryRangeOptions = response.data.list)
                 );
-
                 this.$axios.request({
                     url: "/city/list",
                     method: "get",

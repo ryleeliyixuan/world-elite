@@ -1,4 +1,4 @@
-import {getToken, setToken, removeToken,getUserId} from '@/utils/auth'
+import {getToken, setToken, removeToken, getUserId} from '@/utils/auth'
 import {register, login, logout, getMyInfo} from '@/api/user_api'
 import Toast from '@/utils/toast'
 import {storage} from "@/utils/storage";
@@ -9,7 +9,7 @@ const state = {
     token: getToken(),
     name: storage.getUsername(),
     avatar: storage.getAvatar(),
-    userId:getUserId()
+    userId: getUserId()
 }
 const mutations = {
     SET_TOKEN: (state, token) => {
@@ -41,7 +41,7 @@ const actions = {
                 commit('SET_NAME', data.name)
                 commit('SET_AVATAR', data.avatar)
                 commit('SET_USERID', data.userId)
-                setUserId(data.userId,loginForm.rememberFlag)
+                setUserId(data.userId, loginForm.rememberFlag)
                 setToken(data.token, loginForm.rememberFlag)
                 storage.setUserInfo(data);
                 storage.setLoginInfo(loginForm);
@@ -90,16 +90,12 @@ const actions = {
                 commit('SET_AVATAR', undefined)
                 commit('SET_USERID', undefined)
 
-                removeToken()
-                storage.removeUserInfo();
-
-                const hasToken = getToken()
-                console.log(hasToken);
-                if(hasToken) {
-                    console.log(true)
-                } else {
-                    console.log(false)
+                let hasToken = getToken();
+                while (hasToken) {
+                    removeToken()
+                    hasToken = getToken();
                 }
+                storage.removeUserInfo();
                 resolve()
             }).catch(error => {
                 reject(error)

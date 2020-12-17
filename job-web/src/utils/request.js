@@ -21,6 +21,7 @@ service.interceptors.request.use(
     config => {
         // do something before request is sent
         const token = getToken()
+        console.log("X-Token",token);
         if (token) {
             // let each request carry token
             // ['X-Token'] is a custom headers key
@@ -48,17 +49,17 @@ service.interceptors.response.use(
      * Here is just an example
      * You can also judge the status by HTTP Status Code
      */
-    response => {
+    async response => {
         console.log(response.config.url, response);
         const res = response.data
 
         if (res.code !== 0) {
-
+            Toast.close(); // 最多显示一个错误信息
             Toast.error(res.msg);
 
             if (res.code === 402) {
                 // to re-login
-                store.dispatch('user/LOGOUT').then(() => {
+               await store.dispatch('user/LOGOUT').then(() => {
                     router.push({path: '/login', query: {redirect: curRelativePath()}})
                 });
             }
@@ -68,6 +69,7 @@ service.interceptors.response.use(
         }
     },
     error => {
+        Toast.close(); // 最多显示一个错误信息
         Toast.error(error.message);
         return Promise.reject(error)
     }

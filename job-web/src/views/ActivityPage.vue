@@ -24,7 +24,7 @@
                     {{activity.startTime}} 到 {{activity.finishTime}}
                 </div>
                 <div class="mt-2">
-                    <el-button type="primary" @click="onJoinClick">{{activity.joinFlag?'已关注':'关注'}}</el-button>
+                    <el-button type="primary" @click="onJoinClick">{{activity.joinFlag?'已报名':'报名'}}</el-button>
                 </div>
             </b-media-body>
         </div>
