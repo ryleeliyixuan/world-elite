@@ -31,7 +31,7 @@
             :id="post.id"
           >
             <div class="community-post-item">
-              <div class="community-post-item-title">
+              <div class="community-post-item-title" v-on:click="handleOpenPostDetail(post.id)">
                 <div class="community-post-item-title-text">
                   <span class="mr-2"> {{ post.title }} </span>
                   <el-tag
@@ -264,12 +264,14 @@ export default {
   },
   created() {
     this.initData();
+    // this.$emit("complete");
   },
   computed: {
     ...mapGetters(["token", "userId"]),
   },
   watch: {
     $route() {
+      this.$emit("complete");
       // this.getPostList();
     },
   },
@@ -284,6 +286,7 @@ export default {
       // debugger;
       parseListQuery(this.$route.query, this.listQuery);
       this.getPostList();
+      this.$emit("complete");
     },
     handleClick(tab, event) {
       const status = parseInt(tab.name);

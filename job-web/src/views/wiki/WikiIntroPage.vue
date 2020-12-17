@@ -854,6 +854,7 @@ export default {
     };
   },
   created() {
+    this.$emit("complete");
     this.initData();
   },
   computed: {
@@ -871,11 +872,14 @@ export default {
     },
   },
   watch: {
+
     $route() {
+      this.$emit("complete");
       this.initData();
     },
   },
   mounted() {
+
     // //页面一加载的时候先出来5个推荐公司
     // for (var i = 0; i < 5 && i < this.recommendedComps.length; i++) {
     //   this.companyShowed.push(this.recommendedComps[i]);
@@ -912,6 +916,7 @@ export default {
           this.getMarketInfo();
         }
       });
+      this.$emit("complete");
     },
     getMarketInfo() {
       if (this.stockUrl) {

@@ -82,7 +82,8 @@
             <el-card v-for="job in pageResult.list"
                      class="post-item" style="display: inline-block;"
                      :body-style="{ padding: '0px' }"
-                     :key="job.id">
+                     :key="job.id"
+                     @click.native="openJobDetail(job.id)">
                 <el-image style="width: 100%;height: 210px;" :src="job.companyUser.company.logo"></el-image>
                 <div class="type-logo-box">
                     <div v-if="job.recruitType.value === '1'" class="type-logo school">校 招</div>
@@ -165,6 +166,7 @@
             };
         },
         created() {
+            this.$emit("complete");
             this.initData();
             this.getList();
         },
@@ -178,6 +180,9 @@
             }
         },
         methods: {
+            openJobDetail(id) {
+                this.$router.push(`/job/${id}`);
+            },
             initData() {
                 console.log(this.$route.params.id);
                 this.listQuery.companyId = this.$route.params.id;
@@ -189,7 +194,7 @@
                 });
                 listByType(5).then(
                     response => (this.companyScaleOptions = response.data.list)
-                );
+                )
                 listByType(6).then(
                     response => (this.companyIndustryOptions = response.data.list)
                 );
@@ -199,6 +204,7 @@
                 listByType(9).then(
                     response => (this.salaryRangeOptions = response.data.list)
                 );
+
             },
             handleFilter() {
                 this.listQuery.page = 1;
@@ -230,7 +236,6 @@
                     } else {
                         this.pageResult = response.data;
                         this.total = this.pageResult.total;
-                        this.$emit("complete");
                     }
                 });
 

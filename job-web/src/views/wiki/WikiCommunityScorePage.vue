@@ -77,13 +77,17 @@
                     class="likeButton"
                     @click="likeScore(score.id)"
                   >
-                    <font-awesome-icon
-                      style="color: #409eff"
-                      :icon="['fa', 'thumbs-up']"
-                      size="sm"
-                    />
-                    点赞
-                    {{ score.likes === 0 ? "" : score.likes }}
+<!--                    <font-awesome-icon-->
+<!--                      style="color: #409eff"-->
+<!--                      :icon="['fa', 'thumbs-up']"-->
+<!--                      size="sm"-->
+<!--                    />-->
+                    <el-image
+                            :src="require('@/assets/like.png')"
+                            style="color: #568ed0;width: 14px;height: 14px"
+                    ></el-image>
+                    <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">
+                      {{ score.likes === 0 ? "" : score.likes }}</span>
                   </el-button>
                 </div>
                 <div v-else>
@@ -93,38 +97,52 @@
                     class="likeButton text-secondary"
                     @click="likeScore(score.id)"
                   >
-                    <font-awesome-icon
-                      style="color: grey"
-                      :icon="['fa', 'thumbs-up']"
-                      size="sm"
-                    />
-                    点赞
+                    <el-image
+                            :src="require('@/assets/like.png')"
+                            style="color: #568ed0;width: 14px;height: 14px"
+                    ></el-image>
+                    <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">
                     {{ score.likes === 0 ? "" : score.likes }}
+                    </span>
                   </el-button>
                 </div>
                 <el-button
                   type="text"
                   size="mini"
-                  icon="el-icon-s-comment"
-                  @click="
-                    openScoreCommentbox(score.id, score.likes, score.comments)
+                  @click="openScoreCommentbox(score.id, score.likes, score.comments)
                   "
-                  >评论 {{ score.comments }}
+                  >
+                  <el-image
+                          :src="require('@/assets/comment.png')"
+                          style="width: 13px;height: 13px"
+                  ></el-image>
+                  <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">
+                  评论 {{ score.comments }}
+                    </span>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
                   @click="reportScore(score.id)"
-                  icon="el-icon-s-flag"
-                  >举报</el-button
+                  >
+                  <el-image
+                          :src="require('@/assets/report1.png')"
+                          style="width: 13px;height: 13px"
+                  ></el-image>
+                  <span style="color: #a1aebf;padding-left: 8px;font-size: 15px;font-weight: 500">举报</span>
+                </el-button
                 >
                 <el-button
-                  icon="el-icon-delete-solid"
                   type="text"
                   size="mini"
                   @click="deleteScore(score.id)"
                   v-if="myScoreId === score.id"
-                  >删除我的评分</el-button
+                  ><el-image :src="require('@/assets/delete.png')"
+                             style="width: 12px;height: 12px"
+                ></el-image>
+                  <span style="font-size: 15px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span>
+
+                </el-button
                 >
               </div>
               <div
@@ -187,13 +205,13 @@
                               class="likeButton"
                               @click="likeComment(comment.id)"
                             >
-                              <font-awesome-icon
-                                style="color: #409eff"
-                                :icon="['fa', 'thumbs-up']"
-                                size="sm"
-                              />
-                              点赞
+                              <el-image
+                                      :src="require('@/assets/like.png')"
+                                      style="color: #568ed0;width: 14px;height: 14px"
+                              ></el-image>
+                              <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">
                               {{ comment.likes === 0 ? "" : comment.likes }}
+                              </span>
                             </el-button>
                           </div>
                           <div v-else>
@@ -203,36 +221,48 @@
                               class="likeButton text-secondary"
                               @click="likeComment(comment.id)"
                             >
-                              <font-awesome-icon
-                                style="color: grey"
-                                :icon="['fa', 'thumbs-up']"
-                                size="sm"
-                              />
-                              点赞
+                              <el-image
+                                      :src="require('@/assets/like.png')"
+                                      style="color: #568ed0;width: 14px;height: 14px"
+                              ></el-image>
+                              <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">
                               {{ comment.likes === 0 ? "" : comment.likes }}
+                              </span>
                             </el-button>
                           </div>
                           <el-button
                             type="text"
                             size="small"
-                            icon="el-icon-s-comment"
                             @click="openReplybox(comment.id)"
-                            >回复 {{ comment.comments }}
+                            ><el-image
+                                  :src="require('@/assets/comment.png')"
+                                  style="width: 13px;height: 13px"
+                          ></el-image>
+                            <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">回复</span> {{ comment.comments }}
                           </el-button>
                           <el-button
                             type="text"
                             size="small"
                             @click="reportComment(comment.id)"
-                            icon="el-icon-s-flag"
-                            >举报</el-button
+                            >
+                            <el-image
+                                    :src="require('@/assets/report1.png')"
+                                    style="width: 13px;height: 13px"
+                            ></el-image>
+                            <span style="color: #a1aebf;padding-left: 8px;font-size: 15px;font-weight: 500">举报</span>
+                          </el-button
                           >
                           <el-button
-                            icon="el-icon-delete-solid"
                             type="text"
                             size="small"
                             @click="deleteComment(comment.id, 2)"
                             v-if="comment.fromUser.userId === userId"
-                            >删除</el-button
+                            >
+                            <el-image :src="require('@/assets/delete.png')"
+                                      style="width: 12px;height: 12px"
+                            ></el-image>
+                            <span style="font-size: 15px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span>
+                          </el-button
                           >
                         </div>
                         <div
@@ -279,15 +309,15 @@
                                         class="likeButton"
                                         @click="likeComment(reply.id)"
                                       >
-                                        <font-awesome-icon
-                                          style="color: #409eff"
-                                          :icon="['fa', 'thumbs-up']"
-                                          size="sm"
-                                        />
-                                        点赞
+                                        <el-image
+                                                :src="require('@/assets/like.png')"
+                                                style="color: #568ed0;width: 14px;height: 14px"
+                                        ></el-image>
+                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">
                                         {{
                                           reply.likes === 0 ? "" : reply.likes
                                         }}
+                                        </span>
                                       </el-button>
                                     </div>
                                     <div v-else>
@@ -297,38 +327,49 @@
                                         class="likeButton text-secondary"
                                         @click="likeComment(reply.id)"
                                       >
-                                        <font-awesome-icon
-                                          style="color: grey"
-                                          :icon="['fa', 'thumbs-up']"
-                                          size="sm"
-                                        />
-                                        点赞
+                                        <el-image
+                                                :src="require('@/assets/like.png')"
+                                                style="color: #568ed0;width: 14px;height: 14px"
+                                        ></el-image>
+                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">
                                         {{
                                           reply.likes === 0 ? "" : reply.likes
-                                        }}
+                                          }}</span>
                                       </el-button>
                                     </div>
                                     <el-button
                                       type="text"
                                       size="small"
-                                      icon="el-icon-s-comment"
                                       @click="openSecondaryReplybox(reply.id)"
-                                      >回复
+                                      ><el-image
+                                            :src="require('@/assets/comment.png')"
+                                            style="width: 13px;height: 13px"
+                                    ></el-image>
+                                      <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">回复</span>
                                     </el-button>
                                     <el-button
                                       type="text"
                                       size="small"
                                       @click="reportComment(comment.id)"
-                                      icon="el-icon-s-flag"
-                                      >举报</el-button
+                                      >
+                                      <el-image
+                                              :src="require('@/assets/report1.png')"
+                                              style="width: 13px;height: 13px"
+                                      ></el-image>
+                                      <span style="color: #a1aebf;padding-left: 8px;font-size: 15px;font-weight: 500">举报</span>
+                                    </el-button
                                     >
                                     <el-button
-                                      icon="el-icon-delete-solid"
                                       type="text"
                                       size="mini"
                                       @click="deleteComment(reply.id)"
                                       v-if="reply.fromUser.userId === userId"
-                                      >删除</el-button
+                                      >
+                                      <el-image :src="require('@/assets/delete.png')"
+                                                style="width: 12px;height: 12px"
+                                      ></el-image>
+                                      <span style="font-size: 15px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span>
+                                    </el-button
                                     >
                                   </div>
                                   <div
@@ -362,7 +403,11 @@
                                         type="primary"
                                         size="mini"
                                         @click="replyComment(comment.id)"
-                                        >回复</el-button
+                                        ><el-image
+                                              :src="require('@/assets/comment.png')"
+                                              style="width: 13px;height: 13px"
+                                      ></el-image>
+                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">回复</span></el-button
                                       >
                                     </div>
                                   </div>
@@ -399,7 +444,11 @@
                               type="primary"
                               size="mini"
                               @click="replyComment(comment.id)"
-                              >回复</el-button
+                              ><el-image
+                                    :src="require('@/assets/comment.png')"
+                                    style="width: 13px;height: 13px"
+                            ></el-image>
+                              <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">回复</span></el-button
                             >
                           </div>
                         </div>
@@ -492,7 +541,7 @@
         icon-class="score-missing"
         style="height: 265px; width: 344px; margin-bottom: 17px"
       />
-      <div>来做第一个评分的人吧</div>
+      <div>来做第一个评分的人吧！</div>
     </div>
     <div
       class="community-score-comment-container"
@@ -887,6 +936,7 @@ export default {
   border: 1px solid #b4c4d0;
   border-top: 0px;
 }
+
 
 /deep/ .save-score-box .el-textarea {
   margin-bottom: 0px !important;

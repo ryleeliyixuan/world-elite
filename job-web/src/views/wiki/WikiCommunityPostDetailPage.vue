@@ -17,7 +17,7 @@
                     :body-style="{ padding: '0px' }"
                     shadow="never"
             >
-                <div class="detail-card-header">
+            <div class="detail-card-header">
                     <div class="community-post-item community-post-item-title">
                         <div class="community-post-item-title-user">
                             <div class="detail-card-header-author">
@@ -53,7 +53,7 @@
                         </el-tag>
                     </div>
                 </div>
-                <div class="detail-card-footer">
+            <div class="detail-card-footer">
                     <div class="community-post-item-title-stats text-secondary">
                         <!-- 点赞 -->
                         <span v-if="postDetail.like">
@@ -65,7 +65,7 @@
               >
                  <el-image
                          :src="require('@/assets/like.png')"
-                         style="color: #568ed0;width: 15px;height: 15px"
+                         style="color: #568ed0;width: 14px;height: 14px"
                  ></el-image>
                 <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">
                   {{ postDetail.likes }}
@@ -81,9 +81,9 @@
               >
                  <el-image
                          :src="require('@/assets/like.png')"
-                         style="color: grey;width: 15px;height: 15px"
+                         style="color: grey;width: 14px;height: 14px"
                  ></el-image>
-                <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">
+                <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500">
                   {{ postDetail.likes }}
                 </span>
               </el-button>
@@ -95,9 +95,9 @@
                         >
                             <el-image
                                     :src="require('@/assets/comment.png')"
-                                    style="width: 15px;height: 14px"
+                                    style="width: 13px;height: 13px"
                             ></el-image>
-                            <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">{{ postDetail.comments }}</span>
+                            <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500">{{ postDetail.comments }}</span>
                         </el-button>
                         <el-button
                                 style="color: #568ed0;padding-left: 30px"
@@ -107,9 +107,9 @@
                         >
                             <el-image
                                     :src="require('@/assets/report1.png')"
-                                    style="width: 14.5px;height: 15px"
+                                    style="width: 13px;height: 13px"
                             ></el-image>
-                            <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">举报</span></el-button
+                            <span style="color: #a1aebf;padding-left: 8px;font-size: 15px;font-weight: 500">举报</span></el-button
                         >
                         <el-button
                                 type="text"
@@ -118,12 +118,13 @@
                                 style="padding-left: 30px;color: #568ed0"
                         >
                             <el-image :src="require('@/assets/delete.png')"
-                                      style="width: 16px;height: 16px"
+                                      style="width: 12px;height: 12px"
                             ></el-image>
-                            <span style="font-size: 16px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除我的发帖</span></el-button
-                        >
+                            <span style="font-size: 15px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span>
+                        </el-button>
+
+                        </div>
                     </div>
-                </div>
             </el-card>
             <div class="community-post-detail-commentbox mb-4">
                 <div class="d-flex mb-2">
@@ -133,14 +134,14 @@
                     </div>
                 </div>
                 <el-form
-                        v-if="token"
-                        ref="commentForm"
-                        :rules="commentFormRules"
-                        :model="commentForm"
-                        label-width="80px"
-                        label-position="top"
+                    v-if="token"
+                    ref="commentForm"
+                    :rules="commentFormRules"
+                    :model="commentForm"
+                    label-width="80px"
+                    label-position="top"
                 >
-                    <el-form-item label="" prop="content">
+                <el-form-item label="" prop="content">
                         <el-input
                                 type="textarea"
                                 :rows="3"
@@ -246,9 +247,10 @@
                                     >
                                         <el-image
                                                 :src="require('@/assets/like.png')"
-                                                style="color: #568ed0;width: 15px;height: 15px"
+                                                style="color: #568ed0;width: 14px;height: 14px"
                                         ></el-image>
-                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">{{                                            comment.likes}}</span>
+                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">
+                                            {{comment.likes}}</span>
                                     </el-button>
                                 </div>
                                 <div v-else>
@@ -260,9 +262,10 @@
                                     >
                                         <el-image
                                                 :src="require('@/assets/like.png')"
-                                                style="color: grey;width: 15px;height: 15px"
+                                                style="color: grey;width: 14px;height: 14px"
                                         ></el-image>
-                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">{{                                            comment.likes}}</span>
+                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">
+                                            {{comment.likes}}</span>
                                     </el-button>
                                 </div>
                                 <el-button
@@ -273,9 +276,9 @@
                                 >
                                     <el-image
                                             :src="require('@/assets/comment.png')"
-                                            style="width: 15px;height: 15px"
+                                            style="width: 13px;height: 13px"
                                     ></el-image>
-                                    <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">{{ comment.comments }}</span>
+                                    <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">{{ comment.comments }}</span>
                                 </el-button>
                                 <el-button
                                         type="text"
@@ -285,9 +288,9 @@
                                 >
                                     <el-image
                                             :src="require('@/assets/report1.png')"
-                                            style="width: 14.5px;height: 15px"
+                                            style="width: 13px;height: 13px"
                                     ></el-image>
-                                    <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">举报</span></el-button
+                                    <span style="color: #a1aebf;padding-left: 8px;font-size: 15px;font-weight: 500">举报</span></el-button
                                 >
                                 <el-button
                                         type="text"
@@ -296,10 +299,10 @@
                                         style="padding-left: 30px;color: #568ed0"
                                 >
                                     <el-image :src="require('@/assets/delete.png')"
-                                              style="width: 16px;height: 16px;"
+                                              style="width: 12px;height: 12px;"
                                     ></el-image>
-                                    <span style="font-size: 16px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span></el-button
-                                >
+                                    <span style="font-size: 15px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span>
+                                </el-button>
                             </div>
                             <div
                                     class="community-post-detail-comment-reply"
@@ -315,13 +318,13 @@
                                         <div v-if="reply.ownerId == comment.id">
                                             <el-card :body-style="{ padding: '12px' }" shadow="never">
                                                 <div
-                                                        class="mb-2 d-flex align-items-center"
-                                                        style="font-size: 10px; font-weight: bold"
+                                                    class="mb-2 d-flex align-items-center"
+                                                    style="font-size: 10px; font-weight: bold"
                                                 >
                                                     <el-avatar
-                                                            v-if="
-                                                                reply.fromUser.avatar &&
-                                                                reply.fromUser.avatar.length > 0 "
+                                                        v-if="
+                                                            reply.fromUser.avatar &&
+                                                            reply.fromUser.avatar.length > 0 "
                                                             style="margin-right: 8px"
                                                             :src="reply.fromUser.avatar"
                                                             :size="20"
@@ -348,7 +351,7 @@
                                                 </div>
                                                 {{ reply.content }}
                                                 <div
-                                                        class="community-post-item-reply-action d-flex justify-content-start"
+                                                    class="community-post-item-reply-action d-flex justify-content-start"
                                                 >
                                                     <div v-if="reply.like">
                                                         <el-button
@@ -360,7 +363,7 @@
                                                         >
                                                             <el-image
                                                                     :src="require('@/assets/like.png')"
-                                                                    style="color: #409eff;width: 15px;height: 15px"
+                                                                    style="color: #409eff;width: 14px;height: 14px"
                                                             ></el-image>
                                                             <!--                              <font-awesome-icon-->
                                                             <!--                                style="color: #409eff"-->
@@ -379,7 +382,7 @@
                                                         >
                                                             <el-image
                                                                     :src="require('@/assets/like.png')"
-                                                                    style="width: 15px;height: 15px"
+                                                                    style="width: 14px;height: 14px"
                                                             ></el-image>
                                                             <span style="color: #a1aebf; margin-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">{{                                                                reply.likes}}</span>
                                                         </el-button>
@@ -387,40 +390,37 @@
                                                     <el-button
                                                             type="text"
                                                             size="small"
-
                                                             style="color: #568ed0;padding-left: 30px"
                                                             @click="openSecondaryReplybox(reply.id)"
                                                     >
                                                         <el-image
                                                                 :src="require('@/assets/comment.png')"
-                                                                style="width: 15px;height: 15px"
+                                                                style="width: 13px;height: 13px"
                                                         ></el-image>
-                                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">回复</span>
+                                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;">回复</span>
                                                     </el-button>
                                                     <el-button
                                                             type="text"
-                                                            size="small"
                                                             @click="reportComment(comment.id)"
-                                                            icon="el-icon-s-flag"
                                                             style="color: #568ed0;padding-left: 30px"
                                                     >
                                                         <el-image
                                                                 :src="require('@/assets/report1.png')"
-                                                                style="width: 14.5px;height: 15px"
+                                                                style="width: 13px;height: 13px"
                                                         ></el-image>
-                                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 16px;font-weight: 500;line-height: 22px;">举报</span></el-button
+                                                        <span style="color: #a1aebf;padding-left: 8px;font-size: 15px;font-weight: 500">举报</span></el-button
                                                     >
                                                     <el-button
                                                             type="text"
-                                                            @click="deleteComment(reply.id, 1)"
+                                                            @click="deleteComment1(reply.id, 1)"
                                                             v-if="reply.fromUser.userId === userId"
                                                             style="padding-left: 30px;color: #568ed0"
                                                     >
                                                         <el-image :src="require('@/assets/delete.png')"
-                                                                  style="width: 16px;height: 16px"
+                                                                  style="width: 12px;height: 12px"
                                                         ></el-image>
-                                                        <span style="font-size: 16px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span></el-button
-                                                    >
+                                                        <span style="font-size: 15px;font-weight: 500;color: #A1AEBF;padding-left: 8px">删除</span>
+                                                    </el-button>
                                                 </div>
                                                 <div
                                                         v-if="secondaryRepyOpen && reply.id === replyCommentId"
@@ -624,6 +624,7 @@
         },
         data() {
             return {
+                dialogVisible: false,
                 //COMMUNITY ATTRIBUTES
                 activeCommentTabName: "-id",
                 activeCommName: "1",
@@ -705,6 +706,14 @@
             },
         },
         methods: {
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {
+                    });
+            },
             initData() {
                 this.companyId = this.$route.params.id;
                 this.postId = this.$route.query.postId;
@@ -769,11 +778,22 @@
                 this.getCommentList();
             },
             deletePost(id) {
-                let data = {postId: id};
-                deletePost(data).then(() => {
-                    Toast.success("成功删除帖子");
-                    this.$router.push(`/company/${this.companyId}/post`);
-                });
+                this.$confirm("确认删除这条帖子？","提示",{
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    center: true
+                }).then(()=>{
+                    let data = {postId: id};
+                    deletePost(data).then(() => {
+                        Toast.success("成功删除帖子");
+                        this.$router.push(`/company/${this.companyId}/post`);
+                    });
+                }).catch(()=>{
+                    type: 'info',
+                    Toast.success("已取消删除");
+                })
+
+
             },
             likePost(id) {
                 likePost(id).then((response) => {
@@ -839,12 +859,44 @@
                 });
             },
             deleteComment(id, type) {
-                let data = {commentId: id};
-                deleteComment(data).then(() => {
-                    Toast.success("成功删除评论");
-                    this.getCommentList();
-                    this.getReplyList();
-                });
+                this.$confirm('确认删除这条评论?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(()=>{
+                    let data = {commentId: id};
+                    deleteComment(data).then(() => {
+                        Toast.success("成功删除评论");
+                        this.getCommentList();
+                        this.getReplyList();
+                    });
+                }).catch(()=>{
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                })
+            },
+            deleteComment1(id, type) {
+                this.$confirm('确认删除这条回复?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(()=>{
+                    let data = {commentId: id};
+                    deleteComment(data).then(() => {
+                        Toast.success("成功删除回复");
+                        this.getCommentList();
+                        this.getReplyList();
+                    });
+                }).catch(()=>{
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                })
             },
             reportComment(id) {
                 let data = {

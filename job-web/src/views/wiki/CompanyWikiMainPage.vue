@@ -160,6 +160,7 @@ export default {
     };
   },
   created() {
+    this.$emit("complete");
     this.initData();
     this.initTabActive();
   },
@@ -245,16 +246,15 @@ export default {
       this.$router.push("/login");
     },
     goToSaveScore() {
-      const urlRootPath = `/company/${this.companyId}/community/score/#save`;
-      this.$router.push({
-        path: urlRootPath,
-      });
+      let element=document.getElementById("save");
+      this.$router.push(`/company/${this.companyId}/score`);
+      element.scrollIntoView();
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 /deep/ .el-menu {
   background-color: #f6f8fb;
 }
