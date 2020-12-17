@@ -9,7 +9,11 @@ export function getInterviewerList(data) {
 }
 
 export function getInterviewRecordList(data) {
-
+  return request({
+    url: '/mock/interview/records/query',
+    method: 'post',
+    data
+  })
 }
 
 export function getAvatar() {

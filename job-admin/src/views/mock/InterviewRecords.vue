@@ -158,6 +158,21 @@
           this.total = total;
           this.listLoading = false;
         });
+
+        // this.$axios.post("/mock/interview/time", {this.listQuery}).then(data => {
+        //   let event = data.data;
+        //   this.calendarOptions.events.push({
+        //     id: event.id,
+        //     interviewerId: event.id,
+        //     start: parseInt(event.beginTime),
+        //     end: parseInt(event.endTime),
+        //     borderColor: '#D3F261', // 块边框颜色
+        //     backgroundColor: '#D3F261', // 块背景色
+        //   });
+        //   this.beginTime = undefined;
+        //   this.endTime = undefined;
+        //   this.dialogVisible = false;
+        // })
       },
       handleRouteList() {
         this.$router.push({path: this.$route.path, query: this.listQuery});

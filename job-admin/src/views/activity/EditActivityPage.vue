@@ -140,7 +140,7 @@
             { required: true, message: '请输入主办方', trigger: 'blur' }
           ]
         },
-        cityOptions: [{ id: 1, name: '国内' }, { id: 2, name: '国外' }],
+        cityOptions: [{id: 1, name: "国内", children:[{id: 0, name: "加载中"}]}, {id: 2, name: "国外"}],
         uploadPicOptions: {
           action: '',
           params: {},
@@ -150,27 +150,27 @@
         },
         saveLoading: false,
         cityIdProps: {
-          lazy: true,
-          lazyLoad: (node, resolve) => {
-            if (node.level === 1) {
-              this.$axios.request({
-                url: '/city/list',
-                method: 'get',
-                params: { type: node.value }
-              }).then(data => {
-                console.log(data.data)
-                let nodes = data.data.map(second => {
-                  let children = second.children && second.children.map(third => {
-                    return { id: third.id, name: third.name, leaf: true }
-                  })
-                  return { id: second.id, name: second.name, children }
-                })
-                resolve(nodes)
-              })
-            } else {
-              resolve()
-            }
-          },
+          lazy: false,
+          // lazyLoad: (node, resolve) => {
+          //   if (node.level === 1) {
+          //     this.$axios.request({
+          //       url: '/city/list',
+          //       method: 'get',
+          //       params: { type: node.value }
+          //     }).then(data => {
+          //       console.log(data.data)
+          //       let nodes = data.data.map(second => {
+          //         let children = second.children && second.children.map(third => {
+          //           return { id: third.id, name: third.name, leaf: true }
+          //         })
+          //         return { id: second.id, name: second.name, children }
+          //       })
+          //       resolve(nodes)
+          //     })
+          //   } else {
+          //     resolve()
+          //   }
+          // },
           expandTrigger: 'hover',
           value: 'id',
           label: 'name',
@@ -200,6 +200,32 @@
       initData() {
         // listByType(2).then(response => (this.cityOptions = response.data.list));
         this.getActivityInfo()
+
+        this.$axios.request({
+          url: "/city/list",
+          method: "get",
+          params: {type: 1}
+        }).then(data => {
+          this.cityOptions[0].children = data.data.map(second => {
+            let children = second.children && second.children.map(third => {
+              return {id: third.id, name: third.name, leaf: true}
+            })
+            return {id: second.id, name: second.name, children}
+          });
+        })
+
+        this.$axios.request({
+          url: "/city/list",
+          method: "get",
+          params: {type: 2}
+        }).then(data => {
+          this.cityOptions[1].children = data.data.map(second => {
+            let children = second.children && second.children.map(third => {
+              return {id: third.id, name: third.name, leaf: true}
+            })
+            return {id: second.id, name: second.name, children}
+          });
+        })
       },
       getActivityInfo() {
         const activityId = this.$route.query.id
@@ -210,6 +236,7 @@
               this.activityForm[key] = data[key]
             })
             this.activityForm.cityId = data.city.id
+            console.log(this.activityForm)
             this.activityForm.timeRange = [
               this.activityForm.startTime,
               this.activityForm.finishTime
