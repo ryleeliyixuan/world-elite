@@ -181,6 +181,7 @@
     },
     created() {
       this.initData()
+
     },
     watch: {
       'activityForm.timeRange': function() {
@@ -260,6 +261,7 @@
         })
       },
       beforeUpload(file) {
+        document.querySelector("body").setAttribute("style", "overflow: auto !important;")
         return new Promise((resolve, reject) => {
           this.uploadPicOptions.loading = true
           getUploadPicToken(file.name)
@@ -280,6 +282,7 @@
         })
       },
       handleUploadSuccess() {
+        console.log(document.querySelector("body"))
         this.uploadPicOptions.loading = false
       }
     }
@@ -287,42 +290,45 @@
 </script>
 
 <style lang="scss">
-  .edit-activity {
-    .thumbnail-uploader .el-upload {
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+
+    .edit-activity {
+      .thumbnail-uploader .el-upload {
+        cursor: pointer;
+        position: relative;
+        overflow:hidden;
+      }
+
+      .thumbnail-uploader .el-upload:hover {
+        border-color: #ccc;
+      }
+
+      $avatarSize: 200px;
+
+      .thumbnail-uploader .thumbnail-uploader-icon {
+        border: 1px dashed #d9d9d9;
+        font-size: 28px;
+        color: #8c939d;
+        width: $avatarSize;
+        height: $avatarSize;
+        line-height: $avatarSize;
+        text-align: center;
+      }
+
+      .thumbnail-uploader .thumbnail {
+        width: $avatarSize;
+        height: $avatarSize;
+        display: block;
+      }
+
+      .ql-container .ql-editor {
+        height: calc(100vh - 220px);
+        font-size: 1rem;
+      }
+
+      .ql-toolbar {
+        line-height: normal;
+      }
     }
 
-    .thumbnail-uploader .el-upload:hover {
-      border-color: #ccc;
-    }
 
-    $avatarSize: 200px;
-
-    .thumbnail-uploader .thumbnail-uploader-icon {
-      border: 1px dashed #d9d9d9;
-      font-size: 28px;
-      color: #8c939d;
-      width: $avatarSize;
-      height: $avatarSize;
-      line-height: $avatarSize;
-      text-align: center;
-    }
-
-    .thumbnail-uploader .thumbnail {
-      width: $avatarSize;
-      height: $avatarSize;
-      display: block;
-    }
-
-    .ql-container .ql-editor {
-      height: calc(100vh - 220px);
-      font-size: 1rem;
-    }
-
-    .ql-toolbar {
-      line-height: normal;
-    }
-  }
 </style>

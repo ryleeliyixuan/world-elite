@@ -481,7 +481,6 @@
                     this.myInfo.name = data.data && data.data.nickName || this.$store.state.user.name;
                 })
             },
-
             // 面试者
             onInterviewee() {
                 // 切换身份为面试者
