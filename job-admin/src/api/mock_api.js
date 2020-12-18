@@ -68,3 +68,11 @@ export function getInterviewerBaseInfo(id){
     params: {userId: id}
   })
 }
+
+export function getInterviewerTimeInfo(data){
+  return request({
+    url: '/mock/interview/time/query',
+    method: 'post',
+    data
+  })
+}
