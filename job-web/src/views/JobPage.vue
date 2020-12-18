@@ -18,11 +18,11 @@
                     {{job.favoriteFlag === 1? '已收藏': '收藏岗位'}}
                 </el-button>
                 <el-button
-                        type="primary"
-                        :loading="applyLoading"
-                        icon="el-icon-phone-outline"
-                        @click="handleAppleJob"
-                        v-bind:disabled="job.applyFlag === 1">
+                    type="primary"
+                    :loading="applyLoading"
+                    icon="el-icon-phone-outline"
+                    @click="handleAppleJob"
+                    v-bind:disabled="job.applyFlag === 1">
                     {{job.applyFlag === 1? '已申请' : '申请岗位'}}
                 </el-button>
                 <el-button type="primary"
@@ -43,11 +43,11 @@
                     {{job.favoriteFlag === 1? '已收藏': '收藏岗位'}}
                 </el-button>
                 <el-button
-                        type="primary"
-                        :loading="applyLoading"
-                        icon="el-icon-s-promotion"
-                        @click="handleAppleJob"
-                        v-bind:disabled="job.applyFlag === 1">
+                    type="primary"
+                    :loading="applyLoading"
+                    icon="el-icon-s-promotion"
+                    @click="handleAppleJob"
+                    v-bind:disabled="job.applyFlag === 1">
                     {{job.applyFlag === 1? '已申请' : '申请岗位'}}
                 </el-button>
             </div>
@@ -124,6 +124,7 @@
                 favoriteLoading: false,
                 applyLoading: false,
                 shareConfig: {
+                    url: window.location.href,
                     source: "",
                     title: "",
                     description: "",
@@ -191,7 +192,7 @@
             },
 
             handleChat() {
-                this.$router.push({path: "/chat", query: {toUser: this.job.creatorId, jobId:this.job.id}})
+                this.$router.push({path: "/chat", query: {toUser: this.job.creatorId, jobId: this.job.id}})
             }
         }
     };

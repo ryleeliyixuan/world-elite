@@ -74,10 +74,10 @@
         <span>{{userStatus[scope.row.status]}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" fixed="right" width="400">
+      <el-table-column label="操作" align="center" width="230">
         <template slot-scope="scope">
-          <el-link type="primary" :underline="true" @click="onCancel(scope.row)">取消预约</el-link>&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp; <el-link type="primary" :underline="true">退费</el-link>
+          <el-link type="primary" :underline="false" @click="onCancel(scope.row)" style="border-bottom: 1px solid #409eff;margin-right: 20px;" v-if="scope.row.status<=2">取消订单</el-link>
+          <el-link type="primary" :underline="false" style="border-bottom: 1px solid #409eff;">退费</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -189,9 +189,9 @@
       //取消订单
       onCancel(row){
         console.log(row)
-        this.$axios.post("/pay/goods/order/cancel/{orderId}", ).then(data => {
+        this.$axios.patch(`/pay/goods/order/cancel/${row.orderId}`).then(()=>{
+          this.$message('已取消订单')
         })
-
       },
       handleModifyStatus(user, status) {
         this.statusForm.userId = user.userId
