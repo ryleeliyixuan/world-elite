@@ -312,7 +312,7 @@
       return {
         tableKey: 0,
         listLoading: true,
-        activeName: 'time',
+        activeName: 'info',
         interviewer: undefined, // 面试官vo
         direction: '', //面试方向列表
         experience: '',
