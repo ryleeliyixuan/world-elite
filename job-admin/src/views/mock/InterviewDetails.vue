@@ -212,8 +212,180 @@
           </el-table>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="面试记录" name="records"></el-tab-pane>
-      <el-tab-pane label="退款记录" name="refundRecord"></el-tab-pane>
+      <el-tab-pane label="面试记录" name="records" class="app-container">
+        <div>
+          <div class="filter-container">
+            <el-form :inline="true" :model="listQuery">
+              <el-form-item>
+                <el-input v-model="listQuery.orderId" placeholder="订单号ID" @keyup.enter.native="handleFilter"
+                          clearable @change="handleFilter"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-date-picker
+                  v-model="beginTime"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  @change="handleFilter"
+                  placeholder="选择日期" clearable>
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-input v-model="listQuery.userName" placeholder="面试者姓名" @keyup.enter.native="handleFilter"
+                          clearable @change="handleFilter"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="handleFilter">查询</el-button>
+              </el-form-item>
+
+              <el-form-item>
+                <el-button @click="handleReset">重置</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.limit"
+            @pagination="handleRouteList"
+          />
+
+          <el-table
+            :key="tableKey2"
+            v-loading="listLoading2"
+            :data="list"
+            border
+            highlight-current-row
+            style="margin-top: 10px"
+          >
+            <el-table-column label="面试ID" prop="id" width="80"></el-table-column>
+            <el-table-column label="面试时间" prop="beginTime">
+              <template slot-scope="scope">
+                <div>
+                  {{scope.row.beginTime | timestampToDateTime}}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="面试者姓名" prop="userName"></el-table-column>
+            <el-table-column label="订单号ID" prop="orderId"></el-table-column>
+            <el-table-column label="付款金额" prop="amount"></el-table-column>
+            <el-table-column label="平台抽成">
+              <template slot-scope="scope">
+                <span>{{scope.row.amount*0.2}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="面试状态" prop="status">
+              <template slot-scope="scope">
+                <span>{{userStatus[scope.row.status]}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" align="center" fixed="right" width="180px">
+              <template slot-scope="scope">
+                <el-button type="success" size="small" @click="onCancel(scope.row)" :disabled="scope.row.status !== 1">
+                  取消预约
+                </el-button>&nbsp;&nbsp;&nbsp;
+                <el-button type="danger" size="small">退费</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.limit"
+            @pagination="handleRouteList"
+          />
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="退款记录" name="refundRecord" class="app-container">
+        <div>
+          <div class="filter-container">
+            <el-form :inline="true" :model="listQuery">
+              <el-form-item>
+                <el-input v-model="listQuery.orderId" placeholder="订单号ID" @keyup.enter.native="handleFilter"
+                          clearable @change="handleFilter"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-date-picker
+                  v-model="beginTime"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  @change="handleFilter"
+                  placeholder="选择日期" clearable>
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-input v-model="listQuery.userName" placeholder="面试者姓名" @keyup.enter.native="handleFilter"
+                          clearable @change="handleFilter"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="handleFilter">查询</el-button>
+              </el-form-item>
+
+              <el-form-item>
+                <el-button @click="handleReset">重置</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.limit"
+            @pagination="handleRouteList"
+          />
+
+          <el-table
+            :key="tableKey2"
+            v-loading="listLoading2"
+            :data="list"
+            border
+            highlight-current-row
+            style="margin-top: 10px"
+          >
+            <el-table-column label="面试ID" prop="id" width="80"></el-table-column>
+            <el-table-column label="面试时间" prop="beginTime">
+              <template slot-scope="scope">
+                <div>
+                  {{scope.row.beginTime | timestampToDateTime}}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="面试者姓名" prop="userName"></el-table-column>
+            <el-table-column label="订单号ID" prop="orderId"></el-table-column>
+            <el-table-column label="付款金额" prop="amount"></el-table-column>
+            <el-table-column label="平台抽成">
+              <template slot-scope="scope">
+                <span>{{scope.row.amount*0.2}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="面试状态" prop="status">
+              <template slot-scope="scope">
+                <span>{{userStatus[scope.row.status]}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" align="center" fixed="right" width="180px">
+              <template slot-scope="scope">
+                <el-button type="success" size="small" @click="onCancel(scope.row)" :disabled="scope.row.status !== 1">
+                  取消预约
+                </el-button>&nbsp;&nbsp;&nbsp;
+                <el-button type="danger" size="small">退费</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.limit"
+            @pagination="handleRouteList"
+          />
+        </div>
+      </el-tab-pane>
     </el-tabs>
 
     <el-dialog title="预约详情" :visible.sync="reservationDialog" width="70%">
@@ -302,12 +474,17 @@
     getInterviewDirection,
     getInterviewerBaseInfo,
     getInterviewerInfo,
-    getInterviewerTimeInfo
+    getInterviewerTimeInfo,
+    getInterviewRecordList
   } from "@/api/mock_api";
-  import {timestampToDate, timestampToMinute} from "@/filters/filters";
+  import {timestampToMinute} from "@/filters/filters";
+  import Pagination from "@/components/Pagination/index";
+  import waves from "@/directive/waves";
 
   export default {
     name: "interviewDetails",
+    components: {Pagination},
+    directives: {waves},
     data() {
       return {
         tableKey: 0,
@@ -373,6 +550,31 @@
               }
             }],
         },
+
+        //面试记录
+        tableKey2: 0,
+        list: [],
+        total: 0,
+        listLoading2: true,
+        listQuery: {
+          interviewerId: undefined,
+          orderId: undefined,
+          beginTime: undefined,
+          userName: undefined,
+          status: undefined,
+          page: 1,
+          limit: 20
+        },
+        userStatus: {
+          1: '待支付',
+          2: '待面试',
+          3: '面试中',
+          4: '已面试',
+          5: '已关闭',
+          6: '已退款'
+        },
+        curTabName: undefined,
+
       };
     },
 
@@ -417,6 +619,7 @@
       },
 
       handleClick(tab, event) {
+        this.curTabName = tab.name;
         if (tab.name === 'info') {
           if (this.interviewer == null && this.$route.query.id != null)
             this.getData(this.$route.query.id);
@@ -424,9 +627,9 @@
           if (this.interviewerTimeList == null || this.interviewerTimeList.length === 0)
             this.getInterviewerTimeList();
         } else if (tab.name === 'records') {
-
+          this.getInterviewRecordList();
         } else if (tab.name === 'refundRecord') {
-
+          this.getInterviewRecordList();
         }
       },
       /**
@@ -477,7 +680,7 @@
         //弹出可预约时间对话框切换为编辑模式
         this.reservationDialogAddMode = false;
         const d = new Date(data.beginTime);
-        d.setHours(0,0,0,0);
+        d.setHours(0, 0, 0, 0);
         this.date = d;
         this.beginTime = timestampToMinute(data.beginTime);
         this.endTime = timestampToMinute(data.endTime);
@@ -527,18 +730,22 @@
                 this.addReservationDialog = false;
               })
             } else {
-                if(this.reservationEditId ==null)
-                  this.$message.warning("要编辑的记录ID不存在");
-                else{
-                  repeat = '1';
-                  this.$axios.patch("/mock/interview/time/" + this.reservationEditId , {beginTime, endTime, repeat}).then(data => {
-                    this.getInterviewerTimeList();
-                    this.$message.success("更新成功")
-                    this.beginTime = undefined;
-                    this.endTime = undefined;
-                    this.addReservationDialog = false;
-                  })
-                }
+              if (this.reservationEditId == null)
+                this.$message.warning("要编辑的记录ID不存在");
+              else {
+                repeat = '1';
+                this.$axios.patch("/mock/interview/time/" + this.reservationEditId, {
+                  beginTime,
+                  endTime,
+                  repeat
+                }).then(data => {
+                  this.getInterviewerTimeList();
+                  this.$message.success("更新成功")
+                  this.beginTime = undefined;
+                  this.endTime = undefined;
+                  this.addReservationDialog = false;
+                })
+              }
             }
           }
         }
@@ -584,7 +791,60 @@
       closeReservationDialog() {
         this.reservationDialogAddMode = true;
         this.reservationEditId = null;
-      }
+      },
+
+      getInterviewRecordList() {
+        this.listLoading2 = true
+        const query = this.$route.query
+        if (query.page) {
+          this.listQuery.page = parseInt(query.page)
+        }
+        if (query.limit) {
+          this.listQuery.limit = parseInt(query.limit)
+        }
+        this.listQuery.interviewerId = this.$route.query.id;
+        if (this.curTabName === "refundRecord")
+          this.listQuery.status = 6;
+        else
+          this.listQuery.status = undefined;
+
+        getInterviewRecordList(this.listQuery).then(response => {
+          console.log(this.listQuery)
+          const {total, list} = response.data
+          this.list = list
+          this.total = total
+          this.listLoading2 = false
+        })
+      },
+      handleRouteList() {
+        this.$router.push({path: this.$route.path, query: this.listQuery})
+      },
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getInterviewRecordList()
+      },
+      // 重置
+      handleReset() {
+        this.listQuery = {
+          orderId: undefined,
+          beginTime: undefined,
+          userName: undefined,
+          page: 1,
+          limit: 20
+        }
+        this.getInterviewRecordList()
+      },
+      //取消订单
+      onCancel(row) {
+        console.log(row)
+        this.$axios.patch("/pay/goods/order/cancel/{orderId}",).then(response => {
+          if (response.data) {
+            this.$message.success("取消预约成功!");
+          } else {
+            this.$message.error("取消预约失败");
+          }
+        })
+      },
     }
   }
 </script>
