@@ -193,33 +193,7 @@
           this.$message('已取消订单')
         })
       },
-      handleModifyStatus(user, status) {
-        this.statusForm.userId = user.userId
-        this.statusForm.status = status
-        if (status === 1) {
-          this.$confirm('此操作将解禁该用户, 是否继续?', '提示', {
-            confirmButtonText: '继续',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            modifyApplicantStatus(this.statusForm).then(response => {
-              user.status = status
-              this.$message('操作成功')
-            })
-          })
-        } else {
-          this.$prompt('请输入禁用的原因', '提示', {
-            confirmButtonText: '提交',
-            cancelButtonText: '取消'
-          }).then(({ value }) => {
-            this.statusForm.reason = value
-            modifyApplicantStatus(this.statusForm).then(response => {
-              user.status = status
-              this.$message('操作成功')
-            })
-          })
-        }
-      }
+
     }
   }
 </script>
