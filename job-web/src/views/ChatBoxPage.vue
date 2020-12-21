@@ -160,7 +160,9 @@
                                   ref="content"
                                   :rows="3"
                                   placeholder="请输入内容"
-                                  v-model="content">
+                                  v-model="content"
+                                  @keydown.enter.native="keyDown"
+                        >
                         </el-input>
                         <el-button type="primary" class="send" @click="onSend">发送</el-button>
                     </div>
@@ -457,13 +459,24 @@
                 }).catch(() => {
                 });
             },
-
+            //回车换行
+            keyDown (e) {
+                if(e.ctrlKey  && e.keyCode==13||e.shiftKey  && e.keyCode==13) {   //用户点击了ctrl或shift+enter触发
+                    this.content =this.content+'\n'
+                    // console.log(this.content)
+                }else { //用户点击了enter触发
+                    this.onSend();
+                    e.preventDefault();
+                    // console.log("++++")
+                }
+            },
             // 发送
             onSend() {
                 if (this.content !== '') {
                     // 保存消息，并清空发送框
                     let content = this.content;
                     this.content = '';
+
 
                     // 构建消息对象，插入接收框
                     let message = {
