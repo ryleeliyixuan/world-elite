@@ -139,7 +139,7 @@
 
                 let card = this.$refs[item.name];
                 if (card) {
-                    document.getElementById("app").scrollTop = card[0].offsetTop + 200;
+                    document.getElementById("app").scrollTop = card[0].offsetTop + 170;
                     // if (this.timer) {
                     //     clearInterval(this.timer);
                     // }
