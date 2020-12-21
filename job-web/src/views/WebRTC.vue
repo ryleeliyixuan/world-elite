@@ -81,7 +81,7 @@
                                       maxlength="150"
                                       @keyup.enter.native="onSend"
                                       :show-word-limit="false"/>
-<!--                            <el-button class="send-button" type="primary" icon="el-icon-message" size="small" circle @click="onSend"></el-button>-->
+                            <!--                            <el-button class="send-button" type="primary" icon="el-icon-message" size="small" circle @click="onSend"></el-button>-->
                             <el-image :src="require('@/assets/mock/send.png')" class="send-button" @click="onSend"></el-image>
                         </div>
                     </div>
@@ -191,7 +191,8 @@
             }).catch(() => {
                 this.$message.warning("即时通信组件初始化失败，请重新登录");
                 store.dispatch('user/LOGOUT').then(() => {
-                    this.$router.push({path: "/login",
+                    this.$router.push({
+                        path: "/login",
                         query: {
                             ...this.$route.query,
                             redirect: `/webRTC/${this.$route.params.id}/${this.$route.params.interviewerId}/${this.$route.params.identity}`
@@ -897,9 +898,11 @@
                         width: 100%;
                         height: auto;
                         background-color: #F5F6FA;
-                        .upload-container{
+
+                        .upload-container {
                             width: 98%;
                             margin: 5px auto;
+
                             .icon2 {
                                 font-size: 14px;
                                 color: #606266;
@@ -916,10 +919,12 @@
                             }
 
                         }
-                        .input-container{
+
+                        .input-container {
                             width: 98%;
                             margin: 5px auto 10px;
                             display: flex;
+
                             .send-button {
                                 width: 40px;
                                 margin-left: 10px;

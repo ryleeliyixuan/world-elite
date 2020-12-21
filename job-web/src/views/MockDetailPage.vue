@@ -14,19 +14,19 @@
                     <div class="basis1">{{interviewer.nickName}}
                     </div>
                     <div class="basis2">{{interviewer.industry.name}}<span v-if="interviewer.position">·</span>{{interviewer.position}}</div>
-<!--                    <div class="basis3">-->
-<!--                        <el-rate-->
-<!--                                :value="interviewer.avgScore|toFixed1"-->
-<!--                                disabled-->
-<!--                                show-score-->
-<!--                                :colors="['#FFD740', '#FFD740', '#FFD740']"-->
-<!--                                text-color="#999999"-->
-<!--                                score-template="{value}"-->
-<!--                                class="item-rate">-->
-<!--                        </el-rate>-->
+                    <!--                    <div class="basis3">-->
+                    <!--                        <el-rate-->
+                    <!--                                :value="interviewer.avgScore|toFixed1"-->
+                    <!--                                disabled-->
+                    <!--                                show-score-->
+                    <!--                                :colors="['#FFD740', '#FFD740', '#FFD740']"-->
+                    <!--                                text-color="#999999"-->
+                    <!--                                score-template="{value}"-->
+                    <!--                                class="item-rate">-->
+                    <!--                        </el-rate>-->
 
-<!--                        <span> of 5.0</span>-->
-<!--                    </div>-->
+                    <!--                        <span> of 5.0</span>-->
+                    <!--                    </div>-->
                 </div>
             </div>
             <el-image v-if="interviewer.company" :src="interviewer.company.logo" class="message-image" fit="scale-down"></el-image>
@@ -46,7 +46,7 @@
         <div class="user-info">个人信息</div>
         <div class="brief-introduction">
             <el-image v-if="interviewer.company" :src="require('@/assets/mock/icon9.png')" class="brief-icon1" fit="fill"></el-image>
-            <div  class="brief-title" style="margin-right: 62px">公司：{{interviewer.company?interviewer.company.name:interviewer.companyName}}</div>
+            <div class="brief-title" style="margin-right: 62px">公司：{{interviewer.company?interviewer.company.name:interviewer.companyName}}</div>
             <el-image :src="require('@/assets/mock/icon10.png')" class="brief-icon1" fit="fill"></el-image>
             <div class="brief-title" style="margin-right: 62px">行业：{{interviewer.industry.name}}</div>
             <el-image :src="require('@/assets/mock/icon12.png')" class="brief-icon1" fit="fill"></el-image>

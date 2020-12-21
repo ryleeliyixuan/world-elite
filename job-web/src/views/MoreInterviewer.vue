@@ -58,8 +58,8 @@
                 </div>
                 <div class="interviewer-right">
                     <div class="rate-top">
-<!--                        <el-image :src="require('@/assets/mock/icon6.png')" class="rate-image" fit="fill"></el-image>-->
-<!--                        <div class="rate-text">{{interviewer.avgScore|toFixed1}}</div>-->
+                        <!--                        <el-image :src="require('@/assets/mock/icon6.png')" class="rate-image" fit="fill"></el-image>-->
+                        <!--                        <div class="rate-text">{{interviewer.avgScore|toFixed1}}</div>-->
                     </div>
                     <div class="reservation" @click.stop="onPromise(interviewer)">马上预约</div>
                 </div>
@@ -70,12 +70,12 @@
             </div>
         </div>
         <el-pagination
-                v-if="interviewerList.length>0"
-                size="medium" class="pagination"
-                layout="prev, pager, next, jumper"
-                :total="total" :page-size="10"
-                :current-page.sync="listQuery.page"
-                @current-change="getList">
+            v-if="interviewerList.length>0"
+            size="medium" class="pagination"
+            layout="prev, pager, next, jumper"
+            :total="total" :page-size="10"
+            :current-page.sync="listQuery.page"
+            @current-change="getList">
         </el-pagination>
     </div>
 </template>
@@ -186,7 +186,7 @@
             },
 
             onInterviewer(interviewer) {
-                this.$storage.setData("interviewerFrom", {home:false});
+                this.$storage.setData("interviewerFrom", {home: false});
                 this.$router.push(`/mock/interviewer/${interviewer.id}`);
             },
 
@@ -198,7 +198,7 @@
             getList() {
                 this.loading = true;
                 this.$axios.get("/mock/interviewer/list", {params: this.listQuery}).then(data => {
-                    // this.loading = false;
+                    this.loading = false;
                     this.interviewerList = data.data.list;
                     this.total = data.data.total;
                 })

@@ -131,14 +131,14 @@
                             </div>
                             <div class="icon1" @click="onInvite" v-if="type==='company'">邀请面试</div>
                             <el-upload
-                                    v-loading.fullscreen.lock="fullscreenLoading"
-                                    ref="upload"
-                                    :action="uploadAnnexOptions.action"
-                                    :data="uploadAnnexOptions.params"
-                                    :show-file-list="false"
-                                    :on-success="handleEditorUploadSuccess"
-                                    :on-error="handleEditorUploadError"
-                                    :before-upload="beforeUpload">
+                                v-loading.fullscreen.lock="fullscreenLoading"
+                                ref="upload"
+                                :action="uploadAnnexOptions.action"
+                                :data="uploadAnnexOptions.params"
+                                :show-file-list="false"
+                                :on-success="handleEditorUploadSuccess"
+                                :on-error="handleEditorUploadError"
+                                :before-upload="beforeUpload">
                                 <div class="icon2">附件</div>
                             </el-upload>
                             <!-- :accept="uploadAnnexOptions.acceptFileType" -->
@@ -460,11 +460,11 @@
                 });
             },
             //回车换行
-            keyDown (e) {
-                if(e.ctrlKey  && e.keyCode==13||e.shiftKey  && e.keyCode==13) {   //用户点击了ctrl或shift+enter触发
-                    this.content =this.content+'\n'
+            keyDown(e) {
+                if (e.ctrlKey && e.keyCode == 13 || e.shiftKey && e.keyCode == 13) {   //用户点击了ctrl或shift+enter触发
+                    this.content = this.content + '\n'
                     // console.log(this.content)
-                }else { //用户点击了enter触发
+                } else { //用户点击了enter触发
                     this.onSend();
                     e.preventDefault();
                     // console.log("++++")
