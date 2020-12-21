@@ -52,7 +52,7 @@
       create_time, update_time, msg_type)
     values (#{id,jdbcType=INTEGER}, #{fromUser,jdbcType=BIGINT}, #{toUser,jdbcType=BIGINT}, 
       #{content,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{readFlag,jdbcType=TINYINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{msg_type,jdbcType=TINYINT})
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{msgType,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.worldelite.job.entity.Message">
     <!--
@@ -115,7 +115,7 @@
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="msgType != null">
-        #{msg_type,jdbcType=TINYINT},
+        #{msgType,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -148,7 +148,7 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="msgType != null">
-        msg_type = #{msg_type,jdbcType=TINYINT},
+        msg_type = #{msgType,jdbcType=TINYINT},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
