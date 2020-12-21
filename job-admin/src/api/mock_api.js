@@ -47,21 +47,21 @@ export function addInterviewAuth(data) {
   })
 }
 
-export function getInterviewerInfo(id){
+export function getInterviewerInfo(id) {
   return request({
-    url: '/mock/interviewer/'+id,
+    url: '/mock/interviewer/' + id,
     method: 'get'
   })
 }
 
-export function getInterviewDirection(id){
+export function getInterviewDirection(id) {
   return request({
-    url: '/mock/interviewer/direction/'+id,
+    url: '/mock/interviewer/direction/' + id,
     method: 'get'
   })
 }
 
-export function getInterviewerBaseInfo(id){
+export function getInterviewerBaseInfo(id) {
   return request({
     url: '/userapplicant/user-info',
     method: 'get',
@@ -69,10 +69,18 @@ export function getInterviewerBaseInfo(id){
   })
 }
 
-export function getInterviewerTimeInfo(data){
+export function getInterviewerTimeInfo(data) {
   return request({
-    url: '/mock/interview/time/query',
-    method: 'post',
-    data
+    url: '/mock/interview/time/page',
+    method: 'get',
+    params: data
+  })
+}
+
+//面试官下架
+export function offShelfInterviewer(id) {
+  return request({
+    url: '/mock/interviewer/offshelf/' + id,
+    method: 'patch'
   })
 }

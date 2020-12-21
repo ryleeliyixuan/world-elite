@@ -151,7 +151,16 @@
           </el-col>
         </div>
 
-        <div style="margin-top: 60px">
+        <pagination
+          v-show="timeTotal>0"
+          :total="timeTotal"
+          :page.sync="interviewerTimeQuery.page"
+          :limit.sync="interviewerTimeQuery.limit"
+          @pagination="handleTimeRouteList"
+          style="margin-top: 60px"
+        />
+
+        <div>
           <el-table
             :key="tableKey"
             v-loading="listLoading"
@@ -211,6 +220,14 @@
             </el-table-column>
           </el-table>
         </div>
+
+        <pagination
+          v-show="timeTotal>0"
+          :total="timeTotal"
+          :page.sync="interviewerTimeQuery.page"
+          :limit.sync="interviewerTimeQuery.limit"
+          @pagination="handleTimeRouteList"
+        />
       </el-tab-pane>
       <el-tab-pane label="面试记录" name="records" class="app-container">
         <div>
@@ -495,11 +512,14 @@
         experience: '',
         userInfo: undefined,
 
+        timeTotal: 0,
         timeRange: undefined,
         interviewerTimeQuery: {
           beginTime: undefined,
           endTime: undefined,
-          interviewerId: undefined
+          interviewerId: undefined,
+          page: 1,
+          limit: 20
         },
         interviewerTimeList: [],
 
@@ -584,9 +604,9 @@
       }
     },
     mounted() {
-      if (this.$route.query.id) {
-        this.getData(this.$route.query.id);
-        this.interviewerTimeQuery.interviewerId = this.$route.query.id;
+      if (this.$route.query.interviewerId) {
+        this.getData(this.$route.query.interviewerId);
+        this.interviewerTimeQuery.interviewerId = this.$route.query.interviewerId;
       } else {
         this.$message.warning("面试官ID不存在");
       }
@@ -620,9 +640,10 @@
 
       handleClick(tab, event) {
         this.curTabName = tab.name;
+        this.resetQuery();
         if (tab.name === 'info') {
-          if (this.interviewer == null && this.$route.query.id != null)
-            this.getData(this.$route.query.id);
+          if (this.interviewer == null && this.$route.query.interviewerId != null)
+            this.getData(this.$route.query.interviewerId);
         } else if (tab.name === 'time') {
           if (this.interviewerTimeList == null || this.interviewerTimeList.length === 0)
             this.getInterviewerTimeList();
@@ -637,8 +658,10 @@
        */
       getInterviewerTimeList() {
         this.listLoading = true;
-        getInterviewerTimeInfo(this.interviewerTimeQuery).then(data => {
-          this.interviewerTimeList = data.data;
+        getInterviewerTimeInfo(this.interviewerTimeQuery).then(response => {
+          const {total, list} = response.data;
+          this.interviewerTimeList = list;
+          this.timeTotal = total;
           this.listLoading = false;
         })
       },
@@ -714,7 +737,7 @@
         } else if (!this.repeat) {
           this.$message.warning("请选择预约类型")
         } else {
-          let interviewerId = this.$route.query.id;
+          let interviewerId = this.$route.query.interviewerId;
           let beginTime = this.getDate(this.date, this.beginTime);
           let endTime = this.getDate(this.date, this.endTime) - (this.endTime === "24:00" ? 1 : 0);
           let repeat = this.repeat;
@@ -794,22 +817,14 @@
       },
 
       getInterviewRecordList() {
-        this.listLoading2 = true
-        const query = this.$route.query
-        if (query.page) {
-          this.listQuery.page = parseInt(query.page)
-        }
-        if (query.limit) {
-          this.listQuery.limit = parseInt(query.limit)
-        }
-        this.listQuery.interviewerId = this.$route.query.id;
+        this.listLoading2 = true;
+        this.listQuery.interviewerId = this.$route.query.interviewerId;
         if (this.curTabName === "refundRecord")
           this.listQuery.status = 6;
         else
           this.listQuery.status = undefined;
 
         getInterviewRecordList(this.listQuery).then(response => {
-          console.log(this.listQuery)
           const {total, list} = response.data
           this.list = list
           this.total = total
@@ -817,12 +832,21 @@
         })
       },
       handleRouteList() {
-        this.$router.push({path: this.$route.path, query: this.listQuery})
+        this.getInterviewRecordList();
       },
       handleFilter() {
         this.listQuery.page = 1
         this.getInterviewRecordList()
       },
+
+      handleTimeRouteList() {
+        this.getInterviewerTimeList();
+      },
+      handleTimeFilter() {
+        this.interviewerTimeQuery.page = 1
+        this.getInterviewerTimeList()
+      },
+
       // 重置
       handleReset() {
         this.listQuery = {
@@ -832,8 +856,24 @@
           page: 1,
           limit: 20
         }
-        this.getInterviewRecordList()
+        this.getInterviewRecordList();
       },
+      resetQuery() {
+        this.listQuery = {
+          orderId: undefined,
+          beginTime: undefined,
+          userName: undefined,
+          page: 1,
+          limit: 20
+        }
+        this.interviewerTimeQuery = {
+          beginTime: undefined,
+          endTime: undefined,
+          page: 1,
+          limit: 20
+        }
+      },
+
       //取消订单
       onCancel(row) {
         console.log(row)

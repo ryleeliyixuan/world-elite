@@ -66,7 +66,7 @@
           {{row.totalInterviewTime}}小时
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" fixed="right" width="350">
+      <el-table-column label="操作" align="center" fixed="right" width="300">
         <template slot-scope="{row}">
           <span v-if="row.status !== '0'">
             <el-button
@@ -86,20 +86,12 @@
             >编辑</el-button>
 
             <el-button
-              type="success"
-              size="mini"
-              icon="el-icon-top"
-              @click=""
-              v-if="row.status === '1'"
-            >置顶</el-button>
-
-            <el-button
               type="danger"
               size="mini"
               icon="el-icon-delete"
-              @click=""
+              @click="offShelfInterviewer(row.id)"
               v-if="row.status === '1'"
-            >删除</el-button>
+            >下架</el-button>
           </span>
           <span v-else>
             <el-button
@@ -145,7 +137,7 @@
   import waves from "@/directive/waves"; // waves directive
   import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
   import VerificationView from "./VerificationView";
-  import {getInterviewerList} from "@/api/mock_api";
+  import {getInterviewerList,offShelfInterviewer} from "@/api/mock_api";
   import {verifyInterviewer} from "@/api/verify_api";
 
   export default {
@@ -261,7 +253,24 @@
         this.$router.push("/mock/registerInterviewer");
       },
       interviewDetails(id){
-        this.$router.push({path:'/mock/interviewDetails',query: {id: id}});
+        this.$router.push({path:'/mock/interviewDetails',query: {interviewerId: id}});
+      },
+
+      offShelfInterviewer(id){
+        this.$confirm("此操作将下架面试官, 是否继续?", "提示", {
+          confirmButtonText: "继续",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          offShelfInterviewer(id).then(response => {
+            if(response.data){
+              this.getList();
+              this.$message.success("下架面试官成功");
+            }
+            else
+              this.$message.error("下架面试官失败");
+          });
+        });
       },
     }
   };
