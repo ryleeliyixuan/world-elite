@@ -235,12 +235,11 @@
                 this.handleRouteList();
             },
             handleSearch() {
-                    this.listQuery.keyword = this.queryStr;
+                    this.listQuery.keyword = this.queryStr
                     this.$router.push({
-                        path: "/post-list/" + this.listQuery.companyId,
-                        query: {searchForm: this.listQuery}
+                        // path: "/post-list/" + this.listQuery.companyId,
+                        query: {searchForm: this.listQuery},
                     });
-
             },
             getList() {
                 this.showNoResult = false;
