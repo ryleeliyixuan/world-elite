@@ -48,9 +48,10 @@ public class CompanyPostVo implements VoConvertable<CompanyPostVo, CompanyPost>{
     @Override
     public CompanyPostVo asVo(CompanyPost companyPost) {
         if(companyPost==null) return null;
-        BeanUtil.copyProperties(companyPost,this,"id","companyId","tags");
+        BeanUtil.copyProperties(companyPost,this,"id","companyId","tags","image");
         setId(String.valueOf(companyPost.getId()));
         setCompanyId(String.valueOf(companyPost.getCompanyId()));
+        setImage(AppUtils.absOssUrl(companyPost.getImage()));
         if(StringUtils.isNotEmpty(companyPost.getTags())){
             setTags(companyPost.getTags().split(","));
         }else{

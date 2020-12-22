@@ -1,5 +1,6 @@
 package com.worldelite.job.form;
 
+import com.worldelite.job.util.AppUtils;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
@@ -19,5 +20,9 @@ public class CompanyPostForm {
 
     public String getTags(){
         return StringUtils.join(tags,',');
+    }
+
+    public String getImage(){
+        return AppUtils.getOssKey(this.image);
     }
 }
