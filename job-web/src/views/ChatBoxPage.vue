@@ -461,10 +461,18 @@
             },
             //回车换行
             keyDown(e) {
-                if (e.ctrlKey && e.keyCode == 13 || e.shiftKey && e.keyCode == 13) {   //用户点击了ctrl或shift+enter触发
+                if (e.shiftKey && e.keyCode == 13 ) {   //用户点击了ctrl+enter触发
                     this.content = this.content + '\n'
                     // console.log(this.content)
-                } else { //用户点击了enter触发
+                    if(e != undefined){
+                        e.preventDefault();  // 阻止浏览器默认的敲击回车换行的方法
+                    }
+                }
+                else if( e.ctrlKey && e.keyCode == 13){    //用户点击了shift+enter触发
+                    this.content = this.content + '\n'
+                    // console.log("-----")
+                }
+                else{   //用户点击了enter触发
                     this.onSend();
                     e.preventDefault();
                     // console.log("++++")

@@ -66,9 +66,13 @@
                       :zoom="mapZoom"
                       :center="addr.mapWindow.position"
                     >
+                      <el-amap-marker
+                              :position="addr.mapWindow.position">
+                      </el-amap-marker>
                       <el-amap-info-window
                         :position="addr.mapWindow.position"
                         :content="addr.mapWindow.content"
+                        :close-when-click-map="true"
                       ></el-amap-info-window>
                     </el-amap>
                   </div>
@@ -308,15 +312,15 @@
                 <el-button
                   round
                   class="intro-structure-fullscreen mb-4"
-                  size="mini"
                   type="goon"
                   @click="fullScreenStructure = true"
                   plain
                 >
                   <svg-icon
                     icon-class="zoom"
-                    style="height: 13px; width: 13px; margin-right: 3px"
-                  />查看</el-button
+                    style="height: 22px; width: 20px; margin-right: 3px"
+                  />
+                  <span style="padding-left:4px;font-size: 16px;font-weight: 500;">查看</span></el-button
                 >
               </div>
               <el-dialog
@@ -529,22 +533,46 @@
               shadow="always"
               :body-style="{ padding: '36px' }"
             >
-              <div class="d-flex justify-content-end">
-                <h5 class="mb-4">
-                  <i class="el-icon-s-custom" style="color: #1e90ff"></i>
-                  公司部门
+              <div class="structure-module-header">
+                <h5>
+					<svg-icon
+						 icon-class="department"
+						 style="height: 32px; width: 31px"
+					   />
+					   <span style="font-size: 21px;
+					   font-weight: 500;line-height: 29px;
+					   padding-left: 7px"> 公司部门
+					   </span>
                 </h5>
-                <el-button
-                  class="intro-structure-fullscreen"
-                  size="mini"
-                  type="goon"
-                  icon="el-icon-full-screen"
-                  @click="fullScreen = true"
-                  plain
-                  >查看</el-button
-                >
+				 <el-button
+					  round
+					  class="intro-structure-fullscreen"
+					  type="goon"
+					  @click="fullScreenStructure = true"
+					  plain
+					>
+                <svg-icon
+					icon-class="zoom"
+					style="height: 22px; width: 20px; margin-right: 3px"
+				  />
+				  <span style="padding-left:4px;font-size: 16px;font-weight: 500;">查看</span></el-button
+				>
               </div>
-              <el-dialog
+			  <el-dialog
+				  :visible.sync="fullScreenStructure"
+				  width="90%"
+				  height="90%"
+				>
+				  <StructureTreeChartFullScreen
+					:items="companyWiki.department"
+					class="intro-structure-chart"
+				  ></StructureTreeChartFullScreen>
+				</el-dialog>
+				<TreeChart
+				  :items="companyWiki.department"
+				  class="intro-structure-chart"
+				></TreeChart>
+              <!-- <el-dialog
                 title="公司部门"
                 :visible.sync="fullScreen"
                 width="90%"
@@ -557,7 +585,7 @@
               <DepartmentChart
                 :items="companyWiki.department"
                 class="intro-structure-chart"
-              ></DepartmentChart>
+              ></DepartmentChart> -->
             </el-card>
           </el-col>
         </el-row>
@@ -987,7 +1015,7 @@ export default {
     position: absolute;
     top: 36px;
     right: 0;
-    padding: 0 12px 0 36px;
+    padding: 0 0px 0 36px;
   }
 }
 
@@ -1247,6 +1275,10 @@ export default {
         position: absolute;
         top: 0;
         right: 0;
+        .mb-4{
+          width: 93px;
+          height: 37px;
+        }
       }
     }
 

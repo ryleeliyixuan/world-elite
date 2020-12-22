@@ -1,23 +1,22 @@
 <template>
     <div class="app-container">
         <div class="section1-container" style="margin-bottom: 15px;">
-            <el-select v-model="listQuery.cityIds"
-                       multiple
-                       filterable
-                       clearable
-                       placeholder="工作地点"
-                       @change="handleFilter"
-                       size="mini"
-                       class="section1-select">
-                <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
+            <el-cascader placeholder="工作地点"
+                         :show-all-levels="true"
+                         :options="cityOptions"
+                         :props="cityIdProps"
+                         clearable
+                         collapse-tags
+                         @change="handleFilter"
+                         class="cascader"
+                         v-model="listQuery.cityIds">
+            </el-cascader>
             <el-select v-model="listQuery.salaryRangeIds"
                        multiple
                        filterable
                        clearable
                        placeholder="薪资"
                        @change="handleFilter"
-                       size="mini"
                        class="section1-select">
                 <el-option v-for="item in salaryRangeOptions" :key="item.id" :label="item.name"
                            :value="item.id"></el-option>
@@ -28,7 +27,6 @@
                        clearable
                        placeholder="学历要求"
                        @change="handleFilter"
-                       size="mini"
                        class="section1-select">
                 <el-option v-for="item in degreeOptions" :key="item.id" :label="item.name"
                            :value="item.id"></el-option>
@@ -39,15 +37,14 @@
                        clearable
                        placeholder="岗位分类"
                        @change="handleFilter"
-                       size="mini"
                        class="section1-select">
                 <el-option v-for="item in companyIndustryOptions" :key="item.id" :label="item.name"
                            :value="item.id"></el-option>
             </el-select>
-            <el-input style="width: auto;" v-model="queryStr" placeholder="请输入关键词" size="small"></el-input>
-            <el-button type="primary" @click="handleSearch" size="mini" style="margin:0 25px; height: 30px;">搜索
+            <el-input style="width: auto;" v-model="queryStr" placeholder="请输入关键词"></el-input>
+            <el-button type="primary" @click="handleSearch" style="margin:0 25px; height: 37px;">搜索
             </el-button>
-            <el-link @click="clearOptions" :underline="false" style="color: #b4bbc5;">清空搜索条件</el-link>
+            <el-link @click="clearOptions" :underline="false" style="color: #b4bbc5;height: 37px">清空搜索条件</el-link>
         </div>
 
       <div style="display: inline-block;">
@@ -73,9 +70,9 @@
       </div>
 
       <div class="sort-options" v-show="!showNoResult">
-            <el-link :underline="false" style="color: #599EF8;">最新</el-link>
-            /
-            <el-link :underline="false">发布顺序</el-link>
+<!--            <el-link :underline="false" style="color: #599EF8;">最新</el-link>-->
+<!--            /-->
+<!--            <el-link :underline="false">发布顺序</el-link>-->
         </div>
 
         <div class="section3-container">
@@ -157,6 +154,17 @@
                 pageResult: {},
                 recruitCountResult: {all: 0, school: 0, community: 0, urgency: 0, hot: 0, inner: 0},
                 cityOptions: [],
+                cityIdProps: {
+                    multiple: true,
+                    lazy: false,
+                    expandTrigger: "hover",
+                    value: "id",
+                    label: "name",
+                    emitPath: false,
+                    children: "children"
+                },
+                cityOptions: [{id: 1, name: "国内", children:[{id: 0, name: "加载中"}]},
+                    {id: 2, name: "国外"}],
                 salaryRangeOptions: [],
                 companyScaleOptions: [],
                 companyIndustryOptions: [],
@@ -180,29 +188,45 @@
             }
         },
         methods: {
-            openJobDetail(id) {
-                this.$router.push(`/job/${id}`);
-            },
             initData() {
                 console.log(this.$route.params.id);
                 this.listQuery.companyId = this.$route.params.id;
+                //城市分级选择
+                this.$axios.request({
+                    url: "/city/list",
+                    method: "get",
+                    params: {type: 1}
+                }).then(data => {
+                    this.cityOptions[0].children = data.data.map(second => {
+                        let children = second.children && second.children.map(third => {
+                            return {id: third.id, name: third.name, leaf: true}
+                        })
+                        return {id: second.id, name: second.name, children}
+                    });
+                })
+                this.$axios.request({
+                    url: "/city/list",
+                    method: "get",
+                    params: {type: 2}
+                }).then(data => {
+                    this.cityOptions[1].children = data.data.map(second => {
+                        let children = second.children && second.children.map(third => {
+                            return {id: third.id, name: third.name, leaf: true}
+                        })
+                        return {id: second.id, name: second.name, children}
+                    });
+                })
+                //薪资下拉
+                listByType(9).then(
+                    response => (this.salaryRangeOptions = response.data.list)
+                );
+                //学历下拉
                 listByType(1).then(
                     response => (this.degreeOptions = response.data.list)
                 );
-                listByType(2).then(response => (this.cityOptions = response.data.list)).catch(function (err) {
-                    console.log(err)
-                });
-                listByType(5).then(
-                    response => (this.companyScaleOptions = response.data.list)
-                )
+                //岗位分类下拉
                 listByType(6).then(
                     response => (this.companyIndustryOptions = response.data.list)
-                );
-                listByType(8).then(
-                    response => (this.jobTypeOptions = response.data.list)
-                );
-                listByType(9).then(
-                    response => (this.salaryRangeOptions = response.data.list)
                 );
 
             },
@@ -211,19 +235,12 @@
                 this.handleRouteList();
             },
             handleSearch() {
-                if (this.isHomeListPage()) {
-                    this.$store.commit("setting/SET_KEYWORD", this.queryStr);
-                } else {
                     this.listQuery.keyword = this.queryStr;
                     this.$router.push({
                         path: "/post-list/" + this.listQuery.companyId,
                         query: {searchForm: this.listQuery}
                     });
-                }
-            },
-            isHomeListPage() {
-                const cur_path = this.$route.path;
-                return cur_path === "/job-list" || cur_path === "/activity-list" || cur_path === "/wiki-card" || cur_path === "/wiki-list";
+
             },
             getList() {
                 this.showNoResult = false;
@@ -303,6 +320,9 @@
             min-width: 335px;
             display: flex;
             flex-wrap: wrap;
+            ::v-deep .el-cascader {
+                margin-bottom: 10px;
+            }
 
             .section1-select {
                 flex: 1;
