@@ -185,7 +185,6 @@ import Vue from "vue";
 import VueAMap from "vue-amap";
 import Pagination from "@/components/Pagination";
 import { formatListQuery, parseListQuery } from "@/utils/common";
-
 import { library, parse } from "@fortawesome/fontawesome-svg-core";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 library.add(faThumbsUp);
@@ -297,8 +296,25 @@ export default {
         this.listQuery.sort = "-hots";
         this.listQuery.recommend = undefined;
       } else {
-        this.listQuery.recommend = 1;
-        this.listQuery.sort = "-create_time";
+        let j=this.postPage.list.length;
+        for (let i=0 ;i< j;i++){
+          if (this.postPage.list[i].recommend==1){
+            this.listQuery.sort = "-create_time";
+            this.listQuery.recommend = 1;
+            break;
+          }else{
+            const h = this.$createElement;
+            this.$message({
+              message: h('p', { style: 'color: teal' }, [
+                h('span', { style: 'color: teal' }, '暂无精品贴，按最新发布顺序为您展示'),
+                h('i', { style: 'color: teal' }, '')
+              ])
+            });
+            this.listQuery.sort = "-create_time";
+            this.listQuery.recommend = undefined;
+            break;
+          }
+        }
       }
       this.getPostList();
     },
@@ -561,4 +577,11 @@ export default {
     }
   }
 }
+</style>
+<style>
+  .el-message--info{
+    height: 50px;
+    background-color: #d9edf7;
+    color: #6d737b;
+  }
 </style>
