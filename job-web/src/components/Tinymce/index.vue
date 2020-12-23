@@ -20,7 +20,7 @@
   import 'tinymce/plugins/advlist'// 高级列表插件
   import 'tinymce/plugins/autolink'// 自动链接
   import 'tinymce/plugins/autoresize'// 自动适应大小
-  import 'tinymce/plugins/autosave'// 自动保存
+ // import 'tinymce/plugins/autosave'// 自动保存
   import 'tinymce/plugins/charmap'// 插入特殊字符
   import 'tinymce/plugins/code'// 插入html源码
   import 'tinymce/plugins/emoticons'// 插入unicode字符表情
