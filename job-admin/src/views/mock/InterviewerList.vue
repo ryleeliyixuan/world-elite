@@ -81,7 +81,7 @@
               type="warning"
               size="mini"
               icon="el-icon-edit"
-              @click=""
+              @click="editInterviewer(row.id)"
               v-if="row.status === '1'"
             >编辑</el-button>
 
@@ -254,6 +254,10 @@
       },
       interviewDetails(id){
         this.$router.push({path:'/mock/interviewDetails',query: {interviewerId: id}});
+      },
+
+      editInterviewer(id) {
+        this.$router.push({path:'/mock/editInterviewer',query: {interviewerId: id}});
       },
 
       offShelfInterviewer(id){

@@ -31,6 +31,14 @@ export function addInterview(data) {
   })
 }
 
+export function updateInterview(data) {
+  return request({
+    url: '/mock/interviewer/info',
+    method: 'patch',
+    data
+  })
+}
+
 export function addInterviewDirection(data) {
   return request({
     url: '/mock/interviewer/direction',
@@ -39,10 +47,33 @@ export function addInterviewDirection(data) {
   })
 }
 
+export function updateInterviewDirection(data) {
+  return request({
+    url: '/mock/interviewer/direction',
+    method: 'patch',
+    data
+  })
+}
+
+export function delInterviewerInfo(id) {
+  return request({
+    url: '/mock/interviewer/direction/' + id,
+    method: 'delete'
+  })
+}
+
 export function addInterviewAuth(data) {
   return request({
     url: '/mock/interviewer/auth',
     method: 'post',
+    data
+  })
+}
+
+export function updateInterviewAuth(data) {
+  return request({
+    url: '/mock/interviewer/auth/',
+    method: 'patch',
     data
   })
 }
@@ -82,5 +113,13 @@ export function offShelfInterviewer(id) {
   return request({
     url: '/mock/interviewer/offshelf/' + id,
     method: 'patch'
+  })
+}
+
+
+export function getInterviewAuth(id) {
+  return request({
+    url: '/mock/interviewer/auth/' + id,
+    method: 'get',
   })
 }
