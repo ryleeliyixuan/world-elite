@@ -170,6 +170,7 @@
             disabled
             type="mini"
             @click="savePost"
+            :loading="saveLoading"
             >发布帖子</el-button
           >
         </div>
@@ -226,6 +227,7 @@ export default {
       //COMMUNITY ATTRIBUTES
       activeCommName: "1",
       companyId: undefined,
+      saveLoading: false,
       //COMMUNITY POST ATTRIBUTES
       hasMorePost: false,
       postPage: {
@@ -361,6 +363,7 @@ export default {
       this.postForm.tags = this.dynamicTags;
       this.$refs["postForm"].validate((valid) => {
         if (valid) {
+          this.saveLoading = true;
           savePost(this.postForm)
             .then(() => {
               Toast.success("成功发布帖子");
