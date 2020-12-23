@@ -77,7 +77,7 @@
       <el-table-column label="操作" align="center" width="230">
         <template slot-scope="scope">
           <el-link type="primary" :underline="false" @click="onCancel(scope.row)" style="border-bottom: 1px solid #409eff;margin-right: 20px;" v-if="scope.row.status<=2">取消订单</el-link>
-          <el-link type="primary" :underline="false" style="border-bottom: 1px solid #409eff;">退费</el-link>
+          <el-link type="primary" :underline="false" style="border-bottom: 1px solid #409eff;" v-if="scope.row.status!==6&&scope.row.status!==1" @click="onRefund(scope.row)">退费</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -151,6 +151,8 @@
           console.log(this.listQuery)
           const { total, list } = response.data
           this.list = list
+          console.log(111111111)
+          console.log(this.list)
           this.total = total
           this.listLoading = false
         })
@@ -191,8 +193,18 @@
         console.log(row)
         this.$axios.patch(`/pay/goods/order/cancel/${row.orderId}`).then(()=>{
           this.$message('已取消订单')
+          this.getList()
         })
       },
+      onRefund(row){
+        console.log(row)
+        this.$axios.patch(`mock/interviewer/income/refund/${row.id}`).then((data)=>{
+          console.log(22222222)
+          console.log(data)
+          this.$message('已退费')
+          this.getList()
+        })
+      }
 
     }
   }
