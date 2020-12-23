@@ -81,7 +81,7 @@
       />
       <div>来做第一个发帖子的人吧！</div>
     </div>
-    <div class="community-post-comment" style="margin-bottom: 90px">
+    <div id="comment" class="community-post-comment" style="margin-bottom: 90px">
       <div class="d-flex mb-2">
         <h5 class="mr-3">发布帖子</h5>
         <div style="color: grey; font-size: 14px">
@@ -374,6 +374,8 @@ export default {
             }).finally(() => {
                 this.saveLoading = false;
               });
+        }else{
+          document.getElementById("comment").scrollIntoView();
         }
       });
     },

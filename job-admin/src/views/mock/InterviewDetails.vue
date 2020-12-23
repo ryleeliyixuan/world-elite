@@ -302,7 +302,7 @@
                 <el-button type="success" size="small" @click="onCancel(scope.row)" :disabled="scope.row.status !== 1">
                   取消预约
                 </el-button>&nbsp;&nbsp;&nbsp;
-                <el-button type="danger" size="small">退费</el-button>
+                <el-button type="danger" size="small" v-if="scope.row.status!==6&&scope.row.status!==1" @click="onRefund(scope.row)">退费</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -382,14 +382,6 @@
             <el-table-column label="面试状态" prop="status">
               <template slot-scope="scope">
                 <span>{{userStatus[scope.row.status]}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" fixed="right" width="180px">
-              <template slot-scope="scope">
-                <el-button type="success" size="small" @click="onCancel(scope.row)" :disabled="scope.row.status !== 1">
-                  取消预约
-                </el-button>&nbsp;&nbsp;&nbsp;
-                <el-button type="danger" size="small">退费</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -876,13 +868,21 @@
 
       //取消订单
       onCancel(row) {
-        console.log(row)
         this.$axios.patch("/pay/goods/order/cancel/{orderId}",).then(response => {
           if (response.data) {
             this.$message.success("取消预约成功!");
+            this.getInterviewRecordList()
           } else {
             this.$message.error("取消预约失败");
           }
+        })
+      },
+
+      onRefund(row){
+        console.log(row)
+        this.$axios.patch(`mock/interviewer/income/refund/${row.id}`).then((data)=>{
+          this.$message('已退费')
+          this.getInterviewRecordList()
         })
       },
     }
