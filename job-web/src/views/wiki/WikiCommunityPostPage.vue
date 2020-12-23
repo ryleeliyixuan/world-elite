@@ -368,9 +368,10 @@ export default {
               this.postForm.content = "";
               this.dynamicTags = [];
               this.getPostList();
-            })
+            }).finally(() => {
+                this.saveLoading = false;
+              });
         }
-        // console.log(this.postForm.content)
       });
     },
     handleOpenPostDetail(id) {
