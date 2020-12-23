@@ -288,11 +288,16 @@
                 this.$router.push(`/job/${id}`);
             },
             clearOptions() {
-                let options = document.getElementsByClassName(".el-select__tags");
-                for (let i = 0; i < options.length; i++) {
-                    options.item(i).remove();
-                }
+                // let options = document.getElementsByClassName(".el-select__tags");
+                // for (let i = 0; i < options.length; i++) {
+                //     options.item(i).remove();
+                // }
                 this.queryStr = '';
+                this.listQuery.cityIds='';
+                this.listQuery.salaryRangeIds='';
+                this.listQuery.degreeIds='';
+                this.listQuery.companyIndustryIds='';
+               this.handleRouteList()
             }
         }
     };
