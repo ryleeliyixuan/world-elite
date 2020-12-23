@@ -817,7 +817,6 @@
             },
             commentPost(id) {
                 this.commentForm.ownerId = id;
-                this.postDetail.comments++;
                 this.$refs["commentForm"].validate((valid) => {
                     if (valid) {
                         commentPost(this.commentForm).then(() => {
@@ -825,7 +824,9 @@
                             this.commentForm.content = "";
                             this.getCommentList();
                         });
+                        this.postDetail.comments++;
                     }
+
                 });
             },
             //POST METHODS END
