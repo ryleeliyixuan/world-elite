@@ -311,7 +311,7 @@
         width: 1140px;
         margin: 0 auto;
         padding: 0 20px;
-        min-height: calc(100vh - 477px);
+        min-height: calc(100vh - 100px);
 
         .non-post-tip {
             line-height: 80px;

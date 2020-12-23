@@ -23,11 +23,11 @@
                             <div class="detail-card-header-author">
                                 <el-avatar
                                         class="mr-2"
-                                        :src="postDetail.fromUser.avatar"
+                                        :src="postDetail.fromUser && postDetail.fromUser.avatar"
                                         :size="50"
                                 ></el-avatar>
                                 <span class="mr-2">
-                  {{ postDetail.fromUser.name }} (楼主)
+                  {{postDetail.fromUser &&  postDetail.fromUser.name }} (楼主)
                 </span>
                             </div>
                             <el-tag
@@ -114,7 +114,7 @@
                         <el-button
                                 type="text"
                                 @click="deletePost(postDetail.id)"
-                                v-if="postDetail.fromUser.userId === userId"
+                                v-if="postDetail.fromUser && postDetail.fromUser.userId === userId"
                                 style="padding-left: 30px;color: #568ed0"
                         >
                             <el-image :src="require('@/assets/delete.png')"
@@ -208,6 +208,7 @@
                             >
                                 <el-avatar
                                         v-if="
+                                        comment.fromUser &&
                     comment.fromUser.avatar &&
                     comment.fromUser.avatar.length > 0
                   "
@@ -224,7 +225,7 @@
                                 </el-avatar>
                                 <div class="comment-detail-header font-weight-bold">
                                     {{
-                                    comment.fromUser.name.length > 0
+                                    comment.fromUser && comment.fromUser.name.length > 0
                                     ? comment.fromUser.name
                                     : "新注册用户"
                                     }}
@@ -295,7 +296,7 @@
                                 <el-button
                                         type="text"
                                         @click="deleteComment(comment.id, 1)"
-                                        v-if="comment.fromUser.userId === userId"
+                                        v-if="comment.fromUser && comment.fromUser.userId === userId"
                                         style="padding-left: 30px;color: #568ed0"
                                 >
                                     <el-image :src="require('@/assets/delete.png')"
@@ -323,6 +324,7 @@
                                                 >
                                                     <el-avatar
                                                         v-if="
+                                                        reply.fromUser &&
                                                             reply.fromUser.avatar &&
                                                             reply.fromUser.avatar.length > 0 "
                                                             style="margin-right: 8px"
@@ -336,7 +338,7 @@
                                                             size="small"
                                                     >
                                                     </el-avatar>
-                                                    {{
+                                                    {{ reply.fromUser &&
                                                     reply.fromUser.name &&
                                                     reply.fromUser.name.length > 0
                                                     ? reply.fromUser.name
@@ -413,7 +415,7 @@
                                                     <el-button
                                                             type="text"
                                                             @click="deleteComment1(reply.id, 1)"
-                                                            v-if="reply.fromUser.userId === userId"
+                                                            v-if="reply.fromUser && reply.fromUser.userId === userId"
                                                             style="padding-left: 30px;color: #568ed0"
                                                     >
                                                         <el-image :src="require('@/assets/delete.png')"
@@ -1126,6 +1128,7 @@
         flex-direction: row;
         margin-bottom: 80px;
         align-items: flex-start;
+        min-height: 100vh;
     }
 
     .post-content {

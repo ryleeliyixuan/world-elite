@@ -108,7 +108,7 @@
         >
           <el-menu-item index="intro">首页</el-menu-item>
           <el-menu-item index="job">岗位</el-menu-item>
-          <el-menu-item @click="linkToActivity" index="activity"
+          <el-menu-item :index="'activity/'+company.name" index="activity"
             >活动</el-menu-item
           >
           <el-menu-item index="post">圈子</el-menu-item>
@@ -194,15 +194,15 @@ export default {
         this.tabIndex = getName;
       }
     },
-    linkToActivity() {
-      this.$router.push({
-        name: "wiki-activity",
-        params: {
-          id: this.companyId,
-          name: this.company.name,
-        },
-      });
-    },
+    // linkToActivity() {
+    //   this.$router.push({
+    //     name: "wiki-activity",
+    //     params: {
+    //       id: this.companyId,
+    //       name: this.company.name,
+    //     },
+    //   });
+    // },
     initData() {
       let id = this.$route.params.id;
       this.companyId = id;
@@ -221,9 +221,9 @@ export default {
       });
     },
     handleSelectTab(tabIndex) {
-      const urlRootPath = `/company/${this.companyId}/`;
+        const urlRootPath = `/company/${this.companyId}/`;
       this.$router.push({
-        path: urlRootPath + tabIndex,
+        path: urlRootPath + (tabIndex==='activity'?`${tabIndex}/${this.company.name}`:tabIndex),
       });
     },
     handleFavorite() {

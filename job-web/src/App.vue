@@ -20,6 +20,7 @@
     export default {
         data() {
             return {
+                noScroll: ["wiki-intro", "wiki-job", "wiki-activity", "wiki-community-post", "wiki-community-score", "wiki-community-post-detail"],
                 show: false,
                 showRedDot: false,
             };
@@ -35,9 +36,11 @@
             },
         },
         updated() {
-            setTimeout(() => {
-                this.$refs.app.scrollTop = 0;
-            }, 400)
+            if (!this.noScroll.includes(this.$route.name)) {
+                setTimeout(() => {
+                    this.$refs.app.scrollTop = 0;
+                }, 400)
+            }
         },
         methods: {
             onComplete() {
