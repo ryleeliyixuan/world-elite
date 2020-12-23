@@ -163,7 +163,6 @@
           v-if="token"
           type="mini"
           @click="savePost"
-          :loading="saveLoading"
           >发布帖子</el-button
         >
         <div v-else class="disable">
@@ -171,7 +170,6 @@
             disabled
             type="mini"
             @click="savePost"
-            :loading="saveLoading"
             >发布帖子</el-button
           >
         </div>
@@ -225,7 +223,6 @@ export default {
       inputValue: "",
       //save post
       loading: false,
-      saveLoading: false,
       //COMMUNITY ATTRIBUTES
       activeCommName: "1",
       companyId: undefined,
@@ -273,6 +270,11 @@ export default {
       this.$emit("complete");
       // this.getPostList();
     },
+  },
+  mounted() {
+    this.postForm.title = "";
+    this.postForm.content = "";
+    this.dynamicTags = [];
   },
   methods: {
     initData() {
@@ -356,7 +358,6 @@ export default {
       });
     },
     savePost() {
-      this.saveLoading = true;
       this.postForm.tags = this.dynamicTags;
       this.$refs["postForm"].validate((valid) => {
         if (valid) {
@@ -368,10 +369,8 @@ export default {
               this.dynamicTags = [];
               this.getPostList();
             })
-            .finally(() => {
-              this.saveLoading = false;
-            });
         }
+        // console.log(this.postForm.content)
       });
     },
     handleOpenPostDetail(id) {
