@@ -88,7 +88,7 @@
           // max_height: '800px', // 最大高度800px
           resize: true, // true 调整高度  false 完全不动, 'both' 宽高都能改变
           draggable_modal: true, // 模态窗口允许拖动
-          // fixed_toolbar_container: '#mytoolbar', // 指定工具栏在某一容器顶部固定。
+          // fixed_toolbar_container: '#mytoolinterviewer-imagebar', // 指定工具栏在某一容器顶部固定。
           toolbar_mode: 'sliding',
           toolbar_sticky: false, // 粘性工具栏（或停靠工具栏），在向下滚动网页直到不再可见编辑器时，将工具栏和菜单停靠在屏幕顶部。
 

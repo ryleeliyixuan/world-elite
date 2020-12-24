@@ -279,6 +279,7 @@
             font-size: 18px;
             color: #333333;
             margin-top: 23px;
+            word-break: break-all;
         }
 
         .user-info {
@@ -325,6 +326,7 @@
                 color: #333333;
                 display: block;
                 margin-bottom: 7px;
+                word-break: break-all;
             }
 
             .experience-title {

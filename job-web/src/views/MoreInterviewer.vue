@@ -47,11 +47,11 @@
                             <div class="message-name" v-if="interviewer.company">{{interviewer.company.name}}</div>
                         </div>
                         <div class="message-bottom">
-                            <el-image :src="require('@/assets/mock/icon5.png')" class="tip-image" fit="fill"></el-image>
+                            <el-image v-if="interviewer.industry" :src="require('@/assets/mock/icon5.png')" class="tip-image" fit="fill"></el-image>
                             <div v-if="interviewer.industry" class="tip-text">{{interviewer.industry.name}}</div>
-                            <el-image :src="require('@/assets/mock/icon3.png')" class="tip-image" fit="fill"></el-image>
-                            <div class="tip-text">{{interviewer.position}}</div>
-                            <el-image :src="require('@/assets/mock/icon4.png')" class="tip-image" fit="fill"></el-image>
+                            <el-image v-if="interviewer.position" :src="require('@/assets/mock/icon3.png')" class="tip-image" fit="fill"></el-image>
+                            <div v-if="interviewer.position" class="tip-text">{{interviewer.position}}</div>
+                            <el-image v-if="interviewer.experienceTime" :src="require('@/assets/mock/icon4.png')" class="tip-image" fit="fill"></el-image>
                             <div v-if="interviewer.experienceTime" class="tip-text">已从业{{interviewer.experienceTime.name}}</div>
                         </div>
                     </div>
@@ -274,7 +274,7 @@
             .interviewer-item {
                 width: 100%;
                 height: 118px;
-                padding: 16px 44px 16px 6px;
+                padding: 16px 44px 16px 16px;
                 display: flex;
                 align-items: center;
                 box-shadow: 0 3px 13px 1px #DEE5F4;
@@ -287,7 +287,7 @@
                     align-items: center;
 
                     .interviewer-image {
-                        width: 87px;
+                        width: 88px;
                         height: 87px;
                         border-radius: 5px;
                     }

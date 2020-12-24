@@ -1162,6 +1162,7 @@
                             margin-right: 10px;
                             width: 34px;
                             height: 34px;
+                            min-width: 34px;
                         }
                     }
 
