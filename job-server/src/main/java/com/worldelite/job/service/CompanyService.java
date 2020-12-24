@@ -299,6 +299,7 @@ public class CompanyService extends BaseService{
         companyVo.setStage(dictService.getById(company.getStageId()));
         companyVo.setIndustry(dictService.getById(company.getIndustryId()));
         companyVo.setProperty(dictService.getById(company.getPropertyId()));
+        companyVo.setAddressList(companyAddressService.getCompanyAddressList(company.getId()));
         if(curUser() != null){
             Boolean favorite = favoriteService.checkUserFavorite(company.getId(), FavoriteType.COMPANY);
             companyVo.setFavoriteFlag(favorite? Bool.TRUE: Bool.FALSE);

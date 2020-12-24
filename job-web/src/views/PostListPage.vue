@@ -13,7 +13,6 @@
             </el-cascader>
             <el-select v-model="listQuery.salaryRangeIds"
                        multiple
-                       filterable
                        clearable
                        placeholder="薪资"
                        @change="handleFilter"
@@ -23,7 +22,6 @@
             </el-select>
             <el-select v-model="listQuery.degreeIds"
                        multiple
-                       filterable
                        clearable
                        placeholder="学历要求"
                        @change="handleFilter"
@@ -33,7 +31,6 @@
             </el-select>
             <el-select v-model="listQuery.companyIndustryIds"
                        multiple
-                       filterable
                        clearable
                        placeholder="岗位分类"
                        @change="handleFilter"
@@ -41,7 +38,7 @@
                 <el-option v-for="item in companyIndustryOptions" :key="item.id" :label="item.name"
                            :value="item.id"></el-option>
             </el-select>
-            <el-input style="width: auto;" v-model="queryStr" placeholder="请输入关键词"></el-input>
+            <el-input style="width: auto;" v-model="queryStr" placeholder="请输入关键词" @keydown.enter.native="handleSearch"></el-input>
             <el-button type="primary" @click="handleSearch" style="margin:0 25px; height: 37px;">搜索
             </el-button>
             <el-link @click="clearOptions" :underline="false" style="color: #b4bbc5;height: 37px">清空搜索条件</el-link>
