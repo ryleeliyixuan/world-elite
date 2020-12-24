@@ -29,6 +29,131 @@
       <div v-if="companyWiki" class="intro-module">
         <el-row :gutter="36">
           <el-col
+                  v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.recruitEnable == 1 &&
+              companyWiki.recruitList &&
+              companyWiki.recruitList.length > 0
+            "
+                  class="intro-recruit intro-module-element"
+                  :xs="24"
+                  :sm="24"
+                  :md="12"
+                  :lg="12"
+                  :xl="12"
+          >
+            <el-card
+                    class="stdmb"
+                    shadow="always"
+                    :body-style="{ padding: '36px' }"
+            >
+              <div class="module-header">
+                <h5 class="mb-4">
+                  <svg-icon
+                          icon-class="timeline"
+                          style="height: 34px; width: 33px"
+                  />
+                  <span style="padding-left: 9px;font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">招聘时间线</span>
+                </h5>
+                <div class="timeline-switch mb-4">
+                  <el-switch
+                          class="timline-switch-button"
+                          v-model="reverseRecruit"
+                          active-text="ON"
+                          inactive-text=""
+                          :width="50"
+                  >
+                  </el-switch>
+                  <span style="font-size: 14px"> 倒序 </span>
+                </div>
+              </div>
+              <div class="block">
+                <div class="infinite-list-wrapper" style="overflow: auto">
+                  <el-timeline :reverse="reverseRecruit">
+                    <el-timeline-item
+                            color="#F9BA49"
+                            v-for="history in companyWiki.recruitList"
+                            :key="history.id"
+                            :timestamp="history.time"
+                            placement="top"
+                            v-infinite-scroll="load"
+                            infinite-scroll-disabled="disabled"
+                    >
+                      {{ history.event }}
+                    </el-timeline-item>
+                  </el-timeline>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col
+                  v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.salaryEnable == 1 &&
+              companyWiki.salaryList &&
+              companyWiki.salaryList.length > 0
+            "
+                  class="intro-salary intro-module-element"
+                  :xs="24"
+                  :sm="24"
+                  :md="12"
+                  :lg="12"
+                  :xl="12"
+          >
+            <div class="intro-salary-container">
+              <el-card class="stdmb" shadow="always">
+                <h5 class="mb-4" style="padding: 16px 16px 0 16px">
+                  <svg-icon
+                          icon-class="salary"
+                          style="height: 30px; width: 33px"
+                  />
+                  <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 11px">薪资待遇</span>
+                </h5>
+                <div class="intro-salary-pie-container">
+                  <SalaryPieChart
+                          class="intro-salary-pie"
+                          :items="companyWiki.salaryList"
+                          :name="companyWiki.company.fullName"
+                  ></SalaryPieChart>
+                </div>
+              </el-card>
+            </div>
+          </el-col>
+
+          <el-col
+                  v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.employeeEnable == 1 &&
+              companyWiki.employeeList &&
+              companyWiki.employeeList.length !== 0
+            "
+                  class="intro-employee intro-module-element"
+                  :xs="24"
+                  :sm="24"
+                  :md="12"
+                  :lg="12"
+                  :xl="12"
+          >
+            <el-card
+                    shadow="always"
+                    class="stdmb intro-employee-chart-wrapper"
+                    :body-style="{ padding: '36px' }"
+            >
+              <h5 class="mb-4">
+                <svg-icon
+                        icon-class="employee"
+                        style="height: 34px; width: 34px"
+                />
+                <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">雇员数量</span>
+              </h5>
+              <BarChart
+                      :items="companyWiki.employeeList"
+                      class="intro-employee-chart"
+              ></BarChart>
+            </el-card>
+          </el-col>
+
+          <el-col
             v-if="
               companyWiki.wikiModule &&
               companyWiki.wikiModule.addressEnable == 1 &&
@@ -81,38 +206,105 @@
               </div>
             </el-card>
           </el-col>
+
           <el-col
-            v-if="
+                  v-if="
               companyWiki.wikiModule &&
-              companyWiki.wikiModule.employeeEnable == 1 &&
-              companyWiki.employeeList &&
-              companyWiki.employeeList.length !== 0
+              companyWiki.wikiModule.historyEnable == 1 &&
+              companyWiki.historyList &&
+              companyWiki.historyList.length > 0
             "
-            class="intro-employee intro-module-element"
-            :xs="24"
-            :sm="24"
-            :md="12"
-            :lg="12"
-            :xl="12"
+                  class="intro-timeline intro-module-element"
+                  :xs="24"
+                  :sm="24"
+                  :md="12"
+                  :lg="12"
+                  :xl="12"
           >
             <el-card
-              shadow="always"
-              class="stdmb intro-employee-chart-wrapper"
-              :body-style="{ padding: '36px' }"
+                    class="stdmb"
+                    shadow="always"
+                    :body-style="{ padding: '36px' }"
+            >
+              <div class="module-header">
+                <h5 class="mb-4">
+                  <svg-icon
+                          icon-class="history"
+                          style="height: 32px; width: 32px"
+                  />
+                  <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">发展路径</span>
+                </h5>
+                <div class="timeline-switch mb-3">
+                  <el-switch
+                          class="timline-switch-button"
+                          v-model="reverse"
+                          active-text="ON"
+                          inactive-text=""
+                          :width="50"
+                  >
+                  </el-switch>
+                  <span style="font-size: 14px"> 倒序 </span>
+                </div>
+              </div>
+              <div class="block">
+                <div class="infinite-list-wrapper" style="overflow: auto">
+                  <el-timeline :reverse="reverse">
+                    <el-timeline-item
+                            v-for="history in companyWiki.historyList"
+                            :key="history.id"
+                            :timestamp="history.eventTime"
+                            color="#F9BA49"
+                            placement="top"
+                            v-infinite-scroll="load"
+                            infinite-scroll-disabled="disabled"
+                    >
+                      {{ history.event }}
+                    </el-timeline-item>
+                  </el-timeline>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+
+          <el-col
+                  v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.honorEnable == 1 &&
+              companyWiki.honorList &&
+              companyWiki.honorList.length > 0
+            "
+                  class="intro-honor intro-module-element"
+                  :xs="24"
+                  :sm="24"
+                  :md="12"
+                  :lg="12"
+                  :xl="12"
+          >
+            <el-card
+                    class="stdmb"
+                    shadow="always"
+                    :body-style="{ padding: '36px' }"
             >
               <h5 class="mb-4">
                 <svg-icon
-                  icon-class="employee"
-                  style="height: 34px; width: 34px"
-                />
-                <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">雇员数量</span>
+                        icon-class="honor"
+                        style=" width: 33px;height: 37px;"
+                /> <span style="line-height: 29px;font-size: 21px;min-height: 29px;padding-left: 7px">企业荣誉</span>
               </h5>
-              <BarChart
-                :items="companyWiki.employeeList"
-                class="intro-employee-chart"
-              ></BarChart>
+              <el-table
+                      :data="companyWiki.honorList"
+                      style="width: 100%"
+                      max-height="330"
+              >
+                <el-table-column prop="year" label="年份" width="100">
+                </el-table-column>
+                <el-table-column prop="point" label="" width="10">
+                </el-table-column>
+                <el-table-column prop="honor" label="荣誉"> </el-table-column>
+              </el-table>
             </el-card>
           </el-col>
+
           <el-col
             v-if="
               companyWiki.wikiModule &&
@@ -163,6 +355,54 @@
               </el-carousel>
             </el-card>
           </el-col>
+
+          <el-col
+                  v-if="
+              companyWiki.wikiModule &&
+              companyWiki.wikiModule.environmentEnable == 1 &&
+              companyWiki.environmentList &&
+              companyWiki.environmentList.length > 0
+            "
+                  class="intro-environment intro-module-element"
+                  :xs="24"
+                  :sm="24"
+                  :md="12"
+                  :lg="12"
+                  :xl="12"
+          >
+            <el-card class="stdmb" shadow="always">
+              <h5 class="mb-4" style="padding: 16px 16px 0 16px">
+                <svg-icon
+                        icon-class="environment"
+                        style="height: 33px; width: 37px"
+                />
+                <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">工作环境</span>
+              </h5>
+              <el-carousel
+                      indicator-position="none"
+                      height="380px"
+                      :interval="5000"
+                      arrow="always"
+              >
+                <el-carousel-item
+                        v-for="image in companyWiki.environmentList"
+                        :key="image.id"
+                >
+                  <div class="carousel-wrapper">
+                    <div class="carousel-image">
+                      <img
+                              class="intro-environment-image"
+                              :src="image.imageUrl"
+                              :alt="image.name"
+                              v-on:click="select(image)"
+                      />
+                    </div>
+                  </div>
+                </el-carousel-item>
+              </el-carousel>
+            </el-card>
+          </el-col>
+
           <!-- <el-col
             v-if="
               companyWiki.wikiModule &&
@@ -224,64 +464,7 @@
               </div>
             </el-card>
           </el-col> -->
-          <el-col
-            v-if="
-              companyWiki.wikiModule &&
-              companyWiki.wikiModule.historyEnable == 1 &&
-              companyWiki.historyList &&
-              companyWiki.historyList.length > 0
-            "
-            class="intro-timeline intro-module-element"
-            :xs="24"
-            :sm="24"
-            :md="12"
-            :lg="12"
-            :xl="12"
-          >
-            <el-card
-              class="stdmb"
-              shadow="always"
-              :body-style="{ padding: '36px' }"
-            >
-              <div class="module-header">
-                <h5 class="mb-4">
-                  <svg-icon
-                    icon-class="history"
-                    style="height: 32px; width: 32px"
-                  />
-                 <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">发展路径</span>
-                </h5>
-                <div class="timeline-switch mb-3">
-                  <el-switch
-                    class="timline-switch-button"
-                    v-model="reverse"
-                    active-text="ON"
-                    inactive-text=""
-                    :width="50"
-                  >
-                  </el-switch>
-                  <span style="font-size: 14px"> 倒序 </span>
-                </div>
-              </div>
-              <div class="block">
-                <div class="infinite-list-wrapper" style="overflow: auto">
-                  <el-timeline :reverse="reverse">
-                    <el-timeline-item
-                      v-for="history in companyWiki.historyList"
-                      :key="history.id"
-                      :timestamp="history.eventTime"
-                      color="#F9BA49"
-                      placement="top"
-                      v-infinite-scroll="load"
-                      infinite-scroll-disabled="disabled"
-                    >
-                      {{ history.event }}
-                    </el-timeline-item>
-                  </el-timeline>
-                </div>
-              </div>
-            </el-card>
-          </el-col>
+
           <el-col
             v-if="
               companyWiki.wikiModule &&
@@ -339,181 +522,9 @@
               ></TreeChart>
             </el-card>
           </el-col>
-          <el-col
-            v-if="
-              companyWiki.wikiModule &&
-              companyWiki.wikiModule.salaryEnable == 1 &&
-              companyWiki.salaryList &&
-              companyWiki.salaryList.length > 0
-            "
-            class="intro-salary intro-module-element"
-            :xs="24"
-            :sm="24"
-            :md="12"
-            :lg="12"
-            :xl="12"
-          >
-            <div class="intro-salary-container">
-              <el-card class="stdmb" shadow="always">
-                <h5 class="mb-4" style="padding: 16px 16px 0 16px">
-                  <svg-icon
-                    icon-class="salary"
-                    style="height: 30px; width: 33px"
-                  />
-                  <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 11px">薪资待遇</span>
-                </h5>
-                <div class="intro-salary-pie-container">
-                  <SalaryPieChart
-                    class="intro-salary-pie"
-                    :items="companyWiki.salaryList"
-                    :name="companyWiki.company.fullName"
-                  ></SalaryPieChart>
-                </div>
-              </el-card>
-            </div>
-          </el-col>
-          <el-col
-                  v-if="
-              companyWiki.wikiModule &&
-              companyWiki.wikiModule.environmentEnable == 1 &&
-              companyWiki.environmentList &&
-              companyWiki.environmentList.length > 0
-            "
-            class="intro-environment intro-module-element"
-            :xs="24"
-            :sm="24"
-            :md="12"
-            :lg="12"
-            :xl="12"
-          >
-            <el-card class="stdmb" shadow="always">
-              <h5 class="mb-4" style="padding: 16px 16px 0 16px">
-                <svg-icon
-                  icon-class="environment"
-                  style="height: 33px; width: 37px"
-                />
-                <span style="font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">工作环境</span>
-              </h5>
-              <el-carousel
-                indicator-position="none"
-                height="380px"
-                :interval="5000"
-                arrow="always"
-              >
-                <el-carousel-item
-                  v-for="image in companyWiki.environmentList"
-                  :key="image.id"
-                >
-                  <div class="carousel-wrapper">
-                    <div class="carousel-image">
-                      <img
-                        class="intro-environment-image"
-                        :src="image.imageUrl"
-                        :alt="image.name"
-                        v-on:click="select(image)"
-                      />
-                    </div>
-                  </div>
-                </el-carousel-item>
-              </el-carousel>
-            </el-card>
-          </el-col>
-          <el-col
-            v-if="
-              companyWiki.wikiModule &&
-              companyWiki.wikiModule.recruitEnable == 1 &&
-              companyWiki.recruitList &&
-              companyWiki.recruitList.length > 0
-            "
-            class="intro-recruit intro-module-element"
-            :xs="24"
-            :sm="24"
-            :md="12"
-            :lg="12"
-            :xl="12"
-          >
-            <el-card
-              class="stdmb"
-              shadow="always"
-              :body-style="{ padding: '36px' }"
-            >
-              <div class="module-header">
-                <h5 class="mb-4">
-                  <svg-icon
-                    icon-class="timeline"
-                    style="height: 34px; width: 33px"
-                  />
-                  <span style="padding-left: 9px;font-size: 21px;font-weight: 500;line-height: 29px;padding-left: 7px">招聘时间线</span>
-                </h5>
-                <div class="timeline-switch mb-4">
-                  <el-switch
-                    class="timline-switch-button"
-                    v-model="reverseRecruit"
-                    active-text="ON"
-                    inactive-text=""
-                    :width="50"
-                  >
-                  </el-switch>
-                  <span style="font-size: 14px"> 倒序 </span>
-                </div>
-              </div>
-              <div class="block">
-                <div class="infinite-list-wrapper" style="overflow: auto">
-                  <el-timeline :reverse="reverseRecruit">
-                    <el-timeline-item
-                      color="#F9BA49"
-                      v-for="history in companyWiki.recruitList"
-                      :key="history.id"
-                      :timestamp="history.time"
-                      placement="top"
-                      v-infinite-scroll="load"
-                      infinite-scroll-disabled="disabled"
-                    >
-                      {{ history.event }}
-                    </el-timeline-item>
-                  </el-timeline>
-                </div>
-              </div>
-            </el-card>
-          </el-col>
-          <el-col
-                  v-if="
-              companyWiki.wikiModule &&
-              companyWiki.wikiModule.honorEnable == 1 &&
-              companyWiki.honorList &&
-              companyWiki.honorList.length > 0
-            "
-            class="intro-honor intro-module-element"
-            :xs="24"
-            :sm="24"
-            :md="12"
-            :lg="12"
-            :xl="12"
-          >
-            <el-card
-              class="stdmb"
-              shadow="always"
-              :body-style="{ padding: '36px' }"
-            >
-              <h5 class="mb-4">
-                <svg-icon
-                        icon-class="honor"
-                        style=" width: 33px;height: 37px;"
-                /> <span style="line-height: 29px;font-size: 21px;min-height: 29px;padding-left: 7px">企业荣誉</span>
-              </h5>
-              <el-table
-                :data="companyWiki.honorList"
-                style="width: 100%"
-                max-height="330"
-              >
-                <el-table-column prop="year" label="年份" width="100">
-                </el-table-column>
-                <el-table-column prop="point" label="" width="10">
-                </el-table-column>
-                <el-table-column prop="honor" label="荣誉"> </el-table-column>
-              </el-table>
-            </el-card>
-          </el-col>
+
+
+
           <el-col
             v-if="
               companyWiki.wikiModule &&
