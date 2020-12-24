@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200px" height="198px" viewBox="0 0 1200 198" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>椭圆形</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="48.63875%" x2="100%" y2="51.36125%" id="linearGradient-1">
+            <stop stop-color="#115BD1" offset="0%"></stop>
+            <stop stop-color="#8BD9FF" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="1200" height="198"></rect>
+    </defs>
+    <g id="简历投递" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="简历投递职位详情页" transform="translate(-360.000000, -168.000000)">
+            <g id="椭圆形-3" transform="translate(360.000000, 168.000000)">
+                <g id="椭圆形">
+                    <mask id="mask-3" fill="white">
+                        <use xlink:href="#path-2"></use>
+                    </mask>
+                    <use id="蒙版" fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+                    <circle fill-opacity="0.28" fill="#FFFFFF" mask="url(#mask-3)" cx="45.5" cy="49.5" r="83.5"></circle>
+                    <circle id="椭圆形备份" fill-opacity="0.25" fill="#FFFFFF" mask="url(#mask-3)" cx="93" cy="126" r="57"></circle>
+                    <circle id="椭圆形备份-3" fill-opacity="0.14" fill="#FFFFFF" mask="url(#mask-3)" cx="1132" cy="183" r="57"></circle>
+                    <circle id="椭圆形备份-2" fill-opacity="0.16" fill="#FFFFFF" mask="url(#mask-3)" cx="1084" cy="49" r="138"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
