@@ -13,7 +13,6 @@
             </el-cascader>
             <el-select v-model="listQuery.salaryRangeIds"
                        multiple
-                       filterable
                        clearable
                        placeholder="薪资"
                        @change="handleFilter"
@@ -23,7 +22,6 @@
             </el-select>
             <el-select v-model="listQuery.degreeIds"
                        multiple
-                       filterable
                        clearable
                        placeholder="学历要求"
                        @change="handleFilter"
@@ -33,7 +31,6 @@
             </el-select>
             <el-select v-model="listQuery.companyIndustryIds"
                        multiple
-                       filterable
                        clearable
                        placeholder="岗位分类"
                        @change="handleFilter"
