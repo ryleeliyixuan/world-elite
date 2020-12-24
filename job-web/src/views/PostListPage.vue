@@ -297,7 +297,7 @@
                 this.listQuery.salaryRangeIds='';
                 this.listQuery.degreeIds='';
                 this.listQuery.companyIndustryIds='';
-               this.handleRouteList()
+               this.handleSearch()
             }
         }
     };
