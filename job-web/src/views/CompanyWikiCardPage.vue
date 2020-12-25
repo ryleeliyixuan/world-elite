@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <div class="left-container" v-if="industryList.length>0">
+        <div class="left-container" v-if="industryList.length>0" :style="{'top':top}">
             <el-scrollbar class="left-scrollbar"
                           wrap-style="overflow-x: hidden; overflow-y: auto; padding-right: 20px;"
                           :native="false">
@@ -76,6 +76,7 @@
                 companyList: {}, // 公司列表
                 companyCount: 4, // 显示公司数
                 timer: undefined,
+                top: "5px"
             };
         },
         computed: {
@@ -94,6 +95,10 @@
         created() {
             this.resumeId = this.$route.params.id;
             this.initData();
+            let app = document.querySelector('#app');
+            app.addEventListener("scroll", () => {
+                this.top = (app.scrollTop + 5) + 'px';
+            })
         },
         mounted() {
             this.handleWidthChange(window.innerWidth);
@@ -213,7 +218,6 @@
             position: absolute;
             top: 5px;
             left: -50px;
-            height: calc(100% - 238px);
             overflow-y: auto;
 
             .left-scrollbar {
