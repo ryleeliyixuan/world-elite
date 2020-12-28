@@ -9,11 +9,11 @@
             <!-- </el-link>-->
             <!-- <el-link class="logo" type="primary" href="/" :underline="false" >{{$t('app_name')}}</el-link>-->
             <el-menu
-                    :router="true"
-                    mode="horizontal"
-                    :default-active="activeIndex"
-                    @select="handleSelect"
-                    class="menu-container"
+                :router="true"
+                mode="horizontal"
+                :default-active="activeIndex"
+                @select="handleSelect"
+                class="menu-container"
             >
                 <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
                 <el-menu-item class="nav-item" index="/wiki-card">百科</el-menu-item>
@@ -30,97 +30,68 @@
 
         <div class="nav_right_container">
             <el-autocomplete
-                    v-model="keyword"
-                    class="input-search"
-                    :placeholder="searchPlaceHolder"
-                    @keyup.enter.native="handleSearch"
-                    :fetch-suggestions="
-          keyword && keyword.length > 0 ? querySearch : EmptyQuery
-        "
-                    @select="handleSelectFilter"
-                    :trigger-on-focus="false"
-            >
-                <i
-                        slot="suffix"
-                        class="el-input__icon el-icon-search"
-                        @click="handleSearch"
-                ></i>
+                v-model="keyword"
+                class="input-search"
+                :placeholder="searchPlaceHolder"
+                @keyup.enter.native="handleSearch"
+                :fetch-suggestions="keyword && keyword.length > 0 ? querySearch : EmptyQuery"
+                @select="handleSelectFilter"
+                :trigger-on-focus="false">
+                <i slot="suffix"
+                   class="el-input__icon el-icon-search"
+                   @click="handleSearch">
+                </i>
             </el-autocomplete>
             <!-- 未登录 -->
             <div class="user_container" v-if="token === undefined || token === ''">
-                <el-link
-                        :underline="false"
-                        class="join"
-                        @click="$router.push('/register')"
-                >
+                <el-link :underline="false"
+                         class="join"
+                         @click="$router.push('/register')">
                     <b>立即加入</b>
                 </el-link>
-                <el-button type="primary" @click="$router.push('/login')" size="small"
-                >登录
-                </el-button
-                >
-                <!--                <el-link :underline="false" class="icon-company" :href="companyHomeUrl" target="_blank">-->
-                <!--                    <svg-icon icon-class="company"/>-->
-                <!--                </el-link>-->
+                <el-button type="primary" @click="$router.push('/login')" size="small">登录</el-button>
+                <!--<el-link :underline="false" class="icon-company" :href="companyHomeUrl" target="_blank">-->
+                <!--    <svg-icon icon-class="company"/>-->
+                <!--</el-link>-->
             </div>
             <!-- 已登录 -->
             <div class="user_container" v-else>
                 <svg-icon @click="handlerChat" icon-class="chat2" class="chat"/>
                 <svg-icon @click="handlerResume" icon-class="resume" class="chat"/>
-<!--       TODO 替换 chat2  svg格式图片   放入 icons/svg 文件夹中    -->
                 <!-- 系统通知 -->
-                <el-popover
-                        placement="bottom-end"
-                        width="300"
-                        trigger="hover"
-                        @show="getMessageList"
-                        title="系统通知"
-                >
-                    <div
-                            class="message-list"
-                            v-if="newMessageList && newMessageList.length !== 0"
-                    >
-                        <div
-                                class="message-item"
-                                v-for="message in newMessageList"
-                                :key="message.id"
-                        >
+                <el-popover placement="bottom-end"
+                            width="300"
+                            trigger="hover"
+                            @show="getMessageList"
+                            title="系统通知">
+                    <div class="message-list" v-if="newMessageList && newMessageList.length !== 0">
+                        <div class="message-item" v-for="message in newMessageList" :key="message.id">
                             <el-badge is-dot v-if="message.readFlag === 0"/>
                             {{ message.content }}
-                            <el-link
-                                    v-if="message.url && message.url !== ''"
-                                    :href="message.url"
-                                    :underline="false"
-                            >查看
+                            <el-link v-if="message.url && message.url !== ''"
+                                     :href="message.url"
+                                     :underline="false">
+                                查看
                             </el-link>
                         </div>
                     </div>
                     <div class="message-text" v-else>暂无新消息</div>
                     <div class="message-text">
-                        <el-link type="primary" :underline="false" @click="goMessageList"
-                        >查看全部
-                        </el-link
-                        >
+                        <el-link type="primary" :underline="false" @click="goMessageList">查看全部</el-link>
                     </div>
-                    <el-link
-                            :underline="false"
-                            class="nav-message"
-                            slot="reference"
-                            @click="goMessageList"
-                    >
-                        <el-badge is-dot v-if="messageCount !== 0">
+                    <el-link :underline="false"
+                             class="nav-message"
+                             slot="reference"
+                             @click="goMessageList">
+                        <el-badge v-if="messageCount !== 0" is-dot>
                             <i class="el-icon-message-solid"></i>
                         </el-badge>
-                        <i class="el-icon-message-solid" v-else></i>
+                        <i v-else class="el-icon-message-solid"></i>
                     </el-link>
                 </el-popover>
                 <!-- 用户头像 -->
                 <el-dropdown>
-                    <el-avatar
-                            :size="35"
-                            icon="el-icon-user-solid"
-                            :src="avatar"
-                    ></el-avatar>
+                    <el-avatar :size="35" icon="el-icon-user-solid" :src="avatar"></el-avatar>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>
                             <el-link :underline="false" href="/edit-resume">我的简历</el-link>
@@ -132,10 +103,7 @@
                             <el-link :underline="false" href="/favorites">我的收藏</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" href="/my-activities"
-                            >我的活动
-                            </el-link
-                            >
+                            <el-link :underline="false" href="/my-activities">我的活动</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
                             <el-link :underline="false" href="/mock-mine">我的面试</el-link>
@@ -143,10 +111,9 @@
                         <el-dropdown-item>
                             <el-link :underline="false" href="/modify-pwd">修改密码</el-link>
                         </el-dropdown-item>
-                        <el-dropdown-item @click.native="handleLogout" class="text-danger"
-                        >退出登录
-                        </el-dropdown-item
-                        >
+                        <el-dropdown-item @click.native="handleLogout" class="text-danger">
+                            退出登录
+                        </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
