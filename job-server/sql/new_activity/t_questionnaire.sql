@@ -27,7 +27,7 @@ CREATE TABLE `t_questionnaire`  (
   `title` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '报名问卷题目',
   `type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类型(填空/单选/多选/附件)',
   `must_answer` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '问题是否必答, 0必答; 1选答',
-  `sort` int(11) NULL DEFAULT 0 COMMENT '选项排序',
+  `sort` int(11) NULL DEFAULT 0 COMMENT '题目排序',
   `del_flag` tinyint(4) NOT NULL DEFAULT 0,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

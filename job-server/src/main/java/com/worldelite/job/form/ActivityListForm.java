@@ -9,10 +9,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ActivityListForm extends PageForm{
-    private Integer cityId; //所在城市
-    private Integer[] cityIds; //城市ID
+    private Integer[] cityIds; //城市ID,线上国内=999992; 线上国外=999993
     private Long companyId; //公司ID
+    private Integer timeId; //时间id
+    private String publisherType; //活动发布者类型
     private Byte status; //活动状态
-    private String title; //活动标题
     private String keyword; //搜索关键词
 }

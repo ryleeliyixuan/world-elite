@@ -19,14 +19,11 @@
     <include refid="Base_Column_List" />
     from t_activity
     <where>
-      <if test="title != null and title != ''">
-        and title like CONCAT('%', #{title},'%')
-      </if>
       <if test="userId != null">
         and user_id = #{userId,jdbcType=BIGINT}
       </if>
-      <if test="cityId != null">
-        and city_id = #{cityId,jdbcType=INTEGER}
+      <if test="userType != null">
+        user_type,
       </if>
       <if test="cityIds != null and cityIds != ''">
         and city_id in (${cityIds})
