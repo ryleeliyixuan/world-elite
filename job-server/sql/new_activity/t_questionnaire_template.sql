@@ -41,3 +41,12 @@ CREATE TABLE `t_questionnaire_template`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '报名问模板表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- 添加模板名，模板标题和用户姓名
+ALTER TABLE db_worldelite_activity.t_questionnaire_template ADD template_name varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' NOT NULL COMMENT '模板名';
+ALTER TABLE db_worldelite_activity.t_questionnaire_template CHANGE template_name template_name varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' NOT NULL COMMENT '模板名' AFTER activity_id;
+ALTER TABLE db_worldelite_activity.t_questionnaire_template ADD title varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '模板标题';
+ALTER TABLE db_worldelite_activity.t_questionnaire_template CHANGE title title varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '模板标题' AFTER template_name;
+ALTER TABLE db_worldelite_activity.t_questionnaire_template ADD name_flag char(1) NULL COMMENT '姓名选填flag.0 显示,1 选填,2 隐藏';
+ALTER TABLE db_worldelite_activity.t_questionnaire_template CHANGE name_flag name_flag char(1) NULL COMMENT '姓名选填flag.0 显示,1 选填,2 隐藏' AFTER title;
+
