@@ -24,9 +24,9 @@
                 <div class="company-list-container" v-for="item in industryList" :key="item.id">
                     <div class="company-name-container" v-if="companyList[item.id] && companyList[item.id].length > 0">
                         <div class="company-name" :ref="item.name">{{item.name}}
-					<!-- 	<span
-                                class="company-count">{{"共" + companyList[item.id].length + "家企业"}}</span> -->
-								</div>
+                            <!-- 	<span
+                                                  class="company-count">{{"共" + companyList[item.id].length + "家企业"}}</span> -->
+                        </div>
                         <el-button :underline="false"
                                    type="text"
                                    class="company-name-text"
@@ -97,7 +97,8 @@
             this.initData();
             let app = document.querySelector('#app');
             app.addEventListener("scroll", () => {
-                this.top = (app.scrollTop + 5) + 'px';
+                let top = app.scrollTop < 184 ? 0 : app.scrollTop - 184;
+                this.top = (top + 5) + 'px';
             })
         },
         mounted() {
@@ -214,6 +215,7 @@
         /*padding: 20px;*/
         min-height: calc(100vh - 477px);
         position: relative;
+
         .left-container {
             position: absolute;
             top: 5px;
@@ -263,6 +265,7 @@
                     font-weight: bold;;
                     color: #000;
                 }
+
                 .company-name-text {
                     height: 40px;
                     font-size: 14px;
@@ -271,7 +274,8 @@
                     color: #999999;
                     line-height: 20px;
                 }
-                .company-name-icon{
+
+                .company-name-icon {
                     width: 8px;
                     height: 12px;
                 }
