@@ -76,22 +76,22 @@
       </el-table-column>
       <el-table-column label="投递数" align="center">
         <template slot-scope="{row}">
-           <el-link type="primary" @click="showResumeApplyJobs(row.id)">{{row.totalResumeCount}}</el-link>
+           <el-link type="primary" @click="showResumeApplyJobs(row.id, row.creatorId)">{{row.totalResumeCount}}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="待处理" align="center">
         <template slot-scope="{row}">
-           <el-link type="primary" @click="showResumeApplyJobs(row.id, [1,2])">{{row.newResumeCount}}</el-link>
+           <el-link type="primary" @click="showResumeApplyJobs(row.id, row.creatorId,[1,2])">{{row.newResumeCount}}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="候选简历" align="center">
         <template slot-scope="{row}">
-           <el-link type="primary" @click="showResumeApplyJobs(row.id, [3])">{{row.candidateResumeCount}}</el-link>
+           <el-link type="primary" @click="showResumeApplyJobs(row.id, row.creatorId,[3])">{{row.candidateResumeCount}}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="进入面试" align="center">
         <template slot-scope="{row}">
-           <el-link type="primary" @click="showResumeApplyJobs(row.id, [4])">{{row.interviewResumeCount}}</el-link>
+           <el-link type="primary" @click="showResumeApplyJobs(row.id, row.creatorId,[4])">{{row.interviewResumeCount}}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="300">
@@ -187,6 +187,7 @@ export default {
         list:[]
       },
       applyResumeForm:{
+        creatorId: undefined,
         jobIds: undefined,
         statuses: undefined,
         page: 1,
@@ -270,10 +271,11 @@ export default {
     goJobDetail(jobId){
         window.open(`${process.env.VUE_APP_WEB_HOST}/job/${jobId}`)
     },
-    showResumeApplyJobs(jobId, statues) {
+    showResumeApplyJobs(jobId, creatorId, statues) {
       this.applyResumeDrawerVisible = true;
       this.applyResumeForm.page = 1;
       this.applyResumeForm.jobIds = [jobId];
+      this.applyResumeForm.creatorId = creatorId;
       this.applyResumeForm.statuses = statues;
       this.getJobApplyResumeList();
     },
