@@ -23,7 +23,7 @@
         and user_id = #{userId,jdbcType=BIGINT}
       </if>
       <if test="userType != null">
-        user_type,
+        and user_type = #{userType,jdbcType=CHAR}
       </if>
       <if test="cityIds != null and cityIds != ''">
         and city_id in (${cityIds})
@@ -34,6 +34,9 @@
       <if test="keyword != null and keyword != ''">
         and (title like CONCAT('%', #{keyword},'%') or organizer like CONCAT('%', #{keyword},'%'))
       </if>
+      <if test="delFlag != null">
+       and del_flag = #{delFlag,jdbcType=TINYINT}
+      </if>
     </where>
   </select>
 
@@ -43,4 +46,10 @@
     from t_activity
     where title like CONCAT('%',#{title},'%') limit 10
   </select>
+  <update id="minusFollower">
+    update t_activity set follower = if(follower <![CDATA[<]]> 1, 0, follower-1) where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="increaseFollower">
+    update t_activity set follower = follower+1 where id = #{id,jdbcType=INTEGER}
+</update>
 </mapper>
