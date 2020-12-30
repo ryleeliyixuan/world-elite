@@ -1169,7 +1169,6 @@ export default {
 .app-container {
   margin: 0 auto;
   width: 100%;
-  min-height: calc(100vh - 477px);
   background: #f6f8fb;
 
   .company-info-container {

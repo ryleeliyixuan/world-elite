@@ -59,7 +59,37 @@ export const storage = {
     removeData: (key) => {
         console.log("remove -  key:" + key);
         sessionStorage.removeItem(key);
-    }
+    },
+
+    setObject: (key, value) => {
+        console.log("setObject -  key:" + key + "  value:" + JSON.stringify(value));
+        sessionStorage.setItem(key, JSON.stringify(value));
+    },
+
+    getObject: (key) => {
+        console.log("getObject -  key:" + key);
+        return JSON.parse(sessionStorage.getItem(key));
+    },
+
+    removeObject: (key) => {
+        console.log("removeObject -  key:" + key);
+        sessionStorage.removeItem(key);
+    },
+
+    setString: (key, value) => {
+        console.log("setString -  key:" + key + "  value:" + value);
+        sessionStorage.setItem(key, value);
+    },
+
+    getString: (key) => {
+        console.log("getString -  key:" + key);
+        return sessionStorage.getItem(key) || "";
+    },
+
+    removeString: (key) => {
+        console.log("remove -  key:" + key);
+        sessionStorage.removeItem(key);
+    },
 }
 
 export default {

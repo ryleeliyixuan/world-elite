@@ -1,14 +1,5 @@
 import request from '@/utils/request'
 
-export function searchJobName(data) {
-    return request({
-        url: '/job/search-job-name',
-        method: 'get',
-        params: data
-    })
-}
-
-
 export function getCompanyJobList(data) {
     return request({
         url: '/job/company-job-list',

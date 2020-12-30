@@ -1,15 +1,13 @@
 <template>
     <div id="app" ref="app">
-        <MainNavBar/>
+        <MainNavBar class="page"/>
         <transition name="fade-transform" mode="out-in">
-            <router-view @complete="onComplete" @receiveMessage="onReceiveMessage"/>
+            <router-view @complete="onComplete" class="main-container page"/>
         </transition>
         <transition name="fade">
             <FooterView @complete="onComplete" v-if="show"/>
         </transition>
         <el-backtop></el-backtop>
-        <!--    <svg-icon @click="handlerChat" icon-class="chat3" class="chat" />-->
-        <!--    <div class="red-dot" v-if="showRedDot" />-->
     </div>
 </template>
 
@@ -21,18 +19,14 @@
         data() {
             return {
                 noScroll: ["wiki-intro", "wiki-job", "wiki-activity", "wiki-community-post", "wiki-community-score", "wiki-community-post-detail"],
-                show: false,
-                showRedDot: false,
+                show: true,
             };
         },
         components: {MainNavBar, FooterView},
         name: "App",
         watch: {
             $route(route) {
-                this.show = false;
-                if (this.$route.path === "/chat") {
-                    this.showRedDot = false;
-                }
+                this.show = true;
             },
         },
         updated() {
@@ -46,18 +40,6 @@
             onComplete() {
                 this.show = true;
             },
-
-            handlerChat() {
-                if (this.$route.path !== "/chat") {
-                    this.$router.push({path: "/chat"});
-                }
-            },
-
-            onReceiveMessage() {
-                if (this.$route.path !== "/chat") {
-                    this.showRedDot = true;
-                }
-            },
         }
     };
 </script>
@@ -70,29 +52,17 @@
         color: #2c3e50;
         height: 100vh;
         overflow: auto;
+        display: flex;
+        flex-direction: column;
 
-        .chat {
-            position: fixed;
-            top: 650px;
-            right: 80px;
-            width: 60px;
-            height: 60px;
-            padding: 10px;
-
-            &:hover {
-                cursor: pointer;
-                color: #409eff;
-            }
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .red-dot {
-            position: fixed;
-            top: 654px;
-            right: 85px;
-            background: red;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
+        .main-container {
+            flex: 1;
         }
     }
 </style>

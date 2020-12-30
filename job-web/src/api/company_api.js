@@ -16,23 +16,6 @@ export function getCompanyInfo(id) {
   })
 }
 
-export function getCompanyWikiList(data) {
-  return request({
-    // url: '/company/wiki-list',
-    url: '/company/list-wiki-by-industry',
-    method: 'get',
-    params: data
-  })
-}
-
-export function getWikiList(data) {
-  return request({
-    url: '/company/wiki-list',
-    method: 'get',
-    params: data
-  })
-}
-
 export function getCompanyWiki(companyId) {
   return request({
     url: '/company/get-company-wiki',

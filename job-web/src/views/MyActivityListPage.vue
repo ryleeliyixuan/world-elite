@@ -176,8 +176,8 @@ export default {
 <style lang="scss" scoped>
 .app-container {
   max-width: 1000px;
+  width: 100%;
   margin: 20px auto;
-  min-height: calc(100vh - 517px);
 
   .nav-bar {
     display: inline-flex;

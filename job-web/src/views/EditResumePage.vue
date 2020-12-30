@@ -254,7 +254,7 @@
                         </div>
                     </div>
                 </b-media>
-                <b-col class="resume-sidebar col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-4">
+                <b-col class="resume-sidebar col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="resume-objective resume-right-box">
                         <EditResumeTitle
                                 title="求职意向"
@@ -1494,7 +1494,7 @@
 
     .app-container {
         margin: 20px auto;
-        min-height: calc(100vh - 477px);
+        width: 100%;
     }
 
     .resume-body {
