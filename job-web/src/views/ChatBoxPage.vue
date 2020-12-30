@@ -703,7 +703,6 @@
 
 <style scoped lang="scss">
     .app-container {
-        min-height: calc(100vh - 527px);
 
         .chat-container {
             width: 1200px;

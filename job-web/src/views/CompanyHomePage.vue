@@ -418,7 +418,6 @@
 
     .app-container {
         margin: 0 auto;
-        min-height: calc(100vh - 477px);
     }
 
     .wiki_sidebar {

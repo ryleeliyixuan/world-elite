@@ -72,7 +72,6 @@
 <style scoped lang="scss">
 
     .app-container {
-        min-height: calc(100vh - 477px);
 
         .activity-container {
             display: flex;

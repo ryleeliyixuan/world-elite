@@ -1,119 +1,112 @@
 <template>
-  <div class="app-container">
-    <div class="section1-container">
-      <el-cascader placeholder="城市"
-                   :show-all-levels="true"
-                   :options="cityOptions"
-                   :props="cityIdProps"
-                   clearable
-                   @change="handleFilter"
-                   class="cascader"
-                   v-model="listQuery.cityIds">
-      </el-cascader>
-      <el-select v-model="listQuery.salaryRangeIds"
-                 multiple
-                 clearable
-                 placeholder="薪资"
-                 @change="handleFilter"
-                 class="section1-select">
-        <el-option v-for="item in salaryRangeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>
-      <el-select v-model="listQuery.companyIndustryIds"
-                 multiple
-                 clearable
-                 placeholder="行业"
-                 @change="handleFilter"
-                 class="section1-select">
-        <el-option v-for="item in companyIndustryOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>
-      <el-select v-model="listQuery.companyScaleIds"
-                 multiple
-                 clearable
-                 placeholder="公司规模"
-                 @change="handleFilter"
-                 class="section1-select">
-        <el-option v-for="item in companyScaleOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>
-      <el-select v-model="listQuery.jobTypes"
-                 multiple
-                 clearable
-                 placeholder="工作类型"
-                 @change="handleFilter"
-                 class="section1-select">
-        <el-option v-for="item in jobTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>
-    </div>
-    <div v-if="showNoResult" style="text-align: center; line-height: 40px;">
-      暂无搜索结果，显示推荐职位
-    </div>
-    <div class="section2-container">
-      <pagination v-show="total"
-                  :total="total"
-                  :page.sync="listQuery.page"
-                  :limit.sync="listQuery.limit"
-                  @pagination="handleRouteList"/>
-    </div>
+    <div class="app-container">
+        <div class="section1-container">
+            <el-cascader placeholder="城市"
+                         :show-all-levels="true"
+                         :options="cityOptions"
+                         :props="cityIdProps"
+                         clearable
+                         @change="handleFilter"
+                         class="cascader"
+                         v-model="listQuery.cityIds">
+            </el-cascader>
+            <el-select v-model="listQuery.salaryRangeIds"
+                       multiple
+                       clearable
+                       placeholder="薪资"
+                       @change="handleFilter"
+                       class="section1-select">
+                <el-option v-for="item in salaryRangeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+            <el-select v-model="listQuery.companyIndustryIds"
+                       multiple
+                       clearable
+                       placeholder="行业"
+                       @change="handleFilter"
+                       class="section1-select">
+                <el-option v-for="item in companyIndustryOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+            <el-select v-model="listQuery.companyScaleIds"
+                       multiple
+                       clearable
+                       placeholder="公司规模"
+                       @change="handleFilter"
+                       class="section1-select">
+                <el-option v-for="item in companyScaleOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+            <el-select v-model="listQuery.jobTypes"
+                       multiple
+                       clearable
+                       placeholder="工作类型"
+                       @change="handleFilter"
+                       class="section1-select">
+                <el-option v-for="item in jobTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+        </div>
+        <div v-if="showNoResult" style="text-align: center; line-height: 40px;">
+            暂无搜索结果，显示推荐职位
+        </div>
+        <div class="section2-container">
+            <pagination v-show="total"
+                        :total="total"
+                        :page.sync="listQuery.page"
+                        :limit.sync="listQuery.limit"
+                        @pagination="getList"/>
+        </div>
 
 
-    <div class="section3-container" v-if="pageResult.list && pageResult.list.length !== 0">
-      <el-card v-if="job.salary && job.companyUser.company.name !== ''"
-               shadow="hover"
-               v-for="job in pageResult.list"
-               :key="job.id"
-               class="section3-item-container"
-               @click.native="openJobDetail(job.id)">
-        <div class="section3-left-container">
-          <h6 class="section3-job-name">{{job.name}}</h6>
-          <div>
-            <b class="section3-salary">{{job.salary.name}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
-            <span class="section3-city-degree text-gray text-small">{{`${job.city? job.city.name : ''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
-          </div>
+        <div class="section3-container" v-if="pageResult.list && pageResult.list.length !== 0">
+            <el-card v-if="job.salary && job.companyUser.company.name !== ''"
+                     shadow="hover"
+                     v-for="job in pageResult.list"
+                     :key="job.id"
+                     class="section3-item-container"
+                     @click.native="openJobDetail(job.id)">
+                <div class="section3-left-container">
+                    <h6 class="section3-job-name">{{job.name}}</h6>
+                    <div>
+                        <b class="section3-salary">{{job.salary.name}}{{job.salaryMonths?` × ${job.salaryMonths}`:''}}</b>
+                        <span
+                            class="section3-city-degree text-gray text-small">{{`${job.city? job.city.name : ''} / ${job.minDegree?job.minDegree.name:''}`}}</span>
+                    </div>
+                </div>
+                <div class="section3-right-container" v-if="job.companyUser && job.companyUser.company">
+                    <div class="section3-company-info-container">
+                        <h6 class="section3-company-name">{{job.companyUser.company.name}}</h6>
+                        <div class="text-gray text-small">
+                            {{job.companyUser.company.industry?job.companyUser.company.industry.name + ' / ':''}}
+                            {{job.companyUser.company.stage?job.companyUser.company.stage.name + ' / ':''}}
+                            {{job.companyUser.company.scale?job.companyUser.company.scale.name:''}}
+                        </div>
+                    </div>
+                    <el-link :href="`/company/${job.companyUser.company.id}`">
+                        <el-image class="section3-logo" :src="job.companyUser.company.logo"
+                                  v-if="job.companyUser.company.logo && job.companyUser.company.logo !== ''">
+                            <div slot="error" class="section3-logo-error">
+                                <i class="el-icon-picture-outline"></i>
+                            </div>
+                        </el-image>
+                    </el-link>
+                </div>
+            </el-card>
         </div>
-        <div class="section3-right-container" v-if="job.companyUser && job.companyUser.company">
-          <div class="section3-company-info-container">
-            <h6 class="section3-company-name">{{job.companyUser.company.name}}</h6>
-            <div class="text-gray text-small">
-              {{job.companyUser.company.industry?job.companyUser.company.industry.name + ' / ':''}}
-              {{job.companyUser.company.stage?job.companyUser.company.stage.name + ' / ':''}}
-              {{job.companyUser.company.scale?job.companyUser.company.scale.name:''}}
-            </div>
-          </div>
-          <el-link :href="`/company/${job.companyUser.company.id}`">
-            <el-image class="section3-logo" :src="job.companyUser.company.logo"
-                      v-if="job.companyUser.company.logo && job.companyUser.company.logo !== ''">
-              <div slot="error" class="section3-logo-error">
-                <i class="el-icon-picture-outline"></i>
-              </div>
-            </el-image>
-          </el-link>
+        <div class="section2-container">
+            <pagination v-show="total"
+                        :total="total"
+                        :page.sync="listQuery.page"
+                        :limit.sync="listQuery.limit"
+                        @pagination="getList"/>
         </div>
-      </el-card>
     </div>
-    <div class="section2-container">
-      <pagination v-show="total"
-                  :total="total"
-                  :page.sync="listQuery.page"
-                  :limit.sync="listQuery.limit"
-                  @pagination="handleRouteList"/>
-    </div>
-  </div>
 </template>
 
 <script>
     import {listByType} from "@/api/dict_api";
-    import {searchJob} from "@/api/job_api";
     import Pagination from "@/components/Pagination";
-    import {mapGetters} from "vuex";
-
-    import {formatListQuery, parseListQuery} from "@/utils/common";
-    import {getRecommendList} from "@/api/recommend_api";
 
     export default {
         name: "JobListPage",
         components: {Pagination},
-        computed: {
-            ...mapGetters(["keyword"])
-        },
         data() {
             return {
                 listQuery: {
@@ -139,61 +132,37 @@
                 cityIdProps: {
                     multiple: true,
                     lazy: false,
-                    // lazyLoad: (node, resolve) => {
-                    //     if (node.level === 1) {
-                    //         this.$axios.request({
-                    //             url: "/city/list",
-                    //             method: "get",
-                    //             params: {type: node.value}
-                    //         }).then(data => {
-                    //             let nodes = data.data.map(second => {
-                    //                 let children = second.children && second.children.map(third => {
-                    //                     return {id: third.id, name: third.name, leaf: true}
-                    //                 })
-                    //                 return {id: second.id, name: second.name, children}
-                    //             });
-                    //             resolve(nodes);
-                    //         })
-                    //     } else {
-                    //         resolve();
-                    //     }
-                    // },
                     expandTrigger: "hover",
                     value: "id",
                     label: "name",
                     emitPath: false,
                     children: "children"
                 },
-                cityOptions: [{id: 1, name: "国内", children:[{id: 0, name: "加载中"}]}, {id: 2, name: "国外"}],
+                cityOptions: [{id: 1, name: "国内", children: [{id: 0, name: "加载中"}]}, {id: 2, name: "国外"}],
             };
-        },
-        created() {
-            this.initData();
-            this.getList();
         },
         watch: {
             $route() {
                 this.getList();
-            },
-            keyword() {
-                this.listQuery.keyword = this.keyword;
-                this.handleRouteList();
             }
         },
+        mounted() {
+            let query = this.$storage.getObject(this.$options.name)
+            if (query) {
+                this.listQuery = query;
+            }
+            this.getList();
+            this.initData();
+        },
         methods: {
+            // 初始化数据
             initData() {
-                listByType(5).then(
-                    response => (this.companyScaleOptions = response.data.list)
-                );
-                listByType(6).then(
-                    response => (this.companyIndustryOptions = response.data.list)
-                );
-                listByType(8).then(
-                    response => (this.jobTypeOptions = response.data.list)
-                );
-                listByType(9).then(
-                    response => (this.salaryRangeOptions = response.data.list)
-                );
+                listByType(5).then(response => (this.companyScaleOptions = response.data.list));
+                listByType(6).then(response => (this.companyIndustryOptions = response.data.list));
+                listByType(8).then(response => (this.jobTypeOptions = response.data.list));
+                listByType(9).then(response => (this.salaryRangeOptions = response.data.list));
+
+                // 获取国内城市
                 this.$axios.request({
                     url: "/city/list",
                     method: "get",
@@ -207,6 +176,7 @@
                     });
                 })
 
+                // 获取国外城市
                 this.$axios.request({
                     url: "/city/list",
                     method: "get",
@@ -220,42 +190,46 @@
                     });
                 })
             },
+
+            // 条件改变
             handleFilter() {
                 this.listQuery.page = 1;
-                this.handleRouteList();
+                this.getList();
             },
+
+            // 加载数据
             getList() {
                 this.showNoResult = false;
-                parseListQuery(this.$route.query, this.listQuery);
-                searchJob(this.listQuery).then(response => {
+                this.listQuery.keyword = this.$route.query.searchWord;
+                this.$storage.setData(this.$options.name, this.listQuery);
+                this.$axios.post("/job/search-job", this.listQuery).then(response => {
                     if (!response.data.list || response.data.list.length === 0) {
                         this.showNoResult = true;
                         this.total = 10;
-                        getRecommendList({
-                            objectType: 1, // 职位
-                            page: 1,
-                            limit: 10,
-                            sort: "+position"
-                        }).then(response => {
-                            this.pageResult.list = response.data.list.map(item => item.object);
-                            this.total = response.data.total;
-                            this.$emit("complete");
-
-                        });
+                        this.getRecommendList();
                     } else {
                         this.pageResult = response.data;
                         this.total = this.pageResult.total;
-                        this.$emit("complete");
                     }
                 });
             },
 
-            handleRouteList() {
-                this.$router.replace({
-                    path: this.$route.path,
-                    query: formatListQuery(this.listQuery)
+            // 获取推荐职位
+            getRecommendList() {
+                this.$axios.get("/recommend/list", {
+                    params: {
+                        objectType: 1, // 职位
+                        page: 1,
+                        limit: 10,
+                        sort: "+position"
+                    }
+                }).then(response => {
+                    this.pageResult.list = response.data.list.map(item => item.object);
+                    this.total = response.data.total;
                 });
             },
+
+            // 点击职位，查看职位详情
             openJobDetail(id) {
                 this.$router.push(`/job/${id}`);
             }
@@ -264,114 +238,113 @@
 </script>
 
 <style scoped lang="scss">
-  .app-container {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 0 20px;
-    min-height: calc(100vh - 477px);
-
-    .section1-container {
-      min-width: 335px;
-      display: flex;
-      flex-wrap: wrap;
-
-      ::v-deep .el-cascader {
-        margin-bottom: 10px;
-      }
-
-      .section1-select {
-        flex: 1;
-        min-width: 130px;
-        margin: 0 10px 10px;
-        height: 100%;
-      }
-    }
-
-    .section2-container {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    .section3-container {
-      min-width: 335px;
-
-      .section3-item-container {
-        margin-bottom: 10px;
-        cursor: pointer;
-
-        /deep/ .el-card__body {
-          display: flex;
-        }
-      }
-
-      .section3-left-container {
-        flex: 1;
-        min-width: 290px;
-
-        .section3-job-name {
-          margin: 0 0 4px 0;
-        }
-
-        .section3-salary {
-          color: #dc3545;
-        }
-
-        .section3-city-degree {
-          margin-left: 16px;
-        }
-      }
-
-      .section3-right-container {
-        flex: 1;
-        min-width: 290px;
-        display: flex;
-        justify-content: space-between;
-
-        .section3-company-info-container {
-          .section3-company-name {
-            margin: 0 0 4px 0;
-          }
-        }
-
-        .section3-logo {
-          width: 48px;
-
-          /deep/ .section3-logo-error {
-            width: 48px;
-            text-align: center;
-            font-size: 25px;
-          }
-        }
-      }
-    }
-  }
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  @media screen and (max-width: 850px) {
     .app-container {
-      .section3-container {
-        .section3-item-container {
-          /deep/ .el-card__body {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 20px;
+
+        .section1-container {
+            min-width: 335px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-wrap: wrap;
+
+            ::v-deep .el-cascader {
+                margin-bottom: 10px;
+            }
+
+            .section1-select {
+                flex: 1;
+                min-width: 130px;
+                margin: 0 10px 10px;
+                height: 100%;
+            }
+        }
+
+        .section2-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .section3-container {
+            min-width: 335px;
+
+            .section3-item-container {
+                margin-bottom: 10px;
+                cursor: pointer;
+
+                /deep/ .el-card__body {
+                    display: flex;
+                }
+            }
 
             .section3-left-container {
-              margin-bottom: 10px;
+                flex: 1;
+                min-width: 290px;
+
+                .section3-job-name {
+                    margin: 0 0 4px 0;
+                }
+
+                .section3-salary {
+                    color: #dc3545;
+                }
+
+                .section3-city-degree {
+                    margin-left: 16px;
+                }
             }
-          }
+
+            .section3-right-container {
+                flex: 1;
+                min-width: 290px;
+                display: flex;
+                justify-content: space-between;
+
+                .section3-company-info-container {
+                    .section3-company-name {
+                        margin: 0 0 4px 0;
+                    }
+                }
+
+                .section3-logo {
+                    width: 48px;
+
+                    /deep/ .section3-logo-error {
+                        width: 48px;
+                        text-align: center;
+                        font-size: 25px;
+                    }
+                }
+            }
         }
-      }
     }
-  }
 
-  @media screen and (max-width: 410px) {
-    .app-container {
-
+    ::-webkit-scrollbar {
+        display: none;
     }
-  }
+
+    @media screen and (max-width: 850px) {
+        .app-container {
+            .section3-container {
+                .section3-item-container {
+                    /deep/ .el-card__body {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+
+                        .section3-left-container {
+                            margin-bottom: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 410px) {
+        .app-container {
+
+        }
+    }
 </style>
 

@@ -1,12 +1,5 @@
 <template>
     <div class="app-container">
-   <!--     <div class="section1-container">
-            <pagination v-show="total"
-                        :total="total"
-                        :page.sync="listQuery.page"
-                        :limit.sync="listQuery.limit"
-                        @pagination="handleRouteList"/>
-        </div> -->
         <div class="section2-container" v-if="list.length !== 0">
             <el-card shadow="hover"
                      v-for="company in list"
@@ -17,10 +10,10 @@
                 <div class="section2-right-container">
                     <h5>{{company.fullName}}</h5>
                     <div class="text-label">
-                        <span v-if="company.stage">{{company.stage.name}} |</span>
-                        <span v-if="company.property"> {{company.property.name}} |</span>
-                        <span v-if="company.industry"> {{company.industry.name}} |</span>
-                        <span v-if="company.scale"> {{company.scale.name}}</span>
+                        <span v-if="company.stage">{{company.stage.name}}</span>
+                        <span v-if="company.property"> | {{company.property.name}}</span>
+                        <span v-if="company.industry"> | {{company.industry.name}}</span>
+                        <span v-if="company.scale"> | {{company.scale.name}}</span>
                     </div>
                     <div class="text-desc">{{company.wikiSummary}}</div>
                 </div>
@@ -32,76 +25,51 @@
                         :total="total"
                         :page.sync="listQuery.page"
                         :limit.sync="listQuery.limit"
-                        @pagination="handleRouteList"/>
+                        @pagination="getList"/>
         </div>
     </div>
 </template>
 
 <script>
-    import {listByType} from "@/api/dict_api";
-    import {getCompanyWikiList} from "@/api/company_api";
     import Pagination from "@/components/Pagination";
-    import {formatListQuery, parseListQuery} from "@/utils/common";
-    import {mapGetters} from "vuex";
 
     export default {
         name: "WikiListPage",
         components: {Pagination},
-        computed: {
-            ...mapGetters(["keyword"])
-        },
         data() {
             return {
                 listQuery: {
-                    industryId:undefined,
+                    industryId: undefined,
                     keyword: undefined,
                     page: 1,
                     limit: 10
                 },
                 total: 0,
                 list: [],
-                cityOptions: []
             };
-        },
-        created() {
-            this.initData();
         },
         watch: {
             $route() {
                 this.getList();
-            },
-            keyword() {
-                if (this.keyword) {
-                    this.listQuery.keyword = this.keyword;
-                    this.handleRouteList();
-                } else {
-                    this.$router.replace("/wiki-card")
-                }
             }
         },
+        mounted() {
+            let query = this.$storage.getObject(this.$options.name)
+            if (query) {
+                this.listQuery = query;
+            }
+            this.getList();
+        },
         methods: {
-            initData() {
-                listByType(2).then(response => (this.cityOptions = response.data.list));
-                this.getList();
-            },
-            handleFilter() {
-                this.listQuery.page = 1;
-                this.handleRouteList();
-            },
             getList() {
-                parseListQuery(this.$route.query, this.listQuery);
-                getCompanyWikiList(this.listQuery).then(response => {
+                this.listQuery.keyword = this.$route.query.searchWord;
+                this.$storage.setData(this.$options.name, this.listQuery);
+                this.$axios.get("/company/list-wiki-by-industry", {params: this.listQuery}).then(response => {
                     this.list = response.data.list;
                     this.total = response.data.total;
-                    this.$emit("complete");
                 });
             },
-            handleRouteList() {
-                this.$router.push({
-                    path: this.$route.path,
-                    query: formatListQuery(this.listQuery)
-                });
-            },
+
             openCompanyDetail(company) {
                 this.$router.push(`/company/${company.id}`)
             }
@@ -126,7 +94,6 @@
         margin: 0 auto;
         padding: 0 20px;
         min-width: 375px;
-        min-height: calc(100vh - 477px);
 
         .section1-container {
             width: 100%;
@@ -143,7 +110,7 @@
 
                     .section2-left-container {
                         max-width: 100px;
-						max-height: 100px;
+                        max-height: 100px;
                         margin-right: 20px;
                     }
 

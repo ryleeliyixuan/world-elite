@@ -18,7 +18,7 @@
                         :total="total"
                         :page.sync="listQuery.page"
                         :limit.sync="listQuery.limit"
-                        @pagination="handleRouteList"/>
+                        @pagination="getList"/>
         </div>
 
         <div class="section3-container">
@@ -63,30 +63,22 @@
         </div>
 
         <div class="section2-container">
-            <pagination
-                    v-show="total"
-                    :total="total"
-                    :page.sync="listQuery.page"
-                    :limit.sync="listQuery.limit"
-                    @pagination="handleRouteList"
-            />
+            <pagination v-show="total"
+                        :total="total"
+                        :page.sync="listQuery.page"
+                        :limit.sync="listQuery.limit"
+                        @pagination="getList"/>
         </div>
     </div>
 </template>
 
 <script>
     import {listByType} from "@/api/dict_api";
-    import {getActivityList} from "@/api/activity_api";
     import Pagination from "@/components/Pagination";
-    import {formatListQuery, parseListQuery} from "@/utils/common";
-    import {mapGetters} from "vuex";
 
     export default {
-        name: "JobListPage",
+        name: "ActivityListPage",
         components: {Pagination},
-        computed: {
-            ...mapGetters(["keyword"])
-        },
         data() {
             return {
                 listQuery: {
@@ -102,41 +94,42 @@
                 cityOptions: []
             };
         },
-        created() {
-            this.initData();
-        },
         watch: {
             $route() {
                 this.getList();
-            },
-            keyword() {
-                this.listQuery.keyword = this.keyword;
-                this.handleRouteList();
             }
         },
+        mounted() {
+            let query = this.$storage.getObject(this.$options.name)
+            if (query) {
+                this.listQuery = query;
+            }
+            this.getList();
+            this.initData();
+        },
         methods: {
+            // 初始化数据
             initData() {
                 listByType(2).then(response => (this.cityOptions = response.data.list));
-                this.getList();
             },
+
+            // 条件改变
             handleFilter() {
                 this.listQuery.page = 1;
-                this.handleRouteList();
+                this.getList();
             },
+
+            // 加载数据
             getList() {
-                parseListQuery(this.$route.query, this.listQuery);
-                getActivityList(this.listQuery).then(response => {
+                this.listQuery.keyword = this.$route.query.searchWord;
+                this.$storage.setData(this.$options.name, this.listQuery);
+                this.$axios.post("/activity/list", this.listQuery).then(response => {
                     this.list = response.data.list;
                     this.total = response.data.total;
-                    this.$emit("complete");
                 });
             },
-            handleRouteList() {
-                this.$router.push({
-                    path: this.$route.path,
-                    query: formatListQuery(this.listQuery)
-                });
-            },
+
+            // 点击活动，查看活动详情
             openActivity(activity) {
                 this.$router.push(`/activity/${activity.id}`);
             }
@@ -150,7 +143,6 @@
         max-width: 1140px;
         margin: 0 auto;
         padding: 0 20px;
-        min-height: calc(100vh - 477px);
 
         .section1-container {
             min-width: 335px;

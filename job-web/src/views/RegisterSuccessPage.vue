@@ -33,7 +33,6 @@
 </script>
 <style scoped>
     .app-container {
-        min-height: calc(100vh - 477px);
     }
     .success-icon {
         font-size: 60px;

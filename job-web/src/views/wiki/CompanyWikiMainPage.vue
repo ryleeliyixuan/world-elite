@@ -292,14 +292,10 @@ export default {
 
 .app-container {
   margin: 0 auto;
-  min-height: calc(100vh - 477px);
   width: 100%;
   background-color: #f6f8fb;
 
   .company-wiki-header-container {
-    // display: flex;
-    // align-items: center;
-    // justify-content: space-between;
     display: flex;
     flex-direction: column;
     align-items: center;
