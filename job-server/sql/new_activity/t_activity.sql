@@ -45,7 +45,7 @@ CREATE TABLE `t_activity`  (
   `follower` int(11) NULL DEFAULT 0 COMMENT '关注人数',
   `applicant_quantity` int(11) NULL DEFAULT 0 COMMENT '报名人数',
   `weight` int(11) NULL DEFAULT 0 COMMENT '置顶权重',
-  `notice` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '1' COMMENT '通知提示,0不再提示,1需要提示',
+  `send_notice_confirm` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '1' COMMENT '发送通知确认提示,0不再提示,1需要提示',
   `del_flag` tinyint(4) NOT NULL DEFAULT 0,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

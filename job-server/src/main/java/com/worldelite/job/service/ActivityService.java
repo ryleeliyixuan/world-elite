@@ -3,6 +3,7 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.ActivityStatus;
+import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.Activity;
@@ -240,5 +241,16 @@ public class ActivityService extends BaseService {
      */
     public void increaseFollower(Integer activityId) {
         activityMapper.increaseFollower(activityId);
+    }
+
+    /**
+     * 关闭活动通过审核通知提示
+     * @param id 活动id
+     */
+    public void closeNotification(Integer id) {
+        ActivityOptions options = new ActivityOptions();
+        options.setId(id);
+        options.setSendNoticeConfirm(String.valueOf(Bool.FALSE));
+        activityMapper.updateByPrimaryKeySelective(options);
     }
 }

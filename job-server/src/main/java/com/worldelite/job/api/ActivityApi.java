@@ -97,6 +97,18 @@ public class ActivityApi {
     }
 
     /**
+     * 关闭活动通过审核通知提示
+     * @param id
+     * @return
+     */
+    @RequireLogin
+    @PatchMapping("closeSendNotification")
+    public ApiResult closeSendNotification(@RequestParam Integer id){
+        activityService.closeNotification(id);
+        return ApiResult.ok();
+    }
+
+    /**
      * 删除活动
      *
      * @param id 活动ID

@@ -29,7 +29,7 @@
     <result column="follower" jdbcType="INTEGER" property="follower" />
     <result column="applicant_quantity" jdbcType="INTEGER" property="applicantQuantity" />
     <result column="weight" jdbcType="INTEGER" property="weight" />
-    <result column="notice" jdbcType="CHAR" property="notice" />
+    <result column="send_notice_confirm" jdbcType="CHAR" property="sendNoticeConfirm" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -49,7 +49,8 @@
     id, user_id, city_id, user_type, title, poster, organizer_id, organizer_type, activity_start_time, 
     activity_finish_time, registration_start_time, registration_finish_time, need_resume, 
     only_overseas_student, audit_type, number_limit, address, status, registration_template_id, 
-    follower, applicant_quantity, weight, notice, del_flag, create_time, update_time
+    follower, applicant_quantity, weight, send_notice_confirm, del_flag, create_time, 
+    update_time
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -93,7 +94,7 @@
       need_resume, only_overseas_student, audit_type, 
       number_limit, address, status, 
       registration_template_id, follower, applicant_quantity, 
-      weight, notice, del_flag, 
+      weight, send_notice_confirm, del_flag, 
       create_time, update_time, description
       )
     values (#{userId,jdbcType=BIGINT}, #{cityId,jdbcType=INTEGER}, #{userType,jdbcType=CHAR}, 
@@ -103,7 +104,7 @@
       #{needResume,jdbcType=CHAR}, #{onlyOverseasStudent,jdbcType=CHAR}, #{auditType,jdbcType=CHAR}, 
       #{numberLimit,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
       #{registrationTemplateId,jdbcType=INTEGER}, #{follower,jdbcType=INTEGER}, #{applicantQuantity,jdbcType=INTEGER}, 
-      #{weight,jdbcType=INTEGER}, #{notice,jdbcType=CHAR}, #{delFlag,jdbcType=TINYINT}, 
+      #{weight,jdbcType=INTEGER}, #{sendNoticeConfirm,jdbcType=CHAR}, #{delFlag,jdbcType=TINYINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR}
       )
   </insert>
@@ -180,8 +181,8 @@
       <if test="weight != null">
         weight,
       </if>
-      <if test="notice != null">
-        notice,
+      <if test="sendNoticeConfirm != null">
+        send_notice_confirm,
       </if>
       <if test="delFlag != null">
         del_flag,
@@ -260,8 +261,8 @@
       <if test="weight != null">
         #{weight,jdbcType=INTEGER},
       </if>
-      <if test="notice != null">
-        #{notice,jdbcType=CHAR},
+      <if test="sendNoticeConfirm != null">
+        #{sendNoticeConfirm,jdbcType=CHAR},
       </if>
       <if test="delFlag != null">
         #{delFlag,jdbcType=TINYINT},
@@ -347,8 +348,8 @@
       <if test="weight != null">
         weight = #{weight,jdbcType=INTEGER},
       </if>
-      <if test="notice != null">
-        notice = #{notice,jdbcType=CHAR},
+      <if test="sendNoticeConfirm != null">
+        send_notice_confirm = #{sendNoticeConfirm,jdbcType=CHAR},
       </if>
       <if test="delFlag != null">
         del_flag = #{delFlag,jdbcType=TINYINT},
@@ -392,7 +393,7 @@
       follower = #{follower,jdbcType=INTEGER},
       applicant_quantity = #{applicantQuantity,jdbcType=INTEGER},
       weight = #{weight,jdbcType=INTEGER},
-      notice = #{notice,jdbcType=CHAR},
+      send_notice_confirm = #{sendNoticeConfirm,jdbcType=CHAR},
       del_flag = #{delFlag,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -426,7 +427,7 @@
       follower = #{follower,jdbcType=INTEGER},
       applicant_quantity = #{applicantQuantity,jdbcType=INTEGER},
       weight = #{weight,jdbcType=INTEGER},
-      notice = #{notice,jdbcType=CHAR},
+      send_notice_confirm = #{sendNoticeConfirm,jdbcType=CHAR},
       del_flag = #{delFlag,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
