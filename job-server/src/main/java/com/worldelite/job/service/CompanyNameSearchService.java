@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Author twz
@@ -101,7 +103,7 @@ public class CompanyNameSearchService {
             pageResult.setTotal(topDocs.totalHits);
             pageResult.setCurrentPage(page);
             pageResult.setPageSize(size);
-            pageResult.setList(arrayList);
+            pageResult.setList(removeDuplicate(arrayList));
             pageResult.calPageCountAndHasMore(arrayList);
 
             return pageResult;
@@ -115,6 +117,12 @@ public class CompanyNameSearchService {
     }
 
 
+    private List<String> removeDuplicate(List<String> list) {
+        Set<String> set = new HashSet<>(list);
+        list.clear();
+        list.addAll(set);
+        return list;
+    }
 
 
     /**
