@@ -45,6 +45,9 @@ public class ActivityService extends BaseService {
     @Autowired
     private FavoriteService favoriteService;
 
+    @Autowired
+    private ActivityStatusManager activityStatusManager;
+
     /**
      * 获取活动列表
      *
@@ -141,7 +144,7 @@ public class ActivityService extends BaseService {
 
         activity.setPoster(AppUtils.getOssKey(activityForm.getPoster()));
 
-        if(activity.getUserId() == null){
+        if (activity.getUserId() == null) {
             activity.setUserId(curUser().getId());
             activity.setUserType(String.valueOf(curUser().getType()));
         }
@@ -149,15 +152,16 @@ public class ActivityService extends BaseService {
 
         if (activity.getId() == null) {
             //新发布的活动都是未来将举办的,状态默认即将开始
-            if (getActivityStatus(activity) == ActivityStatus.WILL)
-                activity.setStatus(ActivityStatus.WILL.value);
-            else
-                throw new RuntimeException(message("activity.status.error"));
-
+            activity.setStatus(ActivityStatus.WILL.value);
             activityMapper.insertSelective(activity);
+
+            activityStatusManager.put(activity);
         } else {
             activity.setUpdateTime(new Date());
             activityMapper.updateByPrimaryKeySelective(activity);
+
+            activityStatusManager.remove(activity.getId());
+            activityStatusManager.put(activity);
         }
     }
 
@@ -170,10 +174,11 @@ public class ActivityService extends BaseService {
         Activity activity = activityMapper.selectSimpleById(id);
         if (activity != null) {
             //自己发布的或者管理员才能下架活动
-            if(activity.getUserId().equals(curUser().getId()) || curUser().getType() == UserType.ADMIN.value) {
+            if (activity.getUserId().equals(curUser().getId()) || curUser().getType() == UserType.ADMIN.value) {
                 activity.setStatus(ActivityStatus.OFFLINE.value);
                 activityMapper.updateByPrimaryKeySelective(activity);
-            }else{
+                activityStatusManager.remove(activity.getId());
+            } else {
                 throw new RuntimeException(message("api.error.permission.denied"));
             }
         }
@@ -190,7 +195,8 @@ public class ActivityService extends BaseService {
             //自己发布的或者管理员才能删除活动
             if (activity.getUserId().equals(curUser().getId()) || curUser().getType() == UserType.ADMIN.value) {
                 activityMapper.deleteByPrimaryKey(id);
-            }else{
+                activityStatusManager.remove(activity.getId());
+            } else {
                 throw new RuntimeException(message("api.error.permission.denied"));
             }
         }
@@ -201,7 +207,6 @@ public class ActivityService extends BaseService {
             return null;
         }
         ActivityVo activityVo = new ActivityVo().asVo(activity);
-        activityVo.setStatus(getActivityStatus(activity).value);
 
         activityVo.setCurTime(new Date());
         activityVo.setCity(cityService.getCityVo(activity.getCityId()));
@@ -209,24 +214,6 @@ public class ActivityService extends BaseService {
             activityVo.setJoinFlag(favoriteService.checkUserFavorite(activity.getId().longValue(), FavoriteType.ACTIVITY));
         }
         return activityVo;
-    }
-
-    public ActivityStatus getActivityStatus(Activity activity) {
-        Date date = new Date();
-        ActivityStatus status;
-        if (date.compareTo(activity.getRegistrationStartTime()) < 0) {
-            status = ActivityStatus.WILL;
-        } else if (date.compareTo(activity.getRegistrationStartTime()) >= 0 && date.compareTo(activity.getRegistrationFinishTime()) <= 0) {
-            status = ActivityStatus.SIGN_UP;
-        } else if (date.compareTo(activity.getRegistrationFinishTime()) > 0 && date.compareTo(activity.getActivityStartTime()) < 0) {
-            status = ActivityStatus.WILL;
-        } else if (date.compareTo(activity.getActivityStartTime()) >= 0 && date.compareTo(activity.getActivityFinishTime()) <= 0) {
-            status = ActivityStatus.ACTIVE;
-        } else {
-            status = ActivityStatus.END;
-        }
-
-        return status;
     }
 
     /**
@@ -245,6 +232,7 @@ public class ActivityService extends BaseService {
 
     /**
      * 关闭活动通过审核通知提示
+     *
      * @param id 活动id
      */
     public void closeNotification(Integer id) {
