@@ -9,7 +9,7 @@
                  label-position="left">
             <el-form-item label="职位名称" prop="name">
                 <el-input v-model="jobForm.name"
-                          maxlength="20"
+                          maxlength="40"
                           class="text-input-width"
                           show-word-limit
                           placeholder="请填写职位名称"
