@@ -40,7 +40,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     private Integer follower;//关注人数
     private Integer applicantQuantity;//报名人数
     private Integer weight;//排名权重
-    private String notice;//报名审核后是否需要通知
+    private String sendNoticeConfirm;//报名审核后是否需要通知,0不再提示,1需要提示
     private Boolean joinFlag; //是否参加
     @JSONField(format = "yyyy-MM-dd HH:mm")
     private Date joinTime; //参加时间

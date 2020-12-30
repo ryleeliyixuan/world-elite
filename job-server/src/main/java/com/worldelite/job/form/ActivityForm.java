@@ -51,6 +51,6 @@ public class ActivityForm {
     private Integer follower; //关注人数
     private Integer applicantQuantity; //报名人数
     private Integer weight; //置顶权重
-    private String notice; //通知提示,0不再提示,1需要提示
+    private String sendNoticeConfirm; //发送通知确认提示,0不再提示,1需要提示
 
 }
