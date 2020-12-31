@@ -3,12 +3,13 @@ package com.worldelite.job.api;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.context.SpringContextHolder;
+import com.worldelite.job.entity.ActivityReport;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
-import com.worldelite.job.form.ActivityForm;
-import com.worldelite.job.form.ActivityListForm;
-import com.worldelite.job.form.SearchNameForm;
+import com.worldelite.job.form.*;
+import com.worldelite.job.service.ActivityReportService;
 import com.worldelite.job.service.ActivitySearchService;
 import com.worldelite.job.service.ActivityService;
+import com.worldelite.job.vo.ActivityReportVo;
 import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
@@ -38,6 +39,9 @@ public class ActivityApi {
      */
     @Autowired
     private ActivitySearchService activitySearchService;
+
+    @Autowired
+    private ActivityReportService activityReportService;
 
     /**
      * 活动列表
@@ -154,4 +158,33 @@ public class ActivityApi {
         SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this));
         return ApiResult.ok();
     }
+
+    @ApiDoc
+    @RequireLogin
+    @GetMapping("/report")
+    public ApiResult<PageResult<ActivityReportVo>> getActivityReportList(ActivityReportForm activityReportForm, PageForm pageForm){
+        return ApiResult.ok(activityReportService.getActivityReportList(activityReportForm, pageForm));
+    }
+
+    @ApiDoc
+    @RequireLogin
+    @PostMapping("/report")
+    public ApiResult<?> addActivityReport(@RequestBody ActivityReportForm activityReportForm){
+        return ApiResult.ok(activityReportService.addActivityReport(activityReportForm));
+    }
+
+    @ApiDoc
+    @RequireLogin
+    @PatchMapping("/report")
+    public ApiResult<?> updateActivityReport(@RequestBody ActivityReportForm activityReportForm){
+        return ApiResult.ok(activityReportService.updateActivityReport(activityReportForm));
+    }
+
+    @ApiDoc
+    @RequireLogin
+    @DeleteMapping("/report/{id}")
+    public ApiResult<PageResult<ActivityReportVo>> deleteActivityReportList(@PathVariable("id") Integer id){
+        return ApiResult.ok(activityReportService.delActivityReport(id));
+    }
+
 }
