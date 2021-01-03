@@ -265,11 +265,11 @@
   </update>
 
   <select id="selectStatInfo" parameterType="INTEGER" resultType="map">
-    select create_time,count(0) as count from t_user_corporate where to_days(now()) - to_days(create_time) &lt; ${value} group by(TO_DAYS(create_time));
+    select any_value(create_time) as create_time,count(0) as count from t_user_corporate where to_days(now()) - to_days(create_time) &lt; ${value} group by(TO_DAYS(create_time));
   </select>
 
   <select id="selectSpecifyMonthStatInfo" parameterType="string" resultType="map">
-    SELECT create_time,COUNT(0) AS count FROM t_user_corporate WHERE DATE_FORMAT(create_time,'%Y-%m') = #{value}
+    SELECT any_value(create_time) as create_time,COUNT(0) AS count FROM t_user_corporate WHERE DATE_FORMAT(create_time,'%Y-%m') = #{value} GROUP BY DATE(create_time)
   </select>
 
   <select id="selectSpecifyYearStatInfo" parameterType="string" resultType="map">
