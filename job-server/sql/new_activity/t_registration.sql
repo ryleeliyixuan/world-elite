@@ -46,8 +46,8 @@ CREATE TABLE `t_registration`  (
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- 添加报名者ID和简历ID
-ALTER TABLE db_worldelite_activity.t_registration ADD registration_user_id BIGINT(20) NULL COMMENT '活动报名者ID';
-ALTER TABLE db_worldelite_activity.t_registration CHANGE registration_user_id registration_user_id BIGINT(20) NULL COMMENT '活动报名者ID' AFTER activity_id;
-ALTER TABLE db_worldelite_activity.t_registration ADD resume_id BIGINT(20) NULL COMMENT '简历ID';
-ALTER TABLE db_worldelite_activity.t_registration CHANGE resume_id resume_id BIGINT(20) NULL COMMENT '简历ID' AFTER registration_user_id;
+ALTER TABLE t_registration ADD registration_user_id BIGINT(20) NULL COMMENT '活动报名者ID';
+ALTER TABLE t_registration CHANGE registration_user_id registration_user_id BIGINT(20) NULL COMMENT '活动报名者ID' AFTER activity_id;
+ALTER TABLE t_registration ADD resume_id BIGINT(20) NULL COMMENT '简历ID';
+ALTER TABLE t_registration CHANGE resume_id resume_id BIGINT(20) NULL COMMENT '简历ID' AFTER registration_user_id;
 
