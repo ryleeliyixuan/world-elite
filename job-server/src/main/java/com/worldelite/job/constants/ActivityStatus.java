@@ -5,9 +5,13 @@ package com.worldelite.job.constants;
  */
 public enum ActivityStatus {
 
-    DRAFT(1),PUBLISH(2),OFFLINE(3),
-    //将PUBLISH状态的活动细分
-    WILL(4),ACTIVE(5),END(6);
+    REVIEWING(0), //审核中
+    DRAFT(1), //草稿
+    OFFLINE(2), //下架
+    WILL(3), //即将开始
+    SIGN_UP(4), //报名中
+    ACTIVE(5), //进行中
+    END(6); //已结束
     public final byte value;
 
     ActivityStatus(int value) {

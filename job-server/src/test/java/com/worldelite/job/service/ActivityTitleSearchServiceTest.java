@@ -18,7 +18,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class ActivityTitleSearchServiceTest {
 
     @Autowired
-    private ActivityTitleSearchService activityTitleSearchService;
+    private ActivitySearchService activityTitleSearchService;
 
     @Test
     public void testCreateOrRefreshActivityTitleIndex() {
