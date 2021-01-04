@@ -47,11 +47,9 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     @JSONField(format = "yyyy-MM-dd HH:mm")
     private Date curTime; //系统服务器当前时间, 前端计算剩余多久用
 
-    //举办方信息vo
-    private Integer organizerId;
-    private String organizerType;
-    //问卷vo
-    private Integer registrationTemplateId;
+    private String organizerType; //举办方类型
+    private OrganizerInfoVo organizerInfoVo; //举办方信息vo
+    private Integer registrationTemplateId; //问卷id
 
 
     @Override

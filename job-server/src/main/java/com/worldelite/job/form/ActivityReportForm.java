@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
 @Data
 public class ActivityReportForm{
     private Integer id; //举报ID
-    private Long activityId; //活动ID
+    private Integer activityId; //活动ID
     private Long reportUserId; //举报者用户ID,留空为当前登录账户
     private Integer optionId; //举报理由选项Dict
     private String reason; //举报原因

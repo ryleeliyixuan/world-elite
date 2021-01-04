@@ -40,7 +40,7 @@ CREATE TABLE `t_activity`  (
   `number_limit` int(11) NULL DEFAULT NULL COMMENT '报名人数限制',
   `address` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '详细地址, 如果是线上活动则为链接',
   `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '活动介绍',
-  `status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '活动状态, 0:审核中 1:草稿,2:下架,3:即将开始,4:报名中,5:进行中,6已结束',
+  `status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '活动状态, 0:审核中 1:草稿,2:下架,3:即将开始,4:报名中,5:进行中,6:已结束,7:审核失败',
   `registration_template_id` int(11) NULL DEFAULT NULL COMMENT '报名表模板ID',
   `follower` int(11) NULL DEFAULT 0 COMMENT '关注人数',
   `applicant_quantity` int(11) NULL DEFAULT 0 COMMENT '报名人数',

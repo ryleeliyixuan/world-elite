@@ -16,6 +16,5 @@ public class ActivityListForm extends PageForm{
     private String publisherType; //活动发布者类型
     private Byte status; //活动状态
     private String keyword; //搜索关键词
-    public String sortField; //排序字段
-
+    private String sortField; //排序字段
 }

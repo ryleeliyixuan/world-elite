@@ -1,5 +1,6 @@
 package com.worldelite.job.form;
 
+import com.worldelite.job.entity.OrganizerInfo;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -53,4 +54,5 @@ public class ActivityForm {
     private Integer weight; //置顶权重
     private String sendNoticeConfirm; //发送通知确认提示,0不再提示,1需要提示
 
+    private OrganizerInfoForm organizerInfoForm; //组织信息
 }

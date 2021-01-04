@@ -8,21 +8,19 @@ import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
-import com.worldelite.job.entity.Favorite;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
+import com.worldelite.job.form.ActivityReviewForm;
 import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.PageResult;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +45,12 @@ public class ActivityService extends BaseService {
 
     @Autowired
     private ActivityStatusManager activityStatusManager;
+
+    @Autowired
+    private ActivityReviewService activityReviewService;
+
+    @Autowired
+    private OrganizerInfoService organizerInfoService;
 
     /**
      * 获取活动列表
@@ -80,50 +84,6 @@ public class ActivityService extends BaseService {
         return toActivityVo(activity);
     }
 
-    public ActivityVo getSimpleActivity(Integer id) {
-        Activity activity = activityMapper.selectSimpleById(id);
-        return toActivityVo(activity);
-    }
-
-    public PageResult<ActivityVo> getSimpleActivityByStatus(Long userId, ActivityListForm pageForm) {
-        //根据不同状态构建查询SQL
-        StringBuffer where = new StringBuffer();
-        Date date = new Date();
-        String strDateFormat = "yyyy-MM-dd HH:mm:ss";
-        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
-        String dateStr = sdf.format(date);
-        where.append("id in (select object_id from t_favorite where type = 3 and user_id = " + userId + ")");
-        Byte status = pageForm.getStatus();
-        if (status == ActivityStatus.WILL.value) {
-            where.append(" and start_time > '" + dateStr + "'");
-        }
-        if (status == ActivityStatus.ACTIVE.value) {
-            where.append(" and start_time < '" + dateStr + "'");
-            where.append(" and finish_time > '" + dateStr + "'");
-        }
-        if (status == ActivityStatus.END.value) {
-            where.append(" and finish_time < '" + dateStr + "'");
-        }
-        AppUtils.setPage(pageForm);
-        Page<Activity> page = (Page<Activity>) activityMapper.selectSimpleByIdAndStatus(where.toString());
-        PageResult<ActivityVo> pageResult = new PageResult<>(page);
-        List<ActivityVo> activityVoList = new ArrayList<>(page.size());
-        for (Activity activity : page) {
-            ActivityVo activityVo = toActivityVo(activity);
-            Favorite options = new Favorite();
-            options.setType(FavoriteType.ACTIVITY.value);
-            options.setUserId(userId);
-            options.setObjectId(activity.getId().longValue());
-            List<Favorite> favoriteList = favoriteMapper.selectAndList(options);
-            if (CollectionUtils.isNotEmpty(favoriteList)) {
-                activityVo.setJoinTime(favoriteList.get(0).getCreateTime());
-            }
-            activityVoList.add(activityVo);
-        }
-        pageResult.setList(activityVoList);
-        return pageResult;
-    }
-
     /**
      * 保存活动
      *
@@ -134,7 +94,7 @@ public class ActivityService extends BaseService {
     public void saveActivity(ActivityForm activityForm) {
         Activity activity = null;
         if (activityForm.getId() != null) {
-            activity = activityMapper.selectSimpleById(activityForm.getId());
+            activity = activityMapper.selectByPrimaryKey(activityForm.getId());
         }
 
         if (activity == null) {
@@ -148,17 +108,30 @@ public class ActivityService extends BaseService {
             activity.setUserId(curUser().getId());
             activity.setUserType(String.valueOf(curUser().getType()));
         }
-        //TODO 需要保存组织信息
 
         if (activity.getId() == null) {
             //新发布的活动都是未来将举办的,状态默认即将开始
             activity.setStatus(ActivityStatus.WILL.value);
             activityMapper.insertSelective(activity);
 
+            //添加活动审核信息
+            ActivityReviewForm activityReviewForm = new ActivityReviewForm();
+            activityReviewForm.setActivityId(activity.getId());
+            activityReviewForm.setUserId(activity.getUserId());
+            activityReviewService.addActivityReview(activityReviewForm);
+
+            if (activityForm.getOrganizerInfoForm() != null) {
+                organizerInfoService.addOrganizerInfo(activityForm.getOrganizerInfoForm());
+            }
+
             activityStatusManager.put(activity);
         } else {
             activity.setUpdateTime(new Date());
             activityMapper.updateByPrimaryKeySelective(activity);
+
+            if (activityForm.getOrganizerInfoForm() != null) {
+                organizerInfoService.updateOrganizerInfo(activityForm.getOrganizerInfoForm());
+            }
 
             activityStatusManager.remove(activity.getId());
             activityStatusManager.put(activity);
@@ -171,7 +144,7 @@ public class ActivityService extends BaseService {
      * @param id
      */
     public void takeOffActivity(Integer id) {
-        Activity activity = activityMapper.selectSimpleById(id);
+        Activity activity = activityMapper.selectByPrimaryKey(id);
         if (activity != null) {
             //自己发布的或者管理员才能下架活动
             if (activity.getUserId().equals(curUser().getId()) || curUser().getType() == UserType.ADMIN.value) {
@@ -190,7 +163,7 @@ public class ActivityService extends BaseService {
      * @param id
      */
     public void deleteActivity(Integer id) {
-        Activity activity = activityMapper.selectSimpleById(id);
+        Activity activity = activityMapper.selectByPrimaryKey(id);
         if (activity != null) {
             //自己发布的或者管理员才能删除活动
             if (activity.getUserId().equals(curUser().getId()) || curUser().getType() == UserType.ADMIN.value) {
@@ -213,6 +186,9 @@ public class ActivityService extends BaseService {
         if (curUser() != null) {
             activityVo.setJoinFlag(favoriteService.checkUserFavorite(activity.getId().longValue(), FavoriteType.ACTIVITY));
         }
+
+        activityVo.setOrganizerInfoVo(organizerInfoService.getOrganizerInfo(activity.getOrganizerId()));
+
         return activityVo;
     }
 

@@ -23,7 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `t_activity_report`;
 CREATE TABLE `t_activity_report`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '举报ID',
-  `activity_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '活动ID',
+  `activity_id` int(11) NOT NULL DEFAULT 0 COMMENT '活动ID',
   `report_user_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '举报者用户ID',
   `option_id` int(11) NULL DEFAULT 0 COMMENT '举报理由选项',
   `reason` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '举报原因',
