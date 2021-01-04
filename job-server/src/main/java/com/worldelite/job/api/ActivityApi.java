@@ -154,7 +154,7 @@ public class ActivityApi {
     }
 
     @PatchMapping("/create-or-refresh-activity-info-index")
-    public ApiResult<?> updateActivityInfoIndex() {
+    public ApiResult updateActivityInfoIndex() {
         SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this));
         return ApiResult.ok();
     }
@@ -169,14 +169,14 @@ public class ActivityApi {
     @ApiDoc
     @RequireLogin
     @PostMapping("/report")
-    public ApiResult<?> addActivityReport(@RequestBody ActivityReportForm activityReportForm){
+    public ApiResult addActivityReport(@RequestBody ActivityReportForm activityReportForm){
         return ApiResult.ok(activityReportService.addActivityReport(activityReportForm));
     }
 
     @ApiDoc
     @RequireLogin
     @PatchMapping("/report")
-    public ApiResult<?> updateActivityReport(@RequestBody ActivityReportForm activityReportForm){
+    public ApiResult updateActivityReport(@RequestBody ActivityReportForm activityReportForm){
         return ApiResult.ok(activityReportService.updateActivityReport(activityReportForm));
     }
 
