@@ -141,7 +141,7 @@ public class FavoriteService extends BaseService {
      * @param pageForm
      * @return
      */
-    public PageResult<ActivityVo> getUserActivityList(Long userId, ActivityListForm pageForm) {
+    public PageResult<ActivityVo> getUserActivityList(Long userId, PageForm pageForm) {
         Favorite options = new Favorite();
         options.setType(FavoriteType.ACTIVITY.value);
         options.setUserId(userId);
@@ -160,6 +160,16 @@ public class FavoriteService extends BaseService {
         pageResult.setList(activityVoList);
         return pageResult;
     }
+
+    /**
+     * 获取用户指定状态的活动列表
+     * @param pageForm
+     * @return
+     */
+    public PageResult<ActivityVo> getUserActivityListByStatus(Long userId, ActivityListForm pageForm){
+        return activityService.getSimpleActivityByStatus(userId,pageForm);
+    }
+
 
     /**
      * 检查用户是否收藏

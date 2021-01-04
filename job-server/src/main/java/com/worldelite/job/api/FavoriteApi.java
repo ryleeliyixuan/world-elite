@@ -68,6 +68,10 @@ public class FavoriteApi extends BaseApi{
     @GetMapping("my-favorite-activities")
     @ApiDoc
     public ApiResult<PageResult<ActivityVo>> getFavoriteActivityList(ActivityListForm pageForm){
+        if(pageForm.getStatus() != null){
+            PageResult pageResult = favoriteService.getUserActivityListByStatus(curUser().getId(), pageForm);
+            return ApiResult.ok(pageResult);
+        }
         PageResult pageResult = favoriteService.getUserActivityList(curUser().getId(), pageForm);
         return ApiResult.ok(pageResult);
     }

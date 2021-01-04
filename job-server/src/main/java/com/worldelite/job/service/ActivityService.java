@@ -8,6 +8,7 @@ import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
+import com.worldelite.job.entity.Favorite;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.ActivityReviewForm;
@@ -16,6 +17,7 @@ import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.PageResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,6 +85,34 @@ public class ActivityService extends BaseService {
         Activity activity = activityMapper.selectByPrimaryKey(id);
         return toActivityVo(activity);
     }
+
+    public PageResult<ActivityVo> getSimpleActivityByStatus(Long userId, ActivityListForm pageForm) {
+        //根据不同状态构建查询SQL
+        StringBuilder where = new StringBuilder();
+        where.append("id in (select object_id from t_favorite where type = 3 and user_id = ").append(userId).append(")");
+        Byte status = pageForm.getStatus();
+        where.append(" and status = '").append(status).append("'");
+
+        AppUtils.setPage(pageForm);
+        Page<Activity> page = (Page<Activity>) activityMapper.selectSimpleByIdAndStatus(where.toString());
+        PageResult<ActivityVo> pageResult = new PageResult<>(page);
+        List<ActivityVo> activityVoList = new ArrayList<>(page.size());
+        for (Activity activity : page) {
+            ActivityVo activityVo = toActivityVo(activity);
+            Favorite options = new Favorite();
+            options.setType(FavoriteType.ACTIVITY.value);
+            options.setUserId(userId);
+            options.setObjectId(activity.getId().longValue());
+            List<Favorite> favoriteList = favoriteMapper.selectAndList(options);
+            if (CollectionUtils.isNotEmpty(favoriteList)) {
+                activityVo.setJoinTime(favoriteList.get(0).getCreateTime());
+            }
+            activityVoList.add(activityVo);
+        }
+        pageResult.setList(activityVoList);
+        return pageResult;
+    }
+
 
     /**
      * 保存活动

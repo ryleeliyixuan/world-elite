@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.ActivityMapper">
 <cache-ref namespace="com.worldelite.job.mapper.ActivityMapper"/>
+  <select id="selectSimpleByIdAndStatus" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_activity
+    where ${where}
+  </select>
   <select id="selectAndList" resultMap="BaseResultMap" resultType="com.worldelite.job.entity.ActivityOptions">
     select
     <include refid="Base_Column_List" />
