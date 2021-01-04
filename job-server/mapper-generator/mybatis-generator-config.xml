@@ -58,7 +58,10 @@
 
         <table tableName="t_city" domainObjectName="City"  enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false"
-               enableUpdateByExample="false"/>
+               enableUpdateByExample="false">
+            <!--表的insert语句如果要返回自动生成的id值, 启用下面这行-->
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
 
     </context>
 </generatorConfiguration>

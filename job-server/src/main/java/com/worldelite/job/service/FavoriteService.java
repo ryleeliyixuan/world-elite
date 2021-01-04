@@ -54,10 +54,19 @@ public class FavoriteService extends BaseService{
         if(favoriteForm.getFavorite()){
             if(CollectionUtils.isEmpty(favoriteList)){
                 favoriteMapper.insertSelective(favorite);
+
+                if(favorite.getType() == FavoriteType.ACTIVITY.value){
+                    activityService.increaseFollower(Math.toIntExact(favorite.getObjectId()));
+                }
             }
         }else{
             if(CollectionUtils.isNotEmpty(favoriteList)){
                 favoriteMapper.deleteByPrimaryKey(favoriteList.get(0).getId());
+
+                if(favorite.getType() == FavoriteType.ACTIVITY.value){
+                    activityService.minusFollower(Math.toIntExact(favorite.getObjectId()));
+                }
+
             }
         }
         return !favoriteForm.getFavorite();

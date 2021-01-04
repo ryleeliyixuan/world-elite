@@ -22,3 +22,9 @@ INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (212, '3-5年', 21, '3', '2020-09-26 17:37:21', '2020-09-26 17:37:21', 0);
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (213, '5-10年', 21, '4', '2020-09-26 17:37:33', '2020-09-26 17:37:33', 0);
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (214, '10年以上', 21, '5', '2020-09-26 17:37:49', '2020-09-26 17:37:49', 0);
+
+-- 新版活动列表搜索页面时间
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (220, '3天内', 22, '3', '2020-09-26 17:36:38', '2020-09-26 17:36:38', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (221, '1周内', 22, '7', '2020-09-26 17:36:47', '2020-09-26 17:36:47', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (222, '1个月内', 22, '30', '2020-09-26 17:37:21', '2020-09-26 17:37:21', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (223, '3个月内', 22, '90', '2020-09-26 17:37:33', '2020-09-26 17:37:33', 0);
