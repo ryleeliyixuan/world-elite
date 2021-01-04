@@ -44,15 +44,15 @@
       highlight-current-row
       style="margin-top: 10px">
       <el-table-column prop="date"></el-table-column>
-      <el-table-column prop="userTotalNum" label="用户总数"></el-table-column>
-      <el-table-column prop="totalDayGrowthNum" label="总日增数"></el-table-column>
-      <el-table-column prop="totalDayGrowth" label="总日增率"></el-table-column>
-      <el-table-column prop="studentNum" label="学生用户数"></el-table-column>
-      <el-table-column prop="studentDayGrowthNum" label="学生日增数"></el-table-column>
-      <el-table-column prop="studentDayGrowth" label="学生日增率"></el-table-column>
-      <el-table-column prop="companyNum" label="企业用户数"></el-table-column>
-      <el-table-column prop="companyDayGrowthNum" label="企业日增数"></el-table-column>
-      <el-table-column prop="companyDayGrowth" label="企业日增率"></el-table-column>
+      <el-table-column prop="userTotalNum" label="用户总计增数"></el-table-column>
+      <el-table-column prop="totalDayGrowthNum" label="用户总计当日增加数"></el-table-column>
+      <el-table-column prop="totalDayGrowth" label="用户总计当日增长率"></el-table-column>
+      <el-table-column prop="studentNum" label="学生用户增数"></el-table-column>
+      <el-table-column prop="studentDayGrowthNum" label="学生用户当日增加数"></el-table-column>
+      <el-table-column prop="studentDayGrowth" label="学生用户当日增长率"></el-table-column>
+      <el-table-column prop="companyNum" label="企业用户增数"></el-table-column>
+      <el-table-column prop="companyDayGrowthNum" label="企业用户当日增加数"></el-table-column>
+      <el-table-column prop="companyDayGrowth" label="企业用户当日增长率"></el-table-column>
     </el-table>
     <el-table
       :data="tableData"
@@ -61,15 +61,15 @@
       highlight-current-row
       style="margin-top: 10px">
       <el-table-column prop="date"></el-table-column>
-      <el-table-column prop="userTotalNum" label="用户总数"></el-table-column>
-      <el-table-column prop="totalMonthGrowthNum" label="总月增数"></el-table-column>
-      <el-table-column prop="totalMonthGrowth" label="总月增率"></el-table-column>
-      <el-table-column prop="studentNum" label="学生用户数"></el-table-column>
-      <el-table-column prop="studentMonthGrowthNum" label="学生月增数"></el-table-column>
-      <el-table-column prop="studentMonthGrowth" label="学生月增率"></el-table-column>
-      <el-table-column prop="companyNum" label="企业用户数"></el-table-column>
-      <el-table-column prop="companyMonthGrowthNum" label="企业月增数"></el-table-column>
-      <el-table-column prop="companyMonthGrowth" label="企业月增率"></el-table-column>
+      <el-table-column prop="userTotalNum" label="用户总增数"></el-table-column>
+      <el-table-column prop="totalMonthGrowthNum" label="用户总计当月增加数"></el-table-column>
+      <el-table-column prop="totalMonthGrowth" label="用户总计当月增长率"></el-table-column>
+      <el-table-column prop="studentNum" label="学生用户增数"></el-table-column>
+      <el-table-column prop="studentMonthGrowthNum" label="学生用户当月增加数"></el-table-column>
+      <el-table-column prop="studentMonthGrowth" label="学生用户当月增长率"></el-table-column>
+      <el-table-column prop="companyNum" label="企业用户增数"></el-table-column>
+      <el-table-column prop="companyMonthGrowthNum" label="企业用户当月增加数"></el-table-column>
+      <el-table-column prop="companyMonthGrowth" label="企业用户当月增长率"></el-table-column>
     </el-table>
   </div>
 
@@ -251,10 +251,10 @@ export default {
     },
     getRecentX(day, isWeek) {
       let weekX = [];
-      for (let i = 0; i < day; i++) {
+      for (let i = day - 1; i >= 0; i--) {
         weekX[i] = this.getDay(-i, isWeek);
       }
-      return weekX;
+      return this.reverseArr(weekX);
     },
     getDay(day, isWeek){
       let today = new Date();
@@ -273,6 +273,15 @@ export default {
         m = "0" + month;
       }
       return m;
+    },
+    reverseArr(xAxis){
+      let reverseTemp;
+      for(let i = 0; i < xAxis.length / 2; i++){
+        reverseTemp = xAxis[i];
+        xAxis[i] = xAxis[xAxis.length-1-i];
+        xAxis[xAxis.length - 1 - i] = reverseTemp;
+      }
+      return xAxis;
     },
     formatData2Table(data) {
       this.tableData = [];
