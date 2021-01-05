@@ -36,7 +36,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     private String auditType;//报名审核类型(是否需要审核) 0需要;1不需要
     private Integer numberLimit;//报名人数限制
     private String address; //活动地址, 在线活动则为url
-    private Byte status; //状态
+    private Byte status; //活动状态, 0:审核中 1:草稿,2:下架,3:即将开始,4:报名中,5:进行中,6已结束;7:审核失败
     private Integer follower;//关注人数
     private Integer applicantQuantity;//报名人数
     private Integer weight;//排名权重

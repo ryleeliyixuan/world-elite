@@ -47,7 +47,7 @@ public class ActivityForm {
     @NotNull
     private String auditType; //报名审核类型(是否需要审核),0不需要,1需要
     private Integer numberLimit; //报名人数限制
-    private Byte status; //活动状态, 0:审核中 1:草稿,2:下架,3:即将开始,4:报名中,5:进行中,6已结束. 管理端会用来修改活动状态,用户端用不到
+    private Byte status; //活动状态, 0:审核中 1:草稿,2:下架,3:即将开始,4:报名中,5:进行中,6已结束;7:审核失败 管理端会用来修改活动状态,用户端用不到
     private Integer registrationTemplateId; //报名表模板ID
     private Integer follower; //关注人数
     private Integer applicantQuantity; //报名人数
