@@ -243,8 +243,7 @@
         }
 
         .company-recommend-box {
-            background: #f7fbfd;
-            padding: 50px;
+            padding: 50px 0;
 
             .main-title {
                 margin-bottom: 40px;
@@ -296,8 +295,6 @@
         }
 
         .job-recommend-box {
-            background: #f7fbfd;
-            padding: 0 50px 20px;
 
             .main-title {
                 margin-bottom: 40px;

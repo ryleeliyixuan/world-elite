@@ -69,20 +69,20 @@
                 <div style="font-size: 36px;font-weight: 600;color: #3D6FF4;line-height: 50px;margin-top: 30px;">Sorry，暂无匹配面试官。</div>
             </div>
         </div>
-        <el-pagination
-            v-if="interviewerList.length>0"
-            size="medium" class="pagination"
-            layout="prev, pager, next, jumper"
-            :total="total" :page-size="10"
-            :current-page.sync="listQuery.page"
-            @current-change="getList">
-        </el-pagination>
+        <pagination :total="total"
+                    :limit="10"
+                    :page.sync="listQuery.page"
+                    @pagination="getList">
+        </pagination>
     </div>
 </template>
 
 <script>
+    import pagination from '@/components/Pagination2'
+
     export default {
         name: "MoreInterviewer",
+        components: {pagination},
         data() {
             return {
                 loading: true,
@@ -236,6 +236,7 @@
                     margin-top: 4px;
                     margin-right: 40px;
                     text-align: right;
+                    font-weight: 600;
                 }
 
                 .filter {
@@ -270,6 +271,7 @@
         .interviewer-container {
             width: 100%;
             margin-top: 31px;
+            min-height: 365px;
 
             .interviewer-item {
                 width: 100%;
@@ -372,66 +374,6 @@
                         color: #F78259;
                         line-height: 31px;
                         text-align: center;
-                    }
-                }
-            }
-        }
-
-        .pagination {
-            margin-top: 20px;
-            align-items: center;
-            justify-content: center;
-
-            ::v-deep .number, ::v-deep .more {
-                width: 37px;
-                height: 37px;
-                border-radius: 50%;
-                background: #EEEEEE;
-                box-shadow: 0 5px 11px 0 #CCCCCC;
-                line-height: 37px;
-                text-align: center;
-                margin: 0 6px;
-                color: #999999;
-
-                &.active {
-                    color: white;
-                    background: #4C90FC;
-                    box-shadow: 0 5px 11px 0 rgba(30, 150, 252, 0.5);
-                }
-            }
-
-            ::v-deep .btn-prev, ::v-deep .btn-next {
-                width: 37px;
-                height: 37px;
-                border-radius: 50%;
-                background: #EEEEEE;
-                box-shadow: 0 5px 11px 0 #CCCCCC;
-                line-height: 37px;
-                text-align: center;
-                margin: 0 6px;
-                color: #999999;
-                padding: 0;
-
-                & .el-icon {
-                    font-size: 18px;
-                }
-            }
-
-            ::v-deep .el-pagination__jump {
-                font-size: 18px;
-                color: #999999;
-                line-height: 25px;
-                height: 37px;
-
-                .el-input {
-                    width: 66px;
-                    height: 37px;
-                    margin: 0 6px;
-
-                    .el-input__inner {
-                        width: 66px;
-                        height: 37px;
-                        font-size: 18px;
                     }
                 }
             }

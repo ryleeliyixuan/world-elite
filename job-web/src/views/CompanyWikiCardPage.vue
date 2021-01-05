@@ -64,9 +64,9 @@
 
         created() {
             this.initData();
-            let app = document.querySelector('#app');
-            app.addEventListener("scroll", () => {
-                let top = app.scrollTop < 184 ? 0 : app.scrollTop - 184;
+            window.addEventListener("scroll", () => {
+                let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                let top = scrollTop < 88 ? 88 - scrollTop : 0;
                 this.top = (top + 5) + 'px';
             })
         },
@@ -100,7 +100,6 @@
                 if (card) {
                     document.getElementById("app").scrollTop = card[0].offsetTop + 170;
                 }
-
             },
 
             getCompanyList() {
@@ -150,9 +149,8 @@
         position: relative;
 
         .left-container {
-            position: absolute;
-            top: 5px;
-            left: -50px;
+            position: fixed;
+            left: 60px;
             overflow-y: auto;
 
             .left-item {
@@ -241,7 +239,7 @@
         }
     }
 
-    @media screen and (max-width: 1200px) {
+    @media screen and (max-width: 1530px) {
         .app-container {
             .left-container {
                 display: none;

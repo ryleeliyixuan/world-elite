@@ -2,7 +2,7 @@
     <div class="nav-container">
         <div class="nav-left-container">
             <router-link class="logo-image" to="/">
-                <img style="width: 100%;" src="../assets/logo.jpg"/>
+                <img style="width: 100%;" src="../assets/logo.png"/>
             </router-link>
             <el-menu :router="true"
                      mode="horizontal"
@@ -35,8 +35,8 @@
             </div>
             <!-- 已登录 -->
             <div class="user-container" v-else>
-                <svg-icon @click="routeTo('chat')" icon-class="chat2" class="chat"/>
-                <svg-icon @click="routeTo('edit-resume')" icon-class="resume" class="chat"/>
+                <svg-icon @click="routeTo('/chat')" icon-class="chat2" class="chat"/>
+                <svg-icon @click="routeTo('/edit-resume')" icon-class="resume" class="chat"/>
                 <!-- 系统通知 -->
                 <el-popover placement="bottom-end"
                             width="300"
@@ -67,7 +67,7 @@
                              class="nav-message"
                              slot="reference"
                              @click="routeTo('messages')">
-                        <el-badge v-if="messageCount !== 0" is-dot>
+                        <el-badge v-if="messageList.length !== 0" is-dot>
                             <i class="el-icon-message-solid"></i>
                         </el-badge>
                         <i v-else class="el-icon-message-solid"></i>
@@ -306,7 +306,7 @@
     }
 
     .nav-container {
-        padding: 20px;
+        padding-top: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -322,7 +322,8 @@
             }
 
             .logo-image {
-                width: 144px;
+                width: 289px;
+                min-width: 289px;
                 height: auto;
             }
 
