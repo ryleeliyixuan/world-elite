@@ -1,9 +1,6 @@
 package com.worldelite.job.service;
 
-import com.worldelite.job.constants.ActivityIndexFields;
-import com.worldelite.job.constants.ActivitySort;
-import com.worldelite.job.constants.ActivityStatus;
-import com.worldelite.job.constants.Bool;
+import com.worldelite.job.constants.*;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
 import com.worldelite.job.entity.Dict;
@@ -173,7 +170,7 @@ public class ActivitySearchService {
         if (event.getActivityId() != null) {
             final Activity activity = activityMapper.selectByPrimaryKey(event.getActivityId());
             //活动被删除
-            if (activity == null){
+            if (activity == null) {
                 indexWriter.deleteDocuments(new Term(ActivityIndexFields.ACTIVITY_ID, String.valueOf(event.getActivityId())));
                 indexWriter.commit();
 
@@ -239,6 +236,9 @@ public class ActivitySearchService {
 
         doc.add(new TextField(ActivityIndexFields.TITLE, activity.getTitle(), Field.Store.YES));
 
+        doc.add(new StringField(ActivityIndexFields.USER_TYPE, String.valueOf(activity.getUserType()), Field.Store.YES));
+        doc.add(new StringField(ActivityIndexFields.ONLY_OVERSEAS, String.valueOf(activity.getOnlyOverseasStudent()), Field.Store.YES));
+
         try {
             indexWriter.updateDocument(new Term(ActivityIndexFields.ACTIVITY_ID, String.valueOf(activity.getId())), doc);
         } catch (Exception e) {
@@ -275,6 +275,14 @@ public class ActivitySearchService {
                     final long endTime = TimeUnit.MILLISECONDS.toDays(value);
 
                     builder.add(FloatPoint.newRangeQuery(ActivityIndexFields.ACTIVITY_START_TIME, System.currentTimeMillis(), System.currentTimeMillis() + endTime), BooleanClause.Occur.MUST);
+                }
+            }
+
+            if (StringUtils.isNotBlank(form.getPublisherType())) {
+                if (form.getPublisherType().equals(String.valueOf(PublisherType.OVERSEAS.value))) {
+                    builder.add(new TermQuery(new Term(ActivityIndexFields.ONLY_OVERSEAS, String.valueOf(Bool.TRUE))), BooleanClause.Occur.MUST);
+                } else {
+                    builder.add(new TermQuery(new Term(ActivityIndexFields.USER_TYPE, form.getPublisherType())), BooleanClause.Occur.MUST);
                 }
             }
 

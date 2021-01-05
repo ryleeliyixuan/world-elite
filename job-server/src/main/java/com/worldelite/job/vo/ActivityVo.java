@@ -7,8 +7,6 @@ import com.worldelite.job.entity.Activity;
 import com.worldelite.job.util.AppUtils;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * @author yeguozhong yedaxia.github.com
  */
@@ -23,14 +21,10 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     private String poster; //活动海报
     private String description; //活动详情
     private CityVo city; //活动城市
-    @JSONField(format = "yyyy-MM-dd HH:mm")
-    private Date activityStartTime; //活动开始时间
-    @JSONField(format = "yyyy-MM-dd HH:mm")
-    private Date activityFinishTime; //活动结束时间
-    @JSONField(format = "yyyy-MM-dd HH:mm")
-    private Date registrationStartTime; //报名开始时间
-    @JSONField(format = "yyyy-MM-dd HH:mm")
-    private Date registrationFinishTime; //报名结束时间
+    private Long activityStartTime; //活动开始时间
+    private Long activityFinishTime; //活动结束时间
+    private Long registrationStartTime; //报名开始时间
+    private Long registrationFinishTime; //报名结束时间
     private String needResume; //参与活动是否需要上传简历
     private String onlyOverseasStudent;//仅留学生能参加
     private String auditType;//报名审核类型(是否需要审核) 0需要;1不需要
@@ -42,10 +36,8 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     private Integer weight;//排名权重
     private String sendNoticeConfirm;//报名审核后是否需要通知,0不再提示,1需要提示
     private Boolean joinFlag; //是否参加
-    @JSONField(format = "yyyy-MM-dd HH:mm")
-    private Date joinTime; //参加时间
-    @JSONField(format = "yyyy-MM-dd HH:mm")
-    private Date curTime; //系统服务器当前时间, 前端计算剩余多久用
+    private Long joinTime; //参加时间
+    private Long curTime; //系统服务器当前时间, 前端计算剩余多久用
 
     private String organizerType; //举办方类型
     private OrganizerInfoVo organizerInfoVo; //举办方信息vo
@@ -54,9 +46,18 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
 
     @Override
     public ActivityVo asVo(Activity activity) {
-        BeanUtil.copyProperties(activity, this);
+        if (activity == null) return null;
+
+        BeanUtil.copyProperties(activity, this, "activityStartTime", "activityFinishTime", "registrationStartTime", "registrationFinishTime", "joinTime", "curTime");
+
         setPoster(AppUtils.absOssUrl(activity.getPoster()));
-        setCurTime(new Date());
+        setCurTime(System.currentTimeMillis());
+
+        setRegistrationStartTime(activity.getRegistrationStartTime().getTime());
+        setRegistrationFinishTime(activity.getRegistrationFinishTime().getTime());
+        setActivityStartTime(activity.getActivityStartTime().getTime());
+        setActivityFinishTime(activity.getActivityFinishTime().getTime());
+
         return this;
     }
 }

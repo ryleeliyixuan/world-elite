@@ -6,6 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -29,17 +31,14 @@ public class ActivityForm {
     private Long userId; //用户id,留空为当前登录用户
     private String userType; //用户类型,个人账户:1/企业账户:2/管理账户:100. 留空为当前用户类型
     @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date activityStartTime; //活动开始时间
+    private Long activityStartTime; //活动开始时间
+
     @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date activityFinishTime; //活动结束时间
+    private Long activityFinishTime; //活动结束时间
     @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date registrationStartTime; //报名开始时间
+    private Long registrationStartTime; //报名开始时间
     @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date registrationFinishTime; //报名结束时间
+    private Long registrationFinishTime; //报名结束时间
     @NotNull
     private String needResume; //是否需要报名者简历信息, 0不需要,1需要
     @NotNull
@@ -57,4 +56,21 @@ public class ActivityForm {
     @NotNull
     private String organizerType; //举办方类型; 1:校园组织;2:社会组织;3:个人
     private OrganizerInfoForm organizerInfoForm; //组织信息
+
+
+    public Timestamp getActivityStartTime() {
+        return Timestamp.from(Instant.ofEpochMilli(activityStartTime));
+    }
+
+    public Timestamp getActivityFinishTime() {
+        return Timestamp.from(Instant.ofEpochMilli(activityFinishTime));
+    }
+
+    public Timestamp getRegistrationStartTime() {
+        return Timestamp.from(Instant.ofEpochMilli(registrationStartTime));
+    }
+
+    public Timestamp getRegistrationFinishTime() {
+        return Timestamp.from(Instant.ofEpochMilli(registrationFinishTime));
+    }
 }
