@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 活动组织信息api
+ * 活动组织信息
  *
  * @author Xiang Chao
  **/
@@ -25,6 +25,10 @@ public class OrganizerInfoApi {
 
     /**
      * 获取组织信息列表
+     *
+     * @param organizerInfoForm
+     * @param pageForm
+     * @return
      */
     @ApiDoc
     @RequireLogin
@@ -47,6 +51,9 @@ public class OrganizerInfoApi {
 
     /**
      * 添加新组织信息
+     *
+     * @param organizerInfoForm
+     * @return
      */
     @ApiDoc
     @RequireLogin
@@ -57,6 +64,8 @@ public class OrganizerInfoApi {
 
     /**
      * 更新组织信息
+     * @param organizerInfoForm
+     * @return
      */
     @ApiDoc
     @RequireLogin
