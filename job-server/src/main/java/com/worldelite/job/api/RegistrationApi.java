@@ -1,7 +1,9 @@
 package com.worldelite.job.api;
 
+import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.entity.Registration;
 import com.worldelite.job.form.RegistrationForm;
+import com.worldelite.job.form.RegistrationListForm;
 import com.worldelite.job.service.RegistrationService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
@@ -31,6 +33,7 @@ public class RegistrationApi {
      * @return
      */
     @ApiDoc
+    @RequireLogin
     @PostMapping
     public ApiResult addRegistration(@RequestBody RegistrationForm registrationForm){
         registrationService.addRegistration(registrationForm);
@@ -46,6 +49,18 @@ public class RegistrationApi {
     @GetMapping("activity-registration/{activityId}")
     public ApiResult<PageResult<RegistrationVo>> listByActivityId(@PathVariable Integer activityId){
         PageResult<RegistrationVo> pageResult = registrationService.getRegistrationList(activityId);
+        return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 查询活动报名信息
+     * @param registrationListForm
+     * @return
+     */
+    @ApiDoc
+    @GetMapping("list")
+    public ApiResult<PageResult<RegistrationVo>> list(RegistrationListForm registrationListForm){
+        PageResult<RegistrationVo> pageResult = registrationService.getRegistrationList(registrationListForm);
         return ApiResult.ok(pageResult);
     }
 

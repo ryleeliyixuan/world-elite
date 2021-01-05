@@ -1,16 +1,14 @@
 package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.worldelite.job.entity.Activity;
-import com.worldelite.job.entity.QuestionnaireAnswer;
-import com.worldelite.job.entity.Registration;
+import com.github.pagehelper.Page;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.form.QuestionnaireAnswerForm;
 import com.worldelite.job.form.RegistrationForm;
+import com.worldelite.job.form.RegistrationListForm;
 import com.worldelite.job.mapper.RegistrationMapper;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.ActivityVo;
-import com.worldelite.job.vo.PageResult;
-import com.worldelite.job.vo.RegistrationVo;
+import com.worldelite.job.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +26,9 @@ public class RegistrationService extends BaseService{
 
     @Autowired
     private QuestionnaireAnswerService questionnaireAnswerService;
+
+    @Autowired
+    private QuestionnaireTemplateService questionnaireTemplateService;
 
     @Autowired
     private ActivityService activityService;
@@ -56,13 +57,28 @@ public class RegistrationService extends BaseService{
     }
 
     /**
-     * 通过ID查询活动详情
+     * 通过ID查询活动报名详情
      * @param id
      * @return
      */
     public RegistrationVo getRegistrationDetail(Integer id){
         Registration registration = registrationMapper.selectByPrimaryKey(id);
         return new RegistrationVo().asVo(registration);
+    }
+
+    /**
+     * 获取带模板信息的活动报名详情
+     * @param id
+     * @return
+     */
+    public RegistrationWithTemplateVo getRegistrationWithTemplateDetail(Integer id){
+        RegistrationVo registration = getRegistrationDetail(id);
+        QuestionnaireTemplateVo template = questionnaireTemplateService
+                .getTemplateDetailByActivityId(registration.getActivityId());
+        RegistrationWithTemplateVo registrationWithTemplateVo = new RegistrationWithTemplateVo();
+        registrationWithTemplateVo.setRegistration(registration);
+        registrationWithTemplateVo.setTemplate(template);
+        return registrationWithTemplateVo;
     }
 
     /**
@@ -80,4 +96,18 @@ public class RegistrationService extends BaseService{
         return pageResult;
     }
 
+    /**
+     * 查询活动报名基本信息
+     * @param registrationListForm
+     * @return
+     */
+    public PageResult<RegistrationVo> getRegistrationList(RegistrationListForm registrationListForm){
+        AppUtils.setPage(registrationListForm);
+        RegistrationOptions options = new RegistrationOptions();
+        BeanUtil.copyProperties(registrationListForm,options);
+        Page<Registration> registrationList = (Page<Registration>) registrationMapper.selectAndList(options);
+        PageResult<RegistrationVo> pageResult = new PageResult<>(registrationList);
+        pageResult.setList(AppUtils.asVoList(registrationList,RegistrationVo.class));
+        return pageResult;
+    }
 }

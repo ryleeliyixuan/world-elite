@@ -79,6 +79,16 @@ public class QuestionnaireTemplateService extends BaseService{
     }
 
     /**
+     * 通过活动ID获取模板详情
+     * @param activityId
+     * @return
+     */
+    public QuestionnaireTemplateVo getTemplateDetailByActivityId(Integer activityId){
+        QuestionnaireTemplate template = questionnaireTemplateMapper.selectByActivityId(activityId);
+        return getTemplateDetail(template);
+    }
+
+    /**
      * 获取模板详情，包含问卷信息
      * @param questionnaireTemplate
      * @return

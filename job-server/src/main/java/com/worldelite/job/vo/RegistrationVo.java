@@ -12,6 +12,8 @@ import java.util.List;
 @Data
 public class RegistrationVo implements VoConvertable<RegistrationVo, Registration>{
 
+    private Integer activityId; //活动ID
+    private Integer number; //活动编号
     private String name; //姓名
     private String gender; //性别
     private String phone; //手机号
@@ -20,6 +22,7 @@ public class RegistrationVo implements VoConvertable<RegistrationVo, Registratio
     private String grade; //年级
     private String profession; //专业
     private String education; //学历
+    private Integer status; //审核状态
 
     private Long resumeId; //简历ID
 
