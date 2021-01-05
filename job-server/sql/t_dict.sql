@@ -35,3 +35,11 @@ INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (232, '上海', 23, '310000', '2020-09-26 17:37:21', '2020-09-26 17:37:21', 0);
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (233, '广东', 23, '440000', '2020-09-26 17:37:33', '2020-09-26 17:37:33', 0);
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (234, '重庆', 23, '500000', '2020-09-26 17:37:33', '2020-09-26 17:37:33', 0);
+
+-- 新版活动举报理由选项选项
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (250, '出现违规/违法内容', 24, '1');
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (251, '活动内容与活动介绍严重不符', 24, '2');
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (252, '强制推销', 24, '3');
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (253, '主办方言论不当', 24, '4');
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (254, '其他', 24, '5');
+

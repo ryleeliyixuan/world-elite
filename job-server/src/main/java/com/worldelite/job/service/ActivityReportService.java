@@ -12,14 +12,17 @@ import com.worldelite.job.vo.ActivityReportVo;
 import com.worldelite.job.vo.PageResult;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class ActivityReportService extends BaseService {
     private final ActivityReportMapper activityReportMapper;
+    private final DictService dictService;
 
     public PageResult<ActivityReportVo> getActivityReportList(ActivityReportForm activityReportForm, PageForm pageForm) {
         ActivityReport options = new ActivityReport();
@@ -27,15 +30,28 @@ public class ActivityReportService extends BaseService {
         AppUtils.setPage(pageForm);
         Page<ActivityReport> activityReportPage = (Page<ActivityReport>) activityReportMapper.selectAndList(options);
         PageResult<ActivityReportVo> pageResult = new PageResult<>(activityReportPage);
-        pageResult.setList(AppUtils.asVoList(activityReportPage, ActivityReportVo.class));
+
+        List<ActivityReportVo> activityReportVos = new ArrayList<>(activityReportPage.size());
+        for (ActivityReport report : activityReportPage) {
+            activityReportVos.add(toActivityReportVo(report));
+        }
+
+        pageResult.setList(activityReportVos);
         return pageResult;
     }
 
     public ActivityReportVo getActivityReport(Integer id) {
         final ActivityReport activityReport = activityReportMapper.selectByPrimaryKey(id);
-        if(activityReport == null) return null;
+        if (activityReport == null) return null;
 
-        return new ActivityReportVo().asVo(activityReport);
+        return toActivityReportVo(activityReport);
+    }
+
+    private ActivityReportVo toActivityReportVo(ActivityReport activityReport) {
+        ActivityReportVo reportVo = new ActivityReportVo().asVo(activityReport);
+        reportVo.setOptionVo(dictService.getById(activityReport.getOptionId()));
+
+        return reportVo;
     }
 
     public Boolean addActivityReport(ActivityReportForm activityReportForm) {

@@ -6,9 +6,11 @@ import com.worldelite.job.constants.ActivityStatus;
 import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
 import com.worldelite.job.entity.Favorite;
+import com.worldelite.job.event.ActivityInfoRefreshEvent;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.ActivityReviewForm;
@@ -16,6 +18,7 @@ import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ActivityVo;
+import com.worldelite.job.vo.OrganizerInfoVo;
 import com.worldelite.job.vo.PageResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -140,6 +143,14 @@ public class ActivityService extends BaseService {
         }
 
         if (activity.getId() == null) {
+            //添加组织信息
+            if (activityForm.getOrganizerInfoForm() != null) {
+                final OrganizerInfoVo organizerInfoVo = organizerInfoService.addOrganizerInfo(activityForm.getOrganizerInfoForm());
+                if(organizerInfoVo != null){
+                    activity.setOrganizerId(organizerInfoVo.getId());
+                }
+            }
+
             //新发布的活动都是未来将举办的,状态默认即将开始
             activity.setStatus(ActivityStatus.WILL.value);
             activityMapper.insertSelective(activity);
@@ -150,22 +161,23 @@ public class ActivityService extends BaseService {
             activityReviewForm.setUserId(activity.getUserId());
             activityReviewService.addActivityReview(activityReviewForm);
 
-            if (activityForm.getOrganizerInfoForm() != null) {
-                organizerInfoService.addOrganizerInfo(activityForm.getOrganizerInfoForm());
-            }
-
             activityStatusManager.put(activity);
         } else {
             activity.setUpdateTime(new Date());
             activityMapper.updateByPrimaryKeySelective(activity);
 
             if (activityForm.getOrganizerInfoForm() != null) {
-                organizerInfoService.updateOrganizerInfo(activityForm.getOrganizerInfoForm());
+                final OrganizerInfoVo organizerInfoVo = organizerInfoService.updateOrganizerInfo(activityForm.getOrganizerInfoForm());
+                if(organizerInfoVo != null){
+                    activity.setOrganizerId(organizerInfoVo.getId());
+                }
             }
 
             activityStatusManager.remove(activity.getId());
             activityStatusManager.put(activity);
         }
+
+        SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
     }
 
     /**
@@ -199,6 +211,8 @@ public class ActivityService extends BaseService {
             if (activity.getUserId().equals(curUser().getId()) || curUser().getType() == UserType.ADMIN.value) {
                 activityMapper.deleteByPrimaryKey(id);
                 activityStatusManager.remove(activity.getId());
+
+                SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
             } else {
                 throw new RuntimeException(message("api.error.permission.denied"));
             }

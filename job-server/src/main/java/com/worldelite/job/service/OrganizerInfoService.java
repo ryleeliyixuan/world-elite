@@ -30,24 +30,41 @@ public class OrganizerInfoService extends BaseService {
     }
 
     public OrganizerInfoVo getOrganizerInfo(Integer id) {
-        final OrganizerInfo OrganizerInfo = organizerInfoMapper.selectByPrimaryKey(id);
-        if (OrganizerInfo == null) return null;
+        final OrganizerInfo organizerInfo = organizerInfoMapper.selectByPrimaryKey(id);
+        if (organizerInfo == null) return null;
 
-        return new OrganizerInfoVo().asVo(OrganizerInfo);
+        return new OrganizerInfoVo().asVo(organizerInfo);
     }
 
-    public Boolean addOrganizerInfo(OrganizerInfoForm organizerInfoForm) {
+    public OrganizerInfoVo addOrganizerInfo(OrganizerInfoForm organizerInfoForm) {
+        OrganizerInfo organizerInfo = new OrganizerInfo();
+
+        if (organizerInfoForm.getId() != null) {
+            final OrganizerInfo info = organizerInfoMapper.selectByPrimaryKey(organizerInfoForm.getId());
+            if(info != null)
+                organizerInfo = info;
+        }
+
+        BeanUtil.copyProperties(organizerInfoForm, organizerInfo);
+
+        if (organizerInfo.getUserId() == null)
+            organizerInfo.setUserId(curUser().getId());
+
+        if (organizerInfo.getId() != null) {
+            return organizerInfoMapper.updateByPrimaryKeySelective(organizerInfo) == 1 ? new OrganizerInfoVo().asVo(organizerInfo) : null;
+        }else{
+            return organizerInfoMapper.insertSelective(organizerInfo) == 1 ? new OrganizerInfoVo().asVo(organizerInfo) : null;
+        }
+    }
+
+    public OrganizerInfoVo updateOrganizerInfo(OrganizerInfoForm organizerInfoForm) {
         OrganizerInfo organizerInfo = new OrganizerInfo();
         BeanUtil.copyProperties(organizerInfoForm, organizerInfo);
 
-        return organizerInfoMapper.insertSelective(organizerInfo) == 1;
-    }
+        if (organizerInfo.getUserId() == null)
+            organizerInfo.setUserId(curUser().getId());
 
-    public Boolean updateOrganizerInfo(OrganizerInfoForm organizerInfoForm) {
-        OrganizerInfo organizerInfo = new OrganizerInfo();
-        BeanUtil.copyProperties(organizerInfoForm, organizerInfo);
-
-        return organizerInfoMapper.updateByPrimaryKeySelective(organizerInfo) == 1;
+        return organizerInfoMapper.updateByPrimaryKeySelective(organizerInfo) == 1 ? new OrganizerInfoVo().asVo(organizerInfo) : null;
     }
 
     public Boolean delOrganizerInfo(Integer id) {

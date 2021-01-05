@@ -172,7 +172,13 @@ public class ActivitySearchService {
         //更新指定面试官的信息
         if (event.getActivityId() != null) {
             final Activity activity = activityMapper.selectByPrimaryKey(event.getActivityId());
-            if (activity == null) return;
+            //活动被删除
+            if (activity == null){
+                indexWriter.deleteDocuments(new Term(ActivityIndexFields.ACTIVITY_ID, String.valueOf(event.getActivityId())));
+                indexWriter.commit();
+
+                return;
+            }
 
             buildActivityIndex(activity);
         }

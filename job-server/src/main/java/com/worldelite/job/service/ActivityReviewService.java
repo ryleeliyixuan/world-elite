@@ -41,6 +41,9 @@ public class ActivityReviewService extends BaseService {
         ActivityReview activityReview = new ActivityReview();
         BeanUtil.copyProperties(ActivityReviewForm, activityReview);
 
+        if(activityReview.getUserId() == null)
+            activityReview.setUserId(curUser().getId());
+
         activityReview.setStatus(String.valueOf(VerificationStatus.REVIEWING.value));
         return activityReviewMapper.insertSelective(activityReview) == 1;
     }
@@ -48,6 +51,9 @@ public class ActivityReviewService extends BaseService {
     public Boolean updateActivityReview(ActivityReviewForm ActivityReviewForm) {
         ActivityReview activityReview = new ActivityReview();
         BeanUtil.copyProperties(ActivityReviewForm, activityReview);
+
+        if(activityReview.getUserId() == null)
+            activityReview.setUserId(curUser().getId());
 
         return activityReviewMapper.updateByPrimaryKeySelective(activityReview) == 1;
     }
