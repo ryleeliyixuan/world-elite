@@ -8,8 +8,9 @@ import lombok.Data;
 @Data
 public class QuestionnaireAnswerForm {
 
+    private Integer registrationId; //报名ID
     private Integer questionnaireId; //问卷ID
-    private String answerContent; //回答内容
-    private Integer answerOptionsId; //选项ID
+    private String[] answerContentList; //回答内容
+    private Integer[] answerOptionsIdList; //选项ID
 
 }

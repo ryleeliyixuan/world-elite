@@ -1,14 +1,7 @@
 package com.worldelite.job.controller;
 
-import com.worldelite.job.anatation.RequireLogin;
-import com.worldelite.job.entity.Registration;
-import com.worldelite.job.entity.ResumeDetail;
 import com.worldelite.job.service.RegistrationService;
-import com.worldelite.job.service.resume.ResumeService;
-import com.worldelite.job.service.resume.ResumeServiceFactory;
-import com.worldelite.job.vo.RegistrationVo;
-import com.worldelite.job.vo.RegistrationWithTemplateVo;
-import com.worldelite.job.vo.ResumeVo;
+import com.worldelite.job.vo.QuestionnaireTemplateWithAnswerVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,8 +27,8 @@ public class RegistrationController extends BaseController{
 //    @RequireLogin
     @GetMapping("/registration/{registrationId}")
     public String resume(ModelMap modelMap, @PathVariable("registrationId") Integer registrationId){
-        RegistrationWithTemplateVo registrationWithTemplateVo = registrationService.getRegistrationWithTemplateDetail(registrationId);
-        modelMap.put("registrationWithTemplate", registrationWithTemplateVo);
+        QuestionnaireTemplateWithAnswerVo registrationVo = registrationService.getRegistrationWithTemplateDetail(registrationId);
+        modelMap.put("registration", registrationVo);
         return "registration";
     }
 }

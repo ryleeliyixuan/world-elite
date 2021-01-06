@@ -7,6 +7,7 @@ import com.worldelite.job.form.QuestionnaireForm;
 import com.worldelite.job.form.QuestionnaireTemplateForm;
 import com.worldelite.job.mapper.QuestionnaireTemplateMapper;
 import com.worldelite.job.util.AppUtils;
+import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.QuestionnaireTemplateVo;
 import com.worldelite.job.vo.QuestionnaireVo;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,9 @@ public class QuestionnaireTemplateService extends BaseService{
     @Autowired
     private QuestionnaireService questionnaireService;
 
+    @Autowired
+    private ActivityService activityService;
+
     /**
      * 添加报名表模板信息
      * @param questionnaireTemplateForm
@@ -37,10 +41,9 @@ public class QuestionnaireTemplateService extends BaseService{
     public void addQuestionnaireTemplate(QuestionnaireTemplateForm questionnaireTemplateForm){
         QuestionnaireTemplate template = new QuestionnaireTemplate();
         BeanUtil.copyProperties(questionnaireTemplateForm,template);
-        //参数没有用户ID，则认为是当前用户添加模板
-        if(questionnaireTemplateForm.getUserId()==null){
-            template.setUserId(curUser().getId());
-        }
+        //获取活动用ID
+        ActivityVo activity = activityService.getActivityInfo(template.getActivityId());
+        template.setUserId(activity.getUserId());
         //保存模板信息
         questionnaireTemplateMapper.insertSelective(template);
         log.debug("保存模板{}",template.getId());

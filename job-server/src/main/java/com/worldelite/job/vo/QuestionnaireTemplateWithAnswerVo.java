@@ -1,18 +1,27 @@
 package com.worldelite.job.vo;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
-import com.worldelite.job.entity.Registration;
 import lombok.Data;
 
 import java.util.List;
 
 /**
- * 活动报名视图
+ * 问卷模板和回答视图
  */
 @Data
-public class RegistrationVo implements VoConvertable<RegistrationVo, Registration>{
+public class QuestionnaireTemplateWithAnswerVo {
+
+    private String templateName; //模板名
+    private String title; //报名表标题
+    private String nameFlag; //姓名标志
+    private String genderFlag; //性别标志
+    private String phoneFlag; //手机号标志
+    private String emailFlag; //邮箱标志
+    private String schoolFlag; //学校标志
+    private String gradeFlag; //年级标志
+    private String professionFlag; //专业标志
+    private String educationFlag; //学历标志
 
     private Integer id; //报名ID
     private Integer activityId; //活动ID
@@ -30,11 +39,6 @@ public class RegistrationVo implements VoConvertable<RegistrationVo, Registratio
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long resumeId; //简历ID
 
-    private List<QuestionnaireAnswerVo> answerList; //回答列表
+    private List<QuestionnaireWithAnswerVo> questionnaireList; //问卷列表
 
-    @Override
-    public RegistrationVo asVo(Registration registration) {
-        BeanUtil.copyProperties(registration,this);
-        return this;
-    }
 }
