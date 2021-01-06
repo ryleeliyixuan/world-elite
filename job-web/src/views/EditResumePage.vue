@@ -1,32 +1,35 @@
 <template>
     <div class="app-container">
         <b-container>
-            <b-row>
-                <b-media class="resume-wrapper">
-                    <el-tabs v-model="editableTabsValue" type="card"  editable @edit="handleTabsEdit"
-                             style="margin-top: 41px">
-                        <el-tab-pane
-                                :key="item.name"
-                                v-for="(item, index) in editableTabs"
-                                :label="'简历'+(index+1)"
-                                :name="item.name"
-                        >
-                    <div class="resume-body">
-                        <el-row style="display: inline-flex;height: 100px;padding: 3px;">
-                            <div class="resume-updateTime">更新时间：</div>
-                            <div style="width: 262px">
-                            <div class="help-text"  v-show="seen" @mouseleave="onMouseOut" >
-                                HR在搜索简历时只会搜索到最符合搜索条件的那一版简历。
-                                但是当你有多版简历同等程度满足HR搜索条件时，优先级更高的简历会出现在HR面前。
-                                注：在简历名称处拖拽简历顺序也可调整优先级。
-                            </div>
-                            </div>
-                            <div style="margin-right: 0px">
+            <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit"
+            >
+                <el-tab-pane
+                        :key="item.id"
+                        v-for="(item, index) in resume"
+                        :label="'简历'+(index+1)"
+                        :name="item.id"
+                        style="margin-top: -100px"
+                >
+                    <b-row>
+
+                        <!--                            {{item.id}}-->
+                        <b-media class="resume-wrapper">
+                            <div class="resume-body">
+                                <el-row style="display: inline-flex;height: 100px;padding: 3px;">
+                                    <div class="resume-updateTime">更新时间：</div>
+                                    <div style="width: 262px">
+                                        <div class="help-text" v-show="seen" @mouseleave="onMouseOut">
+                                            HR在搜索简历时只会搜索到最符合搜索条件的那一版简历。
+                                            但是当你有多版简历同等程度满足HR搜索条件时，优先级更高的简历会出现在HR面前。
+                                            注：在简历名称处拖拽简历顺序也可调整优先级。
+                                        </div>
+                                    </div>
+                                    <div style="margin-right: 0px">
                             <span>
                                 <svg-icon
-                                    icon-class="help-mark"
-                                    style="width: 13px;height: 31px;padding-top: 12px;padding-left: 3px"
-                                    @mouseenter="onMouseOver"
+                                        icon-class="help-mark"
+                                        style="width: 13px;height: 31px;padding-top: 12px;padding-left: 3px"
+                                        @mouseenter="onMouseOver"
                                 ></svg-icon>
                                 <span style="padding-left: 8px;padding-right: 9px">优先级
                                 <span style="color: #d9001b;font-size: 20px;height: 3px;width: 3px;vertical-align: sub;padding-right: 9px">*</span>
@@ -37,1303 +40,1420 @@
                                             :key="item.poriority"
                                             :label="item.name"
                                             :value="item.poriority"
-                                    style="width: 89px;height: 25px">
+                                            style="width: 89px;height: 25px">
                                     </el-option>
 
                                 </el-select>
                             </span>
-                            </div>
-                        </el-row>
-                        <div class="resume-box" id="Resume-Basic">
-                            <div v-if="showBasicDialog==true">
-                                <el-row>
-                                    <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                        <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                        <span class="resume-base">基本信息</span>
-                                        <span class="resume-red">*</span>
                                     </div>
                                 </el-row>
-                                <div class="resume-box-edit">
-                                    <div style="display:flex;height: 45px;">
-                                        <div style="width: 350px">
-                                            <el-form ref="resumeForm" :model="resumeForm" :rules="resumeFormRules" label-width="80px">
-                                                <el-form-item label="姓名:" prop="name" class="m-input-text-width">
-                                                    <el-input
-                                                            v-model="resumeForm.name"
-                                                            placeholder="你的真实姓名"
-                                                            maxlength="20"
-                                                            show-word-limit
-                                                    ></el-input>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                        <div>
-                                            <div style="padding-top: 8px">
-                                                <span class="politic-title">政治面貌：</span>
-                                                <el-select class="politic-sel" v-model="resumeForm.maritalStatus" placeholder="">
-                                                    <el-option
-                                                            v-for="item in maritalStatusList"
-                                                            :key="item.maritalStatus"
-                                                            :label="item.name"
-                                                            :value="item.maritalStatus">
-                                                    </el-option>
-                                                </el-select>
+                                <div class="resume-box" id="Resume-Basic">
+                                    <div v-if="showBasicDialog==true">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">基本信息</span>
+                                                <span class="resume-red">*</span>
+                                            </div>
+                                        </el-row>
+                                        <div class="resume-box-edit">
+                                            <div style="display:flex;height: 45px;">
+                                                <div style="width: 350px">
+                                                    <el-form ref="resumeForm" :model="resumeForm"
+                                                             :rules="resumeFormRules" label-width="80px">
+                                                        <el-form-item label="姓名:" prop="name"
+                                                                      class="m-input-text-width">
+                                                            <el-input
+                                                                    v-model="item.name"
+                                                                    placeholder="你的真实姓名"
+                                                                    maxlength="20"
+                                                                    show-word-limit
+                                                            ></el-input>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div>
+                                                    <div style="padding-top: 8px">
+                                                        <span class="politic-title">政治面貌：</span>
+                                                        <el-select class="politic-sel"
+                                                                   v-model="resumeForm.maritalStatus" placeholder="">
+                                                            <el-option
+                                                                    v-for="item in maritalStatusList"
+                                                                    :key="item.maritalStatus"
+                                                                    :label="item.name"
+                                                                    :value="item.maritalStatus">
+                                                            </el-option>
+                                                        </el-select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div style="display:flex;height: 45px">
+                                                <div style="width: 310px">
+                                                    <el-form ref="resumeForm" :model="resumeForm"
+                                                             :rules="resumeFormRules" label-width="85px">
+                                                        <el-form-item label="性别:" prop="gender" class="radio-gender">
+                                                            <el-radio-group v-model="item.gender">
+                                                                <el-radio :label="1">男</el-radio>
+                                                                <el-radio :label="2">女</el-radio>
+                                                            </el-radio-group>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div>
+                                                    <el-form ref="resumeForm" :model="resumeForm"
+                                                             :rules="resumeFormRules" label-width="100px">
+                                                        <el-form-item label="现居地址：" prop="curPlace"
+                                                                      class="n-input-text-width">
+                                                            <el-input
+                                                                    v-model="item.curPlace"
+                                                                    placeholder="比如：洛杉矶"
+                                                                    maxlength="50"
+                                                                    show-word-limit
+                                                            ></el-input>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex;height: 45px">
+                                                <div style="width: 334px">
+                                                    <el-form ref="resumeForm" :model="resumeForm"
+                                                             :rules="resumeFormRules" label-width="80px">
+                                                        <el-form-item label="生日:" prop="birth"
+                                                                      class="m-input-text-width">
+                                                            <el-date-picker
+                                                                    v-model="item.birth"
+                                                                    :picker-options="oldDatePickerOptions"
+                                                                    type="date"
+                                                                    value-format="yyyy-MM-dd"
+                                                                    placeholder="选择日期"
+                                                            ></el-date-picker>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div>
+                                                    <el-form ref="resumeForm" :model="resumeForm"
+                                                             :rules="resumeFormRules" label-width="80px">
+                                                        <el-form-item label="入职时间:" prop="onWork"
+                                                                      class="m-input-text-width">
+                                                            <el-date-picker
+                                                                    v-model="item.onWork"
+                                                                    :picker-options="oldDatePickerOptions"
+                                                                    type="date"
+                                                                    value-format="yyyy-MM-dd"
+                                                                    placeholder="选择日期"
+                                                            ></el-date-picker>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex">
+                                                <div style="width: 334px">
+                                                    <el-form ref="resumeForm" :model="resumeForm"
+                                                             :rules="resumeFormRules" label-width="80px">
+                                                        <el-form-item label="邮箱:" prop="email"
+                                                                      class="m-input-text-width">
+                                                            <el-input
+                                                                    v-model="item.email"
+                                                                    placeholder="请输入新邮箱"
+                                                            ></el-input>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div>
+                                                    <el-form ref="resumeForm" :model="resumeForm"
+                                                             :rules="resumeFormRules" label-width="80px">
+                                                        <el-form-item label="手机号码:" prop="phone"
+                                                                      class="m-input-text-width">
+                                                            <el-input
+                                                                    v-model="item.phone"
+                                                                    placeholder="请输入新手机号码"
+                                                            ></el-input>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
+                                                <el-button class="btn1" @click="handleSaveResumeBasic(true)"
+                                                           :loading="posting">保存
+                                                </el-button>
+                                                <el-button class="btn2" @click="showBasicDialog = false">取消</el-button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div style="display:flex;height: 45px">
-                                        <div style="width: 310px">
-                                            <el-form ref="resumeForm" :model="resumeForm" :rules="resumeFormRules" label-width="85px">
-                                                <el-form-item label="性别:" prop="gender" class="radio-gender">
-                                                    <el-radio-group v-model="resumeForm.gender">
-                                                        <el-radio :label="1" >男</el-radio>
-                                                        <el-radio :label="2" >女</el-radio>
-                                                    </el-radio-group>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                        <div>
-                                            <el-form ref="resumeForm" :model="resumeForm" :rules="resumeFormRules" label-width="100px">
-                                                <el-form-item label="现居地址：" prop="curPlace" class="n-input-text-width">
-                                                    <el-input
-                                                            v-model="resumeForm.curPlace"
-                                                            placeholder="比如：洛杉矶"
-                                                            maxlength="50"
-                                                            show-word-limit
-                                                    ></el-input>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex;height: 45px">
-                                        <div style="width: 334px">
-                                            <el-form ref="resumeForm" :model="resumeForm" :rules="resumeFormRules" label-width="80px">
-                                                <el-form-item label="生日:" prop="birth" class="m-input-text-width">
-                                                    <el-date-picker
-                                                            v-model="resumeForm.birth"
-                                                            :picker-options="oldDatePickerOptions"
-                                                            type="date"
-                                                            value-format="yyyy-MM-dd"
-                                                            placeholder="选择日期"
-                                                    ></el-date-picker>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                        <div>
-                                            <el-form ref="resumeForm" :model="resumeForm" :rules="resumeFormRules" label-width="80px">
-                                                <el-form-item label="入职时间:" prop="onWork" class="m-input-text-width">
-                                                    <el-date-picker
-                                                            v-model="resumeForm.onWork"
-                                                            :picker-options="oldDatePickerOptions"
-                                                            type="date"
-                                                            value-format="yyyy-MM-dd"
-                                                            placeholder="选择日期"
-                                                    ></el-date-picker>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex">
-                                        <div style="width: 334px">
-                                            <el-form ref="resumeForm" :model="resumeForm" :rules="resumeFormRules" label-width="80px">
-                                                <el-form-item label="邮箱:" prop="email" class="m-input-text-width">
-                                                    <el-input
-                                                            v-model="resumeForm.email"
-                                                            placeholder="请输入新邮箱"
-                                                    ></el-input>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                        <div>
-                                            <el-form ref="resumeForm" :model="resumeForm" :rules="resumeFormRules" label-width="80px">
-                                                <el-form-item label="手机号码:" prop="phone" class="m-input-text-width">
-                                                    <el-input
-                                                            v-model="resumeForm.phone"
-                                                            placeholder="请输入新手机号码"
-                                                    ></el-input>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
-                                        <el-button class="btn1" @click="handleSaveResumeBasic(true)" :loading="posting">保存</el-button>
-                                        <el-button class="btn2" @click="showBasicDialog = false">取消</el-button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div v-if="showBasicDialog==false">
-                            <el-row>
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">基本信息</span>
-                                    <span class="resume-red">*</span>
-                                </div>
-                                <span>
+                                    <div v-if="showBasicDialog==false">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">基本信息</span>
+                                                <span class="resume-red">*</span>
+                                            </div>
+                                            <span>
                                <img src="../assets/resume_edit.png"
                                     style="width: 18px;height: 19px;"
                                     v-on:click="handleEditResumeBasic">
                             </span>
-                            </el-row>
-                            <div class="resume-basicinfo row mt-3">
-                                <div class="avatorHolder">
-                                    <el-upload
-                                            class="avatar-uploader"
-                                            :action="uploadPicOptions.action"
-                                            :data="uploadPicOptions.params"
-                                            :accept="uploadPicOptions.acceptFileType"
-                                            :show-file-list="false"
-                                            :on-success="handleAvatarSuccess"
-                                            :before-upload="beforeAvatarUpload"
-                                    >
-                                        <img
-                                                v-if="(resume.avatar && resume.avatar !== '')"
-                                                :src="resume.avatar"
-                                                class="avatar"
-                                        />
-                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                    </el-upload>
-                                    <el-row style="padding-left: 5px">
-                                        <el-button class="img-button">上传照片</el-button>
-                                    </el-row>
-                                </div>
-
-                                <div class="resume-info">
-                                    <div class="info-other-row-l">
-                                        <el-row class="info-name">{{resume.name}}</el-row>
-                                        <el-row class="info-other">性别：
-                                            <span v-if="resume.gender==1">男</span>
-                                            <span v-if="resume.gender==2"></span>
                                         </el-row>
-                                        <el-row class="info-other">年龄：{{resume.age}} 岁</el-row>
-                                        <el-row class="info-other">邮箱：{{resume.email}}</el-row>
-                                        <el-row class="info-other">手机：{{resume.phone}}</el-row>
+                                        <div class="resume-basicinfo row mt-3">
+                                            <div class="avatorHolder">
+                                                <el-upload
+                                                        class="avatar-uploader"
+                                                        :action="uploadPicOptions.action"
+                                                        :data="uploadPicOptions.params"
+                                                        :accept="uploadPicOptions.acceptFileType"
+                                                        :show-file-list="false"
+                                                        :on-success="handleAvatarSuccess"
+                                                        :before-upload="beforeAvatarUpload"
+                                                >
+                                                    <img
+                                                            v-if="(item.avatar && item.avatar !== '')"
+                                                            :src="item.avatar"
+                                                            class="avatar"
+                                                    />
+                                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                </el-upload>
+                                                <el-row style="padding-left: 5px">
+                                                    <el-button class="img-button">上传照片</el-button>
+                                                </el-row>
+                                            </div>
+
+                                            <div class="resume-info">
+                                                <div class="info-other-row-l">
+                                                    <el-row class="info-name">{{item.name}}</el-row>
+                                                    <el-row class="info-other">性别：
+                                                        <span v-if="item.gender==1">男</span>
+                                                        <span v-if="item.gender==2"></span>
+                                                    </el-row>
+                                                    <el-row class="info-other">年龄：{{item.age}} 岁</el-row>
+                                                    <el-row class="info-other">邮箱：{{item.email}}</el-row>
+                                                    <el-row class="info-other">手机：{{item.phone}}</el-row>
+                                                </div>
+                                                <div class="info-other-row-m">
+                                                    <el-row class="info-other">政治面貌：{{item.maritalStatus}}</el-row>
+                                                    <el-row class="info-other">现居地址：{{item.curPlace}}</el-row>
+                                                    <el-row class="info-other">入职时间：{{item.returnTime}}</el-row>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="info-other-row-m">
-                                        <el-row class="info-other">政治面貌：{{resume.maritalStatus}}</el-row>
-                                        <el-row class="info-other">现居地址：{{resume.curPlace}}</el-row>
-                                        <el-row class="info-other">入职时间：{{resume.returnTime}}</el-row>
-                                    </div>
+                                    <el-divider></el-divider>
                                 </div>
-                            </div>
-                            </div>
-                            <el-divider></el-divider>
-                        </div>
-                        <div class="resume-box" id="Resume-Edu">
-                           <div v-if="showEduDialog==false">
-                            <el-row>
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">教育经历</span>
-                                    <span class="resume-red">*</span>
-                                </div>
-                                <span>
+                                <div class="resume-box" id="Resume-Edu">
+                                    <div v-if="showEduDialog==false">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">教育经历</span>
+                                                <span class="resume-red">*</span>
+                                            </div>
+                                            <span>
                                <img src="../assets/resume_add.png"
                                     style="width: 19px;height: 19px;"
                                     v-on:click="handleEditResumeEdu('create')">
                                 </span>
-                            </el-row>
-                            <el-row>
-                                <div class="resume-eduinfo">
-                                    <div style="display: inline-block">
-                                        <div class="resume-edu" v-for="resumeEdu in resume.resumeEduList"
-                                             :key="resumeEdu.id">
-                                            <div class="edu-box-l">
-                                                <el-row class="edu-school ">{{resumeEdu.schoolName}}</el-row>
-                                                <el-row class="info-other">学历：{{resumeEdu.degree.name}}</el-row>
-                                                <el-row class="info-other">专业：{{resumeEdu.majorName}}</el-row>
-                                            </div>
-                                            <div class="edu-box-m">
-                                                <el-row class="info-other">在校时间：
-                                                    <span style="font-size: 14px;
+                                        </el-row>
+                                        <el-row>
+                                            <div class="resume-eduinfo">
+                                                <div style="display: inline-block">
+                                                    <div class="resume-edu" v-for="resumeEdu in item.resumeEduList"
+                                                         :key="resumeEdu.id">
+                                                        <div class="edu-box-l">
+                                                            <el-row class="edu-school ">{{resumeEdu.schoolName}}
+                                                            </el-row>
+                                                            <el-row class="info-other">学历：{{resumeEdu.degree.name}}
+                                                            </el-row>
+                                                            <el-row class="info-other">专业：{{resumeEdu.majorName}}
+                                                            </el-row>
+                                                        </div>
+                                                        <div class="edu-box-m">
+                                                            <el-row class="info-other">在校时间：
+                                                                <span style="font-size: 14px;
                                         font-family: PingFangSC-Regular, PingFang SC;
                                         font-weight: 400;">{{resumeEdu.startTime}}.{{resumeEdu.finishTime}}</span>
-                                                </el-row>
-                                                <el-row class="info-other">GPA：{{resumeEdu.gpa}}</el-row>
+                                                            </el-row>
+                                                            <el-row class="info-other">GPA：{{resumeEdu.gpa}}</el-row>
+                                                        </div>
+                                                        <div>
+                                                            <el-row style="height: 30px">
+                                                                <img src="../assets/resume_edit.png"
+                                                                     style="width: 18px;height: 19px;"
+                                                                     v-on:click="handleEditResumeEdu('update', resumeEdu)">
+                                                            </el-row>
+                                                            <el-row style="height: 30px">
+                                                                <img src="../assets/resume_del.png"
+                                                                     style="width: 19px;height: 21px;"
+                                                                     v-on:click="handleDelResumeEdu(resumeEdu.id)">
+                                                            </el-row>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <el-row style="height: 30px">
-                                                    <img src="../assets/resume_edit.png"
-                                                         style="width: 18px;height: 19px;"
-                                                         v-on:click="handleEditResumeEdu('update', resumeEdu)">
-                                                </el-row>
-                                                <el-row style="height: 30px">
-                                                    <img src="../assets/resume_del.png"
-                                                         style="width: 19px;height: 21px;"
-                                                         v-on:click="handleDelResumeEdu(resumeEdu.id)">
-                                                </el-row>
+                                        </el-row>
+                                    </div>
+                                    <div v-if="showEduDialog==true">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">教育经历</span>
+                                                <span class="resume-red">*</span>
+                                            </div>
+                                        </el-row>
+                                        <div class="resume-box-edit">
+                                            <div style="display:flex;height: 45px;">
+                                                <div style="width: 324px">
+                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                             :rules="resumeEduFormRules" label-width="80px">
+                                                        <el-form-item label="学校:" prop="schoolName"
+                                                                      class="m-input-text-width">
+                                                            <el-input
+                                                                    v-model="resumeEduForm.schoolName"
+                                                                    placeholder="请输入学校名称"
+                                                            ></el-input>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div>
+                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                             :rules="resumeEduFormRules" label-width="90px">
+                                                        <el-form-item label="在校时间：" prop="workingDates"
+                                                                      class="m-input-text-width">
+                                                            <el-date-picker
+                                                                    style="width: 200px"
+                                                                    type="daterange"
+                                                                    range-separator="-"
+                                                                    start-placeholder="入校时间"
+                                                                    end-placeholder="毕业时间"
+                                                                    value-format="yyyy-MM"
+                                                                    v-model="resumeEduForm.workingDates"
+                                                            />
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                            </div>
+                                            <div style="display:flex;height: 45px">
+                                                <div style="width: 310px">
+                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                             :rules="resumeEduFormRules">
+                                                        <el-form-item label="学历" prop="degreeId"
+                                                                      class="m-input-text-width">
+                                                            <el-select v-model="resumeEduForm.degreeId"
+                                                                       placeholder="请选择学历">
+                                                                <el-option
+                                                                        :label="dict.name"
+                                                                        :value="dict.id"
+                                                                        v-for="dict in degreeOptions"
+                                                                        :key="dict.id"
+                                                                />
+                                                            </el-select>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div style="padding-left: 110px;padding-top: 10px">
+                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                             :rules="resumeEduFormRules" label-width="100px">
+                                                        <el-checkbox v-model="resumeEduForm.inSchool" label="1"
+                                                                     class="m-input-text-width">在读
+                                                        </el-checkbox>
+                                                    </el-form>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex;height: 45px">
+                                                <div style="width: 334px">
+                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                             :rules="resumeEduFormRules">
+                                                        <el-form-item label="专业:" prop="majorName"
+                                                                      class="m-input-text-width">
+                                                            <el-input v-model="resumeEduForm.majorName"
+                                                                      placeholder="请输入所在专业"></el-input>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div>
+                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                             :rules="resumeEduFormRules">
+                                                        <el-form-item label="GPA:" prop="gpa" class="n-input-text-width"
+                                                                      label-width="90px">
+                                                            <el-input v-model="resumeEduForm.gpa" type="number"
+                                                                      placeholder="请输入GPA" min="0"></el-input>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
+                                                <el-button class="btn1" @click="handleSaveResumeEdu" :loading="posting">
+                                                    保存
+                                                </el-button>
+                                                <el-button class="btn2" @click="showEduDialog = false">取消</el-button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </el-row>
-                           </div>
-                            <div v-if="showEduDialog==true">
-                                <el-row>
-                                    <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                        <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                        <span class="resume-base">教育经历</span>
-                                        <span class="resume-red">*</span>
-                                    </div>
-                                </el-row>
-                                <div class="resume-box-edit">
-                                <div style="display:flex;height: 45px;">
-                                    <div style="width: 324px">
-                                        <el-form ref="resumeEduForm" :model="resumeEduForm" :rules="resumeEduFormRules" label-width="80px">
-                                            <el-form-item label="学校:" prop="schoolName" class="m-input-text-width">
-                                                <el-input
-                                                        v-model="resumeEduForm.schoolName"
-                                                        placeholder="请输入学校名称"
-                                                ></el-input>
-                                            </el-form-item>
-                                        </el-form>
-                                    </div>
-                                    <div>
-                                        <el-form ref="resumeEduForm" :model="resumeEduForm" :rules="resumeEduFormRules" label-width="90px">
-                                        <el-form-item label="在校时间：" prop="workingDates" class="m-input-text-width">
-                                            <el-date-picker
-                                                style="width: 200px"
-                                                type="daterange"
-                                                range-separator="-"
-                                                start-placeholder="入校时间"
-                                                end-placeholder="毕业时间"
-                                                value-format="yyyy-MM"
-                                                v-model="resumeEduForm.workingDates"
-                                            />
-                                        </el-form-item>
-                                        </el-form>
-                                    </div>
-                                </div>
-                                <div style="display:flex;height: 45px">
-                                    <div style="width: 310px">
-                                        <el-form ref="resumeEduForm" :model="resumeEduForm" :rules="resumeEduFormRules">
-                                        <el-form-item label="学历" prop="degreeId" class="m-input-text-width">
-                                            <el-select v-model="resumeEduForm.degreeId" placeholder="请选择学历">
-                                                <el-option
-                                                        :label="dict.name"
-                                                        :value="dict.id"
-                                                        v-for="dict in degreeOptions"
-                                                        :key="dict.id"
-                                                />
-                                            </el-select>
-                                        </el-form-item>
-                                        </el-form>
-                                    </div>
-                                    <div style="padding-left: 110px;padding-top: 10px">
-                                        <el-form ref="resumeEduForm" :model="resumeEduForm" :rules="resumeEduFormRules" label-width="100px">
-                                            <el-checkbox v-model="resumeEduForm.inSchool" label="1" class="m-input-text-width">在读</el-checkbox>
-                                        </el-form>
-                                    </div>
-                                </div>
-                                <div style="display: flex;height: 45px">
-                                    <div style="width: 334px">
-                                        <el-form ref="resumeEduForm" :model="resumeEduForm" :rules="resumeEduFormRules" >
-                                        <el-form-item label="专业:" prop="majorName" class="m-input-text-width">
-                                            <el-input v-model="resumeEduForm.majorName" placeholder="请输入所在专业"></el-input>
-                                        </el-form-item>
-                                        </el-form>
-                                    </div>
-                                    <div>
-                                        <el-form ref="resumeEduForm" :model="resumeEduForm" :rules="resumeEduFormRules">
-                                        <el-form-item label="GPA:" prop="gpa" class="n-input-text-width" label-width="90px">
-                                            <el-input v-model="resumeEduForm.gpa" type="number" placeholder="请输入GPA" min="0" ></el-input>
-                                        </el-form-item>
-                                        </el-form>
-                                    </div>
-                                </div>
-                                <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
-                                    <el-button class="btn1" @click="handleSaveResumeEdu" :loading="posting">保存</el-button>
-                                    <el-button class="btn2" @click="showEduDialog = false">取消</el-button>
-                                </div>
-                            </div>
-                            </div>
 
-                            <el-divider></el-divider>
-                        </div>
-                        <div class="resume-box" id="Resume-ExpectJob">
-                            <div v-if="showExpectJobDialog==false">
-                            <el-row>
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">求职意向</span>
-                                    <span class="resume-red">*</span>
-                                    <span class="jobcount">1/4</span>
-                                    <span class="mark-row">
+                                    <el-divider></el-divider>
+                                </div>
+                                <div class="resume-box" id="Resume-ExpectJob">
+                                    <div v-if="showExpectJobDialog==false">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">求职意向</span>
+                                                <span class="resume-red">*</span>
+                                                <span class="jobcount">1/4</span>
+                                                <span class="mark-row">
                                     <img src="../assets/resume_qmark.png"
                                          class="mark-icon"
                                          @mouseenter="onMouseOver">
                                     </span>
-                                    <span class="mark-text"
-                                          v-show="seen"
-                                          @mouseleave="onMouseOut">最多可显示4个求职意向
+                                                <span class="mark-text"
+                                                      v-show="seen"
+                                                      @mouseleave="onMouseOut">最多可显示4个求职意向
                                     </span>
-                                </div>
-                                <span>
+                                            </div>
+                                            <span>
                                <img src="../assets/resume_edit.png"
                                     style="width: 18px;height: 20px;"
                                     v-on:click="handleEditExpectJob()"
                                >
                                  </span>
 
-                            </el-row>
-                            <el-row>
-                                <div class="resume-eduinfo">
-                                    <div class="resume-edu">
-                                        <div class="edu-box-l1">
-                                            <el-row class="edu-school">
-                                                XXXXXX<!-- {{resumeExp.jobName}}-->
-                                            </el-row>
-                                            <el-row class="info-other">预期薪资：
-                                                <span v-if="resume.userExpectJob.salary"
-                                                      effect="plain"
-                                                      class="expjob-data"
-                                                >{{resume.userExpectJob.salary.name}}
+                                        </el-row>
+                                        <el-row>
+                                            <div class="resume-eduinfo">
+                                                <div class="resume-edu">
+                                                    <div class="edu-box-l1">
+                                                        <el-row class="edu-school">
+                                                            XXXXXX<!-- {{resumeExp.jobName}}-->
+                                                        </el-row>
+                                                        <el-row class="info-other">预期薪资：
+                                                            <span
+                                                                    v-for="salary in item.userExpectJob"
+                                                                    effect="plain"
+                                                                    class="expjob-data"
+                                                            >{{salary.name}}
                                                 </span>
-                                            </el-row>
-                                            <el-row class="info-other">工作类型：
-                                                <span v-for="jobType in  resume.userExpectJob.jobTypeList"
-                                                      :key="jobType.id"
-                                                      effect="plain"
-                                                      class="expjob-data"
-                                                >{{ jobType.name }}
+                                                        </el-row>
+                                                        <el-row class="info-other">工作类型：
+                                                            <!--                                                <span v-for="jobType in  resume.userExpectJob.jobTypeList"-->
+                                                            <!--                                                      :key="jobType.id"-->
+                                                            <!--                                                      effect="plain"-->
+                                                            <!--                                                      class="expjob-data"-->
+                                                            <!--                                                >{{ jobType.name }}-->
+                                                            <!--                                                </span>-->
+                                                        </el-row>
+                                                    </div>
+                                                    <div class="edu-box-m1">
+                                                        <el-row class="info-other">期望行业：
+                                                            <span v-for="categoryList in  item.userExpectJob"
+                                                                  v-if="categoryList.category"
+                                                                  :key="categoryList.category.id"
+                                                                  effect="plain"
+                                                                  class="expjob-data"
+                                                            >{{ categoryList.category.name }}
                                                 </span>
-                                            </el-row>
-                                        </div>
-                                        <div class="edu-box-m1">
-                                            <el-row class="info-other">期望行业：
-                                                <span v-for="category in  resume.userExpectJob.categoryList"
-                                                      :key="category.id"
-                                                      effect="plain"
-                                                      class="expjob-data"
-                                                >{{ category.name }}
+                                                        </el-row>
+                                                        <el-row class="info-other">工作城市：
+                                                            <span v-for="cityList in item.userExpectJob"
+                                                                  v-if="cityList.city"
+                                                                  :key="cityList.city.id"
+                                                                  effect="plain"
+                                                                  class="expjob-data"
+                                                            >{{ cityList.city.name }}
                                                 </span>
-                                            </el-row>
-                                            <el-row class="info-other">工作城市：
-                                                <span v-for="city in  resume.userExpectJob.cityList"
-                                                      :key="city.id"
-                                                      effect="plain"
-                                                      class="expjob-data"
-                                                >{{ city.name }}
-                                                </span>
-                                            </el-row>
-                                        </div>
+                                                        </el-row>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-row>
                                     </div>
-                                </div>
-                            </el-row>
-                            </div>
-                            <div v-if="showExpectJobDialog==true">
-                            <el-row>
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">求职意向</span>
-                                    <span class="resume-red">*</span>
-                                    <span class="jobcount">1/4</span>
-                                    <span class="mark-row">
+                                    <div v-if="showExpectJobDialog==true">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">求职意向</span>
+                                                <span class="resume-red">*</span>
+                                                <span class="jobcount">1/4</span>
+                                                <span class="mark-row">
                                     <img src="../assets/resume_qmark.png"
                                          class="mark-icon"
                                          @mouseenter="onMouseOver">
                                     </span>
-                                    <span class="mark-text"
-                                          v-show="seen"
-                                          @mouseleave="onMouseOut">最多可显示4个求职意向
+                                                <span class="mark-text"
+                                                      v-show="seen"
+                                                      @mouseleave="onMouseOut">最多可显示4个求职意向
                                     </span>
-                                </div>
-                                <span>
+                                            </div>
+                                            <span>
                                <img src="../assets/resume_edit.png"
                                     style="width: 18px;height: 20px;"
                                     v-on:click="handleEditExpectJob()"
                                >
                                  </span>
 
-                            </el-row>
-                            <div class="resume-box-edit" >
-                                <div style="padding-top: 20px">
-                                <div style="display:flex;height: 70px;">
-                                    <div style="width: 324px;padding-left: 10px">
-                                        <el-form
-                                                ref="expectJobForm"
-                                                :model="expectJobForm"
-                                        >
-                                        <el-form-item label="意向职位：" prop="categoryIds"  class="m-input-text-width">
-                                            <el-cascader
-                                                    placeholder="最多选择三个"
-                                                    :show-all-levels="false"
-                                                    :options="jobCategoryOptions"
-                                                    :props="jobCatetoryProps"
-                                                    filterable
-                                                    collapse-tags
-                                                    clearable
-                                                    v-model="expectJobForm.categoryIds"
-                                            ></el-cascader>
-                                        </el-form-item>
-                                        </el-form>
-                                    </div>
-                                    <div style="padding-left:30px">
+                                        </el-row>
+                                        <div class="resume-box-edit">
+                                            <div style="padding-top: 20px">
+                                                <div style="display:flex;height: 70px;">
+                                                    <div style="width: 324px;padding-left: 10px">
+                                                        <el-form
+                                                                ref="expectJobForm"
+                                                                :model="expectJobForm"
+                                                        >
+                                                            <el-form-item label="意向职位：" prop="categoryIds"
+                                                                          class="m-input-text-width">
+                                                                <el-cascader
+                                                                        placeholder="最多选择三个"
+                                                                        :show-all-levels="false"
+                                                                        :options="jobCategoryOptions"
+                                                                        :props="jobCatetoryProps"
+                                                                        filterable
+                                                                        collapse-tags
+                                                                        clearable
+                                                                        v-model="expectJobForm.categoryIds"
+                                                                ></el-cascader>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                    <div style="padding-left:30px">
 
-                                        <el-form
-                                                ref="expectJobForm"
-                                                :model="expectJobForm"
-                                                label-width="80px"
-                                        >
-                                            <el-form-item label="意向城市:" prop="cityIds" class="m-input-text-width">
-                                                <el-cascader placeholder="最多选择三个"
-                                                             :show-all-levels="false"
-                                                             :options="cityOptions"
-                                                             :props="cityIdProps"
-                                                             filterable
-                                                             clearable
-                                                             collapse-tags
-                                                             v-model="expectJobForm.cityIds">
-                                                </el-cascader>
-                                            </el-form-item>
-                                        </el-form>
+                                                        <el-form
+                                                                ref="expectJobForm"
+                                                                :model="expectJobForm"
+                                                                label-width="80px"
+                                                        >
+                                                            <el-form-item label="意向城市:" prop="cityIds"
+                                                                          class="m-input-text-width">
+                                                                <el-cascader placeholder="最多选择三个"
+                                                                             :show-all-levels="false"
+                                                                             :options="cityOptions"
+                                                                             :props="cityIdProps"
+                                                                             filterable
+                                                                             clearable
+                                                                             collapse-tags
+                                                                             v-model="expectJobForm.cityIds">
+                                                                </el-cascader>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                </div>
+                                                <div style="display:flex;height: 45px">
+                                                    <div>
+                                                        <el-form
+                                                                ref="expectJobForm"
+                                                                :model="expectJobForm"
+                                                                label-width="80px"
+                                                        >
+                                                            <el-form-item label="工作类型:" prop="workType"
+                                                                          class="m-input-text-width">
+                                                                <el-button class="ej-btn"
+                                                                           @click="expectJobForm.workType = '全职'">全职
+                                                                </el-button>
+                                                                <el-button class="ej-btn"
+                                                                           @click="expectJobForm.workType = '兼职'">兼职
+                                                                </el-button>
+                                                                <el-button class="ej-btn"
+                                                                           @click="expectJobForm.workType = '实习'">实习
+                                                                </el-button>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                    <div style="padding-left: 30px">
+                                                        <el-form
+                                                                ref="expectJobForm"
+                                                                :model="expectJobForm"
+                                                                label-width="80px"
+                                                        >
+                                                            <el-form-item label="薪资范围:" class="m-input-text-width">
+                                                                <el-select v-model="expectJobForm.salaryId"
+                                                                           placeholder="薪资范围">
+                                                                    <el-option v-for="item in salaryOptions"
+                                                                               :key="item.id"
+                                                                               :label="item.name"
+                                                                               :value="item.id"
+                                                                    ></el-option>
+                                                                </el-select>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                </div>
+                                                <div style="display: flex;height: 45px;padding-top: 16px;margin-bottom: 26px">
+                                                    <div style="width: 334px;padding-left: 2px">
+                                                        <el-form
+                                                                ref="expectJobForm"
+                                                                :model="expectJobForm"
+                                                                label-width="80px"
+                                                        >
+                                                            <el-form-item label="期望行业:" class="m-input-text-width">
+                                                                <el-select v-model="expectJobForm.industryName"
+                                                                           placeholder="请选择期望行业">
+                                                                    <el-option v-for="item in industryNameOptions"
+                                                                               :key="item.id"
+                                                                               :label="item.name"
+                                                                               :value="item.id"
+                                                                    ></el-option>
+                                                                </el-select>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                    <div style="padding-left:100px;padding-top: 10px">
+                                                        <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                                 :rules="resumeEduFormRules" label-width="100px">
+                                                            <el-checkbox v-model="resumeEduForm.faceToke" label="1"
+                                                                         class="m-input-text-width">面议
+                                                            </el-checkbox>
+                                                        </el-form>
+                                                    </div>
+                                                </div>
+                                                <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
+                                                    <el-button class="btn1" @click="handleSaveExpectJob"
+                                                               :loading="posting">保存
+                                                    </el-button>
+                                                    <el-button class="btn2" @click="showExpectJobDialog = false">取消
+                                                    </el-button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div style="display:flex;height: 45px">
-                                    <div >
-                                        <el-form
-                                                ref="expectJobForm"
-                                                :model="expectJobForm"
-                                                label-width="80px"
-                                        >
-                                            <el-form-item label="工作类型:" prop="workType" class="m-input-text-width">
-                                                <el-button  class="ej-btn" @click="expectJobForm.workType = '全职'">全职</el-button>
-                                                <el-button class="ej-btn" @click="expectJobForm.workType = '兼职'">兼职</el-button>
-                                                <el-button class="ej-btn" @click="expectJobForm.workType = '实习'">实习</el-button>
-                                            </el-form-item>
-                                        </el-form>
-                                    </div>
-                                    <div style="padding-left: 30px">
-                                        <el-form
-                                                ref="expectJobForm"
-                                                :model="expectJobForm"
-                                                label-width="80px"
-                                        >
-                                        <el-form-item label="薪资范围:" class="m-input-text-width">
-                                            <el-select v-model="expectJobForm.salaryId" placeholder="薪资范围">
-                                                <el-option v-for="item in salaryOptions"
-                                                           :key="item.id"
-                                                           :label="item.name"
-                                                           :value="item.id"
-                                                ></el-option>
-                                            </el-select>
-                                        </el-form-item>
-                                        </el-form>
-                                    </div>
-                                </div>
-                                <div style="display: flex;height: 45px;padding-top: 16px;margin-bottom: 26px">
-                                    <div style="width: 334px;padding-left: 2px">
-                                        <el-form
-                                                ref="expectJobForm"
-                                                :model="expectJobForm"
-                                                label-width="80px"
-                                        >
-                                            <el-form-item label="期望行业:" class="m-input-text-width">
-                                                <el-select v-model="expectJobForm.industryName" placeholder="请选择期望行业">
-                                                    <el-option v-for="item in industryNameOptions"
-                                                               :key="item.id"
-                                                               :label="item.name"
-                                                               :value="item.id"
-                                                    ></el-option>
-                                                </el-select>
-                                            </el-form-item>
-                                        </el-form>
-                                    </div>
-                                    <div style="padding-left:100px;padding-top: 10px">
-                                        <el-form ref="resumeEduForm" :model="resumeEduForm" :rules="resumeEduFormRules" label-width="100px">
-                                            <el-checkbox v-model="resumeEduForm.faceToke" label="1" class="m-input-text-width">面议</el-checkbox>
-                                        </el-form>
-                                    </div>
-                                </div>
-                                <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                    <el-button class="btn1" @click="handleSaveExpectJob" :loading="posting">保存</el-button>
-                                    <el-button class="btn2" @click="showExpectJobDialog = false">取消</el-button>
-                                </div>
-                            </div>
-                            </div>
-                            </div>
 
 
-                            <el-divider></el-divider>
-                        </div>
-                        <div class="resume-box" id="Resume-Experience">
-                            <div v-if="showExpDialog==false">
-                            <div style="display: inline-flex">
-                                <div style="width: 615px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">工作/实习经历</span>
+                                    <el-divider></el-divider>
                                 </div>
-                                <span>
+                                <div class="resume-box" id="Resume-Experience">
+                                    <div v-if="showExpDialog==false">
+                                        <div style="display: inline-flex">
+                                            <div style="width: 615px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">工作/实习经历</span>
+                                            </div>
+                                            <span>
                                <img src="../assets/resume_add.png"
                                     style="width: 19px;height: 19px;"
                                     v-on:click="handleEditResumeExp('create')">
                                 </span>
-                            </div>
-                            <div v-for="resumeExp in resume.resumeExpList"
-                                 :key="resumeExp.id">
-                             <div style="display: inline-flex;margin-top: 20px">
-                                <div>
-                                    <span class="resume-box-text"> {{resumeExp.company}}</span>
-                                </div>
-                                <div style="padding-left: 31px">
-                                    <span>{{resumeExp.post}}</span>
-                                </div>
-                                <div style="padding-left: 31px">
-                                    <span>全职<!--{{resumeExp.jobType}}--> </span>
-                                </div>
-                            </div>
-                            <div style="display: inline-flex">
-                            <div style="width: 615px">
-                                <div style="margin-top: 9px;display: inline-flex" >
-                                    <div style="width: 380px">
-                                        <span class="resume-box-text-title">行业：</span>
-                                        <span v-for="category in  resume.userExpectJob.categoryList"
-                                              :key="category.id"
-                                              class="resume-box-text-data"
-                                        >{{ category.name }}
+                                        </div>
+                                        <div v-for="resumeExp in item.resumeExpList"
+                                             :key="resumeExp.id">
+                                            <div style="display: inline-flex;margin-top: 20px">
+                                                <div>
+                                                    <span class="resume-box-text"> {{resumeExp.company}}</span>
+                                                </div>
+                                                <div style="padding-left: 31px">
+                                                    <span>{{resumeExp.post}}</span>
+                                                </div>
+                                                <div style="padding-left: 31px">
+                                                    <span>全职<!--{{resumeExp.jobType}}--> </span>
+                                                </div>
+                                            </div>
+                                            <div style="display: inline-flex">
+                                                <div style="width: 615px">
+                                                    <div style="margin-top: 9px;display: inline-flex">
+                                                        <div style="width: 380px">
+                                                            <span class="resume-box-text-title">行业：</span>
+                                                            <span v-for="category in  item.userExpectJob.categoryList"
+                                                                  :key="category.id"
+                                                                  class="resume-box-text-data"
+                                                            >{{ category.name }}
                                         </span>
-                                    </div>
-                                    <div>
-                                        <span class="resume-box-text-title">在职时间：</span>
-                                        <span class="resume-box-text-data">
+                                                        </div>
+                                                        <div>
+                                                            <span class="resume-box-text-title">在职时间：</span>
+                                                            <span class="resume-box-text-data">
                                             {{resumeExp.onWork == 1? '在职': `${resumeExp.startTime}到${resumeExp.finishTime}`}}
                                         </span>
-                                    </div>
-                                </div>
-                                <div style="display: inline-flex;margin-top: 9px">
-                                    <span class="resume-box-text-title">工作描述：</span>
-                                    <span class="resume-box-text-html"
-                                          v-html="resumeExp.description"></span>
-                                </div>
-                            </div>
-                            <div style="width: 20px;">
-                                <el-row style="height: 30px">
-                                    <img src="../assets/resume_edit.png"
-                                         style="width: 18px;height: 19px;"
-                                         v-on:click="handleEditResumeExp('update', resumeExp)">
-                                </el-row>
-                                <el-row style="height: 30px">
-                                    <img src="../assets/resume_del.png"
-                                         style="width: 19px;height: 21px;"
-                                         v-on:click="handleDelResumeExp(resumeExp.id)">
-                                </el-row>
-                            </div>
-                            </div>
-                            </div>
-                            </div>
-
-
-                            <div v-if="showExpDialog==true">
-                                <div style="width: 615px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">工作/实习经历</span>
-                                </div>
-                                <div class="resume-box-edit">
-                                    <div style="display:flex;height: 45px;">
-                                        <div style="width: 324px;padding-left: 20px">
-                                            <el-form ref="resumeExpForm" :model="resumeExpForm" :rules="resumeExpFormRules">
-                                                <el-form-item label="工作类型：" prop="workType" class="m-input-text-width">
-                                                    <el-select v-model="resumeEduForm.workType" placeholder="请选择工作类型">
-                                                        <el-option
-                                                                :label="dict.name"
-                                                                :value="dict.id"
-                                                                v-for="dict in workTypeOptions"
-                                                                :key="dict.id"
-                                                        />
-                                                    </el-select>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                        <div>
-                                            <el-form ref="resumeEduForm" :model="resumeEduForm" :rules="resumeEduFormRules" label-width="90px">
-                                                <el-form-item label="在职时间：" prop="workingTimeFlag" class="m-input-text-width">
-                                                    <el-date-picker
-                                                        v-model="resumeExpForm.workingDates"
-                                                        type="monthrange"
-                                                        value-format="yyyy-MM"
-                                                        start-placeholder="入职时间"
-                                                        end-placeholder="离职时间"
-                                                        :disabled="resumeExpForm.onWork == 1"
-                                                    />
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                    </div>
-                                    <div style="display:flex;height: 45px">
-                                        <div style="width: 310px">
-                                            <el-form
-                                                    ref="resumeExpForm"
-                                                    :model="resumeExpForm"
-                                                    :rules="resumeExpFormRules"
-                                                    label-width="80px"
-                                            >
-                                                <el-form-item label="公司名称：" prop="company" class="m-input-text-width" label-width="100px">
-                                                    <el-autocomplete
-                                                            v-model="resumeExpForm.company"
-                                                            :fetch-suggestions="searchCompanyName"
-                                                            :trigger-on-focus="false"
-                                                            value-key="fullName"
-                                                            placeholder="请输入公司名称"
-                                                            :maxlength="100"
-                                                            show-word-limit
-                                                    />
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                        <div style="padding-left: 110px;padding-top: 10px">
-                                            <el-form ref="resumeEduForm" :model="resumeEduForm" :rules="resumeEduFormRules">
-                                                <el-checkbox v-model="resumeExpForm.onWork" :true-label="1" :false-label="0" class="m-input-text-width">在职</el-checkbox>
-                                            </el-form>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex;height: 45px">
-                                        <div style="width: 334px">
-                                            <el-form
-                                                    ref="resumeExpForm"
-                                                    :model="resumeExpForm"
-                                                    :rules="resumeExpFormRules"
-                                                    label-width="80px"
-                                            >
-                                            <el-form-item label="职位名称：" prop="post" class="m-input-text-width" label-width="100px">
-                                                <el-input
-                                                        v-model="resumeExpForm.post"
-                                                        placeholder="请填写职位名称"
-                                                        :maxlength="40"
-                                                        show-word-limit
-                                                >
-                                                </el-input>
-                                            </el-form-item>
-                                            </el-form>
-                                        </div>
-
-                                        <div>
-                                            <el-form ref="resumeExpForm" :model="resumeExpForm" :rules="resumeExpFormRules">
-                                                <el-form-item label="行业：" prop="categoryList" class="m-input-text-width" label-width="80px">
-                                                    <el-select v-model="resumeEduForm.categoryList" placeholder="请选择行业类型">
-                                                        <el-option
-                                                                :label="dict.name"
-                                                                :value="dict.id"
-                                                                v-for="dict in categoryListOptions"
-                                                                :key="dict.id"
-                                                        />
-                                                    </el-select>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <el-form ref="resumeExpForm" :model="resumeExpForm" :rules="resumeExpFormRules" label-width="100px">
-                                            <el-form-item label="所属部门：" prop="depart" class="m-input-text-width">
-                                                <el-input
-                                                        v-model="resumeExpForm.depart"
-                                                        placeholder="请填写部门信息"
-                                                        :maxlength="40"
-                                                        show-word-limit
-                                                ></el-input>
-                                            </el-form-item>
-                                        </el-form>
-                                    </div>
-                                    <div style="padding-left: 10px">
-                                        <el-form ref="resumeExpForm" :model="resumeExpForm" :rules="resumeExpFormRules">
-                                            <el-form-item label="工作内容:" prop="description" class="m1-input-text-width">
-                                                <quill-editor v-model="resumeExpForm.description" :options="expEditorOption"></quill-editor>
-                                            </el-form-item>
-                                        </el-form>
-                                    </div>
-
-                                    <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
-                                        <el-button class="btn1" @click="handleSaveResumeExp" :loading="posting">保存</el-button>
-                                        <el-button class="btn2" @click="showExpDialog = false">取消</el-button>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <el-divider></el-divider>
-                        </div>
-                        <div class="resume-box" id="Resume-Practice">
-                           <div v-if="showPracticeDialog==false">
-                            <el-row>
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">项目/其它经历</span>
-                                </div>
-                                <span>
-                               <img src="../assets/resume_add.png"
-                                    style="width: 19px;height: 19px;"
-                                    v-on:click="handleEditResumePractice('create')">
-                                 </span>
-                            </el-row>
-                            <el-row>
-                                <div style="display: inline-block">
-                                <div class="resume-info" v-for="practice in resume.resumePracticeList"
-                                     :key="practice.id">
-                                    <div class="resume-edu" style="width: 616px">
-                                        <el-row style="width: 616px">
-                                            <span>{{practice.title}}</span>
-                                            <span style="padding-left: 31px">{{practice.onWork == 1? '项目进行中': `${practice.startTime}到${practice.finishTime}`}}</span>
-                                        </el-row>
-                                        <div class="edu-box">
-                                            <el-row class="expinfo-other-row">
-                                                <span class="expinfo-other" style="width: 42px">介绍：</span>
-                                                <span class="expinfo-other-html" v-html="practice.description"></span>
-                                            </el-row>
-                                        </div>
-                                    </div>
-
-                                    <div class="resume-editbox">
-                                        <el-row style="height: 30px">
-                                            <img src="../assets/resume_edit.png"
-                                                 style="width: 18px;height: 19px;"
-                                                 v-on:click="handleEditResumePractice('update', practice)">
-                                        </el-row>
-                                        <el-row style="height: 30px">
-                                            <img src="../assets/resume_del.png"
-                                                 style="width: 19px;height: 21px;"
-                                                 v-on:click="handleDelResumePractice(practice.id)">
-                                        </el-row>
-                                    </div>
-                                </div>
-                                </div>
-                            </el-row>
-                           </div>
-                            <div v-if="showPracticeDialog==true">
-                            <el-row>
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">项目/其它经历</span>
-                                </div>
-                            </el-row>
-                            <div class="resume-box-edit">
-                                <div style="padding-top: 20px">
-                                    <div style="display:flex;height: 70px;">
-                                        <div>
-                                            <el-form
-                                                    ref="resumePracticeForm"
-                                                    :model="resumePracticeForm"
-                                                    :rules="resumePracticeFormRules"
-                                                    label-width="100px">
-                                                <el-form-item label="项目名称：" prop="title" class="m-input-text-width">
-                                                    <el-input
-                                                            v-model="resumePracticeForm.title"
-                                                            placeholder="请填写项目名称"
-                                                            :maxlength="50"
-                                                            show-word-limit
-                                                    ></el-input>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                        <div style="padding-right: 30px">
-                                            <el-form
-                                                    ref="resumePracticeForm"
-                                                    :model="resumePracticeForm"
-                                                    :rules="resumePracticeFormRules"
-                                                    label-width="80px">
-                                                <el-form-item label="时间" prop="workingTimeFlag" class="m-input-text-width">
-                                                    <div class="m-input-text-width">
-                                                        <el-date-picker
-                                                                style="margin-right: 6px"
-                                                                v-model="resumePracticeForm.workingDates"
-                                                                align="center"
-                                                                type="monthrange"
-                                                                value-format="yyyy-MM"
-                                                                start-placeholder="开始时间"
-                                                                end-placeholder="结束时间"
-                                                                :disabled="resumePracticeForm.onWork == 1"
-                                                        ></el-date-picker>
-                                                        <el-checkbox
-                                                                v-model="resumePracticeForm.onWork"
-                                                                label="进行中"
-                                                                :true-label="1"
-                                                                :false-label="0"
-                                                        ></el-checkbox>
+                                                        </div>
                                                     </div>
+                                                    <div style="display: inline-flex;margin-top: 9px">
+                                                        <span class="resume-box-text-title">工作描述：</span>
+                                                        <span class="resume-box-text-html"
+                                                              v-html="resumeExp.description"></span>
+                                                    </div>
+                                                </div>
+                                                <div style="width: 20px;">
+                                                    <el-row style="height: 30px">
+                                                        <img src="../assets/resume_edit.png"
+                                                             style="width: 18px;height: 19px;"
+                                                             v-on:click="handleEditResumeExp('update', resumeExp)">
+                                                    </el-row>
+                                                    <el-row style="height: 30px">
+                                                        <img src="../assets/resume_del.png"
+                                                             style="width: 19px;height: 21px;"
+                                                             v-on:click="handleDelResumeExp(resumeExp.id)">
+                                                    </el-row>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="showExpDialog==true">
+                                        <div style="width: 615px">
+                                            <img src="../assets/point.png"
+                                                 style="padding-right: 9px;padding-bottom: 7px">
+                                            <span class="resume-base">工作/实习经历</span>
+                                        </div>
+                                        <div class="resume-box-edit">
+                                            <div style="display:flex;height: 45px;">
+                                                <div style="width: 324px;padding-left: 20px">
+                                                    <el-form ref="resumeExpForm" :model="resumeExpForm"
+                                                             :rules="resumeExpFormRules">
+                                                        <el-form-item label="工作类型：" prop="workType"
+                                                                      class="m-input-text-width">
+                                                            <el-select v-model="resumeEduForm.workType"
+                                                                       placeholder="请选择工作类型">
+                                                                <el-option
+                                                                        :label="dict.name"
+                                                                        :value="dict.id"
+                                                                        v-for="dict in workTypeOptions"
+                                                                        :key="dict.id"
+                                                                />
+                                                            </el-select>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div>
+                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                             :rules="resumeEduFormRules" label-width="90px">
+                                                        <el-form-item label="在职时间：" prop="workingTimeFlag"
+                                                                      class="m-input-text-width">
+                                                            <el-date-picker
+                                                                    v-model="resumeExpForm.workingDates"
+                                                                    type="monthrange"
+                                                                    value-format="yyyy-MM"
+                                                                    start-placeholder="入职时间"
+                                                                    end-placeholder="离职时间"
+                                                                    :disabled="resumeExpForm.onWork == 1"
+                                                            />
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                            </div>
+                                            <div style="display:flex;height: 45px">
+                                                <div style="width: 310px">
+                                                    <el-form
+                                                            ref="resumeExpForm"
+                                                            :model="resumeExpForm"
+                                                            :rules="resumeExpFormRules"
+                                                            label-width="80px"
+                                                    >
+                                                        <el-form-item label="公司名称：" prop="company"
+                                                                      class="m-input-text-width" label-width="100px">
+                                                            <el-autocomplete
+                                                                    v-model="resumeExpForm.company"
+                                                                    :fetch-suggestions="searchCompanyName"
+                                                                    :trigger-on-focus="false"
+                                                                    value-key="fullName"
+                                                                    placeholder="请输入公司名称"
+                                                                    :maxlength="100"
+                                                                    show-word-limit
+                                                            />
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div style="padding-left: 110px;padding-top: 10px">
+                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                             :rules="resumeEduFormRules">
+                                                        <el-checkbox v-model="resumeExpForm.onWork" :true-label="1"
+                                                                     :false-label="0" class="m-input-text-width">在职
+                                                        </el-checkbox>
+                                                    </el-form>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex;height: 45px">
+                                                <div style="width: 334px">
+                                                    <el-form
+                                                            ref="resumeExpForm"
+                                                            :model="resumeExpForm"
+                                                            :rules="resumeExpFormRules"
+                                                            label-width="80px"
+                                                    >
+                                                        <el-form-item label="职位名称：" prop="post"
+                                                                      class="m-input-text-width" label-width="100px">
+                                                            <el-input
+                                                                    v-model="resumeExpForm.post"
+                                                                    placeholder="请填写职位名称"
+                                                                    :maxlength="40"
+                                                                    show-word-limit
+                                                            >
+                                                            </el-input>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
 
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                    </div>
-                                    <div style="padding-left: 10px">
-                                        <el-form ref="resumePracticeForm" :model="resumePracticeForm" :rules="resumePracticeFormRules">
-                                            <el-form-item label=" 项目介绍:" prop="description" class="m1-input-text-width">
-                                                <quill-editor v-model="resumePracticeForm.description"
-                                                              :options="practiceEditorOption"></quill-editor>
-                                            </el-form-item>
-                                        </el-form>
-                                    </div>
-                                    <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                        <el-button class="btn1" @click="handleSaveResumePractice" :loading="posting">保存</el-button>
-                                        <el-button class="btn2" @click="showPracticeDialog = false">取消</el-button>
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
-                            <el-divider></el-divider>
-                        </div>
-                        <div class="resume-box" id="Resume-Language">
-                            <div v-if="showLanguageDialog==false">
-                            <el-row style="height: 30px">
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">语言能力</span>
-                                </div>
-                                <span>
-                               <img src="../assets/resume_add.png"
-                                    style="width: 19px;height: 19px;"
-                                    v-on:click="handleEditResumeLanguage('create')">
-                                 </span>
-                            </el-row>
-                            <div style="display: inline-block">
-                            <el-row style="display: inline-flex" v-for="language in resume.resumeLanguageList"
-                                    :key="language.id">
-                                <div class="resume-edu">
-                                    <el-row style="width: 615px;display: inline-flex">
-                                        <div style="width: 386px">
-                                            <span class="info-other">语种1：</span>
-                                        <!--                                            <span>{{language.title}}</span>s-->
-                                        </div>
-                                        <div style="width: 200px">
-                                            <span class="info-other">证书或分数：</span>
-<!--                                            <span>{{language.description}}</span>-->
-                                        </div>
-                                    </el-row>
-                                </div>
-                                <div class="resume-editbox">
-                                    <el-row style="height: 30px">
-                                        <img src="../assets/resume_edit.png"
-                                             style="width: 18px;height: 19px;"
-                                             v-on:click="handleEditResumeLanguage('update', language)">
-                                    </el-row>
-                                    <el-row style="height: 30px">
-                                        <img src="../assets/resume_del.png"
-                                             style="width: 19px;height: 21px;"
-                                             v-on:click="handleDelResumeLanguage(language.id)">
-                                    </el-row>
-                                </div>
-                            </el-row>
-                            </div>
-                            </div>
-
-                            <div v-if="showLanguageDialog==true">
-                                <el-row style="height: 30px">
-                                    <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                        <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                        <span class="resume-base">语言能力</span>
-                                    </div>
-                                </el-row>
-                                <div class="resume-box-edit">
-                                    <div style="padding-top: 20px">
-                                        <div style="display:flex;height: 70px;">
+                                                <div>
+                                                    <el-form ref="resumeExpForm" :model="resumeExpForm"
+                                                             :rules="resumeExpFormRules">
+                                                        <el-form-item label="行业：" prop="categoryList"
+                                                                      class="m-input-text-width" label-width="80px">
+                                                            <el-select v-model="resumeEduForm.categoryList"
+                                                                       placeholder="请选择行业类型">
+                                                                <el-option
+                                                                        :label="dict.name"
+                                                                        :value="dict.id"
+                                                                        v-for="dict in categoryListOptions"
+                                                                        :key="dict.id"
+                                                                />
+                                                            </el-select>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                            </div>
                                             <div>
-                                                <el-form
-                                                        ref="resumeLanguageForm"
-                                                        :model="resumeLanguageForm"
-                                                        :rules="resumeLanguageFormRules"
-                                                        label-width="80px"
-                                                >
-                                                    <el-form-item label="语种:" prop="title" class="m-input-text-width">
+                                                <el-form ref="resumeExpForm" :model="resumeExpForm"
+                                                         :rules="resumeExpFormRules" label-width="100px">
+                                                    <el-form-item label="所属部门：" prop="depart"
+                                                                  class="m-input-text-width">
                                                         <el-input
-                                                                v-model="resumeLanguageForm.title"
-                                                                placeholder="请填写语种名称"
-                                                                :maxlength="50"
+                                                                v-model="resumeExpForm.depart"
+                                                                placeholder="请填写部门信息"
+                                                                :maxlength="40"
                                                                 show-word-limit
                                                         ></el-input>
                                                     </el-form-item>
                                                 </el-form>
                                             </div>
-                                            <div style="padding-right: 30px">
-                                                <el-form
-                                                        ref="resumeLanguageForm"
-                                                        :model="resumeLanguageForm"
-                                                        :rules="resumeLanguageFormRules"
-                                                        label-width="130px">
-                                                    <el-form-item label="证书或分数：" prop="description" class="m-input-text-width">
-                                                        <el-input
-                                                                v-model="resumeLanguageForm.description"
-                                                                placeholder="请填写证书或分数"
-                                                        ></el-input>
+                                            <div style="padding-left: 10px">
+                                                <el-form ref="resumeExpForm" :model="resumeExpForm"
+                                                         :rules="resumeExpFormRules">
+                                                    <el-form-item label="工作内容:" prop="description"
+                                                                  class="m1-input-text-width">
+                                                        <quill-editor v-model="resumeExpForm.description"
+                                                                      :options="expEditorOption"></quill-editor>
                                                     </el-form-item>
                                                 </el-form>
                                             </div>
-                                        </div>
-                                        <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                            <el-button class="btn1" @click="handleSaveResumeLanguage" :loading="posting">保存</el-button>
-                                            <el-button class="btn2" @click="showLanguageDialog = false">取消</el-button>
+
+                                            <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
+                                                <el-button class="btn1" @click="handleSaveResumeExp" :loading="posting">
+                                                    保存
+                                                </el-button>
+                                                <el-button class="btn2" @click="showExpDialog = false">取消</el-button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <el-divider></el-divider>
-                        </div>
-                        <div class="resume-box" id="Resume-Awards">
-                            <div v-if="showAwardsDialog==false">
-                            <el-row style="height: 30px">
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">证书/奖项</span>
+
+                                    <el-divider></el-divider>
                                 </div>
-                                <span>
+                                <div class="resume-box" id="Resume-Practice">
+                                    <div v-if="showPracticeDialog==false">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">项目/其它经历</span>
+                                            </div>
+                                            <span>
+                               <img src="../assets/resume_add.png"
+                                    style="width: 19px;height: 19px;"
+                                    v-on:click="handleEditResumePractice('create')">
+                                 </span>
+                                        </el-row>
+                                        <el-row>
+                                            <div style="display: inline-block">
+                                                <div class="resume-info" v-for="practice in item.resumePracticeList"
+                                                     :key="practice.id">
+                                                    <div class="resume-edu" style="width: 616px">
+                                                        <el-row style="width: 616px">
+                                                            <span>{{practice.title}}</span>
+                                                            <span style="padding-left: 31px">{{practice.onWork == 1? '项目进行中': `${practice.startTime}到${practice.finishTime}`}}</span>
+                                                        </el-row>
+                                                        <div class="edu-box">
+                                                            <el-row class="expinfo-other-row">
+                                                                <span class="expinfo-other"
+                                                                      style="width: 42px">介绍：</span>
+                                                                <span class="expinfo-other-html"
+                                                                      v-html="practice.description"></span>
+                                                            </el-row>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="resume-editbox">
+                                                        <el-row style="height: 30px">
+                                                            <img src="../assets/resume_edit.png"
+                                                                 style="width: 18px;height: 19px;"
+                                                                 v-on:click="handleEditResumePractice('update', practice)">
+                                                        </el-row>
+                                                        <el-row style="height: 30px">
+                                                            <img src="../assets/resume_del.png"
+                                                                 style="width: 19px;height: 21px;"
+                                                                 v-on:click="handleDelResumePractice(practice.id)">
+                                                        </el-row>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-row>
+                                    </div>
+                                    <div v-if="showPracticeDialog==true">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">项目/其它经历</span>
+                                            </div>
+                                        </el-row>
+                                        <div class="resume-box-edit">
+                                            <div style="padding-top: 20px">
+                                                <div style="display:flex;height: 70px;">
+                                                    <div>
+                                                        <el-form
+                                                                ref="resumePracticeForm"
+                                                                :model="resumePracticeForm"
+                                                                :rules="resumePracticeFormRules"
+                                                                label-width="100px">
+                                                            <el-form-item label="项目名称：" prop="title"
+                                                                          class="m-input-text-width">
+                                                                <el-input
+                                                                        v-model="resumePracticeForm.title"
+                                                                        placeholder="请填写项目名称"
+                                                                        :maxlength="50"
+                                                                        show-word-limit
+                                                                ></el-input>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                    <div style="padding-right: 30px">
+                                                        <el-form
+                                                                ref="resumePracticeForm"
+                                                                :model="resumePracticeForm"
+                                                                :rules="resumePracticeFormRules"
+                                                                label-width="80px">
+                                                            <el-form-item label="时间" prop="workingTimeFlag"
+                                                                          class="m-input-text-width">
+                                                                <div class="m-input-text-width">
+                                                                    <el-date-picker
+                                                                            style="margin-right: 6px"
+                                                                            v-model="resumePracticeForm.workingDates"
+                                                                            align="center"
+                                                                            type="monthrange"
+                                                                            value-format="yyyy-MM"
+                                                                            start-placeholder="开始时间"
+                                                                            end-placeholder="结束时间"
+                                                                            :disabled="resumePracticeForm.onWork == 1"
+                                                                    ></el-date-picker>
+                                                                    <el-checkbox
+                                                                            v-model="resumePracticeForm.onWork"
+                                                                            label="进行中"
+                                                                            :true-label="1"
+                                                                            :false-label="0"
+                                                                    ></el-checkbox>
+                                                                </div>
+
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                </div>
+                                                <div style="padding-left: 10px">
+                                                    <el-form ref="resumePracticeForm" :model="resumePracticeForm"
+                                                             :rules="resumePracticeFormRules">
+                                                        <el-form-item label=" 项目介绍:" prop="description"
+                                                                      class="m1-input-text-width">
+                                                            <quill-editor v-model="resumePracticeForm.description"
+                                                                          :options="practiceEditorOption"></quill-editor>
+                                                        </el-form-item>
+                                                    </el-form>
+                                                </div>
+                                                <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
+                                                    <el-button class="btn1" @click="handleSaveResumePractice"
+                                                               :loading="posting">保存
+                                                    </el-button>
+                                                    <el-button class="btn2" @click="showPracticeDialog = false">取消
+                                                    </el-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <el-divider></el-divider>
+                                </div>
+                                <div class="resume-box" id="Resume-Language">
+                                    <div v-if="showLanguageDialog==false">
+                                        <el-row style="height: 30px">
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">语言能力</span>
+                                            </div>
+                                            <span>
+                               <img src="../assets/resume_add.png"
+                                    style="width: 19px;height: 19px;"
+                                    v-on:click="handleEditResumeLanguage('create')">
+                                 </span>
+                                        </el-row>
+                                        <div style="display: inline-block">
+                                            <el-row style="display: inline-flex"
+                                                    v-for="language in item.resumeLanguageList"
+                                                    :key="language.id">
+                                                <div class="resume-edu">
+                                                    <el-row style="width: 615px;display: inline-flex">
+                                                        <div style="width: 386px">
+                                                            <span class="info-other">语种1：</span>
+                                                            <!--                                            <span>{{language.title}}</span>s-->
+                                                        </div>
+                                                        <div style="width: 200px">
+                                                            <span class="info-other">证书或分数：</span>
+                                                            <!--                                            <span>{{language.description}}</span>-->
+                                                        </div>
+                                                    </el-row>
+                                                </div>
+                                                <div class="resume-editbox">
+                                                    <el-row style="height: 30px">
+                                                        <img src="../assets/resume_edit.png"
+                                                             style="width: 18px;height: 19px;"
+                                                             v-on:click="handleEditResumeLanguage('update', language)">
+                                                    </el-row>
+                                                    <el-row style="height: 30px">
+                                                        <img src="../assets/resume_del.png"
+                                                             style="width: 19px;height: 21px;"
+                                                             v-on:click="handleDelResumeLanguage(language.id)">
+                                                    </el-row>
+                                                </div>
+                                            </el-row>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="showLanguageDialog==true">
+                                        <el-row style="height: 30px">
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">语言能力</span>
+                                            </div>
+                                        </el-row>
+                                        <div class="resume-box-edit">
+                                            <div style="padding-top: 20px">
+                                                <div style="display:flex;height: 70px;">
+                                                    <div>
+                                                        <el-form
+                                                                ref="resumeLanguageForm"
+                                                                :model="resumeLanguageForm"
+                                                                :rules="resumeLanguageFormRules"
+                                                                label-width="80px"
+                                                        >
+                                                            <el-form-item label="语种:" prop="title"
+                                                                          class="m-input-text-width">
+                                                                <el-input
+                                                                        v-model="resumeLanguageForm.title"
+                                                                        placeholder="请填写语种名称"
+                                                                        :maxlength="50"
+                                                                        show-word-limit
+                                                                ></el-input>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                    <div style="padding-right: 30px">
+                                                        <el-form
+                                                                ref="resumeLanguageForm"
+                                                                :model="resumeLanguageForm"
+                                                                :rules="resumeLanguageFormRules"
+                                                                label-width="130px">
+                                                            <el-form-item label="证书或分数：" prop="description"
+                                                                          class="m-input-text-width">
+                                                                <el-input
+                                                                        v-model="resumeLanguageForm.description"
+                                                                        placeholder="请填写证书或分数"
+                                                                ></el-input>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                </div>
+                                                <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
+                                                    <el-button class="btn1" @click="handleSaveResumeLanguage"
+                                                               :loading="posting">保存
+                                                    </el-button>
+                                                    <el-button class="btn2" @click="showLanguageDialog = false">取消
+                                                    </el-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <el-divider></el-divider>
+                                </div>
+                                <div class="resume-box" id="Resume-Awards">
+                                    <div v-if="showAwardsDialog==false">
+                                        <el-row style="height: 30px">
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">证书/奖项</span>
+                                            </div>
+                                            <span>
                                <img src="../assets/resume_add.png"
                                     style="width: 19px;height: 19px;"
                                     v-on:click="handleEditResumeAwards('create')">
                                  </span>
-                            </el-row>
-                            <div style="display: inline-block">
-                            <el-row style="display: inline-flex" v-for="awards in resume.resumeAwardsList"
-                                    :key="awards.id">
-                                <div class="resume-edu">
-                                    <el-row style="width: 615px;display: inline-flex">
-                                        <div style="width: 386px">
-                                            <span class="info-other">证书/奖项名称：我的名字叫证书</span>
-                                            <!--                                        <span><span>{{awards.title}}</span>-->
-                                        </div>
-                                        <div style="width: 200px">
-                                            <span class="info-other">获得时间：2020.01.10</span>
-                                            <!--                                        <span>{{awards.time}}</span>-->
-                                        </div>
-                                    </el-row>
-                                </div>
-                                <div class="resume-editbox">
-                                    <el-row style="height: 30px">
-                                        <img src="../assets/resume_edit.png"
-                                             style="width: 18px;height: 19px;"
-                                             v-on:click="handleEditResumeAwards('update', awards)"
-                                        >
-                                    </el-row>
-                                    <el-row style="height: 30px">
-                                        <img src="../assets/resume_del.png"
-                                             style="width: 19px;height: 21px;"
-                                             v-on:click="handleDelResumeAwards(awards.id)">
-                                    </el-row>
-                                </div>
+                                        </el-row>
+                                        <div style="display: inline-block">
+                                            <el-row style="display: inline-flex" v-for="awards in item.resumeAwardsList"
+                                                    :key="awards.id">
+                                                <div class="resume-edu">
+                                                    <el-row style="width: 615px;display: inline-flex">
+                                                        <div style="width: 386px">
+                                                            <span class="info-other">证书/奖项名称：我的名字叫证书</span>
+                                                            <!--                                        <span><span>{{awards.title}}</span>-->
+                                                        </div>
+                                                        <div style="width: 200px">
+                                                            <span class="info-other">获得时间：2020.01.10</span>
+                                                            <!--                                        <span>{{awards.time}}</span>-->
+                                                        </div>
+                                                    </el-row>
+                                                </div>
+                                                <div class="resume-editbox">
+                                                    <el-row style="height: 30px">
+                                                        <img src="../assets/resume_edit.png"
+                                                             style="width: 18px;height: 19px;"
+                                                             v-on:click="handleEditResumeAwards('update', awards)"
+                                                        >
+                                                    </el-row>
+                                                    <el-row style="height: 30px">
+                                                        <img src="../assets/resume_del.png"
+                                                             style="width: 19px;height: 21px;"
+                                                             v-on:click="handleDelResumeAwards(awards.id)">
+                                                    </el-row>
+                                                </div>
 
-                            </el-row>
-                            </div>
-                            </div>
-                            <div v-if="showAwardsDialog==true">
-                                <el-row style="height: 30px">
-                                    <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                        <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                        <span class="resume-base">证书/奖项</span>
-                                    </div>
-                                </el-row>
-                                <div class="resume-box-edit">
-                                <div style="padding-top: 20px">
-                                    <div style="display:flex;height: 70px;">
-                                        <div>
-                                            <el-form
-                                                    ref="resumeAwardsForm"
-                                                    :model="resumeAwardsForm"
-                                                    :rules="resumeAwardsFormRules"
-                                                    label-width="80px"
-                                            >
-                                                <el-form-item label="证书/奖项:" prop="title" label-width="130px" class="m-input-text-width">
-                                                    <el-input
-                                                            v-model="resumeAwardsForm.title"
-                                                            placeholder="请填写证书/奖项名称"
-                                                            :maxlength="50"
-                                                    ></el-input>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                        <div style="padding-right: 30px">
-                                            <el-form
-                                                    ref="resumeAwardsForm"
-                                                    :model="resumeAwardsForm"
-                                                    :rules="resumeAwardsFormRules"
-                                                    label-width="80px">
-                                                <el-form-item label=" 获得时间：" prop="time" label-width="130px" class="m-input-text-width">
-                                                    <el-date-picker
-                                                            v-model="resumeAwardsForm.time"
-                                                            :picker-options="oldDatePickerOptions"
-                                                            type="date"
-                                                            value-format="yyyy-MM-dd"
-                                                            placeholder="请选择获得时间"
-                                                    ></el-date-picker>
-                                                </el-form-item>
-                                            </el-form>
+                                            </el-row>
                                         </div>
                                     </div>
-                                    <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                        <el-button class="btn1" @click="handleSaveResumeAwards" :loading="posting">保存</el-button>
-                                        <el-button class="btn2" @click="showAwardsDialog = false">取消</el-button>
+                                    <div v-if="showAwardsDialog==true">
+                                        <el-row style="height: 30px">
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">证书/奖项</span>
+                                            </div>
+                                        </el-row>
+                                        <div class="resume-box-edit">
+                                            <div style="padding-top: 20px">
+                                                <div style="display:flex;height: 70px;">
+                                                    <div>
+                                                        <el-form
+                                                                ref="resumeAwardsForm"
+                                                                :model="resumeAwardsForm"
+                                                                :rules="resumeAwardsFormRules"
+                                                                label-width="80px"
+                                                        >
+                                                            <el-form-item label="证书/奖项:" prop="title"
+                                                                          label-width="130px"
+                                                                          class="m-input-text-width">
+                                                                <el-input
+                                                                        v-model="resumeAwardsForm.title"
+                                                                        placeholder="请填写证书/奖项名称"
+                                                                        :maxlength="50"
+                                                                ></el-input>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                    <div style="padding-right: 30px">
+                                                        <el-form
+                                                                ref="resumeAwardsForm"
+                                                                :model="resumeAwardsForm"
+                                                                :rules="resumeAwardsFormRules"
+                                                                label-width="80px">
+                                                            <el-form-item label=" 获得时间：" prop="time" label-width="130px"
+                                                                          class="m-input-text-width">
+                                                                <el-date-picker
+                                                                        v-model="resumeAwardsForm.time"
+                                                                        :picker-options="oldDatePickerOptions"
+                                                                        type="date"
+                                                                        value-format="yyyy-MM-dd"
+                                                                        placeholder="请选择获得时间"
+                                                                ></el-date-picker>
+                                                            </el-form-item>
+                                                        </el-form>
+                                                    </div>
+                                                </div>
+                                                <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
+                                                    <el-button class="btn1" @click="handleSaveResumeAwards"
+                                                               :loading="posting">保存
+                                                    </el-button>
+                                                    <el-button class="btn2" @click="showAwardsDialog = false">取消
+                                                    </el-button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            </div>
 
-                            <el-divider></el-divider>
-                        </div>
-                        <div class="resume-box" id="Resume-Skill">
-                            <div v-if="showSkillDialog==false">
-                            <el-row>
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">能力标签</span>
-                                    <span class="jobcount">4/6</span>
-                                    <span class="mark-row">
+                                    <el-divider></el-divider>
+                                </div>
+                                <div class="resume-box" id="Resume-Skill">
+                                    <div v-if="showSkillDialog==false">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">能力标签</span>
+                                                <span class="jobcount">4/6</span>
+                                                <span class="mark-row">
                                     <img src="../assets/resume_qmark.png"
                                          class="mark-icon"
                                          @mouseenter="onMouseOver">
                                 </span>
-                                    <span class="mark-text"
-                                          v-show="seen"
-                                          @mouseleave="onMouseOut">最多可显示6个标签</span>
-                                </div>
-                                <span>
+                                                <span class="mark-text"
+                                                      v-show="seen"
+                                                      @mouseleave="onMouseOut">最多可显示6个标签</span>
+                                            </div>
+                                            <span>
                                <img src="../assets/resume_edit.png"
                                     style="width: 18px;height: 19px;"
                                     v-on:click="handleEditResumeSkill">
                                  </span>
-                            </el-row>
-                            <el-row style="margin-top: 15px">
-                                <div class="resume-languageinfo">
-                                    <div class="resume-edu">
-                                        <el-tag
-                                                v-for="skill in resume.resumeSkillList"
-                                                :key="skill.id"
-                                                class="tag-icon"
-                                        >{{ skill.name }}
-                                        </el-tag>
+                                        </el-row>
+                                        <el-row style="margin-top: 15px">
+                                            <div class="resume-languageinfo">
+                                                <div class="resume-edu">
+                                                    <el-tag
+                                                            v-for="skill in item.resumeSkillList"
+                                                            :key="skill.id"
+                                                            class="tag-icon"
+                                                    >{{ skill.name }}
+                                                    </el-tag>
+                                                </div>
+                                            </div>
+                                        </el-row>
                                     </div>
-                                </div>
-                            </el-row>
-                            </div>
-                            <div v-if="showSkillDialog==true">
-                             <el-row>
-                                    <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                        <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                        <span class="resume-base">能力标签</span>
-                                        <span class="jobcount">4/6</span>
-                                        <span class="mark-row">
+                                    <div v-if="showSkillDialog==true">
+                                        <el-row>
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">能力标签</span>
+                                                <span class="jobcount">4/6</span>
+                                                <span class="mark-row">
                                     <img src="../assets/resume_qmark.png"
                                          class="mark-icon"
                                          @mouseenter="onMouseOver">
                                 </span>
-                                        <span class="mark-text"
-                                              v-show="seen"
-                                              @mouseleave="onMouseOut">最多可显示6个标签</span>
-                                    </div>
-                                </el-row>
-                            <div class="resume-box-edit" >
-                                <div style="padding-top: 20px;padding-left: 40px">
-                                    <div class="resume-languageinfo">
-                                        <div class="resume-edu">
-                                            <span class="tag-title">已选择：</span>
-                                            <el-tag
-                                                    v-for="skill in resume.resumeSkillList"
-                                                    :key="skill.id"
-                                                    class="tag-icon"
-                                                    style="height: 21px;line-height: 0px;border-radius: 5px;"
-                                            >{{ skill.name }}
-                                            </el-tag>
+                                                <span class="mark-text"
+                                                      v-show="seen"
+                                                      @mouseleave="onMouseOut">最多可显示6个标签</span>
+                                            </div>
+                                        </el-row>
+                                        <div class="resume-box-edit">
+                                            <div style="padding-top: 20px;padding-left: 40px">
+                                                <div class="resume-languageinfo">
+                                                    <div class="resume-edu">
+                                                        <span class="tag-title">已选择：</span>
+                                                        <el-tag
+                                                                v-for="skill in resume.resumeSkillList"
+                                                                :key="skill.id"
+                                                                class="tag-icon"
+                                                                style="height: 21px;line-height: 0px;border-radius: 5px;"
+                                                        >{{ skill.name }}
+                                                        </el-tag>
+                                                    </div>
+                                                </div>
+                                                <div style="margin-top: 10px">
+                                                    <span class="tag-title" style="padding-left: 5px">为你推荐：</span>
+                                                    <span class="tag-title-1">根据你的填写的内容智能推荐</span>
+                                                </div>
+                                                <div style="margin-top: 14px;margin-left: 65px">
+                                                    <el-tag
+                                                            class="skill-tag"
+                                                            v-for="tag in this.skillTagListForm"
+                                                            :key="tag.name"
+                                                            :effect="tag.select? 'dark': 'plain'"
+                                                            v-on:click="selectSkillTag(tag)"
+                                                    >{{tag.name}}
+                                                    </el-tag>
+                                                    <el-row :gutter="10">
+                                                        <el-input
+                                                                v-model="newSkillTag"
+                                                                placeholder="搜索标签"
+                                                                maxlength="6"
+                                                                class="m-input-text-width"
+                                                                style="width: 200px;padding-left: 10px;">
+                                                        </el-input>
+                                                        <svg-icon
+                                                                icon-class="resume-add"
+                                                                style="width: 19px;height: 18px"
+                                                                v-on:click="handleAddNewSkillTag"
+                                                        ></svg-icon>
+                                                        <!--                                                <el-button type="primary" icon="el-icon-plus" v-on:click="handleAddNewSkillTag">添加</el-button>-->
+                                                    </el-row>
+                                                </div>
+                                            </div>
+                                            <div style="padding-top: 20px">
+                                                <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
+                                                    <el-button class="btn1" @click="handleSaveResumeSkills"
+                                                               :loading="posting">保存
+                                                    </el-button>
+                                                    <el-button class="btn2" @click="showSkillDialog = false">取消
+                                                    </el-button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div style="margin-top: 10px">
-                                        <span class="tag-title" style="padding-left: 5px">为你推荐：</span>
-                                        <span class="tag-title-1">根据你的填写的内容智能推荐</span>
-                                    </div>
-                                    <div style="margin-top: 14px;margin-left: 65px">
-                                        <el-tag
-                                                class="skill-tag"
-                                                v-for="tag in this.skillTagListForm"
-                                                :key="tag.name"
-                                                :effect="tag.select? 'dark': 'plain'"
-                                                v-on:click="selectSkillTag(tag)"
-                                        >{{tag.name}}
-                                        </el-tag>
-                                        <el-row :gutter="10">
-                                                <el-input
-                                                      v-model="newSkillTag"
-                                                      placeholder="搜索标签"
-                                                      maxlength="6"
-                                                class="m-input-text-width"
-                                                style="width: 200px;padding-left: 10px;">
-                                                </el-input>
-                                                <svg-icon
-                                                        icon-class="resume-add"
-                                                        style="width: 19px;height: 18px"
-                                                        v-on:click="handleAddNewSkillTag"
-                                                ></svg-icon>
-<!--                                                <el-button type="primary" icon="el-icon-plus" v-on:click="handleAddNewSkillTag">添加</el-button>-->
-                                        </el-row>
-                                    </div>
-                                </div>
-                                <div style="padding-top: 20px">
-                                    <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                        <el-button class="btn1" @click="handleSaveResumeSkills" :loading="posting">保存</el-button>
-                                        <el-button class="btn2" @click="showSkillDialog = false">取消</el-button>
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
 
-                            <el-divider></el-divider>
-                        </div>
-                        <div class="resume-box" id="Resume-Introduction">
-
-                            <div v-if="showIntroDialog==false">
-                            <el-row style="height: 30px">
-                                <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                    <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                    <span class="resume-base">自我介绍</span>
+                                    <el-divider></el-divider>
                                 </div>
-                                <span>
+                                <div class="resume-box" id="Resume-Introduction">
+
+                                    <div v-if="showIntroDialog==false">
+                                        <el-row style="height: 30px">
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">自我介绍</span>
+                                            </div>
+                                            <span>
                                <img src="../assets/resume_edit.png"
                                     style="width: 19px;height: 19px;"
                                     v-on:click="handleEditResumeIntro">
                                  </span>
-                            </el-row>
-                            <el-row style="margin-bottom: 35px">
-                                <div class="resume-languageinfo">
-                                    <div class="resume-introduction">
-                                        <span v-html="resume.introduction"></span>
+                                        </el-row>
+                                        <el-row style="margin-bottom: 35px">
+                                            <div class="resume-languageinfo">
+                                                <div class="resume-introduction">
+                                                    <span v-html="item.introduction"></span>
+                                                </div>
+                                            </div>
+                                        </el-row>
                                     </div>
-                                </div>
-                            </el-row>
-                            </div>
-                            <div v-if="showIntroDialog==true">
-                                <el-row style="height: 30px">
-                                    <div style="width: 540px; display: inline-block;margin-right: 75px">
-                                        <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
-                                        <span class="resume-base">自我介绍</span>
-                                    </div>
-                                </el-row>
-                                <div class="resume-box-edit" >
-                                <div style="display: flex;padding: 30px 30px 30px 30px">
-                                    <span class="tag-title" style="width: 60px">自我介绍：</span>
-                                    <quill-editor v-model="resumeForm.introduction" 
-                                                  :options="introEditorOption"
-                                                  class="intro-text"></quill-editor>
+                                    <div v-if="showIntroDialog==true">
+                                        <el-row style="height: 30px">
+                                            <div style="width: 540px; display: inline-block;margin-right: 75px">
+                                                <img src="../assets/point.png"
+                                                     style="padding-right: 9px;padding-bottom: 7px">
+                                                <span class="resume-base">自我介绍</span>
+                                            </div>
+                                        </el-row>
+                                        <div class="resume-box-edit">
+                                            <div style="display: flex;padding: 30px 30px 30px 30px">
+                                                <span class="tag-title" style="width: 60px">自我介绍：</span>
+                                                <quill-editor v-model="resumeForm.introduction"
+                                                              :options="introEditorOption"
+                                                              class="intro-text"></quill-editor>
 
-                                </div>
+                                            </div>
 
-                                    <div style="padding-top: 20px">
-                                        <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                            <el-button class="btn1" @click="handleSaveResumeBasic(false)" :loading="posting">保存</el-button>
-                                            <el-button class="btn2" @click="showIntroDialog = false">取消</el-button>
+                                            <div style="padding-top: 20px">
+                                                <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
+                                                    <el-button class="btn1" @click="handleSaveResumeBasic(false)"
+                                                               :loading="posting">保存
+                                                    </el-button>
+                                                    <el-button class="btn2" @click="showIntroDialog = false">取消
+                                                    </el-button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                        </el-tab-pane>
-                    </el-tabs>
-                </b-media>
-                <b-col class="right-box">
-                    <div class="resume-preview resume-right-box">
-                        <el-row style="padding: 10px">
-                            <el-button
-                                    class="left-btn"
-                            >快速录入
-                            </el-button>
-                            <el-button
 
-                                    @click="handlePreview"
-                                    class="left-btn"
-                            >预览简历
-                            </el-button>
-                        </el-row>
-                        <el-row style="padding: 10px">
-                            <el-button
-                                    @click="exportPdf"
-                                    class="left-btn"
-                            >简历下载
-                            </el-button>
-                            <el-button
-                                    class="left-btn"
-                            >简历删除
-                            </el-button>
-                        </el-row>
-                        <el-divider></el-divider>
-                    </div>
-                    <div class="resume-attachment resume-right-box1">
-                        <span class="right-add">附件：</span>
-                        <span>
+                        </b-media>
+
+                        <b-col class="right-box">
+                            <div class="resume-preview resume-right-box">
+                                <el-row style="padding: 10px">
+                                    <el-button
+                                            class="left-btn"
+                                    >快速录入
+                                    </el-button>
+                                    <el-button
+
+                                            @click="handlePreview"
+                                            class="left-btn"
+                                    >预览简历
+                                    </el-button>
+                                </el-row>
+                                <el-row style="padding: 10px">
+                                    <el-button
+                                            @click="exportPdf"
+                                            class="left-btn"
+                                    >简历下载
+                                    </el-button>
+                                    <el-button
+                                            class="left-btn"
+                                    >简历删除
+                                    </el-button>
+                                </el-row>
+                                <el-divider></el-divider>
+                            </div>
+                            <div class="resume-attachment resume-right-box1">
+                                <span class="right-add">附件：</span>
+                                <span>
                               <img src="../assets/tishi.png" style="width: 13px;height: 13px;">
                         </span>
-                        <span style="font-size: 12px;font-family: PingFangSC-Regular, PingFang SC;font-weight: 400;">
+                                <span style="font-size: 12px;font-family: PingFangSC-Regular, PingFang SC;font-weight: 400;">
                             附件简历内容也可被HR搜索到！
                         </span>
-                        <el-upload
-                                class="mt-2 upload-attach-box"
-                                :limit="1"
-                                :action="uploadAttachmentOptions.action"
-                                :data="uploadAttachmentOptions.params"
-                                :accept="uploadAttachmentOptions.acceptFileType"
-                                :show-file-list="false"
-                                :on-success="handleUploadAttachmengSuccess"
-                                :before-upload="beforeAttachmengUpload"
-                        >
-                            <el-button class="upload-btn">
-                                <svg-icon
-                                icon-class="upload"
-                                style="width: 18px;height: 15px"></svg-icon>
-                                <span style="padding-left: 4px">上传附件简历</span></el-button>
-                        </el-upload>
-                        <el-row style="display: inline-flex;margin: 21px 0px 13px 0px">
-                            <div style="width: 210px">
-                                <el-row style="font-size: 14px;font-family: PingFangSC-Medium, PingFang SC;font-weight: 500;">
-                                    <img src="../assets/PDF.png" style="width: 14px;height: 18px;">
-                                    {{this.$store.getters.name}}个人简历
-                                    <!--                                    {{resume.attachResume}}-->
-                                </el-row>
+                                <el-upload
+                                        class="mt-2 upload-attach-box"
+                                        :limit="1"
+                                        :action="uploadAttachmentOptions.action"
+                                        :data="uploadAttachmentOptions.params"
+                                        :accept="uploadAttachmentOptions.acceptFileType"
+                                        :show-file-list="false"
+                                        :on-success="handleUploadAttachmengSuccess"
+                                        :before-upload="beforeAttachmengUpload"
+                                >
+                                    <el-button class="upload-btn">
+                                        <svg-icon
+                                                icon-class="upload"
+                                                style="width: 18px;height: 15px"></svg-icon>
+                                        <span style="padding-left: 4px">上传附件简历</span></el-button>
+                                </el-upload>
+                                <el-row style="display: inline-flex;margin: 21px 0px 13px 0px">
+                                    <div style="width: 210px">
+                                        <el-row style="font-size: 14px;font-family: PingFangSC-Medium, PingFang SC;font-weight: 500;">
+                                            <img src="../assets/PDF.png" style="width: 14px;height: 18px;">
+                                            {{item.name}}个人简历
+                                            <!--                                    {{resume.attachResume}}-->
+                                        </el-row>
 
-                            </div>
-                            <div>
+                                    </div>
+                                    <div>
                             <span style="height: 30px">
                                 <img src="../assets/resume_edit.png" style="width: 18px;height: 19px;">
                             </span>
-                                <span style="height: 30px;padding-left: 10px">
+                                        <span style="height: 30px;padding-left: 10px">
                                 <img src="../assets/resume_del.png" style="width: 19px;height: 21px;">
                             </span>
+                                    </div>
+                                </el-row>
+                                <el-upload
+                                        class="mt-2 upload-attach-box"
+                                        :limit="1"
+                                        :action="uploadAttachmentOptions.action"
+                                        :data="uploadAttachmentOptions.params"
+                                        :accept="uploadAttachmentOptions.acceptFileType"
+                                        :show-file-list="false"
+                                        :on-success="handleUploadAttachmengSuccess"
+                                        :before-upload="beforeAttachmengUpload"
+                                >
+                                    <el-button class="upload-btn">
+                                        <svg-icon
+                                                icon-class="upload"
+                                                style="width: 18px;height: 15px"
+                                        ></svg-icon>
+                                        <span style="padding-left: 4px">上传其他附件</span></el-button>
+                                </el-upload>
+                                <!--                        <div v-if="resume.attachResume">-->
+                                <!--                            <el-link :href="resume.attachResume" type="primary" icon="el-icon-link">下载附件简历</el-link>-->
+                                <!--                            <el-link type="danger" class="ml-4" @click="onDelResumeAttachClick">-->
+                                <!--                                <i class="el-icon-delete"></i> 删除-->
+                                <!--                            </el-link>-->
+                                <!--                        </div>-->
+                                <el-divider></el-divider>
                             </div>
-                        </el-row>
-                        <el-upload
-                                class="mt-2 upload-attach-box"
-                                :limit="1"
-                                :action="uploadAttachmentOptions.action"
-                                :data="uploadAttachmentOptions.params"
-                                :accept="uploadAttachmentOptions.acceptFileType"
-                                :show-file-list="false"
-                                :on-success="handleUploadAttachmengSuccess"
-                                :before-upload="beforeAttachmengUpload"
-                        >
-                            <el-button class="upload-btn">
-                                <svg-icon
-                                icon-class="upload"
-                                style="width: 18px;height: 15px"
-                                ></svg-icon>
-                                <span style="padding-left: 4px">上传其他附件</span></el-button>
-                        </el-upload>
-                        <!--                        <div v-if="resume.attachResume">-->
-                        <!--                            <el-link :href="resume.attachResume" type="primary" icon="el-icon-link">下载附件简历</el-link>-->
-                        <!--                            <el-link type="danger" class="ml-4" @click="onDelResumeAttachClick">-->
-                        <!--                                <i class="el-icon-delete"></i> 删除-->
-                        <!--                            </el-link>-->
-                        <!--                        </div>-->
-                        <el-divider></el-divider>
-                    </div>
-                    <div class="resume-preview resume-right-box1">
-                        <span class="right-add">简历完成度：</span>
-                        <span class="right-num">{{resume.resumeCompleteProgress}}%</span>
-                        <el-progress
-                                :stroke-width="22"
-                                :percentage="resume.resumeCompleteProgress"
-                                :status="resume.resumeCompleteProgress == 100? 'success': 'warning'"
-                        ></el-progress>
-                        <!--                        <el-button-->
-                        <!--                                type="primary"-->
-                        <!--                                class="mt-2 btn-preview"-->
-                        <!--                                @click="handlePreview"-->
-                        <!--                                icon="el-icon-document"-->
-                        <!--                        >预览简历-->
-                        <!--                        </el-button>-->
-                    </div>
+                            <div class="resume-preview resume-right-box1">
+                                <span class="right-add">简历完成度：</span>
+                                <span class="right-num">{{item.resumeCompleteProgress}}%</span>
+                                <el-progress
+                                        :stroke-width="22"
+                                        :percentage="item.resumeCompleteProgress"
+                                        :status="item.resumeCompleteProgress == 100? 'success': 'warning'"
+                                ></el-progress>
+                            </div>
 
-                </b-col>
-            </b-row>
+                        </b-col>
+
+                    </b-row>
+                </el-tab-pane>
+            </el-tabs>
+
         </b-container>
     </div>
 </template>
@@ -1373,7 +1493,7 @@
     import {quillEditor} from "vue-quill-editor";
     import Toast from "@/utils/toast";
     import {checkPicSize, checkAttachmentSize} from "@/utils/common";
-    import { exportResumeToPdf } from "@/api/export_api";
+    import {exportResumeToPdf} from "@/api/export_api";
     import {
         faEdit,
         faFemale,
@@ -1400,18 +1520,17 @@
         name: "EditResumePage",
         data() {
             return {
-                resumeId:'',
                 editableTabsValue: '1',
                 editableTabs: [{
                     title: '简历1',
                     name: '1',
                 }],
                 seen: false,
-                maritalStatusList:{},
+                maritalStatusList: {},
                 poriorityList: {},
-                categoryList:{},
+                categoryList: {},
                 resumeForm: {
-                    priority:'',
+                    priority: undefined,
                     id: undefined,
                     name: "",
                     birth: undefined,
@@ -1424,7 +1543,7 @@
                     phone: undefined,
                     introduction: "",
                     attachResume: undefined,
-                    email:''
+                    email: ''
                 },
                 resumeFormRules: {
                     name: [{required: true, message: "请输入姓名", trigger: "blur"}],
@@ -1439,9 +1558,9 @@
                     // ],
                 },
                 resumeEduForm: {
-                    workType:undefined,
-                    faceToke:undefined,
-                    inSchool:undefined,
+                    workType: undefined,
+                    faceToke: undefined,
+                    inSchool: undefined,
                     id: undefined,
                     resumeId: undefined,
                     schoolName: undefined,
@@ -1542,8 +1661,8 @@
                     time: [{required: true, message: "请输入获得时间", trigger: "blur"},],
                 },
                 expectJobForm: {
-                    workType:undefined,
-                    industryName:undefined,
+                    workType: undefined,
+                    industryName: undefined,
                     cityIds: [],
                     categoryIds: [],
                     salaryId: undefined,
@@ -1565,9 +1684,9 @@
                 degreeOptions: [],
                 jobCategoryOptions: [],
                 skillTagOptions: [],
-                categoryListOptions:[],
+                categoryListOptions: [],
                 // categoryList
-                industryNameOptions:[],
+                industryNameOptions: [],
                 showBasicDialog: false,
                 showIntroDialog: false,
                 showEduDialog: false,
@@ -1609,11 +1728,11 @@
                     label: "name",
                     emitPath: false,
                     children: "children",
-                    checkStrictly:true
+                    checkStrictly: true
 
                 },
-                workTypeOptions:[],
-                categoryListOptions:[],
+                workTypeOptions: [],
+                categoryListOptions: [],
                 newSkillTag: "",
                 skillTagListForm: [],
                 salaryOptions: [],//薪资范围
@@ -1623,7 +1742,7 @@
                     },
                 },
                 cityIdProps: {
-                    checkStrictly:true,
+                    checkStrictly: true,
                     multiple: true,
                     lazy: true,
                     lazyLoad: (node, resolve) => {
@@ -1714,10 +1833,10 @@
                 }
             },
             onMouseOver() {
-                this.seen=true
+                this.seen = true
             },
             onMouseOut() {
-                this.seen=false
+                this.seen = false
             },
             initData() {
                 getAllCountries().then((response) => {
@@ -1800,7 +1919,7 @@
                 this.resumeForm.name = this.resume.name;
                 this.resumeForm.birth = this.resume.birth;
                 this.resumeForm.gender = this.resume.gender;
-                this.resumeForm.email=this.resume.email;
+                this.resumeForm.email = this.resume.email;
                 this.resumeForm.returnTime = this.resume.returnTime;
                 this.resumeForm.graduateTime = this.resume.graduateTime;
                 this.resumeForm.curPlace = this.resume.curPlace;
@@ -1809,11 +1928,17 @@
                 this.resumeForm.introduction = this.resume.introduction;
             },
             handleEditResumeBasic() {
+                let item;
                 console.log("-----")
+                console.log(this.index)
+                console.log(this.resume)
+                for (item in this.resume) {
+                        console.log(this.resume[item].id)
+                }
                 this.showBasicDialog = true;
                 this.setResumeFormValues();
                 this.$nextTick(() => {
-                    this.$refs["resumeForm"].clearValidate();
+                    this.$refs["resumeForm"][0].clearValidate();
                 });
             },
             handleEditResumeIntro() {
@@ -1846,7 +1971,7 @@
                     this.resumeEduForm.gpa = undefined;
                 }
                 this.$nextTick(() => {
-                    this.$refs["resumeEduForm"].clearValidate();
+                    this.$refs["resumeEduForm"][0].clearValidate();
                 });
             },
             handleEditResumeLanguage(type, resumeLanguage) {
@@ -1862,7 +1987,7 @@
                     this.resumeLanguageForm.description = undefined;
                 }
                 this.$nextTick(() => {
-                    this.$refs["resumeLanguageForm"].clearValidate();
+                    this.$refs["resumeLanguageForm"][0].clearValidate();
                 });
             },
             handleEditResumeAwards(type, resumeAwards) {
@@ -1878,11 +2003,12 @@
                     this.resumeAwardsForm.time = undefined;
                 }
                 this.$nextTick(() => {
-                    this.$refs["resumeAwardsForm"].clearValidate();
+                    this.$refs["resumeAwardsForm"][0].clearValidate();
                 });
             },
             handleEditResumeExp(type, resumeExp) {
-                this.showExpDialog = true;
+                for (i in resumeExpForm)
+                    this.showExpDialog = true;
                 this.resumeExpForm.resumeId = this.resume.id;
                 if (type === "update") {
                     this.resumeExpForm.id = resumeExp.id;
@@ -1911,7 +2037,7 @@
                     this.resumeExpForm.onWork = 0;
                 }
                 this.$nextTick(() => {
-                    this.$refs["resumeExpForm"].clearValidate();
+                    this.$refs["resumeExpForm"][0].clearValidate();
                 });
             },
             handleEditResumePractice(type, resumePractice) {
@@ -1940,7 +2066,7 @@
                     this.resumePracticeForm.onWork = undefined;
                 }
                 this.$nextTick(() => {
-                    this.$refs["resumePracticeForm"].clearValidate();
+                    this.$refs["resumePracticeForm"][0].clearValidate();
                 });
             },
             handleEditExpectJob() {
@@ -1956,7 +2082,7 @@
                     }
                 );
                 this.$nextTick(() => {
-                    this.$refs["expectJobForm"].clearValidate();
+                    this.$refs["expectJobForm"][0].clearValidate();
                 });
             },
             handleEditResumeSkill() {
@@ -1979,22 +2105,22 @@
                     }
                 }
             },
-            handleEditResumeLink(type, resumeLink) {
-                this.showLinkDialog = true;
-                this.resumeLinkForm.resumeId = this.resume.id;
-                if (type === "update") {
-                    this.resumeLinkForm.id = resumeLink.id;
-                    this.resumeLinkForm.name = resumeLink.name;
-                    this.resumeLinkForm.link = resumeLink.link;
-                } else {
-                    this.resumeLinkForm.id = undefined;
-                    this.resumeLinkForm.name = undefined;
-                    this.resumeLinkForm.link = undefined;
-                }
-                this.$nextTick(() => {
-                    this.$refs["resumeLinkForm"].clearValidate();
-                });
-            },
+            // handleEditResumeLink(type, resumeLink) {
+            //     this.showLinkDialog = true;
+            //     this.resumeLinkForm.resumeId = this.resume.id;
+            //     if (type === "update") {
+            //         this.resumeLinkForm.id = resumeLink.id;
+            //         this.resumeLinkForm.name = resumeLink.name;
+            //         this.resumeLinkForm.link = resumeLink.link;
+            //     } else {
+            //         this.resumeLinkForm.id = undefined;
+            //         this.resumeLinkForm.name = undefined;
+            //         this.resumeLinkForm.link = undefined;
+            //     }
+            //     this.$nextTick(() => {
+            //         this.$refs["resumeLinkForm"].clearValidate();
+            //     });
+            // },
             handleDelResumeEdu(id) {
                 this.handleDeleteItemById(delResumeEdu, id);
             },
@@ -2011,8 +2137,9 @@
                 this.handleDeleteItemById(delResumeAwards, id);
             },
             handleSaveResumeBasic(validation = false) {
+
                 if (validation) {
-                    this.$refs["resumeForm"].validate((valid) => {
+                    this.$refs["resumeForm"][0].validate((valid) => {
                         if (valid) {
                             this.postSaveResumeBasic();
                         }
@@ -2020,6 +2147,7 @@
                 } else {
                     this.postSaveResumeBasic();
                 }
+
             },
             postSaveResumeBasic() {
                 this.posting = true;
@@ -2035,7 +2163,7 @@
                     });
             },
             handleSaveResumeEdu() {
-                this.$refs["resumeEduForm"].validate((valid) => {
+                this.$refs["resumeEduForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
                         this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
@@ -2052,7 +2180,7 @@
                 });
             },
             handleSaveResumeExp() {
-                this.$refs["resumeExpForm"].validate((valid) => {
+                this.$refs["resumeExpForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
                         if (
@@ -2074,7 +2202,7 @@
                 });
             },
             handleSaveResumePractice() {
-                this.$refs["resumePracticeForm"].validate((valid) => {
+                this.$refs["resumePracticeForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
                         if (
@@ -2096,7 +2224,7 @@
                 });
             },
             handleSaveResumeLanguage() {
-                this.$refs["resumeLanguageForm"].validate((valid) => {
+                this.$refs["resumeLanguageForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
                         saveResumeLanguage(this.resumeLanguageForm)
@@ -2111,7 +2239,7 @@
                 });
             },
             handleSaveResumeAwards() {
-                this.$refs["resumeAwardsForm"].validate((valid) => {
+                this.$refs["resumeAwardsForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
                         saveResumeAwards(this.resumeAwardsForm)
@@ -2126,7 +2254,7 @@
                 });
             },
             handleSaveExpectJob() {
-                this.$refs["expectJobForm"].validate((valid) => {
+                this.$refs["expectJobForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
                         saveUserExpectJob(this.expectJobForm)
@@ -2139,6 +2267,7 @@
                             });
                     }
                 });
+
             },
             handleSaveResumeSkills() {
                 const selectSkillTags = {
@@ -2249,14 +2378,15 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style  lang="scss" scoped>
+<style lang="scss" scoped>
     $border-style: 1px solid #eee;
 
     .app-container {
         /*margin: 20px auto;*/
         /*min-height: calc(100vh - 477px);*/
         background: rgba(213, 226, 240, 0.21);
-        .selectleave{
+
+        .selectleave {
             ::v-deep.el-input--suffix .el-input__inner {
                 padding-right: 30px;
                 height: 25px;
@@ -2269,6 +2399,7 @@
                 font-weight: 500;
                 color: #4895EF;
             }
+
             ::v-deep.el-input__icon {
                 height: 32px;
                 width: 25px;
@@ -2292,39 +2423,7 @@
             .resume-body {
                 /*padding-top: 119px;*/
                 padding-left: 68px;
-                ::v-deep.el-tabs__nav-scroll {
-                    width: fit-content;
-                    height: 45px;
-                    background: #FFFFFF;
-                    border-radius: 25px;
-                    border: 1px solid #CCCCCC;
 
-                }
-                ::v-deep.el-tabs--card>.el-tabs__header {
-                    border-bottom: 0px;
-                }
-                ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__nav {
-                    border: 0px;
-                    border-bottom: none;
-                    border-radius: 4px 4px 0 0;
-                    -webkit-box-sizing: border-box;
-                    box-sizing: border-box;
-                }
-
-                ::v-deep.el-tabs--card>.el-tabs__header .el-tabs__item {
-                    border-left: none;
-                    width: 80px;
-                    height: 35px;
-                    background: #4895EF;
-                    border-radius: 18px;
-                    margin: 5px;
-                    font-size: 18px;
-                    font-family: PingFangSC-Medium, PingFang SC;
-                    font-weight: 500;
-                    color: #FFFFFF;
-                    line-height: 34px;
-                    text-align: center;
-                }
                 .resume-point {
                     padding-top: 10px;
                     width: 7px;
@@ -2413,7 +2512,8 @@
                     line-height: 42px;
                     padding-bottom: 10px;
                 }
-                .help-text{
+
+                .help-text {
                     padding: 3px;
                     width: 263px;
                     height: 80px;
@@ -2425,6 +2525,7 @@
                     color: #666666;
                     line-height: 15px;
                 }
+
                 .img-button {
                     margin-left: 6px;
                     padding-left: 12px;
@@ -2439,6 +2540,7 @@
                     line-height: 0px;
                     border-color: #EDF2FF;
                 }
+
                 .info-name {
                     width: 97px;
                     height: 29px;
@@ -2451,6 +2553,7 @@
 
                 .expinfo-other-row {
                     display: inline-flex;
+
                     .expinfo-other {
                         width: 70px;
                         font-size: 14px;
@@ -2458,6 +2561,7 @@
                         font-weight: 500;
                         color: #333333;
                     }
+
                     .expinfo-other-html {
                         width: 478px;
                         font-size: 14px;
@@ -2603,7 +2707,7 @@
             padding: 10px 10px 0px 20px;
             /*<!--border: $border-style;-->*/
             /*margin-bottom: 15px;*/
-            .upload-btn{
+            .upload-btn {
                 width: 192px;
                 height: 31px;
                 background: #4895EF;
@@ -2613,6 +2717,7 @@
                 font-weight: 500;
                 color: #FFFFFF;
             }
+
             .right-add {
 
                 font-size: 18px;
@@ -2633,16 +2738,19 @@
             }
 
         }
+
         .resume-box-edit {
             width: 640px;
             height: auto;
             background: #F6F9FC;
+
             .intro-text {
                 width: 500px;
                 height: auto;
                 background: #FFFFFF;
                 border-radius: 12px;
                 border: 1px solid #CCDBF5;
+
                 ::v-deep.ql-toolbar.ql-snow {
                     border: 0px solid #ccc;
                     -webkit-box-sizing: border-box;
@@ -2650,24 +2758,27 @@
                     font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
                     padding: 8px;
                 }
+
                 ::v-deep.ql-container.ql-snow {
                     border: 0px;
                 }
             }
-            .tag-title{
+
+            .tag-title {
                 font-size: 12px;
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 vertical-align: text-top;
             }
-            .tag-title-1{
+
+            .tag-title-1 {
                 font-size: 12px;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
                 color: #999999;
             }
 
-            .btn1{
+            .btn1 {
                 width: 75px;
                 height: 23px;
                 background: #4895EF;
@@ -2679,7 +2790,8 @@
                 color: #FFFFFF;
                 line-height: 2px;
             }
-            .btn2{
+
+            .btn2 {
                 width: 75px;
                 height: 23px;
                 background: #FFFFFF;
@@ -2691,6 +2803,7 @@
                 color: #4895EF;
                 line-height: 2px;
             }
+
             .n-input-text-width {
                 font-size: 12px;
                 font-family: PingFangSC-Medium, PingFang SC;
@@ -2726,13 +2839,15 @@
                     text-align: center;
                 }
             }
+
             .m1-input-text-width {
 
                 font-size: 12px;
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #333333;
-                .ej-btn{
+
+                .ej-btn {
                     width: 75px;
                     height: 23px;
                     background: #FFFFFF;
@@ -2744,12 +2859,14 @@
                     color: #4895EF;
                     line-height: 1px;
                 }
+
                 ::v-deep .el-date-editor .el-range-separator {
                     padding: 0 5px;
                     line-height: 14px;
                     width: 5%;
                     color: #303133;
                 }
+
                 ::v-deep .el-input__icon {
                     height: 100%;
                     width: 25px;
@@ -2759,6 +2876,7 @@
                     line-height: unset;
                     color: #4895EF;
                 }
+
                 ::v-deep .el-input {
                     position: relative;
                     font-size: 14px;
@@ -2774,12 +2892,14 @@
                     line-height: 36px;
                     /*padding: 0 0px 0 0;*/
                 }
+
                 ::v-deep.el-form-item__content {
                     line-height: 40px;
                     position: relative;
                     font-size: 11px;
                     padding-left: 90px;
                 }
+
                 ::v-deep.ql-bubble {
                     width: 512px;
                     height: 94px;
@@ -2787,17 +2907,20 @@
                     border-radius: 12px;
                     border: 1px solid #CCDBF5;
                 }
+
                 ::v-deep .ql-container .ql-editor {
                     min-height: 93px;
                     font-size: 15px;
                 }
             }
+
             .m-input-text-width {
                 font-size: 12px;
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #333333;
-                .ej-btn{
+
+                .ej-btn {
                     width: 75px;
                     height: 23px;
                     background: #FFFFFF;
@@ -2809,12 +2932,14 @@
                     color: #4895EF;
                     line-height: 1px;
                 }
+
                 ::v-deep .el-date-editor .el-range-separator {
                     padding: 0 5px;
                     line-height: 14px;
                     width: 5%;
                     color: #303133;
                 }
+
                 ::v-deep .el-input__icon {
                     height: 100%;
                     width: 25px;
@@ -2824,12 +2949,14 @@
                     line-height: unset;
                     color: #4895EF;
                 }
+
                 ::v-deep .el-input {
                     position: relative;
                     font-size: 14px;
                     display: inline-block;
                     width: 173px
                 }
+
                 ::v-deep .el-input__inner {
                     width: 173px;
                     height: 23px;
@@ -2841,6 +2968,7 @@
                     font-weight: 400;
                     color: #999999;
                 }
+
                 ::v-deep .el-form-item__label {
                     width: 80px;
                     font-size: 12px;
@@ -2849,6 +2977,7 @@
                     line-height: 36px;
                     /*padding: 0 0px 0 0;*/
                 }
+
                 ::v-deep.el-date-editor .el-range-input, .el-date-editor .el-range-separator {
                     height: 100%;
                     width: 70px;
@@ -2857,6 +2986,7 @@
                     display: inline-block;
                     font-size: 11px;
                 }
+
                 ::v-deep.el-form-item__content {
                     line-height: 40px;
                     position: relative;
@@ -2910,31 +3040,36 @@
                 }
             }
         }
+
         .resume-box {
             margin-bottom: 21px;
             width: 640px;
-            .resume-box-text{
+
+            .resume-box-text {
                 font-size: 16px;
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #333333;
                 line-height: 22px;
             }
-            .resume-box-text-title{
+
+            .resume-box-text-title {
                 font-size: 14px;
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #333333;
                 line-height: 20px;
             }
-            .resume-box-text-data{
+
+            .resume-box-text-data {
                 font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
                 color: #333333;
                 line-height: 20px;
             }
-            .resume-box-text-html{
+
+            .resume-box-text-html {
                 width: 478px;
                 font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
@@ -2981,9 +3116,11 @@
                 .edu-box {
                     display: inline-flex;
                 }
-                .edu-box-l{
+
+                .edu-box-l {
                     width: 346px;
                 }
+
                 .edu-box-l1 {
                     width: 346px;
                 }
@@ -2993,10 +3130,12 @@
                     width: 250px;
                     margin-right: 20px;
                 }
+
                 .edu-box-m1 {
                     margin-top: 24px;
                     margin-right: 20px;
-                    .info-other{
+
+                    .info-other {
                         height: auto;
                         font-size: 14px;
                         font-family: PingFangSC-Medium, PingFang SC;
@@ -3010,10 +3149,12 @@
                 }
             }
         }
+
         .el-input .el-select {
             width: 120px;
         }
-        ::v-deep .el-tag--dark{
+
+        ::v-deep .el-tag--dark {
 
             height: 21px;
             font-size: 12px;
@@ -3025,6 +3166,7 @@
             line-height: 20px;
             margin: 5px;
         }
+
         ::v-deep.el-tag--plain {
 
             height: 21px;
@@ -3049,12 +3191,14 @@
 </style>
 <style lang="scss">
     @import "bootstrap/scss/bootstrap.scss";
-    .svg-icon[data-v-c8a70580]{
+
+    .svg-icon[data-v-c8a70580] {
         width: 1em;
         vertical-align: -0.25em;
         fill: currentColor;
         overflow: hidden;
     }
+
     .info-other {
         height: 20px;
         font-size: 14px;
@@ -3063,6 +3207,7 @@
         color: #333333;
         margin-top: 4px;
     }
+
     .el-progress-bar__outer {
         height: 6px;
         border-radius: 100px;
@@ -3071,9 +3216,11 @@
         position: relative;
         vertical-align: middle;
     }
+
     .el-progress.is-warning .el-progress-bar__inner {
         background-color: #FDC500;
     }
+
     .tag-icon {
         margin-right: 7px;
         padding: 10px;
@@ -3157,6 +3304,7 @@
         display: block;
 
     }
+
     .upload-attach-box .el-upload button {
         height: 31px;
         margin-top: 17px;
@@ -3169,5 +3317,91 @@
         font-family: PingFangSC-Medium, PingFang SC;
         font-weight: 500;
         color: #FFFFFF;
+    }
+
+    .el-tabs__nav-scroll {
+        width: fit-content;
+        height: 45px;
+        background: #FFFFFF;
+        border-radius: 25px;
+        border: 1px solid #CCCCCC;
+
+    }
+
+    .el-tabs--card > .el-tabs__header {
+        width: fit-content;
+        height: 35px;
+        background: #FFFFFF;
+        border-radius: 18px;
+        border-bottom: 0px;
+        margin-left: 56px;
+
+    }
+
+    .el-tabs--card > .el-tabs__header .el-tabs__nav {
+        border: 0px;
+        border-bottom: none;
+        border-radius: 4px 4px 0 0;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .el-tabs--card > .el-tabs__header .el-tabs__item {
+        border-left: none;
+        width: 80px;
+        height: 35px;
+        background: #4895EF;
+        border-radius: 18px;
+        margin: 5px;
+        font-size: 18px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #FFFFFF;
+        line-height: 34px;
+        text-align: center;
+    }
+
+    .el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable {
+        width: fit-content;
+        height: 35px;
+        background: #4895EF;
+        border-radius: 18px;
+        font-size: 18px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #FFFFFF;
+        line-height: 35px;
+        font-size: 18px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #FFFFFF;
+        margin: 3px 6px 3px 3px;
+    }
+
+    .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable {
+        width: fit-content;
+        height: 35px;
+        margin: 3px 6px 3px 3px;
+        background: #FFFFFF;
+        border-radius: 18px;
+        font-size: 18px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+    }
+
+    .el-tabs--card > .el-tabs__header.el-tabs__new-tab {
+        float: right;
+        border: 1px solid #d3dce6;
+        height: 18px;
+        width: 18px;
+        line-height: 18px;
+        margin: 12px 0 9px 10px;
+        border-radius: 50px;
+        text-align: center;
+        font-size: 12px;
+        color: #d3dce6;
+        cursor: pointer;
+        transition: all .15s;
     }
 </style>
