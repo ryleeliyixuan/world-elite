@@ -14,6 +14,13 @@ export function saveResumeBasic(data){
         data
       })
 }
+export function addResume(data){
+    return request({
+        url: '/resume/add-resume',
+        method: 'post',
+        data
+    })
+}
 
 export function saveResumeEdu(data){
     return request({
@@ -63,6 +70,38 @@ export function delResumePractice(id){
       })
 }
 
+export function saveResumeLanguage(data) {
+    return request({
+        url:'/resume/save-resume-language',
+        method:'post',
+        data
+    })
+}
+export function delResumeLanguage(id) {
+    return request({
+        url:'/resume/del-resume-language',
+        method:'post',
+        params:{id: id}
+    })
+}
+
+export function saveResumeAwards(data) {
+    return request({
+        url:'/resume/save-resume-certificate',
+        method:'post',
+        data
+    })
+}
+
+export function delResumeAwards(id) {
+    return request({
+        url:'/resume/delete-resume-certificate',
+        method:'post',
+        params:{id:id}
+    })
+
+}
+
 export function saveResumeSkills(data){
   return request({
     url: '/resume/save-resume-skills',
@@ -71,21 +110,21 @@ export function saveResumeSkills(data){
   })
 }
 
-export function saveResumeLink(data){
-  return request({
-    url: '/resume/save-resume-link',
-    method: 'post',
-    data
-  })
-}
+// export function saveResumeLink(data){
+//   return request({
+//     url: '/resume/save-resume-link',
+//     method: 'post',
+//     data
+//   })
+// }
 
-export function delResumeLink(id){
-  return request({
-    url: '/resume/del-resume-link',
-    method: 'post',
-    params: {id: id}
-  })
-}
+// export function delResumeLink(id){
+//   return request({
+//     url: '/resume/del-resume-link',
+//     method: 'post',
+//     params: {id: id}
+//   })
+// }
 
 export function getResumeDetail(id) {
   return request({
