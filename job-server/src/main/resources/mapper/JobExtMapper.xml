@@ -76,7 +76,7 @@
         count(t_job.recruit_type) as count
       from t_dict
       left join t_job
-      on t_dict.id = t_job.recruit_type and t_job.company_id = #{companyId,jdbcType=BIGINT}
+      on t_dict.id = t_job.recruit_type and t_job.company_id = #{companyId,jdbcType=BIGINT} and t_job.status = 2
       <where>
         and t_dict.type = 12
       </where>
