@@ -20,6 +20,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     private String title; //活动标题
     private String poster; //活动海报
     private String description; //活动详情
+    private Byte form; //活动形式, 线上0, 线下1
     private CityVo city; //活动城市
     private Long activityStartTime; //活动开始时间
     private Long activityFinishTime; //活动结束时间

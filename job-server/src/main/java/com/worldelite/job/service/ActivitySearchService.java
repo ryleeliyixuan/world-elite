@@ -212,6 +212,7 @@ public class ActivitySearchService {
 
         doc.add(new StringField(ActivityIndexFields.ACTIVITY_ID, String.valueOf(activity.getId()), Field.Store.YES));
 
+        doc.add(new StringField(ActivityIndexFields.FORM, String.valueOf(activity.getForm()), Field.Store.YES));
         doc.add(new StringField(ActivityIndexFields.CITY_ID, String.valueOf(activity.getCityId()), Field.Store.YES));
         doc.add(new StringField(ActivityIndexFields.STATUS, String.valueOf(activity.getStatus()), Field.Store.YES));
 
@@ -257,25 +258,18 @@ public class ActivitySearchService {
             if (StringUtils.isNotBlank(form.getKeyword()))
                 builder.add(new QueryParser(ActivityIndexFields.TITLE, analyzer).parse(form.getKeyword().trim()), BooleanClause.Occur.MUST);
 
-            String[] cityIds = null;
-            if (form.getActivityForm() != null) {
-                if (form.getActivityForm() == 0) {
-                    cityIds = new String[]{"999992", "999993"};
-                } else if (form.getActivityForm() == 1) {
-                    if (StringUtils.isNoneBlank(form.getCityIds())) {
-                        cityIds = form.getCityIds();
-                    }
+            if (form.getForm() != null)
+                builder.add(new TermQuery(new Term(ActivityIndexFields.FORM, String.valueOf(form.getForm()))), BooleanClause.Occur.MUST);
+
+            if (form.getCityIds() != null) {
+                BooleanQuery.Builder query = new BooleanQuery.Builder();
+                for (String cityId : form.getCityIds()) {
+                    query.add(new TermQuery(new Term(ActivityIndexFields.CITY_ID, cityId)), BooleanClause.Occur.SHOULD);
                 }
+
+                builder.add(query.build(), BooleanClause.Occur.MUST);
             }
 
-            if (cityIds != null) {
-                for (String cityId : cityIds) {
-                    MultiPhraseQuery.Builder multiBuilder = new MultiPhraseQuery.Builder();
-                    multiBuilder.add(new Term(ActivityIndexFields.CITY_ID, cityId));
-
-                    builder.add(multiBuilder.build(), BooleanClause.Occur.SHOULD);
-                }
-            }
             if (form.getStatus() != null)
                 builder.add(new TermQuery(new Term(ActivityIndexFields.STATUS, String.valueOf(form.getStatus()))), BooleanClause.Occur.MUST);
 

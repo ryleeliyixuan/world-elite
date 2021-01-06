@@ -19,6 +19,9 @@
       <if test="userType != null">
         and user_type = #{userType,jdbcType=CHAR}
       </if>
+      <if test="form != null">
+        and form = #{form,jdbcType=TINYINT}
+      </if>
       <if test="cityIds != null and cityIds != ''">
         and city_id in (${cityIds})
       </if>

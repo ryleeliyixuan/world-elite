@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `t_activity`;
 CREATE TABLE `t_activity`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '活动id',
   `user_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '发布者id',
+  `form` tinyint(1) NULL DEFAULT NULL COMMENT '活动形式, 线上0, 线下1',
   `city_id` int(11) NOT NULL DEFAULT 0 COMMENT '城市id',
   `user_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发布账户类型(个人账户:1/企业账户:2/管理账户:100)',
   `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '活动标题',
@@ -55,3 +56,4 @@ CREATE TABLE `t_activity`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '活动表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;
+

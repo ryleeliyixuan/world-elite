@@ -7,6 +7,7 @@ public interface ActivityIndexFields {
     String ACTIVITY_TITLE = "ACTIVITY_TITLE";
 
     String ACTIVITY_ID = "ACTIVITY_ID";
+    String FORM = "FORM";
     String CITY_ID = "CITY_ID";
     String STATUS = "STATUS";
     String REGISTRATION_START_TIME = "REGISTRATION_START_TIME";

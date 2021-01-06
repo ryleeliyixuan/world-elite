@@ -19,6 +19,8 @@ public class ActivityForm {
     @NotBlank
     private String poster; // 缩略图
     @NotNull
+    private Byte form; //活动形式, 线上0, 线下1
+    @NotNull
     private Integer cityId; //城市ID
     @NotBlank
     private String description; //活动详情
