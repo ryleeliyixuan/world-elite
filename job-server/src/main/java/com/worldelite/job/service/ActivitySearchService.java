@@ -257,9 +257,9 @@ public class ActivitySearchService {
             if (StringUtils.isNotBlank(form.getKeyword()))
                 builder.add(new QueryParser(ActivityIndexFields.TITLE, analyzer).parse(form.getKeyword().trim()), BooleanClause.Occur.MUST);
             if (form.getCityIds() != null) {
-                for (Integer cityId : form.getCityIds()) {
+                for (String cityId : form.getCityIds()) {
                     MultiPhraseQuery.Builder multiBuilder = new MultiPhraseQuery.Builder();
-                    multiBuilder.add(new Term(ActivityIndexFields.CITY_ID, String.valueOf(cityId)));
+                    multiBuilder.add(new Term(ActivityIndexFields.CITY_ID, cityId));
 
                     builder.add(multiBuilder.build(), BooleanClause.Occur.MUST);
                 }
