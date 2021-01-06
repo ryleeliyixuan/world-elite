@@ -1,11 +1,13 @@
 package com.worldelite.job.form;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Xiang Chao
  **/
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class ActivityReviewForm extends PageForm {
     private Integer activityId; //活动id
     private Long userId; //发布活动的用户id/企业id

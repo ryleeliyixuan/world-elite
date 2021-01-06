@@ -34,6 +34,7 @@ public class QuestionnaireTemplateApi {
      */
     @ApiDoc
     @PostMapping
+    @RequireLogin
     public ApiResult addQuestionnaireTemplate(@RequestBody QuestionnaireTemplateForm form){
         questionnaireTemplateService.addQuestionnaireTemplate(form);
         return ApiResult.ok();
@@ -56,10 +57,10 @@ public class QuestionnaireTemplateApi {
      * @return
      */
     @ApiDoc
-    @GetMapping("my/list")
+    @GetMapping("my/list/{activityId}")
     @RequireLogin
-    public ApiResult<List<QuestionnaireTemplateVo>> getMyQuestionnaireTemplateList(){
-        List<QuestionnaireTemplateVo> templateList = questionnaireTemplateService.getMyQuestionnaireTemplateList();
+    public ApiResult<List<QuestionnaireTemplateVo>> getMyQuestionnaireTemplateList(@PathVariable Integer activityId){
+        List<QuestionnaireTemplateVo> templateList = questionnaireTemplateService.getMyQuestionnaireTemplateList(activityId);
         return ApiResult.ok(templateList);
     }
 

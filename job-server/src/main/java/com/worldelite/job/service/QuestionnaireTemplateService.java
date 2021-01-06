@@ -3,6 +3,7 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.worldelite.job.entity.Questionnaire;
 import com.worldelite.job.entity.QuestionnaireTemplate;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.QuestionnaireForm;
 import com.worldelite.job.form.QuestionnaireTemplateForm;
 import com.worldelite.job.mapper.QuestionnaireTemplateMapper;
@@ -41,9 +42,7 @@ public class QuestionnaireTemplateService extends BaseService{
     public void addQuestionnaireTemplate(QuestionnaireTemplateForm questionnaireTemplateForm){
         QuestionnaireTemplate template = new QuestionnaireTemplate();
         BeanUtil.copyProperties(questionnaireTemplateForm,template);
-        //获取活动用ID
-        ActivityVo activity = activityService.getActivityInfo(template.getActivityId());
-        template.setUserId(activity.getUserId());
+        template.setUserId(curUser().getId());
         //保存模板信息
         questionnaireTemplateMapper.insertSelective(template);
         log.debug("保存模板{}",template.getId());
@@ -62,11 +61,13 @@ public class QuestionnaireTemplateService extends BaseService{
      * 获取我的模板列表
      * 只获取模板基本信息
      * 不带关联的问卷信息
+     * @param activityId
      * @return
      */
-    public List<QuestionnaireTemplateVo> getMyQuestionnaireTemplateList(){
+    public List<QuestionnaireTemplateVo> getMyQuestionnaireTemplateList(Integer activityId){
         QuestionnaireTemplate options = new QuestionnaireTemplate();
         options.setUserId(curUser().getId());
+        options.setActivityId(activityId);
         List<QuestionnaireTemplate> templateList = questionnaireTemplateMapper.selectAndList(options);
         return AppUtils.asVoList(templateList,QuestionnaireTemplateVo.class);
     }
@@ -87,7 +88,12 @@ public class QuestionnaireTemplateService extends BaseService{
      * @return
      */
     public QuestionnaireTemplateVo getTemplateDetailByActivityId(Integer activityId){
-        QuestionnaireTemplate template = questionnaireTemplateMapper.selectByActivityId(activityId);
+        ActivityVo activityVo = activityService.getActivityInfo(activityId);
+        Integer templateId = activityVo.getRegistrationTemplateId();
+        if(templateId == null){
+            throw new ServiceException(message("activity.no.template"));
+        }
+        QuestionnaireTemplate template = questionnaireTemplateMapper.selectByPrimaryKey(templateId);
         return getTemplateDetail(template);
     }
 

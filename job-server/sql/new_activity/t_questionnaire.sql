@@ -37,3 +37,5 @@ CREATE TABLE `t_questionnaire`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '报名问卷表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+ALTER TABLE db_worldelite.t_questionnaire DROP FOREIGN KEY fk_registration_template_id;
