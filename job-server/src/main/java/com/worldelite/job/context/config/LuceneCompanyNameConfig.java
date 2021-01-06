@@ -84,8 +84,8 @@ public class LuceneCompanyNameConfig{
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         IndexWriter indexWriter = new IndexWriter(companyDirectory, indexWriterConfig);
         // 清空索引
-        indexWriter.deleteAll();
-        indexWriter.commit();
+        //indexWriter.deleteAll();
+        //indexWriter.commit();
         return indexWriter;
     }
 

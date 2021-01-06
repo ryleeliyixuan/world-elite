@@ -2,9 +2,11 @@ package com.worldelite.job.service;
 
 import com.worldelite.job.constants.ActivityStatus;
 import com.worldelite.job.constants.Bool;
+import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
 import com.worldelite.job.entity.DelayActivityInfo;
+import com.worldelite.job.event.ActivityInfoRefreshEvent;
 import com.worldelite.job.mapper.ActivityMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,6 +97,7 @@ public class ActivityStatusManager implements CommandLineRunner {
                     ac.setId(activity.getId());
                     ac.setStatus(activityStatus.value);
                     activityMapper.updateByPrimaryKeySelective(ac);
+                    SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
 
                     log.info("活动状态更新为{}", activityStatus.value);
                 }
@@ -125,6 +128,7 @@ public class ActivityStatusManager implements CommandLineRunner {
                 ac.setId(activity.getId());
                 ac.setStatus(activityStatus.value);
                 activityMapper.updateByPrimaryKeySelective(ac);
+                SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
             }
 
             if (activityStatus == ActivityStatus.END) return;

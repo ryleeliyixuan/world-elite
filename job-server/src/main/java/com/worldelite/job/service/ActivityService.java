@@ -8,6 +8,7 @@ import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
 import com.worldelite.job.entity.Favorite;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.ActivityReviewForm;
@@ -201,8 +202,10 @@ public class ActivityService extends BaseService {
                 activityMapper.updateByPrimaryKeySelective(activity);
                 activityStatusManager.remove(activity.getId());
             } else {
-                throw new RuntimeException(message("api.error.permission.denied"));
+                throw new ServiceException(message("api.error.permission.denied"));
             }
+        } else {
+            throw new ServiceException(message("activity.not.exist"));
         }
     }
 
@@ -223,6 +226,8 @@ public class ActivityService extends BaseService {
             } else {
                 throw new RuntimeException(message("api.error.permission.denied"));
             }
+        } else {
+            throw new ServiceException(message("activity.not.exist"));
         }
     }
 
@@ -245,15 +250,15 @@ public class ActivityService extends BaseService {
     /**
      * 减去一个关注
      */
-    public void minusFollower(Integer activityId) {
-        activityMapper.minusFollower(activityId);
+    public boolean minusFollower(Integer activityId) {
+        return activityMapper.minusFollower(activityId) == 1;
     }
 
     /**
      * 增加一个关注
      */
-    public void increaseFollower(Integer activityId) {
-        activityMapper.increaseFollower(activityId);
+    public boolean increaseFollower(Integer activityId) {
+        return activityMapper.increaseFollower(activityId) == 1;
     }
 
     /**
@@ -261,10 +266,10 @@ public class ActivityService extends BaseService {
      *
      * @param id 活动id
      */
-    public void closeNotification(Integer id) {
+    public boolean closeNotification(Integer id) {
         ActivityOptions options = new ActivityOptions();
         options.setId(id);
         options.setSendNoticeConfirm(String.valueOf(Bool.FALSE));
-        activityMapper.updateByPrimaryKeySelective(options);
+        return activityMapper.updateByPrimaryKeySelective(options) == 1;
     }
 }

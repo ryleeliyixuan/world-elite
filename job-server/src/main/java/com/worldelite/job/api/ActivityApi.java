@@ -67,7 +67,7 @@ public class ActivityApi extends BaseApi {
     @GetMapping("activity-info")
     public ApiResult<ActivityVo> getActivityInfo(@RequestParam Integer id) {
         ActivityVo activityVo = activityService.getActivityInfo(id);
-        return ApiResult.ok(activityVo);
+        return activityVo == null ? ApiResult.fail(message("activity.not.exist")) : ApiResult.ok(activityVo);
     }
 
     /**
@@ -107,8 +107,8 @@ public class ActivityApi extends BaseApi {
     @RequireLogin
     @PatchMapping("closeSendNotification")
     public ApiResult closeSendNotification(@RequestParam Integer id) {
-        activityService.closeNotification(id);
-        return ApiResult.ok();
+        final boolean b = activityService.closeNotification(id);
+        return b ? ApiResult.ok() : ApiResult.fail(message("activity.not.exist"));
     }
 
     /**

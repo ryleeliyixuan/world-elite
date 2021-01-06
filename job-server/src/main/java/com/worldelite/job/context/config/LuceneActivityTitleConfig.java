@@ -81,8 +81,8 @@ public class LuceneActivityTitleConfig {
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         IndexWriter indexWriter = new IndexWriter(activityDirectory, indexWriterConfig);
         // 清空索引
-        indexWriter.deleteAll();
-        indexWriter.commit();
+        //indexWriter.deleteAll();
+        //indexWriter.commit();
         return indexWriter;
     }
 

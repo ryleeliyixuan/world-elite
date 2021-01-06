@@ -68,7 +68,7 @@ public interface ActivityMapper {
 
     List<Activity> selectSmartTips(Activity record);
 
-    void minusFollower(Integer id);
+    int minusFollower(Integer id);
 
-    void increaseFollower(Integer id);
+    int increaseFollower(Integer id);
 }

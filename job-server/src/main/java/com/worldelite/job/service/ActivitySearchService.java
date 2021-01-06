@@ -278,9 +278,9 @@ public class ActivitySearchService {
 
                 if (dict != null) {
                     int value = Integer.parseInt(dict.getValue());
-                    final long endTime = TimeUnit.MILLISECONDS.toDays(value);
+                    final long endTime = TimeUnit.DAYS.toMillis(value);
 
-                    builder.add(FloatPoint.newRangeQuery(ActivityIndexFields.ACTIVITY_START_TIME, System.currentTimeMillis(), System.currentTimeMillis() + endTime), BooleanClause.Occur.MUST);
+                    builder.add(LongPoint.newRangeQuery(ActivityIndexFields.ACTIVITY_START_TIME, System.currentTimeMillis(), System.currentTimeMillis() + endTime), BooleanClause.Occur.MUST);
                 }
             }
 
