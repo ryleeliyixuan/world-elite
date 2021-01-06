@@ -2,10 +2,7 @@ package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
-import com.worldelite.job.constants.ActivityStatus;
-import com.worldelite.job.constants.Bool;
-import com.worldelite.job.constants.FavoriteType;
-import com.worldelite.job.constants.UserType;
+import com.worldelite.job.constants.*;
 import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
@@ -21,7 +18,7 @@ import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.OrganizerInfoVo;
 import com.worldelite.job.vo.PageResult;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,7 +63,25 @@ public class ActivityService extends BaseService {
     public PageResult<ActivityVo> getActivityList(ActivityListForm listForm) {
         ActivityOptions options = new ActivityOptions();
         BeanUtil.copyProperties(listForm, options);
-        options.setCityIds(StringUtils.join(listForm.getCityIds(), ","));
+
+        if (listForm.getActivityForm() != null) {
+            if (listForm.getActivityForm() == 0) {
+                options.setCityIds("999992,999993");
+            } else if (listForm.getActivityForm() == 1) {
+                if (StringUtils.isNoneBlank(listForm.getCityIds())) {
+                    options.setCityIds(StringUtils.join(listForm.getCityIds(), ","));
+                }
+            }
+        }
+
+        //海外留学生属于另一个字段,方便前端传递 合并到一起了
+        if (StringUtils.isNotBlank(listForm.getPublisherType())) {
+            if (!listForm.getPublisherType().equals(String.valueOf(PublisherType.OVERSEAS.value))) {
+                options.setUserType(listForm.getPublisherType());
+            } else {
+                options.setOnlyOverseasStudent(String.valueOf(Bool.TRUE));
+            }
+        }
         AppUtils.setPage(listForm);
         Page<Activity> activityPage = (Page<Activity>) activityMapper.selectAndList(options);
         PageResult<ActivityVo> pageResult = new PageResult<>(activityPage);
@@ -108,7 +123,7 @@ public class ActivityService extends BaseService {
             options.setObjectId(activity.getId().longValue());
             List<Favorite> favoriteList = favoriteMapper.selectAndList(options);
             if (CollectionUtils.isNotEmpty(favoriteList)) {
-                activityVo.setJoinTime(favoriteList.get(0).getCreateTime());
+                activityVo.setJoinTime(favoriteList.get(0).getCreateTime().getTime());
             }
             activityVoList.add(activityVo);
         }
@@ -146,7 +161,7 @@ public class ActivityService extends BaseService {
             //添加组织信息
             if (activityForm.getOrganizerInfoForm() != null) {
                 final OrganizerInfoVo organizerInfoVo = organizerInfoService.addOrganizerInfo(activityForm.getOrganizerInfoForm());
-                if(organizerInfoVo != null){
+                if (organizerInfoVo != null) {
                     activity.setOrganizerId(organizerInfoVo.getId());
                 }
             }
@@ -168,7 +183,7 @@ public class ActivityService extends BaseService {
 
             if (activityForm.getOrganizerInfoForm() != null) {
                 final OrganizerInfoVo organizerInfoVo = organizerInfoService.updateOrganizerInfo(activityForm.getOrganizerInfoForm());
-                if(organizerInfoVo != null){
+                if (organizerInfoVo != null) {
                     activity.setOrganizerId(organizerInfoVo.getId());
                 }
             }
@@ -225,7 +240,6 @@ public class ActivityService extends BaseService {
         }
         ActivityVo activityVo = new ActivityVo().asVo(activity);
 
-        activityVo.setCurTime(new Date());
         activityVo.setCity(cityService.getCityVo(activity.getCityId()));
         if (curUser() != null) {
             activityVo.setJoinFlag(favoriteService.checkUserFavorite(activity.getId().longValue(), FavoriteType.ACTIVITY));

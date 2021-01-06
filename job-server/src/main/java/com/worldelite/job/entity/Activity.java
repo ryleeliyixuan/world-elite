@@ -1,6 +1,7 @@
 package com.worldelite.job.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -108,7 +109,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    private Date activityStartTime;
+    private Timestamp activityStartTime;
 
     /**
      * Database Column Remarks:
@@ -119,7 +120,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    private Date activityFinishTime;
+    private Timestamp activityFinishTime;
 
     /**
      * Database Column Remarks:
@@ -130,7 +131,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    private Date registrationStartTime;
+    private Timestamp registrationStartTime;
 
     /**
      * Database Column Remarks:
@@ -141,7 +142,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    private Date registrationFinishTime;
+    private Timestamp registrationFinishTime;
 
     /**
      * Database Column Remarks:
@@ -502,7 +503,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public Date getActivityStartTime() {
+    public Timestamp getActivityStartTime() {
         return activityStartTime;
     }
 
@@ -514,7 +515,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public void setActivityStartTime(Date activityStartTime) {
+    public void setActivityStartTime(Timestamp activityStartTime) {
         this.activityStartTime = activityStartTime;
     }
 
@@ -526,7 +527,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public Date getActivityFinishTime() {
+    public Timestamp getActivityFinishTime() {
         return activityFinishTime;
     }
 
@@ -538,7 +539,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public void setActivityFinishTime(Date activityFinishTime) {
+    public void setActivityFinishTime(Timestamp activityFinishTime) {
         this.activityFinishTime = activityFinishTime;
     }
 
@@ -550,7 +551,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public Date getRegistrationStartTime() {
+    public Timestamp getRegistrationStartTime() {
         return registrationStartTime;
     }
 
@@ -562,7 +563,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public void setRegistrationStartTime(Date registrationStartTime) {
+    public void setRegistrationStartTime(Timestamp registrationStartTime) {
         this.registrationStartTime = registrationStartTime;
     }
 
@@ -574,7 +575,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public Date getRegistrationFinishTime() {
+    public Timestamp getRegistrationFinishTime() {
         return registrationFinishTime;
     }
 
@@ -586,7 +587,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public void setRegistrationFinishTime(Date registrationFinishTime) {
+    public void setRegistrationFinishTime(Timestamp registrationFinishTime) {
         this.registrationFinishTime = registrationFinishTime;
     }
 

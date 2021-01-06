@@ -143,7 +143,7 @@
         },
         watch: {
             $route() {
-                this.getList();
+                this.handleFilter();
             }
         },
         mounted() {

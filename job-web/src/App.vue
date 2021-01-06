@@ -1,11 +1,15 @@
 <template>
     <div id="app" ref="app">
-        <MainNavBar class="page"/>
+        <div style="background: white;">
+            <MainNavBar class="nav-bar"/>
+        </div>
         <transition name="fade-transform" mode="out-in">
-            <router-view @complete="onComplete" class="main-container page"/>
+            <router-view class="main-container page"/>
         </transition>
         <transition name="fade">
-            <FooterView @complete="onComplete" v-if="show"/>
+            <div style="background: white;">
+                <FooterView/>
+            </div>
         </transition>
         <el-backtop></el-backtop>
     </div>
@@ -19,16 +23,10 @@
         data() {
             return {
                 noScroll: ["wiki-intro", "wiki-job", "wiki-activity", "wiki-community-post", "wiki-community-score", "wiki-community-post-detail"],
-                show: true,
             };
         },
         components: {MainNavBar, FooterView},
         name: "App",
-        watch: {
-            $route(route) {
-                this.show = true;
-            },
-        },
         updated() {
             if (!this.noScroll.includes(this.$route.name)) {
                 setTimeout(() => {
@@ -36,11 +34,6 @@
                 }, 400)
             }
         },
-        methods: {
-            onComplete() {
-                this.show = true;
-            },
-        }
     };
 </script>
 
@@ -49,16 +42,24 @@
         font-family: "Avenir", Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        color: #2c3e50;
-        height: 100vh;
+        background: #f6f9fc;
+        min-height: 100vh;
+        width: 100%;
         overflow: auto;
         display: flex;
         flex-direction: column;
+
+        .nav-bar {
+            width: 100%;
+            max-width: 1333px;
+            margin: 0 auto;
+        }
 
         .page {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
+            padding: 17px 0;
         }
 
         .main-container {

@@ -57,12 +57,20 @@ public abstract class ResumeService extends BaseService{
      */
     public abstract ResumeDetail getDefaultOrCreate();
 
+    //one or more resumes
+    public abstract List<ResumeDetail> getDefaultListOrCreate();
+
     /**
      * 保存简历基础信息并返回简历详细数据
      * @param resumeForm 简历表单
      * @return 简历详细数据
      */
     public abstract ResumeDetail saveBasic(ResumeForm resumeForm);
+
+
+    public abstract ResumeDetail addResume();
+
+    public abstract void updatePriority(Long resumeId, Byte order);
 
     /**
      * 解析简历文件
