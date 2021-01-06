@@ -1,18 +1,17 @@
 package com.worldelite.job.api;
 
-import com.worldelite.job.entity.Registration;
+import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.form.RegistrationForm;
+import com.worldelite.job.form.RegistrationListForm;
 import com.worldelite.job.service.RegistrationService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.QuestionnaireTemplateWithAnswerVo;
 import com.worldelite.job.vo.RegistrationVo;
 import io.github.yedaxia.apidocs.ApiDoc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 活动报名接口
@@ -31,6 +30,7 @@ public class RegistrationApi {
      * @return
      */
     @ApiDoc
+    @RequireLogin
     @PostMapping
     public ApiResult addRegistration(@RequestBody RegistrationForm registrationForm){
         registrationService.addRegistration(registrationForm);
@@ -38,14 +38,14 @@ public class RegistrationApi {
     }
 
     /**
-     * 获取活动对应的报名表列表
-     * @param activityId 活动ID
+     * 查询活动报名信息
+     * @param registrationListForm
      * @return
      */
     @ApiDoc
-    @GetMapping("activity-registration/{activityId}")
-    public ApiResult<PageResult<RegistrationVo>> listByActivityId(@PathVariable Integer activityId){
-        PageResult<RegistrationVo> pageResult = registrationService.getRegistrationList(activityId);
+    @PostMapping("list")
+    public ApiResult<PageResult<RegistrationVo>> list(@RequestBody RegistrationListForm registrationListForm){
+        PageResult<RegistrationVo> pageResult = registrationService.getRegistrationList(registrationListForm);
         return ApiResult.ok(pageResult);
     }
 
@@ -57,9 +57,31 @@ public class RegistrationApi {
     @ApiDoc
     @GetMapping("{id}")
     public ApiResult<RegistrationVo> getRegistration(@PathVariable Integer id){
-        RegistrationVo registration = registrationService.getRegistrationDetail(id);
+        QuestionnaireTemplateWithAnswerVo registration = registrationService.getRegistrationWithTemplateDetail(id);
         return ApiResult.ok(registration);
     }
 
+    /**
+     * 通过活动报名
+     * @param id 报名ID
+     * @return
+     */
+    @ApiDoc
+    @PatchMapping("pass/{id}")
+    public ApiResult setRegistrationPass(@PathVariable Integer id){
+        registrationService.setRegistrationPass(id);
+        return ApiResult.ok();
+    }
 
+    /**
+     * 活动报名不合适
+     * @param id 报名ID
+     * @return
+     */
+    @ApiDoc
+    @PatchMapping("inappropriate/{id}")
+    public ApiResult setRegistrationInappropriate(@PathVariable Integer id){
+        registrationService.setRegistrationInappropriate(id);
+        return ApiResult.ok();
+    }
 }

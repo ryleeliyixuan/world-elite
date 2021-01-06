@@ -9,7 +9,6 @@ import com.worldelite.job.vo.QuestionnaireOptionsVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean;
 
 import java.util.List;
 
@@ -35,5 +34,10 @@ public class QuestionnaireOptionsService extends BaseService {
         options.setQuestionnaireId(questionnaireId);
         List<QuestionnaireOptions> optionsList = questionnaireOptionsMapper.selectAndList(options);
         return AppUtils.asVoList(optionsList,QuestionnaireOptionsVo.class);
+    }
+
+    public QuestionnaireOptionsVo getOptionsById(Integer id){
+        QuestionnaireOptions options = questionnaireOptionsMapper.selectByPrimaryKey(id);
+        return new QuestionnaireOptionsVo().asVo(options);
     }
 }

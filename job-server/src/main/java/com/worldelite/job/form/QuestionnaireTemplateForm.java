@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class QuestionnaireTemplateForm {
     private Integer activityId; //活动ID
-    private Long userId; //用户ID
     private String templateName; //模板名称
     private String title; //标题
     private String nameFlag; //姓名

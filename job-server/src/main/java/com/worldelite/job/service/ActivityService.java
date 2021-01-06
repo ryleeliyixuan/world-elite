@@ -18,7 +18,7 @@ import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.OrganizerInfoVo;
 import com.worldelite.job.vo.PageResult;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +63,17 @@ public class ActivityService extends BaseService {
     public PageResult<ActivityVo> getActivityList(ActivityListForm listForm) {
         ActivityOptions options = new ActivityOptions();
         BeanUtil.copyProperties(listForm, options);
-        options.setCityIds(StringUtils.join(listForm.getCityIds(), ","));
+
+        if (listForm.getActivityForm() != null) {
+            if (listForm.getActivityForm() == 0) {
+                options.setCityIds("999992,999993");
+            } else if (listForm.getActivityForm() == 1) {
+                if (StringUtils.isNoneBlank(listForm.getCityIds())) {
+                    options.setCityIds(StringUtils.join(listForm.getCityIds(), ","));
+                }
+            }
+        }
+
         //海外留学生属于另一个字段,方便前端传递 合并到一起了
         if (StringUtils.isNotBlank(listForm.getPublisherType())) {
             if (!listForm.getPublisherType().equals(String.valueOf(PublisherType.OVERSEAS.value))) {
