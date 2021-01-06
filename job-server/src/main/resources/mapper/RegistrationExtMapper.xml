@@ -20,4 +20,10 @@
       </if>
     </where>
   </select>
+  <select id="selectRegistrationStatusByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_registration
+    where activity_id = #{activityId} and registration_user_id = #{registrationUserId}
+</select>
 </mapper>

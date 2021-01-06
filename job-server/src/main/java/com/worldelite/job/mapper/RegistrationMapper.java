@@ -1,6 +1,7 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.Registration;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -54,4 +55,6 @@ public interface RegistrationMapper {
     int updateByPrimaryKey(Registration record);
 
     List<Registration> selectAndList(Registration registration);
+
+    Registration selectRegistrationStatusByUserId(@Param("activityId") Integer activityId, @Param("registrationUserId") Long registrationUserId);
 }

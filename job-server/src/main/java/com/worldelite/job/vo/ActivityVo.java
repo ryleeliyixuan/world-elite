@@ -36,9 +36,12 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     private Integer applicantQuantity;//报名人数
     private Integer weight;//排名权重
     private String sendNoticeConfirm;//报名审核后是否需要通知,0不再提示,1需要提示
-    private Boolean joinFlag; //是否参加
-    private Long joinTime; //参加时间
+    private Boolean attentionFlag; //是否关注
+    private Long attentionTime; //关注时间
+    private Boolean registrationFlag; //是否报名
+    private Long registrationTime; //报名时间
     private Long curTime; //系统服务器当前时间, 前端计算剩余多久用
+    private Long createTime;//活动发布时间
 
     private String organizerType; //举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
     private OrganizerInfoVo organizerInfoVo; //举办方信息vo
@@ -49,7 +52,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     public ActivityVo asVo(Activity activity) {
         if (activity == null) return null;
 
-        BeanUtil.copyProperties(activity, this, "activityStartTime", "activityFinishTime", "registrationStartTime", "registrationFinishTime", "joinTime", "curTime");
+        BeanUtil.copyProperties(activity, this, "activityStartTime", "activityFinishTime", "registrationStartTime", "registrationFinishTime", "attentionTime", "registrationTime", "curTime","createTime");
 
         setPoster(AppUtils.absOssUrl(activity.getPoster()));
         setCurTime(System.currentTimeMillis());
@@ -58,6 +61,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
         setRegistrationFinishTime(activity.getRegistrationFinishTime().getTime());
         setActivityStartTime(activity.getActivityStartTime().getTime());
         setActivityFinishTime(activity.getActivityFinishTime().getTime());
+        setCreateTime(activity.getCreateTime().getTime());
 
         return this;
     }

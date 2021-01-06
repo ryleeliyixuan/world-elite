@@ -292,7 +292,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    private Date createTime;
+    private Timestamp createTime;
 
     /**
      *
@@ -922,7 +922,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public Date getCreateTime() {
+    public Timestamp getCreateTime() {
         return createTime;
     }
 
@@ -934,7 +934,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
 

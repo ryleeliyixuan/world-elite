@@ -154,7 +154,7 @@ public class FavoriteService extends BaseService {
         List<ActivityVo> activityVoList = new ArrayList<>(favoritePage.size());
         for (Favorite favorite : favoritePage) {
             ActivityVo activityVo = activityService.getActivityInfo(favorite.getObjectId().intValue());
-            activityVo.setJoinTime(favorite.getCreateTime().getTime());
+            activityVo.setAttentionTime(favorite.getCreateTime().getTime());
             activityVoList.add(activityVo);
         }
         pageResult.setList(activityVoList);

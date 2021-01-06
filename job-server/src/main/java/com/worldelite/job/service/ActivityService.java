@@ -7,6 +7,7 @@ import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
 import com.worldelite.job.entity.Favorite;
+import com.worldelite.job.entity.Registration;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.ActivityForm;
@@ -14,6 +15,7 @@ import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.ActivityReviewForm;
 import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
+import com.worldelite.job.mapper.RegistrationMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.OrganizerInfoVo;
@@ -54,6 +56,9 @@ public class ActivityService extends BaseService {
 
     @Autowired
     private OrganizerInfoService organizerInfoService;
+
+    @Autowired
+    private RegistrationMapper registrationMapper;
 
     /**
      * 获取活动列表
@@ -116,7 +121,7 @@ public class ActivityService extends BaseService {
             options.setObjectId(activity.getId().longValue());
             List<Favorite> favoriteList = favoriteMapper.selectAndList(options);
             if (CollectionUtils.isNotEmpty(favoriteList)) {
-                activityVo.setJoinTime(favoriteList.get(0).getCreateTime().getTime());
+                activityVo.setAttentionTime(favoriteList.get(0).getCreateTime().getTime());
             }
             activityVoList.add(activityVo);
         }
@@ -239,11 +244,18 @@ public class ActivityService extends BaseService {
 
         activityVo.setCity(cityService.getCityVo(activity.getCityId()));
         if (curUser() != null) {
-            activityVo.setJoinFlag(favoriteService.checkUserFavorite(activity.getId().longValue(), FavoriteType.ACTIVITY));
+            activityVo.setAttentionFlag(favoriteService.checkUserFavorite(activity.getId().longValue(), FavoriteType.ACTIVITY));
         }
 
         activityVo.setOrganizerInfoVo(organizerInfoService.getOrganizerInfo(activity.getOrganizerId()));
 
+        if(curUser() != null) {
+            final Registration registration = registrationMapper.selectRegistrationStatusByUserId(activity.getId(), curUser().getId());
+            if(registration != null){
+                activityVo.setRegistrationFlag(true);
+                activityVo.setRegistrationTime(registration.getCreateTime().getTime());
+            }
+        }
         return activityVo;
     }
 
