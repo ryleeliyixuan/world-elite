@@ -46,7 +46,7 @@ public class ActivityApi extends BaseApi {
      */
     @GetMapping("list")
     @ApiDoc
-    public ApiResult<PageResult<ActivityVo>> getActivityList(ActivityListForm listForm) throws IOException {
+    public ApiResult<PageResult<ActivityVo>> getActivityList(@Valid ActivityListForm listForm) throws IOException {
         PageResult<ActivityVo> pageResult;
         if (listForm.getUserId() == null) {
             pageResult = activitySearchService.searchActivityList(listForm);

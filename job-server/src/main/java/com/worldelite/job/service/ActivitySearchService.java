@@ -256,8 +256,20 @@ public class ActivitySearchService {
             BooleanQuery.Builder builder = new BooleanQuery.Builder();
             if (StringUtils.isNotBlank(form.getKeyword()))
                 builder.add(new QueryParser(ActivityIndexFields.TITLE, analyzer).parse(form.getKeyword().trim()), BooleanClause.Occur.MUST);
-            if (form.getCityIds() != null) {
-                for (String cityId : form.getCityIds()) {
+
+            String[] cityIds = null;
+            if (form.getActivityForm() != null) {
+                if (form.getActivityForm() == 0) {
+                    cityIds = new String[]{"999992", "999993"};
+                } else if (form.getActivityForm() == 1) {
+                    if (StringUtils.isNoneBlank(form.getCityIds())) {
+                        cityIds = form.getCityIds();
+                    }
+                }
+            }
+
+            if (cityIds != null) {
+                for (String cityId : cityIds) {
                     MultiPhraseQuery.Builder multiBuilder = new MultiPhraseQuery.Builder();
                     multiBuilder.add(new Term(ActivityIndexFields.CITY_ID, cityId));
 

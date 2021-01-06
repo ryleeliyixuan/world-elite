@@ -3,11 +3,18 @@ package com.worldelite.job.form;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author yeguozhong yedaxia.github.com
  */
 @Data
 public class ActivityListForm extends PageForm {
+    /**
+     * 活动形式, 线上0, 线下1
+     */
+    @NotNull
+    private Integer activityForm; //活动形式, 线上0, 线下1
     private String cityIds; //城市ID,线上国内=999992; 线上国外=999993
     private Long userId; //用户id|公司id
     private Integer timeId; //时间id-搜索专用
