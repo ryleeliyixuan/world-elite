@@ -332,7 +332,7 @@
                 align-items: center;
                 justify-content: space-around;
                 flex: 1;
-                margin: 0 6%;
+                margin: 0 30px;
 
                 .nav-item {
                     font-size: 18px;

@@ -45,15 +45,15 @@
                 <div class="filter-item">
                     <div class="filter-title">活动形式：</div>
                     <div class="filter">
-                        <div :class="[{'selected':item.id === listQuery.modeId},'select-item']" v-for="item in modeList" @click="onMode(item)" :key="item.id">
+                        <div :class="[{'selected':item.id === listQuery.form},'select-item']" v-for="item in formList" @click="onMode(item)" :key="item.id">
                             {{item.name}}
                         </div>
                     </div>
                 </div>
-                <div class="filter-item" v-if="listQuery.modeId===1">
+                <div class="filter-item" v-if="listQuery.form===1">
                     <div class="filter-title">活动城市：</div>
                     <div class="filter">
-                        <div :class="[{'selected':item.id===listQuery.cityIds},'select-item']" v-for="item in cityList" @click="onCity(item)" :key="item.id">
+                        <div :class="[{'selected':item.value===listQuery.cityIds},'select-item']" v-for="item in cityList" @click="onCity(item)" :key="item.id">
                             {{item.name}}
                         </div>
                     </div>
@@ -86,32 +86,33 @@
             </div>
 
             <div class="type-container">
-                <div :class="listQuery.publishType===2?'selected':'normal'" @click="onPublishType(2)">
+                <div :class="listQuery.publisherType===2?'selected':'normal'" @click="onPublishType(2)">
                     企业发布
-                    <div class="line" v-if="listQuery.publishType===2"></div>
+                    <div class="line" v-if="listQuery.publisherType===2"></div>
                 </div>
-                <div :class="listQuery.publishType===1?'selected':'normal'" @click="onPublishType(1)">
+                <div :class="listQuery.publisherType===1?'selected':'normal'" @click="onPublishType(1)">
                     个人发布
-                    <div class="line" v-if="listQuery.publishType===1"></div>
+                    <div class="line" v-if="listQuery.publisherType===1"></div>
                 </div>
-                <div :class="listQuery.publishType===3?'selected':'normal'" @click="onPublishType(3)">
+                <div :class="listQuery.publisherType===3?'selected':'normal'" @click="onPublishType(3)">
                     留学生专区
-                    <div class="line" v-if="listQuery.publishType===3"></div>
+                    <div class="line" v-if="listQuery.publisherType===3"></div>
                 </div>
             </div>
 
             <div class="activity-container">
-                <div class="activity-item" v-for="item in dataList" :key="item.id"  @click="onItem(item)">
+                <div class="activity-item" v-for="item in dataList" :key="item.id" @click="onItem(item)">
                     <el-image class="background-image" :src="img" fit="cover"></el-image>
-                    <el-image class="subscript" :src="require('@/assets/activity/qiye.png')"></el-image>
+                    <el-image class="subscript" :src="require('@/assets/activity/geren.png')" v-if="item.userType==='1'"></el-image>
+                    <el-image class="subscript" :src="require('@/assets/activity/qiye.png')" v-if="item.userType==='2'"></el-image>
                     <div class="brief">
                         <div class="line1">
-                            <div class="title">活动名称</div>
-                            <div class="city">深圳</div>
+                            <div class="title">{{item.title}}</div>
+                            <div v-if="item.city" :class="['city',{'online':item.city.id===999992 || item.city.id ===999993}]">{{item.city.name}}</div>
                         </div>
                         <div class="line2">
-                            <div class="time">2020-11-15 16:00-18:00</div>
-                            <div class="count">1379人正在关注</div>
+                            <div class="time">{{item.activityStartTime | timestampToDateHourMinute}}-{{item.activityFinishTime | timestampToHoursMinutes}}</div>
+                            <div class="count">{{item.follower}}人正在关注</div>
                         </div>
                     </div>
                 </div>
@@ -131,7 +132,7 @@
 </template>
 
 <script>
-    import Pagination from "@/components/Pagination";
+    import Pagination from "@/components/Pagination2";
 
     export default {
         name: "ActivityListPage",
@@ -141,7 +142,7 @@
                 img: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=238583692,2460632321&fm=26&gp=0.jpg',
                 loading: true,
 
-                modeList: [{id: 1, name: '线下'}, {id: 2, name: '线上'}], // 活动形式列表
+                formList: [{id: 0, name: '线上'}, {id: 1, name: '线下'}], // 活动形式列表
                 cityList: [], // 活动城市列表
                 statusList: [{id: 3, name: '即将开始'}, {id: 4, name: '报名中'},
                     {id: 5, name: '进行中'}, {id: 6, name: '已结束'}], // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束
@@ -150,15 +151,15 @@
                     {id: "REGISTRATION_TIME", name: '最多报名'}, {id: "ACTIVITY_TIME", name: '最多开始'}], // 活动排序列表
                 listQuery: {
                     keyword: undefined, // 搜索关键字
-                    modeId: undefined, // 活动形式
+                    form: undefined, // 活动形式
                     cityIds: undefined, // 城市ID 线上国内=999992; 线上国外=999993
                     status: undefined, // 活动状态
                     timeId: undefined, // 活动时间
                     sort: "desc", // 降序
-                    sortField: "PUBLISH_TIME", // 排序字段
-                    publishType: 2, // 活动发布者类型
+                    sortField: undefined, // 排序字段
+                    publisherType: 2, // 活动发布者类型
                     page: 1,
-                    limit: 10,
+                    limit: 12
                 },
 
                 dataList: [], // 活动列表
@@ -194,26 +195,21 @@
 
             // 活动形式
             onMode(item) {
-                if (this.listQuery.modeId === item.id) {
-                    this.listQuery.modeId = undefined;
-                    this.listQuery.cityIds = undefined;
+                if (this.listQuery.form === item.id) {
+                    this.listQuery.form = undefined;
                 } else {
-                    this.listQuery.modeId = item.id;
-                    if (item.id === 2) { // 选中了线上
-                        this.listQuery.cityIds = "999992,999993"; // 国内=999992; 线上国外=999993
-                    } else { // 选中了线下
-                        this.listQuery.cityIds = undefined;
-                    }
+                    this.listQuery.form = item.id;
                 }
+                this.listQuery.cityIds = undefined;
                 this.handleFilter();
             },
 
             // 活动城市
             onCity(item) {
-                if (this.listQuery.cityIds === item.id) {
+                if (this.listQuery.cityIds === item.value) {
                     this.listQuery.cityIds = undefined;
                 } else {
-                    this.listQuery.cityIds = item.id;
+                    this.listQuery.cityIds = item.value;
                 }
                 this.handleFilter();
             },
@@ -249,24 +245,24 @@
             },
 
             // 选择活动发布类型
-            onPublishType(publishType) {
-                this.listQuery.publishType = publishType;
+            onPublishType(publisherType) {
+                this.listQuery.publisherType = publisherType;
                 this.handleFilter();
             },
 
-            // 点击一行数据
-            onItem(item) {
-                console.log(item);
+            // 点击活动，查看活动详情
+            onItem(activity) {
+                this.$router.push(`/activity/${activity.id}`);
             },
 
             // 清空选项
             onClear() {
-                this.listQuery.modeId = undefined;
+                this.listQuery.form = undefined;
                 this.listQuery.cityIds = undefined;
                 this.listQuery.status = undefined;
                 this.listQuery.timeId = undefined;
                 this.listQuery.sortField = undefined;
-                this.listQuery.publishType = 2;
+                this.listQuery.publisherType = 2;
                 this.handleFilter();
             },
 
@@ -284,21 +280,11 @@
                 this.$axios.get("/activity/list", {params: this.listQuery}).then(response => {
                     this.loading = false;
                     this.dataList = response.data.list;
-                    this.dataList.push({id: 1});
-                    this.dataList.push({id: 2});
-                    this.dataList.push({id: 3});
-                    this.dataList.push({id: 4});
-                    this.dataList.push({id: 5});
-                    this.dataList.push({id: 6});
-                    this.dataList.push({id: 7});
                     this.total = response.data.total;
                 });
             },
 
-            // 点击活动，查看活动详情
-            openActivity(activity) {
-                this.$router.push(`/activity/${activity.id}`);
-            }
+
         }
     };
 </script>
@@ -495,6 +481,7 @@
                     width: 377px;
                     height: 212px;
                     margin: 10px 5px;
+                    cursor: pointer;
 
                     .background-image {
                         width: 100%;
@@ -542,6 +529,11 @@
                                 font-size: 13px;
                                 flex-shrink: 0;
                                 margin-left: 7px;
+                                color: #ffffff;
+                            }
+
+                            .online {
+                                background: #ffab00;
                             }
                         }
 

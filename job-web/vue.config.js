@@ -38,7 +38,6 @@ module.exports = {
     hotOnly: false,
     proxy: {
       "/api": {
-        // target: "http://localhost:9000/api",
         target: "https://api.test.myworldelite.com",
         changeOrigin: true,
         ws: true,

@@ -21,6 +21,24 @@ export const timestampToDateTime = (timeStamp) => {
 };
 
 /**
+ * 获取当前时间年月日时分秒，如：2000-10-20 20:20
+ * @param {Number} timeStamp 传入的时间戳
+ **/
+export const timestampToDateHourMinute = (timeStamp) => {
+    if (timeStamp) {
+        const d = new Date(timeStamp);
+        const year = d.getFullYear();
+        const month = getHandledValue(d.getMonth() + 1);
+        const date = getHandledValue(d.getDate());
+        const hours = getHandledValue(d.getHours());
+        const minutes = getHandledValue(d.getMinutes());
+        return year + '-' + month + '-' + date + ' ' + hours + ':' + minutes;
+    } else {
+        return '';
+    }
+};
+
+/**
  * 获取当前时间年月日，如：2000-10-20
  * @param {Number} timeStamp 传入的时间戳
  **/
@@ -48,6 +66,21 @@ export const timestampToMonthDateHoursMinutes = (timeStamp) => {
         const hours = getHandledValue(d.getHours());
         const minutes = getHandledValue(d.getMinutes());
         return month + '/' + date + ' ' + hours + ":" + minutes;
+    } else {
+        return '';
+    }
+};
+
+/**
+ * 获取当前时间，如：00:00
+ * @param {Number} timeStamp 传入的时间戳
+ **/
+export const timestampToHoursMinutes = (timeStamp) => {
+    if (timeStamp) {
+        const d = new Date(timeStamp);
+        const hours = getHandledValue(d.getHours());
+        const minutes = getHandledValue(d.getMinutes());
+        return hours + ":" + minutes;
     } else {
         return '';
     }

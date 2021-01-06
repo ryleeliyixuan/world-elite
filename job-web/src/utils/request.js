@@ -21,7 +21,7 @@ service.interceptors.request.use(
     config => {
         // do something before request is sent
         const token = getToken()
-        console.log("X-Token",token);
+        console.log("X-Token", token);
         if (token) {
             // let each request carry token
             // ['X-Token'] is a custom headers key
@@ -59,7 +59,7 @@ service.interceptors.response.use(
 
             if (res.code === 402) {
                 // to re-login
-               await store.dispatch('user/LOGOUT').then(() => {
+                await store.dispatch('user/LOGOUT').then(() => {
                     router.push({path: '/login', query: {redirect: curRelativePath()}})
                 });
             }
@@ -74,6 +74,20 @@ service.interceptors.response.use(
         return Promise.reject(error)
     }
 )
+
+// POST multipart/form-data 格式上传文件
+service.upload = (url, file, param) => {
+    let formData = new FormData();
+    for (let key in param) {
+        if (param.hasOwnProperty(key))
+            formData.append(key, param[key]);
+    }
+    formData.append("file", file, file.name);
+    let config = {
+        headers: {"Content-Type": "multipart/form-data"}
+    }
+    return axios.post(url, formData, config)
+}
 
 Vue.prototype.$axios = service;
 

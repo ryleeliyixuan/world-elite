@@ -63,7 +63,7 @@
 
 <style scoped lang="scss">
     .pagination {
-        margin-top: 20px;
+        padding: 20px 0 40px;
         align-items: center;
         justify-content: center;
 
