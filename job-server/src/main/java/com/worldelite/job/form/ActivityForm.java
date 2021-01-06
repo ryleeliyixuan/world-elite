@@ -1,14 +1,11 @@
 package com.worldelite.job.form;
 
-import com.worldelite.job.entity.OrganizerInfo;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Date;
 
 /**
  * @author yeguozhong yedaxia.github.com

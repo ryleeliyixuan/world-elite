@@ -17,4 +17,11 @@
       </if>
     </where>
   </select>
+
+  <select id="selectByActivityId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_questionnaire_template
+    where activity_id = #{activityId}
+  </select>
 </mapper>

@@ -45,6 +45,19 @@ public class ExportApi extends BaseApi{
     }
 
     /**
+     * 把活动报名信息导出PDF
+     * @param registrationId 活动报名ID
+     * @return
+     */
+    @RequireLogin
+    @GetMapping("registration-to-pdf")
+    @ApiDoc
+    public ApiResult exportResumeToPdf(@RequestParam Integer registrationId){
+        String fileName = exportService.exportRegistrationToPdf(registrationId);
+        return ApiResult.ok(fileName);
+    }
+
+    /**
      * 导出用户列表
      *
      * @param listForm

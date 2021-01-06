@@ -54,4 +54,6 @@ public interface QuestionnaireTemplateMapper {
     int updateByPrimaryKey(QuestionnaireTemplate record);
 
     List<QuestionnaireTemplate> selectAndList(QuestionnaireTemplate questionnaireTemplate);
+
+    QuestionnaireTemplate selectByActivityId(Integer activityId);
 }

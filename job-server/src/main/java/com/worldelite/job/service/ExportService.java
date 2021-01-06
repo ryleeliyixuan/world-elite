@@ -85,6 +85,33 @@ public class ExportService extends BaseService {
     }
 
     /**
+     * 导出PDF活动报名表
+     *
+     * @param registrationId
+     * @return
+     */
+    public String exportRegistrationToPdf(Integer registrationId) {
+        final String registrationTplUrl = String.format("%s/registration/%s?_token=%s",
+                domainConfig.getLocalHost(), registrationId, curUser().getToken());
+        File registrationPdfFile = null;
+        try {
+            registrationPdfFile = fileService.getFile(UUID.randomUUID().toString() + ".pdf");
+            final String exportCommand = String.format("wkhtmltopdf %s %s", registrationTplUrl, registrationPdfFile.getAbsolutePath());
+            Process process = Runtime.getRuntime().exec(exportCommand);
+            log.info("export registration: " + exportCommand);
+            if(process.waitFor(20, TimeUnit.SECONDS)){
+                return registrationPdfFile.getName();
+            }else{
+                throw new ServiceException("export.registration.fail: exceed timeout");
+            }
+        } catch (Exception ex) {
+            FileUtil.del(registrationPdfFile);
+            log.error("导出活动报名信息失败:" + registrationId, ex);
+            throw new ServiceException(message("export.registration.fail"));
+        }
+    }
+
+    /**
      * 把导出excel任务放进队列
      *
      * @param messageType

@@ -1,11 +1,13 @@
 package com.worldelite.job.form;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Xiang Chao
  **/
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class OrganizerInfoForm extends PageForm {
     private Integer id; //自增id
     private Long userId; //主办方用户id

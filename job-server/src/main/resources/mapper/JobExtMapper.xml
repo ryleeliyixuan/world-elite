@@ -79,6 +79,7 @@
       on t_dict.id = t_job.recruit_type and t_job.company_id = #{companyId,jdbcType=BIGINT} and t_job.status = 2
       <where>
         and t_dict.type = 12
+        and t_job.del_flag = 0
       </where>
       group by t_job.recruit_type,t_dict.id order by t_dict.value asc
     </select>
