@@ -136,6 +136,16 @@ public class ResumeSDK extends BaseService {
         return resumeEduList;
     }
 
+    public List<ResumeLanguageForm> getResumeLanguage(JSONObject result){
+        // to do
+        return null;
+    }
+
+    public List<ResumeCertificateForm> getResumeCertificate(JSONObject result){
+        // to do
+        return null;
+    }
+
     /**
      * 解析工作经验
      * @param result

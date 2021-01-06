@@ -2,6 +2,7 @@ package com.worldelite.job.service.resume;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.JobApplyStatus;
@@ -9,11 +10,13 @@ import com.worldelite.job.constants.ResumeStatus;
 import com.worldelite.job.constants.ResumeType;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
-import com.worldelite.job.form.ResumeForm;
-import com.worldelite.job.form.ResumeListForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.JobApplyMapper;
+import com.worldelite.job.mapper.ResumeLanguageMapper;
 import com.worldelite.job.mapper.ResumeMapper;
+import com.worldelite.job.mapper.ResumeMergeAttachMapper;
 import com.worldelite.job.service.*;
+import com.worldelite.job.service.sdk.ResumeSDK;
 import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.util.AppUtils;
@@ -26,9 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -42,6 +43,15 @@ public class ResumeGeneralService extends ResumeService {
 
     @Autowired
     private JobApplyMapper jobApplyMapper;
+
+    @Autowired
+    private ResumeMergeAttachService resumeMergeAttachService;
+
+    @Autowired
+    private ResumeLanguageService resumeLanguageService;
+
+    @Autowired
+    private ResumeCertificateService resumeCertificateService;
 
     @Autowired
     private ResumeEduService resumeEduService;
@@ -69,7 +79,11 @@ public class ResumeGeneralService extends ResumeService {
 
     @Autowired
     private IndexService indexService;
+    
+    @Autowired
+    private ResumeSDK resumeSDK;
 
+    //only return single resume
     @Override
     public ResumeDetail getDefaultOrCreate() {
         //获取当前登录用户对应简历
@@ -83,6 +97,25 @@ public class ResumeGeneralService extends ResumeService {
         //不存在则新建简历并返回详情
         Resume resume = newResumeBasic();
         return getResumeDetail(resume.getId());
+    }
+
+    //return one or more resume
+    @Override
+    public List<ResumeDetail> getDefaultListOrCreate(){
+        Long userId = curUser().getId();
+        List<Resume> resumeList = getResumeByUserId(userId);
+        List<ResumeDetail>lists = new ArrayList<>();
+        //if exist one or more
+        if (resumeList.size()!=0){
+            for (Resume one:resumeList){
+                lists.add(getResumeDetail(one.getId()));
+            }
+            return lists;
+        }
+        //if not exist
+        Resume resume = newResumeBasic();
+        lists.add(getResumeDetail(resume.getId()));
+        return lists;
     }
 
     /**
@@ -103,6 +136,7 @@ public class ResumeGeneralService extends ResumeService {
      * @return 简历基础信息
      */
     private Resume newResumeBasic() {
+        //get basic info from t_user_applicant
         UserApplicant userApplicant = getResumeUser(null);
         Resume resume = new Resume();
         resume.setId(AppUtils.nextId());
@@ -130,6 +164,7 @@ public class ResumeGeneralService extends ResumeService {
 
     @Override
     public ResumeDetail saveBasic(ResumeForm resumeForm) {
+        //this is the most important function!
         //简历不存在则先创建空简历
         Resume resume = null;
         if (resumeForm.getId() != null) {
@@ -139,22 +174,27 @@ public class ResumeGeneralService extends ResumeService {
             resume = newResumeBasic();
         }
         //用表单数据替换旧简历数据
+        //copy data from resumeForm to resume
+        if (resumeForm.getId()==null){
+            return null;
+        }
         fillResumeBasic(resume, resumeForm);
         //更新简历数据
         resume.setUpdateTime(new Date());
         resumeMapper.updateByPrimaryKeySelective(resume);
-
-        UserApplicant userApplicant = new UserApplicant();
-        userApplicant.setId(curUser().getId());
-        userApplicant.setName(resumeForm.getName());
-        userApplicant.setPhoneCode(resumeForm.getPhoneCode());
-        userApplicant.setPhone(resumeForm.getPhone());
-        if (StringUtils.isNotEmpty(resumeForm.getAvatar())) {
-            userApplicant.setAvatar(AppUtils.getOssKey(resumeForm.getAvatar()));
-        }
-        userApplicant.setGender(resumeForm.getGender());
-        userApplicant.setUpdateTime(new Date());
-        userApplicantService.updateByPrimaryKeySelective(userApplicant);
+        //we don't need to update user application because each user will have multiple resumes
+        //*****************************************
+//        UserApplicant userApplicant = new UserApplicant();
+//        userApplicant.setId(curUser().getId());
+//        userApplicant.setName(resumeForm.getName());
+//        userApplicant.setPhoneCode(resumeForm.getPhoneCode());
+//        userApplicant.setPhone(resumeForm.getPhone());
+//        if (StringUtils.isNotEmpty(resumeForm.getAvatar())) {
+//            userApplicant.setAvatar(AppUtils.getOssKey(resumeForm.getAvatar()));
+//        }
+//        userApplicant.setGender(resumeForm.getGender());
+//        userApplicant.setUpdateTime(new Date());
+//        userApplicantService.updateByPrimaryKeySelective(userApplicant);
 
         //更新索引
         ResumeDetail resumeDetail = getResumeDetail(resume.getId());
@@ -165,8 +205,93 @@ public class ResumeGeneralService extends ResumeService {
     }
 
     @Override
+    public ResumeDetail addResume() {
+        Resume resume = newResumeBasic();
+        resume.setUpdateTime(new Date());
+        resumeMapper.updateByPrimaryKeySelective(resume);
+        ResumeDetail resumeDetail = getResumeDetail(resume.getId());
+        if (resumeDetail.calcCompletion() > 50)
+            indexService.saveResumeItem(resumeDetail, folder);
+
+        return getResumeDetail(resume.getId());
+    }
+
+    @Override
+    public void updatePriority(Long resumeId, Byte order) {
+        Resume options = new Resume();
+        options.setId(resumeId);
+        List<Resume>resumeList = resumeMapper.selectAndList(options);
+        List<Long>queue = new ArrayList<>(resumeList.size());
+        for (Resume resume:resumeList){
+            queue.set(resume.getPriority(), resume.getId());
+        }
+        queue.remove(resumeId);
+        queue.add(order, resumeId);
+        for (int i=0;i<queue.size();i++){
+            options = new Resume();
+            options.setId(queue.get(i));
+            options.setPriority((byte) i);
+            resumeMapper.updateByPrimaryKeySelective(options);
+        }
+
+    }
+
+    @Override
     public ResumeDetail parseAttachment(String attachmentName) {
-        return null;
+        //获取OSS路径
+        String fileName = AppUtils.getOssKey(attachmentName);
+        String filePath = AppUtils.absOssUrl(fileName);
+        JSONObject result = resumeSDK.parse(filePath);
+        //保存基本信息
+        ResumeForm resumeForm = resumeSDK.getResume(result);
+        resumeForm.setAttachResume(fileName);
+        resumeForm.setStatus(ResumeStatus.PUBLISH.value);
+        resumeForm.setType(ResumeType.COMPANY.value);
+        ResumeDetail resumeDetail = saveBasic(resumeForm);
+        Long resumeId = resumeDetail.getResumeId();
+        //保存教育信息
+        List<ResumeEduForm> resumeEduFormList = resumeSDK.getResumeEdu(result);
+        for(ResumeEduForm eduForm:resumeEduFormList){
+            eduForm.setResumeId(resumeId);
+            resumeEduService.saveResumeEdu(eduForm);
+        }
+        //保存工作经验
+        List<ResumeExpForm> resumeExpFormList = resumeSDK.getResumeExperience(result);
+        for(ResumeExpForm expForm:resumeExpFormList){
+            expForm.setResumeId(resumeId);
+            resumeExpService.saveResumeExp(expForm);
+        }
+        //保存实践经验
+        List<ResumePracticeForm> practiceFormList = resumeSDK.getResumePractice(result);
+        for(ResumePracticeForm practiceForm:practiceFormList){
+            practiceForm.setResumeId(resumeId);
+            resumePracticeService.saveResumePractice(practiceForm);
+        }
+        //能力标签
+        ResumeSkillForm resumeSkillForm = resumeSDK.getResumeSkill(result);
+        resumeSkillForm.setResumeId(resumeId);
+        resumeSkillService.saveResumeSkill(resumeSkillForm);
+//        //社交主页
+//        ResumeLinkForm resumeLinkForm = resumeSDK.getResumeLink(result);
+//        resumeLinkForm.setResumeId(resumeId);
+//        resumeLinkService.saveResumeLink(resumeLinkForm);
+        //language
+        List<ResumeLanguageForm> languageFormList = resumeSDK.getResumeLanguage(result);
+        for(ResumeLanguageForm LanguageForm:languageFormList){
+            LanguageForm.setResumeId(resumeId);
+            resumeLanguageService.saveResumeLanguage(LanguageForm);
+        }
+        //certificate
+        List<ResumeCertificateForm> certificateFormList = resumeSDK.getResumeCertificate(result);
+        for(ResumeCertificateForm CertificateForm:certificateFormList){
+            CertificateForm.setResumeId(resumeId);
+            resumeCertificateService.saveResumeCertificate(CertificateForm);
+        }
+        //生成索引
+        resumeDetail = getResumeDetail(resumeId);
+        indexService.saveResumeItem(resumeDetail,folder);
+        //返回简历详情
+        return resumeDetail;
     }
 
     /**
@@ -176,6 +301,7 @@ public class ResumeGeneralService extends ResumeService {
      * @param resumeForm
      */
     public void fillResumeBasic(Resume resume, ResumeForm resumeForm) {
+        resume.setId(resumeForm.getId());
         resume.setName(resumeForm.getName());
         resume.setBirth(resumeForm.getBirth());
         resume.setGender(resumeForm.getGender());
@@ -188,11 +314,19 @@ public class ResumeGeneralService extends ResumeService {
         resume.setReturnTime(resumeForm.getReturnTime());
         resume.setMaxDegreeId(resumeForm.getMaxDegreeId());
         resume.setIntroduction(resumeForm.getIntroduction());
+        resume.setEmail(resumeForm.getEmail());
+        //******************************
+        resumeMergeAttachService.saveResumeMergeAttaches(resumeForm.getAttachOthers(), resume);
+
         if (StringUtils.isNotEmpty(resumeForm.getAttachResume())) {
             String newAttachResume = AppUtils.getOssKey(resumeForm.getAttachResume());
             resume.setAttachResume(newAttachResume);
         }
+        if (StringUtils.isNotEmpty(resumeForm.getAvatar())) {
+            resume.setAvatar(AppUtils.getOssKey(resumeForm.getAvatar()));
+        }
     }
+
 
     @Override
     public ResumeDetail deleteResumeAttachment(Long resumeId) {
@@ -206,8 +340,7 @@ public class ResumeGeneralService extends ResumeService {
 
     @Override
     public void deleteResume(Long resumeId) {
-        //普通用户简历不支持删除
-        throw new ServiceException(message("api.error.fail"));
+        resumeMapper.deleteByPrimaryKey(resumeId);
     }
 
     @Override
@@ -279,14 +412,20 @@ public class ResumeGeneralService extends ResumeService {
         resumeDetail.setResumePracticeList(resumePracticeService.getResumePracticeList(resumeId));
         //能力标签
         resumeDetail.setResumeSkillList(resumeSkillService.getResumeSkillList(resumeId));
-        //社交主页
-        resumeDetail.setResumeLinkList(resumeLinkService.getResumeLinkList(resumeId));
+//        //社交主页
+//        resumeDetail.setResumeLinkList(resumeLinkService.getResumeLinkList(resumeId));
         //意向职位
         resumeDetail.setCategoryList(userExpectJobService.getExpectCategoryList(userApplicant.getId()));
         //意向城市
         resumeDetail.setCityList(userExpectJobService.getExpectCityList(userApplicant.getId()));
         //薪资范围
         resumeDetail.setSalary(userExpectJobService.getSalary(userApplicant.getId()));
+        //language
+        resumeDetail.setResumeLanguageList(resumeLanguageService.getResumeLanguageList(resumeId));
+        //other attaches
+        resumeDetail.setResumeMergeAttachList(resumeMergeAttachService.getResumeMergeAttaches(resumeId));
+        //certificate
+        resumeDetail.setResumeCertificateList(resumeCertificateService.getResumeCertificateList(resumeId));
         return resumeDetail;
     }
 
@@ -330,6 +469,19 @@ public class ResumeGeneralService extends ResumeService {
         if (resumeDetail.getPhone() != null && resumeDetail.getPhone() != 0) {
             resumeVo.setPhone(String.valueOf(resumeDetail.getPhone()));
         }
+
+        // 邮箱
+        if (resumeDetail.getEmail() != null && resumeDetail.getEmail().length() != 0) {
+            resumeVo.setEmail(resumeDetail.getEmail());
+        }
+
+        // 回国时间 & 政治面貌
+        if (resumeDetail.getResumeBasic() != null) {
+            resumeVo.setUpdateTime(resumeDetail.getResumeBasic().getUpdateTime());
+            resumeVo.setReturnTime(resumeDetail.getResumeBasic().getReturnTime());
+            resumeVo.setMaritalStatus(resumeDetail.getResumeBasic().getMaritalStatus());
+        }
+
         //教育信息
         List<ResumeEdu> resumeEduList = resumeDetail.getResumeEduList();
         if (CollectionUtils.isNotEmpty(resumeEduList)) {
@@ -356,12 +508,12 @@ public class ResumeGeneralService extends ResumeService {
             List<ResumePracticeVo> resumePracticeVoList = AppUtils.asVoList(resumePracticeList, ResumePracticeVo.class);
             resumeVo.setResumePracticeList(resumePracticeVoList);
         }
-        //社交主页
-        List<ResumeLink> resumeLinkList = resumeDetail.getResumeLinkList();
-        if (CollectionUtils.isNotEmpty(resumeLinkList)) {
-            List<ResumeLinkVo> resumeLinkVoList = AppUtils.asVoList(resumeLinkList, ResumeLinkVo.class);
-            resumeVo.setResumeLinkList(resumeLinkVoList);
-        }
+//        //社交主页
+//        List<ResumeLink> resumeLinkList = resumeDetail.getResumeLinkList();
+//        if (CollectionUtils.isNotEmpty(resumeLinkList)) {
+//            List<ResumeLinkVo> resumeLinkVoList = AppUtils.asVoList(resumeLinkList, ResumeLinkVo.class);
+//            resumeVo.setResumeLinkList(resumeLinkVoList);
+//        }
         //求职意向
         UserExpectJobVo userExpectJobVo = new UserExpectJobVo();
         if (CollectionUtils.isNotEmpty(resumeDetail.getCategoryList())) {
@@ -374,6 +526,25 @@ public class ResumeGeneralService extends ResumeService {
             userExpectJobVo.setSalary(new DictVo().asVo(resumeDetail.getSalary()));
         }
         resumeVo.setUserExpectJob(userExpectJobVo);
+        //attach others
+        List<ResumeMergeAttach>resumeMergeAttachList = resumeDetail.getResumeMergeAttachList();
+        if (CollectionUtils.isNotEmpty(resumeMergeAttachList)){
+            List<ResumeMergeAttachVo>resumeMergeAttachVoList = AppUtils.asVoList(resumeMergeAttachList, ResumeMergeAttachVo.class);
+            resumeVo.setResumeMergeAttachList(resumeMergeAttachVoList);
+        }
+        //language
+        List<ResumeLanguage>resumeLanguageList = resumeDetail.getResumeLanguageList();
+        if (CollectionUtils.isNotEmpty(resumeLanguageList)){
+            List<ResumeLanguageVo>resumeLanguageVoList = AppUtils.asVoList(resumeLanguageList, ResumeLanguageVo.class);
+            resumeVo.setResumeLanguageList(resumeLanguageVoList);
+        }
+        //certificate
+        List<ResumeCertificate>resumeCertificateList = resumeDetail.getResumeCertificateList();
+        if (CollectionUtils.isNotEmpty(resumeCertificateList)){
+            List<ResumeCertificateVo>resumeCertificateVoList = AppUtils.asVoList(resumeCertificateList, ResumeCertificateVo.class);
+            resumeVo.setResumeCertificateList(resumeCertificateVoList);
+        }
+
         //计算简历完整度
         resumeVo.setResumeCompleteProgress(AppUtils.calCompleteProgress(resumeVo));
         return resumeVo;

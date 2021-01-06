@@ -68,7 +68,7 @@ public interface ResumeMapper {
 
     Integer countAll();
 
-    List<CountForm>countPlaceGroupBy();
+    List<CountForm> countPlaceGroupBy();
 
     List<TimePairForm>countGraduateTimeGroupBy();
 
@@ -77,5 +77,4 @@ public interface ResumeMapper {
     TimePairForm countOpResumeByTime(ResumeOptions record);
 
     TimePairForm countUserResumeByTime(ResumeOptions record);
-
 }
