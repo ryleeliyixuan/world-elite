@@ -52,7 +52,7 @@ public class ActivityForm {
     private String sendNoticeConfirm; //发送通知确认提示,0不再提示,1需要提示
 
     @NotNull
-    private String organizerType; //举办方类型; 1:校园组织;2:社会组织;3:个人
+    private String organizerType; //举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
     private OrganizerInfoForm organizerInfoForm; //组织信息
 
 

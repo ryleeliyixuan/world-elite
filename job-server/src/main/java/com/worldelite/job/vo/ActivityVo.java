@@ -40,7 +40,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     private Long joinTime; //参加时间
     private Long curTime; //系统服务器当前时间, 前端计算剩余多久用
 
-    private String organizerType; //举办方类型
+    private String organizerType; //举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
     private OrganizerInfoVo organizerInfoVo; //举办方信息vo
     private Integer registrationTemplateId; //问卷id
 
