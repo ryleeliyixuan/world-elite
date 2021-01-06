@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +34,12 @@ public class ResumeApi extends BaseApi {
 
     @Autowired
     private ResumeExpService resumeExpService;
+
+    @Autowired
+    private ResumeLanguageService resumeLanguageService;
+    
+    @Autowired
+    private ResumeCertificateService resumeCertificateService;
 
     @Autowired
     private ResumePracticeService resumePracticeService;
@@ -60,16 +67,22 @@ public class ResumeApi extends BaseApi {
 
     /**
      * 我的简历信息
-     * @param type 简历类型
      * @return
      */
     @RequireLogin
     @GetMapping("my-resume")
     @ApiDoc
-    public ApiResult<ResumeVo> myResume(@RequestParam(required = false) Byte type) {
-        ResumeService resumeService = ResumeServiceFactory.getResumeService(type);
-        ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
-        return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
+    public ApiResult<List<ResumeVo>> myResume() {
+//        ResumeService resumeService = ResumeServiceFactory.getResumeService(type);
+        ResumeService resumeService = ResumeServiceFactory.getDefaultService();
+//        ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
+        List<ResumeDetail> resumeDetails = resumeService.getDefaultListOrCreate();
+        List<ResumeVo>resumeVos = new ArrayList<>();
+        for (ResumeDetail one:resumeDetails){
+            resumeVos.add(resumeService.toResumeVo(one));
+        }
+        return ApiResult.ok(resumeVos);
+//        return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
 
     /**
@@ -121,7 +134,7 @@ public class ResumeApi extends BaseApi {
 
     /**
      * 保存基本信息
-     *
+     * this one has been updated
      * @param resumeForm
      * @return
      */
@@ -135,8 +148,36 @@ public class ResumeApi extends BaseApi {
     }
 
     /**
+     * add resume
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("add-resume")
+    @ApiDoc
+    public ApiResult<ResumeVo> addResume() {
+        ResumeService resumeService = ResumeServiceFactory.getDefaultService();
+        ResumeDetail resumeDetail = resumeService.addResume();
+        return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
+    }
+
+    /**
+     * delete resume
+     * @param id
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("del-resume")
+    @ApiDoc
+    public ApiResult deleteResume(@RequestParam Long id) {
+        ResumeService resumeService = ResumeServiceFactory.getDefaultService();
+        resumeService.deleteResume(id);
+        return ApiResult.ok();
+
+    }
+
+    /**
      * 删除附件简历
-     *
+     * don't use
      * @param resumeId 简历ID
      * @return
      */
@@ -211,6 +252,73 @@ public class ResumeApi extends BaseApi {
         return ApiResult.ok();
     }
 
+    /**
+     * save language
+     * @param resumeLanguageForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("save-resume-language")
+    @ApiDoc
+    public ApiResult<ResumeLanguageVo> saveResumeLanguage(@Valid @RequestBody ResumeLanguageForm resumeLanguageForm) {
+        ResumeLanguageVo resumeLanguageVo = resumeLanguageService.saveResumeLanguage(resumeLanguageForm);
+        return ApiResult.ok(resumeLanguageVo);
+    }
+
+    /**
+     * delete language
+     * @param id
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("del-resume-language")
+    @ApiDoc
+    public ApiResult deleteResumeLanguage(@RequestParam Integer id) {
+        resumeLanguageService.deleteResumeLanguage(id);
+        return ApiResult.ok();
+    }
+
+    /**
+     * save certificate
+     * @param resumeCertificateForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("save-resume-certificate")
+    @ApiDoc
+    public ApiResult<ResumeCertificateVo> saveResumeCertificate(@Valid @RequestBody ResumeCertificateForm resumeCertificateForm) {
+        ResumeCertificateVo resumeCertificateVo = resumeCertificateService.saveResumeCertificate(resumeCertificateForm);
+        return ApiResult.ok(resumeCertificateVo);
+    }
+
+    /**
+     * delete certificate
+     * @param id
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("del-resume-certificate")
+    @ApiDoc
+    public ApiResult deleteResumeCertificate(@RequestParam Integer id) {
+        resumeCertificateService.deleteResumeCertificate(id);
+        return ApiResult.ok();
+    }
+
+    /**
+     * update priority
+     * @param id
+     * @param order
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("update-priority")
+    @ApiDoc
+    public ApiResult updatePriority(@RequestParam Long id, @RequestParam Byte order){
+        ResumeService resumeService = ResumeServiceFactory.getDefaultService();
+        resumeService.updatePriority(id, order);
+        return ApiResult.ok();
+    }
+    
     /**
      * 保存实践经验
      *

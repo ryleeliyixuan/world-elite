@@ -9,12 +9,17 @@ import org.hibernate.validator.constraints.SafeHtml;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author yeguozhong yedaxia.github.com
  */
 @Data
 public class ResumeForm {
+
+    public Long getId() {
+        return id;
+    }
 
     private Long id; //简历ID
     @NotBlank(message = "{edit.resume.name.not.blank}")
@@ -36,9 +41,31 @@ public class ResumeForm {
     private String introduction; //个人接受
     private String phoneCode; //电话区号
     private Long phone; //电话号码
+
+    public String getEmail() {
+        return email;
+    }
+
     private String email; //邮箱
     private String avatar; //头像
-    private String attachResume; //附件简历
+
+    private Byte priority;
+
+    public List<String> getAttachOthers() {
+        return attachOthers;
+    }
+
+    private List<String> attachOthers;
+
+    public String getAttachResume() {
+        return attachResume;
+    }
+
+    public void setAttachResume(String attachResume) {
+        this.attachResume = attachResume;
+    }
+
+    private String attachResume;
 
     private Long companyId; //公司ID
     private Byte status; //简历状态
