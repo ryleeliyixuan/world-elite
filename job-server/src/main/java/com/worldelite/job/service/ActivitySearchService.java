@@ -261,7 +261,7 @@ public class ActivitySearchService {
                     MultiPhraseQuery.Builder multiBuilder = new MultiPhraseQuery.Builder();
                     multiBuilder.add(new Term(ActivityIndexFields.CITY_ID, cityId));
 
-                    builder.add(multiBuilder.build(), BooleanClause.Occur.MUST);
+                    builder.add(multiBuilder.build(), BooleanClause.Occur.SHOULD);
                 }
             }
             if (form.getStatus() != null)
