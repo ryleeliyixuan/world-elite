@@ -26,4 +26,10 @@
     from t_registration
     where activity_id = #{activityId} and registration_user_id = #{registrationUserId}
 </select>
+  <select id="selectNextRegistrationId" resultType="java.lang.Integer">
+    select
+      max(`number`)+1
+    from t_registration
+    where activity_id =  #{activityId}
+  </select>
 </mapper>

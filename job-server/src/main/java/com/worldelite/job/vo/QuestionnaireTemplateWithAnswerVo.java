@@ -2,6 +2,7 @@ package com.worldelite.job.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
+import com.worldelite.job.entity.Dict;
 import lombok.Data;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class QuestionnaireTemplateWithAnswerVo {
     private String school; //学校
     private String grade; //年级
     private String profession; //专业
-    private String education; //学历
+    private DictVo education; //学历
     private Integer status; //审核状态
 
     @JSONField(serializeUsing = ToStringSerializer.class)

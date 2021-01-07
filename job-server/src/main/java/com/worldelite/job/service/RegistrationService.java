@@ -45,16 +45,37 @@ public class RegistrationService extends BaseService{
 
     @Transactional
     public void addRegistration(RegistrationForm registrationForm){
-        //保存基本信息
-        Registration registration = new Registration();
-        BeanUtil.copyProperties(registrationForm,registration);
         //报名者ID不存在，认为是当前用户进行报名
-        if(registrationForm.getRegistrationUserId() == null){
-            registration.setRegistrationUserId(curUser().getId());
+        Long registrationUserId = registrationForm.getRegistrationUserId();
+        if(registrationUserId == null){
+            registrationUserId = curUser().getId();
         }
+        //判断报名是否已经存在
+        Registration registration = registrationMapper.selectRegistrationStatusByUserId(registrationForm.getActivityId()
+                ,registrationUserId);
+        if(registration != null){
+            throw new ServiceException(message("registration.exists"));
+        }
+        //保存基本信息
+        registration = new Registration();
+        BeanUtil.copyProperties(registrationForm,registration);
+        registration.setRegistrationUserId(registrationUserId);
         //通过活动ID获取活动发布者ID
         ActivityVo activity = activityService.getActivityInfo(registrationForm.getActivityId());
         registration.setUserId(activity.getUserId());
+        //获取报名编号
+        Integer number = registrationMapper.selectNextRegistrationId(registration.getActivityId());
+        if(number == null){
+            number = 1;
+        }
+        registration.setNumber(number);
+        //Todo 如果报名需要审核，则状态改成待审核，否则状态为无需审核
+        if(activity.getAuditType().equals("0")){
+            registration.setStatus(RegistrationStatus.DIRECT.value);
+        }
+        if(activity.getAuditType().equals("1")){
+            registration.setStatus(RegistrationStatus.NOT_ACTIVITY.value);
+        }
         registrationMapper.insertSelective(registration);
         //保存问卷回答
         QuestionnaireAnswerForm[] answerFormList = registrationForm.getAnswerList();
@@ -77,6 +98,9 @@ public class RegistrationService extends BaseService{
      */
     public RegistrationVo getRegistrationDetail(Integer id){
         Registration registration = registrationMapper.selectByPrimaryKey(id);
+        if(registration == null){
+            throw new ServiceException(message("registration.no.exists"));
+        }
         List<QuestionnaireAnswerVo> answerList = questionnaireAnswerService.getAnswerListByRegistrationId(id);
         RegistrationVo registrationVo = new RegistrationVo().asVo(registration);
         registrationVo.setAnswerList(answerList);

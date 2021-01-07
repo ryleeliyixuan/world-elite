@@ -17,7 +17,7 @@ public class RegistrationForm {
     private String school; //学校
     private String grade; //年级
     private String profession; //专业
-    private String education; //学历
+    private Integer educationId; //学历
 
     private QuestionnaireAnswerForm[] answerList; //回答列表
 

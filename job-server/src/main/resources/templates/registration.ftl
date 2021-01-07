@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
-    <title>活动报名详情.${registrationWithTemplate.template.templateName!""}</title>
+    <title>活动报名详情.${registration.templateName!""}</title>
     <style>
         .registration-number{
             color: #ccc;
@@ -30,96 +30,96 @@
 </head>
 <body>
     <div class="registration-body">
-        <p class="registration-number">No.${registrationWithTemplate.registration.number!""}</p>
-        <h3>${registrationWithTemplate.template.title}</h3>
+        <p class="registration-number">No.${registration.number!""}</p>
+        <h3>${registration.title}</h3>
         <div class="row">
-            <#if registrationWithTemplate.template.nameFlag != "2">
+            <#if registration.nameFlag != "2">
                 <div class="col-md-3 registration-label">
-                    <#if registrationWithTemplate.template.nameFlag == "0">
+                    <#if registration.nameFlag == "0">
                         <font style="color:red;">*</font>
                     </#if>
                     姓名：
                 </div>
-                <div class="col-md-3 registration-value">${registrationWithTemplate.registration.name!""}</div>
+                <div class="col-md-3 registration-value">${registration.name!""}</div>
             </#if>
 
-            <#if registrationWithTemplate.template.genderFlag != "2">
+            <#if registration.genderFlag != "2">
                 <div class="col-md-3 registration-label">
-                    <#if registrationWithTemplate.template.genderFlag == "0">
+                    <#if registration.genderFlag == "0">
                         <font style="color:red;">*</font>
                     </#if>
                     性别：
                 </div>
-                <div class="col-md-3 registration-value">${registrationWithTemplate.registration.gender!""}</div>
+                <div class="col-md-3 registration-value">${registration.gender!""}</div>
             </#if>
         </div>
         <div class="row">
-            <#if registrationWithTemplate.template.phoneFlag != "2">
+            <#if registration.phoneFlag != "2">
                 <div class="col-md-3 registration-label">
-                    <#if registrationWithTemplate.template.phoneFlag == "0">
+                    <#if registration.phoneFlag == "0">
                         <font style="color:red;">*</font>
                     </#if>
                     手机号：
                 </div>
-                <div class="col-md-9 registration-value">${registrationWithTemplate.registration.phone!""}</div>
+                <div class="col-md-9 registration-value">${registration.phone!""}</div>
             </#if>
         </div>
         <div class="row">
-            <#if registrationWithTemplate.template.emailFlag != "2">
+            <#if registration.emailFlag != "2">
                 <div class="col-md-3 registration-label">
-                    <#if registrationWithTemplate.template.emailFlag == "0">
+                    <#if registration.emailFlag == "0">
                         <font style="color:red;">*</font>
                     </#if>
                     邮箱：
                 </div>
-                <div class="col-md-9 registration-value">${registrationWithTemplate.registration.email!""}</div>
+                <div class="col-md-9 registration-value">${registration.email!""}</div>
             </#if>
         </div>
         <div class="row">
-            <#if registrationWithTemplate.template.schoolFlag != "2">
+            <#if registration.schoolFlag != "2">
                 <div class="col-md-3 registration-label">
-                    <#if registrationWithTemplate.template.schoolFlag == "0">
+                    <#if registration.schoolFlag == "0">
                         <font style="color:red;">*</font>
                     </#if>
                     学校：
                 </div>
-                <div class="col-md-9 registration-value">${registrationWithTemplate.registration.school!""}</div>
+                <div class="col-md-9 registration-value">${registration.school!""}</div>
             </#if>
         </div>
         <div class="row">
-            <#if registrationWithTemplate.template.professionFlag != "2">
+            <#if registration.professionFlag != "2">
                 <div class="col-md-3 registration-label">
-                    <#if registrationWithTemplate.template.professionFlag == "0">
+                    <#if registration.professionFlag == "0">
                         <font style="color:red;">*</font>
                     </#if>
                     专业：
                 </div>
-                <div class="col-md-9 registration-value">${registrationWithTemplate.registration.profession!""}</div>
+                <div class="col-md-9 registration-value">${registration.profession!""}</div>
             </#if>
         </div>
         <div class="row">
-            <#if registrationWithTemplate.template.gradeFlag != "2">
+            <#if registration.gradeFlag != "2">
                 <div class="col-md-3 registration-label">
-                    <#if registrationWithTemplate.template.gradeFlag == "0">
+                    <#if registration.gradeFlag == "0">
                         <font style="color:red;">*</font>
                     </#if>
                     年级：
                 </div>
-                <div class="col-md-3 registration-value">${registrationWithTemplate.registration.grade!""}</div>
+                <div class="col-md-3 registration-value">${registration.grade!""}</div>
             </#if>
 
-            <#if registrationWithTemplate.template.educationFlag != "2">
+            <#if registration.educationFlag != "2">
                 <div class="col-md-3 registration-label">
-                    <#if registrationWithTemplate.template.educationFlag == "0">
+                    <#if registration.educationFlag == "0">
                         <font style="color:red;">*</font>
                     </#if>
                     学历：
                 </div>
-                <div class="col-md-3 registration-value">${registrationWithTemplate.registration.education!""}</div>
+                <div class="col-md-3 registration-value">${registration.education!""}</div>
             </#if>
         </div>
 
-        <#list registrationWithTemplate.template.questionnaireList as questionnaire>
+        <#list registration.questionnaireList as questionnaire>
             <div class="row">
                 <div class="col-md-3 registration-label">
                     <#if questionnaire.mustAnswer == "0">
@@ -128,9 +128,16 @@
                     ${questionnaire.title!""}：
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">回答</div>
-            </div>
+            <#list questionnaire.answerContent as content>
+                <div class="row">
+                    <div class="col-md-12">${content}</div>
+                </div>
+            </#list>
+            <#list questionnaire.answerOptions as options>
+                <div class="row">
+                    <div class="col-md-12">${options.options}</div>
+                </div>
+            </#list>
         </#list>
     </div>
 </body>

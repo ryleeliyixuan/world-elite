@@ -16,6 +16,9 @@ public class QuestionnaireOptionsVo implements VoConvertable<QuestionnaireOption
 
     @Override
     public QuestionnaireOptionsVo asVo(QuestionnaireOptions questionnaireOptions) {
+        if(questionnaireOptions == null){
+            return null;
+        }
         BeanUtil.copyProperties(questionnaireOptions,this);
         return this;
     }

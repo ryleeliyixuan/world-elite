@@ -24,7 +24,7 @@ public class RegistrationVo implements VoConvertable<RegistrationVo, Registratio
     private String school; //学校
     private String grade; //年级
     private String profession; //专业
-    private String education; //学历
+    private DictVo education; //学历
     private Integer status; //审核状态
 
     @JSONField(serializeUsing = ToStringSerializer.class)
@@ -34,6 +34,9 @@ public class RegistrationVo implements VoConvertable<RegistrationVo, Registratio
 
     @Override
     public RegistrationVo asVo(Registration registration) {
+        if(registration == null){
+            return null;
+        }
         BeanUtil.copyProperties(registration,this);
         return this;
     }
