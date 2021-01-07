@@ -62,7 +62,7 @@
             </div>
             <div class="report-button" @click="onReport">举报该活动</div>
         </div>
-        <div class="activity-container">
+        <div class="activity-container" v-if="activity">
             <el-image class="image" :src="activity.poster" fit="contain"></el-image>
             <div v-html="activity.description"></div>
         </div>
@@ -118,7 +118,7 @@
     Vue.use(Share);
 
     export default {
-        name: "ActivityPage",
+        name: "ActivityDetailPage",
         data() {
             return {
                 activity: undefined,

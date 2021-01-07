@@ -23,7 +23,7 @@
                     </div>
                     <el-image class="image" :src="require('@/assets/activity/2.png')" fit="scale-down"></el-image>
                 </div>
-                <div class="button-container">
+                <div class="button-container" @click="onPublish">
                     <el-image class="image" :src="require('@/assets/activity/3.png')" fit="scale-down"></el-image>
                     <div class="text-container">
                         <div class="text-major">发布新活动</div>
@@ -117,8 +117,8 @@
                     </div>
                 </div>
                 <div v-if="dataList.length===0 && loading===false" style="width:100%; display: flex; flex-direction: column; align-items: center;">
-                    <el-image :src="require('@/assets/mock/empty.png')" style="width:297px; height: 285px;"></el-image>
-                    <div style="font-size: 36px;font-weight: 600;color: #3D6FF4;line-height: 50px;margin-top: 30px;">Sorry，暂无匹配活动。</div>
+                    <el-image :src="require('@/assets/activity/empty.png')" style="width:344px; height: 265px;"></el-image>
+                    <div style="font-size: 16px;color: #333333;line-height: 22px;margin-top: 24px;">暂无活动，敬请期待!</div>
                 </div>
             </div>
 
@@ -191,6 +191,11 @@
                 this.$axios.get("/dict/list", {params: {type: 23, limit: 99}}).then(data => {
                     this.cityList = data.data.list;
                 })
+            },
+
+            // 发布新活动
+            onPublish() {
+                this.$router.push('/activity/edit');
             },
 
             // 活动形式

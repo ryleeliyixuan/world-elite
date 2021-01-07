@@ -58,8 +58,7 @@
         .page {
             width: 100%;
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 17px 0;
+            margin: 17px auto;
         }
 
         .main-container {

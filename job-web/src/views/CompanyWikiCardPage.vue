@@ -51,14 +51,14 @@
     import {listByType} from "@/api/dict_api";
 
     export default {
-        name: "ResumePage",
+        name: "WikiCardPage",
         data() {
             return {
                 exporting: false,
                 industryList: [],//行业列表
                 companyList: {}, // 公司列表
                 companyCount: 4, // 显示公司数
-                top: "5px" // 目录距离顶部距离
+                top: "93px" // 目录距离顶部距离
             };
         },
 
@@ -98,7 +98,8 @@
 
                 let card = this.$refs[item.name];
                 if (card) {
-                    document.getElementById("app").scrollTop = card[0].offsetTop + 170;
+                    document.body.scrollTop = card[0].offsetTop + 88;
+                    document.documentElement.scrollTop = card[0].offsetTop + 88;
                 }
             },
 

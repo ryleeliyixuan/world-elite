@@ -76,7 +76,7 @@
                 this.$store.dispatch("user/LOGIN", this.form).then(() => {
                     let query = {...this.$route.query};
                     delete query.redirect;
-                    this.$router.push({path: this.redirect || "/", query});
+                    this.$router.replace({path: this.redirect || "/", query});
                 });
             },
             goThridPartLoginUrl(type) {
