@@ -315,6 +315,7 @@ public class ResumeGeneralService extends ResumeService {
         resume.setMaxDegreeId(resumeForm.getMaxDegreeId());
         resume.setIntroduction(resumeForm.getIntroduction());
         resume.setEmail(resumeForm.getEmail());
+        resume.setPhone(resumeForm.getPhone() + "");
         //******************************
         resumeMergeAttachService.saveResumeMergeAttaches(resumeForm.getAttachOthers(), resume);
 
