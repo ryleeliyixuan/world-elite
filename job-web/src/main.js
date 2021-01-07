@@ -11,6 +11,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import i18n from '@/i18n'
+import ViewUI from 'view-design';
+import 'view-design/dist/styles/iview.css';
+
 
 import echarts from "echarts";
 import storage from "@/utils/storage"
@@ -40,6 +43,7 @@ Vue.use(storage);
 Vue.use(VueResource)
 Vue.config.productionTip = false
 
+Vue.use(ViewUI)
 Vue.use(ElementUI)
 Vue.use(BootstrapVue)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
