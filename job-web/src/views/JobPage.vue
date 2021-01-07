@@ -39,7 +39,7 @@
                   : `background: #FFFFFF;`
               "
               ><svg-icon
-                :icon-class="job.favoriteFlag === 1 ? 'jobunflag' : 'jobflag'"
+                :icon-class="job.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'"
                 style="height: 15px; width: 19px"
             /></el-button>
             <el-button style="margin-right: 29px" circle @click="handleChat"
@@ -49,7 +49,7 @@
               <el-button
                 type="primary"
                 :loading="applyLoading"
-                @click="applyDialog = true"
+                @click="(applyDialog = true), getResumeInfo()"
                 v-bind:disabled="job.applyFlag === 1"
               >
                 {{ job.applyFlag === 1 ? "已申请" : "申请岗位" }}
@@ -57,18 +57,6 @@
             </div>
           </div>
         </div>
-        <el-dialog title="选择投递简历" :visible.sync="applyDialog">
-          <div>
-            <span>在线简历</span>
-            <span>刷新</span>
-          </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="applyDialog = false"
-              >确 定</el-button
-            >
-            <el-button @click="applyDialog = false">取 消</el-button>
-          </span>
-        </el-dialog>
         <div class="session2-container" v-if="job">
           <div class="session2-container-left">
             <div v-html="job.description"></div>
@@ -201,12 +189,113 @@
         </div>
       </el-card>
     </div>
+    <!-- 预览简历 -->
+    <div class="resume">
+      <el-dialog :visible.sync="previewDialog" width="854px">
+        <div class="resume-preview">
+          <el-button type="text"
+            ><svg-icon
+              icon-class="resumedownload"
+              style="height: 23px; width: 29px"
+          /></el-button>
+          <el-button @click="previewDialog = false" type="text"
+            ><svg-icon
+              icon-class="resumereviewclose"
+              style="height: 17px; width: 17px"
+          /></el-button>
+        </div>
+        <ResumeView :resumeId="previewResumeId" class="resume-preview-content"></ResumeView
+      ></el-dialog>
+    </div>
+    <!--  选择投递简历  -->
+    <el-dialog title="选择投递简历" :visible.sync="applyDialog">
+      <!-- resume alert start -->
+      <el-dialog
+        class="progress-alert"
+        :visible.sync="progressAlertDialog"
+        append-to-body
+      >
+        <div style="display: flex; justify-content: center">
+          <svg-icon
+            icon-class="jobresumeprogressalert"
+            style="height: 82px; width: 94px; margin-bottom: 21px"
+          />
+        </div>
+        <div class="progress-alert-text">
+          您所选的简历完整度较低（建议提升至80%以上），是否确认投递？
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button
+            type="primary"
+            @click="submitResume(), (progressAlertDialog = false)"
+            >确 定</el-button
+          >
+          <el-button @click="progressAlertDialog = false">去修改</el-button>
+        </span>
+      </el-dialog>
+      <!-- resume alert end -->
+      <div class="dialog-header">
+        <span class="dialog-header-title">在线简历</span>
+        <span class="dialog-header-button"
+          ><el-button type="text" @click="getResumeInfo"
+            >刷新<svg-icon
+              icon-class="jobrefresh"
+              style="height: 13px; width: 13px; margin-left: 7px" /></el-button
+        ></span>
+      </div>
+      <el-table
+        class="dialog-table"
+        :data="resume"
+        style="width: 100%"
+        :show-header="false"
+        @selection-change="handleSelectionChange"
+        v-loading="resumeListLoading"
+      >
+        <el-table-column type="selection" width="30"> </el-table-column>
+        <el-table-column prop="name" label="简历名称" width="180">
+        </el-table-column>
+        <el-table-column
+          prop="resumeCompleteProgress"
+          label="完成度"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span
+              :style="
+                scope.row.resumeCompleteProgress == 100
+                  ? `color: #455A64`
+                  : scope.row.resumeCompleteProgress >= 80
+                  ? `color: #607D8B;`
+                  : `color: #90A4AE;`
+              "
+              >(完整度: {{ scope.row.resumeCompleteProgress }}%)</span
+            >
+          </template>
+        </el-table-column>
+        <el-table-column class="button" label="操作" width="180">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              @click="(previewDialog = true), (previewResumeId = scope.row.id)"
+              >预览</el-button
+            >
+            <el-button @click="handleEditResume()">修改</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleApplyJob()">确 定</el-button>
+        <el-button @click="applyDialog = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import VueAMap from "vue-amap";
+import ResumeView from "@/components/ResumeView";
+import { getResumeInfo } from "@/api/resume_api";
 import { getJobInfo, applyJob } from "@/api/job_api";
 import { doFavorite } from "@/api/favorite_api";
 import { setPageTitle } from "@/utils/setting";
@@ -223,8 +312,34 @@ VueAMap.initAMapApiLoader({
 
 export default {
   name: "JobPage",
+  components: { ResumeView },
   data() {
     return {
+      tableData: [
+        {
+          date: "2016-05-02",
+          name: "UI/UX 设计师",
+          resumeCompleteProgress: "20",
+        },
+        {
+          date: "2016-05-04",
+          name: "UI/UX 设计师 1",
+          resumeCompleteProgress: "80",
+        },
+        {
+          date: "2016-05-01",
+          name: "UI/UX 设计师2 2",
+          resumeCompleteProgress: "100",
+        },
+      ],
+      //resume
+      resume: undefined,
+      multipleSelection: [],
+      previewDialog: false,
+      previewResumeId: undefined,
+      resumeListLoading: true,
+      progressAlertDialog: false,
+
       //map
       activeAddress: 0,
       mapZoom: 13,
@@ -298,6 +413,13 @@ export default {
         this.$emit("complete");
       });
     },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      // console.log(this.multipleSelection);
+    },
+    handleEditResume() {
+      this.$router.replace("/edit-resume");
+    },
     handleFavorite() {
       this.favoriteLoading = true;
       this.favoriteForm.favorite = !this.favoriteForm.favorite;
@@ -310,23 +432,46 @@ export default {
           this.favoriteLoading = false;
         });
     },
-    handleAppleJob() {
-      this.applyLoading = true;
-      applyJob(this.job.id)
-        .then(() => {
-          this.job.applyFlag = 1;
-          this.$message("申请成功");
-        })
-        .finally(() => {
-          this.applyLoading = false;
-        });
+    handleApplyJob() {
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        if (this.multipleSelection[i].resumeCompleteProgress < 80) {
+          this.progressAlertDialog = true;
+          return;
+        }
+      }
+      this.submitResume();
     },
-
+    submitResume() {
+      this.applyLoading = true;
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        let data = {
+          id: this.job.id,
+          resumeId: this.multipleSelection[i].id,
+        };
+        applyJob(data)
+          .then(() => {
+            this.job.applyFlag = 1;
+            this.$message("申请成功");
+          })
+          .finally(() => {
+            this.applyLoading = false;
+          });
+      }
+      this.applyDialog = false;
+    },
     handleChat() {
       this.$router.push({
         path: "/chat",
         query: { toUser: this.job.creatorId, jobId: this.job.id },
       });
+    },
+    getResumeInfo() {
+      this.resumeListLoading = true;
+      getResumeInfo()
+        .then((response) => (this.resume = response.data))
+        .finally(() => {
+          this.resumeListLoading = false;
+        });
     },
   },
 };
@@ -338,12 +483,199 @@ export default {
   background: #f6f9fc;
 }
 
+.resume {
+  /deep/ .el-dialog__header {
+    display: none;
+  }
+  /deep/ .el-dialog {
+    border-radius: 0px;
+  }
+
+  /deep/ .el-dialog__body {
+    padding: 10px 9px 43px 62px;
+  }
+
+  .resume-preview {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .resume-preview-content {
+    padding: 25px 74px 0px 0px;
+  }
+}
+
+.progress-alert {
+  /deep/ .el-dialog__body {
+    padding: 26px 62px 21px 63px;
+  }
+  .dialog-footer {
+    padding-bottom: 22px;
+  }
+  .progress-alert-text {
+    font-size: 18px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 25px;
+  }
+}
+
 /deep/ .el-dialog {
   width: 675px;
-  height: 415px;
   background: #ffffff;
   border-radius: 28px;
   border: 0px;
+}
+
+/deep/ .el-dialog__headerbtn {
+  display: none;
+}
+
+/deep/ .el-dialog__header {
+  display: flex;
+  justify-content: center;
+
+  .el-dialog__title {
+    font-size: 24px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 33px;
+  }
+}
+
+/deep/ .el-dialog__body {
+  padding: 31px 73px 64px 75px;
+}
+
+/deep/.el-table td,
+.el-table th {
+  border-bottom: 0px !important;
+}
+
+/deep/ .el-table::before {
+  display: none;
+}
+
+/deep/ .el-table td,
+.el-table th {
+  padding: 9px 0;
+}
+
+.dialog-table {
+  /deep/ .cell {
+    display: flex;
+    padding: 0;
+  }
+
+  /deep/ .el-table__body {
+    margin-right: 0px;
+  }
+
+  /deep/ .el-table__row td:last-child {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /deep/ .el-checkbox {
+    margin-bottom: 0;
+  }
+
+  /deep/ .el-checkbox__inner {
+    border-color: #4895ef;
+  }
+  /deep/ .el-button--primary {
+    width: 65px;
+    height: 22px;
+    background: #4895ef;
+    border-radius: 11px;
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #ffffff;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /deep/ .el-button--default {
+    width: 65px;
+    height: 22px;
+    background: #ffffff;
+    border-radius: 11px;
+    border: 1px solid #4895ef;
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #4895ef;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  .dialog-header-title {
+    font-size: 21px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 29px;
+  }
+  .dialog-header-button {
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #4895ef;
+    line-height: 20px;
+    /deep/ .el-button {
+      span {
+        display: flex;
+      }
+    }
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 39px;
+
+  /deep/ .el-button--primary {
+    width: 133px;
+    height: 35px;
+    background: #4895ef;
+    border-radius: 18px;
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #ffffff;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /deep/ .el-button--default {
+    width: 134px;
+    height: 35px;
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #4895ef;
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #4895ef;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .app-container {
@@ -351,7 +683,7 @@ export default {
   margin: 0 auto;
   padding: 0 20px;
   min-height: calc(100vh - 477px);
-  padding-top: 78px;
+  padding-top: 31px;
   padding-bottom: 194px;
 
   /deep/.el-card {
@@ -420,6 +752,12 @@ export default {
       /deep/.el-button {
         box-shadow: 0px 5px 13px 0px #2868c0;
         border: 0px;
+        height: 45px;
+        width: 45px;
+      }
+
+      /deep/.el-button + .el-button {
+        margin-left: 0px;
       }
 
       .apply {
@@ -427,7 +765,7 @@ export default {
           background: #ffffff;
           box-shadow: 0px 5px 13px 0px #2868c0;
           border-radius: 20px;
-          min-width: 100px;
+          min-width: 125px;
 
           span {
             font-size: 16px;
@@ -449,6 +787,7 @@ export default {
       display: flex;
       flex-direction: column;
       flex: 3;
+      margin-right: 50px;
 
       .session2-job-address {
         margin-top: 10px;

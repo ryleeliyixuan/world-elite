@@ -25,11 +25,11 @@ export function getJobInfo(id) {
     })
 }
 
-export function applyJob(id) {
+export function applyJob(data) {
     return request({
         url: '/job/apply-job',
         method: 'post',
-        params: { id: id }
+        params: data
     })
 }
 
