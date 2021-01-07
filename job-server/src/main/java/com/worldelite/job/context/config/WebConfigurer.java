@@ -89,7 +89,7 @@ public class WebConfigurer implements WebMvcConfigurer {
         //配置fast json 作为序列号输出库
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
-        fastJsonConfig.setSerializerFeatures(SerializerFeature.WriteMapNullValue,
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.IgnoreNonFieldGetter,
                 SerializerFeature.WriteDateUseDateFormat);
         fastConverter.setFastJsonConfig(fastJsonConfig);
         converters.add(0, fastConverter);
