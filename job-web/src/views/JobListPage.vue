@@ -1,8 +1,9 @@
 <template>
   <div class="background-wrapper">
-    <div class="section1-wrapper">
-      <div class="section1-container">
-        <!-- <el-cascader
+    <Affix @on-change="scrollPane">
+      <div class="section1-wrapper">
+        <div class="section1-container" v-if="!collapse">
+          <!-- <el-cascader
           placeholder="城市"
           :show-all-levels="true"
           :options="cityOptions"
@@ -13,49 +14,15 @@
           v-model="listQuery.cityIds"
         >
         </el-cascader> -->
-        <!-- 行业类型 -->
-        <div class="section1-filter">
-          <span class="section1-filter-title">行业类型：</span>
-
-          <el-checkbox-group
-            v-model="listQuery.companyIndustryIds"
-            size="small"
-          >
-            <!-- <el-checkbox-button
-              :checked="
-                listQuery.companyIndustryIds.length == 0 ? `true` : `false`
-              "
-              @change="(listQuery.companyIndustryIds = []), handleFilter()"
-              >不限</el-checkbox-button
-            > -->
-            <el-checkbox-button
-              v-for="item in companyIndustryOptions"
-              :label="item.id"
-              :key="item.id"
-              @change="handleFilter"
-              >{{ item.name }}</el-checkbox-button
-            >
-          </el-checkbox-group>
-        </div>
-        <!-- 月薪区间 -->
-        <div class="section1-filter">
-          <span class="section1-filter-title">月薪区间：</span>
-          <el-checkbox-group v-model="listQuery.salaryRangeIds" size="small">
-            <el-checkbox-button
-              v-for="item in salaryRangeOptions"
-              :label="item.id"
-              :key="item.id"
-              @change="handleFilter"
-              >{{ item.name }}</el-checkbox-button
-            >
-          </el-checkbox-group>
-        </div>
-        <div v-show="moreFilter">
+          <!-- 行业类型 -->
           <div class="section1-filter">
-            <span class="section1-filter-title">公司规模：</span>
-            <el-checkbox-group v-model="listQuery.companyScaleIds" size="small">
+            <span class="section1-filter-title">行业类型：</span>
+            <el-checkbox-group
+              v-model="listQuery.companyIndustryIds"
+              size="small"
+            >
               <el-checkbox-button
-                v-for="item in companyScaleOptions"
+                v-for="item in companyIndustryOptions"
                 :label="item.id"
                 :key="item.id"
                 @change="handleFilter"
@@ -63,11 +30,12 @@
               >
             </el-checkbox-group>
           </div>
+          <!-- 月薪区间 -->
           <div class="section1-filter">
-            <span class="section1-filter-title">工作类型：</span>
-            <el-checkbox-group v-model="listQuery.jobTypes" size="small">
+            <span class="section1-filter-title">月薪区间：</span>
+            <el-checkbox-group v-model="listQuery.salaryRangeIds" size="small">
               <el-checkbox-button
-                v-for="item in jobTypeOptions"
+                v-for="item in salaryRangeOptions"
                 :label="item.id"
                 :key="item.id"
                 @change="handleFilter"
@@ -75,43 +43,108 @@
               >
             </el-checkbox-group>
           </div>
+          <div v-show="moreFilter">
+            <div class="section1-filter">
+              <span class="section1-filter-title">公司规模：</span>
+              <el-checkbox-group
+                v-model="listQuery.companyScaleIds"
+                size="small"
+              >
+                <el-checkbox-button
+                  v-for="item in companyScaleOptions"
+                  :label="item.id"
+                  :key="item.id"
+                  @change="handleFilter"
+                  >{{ item.name }}</el-checkbox-button
+                >
+              </el-checkbox-group>
+            </div>
+            <div class="section1-filter">
+              <span class="section1-filter-title">工作类型：</span>
+              <el-checkbox-group v-model="listQuery.jobTypes" size="small">
+                <el-checkbox-button
+                  v-for="item in jobTypeOptions"
+                  :label="item.id"
+                  :key="item.id"
+                  @change="handleFilter"
+                  >{{ item.name }}</el-checkbox-button
+                >
+              </el-checkbox-group>
+            </div>
+          </div>
+          <div class="section1-filter-option">
+            <el-button
+              class="quick"
+              @click="quickFilter = !quickFilter"
+              size="mini"
+              >快速筛选</el-button
+            >
+            <el-button
+              class="more"
+              @click="moreFilter = !moreFilter"
+              size="mini"
+              >更多筛选</el-button
+            >
+            <el-button class="empty" @click="emptyFilter" type="text"
+              ><svg-icon
+                class="empty-icon"
+                icon-class="joblistdelete"
+                style="height: 19px; width: 19px"
+              />清除选项</el-button
+            >
+          </div>
+          <div v-show="quickFilter" class="quickFilter">
+            <div class="quickFilter-left">
+              <span class="quickFilter-title">搜索记录：</span>
+              <div class="quickFilter-caption">
+                您还没有搜索过职位哟，赶紧试一试吧
+              </div>
+            </div>
+            <div class="quickFilter-right">
+              <span class="quickFilter-title">订阅的职位：</span>
+              <div class="quickFilter-caption">
+                暂未订阅职位哦，点击下方及时获取职位信息
+              </div>
+              <div class="quickFilter-right-click">
+                <svg-icon
+                  icon-class="joblistfilterplus"
+                  style="height: 20px; width: 20px"
+                />
+                <span class="quickFilter-right-click-text">点我订阅职位</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="section1-filter-option">
-          <el-button class="quick" @click="quickFilter = !quickFilter">快速筛选</el-button>
-          <el-button class="more" @click="moreFilter = !moreFilter"
+        <div class="section1-container section1-collapse" v-else>
+          <el-tag
+            class="section1-collapse-tag"
+            v-if="selectedIndustry && selectedIndustry.length > 0"
+            >{{ selectedIndustry }}
+          </el-tag>
+          <el-tag
+            class="section1-collapse-tag"
+            v-if="selectedSalary && selectedSalary.length > 0"
+            >{{ selectedSalary }}
+          </el-tag>
+          <el-tag
+            class="section1-collapse-tag"
+            v-if="selectedScale && selectedScale.length > 0"
+            >{{ selectedScale }}
+          </el-tag>
+          <el-tag
+            class="section1-collapse-tag"
+            v-if="selectedJobType && selectedJobType.length > 0"
+            >{{ selectedJobType }}
+          </el-tag>
+          <el-button
+            class="more"
+            @click="(moreFilter = true), goToTop()"
+            size="mini"
             >更多筛选</el-button
           >
-          <el-button class="empty" @click="emptyFilter"
-            ><svg-icon
-              class="empty-icon"
-              icon-class="joblistdelete"
-              style="height: 19px; width: 19px"
-            />清除选项</el-button
-          >
-        </div>
-        <div v-show="quickFilter" class="quickFilter">
-          <div class="quickFilter-left">
-            <span class="quickFilter-title">搜索记录：</span>
-            <div class="quickFilter-caption">
-              您还没有搜索过职位哟，赶紧试一试吧
-            </div>
-          </div>
-          <div class="quickFilter-right">
-            <span class="quickFilter-title">订阅的职位：</span>
-            <div class="quickFilter-caption">
-              暂未订阅职位哦，点击下方及时获取职位信息
-            </div>
-            <div class="quickFilter-right-click">
-              <svg-icon
-                icon-class="joblistfilterplus"
-                style="height: 20px; width: 20px"
-              />
-              <span class="quickFilter-right-click-text">点我订阅职位</span>
-            </div>
-          </div>
         </div>
       </div>
-    </div>
+    </Affix>
     <div class="app-container">
       <div v-if="showNoResult" style="text-align: center; line-height: 40px">
         暂无搜索结果，显示推荐职位
@@ -212,6 +245,12 @@ export default {
     return {
       moreFilter: false,
       quickFilter: false,
+      collapse: false,
+
+      selectedSalary: "",
+      selectedIndustry: "",
+      selectedScale: "",
+      selectedJobType: "",
 
       listQuery: {
         keyword: "",
@@ -328,11 +367,71 @@ export default {
           });
         });
     },
+    goToTop() {
+      let top = document.documentElement.scrollTop || document.body.scrollTop;
+      // 实现滚动效果
+      const timeTop = setInterval(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = top -= 50;
+        if (top <= 0) {
+          clearInterval(timeTop);
+        }
+      }, 10);
+    },
+    scrollPane(status) {
+      this.collapse = status;
+      this.selectedSalary = "";
+      this.selectedIndustry = "";
+      this.selectedScale = "";
+      this.selectedJobType = "";
+
+      for (let i = 0; i < this.salaryRangeOptions.length; i++) {
+        let item = this.salaryRangeOptions[i];
+        if (this.listQuery.salaryRangeIds.indexOf(item.id) != -1) {
+          this.selectedSalary += item.name + "，";
+        }
+      }
+      for (let i = 0; i < this.companyIndustryOptions.length; i++) {
+        let item = this.companyIndustryOptions[i];
+        if (this.listQuery.companyIndustryIds.indexOf(item.id) != -1) {
+          this.selectedIndustry += item.name + "，";
+        }
+      }
+      for (let i = 0; i < this.companyScaleOptions.length; i++) {
+        let item = this.companyScaleOptions[i];
+        if (this.listQuery.companyScaleIds.indexOf(item.id) != -1) {
+          this.selectedScale += item.name + "，";
+        }
+      }
+
+      for (let i = 0; i < this.jobTypeOptions.length; i++) {
+        let item = this.jobTypeOptions[i];
+        if (this.listQuery.jobTypes.indexOf(item.id) != -1) {
+          this.selectedJobType += item.name + "，";
+        }
+      }
+
+      this.selectedSalary = this.selectedSalary.substr(
+        0,
+        this.selectedSalary.length - 1
+      );
+      this.selectedIndustry = this.selectedIndustry.substr(
+        0,
+        this.selectedIndustry.length - 1
+      );
+      this.selectedScale = this.selectedScale.substr(
+        0,
+        this.selectedScale.length - 1
+      );
+      this.selectedJobType = this.selectedJobType.substr(
+        0,
+        this.selectedJobType.length - 1
+      );
+    },
     handleFilter() {
       this.listQuery.page = 1;
       this.handleRouteList();
     },
-    emptyFilter(){
+    emptyFilter() {
       this.listQuery = {
         keyword: "",
         salaryRangeIds: [],
@@ -389,9 +488,51 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.section1-collapse {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /deep/ .el-tag + .el-tag {
+    margin-left: 15px;
+  }
+  .section1-collapse-tag {
+    background: #f4f5f8;
+    border-radius: 17px;
+    border: 1px solid #698ec7;
+    height: 25px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+
+    span {
+      font-size: 14px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #698ec7;
+      line-height: 20px;
+    }
+  }
+  /deep/ .el-button {
+    margin-left: 16px;
+    background: #4895ef;
+    border-radius: 17px;
+    width: 86px;
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #ffffff;
+    line-height: 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+}
+
 .background-wrapper {
   background: #f6f9fc;
+  max-width: 3000px !important;
+  padding: 0 !important;
 }
+
 .section1-wrapper {
   width: 100%;
   background: #fbfbfb;
@@ -400,6 +541,9 @@ export default {
   display: flex;
   justify-content: center;
   padding: 31px 0px;
+  position: sticky;
+  position: -webkit-sticky; // 兼容 -webkit 内核的浏览器
+  top: 10px; // 必须设一个值，否则不生效
 
   .section1-container {
     max-width: 1140px;
@@ -503,18 +647,15 @@ export default {
     justify-content: flex-end;
 
     /deep/ .el-button {
-      width: 86px;
-      height: 25px;
       border-radius: 17px;
+      width: 86px;
       font-size: 14px;
       font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 500;
       color: #ffffff;
       line-height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 0px;
+      padding-top: 3px;
+      padding-bottom: 3px;
     }
 
     .quick {
@@ -759,11 +900,6 @@ export default {
         }
       }
     }
-  }
-}
-
-@media screen and (max-width: 410px) {
-  .app-container {
   }
 }
 </style>
