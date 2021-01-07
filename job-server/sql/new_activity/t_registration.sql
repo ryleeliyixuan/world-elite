@@ -51,3 +51,10 @@ ALTER TABLE t_registration CHANGE registration_user_id registration_user_id BIGI
 ALTER TABLE t_registration ADD resume_id BIGINT(20) NULL COMMENT '简历ID';
 ALTER TABLE t_registration CHANGE resume_id resume_id BIGINT(20) NULL COMMENT '简历ID' AFTER registration_user_id;
 
+-- 学历改成保存学历ID
+ALTER TABLE db_worldelite_activity.t_registration MODIFY COLUMN education INT(11) NULL COMMENT '学历';
+ALTER TABLE db_worldelite_activity.t_registration CHANGE education educationId int(11) NULL COMMENT '学历';
+ALTER TABLE db_worldelite_activity.t_registration CHANGE educationId education_id int(11) NULL COMMENT '学历';
+
+
+
