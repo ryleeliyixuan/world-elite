@@ -1,0 +1,767 @@
+<template>
+    <div class="app-container">
+        <div class="title">活动发布<span class="button">查看我已发布的活动</span></div>
+        <div class="content-container">
+            <div class="line">
+                <div class="name">
+                    活动名称<span>*</span>
+                </div>
+                <el-input placeholder="请输入活动名（最多20字）"
+                          v-model="activityForm.title"
+                          size="small"
+                          class="input">
+                </el-input>
+                <div class="option-container" @click="onOverseasStudent">
+                    <svg-icon v-if="activityForm.onlyOverseasStudent!=='1'" icon-class="unselected" style="margin: 0 3px 0 14px;"></svg-icon>
+                    <svg-icon v-else icon-class="selected" style="margin: 0 3px 0 14px;"></svg-icon>
+                    <div class="option-text">此活动为留学生活动</div>
+                </div>
+                <el-tooltip class="item" effect="dark" content="受众人群仅限留学生群体" placement="top">
+                    <svg-icon icon-class="questionMask" style="width: 10px; height: 11px; margin-left: 4px;"></svg-icon>
+                </el-tooltip>
+            </div>
+            <div class="line">
+                <div class="name" style="align-self: flex-start;">
+                    <el-tooltip class="item" effect="dark" content="资料仅用作审核，不会公开或用于其他用途。" placement="top">
+                        <svg-icon icon-class="questionMask" style="width: 10px; height: 11px; margin: 8px 4px;"></svg-icon>
+                    </el-tooltip>
+                    主办方类型<span>*</span>
+                </div>
+                <div class="value-container">
+                    <div class="value-line-container">
+                        <div class="option-container" @click="onOrganizerType('1')">
+                            <svg-icon v-if="activityForm.organizerType!=='1'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                            <div class="option-text">校园组织</div>
+                        </div>
+                        <div class="option-container" @click="onOrganizerType('2')" style="margin-left: 21px">
+                            <svg-icon v-if="activityForm.organizerType!=='2'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                            <div class="option-text">社会组织</div>
+                        </div>
+                        <div class="option-container" @click="onOrganizerType('3')" style="margin-left: 21px">
+                            <svg-icon v-if="activityForm.organizerType!=='3'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                            <div class="option-text">个人</div>
+                        </div>
+                    </div>
+                    <div v-if="activityForm.organizerType==='1' || activityForm.organizerType==='2'">
+                        <div class="line">
+                            <div class="name" style="width: auto;">组织名称</div>
+                            <el-input placeholder="请输入组织名称"
+                                      v-model="activityForm.organizerInfoForm.organizerName"
+                                      size="small"
+                                      class="input"></el-input>
+                        </div>
+                    </div>
+                    <div v-if="activityForm.organizerType==='1'">
+                        <div class="line">
+                            <div class="name" style="width: auto;">所属学校</div>
+                            <el-input placeholder="请输入组织名称"
+                                      v-model="activityForm.organizerInfoForm.school"
+                                      size="small"
+                                      class="input"></el-input>
+                        </div>
+                    </div>
+                    <div v-if="activityForm.organizerType==='2'">
+                        <div class="line">
+                            <div class="name" style="width: auto; align-self: flex-start">营业证明</div>
+                            <el-upload class="business-license-uploader"
+                                       :action="businessLicenseUploadPicOptions.action"
+                                       :data="businessLicenseUploadPicOptions.params"
+                                       :accept="businessLicenseUploadPicOptions.acceptFileType"
+                                       :show-file-list="false"
+                                       :on-success="businessLicenseUploadSuccess"
+                                       :before-upload="beforeBusinessLicenseUpload">
+                                <el-image v-if="businessLicenseUploadPicOptions.localUrl"
+                                          :src="businessLicenseUploadPicOptions.localUrl"
+                                          v-loading="businessLicenseUploadPicOptions.loading"
+                                          fit="scale-down"
+                                          class="business-license-uploader"/>
+                                <div v-else class="business-license-add">
+                                    <svg-icon icon-class="upload" class="upload"></svg-icon>
+                                </div>
+                            </el-upload>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line">
+                <div class="name">
+                    活动城市/线上<span>*</span>
+                </div>
+                <el-cascader placeholder="城市"
+                             :show-all-levels="false"
+                             :options="cityOptions"
+                             :props="cityIdProps"
+                             clearable
+                             size="small"
+                             style="width: 100px;"
+                             v-model="activityForm.cityId">
+                </el-cascader>
+                <div class="name" style="margin-left: 10px;">
+                    详细地址/线上连接<span>*</span>
+                </div>
+                <el-input placeholder="请在此处填写详细地址/线上地址"
+                          v-model="activityForm.address"
+                          size="small"
+                          class="input">
+                </el-input>
+            </div>
+            <div class="line">
+                <div class="name">
+                    活动时间<span>*</span>
+                </div>
+                <el-date-picker v-model="activityTime"
+                                type="datetimerange"
+                                align="right"
+                                start-placeholder="开始时间"
+                                end-placeholder="结束时间"
+                                size="small"
+                                :default-time="['09:00:00', '17:00:00']">
+                </el-date-picker>
+            </div>
+            <div class="line">
+                <div class="name">
+                    报名时间<span>*</span>
+                </div>
+                <el-date-picker v-model="registrationTime"
+                                type="datetimerange"
+                                align="right"
+                                start-placeholder="开始时间"
+                                end-placeholder="结束时间"
+                                size="small"
+                                :default-time="['09:00:00', '17:00:00']">
+                </el-date-picker>
+            </div>
+            <div class="line">
+                <div class="name" style="align-self: flex-start;">
+                    <el-tooltip class="item" effect="dark" placement="top">
+                        <div slot="content">若报名无需审核，学生报名即可参加；若需<br/>要审核，可在活动报名管理信息页进行审核<br/>操作。</div>
+                        <svg-icon icon-class="questionMask" style="width: 10px; height: 11px; margin: 8px 4px;"></svg-icon>
+                    </el-tooltip>
+                    报名审核<span>*</span>
+                </div>
+                <div class="value-container">
+                    <div class="value-line-container">
+                        <div class="option-container" @click="onAuditType('1')">
+                            <svg-icon v-if="activityForm.auditType!=='1'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                            <div class="option-text">需要审核</div>
+                        </div>
+                        <div class="option-container" @click="onAuditType('0')" style="margin-left: 21px">
+                            <svg-icon v-if="activityForm.auditType!=='0'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                            <div class="option-text">无需审核</div>
+                        </div>
+                    </div>
+                    <div v-if="activityForm.auditType==='0'">
+                        <div class="line">
+                            <div class="name" style="width: auto;">人数限制</div>
+                            <div class="option-container" @click="onNumberLimit(-1)">
+                                <svg-icon v-if="activityForm.numberLimit!==-1" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                                <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                                <div class="option-text">不限</div>
+                            </div>
+                            <div class="option-container" @click="onNumberLimit()" style="margin-left: 21px">
+                                <svg-icon v-if="activityForm.numberLimit===-1" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                                <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                                <div class="option-text">有限制</div>
+                            </div>
+                            <el-input placeholder="请在此输入具体人数"
+                                      v-if="activityForm.numberLimit!==-1"
+                                      v-model.number="activityForm.numberLimit"
+                                      size="small"
+                                      class="input"
+                                      style="width: 150px; margin: 0 5px;">
+                            </el-input>
+                            <div v-if="activityForm.numberLimit!==-1">人</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line">
+                <div class="name">
+                    是否需要上传简历<span>*</span>
+                </div>
+                <div class="option-container" @click="onNeedResume('1')">
+                    <svg-icon v-if="activityForm.needResume!=='1'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                    <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                    <div class="option-text">是</div>
+                </div>
+                <div class="option-container" @click="onNeedResume('0')" style="margin-left: 21px">
+                    <svg-icon v-if="activityForm.needResume!=='0'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                    <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                    <div class="option-text">否</div>
+                </div>
+            </div>
+            <div class="line">
+                <div class="name" style="align-self: flex-start; margin-top: 5px;">
+                    活动介绍<span>*</span>
+                </div>
+                <tinymce v-model="activityForm.description"
+                         width="100%"
+                         class="textarea"
+                         placeholder="请在此处输入活动简介及相关信息">
+                </tinymce>
+            </div>
+            <div class="line">
+                <div class="name">
+                    活动报名表<span>*</span>
+                </div>
+                <el-select v-model="activityForm.registrationTemplateId"
+                           v-if="activityForm.registrationTemplateList"
+                           placeholder="选择报名表模板"
+                           class="select"
+                           size="small"
+                           style="margin-right:15px;">
+                    <el-option
+                        v-for="item in registrationTemplateList"
+                        :key="item.id"
+                        :label="item.templateName"
+                        :value="item.id">
+                    </el-option>
+                </el-select>
+                <div class="add-button" @click="onAddRegistrationTemplate">
+                    <svg-icon icon-class="add" style="margin-right: 8px;"></svg-icon>
+                    添加报名表
+                </div>
+            </div>
+            <div class="poster-container">
+                <div class="line" style="margin-top: 0;">
+                    <div class="name" style="width: auto;">
+                        活动海报<span>*</span>
+                    </div>
+                    <div class="tips">为确保正常显示，请上传16:9的海报</div>
+                </div>
+                <el-upload class="poster-uploader"
+                           :action="posterUploadPicOptions.action"
+                           :data="posterUploadPicOptions.params"
+                           :accept="posterUploadPicOptions.acceptFileType"
+                           :show-file-list="false"
+                           :on-success="posterUploadSuccess"
+                           :before-upload="posterUpload">
+                    <el-image v-if="posterUploadPicOptions.localUrl"
+                              :src="posterUploadPicOptions.localUrl"
+                              v-loading="posterUploadPicOptions.loading"
+                              fit="scale-down"
+                              class="poster-uploader"/>
+                    <div v-else class="poster-add">
+                        <svg-icon icon-class="upload" class="upload"></svg-icon>
+                    </div>
+                </el-upload>
+            </div>
+        </div>
+        <div class="button-container">
+            <div class="cancel" @click="onCancel">取消</div>
+            <div class="preview" @click="onPreview">预览</div>
+            <div class="submit" @click="onSubmit">提交</div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import {getUploadPicToken} from "@/api/upload_api";
+    import {checkPicSize} from "@/utils/common";
+    import tinymce from "@/components/Tinymce"
+
+    export default {
+        name: "ActivityEditPage",
+        components: {tinymce},
+        data() {
+            return {
+                activityForm: { // 活动表单
+                    title: undefined, // 活动名称
+                    onlyOverseasStudent: '0', // 是否仅留学生能参加,0不限制,1仅海外
+                    organizerType: undefined, // 举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
+                    cityId: undefined, // 城市id
+                    activityStartTime: undefined, // 活动开始时间
+                    activityFinishTime: undefined, // 活动结束时间
+                    registrationStartTime: undefined, // 报名开始时间
+                    registrationFinishTime: undefined, // 报名结束时间
+                    auditType: '1', // 报名审核类型(是否需要审核),0不需要,1需要
+                    numberLimit: -1, // 无需审核时的人数限制，无限制为-1
+                    needResume: '1', // 是否需要报名者简历信息, 0不需要,1需要
+                    description: undefined, // 活动详情
+                    registrationTemplateId: undefined, // 报名表模板ID
+                    organizerInfoForm: { // 组织信息
+                        organizerName: undefined, // 组织名称
+                        school: undefined, // 所属学校,若是校园组织
+                        businessLicenseUrl: undefined, // 营业执照,若是社会组
+                    },
+                    poster: undefined, // 活动海报
+                },
+
+                activityTime: [], // 活动起止时间，临时保存用户选择时间
+                registrationTime: [], // 报名起止时间，临时保存用户选择时间
+
+                cityIdProps: { // 城市选择框属性
+                    multiple: false,
+                    lazy: false,
+                    emitPath: false,
+                    checkStrictly: true,
+                    expandTrigger: "hover",
+                    value: "id",
+                    label: "name",
+                    children: "children"
+                },
+                cityOptions: [{id: 1, name: "国内", children: [{id: 0, name: "加载中"}]}, {id: 2, name: "国外"}], // 城市列表
+
+                registrationTemplateList: [], // 报名模板列表
+
+                businessLicenseUploadPicOptions: { // 营业执照上传
+                    loading: false,
+                    action: "",
+                    params: {},
+                    fileUrl: "",
+                    localUrl: "",
+                    acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
+                },
+
+                posterUploadPicOptions: { // 活动海报上传
+                    loading: false,
+                    action: "",
+                    params: {},
+                    fileUrl: "",
+                    localUrl: "",
+                    acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
+                },
+            };
+        },
+        watch: {
+            // 活动时间
+            activityTime(value) {
+                if (value && value.length === 2) {
+                    this.activityForm.activityStartTime = value[0].getTime();
+                    this.activityForm.activityFinishTime = value[1].getTime();
+                } else {
+                    this.activityForm.activityStartTime = undefined;
+                    this.activityForm.activityFinishTime = undefined;
+                }
+            },
+            // 报名时间
+            registrationTime(value) {
+                if (value && value.length === 2) {
+                    this.activityForm.registrationStartTime = value[0].getTime();
+                    this.activityForm.registrationFinishTime = value[1].getTime();
+                } else {
+                    this.activityForm.registrationStartTime = undefined;
+                    this.activityForm.registrationFinishTime = undefined;
+                }
+            }
+        },
+        created() {
+            let activityForm = this.$storage.getObject(this.$options.name)
+            if (activityForm) {
+                this.activityForm = activityForm;
+            }
+            this.initData();
+        },
+        methods: {
+            // 初始化数据
+            initData() {
+                // 获取国内城市
+                this.$axios.request({
+                    url: "/city/list",
+                    method: "get",
+                    params: {type: 1}
+                }).then(data => {
+                    this.cityOptions[0].children = data.data.map(second => {
+                        let children = second.children && second.children.map(third => {
+                            return {id: third.id, name: third.name, leaf: true}
+                        })
+                        return {id: second.id, name: second.name, children}
+                    });
+                })
+
+                // 获取国外城市
+                this.$axios.request({
+                    url: "/city/list",
+                    method: "get",
+                    params: {type: 2}
+                }).then(data => {
+                    this.cityOptions[1].children = data.data.map(second => {
+                        let children = second.children && second.children.map(third => {
+                            return {id: third.id, name: third.name, leaf: true}
+                        })
+                        return {id: second.id, name: second.name, children}
+                    });
+                })
+
+                // 获取报名模板
+                this.$axios.get("/questionnaire-template/my/list").then(data => {
+                    this.registrationTemplateList = data.data;
+                })
+            },
+
+            // 点击留学生
+            onOverseasStudent() {
+                this.activityForm.onlyOverseasStudent = this.activityForm.onlyOverseasStudent === '0' ? '1' : '0';
+            },
+
+            // 举办方类型
+            onOrganizerType(type) {
+                this.activityForm.organizerType = type;
+            },
+
+            // 审核类型类型
+            onAuditType(type) {
+                this.activityForm.auditType = type;
+            },
+
+            // 人数限制
+            onNumberLimit(number) {
+                this.activityForm.numberLimit = number;
+            },
+
+            // 是否需要报名者简历信息
+            onNeedResume(type) {
+                this.activityForm.needResume = type;
+            },
+
+            // 营业执照上传成功
+            businessLicenseUploadSuccess() {
+                this.businessLicenseUploadPicOptions.loading = false;
+                this.activityForm.organizerInfoForm.businessLicenseUrl = this.businessLicenseUploadPicOptions.fileUrl;
+            },
+
+            // 营业执照上传获取上传信息
+            beforeBusinessLicenseUpload(file) {
+                return new Promise((resolve, reject) => {
+                    if (checkPicSize(file)) {
+                        reject();
+                    } else {
+                        this.businessLicenseUploadPicOptions.loading = true;
+                        this.businessLicenseUploadPicOptions.localUrl = URL.createObjectURL(file);
+                        getUploadPicToken(file.name).then((response) => {
+                            const {data} = response;
+                            this.businessLicenseUploadPicOptions.action = data.host;
+                            this.businessLicenseUploadPicOptions.params = data;
+                            this.businessLicenseUploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            resolve(data);
+                        }).catch((error) => {
+                            reject(error);
+                        });
+                    }
+                });
+            },
+
+            // 活动海报上传成功
+            posterUploadSuccess() {
+                this.posterUploadPicOptions.loading = false;
+                this.activityForm.poster = this.posterUploadPicOptions.fileUrl;
+            },
+
+            // 活动海报上传获取上传信息
+            posterUpload(file) {
+                return new Promise((resolve, reject) => {
+                    if (checkPicSize(file)) {
+                        reject();
+                    } else {
+                        this.posterUploadPicOptions.loading = true;
+                        this.posterUploadPicOptions.localUrl = URL.createObjectURL(file);
+                        getUploadPicToken(file.name).then((response) => {
+                            const {data} = response;
+                            this.posterUploadPicOptions.action = data.host;
+                            this.posterUploadPicOptions.params = data;
+                            this.posterUploadPicOptions.fileUrl = data.host + "/" + data.key;
+                            resolve(data);
+                        }).catch((error) => {
+                            reject(error);
+                        });
+                    }
+                });
+            },
+
+            // 添加报名表
+            onAddRegistrationTemplate() {
+                this.$storage.setData(this.$options.name, this.activityForm);
+                // this.$router.push("")
+            },
+
+            // 点击取消
+            onCancel() {
+                this.$router.go(-1);
+            },
+
+            // 点击预览
+            onPreview() {
+                if (this.checkForm()) {
+
+                }
+            },
+
+            // 点击提交
+            onSubmit() {
+                if (this.checkForm()) {
+
+                }
+            },
+
+            // 检查参数是否填写完整
+            checkForm() {
+                let message = undefined;
+                if (!this.activityForm.title) {
+                    message = "请输入活动名称";
+                } else if (!this.activityForm.organizerType) {
+                    message = "请选择主办方类型";
+                } else if (!this.activityForm.cityId) {
+                    message = "请选择活动城市";
+                } else if (!this.activityForm.activityStartTime || !this.activityForm.activityFinishTime) {
+                    message = "请选择活动时间";
+                } else if (!this.activityForm.registrationStartTime || !this.activityForm.registrationFinishTime) {
+                    message = "请选择报名时间";
+                } else if (this.activityForm.auditType === '0' && !this.activityForm.numberLimit) {
+                    message = "请输入限制报名人数";
+                } else if (!this.activityForm.description) {
+                    message = "请输入活动介绍";
+                } else if (!this.activityForm.registrationTemplateId) {
+                    message = "请选择报名表模板";
+                } else if (!this.activityForm.poster) {
+                    message = "请上传活动海报";
+                }
+                message && this.$message.warning(message);
+                return !message;
+            }
+        }
+    };
+</script>
+
+<style>
+    label {
+        margin: 0;
+    }
+</style>
+
+<style scoped lang="scss">
+
+    .app-container {
+        width: 1200px !important;
+        padding: 24px 30px 50px;
+        background: #FFFFFF;
+        box-shadow: 0 4px 16px 3px rgba(191, 199, 215, 0.31);
+
+        .option-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-align: left;
+
+            .option-text {
+                font-size: 16px;
+                font-weight: 400;
+                color: #333333;
+                line-height: 22px;
+            }
+        }
+
+        .title {
+            font-size: 30px;
+            color: #333333;
+            line-height: 42px;
+            display: flex;
+            align-items: flex-end;
+
+            span {
+                font-size: 18px;
+                font-weight: 400;
+                color: #999999;
+                line-height: 32px;
+                margin-left: 9px;
+                text-decoration: underline;
+            }
+        }
+
+        .content-container {
+            position: relative;
+            margin-top: 17px;
+
+            .line {
+                display: flex;
+                align-items: center;
+                margin-top: 17px;
+
+                .name {
+                    width: 175px;
+                    flex-shrink: 0;
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: flex-end;
+                    font-size: 18px;
+                    font-weight: 400;
+                    color: #666666;
+                    line-height: 32px;
+                    margin-right: 11px;
+
+                    span {
+                        color: #F4511E;
+                        margin-left: 5px;
+                    }
+                }
+
+                .input {
+                    width: 260px;
+                }
+
+                .textarea {
+
+                    ::-webkit-input-placeholder {
+                        font-size: 16px;
+                        line-height: 32px;
+                    }
+
+                    :-moz-placeholder {
+                        font-size: 16px;
+                        line-height: 32px;
+                    }
+
+                    :-ms-input-placeholder {
+                        font-size: 16px;
+                        line-height: 32px;
+                    }
+
+                    ::v-deep .el-textarea__inner {
+                        flex: 1;
+                        height: 111px;
+                        background: #FFFFFF;
+                        border-radius: 6px;
+                        border: 1px solid #B0BEC5;
+                    }
+                }
+
+                .select {
+                    width: 181px;
+                }
+
+                .tips {
+                    font-size: 14px;
+                    font-weight: 400;
+                    color: #B0BEC5;
+                    line-height: 20px;
+                    margin-left: 5px;
+                }
+
+                .value-container {
+                    display: flex;
+                    flex-direction: column;
+
+                    .value-line-container {
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .business-license-uploader {
+                        width: 77px;
+                        height: 77px;
+
+                        .business-license-add {
+                            width: 77px;
+                            height: 77px;
+                            border-radius: 5px;
+                            background: #FFFFFF;
+                            border: 2px dashed #B0BEC5;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+
+                            .upload {
+                                width: 28px;
+                                height: 24px;
+                            }
+                        }
+                    }
+                }
+
+                .add-button {
+                    width: 122px;
+                    height: 30px;
+                    background: #4895EF;
+                    border-radius: 15px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px;
+                    font-weight: 400;
+                    color: #FFFFFF;
+                    line-height: 30px;
+                    cursor: pointer;
+                }
+            }
+
+            .poster-container {
+                position: absolute;
+                right: 0;
+                top: 0;
+
+                .poster-uploader {
+                    width: 369px;
+                    height: 208px;
+
+                    .poster-add {
+                        width: 369px;
+                        height: 208px;
+                        border-radius: 5px;
+                        background: #FFFFFF;
+                        border: 2px dashed #B0BEC5;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        .upload {
+                            width: 63px;
+                            height: 54px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .button-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 60px;
+
+            .cancel {
+                width: 134px;
+                height: 35px;
+                background: #ECEFF1;
+                border-radius: 18px;
+                border: 1px solid #ECEFF1;
+                font-size: 16px;
+                color: #333333;
+                line-height: 35px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .preview {
+                width: 134px;
+                height: 35px;
+                background: #FFFFFF;
+                border-radius: 18px;
+                border: 1px solid #4895EF;
+                font-size: 16px;
+                font-weight: 500;
+                color: #4895EF;
+                line-height: 35px;
+                text-align: center;
+                margin: 0 21px;
+                cursor: pointer;
+            }
+
+            .submit {
+                width: 133px;
+                height: 35px;
+                background: #4895EF;
+                border-radius: 18px;
+                font-size: 16px;
+                font-weight: 500;
+                color: #FFFFFF;
+                line-height: 35px;
+                text-align: center;
+                cursor: pointer;
+            }
+        }
+    }
+</style>

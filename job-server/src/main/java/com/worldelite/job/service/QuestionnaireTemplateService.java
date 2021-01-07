@@ -61,13 +61,11 @@ public class QuestionnaireTemplateService extends BaseService{
      * 获取我的模板列表
      * 只获取模板基本信息
      * 不带关联的问卷信息
-     * @param activityId
      * @return
      */
-    public List<QuestionnaireTemplateVo> getMyQuestionnaireTemplateList(Integer activityId){
+    public List<QuestionnaireTemplateVo> getMyQuestionnaireTemplateList(){
         QuestionnaireTemplate options = new QuestionnaireTemplate();
         options.setUserId(curUser().getId());
-        options.setActivityId(activityId);
         List<QuestionnaireTemplate> templateList = questionnaireTemplateMapper.selectAndList(options);
         return AppUtils.asVoList(templateList,QuestionnaireTemplateVo.class);
     }
