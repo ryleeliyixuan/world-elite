@@ -57,10 +57,10 @@ public class QuestionnaireTemplateApi {
      * @return
      */
     @ApiDoc
-    @GetMapping("my/list/{activityId}")
+    @GetMapping("my/list")
     @RequireLogin
-    public ApiResult<List<QuestionnaireTemplateVo>> getMyQuestionnaireTemplateList(@PathVariable Integer activityId){
-        List<QuestionnaireTemplateVo> templateList = questionnaireTemplateService.getMyQuestionnaireTemplateList(activityId);
+    public ApiResult<List<QuestionnaireTemplateVo>> getMyQuestionnaireTemplateList(){
+        List<QuestionnaireTemplateVo> templateList = questionnaireTemplateService.getMyQuestionnaireTemplateList();
         return ApiResult.ok(templateList);
     }
 

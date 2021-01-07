@@ -69,7 +69,7 @@ public class RegistrationService extends BaseService{
             number = 1;
         }
         registration.setNumber(number);
-        //Todo 如果报名需要审核，则状态改成待审核，否则状态为无需审核
+        //如果报名需要审核，则状态改成待审核，否则状态为无需审核
         if(activity.getAuditType().equals("0")){
             registration.setStatus(RegistrationStatus.DIRECT.value);
         }
