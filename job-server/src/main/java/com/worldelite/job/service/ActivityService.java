@@ -274,6 +274,20 @@ public class ActivityService extends BaseService {
     }
 
     /**
+     * 减去一个报名人数
+     */
+    public boolean minusApplicant(Integer activityId){
+        return activityMapper.minusApplicant(activityId) == 1;
+    }
+
+    /**
+     * 增加一个报名人数
+     */
+    public boolean increaseApplicant(Integer activityId){
+        return activityMapper.increaseApplicant(activityId) == 1;
+    }
+
+    /**
      * 关闭活动通过审核通知提示
      *
      * @param id 活动id

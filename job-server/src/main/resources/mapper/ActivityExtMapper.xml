@@ -52,4 +52,10 @@
   <update id="increaseFollower">
     update t_activity set follower = follower+1 where id = #{id,jdbcType=INTEGER}
 </update>
+<update id="minusApplicant">
+    update t_activity set applicant_quantity = if(applicant_quantity <![CDATA[<]]> 1, 0, applicant_quantity-1) where id = #{id,jdbcType=INTEGER}
+</update>
+<update id="increaseApplicant">
+    update t_activity set applicant_quantity = applicant_quantity+1 where id = #{id,jdbcType=INTEGER} and (number_limit=-1 or applicant_quantity+1 <![CDATA[<=]]> number_limit)
+</update>
 </mapper>

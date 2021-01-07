@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.RegistrationStatus;
 import com.worldelite.job.entity.*;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.QuestionnaireAnswerForm;
 import com.worldelite.job.form.RegistrationForm;
 import com.worldelite.job.form.RegistrationListForm;
@@ -62,6 +63,10 @@ public class RegistrationService extends BaseService{
                 answerFormList[i].setRegistrationId(registration.getId());
                 questionnaireAnswerService.addQuestionnaireAnswer(answerFormList[i]);
             }
+        }
+
+        if(!activityService.increaseApplicant(registrationForm.getActivityId())){
+            throw new ServiceException(message("activity.applicant.failed"));
         }
     }
 
@@ -170,5 +175,10 @@ public class RegistrationService extends BaseService{
         Registration registration = registrationMapper.selectByPrimaryKey(id);
         registration.setStatus(RegistrationStatus.INAPPROPRIATE.value);
         registrationMapper.updateByPrimaryKeySelective(registration);
+
+        //释放一个活动报名名额
+        if(!activityService.minusApplicant(registration.getActivityId())){
+            throw new ServiceException(message("activity.release.quota.failed"));
+        }
     }
 }

@@ -68,7 +68,31 @@ public interface ActivityMapper {
 
     List<Activity> selectSmartTips(Activity record);
 
+    /**
+     * 减少一个关注
+     * @param id
+     * @return
+     */
     int minusFollower(Integer id);
 
+    /**
+     * 增加一个关注
+     * @param id
+     * @return
+     */
     int increaseFollower(Integer id);
+
+    /**
+     * 减少一个报名人数
+     * @param id
+     * @return
+     */
+    int minusApplicant(Integer id);
+
+    /**
+     * 增加一个报名人数
+     * @param id
+     * @return
+     */
+    int increaseApplicant(Integer id);
 }
