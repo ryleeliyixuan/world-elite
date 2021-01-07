@@ -718,7 +718,6 @@
 <style scoped lang="scss">
     .bg {
         background: url("../assets/webrtc_bg.png") no-repeat center;
-        min-height: calc(100vh - 480px);
         background-size: 1920px 913px;
         padding: 20px 0;
 

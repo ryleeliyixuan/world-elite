@@ -77,7 +77,9 @@
           </div>
         </div>
         <div class="section1-filter-option">
-          <el-button class="quick" @click="quickFilter = !quickFilter">快速筛选</el-button>
+          <el-button class="quick" @click="quickFilter = !quickFilter"
+            >快速筛选</el-button
+          >
           <el-button class="more" @click="moreFilter = !moreFilter"
             >更多筛选</el-button
           >
@@ -332,7 +334,7 @@ export default {
       this.listQuery.page = 1;
       this.handleRouteList();
     },
-    emptyFilter(){
+    emptyFilter() {
       this.listQuery = {
         keyword: "",
         salaryRangeIds: [],
@@ -391,7 +393,9 @@ export default {
 <style scoped lang="scss">
 .background-wrapper {
   background: #f6f9fc;
+  max-width: 3000px !important;
 }
+
 .section1-wrapper {
   width: 100%;
   background: #fbfbfb;
@@ -759,11 +763,6 @@ export default {
         }
       }
     }
-  }
-}
-
-@media screen and (max-width: 410px) {
-  .app-container {
   }
 }
 </style>

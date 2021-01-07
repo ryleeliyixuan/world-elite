@@ -45,7 +45,6 @@
     .app-container {
         max-width: 1140px;
         margin: 0 auto;
-        min-height: calc(100vh - 477px);
         padding-bottom: 200px;
 
         .check-container {

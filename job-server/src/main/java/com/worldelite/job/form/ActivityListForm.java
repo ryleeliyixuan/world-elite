@@ -1,18 +1,28 @@
 package com.worldelite.job.form;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author yeguozhong yedaxia.github.com
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class ActivityListForm extends PageForm{
-    private Integer cityId; //所在城市
-    private Integer[] cityIds; //城市ID
-    private Long companyId; //公司ID
+public class ActivityListForm extends PageForm {
+    private Byte form; //活动形式, 线上0, 线下1
+    private String cityIds; //城市ID
+    private Long userId; //用户id|公司id
+    private Integer timeId; //时间id-搜索专用
+    private String publisherType; //活动发布者类型.个人:1 企业:2 留学生专区:3 管理账户:100(保留,暂时没用到)
     private Byte status; //活动状态
-    private String title; //活动标题
     private String keyword; //搜索关键词
+    private String sortField; //排序字段
+
+    public String[] getCityIds() {
+        return StringUtils.isNotBlank(cityIds) ? cityIds.split(",") : null;
+    }
+
+    public void setCityIds(String[] cityIds) {
+        if (StringUtils.isNoneBlank(cityIds))
+            this.cityIds = String.join(",", cityIds);
+    }
 }

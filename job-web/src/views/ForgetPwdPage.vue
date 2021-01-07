@@ -144,7 +144,6 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-height: calc(100vh - 477px);
 
         .text-center {
             font-size: 24px;

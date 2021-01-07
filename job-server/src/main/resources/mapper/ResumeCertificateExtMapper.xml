@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.worldelite.job.mapper.ResumeCertificateMapper">
+
+  <select id="selectAndList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_resume_certificate
+    <where>
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="resumeId != null and resumeId != ''">
+        and resume_id = #{resumeId}
+      </if>
+    </where>
+  </select>
+</mapper>

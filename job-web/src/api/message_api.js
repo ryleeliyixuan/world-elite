@@ -8,13 +8,6 @@ export function getMessageList(data) {
     })
 }
 
-export function getUnReadMessageCount() {
-    return request({
-        url: '/message/unread-count',
-        method: 'get'
-    })
-}
-
 export function readAllMessage() {
     return request({
         url: '/message/read-all-message',

@@ -12,6 +12,7 @@ import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.CompanyUserMapper;
 import com.worldelite.job.mapper.ResumeMapper;
+import com.worldelite.job.mapper.ResumeMergeAttachMapper;
 import com.worldelite.job.service.*;
 import com.worldelite.job.service.sdk.ResumeSDK;
 import com.worldelite.job.service.search.IndexService;
@@ -96,6 +97,11 @@ public class ResumeCompanyService extends ResumeService{
     }
 
     @Override
+    public List<ResumeDetail> getDefaultListOrCreate() {
+        return null;
+    }
+
+    @Override
     public ResumeDetail saveBasic(ResumeForm resumeForm) {
         //简历不存在则先创建空简历
         Resume resume = null;
@@ -113,6 +119,16 @@ public class ResumeCompanyService extends ResumeService{
         //更新用户数据
         updateUser(resume.getUserId(),resumeForm);
         return getResumeDetail(resume.getId());
+    }
+
+    @Override
+    public ResumeDetail addResume() {
+        return null;
+    }
+
+    @Override
+    public void updatePriority(Long resumeId, Byte order) {
+
     }
 
     @Override
@@ -194,10 +210,13 @@ public class ResumeCompanyService extends ResumeService{
         resume.setReturnTime(resumeForm.getReturnTime());
         resume.setMaxDegreeId(resumeForm.getMaxDegreeId());
         resume.setIntroduction(resumeForm.getIntroduction());
+
         if (StringUtils.isNotEmpty(resumeForm.getAttachResume())) {
             String newAttachResume = AppUtils.getOssKey(resumeForm.getAttachResume());
             resume.setAttachResume(newAttachResume);
         }
+
+
     }
 
     @Override
@@ -340,6 +359,19 @@ public class ResumeCompanyService extends ResumeService{
         if(resumeDetail.getPhone() != null && resumeDetail.getPhone() != 0){
             resumeVo.setPhone(String.valueOf(resumeDetail.getPhone()));
         }
+
+        // 邮箱
+        if (resumeDetail.getEmail() != null && resumeDetail.getEmail().length() != 0) {
+            resumeVo.setEmail(resumeDetail.getEmail());
+        }
+
+        // 回国时间 & 政治面貌
+        if (resumeDetail.getResumeBasic() != null) {
+            resumeVo.setUpdateTime(resumeDetail.getResumeBasic().getUpdateTime());
+            resumeVo.setReturnTime(resumeDetail.getResumeBasic().getReturnTime());
+            resumeVo.setMaritalStatus(resumeDetail.getResumeBasic().getMaritalStatus());
+        }
+
         //教育信息
         List<ResumeEdu> resumeEduList = resumeDetail.getResumeEduList();
         if(CollectionUtils.isNotEmpty(resumeEduList)){

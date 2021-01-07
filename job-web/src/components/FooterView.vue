@@ -28,8 +28,6 @@
                 <div class="section1-item">
                     <div class="qr-wechat">
                         <el-image class="qr-wechat-img" src="https://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg"></el-image>
-                        <br/>
-                        <div class="qr-wechat-text">微信公众号</div>
                     </div>
                 </div>
 
@@ -37,7 +35,7 @@
         </div>
 
         <div class="footer-copyright text-small">
-            <span><a href="https://www.beian.miit.gov.cn/">蜀ICP备20009332</a></span>
+            <span><a href="https://beian.miit.gov.cn/">蜀ICP备20009332</a></span>
             <span>©2020 成都寰球菁英信息科技有限公司</span>
         </div>
     </div>
@@ -56,9 +54,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
     .app-footer {
-        box-sizing: border-box;
-        padding: 0px 20px 10px;
-        background: #f7fbfd;
+        padding: 0 20px 10px;
 
         .section1-container {
             max-width: 1140px;
@@ -70,8 +66,7 @@
             flex-wrap: wrap;
 
             .section1-item {
-                /*width: 212px;*/
-                padding: 40px;
+                padding: 20px 40px 0;
                 display: flex;
                 flex-direction: column;
 
@@ -93,12 +88,6 @@
                     width: 100px;
                     height: 100px;
                 }
-
-                .qr-wechat-text {
-                    display: inline-block;
-                    width: 100px;
-                    text-align: center;
-                }
             }
         }
     }
@@ -106,7 +95,6 @@
     .footer-copyright {
         border-top: 1px solid rgb(245, 238, 238);
         padding: 20px 0;
-        background: #f7fbfd;
         display: flex;
         justify-content: center;
         flex-wrap: wrap;

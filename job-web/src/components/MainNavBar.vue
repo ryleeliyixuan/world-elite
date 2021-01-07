@@ -1,74 +1,54 @@
 <template>
-    <div class="nav_container">
-        <div class="nav_left_container">
+    <div class="nav-container">
+        <div class="nav-left-container">
             <router-link class="logo-image" to="/">
-                <img style="width: 100%" src="../assets/logo.jpg"/>
+                <img style="width: 100%;" src="../assets/logo.png"/>
             </router-link>
-            <!-- <el-link class="logo-image" type="primary" href="/" :underline="false" >-->
-            <!--    <img style="width: 100%;" src="../assets/logo.jpg"/>   -->
-            <!-- </el-link>-->
-            <!-- <el-link class="logo" type="primary" href="/" :underline="false" >{{$t('app_name')}}</el-link>-->
-            <el-menu
-                :router="true"
-                mode="horizontal"
-                :default-active="activeIndex"
-                @select="handleSelect"
-                class="menu-container"
-            >
+            <el-menu :router="true"
+                     mode="horizontal"
+                     :default-active="activeIndex"
+                     @select="handleSelect"
+                     class="menu-container">
                 <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
                 <el-menu-item class="nav-item" index="/wiki-card">百科</el-menu-item>
-                <el-menu-item class="nav-item" index="/activity-list"
-                >活动
-                </el-menu-item
-                >
-                <el-menu-item class="nav-item" index="/mock/interview"
-                >模拟面试
-                </el-menu-item
-                >
+                <el-menu-item class="nav-item" index="/activity-list">活动</el-menu-item>
+                <el-menu-item class="nav-item" index="/mock/interview">模拟面试</el-menu-item>
             </el-menu>
         </div>
 
-        <div class="nav_right_container">
-            <el-autocomplete
-                v-model="keyword"
-                class="input-search"
-                :placeholder="searchPlaceHolder"
-                @keyup.enter.native="handleSearch"
-                :fetch-suggestions="keyword && keyword.length > 0 ? querySearch : EmptyQuery"
-                @select="handleSelectFilter"
-                :trigger-on-focus="false">
-                <i slot="suffix"
-                   class="el-input__icon el-icon-search"
-                   @click="handleSearch">
-                </i>
+        <div class="nav-right-container">
+            <el-autocomplete v-model="keyword"
+                             class="input-search"
+                             :placeholder="searchPlaceHolder"
+                             @keyup.enter.native="handleSearch"
+                             :fetch-suggestions="querySearch"
+                             @select="handleSearch"
+                             :trigger-on-focus="false">
+                <i slot="suffix" class="el-input__icon el-icon-search" @click="handleSearch"/>
             </el-autocomplete>
             <!-- 未登录 -->
-            <div class="user_container" v-if="token === undefined || token === ''">
-                <el-link :underline="false"
-                         class="join"
-                         @click="$router.push('/register')">
+            <div class="user-container" v-if="!token">
+                <el-link :underline="false" class="join" @click="routeTo('register')">
                     <b>立即加入</b>
                 </el-link>
-                <el-button type="primary" @click="$router.push('/login')" size="small">登录</el-button>
-                <!--<el-link :underline="false" class="icon-company" :href="companyHomeUrl" target="_blank">-->
-                <!--    <svg-icon icon-class="company"/>-->
-                <!--</el-link>-->
+                <el-button type="primary" @click="routeTo('login')" size="small">登录</el-button>
             </div>
             <!-- 已登录 -->
-            <div class="user_container" v-else>
-                <svg-icon @click="handlerChat" icon-class="chat2" class="chat"/>
-                <svg-icon @click="handlerResume" icon-class="resume" class="chat"/>
+            <div class="user-container" v-else>
+                <svg-icon @click="routeTo('/chat')" icon-class="chat2" class="chat"/>
+                <svg-icon @click="routeTo('/edit-resume')" icon-class="resume" class="chat"/>
                 <!-- 系统通知 -->
                 <el-popover placement="bottom-end"
                             width="300"
                             trigger="hover"
                             @show="getMessageList"
                             title="系统通知">
-                    <div class="message-list" v-if="newMessageList && newMessageList.length !== 0">
-                        <div class="message-item" v-for="message in newMessageList" :key="message.id">
+                    <!-- 内容 -->
+                    <div v-if="messageList.length !== 0">
+                        <div class="message-item" v-for="message in messageList" :key="message.id">
                             <el-badge is-dot v-if="message.readFlag === 0"/>
                             {{ message.content }}
-                            <el-link v-if="message.url && message.url !== ''"
+                            <el-link v-if="message.url"
                                      :href="message.url"
                                      :underline="false">
                                 查看
@@ -76,40 +56,45 @@
                         </div>
                     </div>
                     <div class="message-text" v-else>暂无新消息</div>
+
+                    <!-- 按钮 -->
                     <div class="message-text">
-                        <el-link type="primary" :underline="false" @click="goMessageList">查看全部</el-link>
+                        <el-link type="primary" :underline="false" @click="routeTo('messages')">查看全部</el-link>
                     </div>
+
+                    <!-- 图标 -->
                     <el-link :underline="false"
                              class="nav-message"
                              slot="reference"
-                             @click="goMessageList">
-                        <el-badge v-if="messageCount !== 0" is-dot>
+                             @click="routeTo('messages')">
+                        <el-badge v-if="messageList.length !== 0" is-dot>
                             <i class="el-icon-message-solid"></i>
                         </el-badge>
                         <i v-else class="el-icon-message-solid"></i>
                     </el-link>
                 </el-popover>
+
                 <!-- 用户头像 -->
                 <el-dropdown>
                     <el-avatar :size="35" icon="el-icon-user-solid" :src="avatar"></el-avatar>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>
-                            <el-link :underline="false" href="/edit-resume">我的简历</el-link>
+                            <el-link :underline="false" @click="routeTo('edit-resume')">我的简历</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" href="/apply-jobs">我的投递</el-link>
+                            <el-link :underline="false" @click="routeTo('apply-jobs')">我的投递</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" href="/favorites">我的收藏</el-link>
+                            <el-link :underline="false" @click="routeTo('favorites')">我的收藏</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" href="/my-activities">我的活动</el-link>
+                            <el-link :underline="false" @click="routeTo('my-activities')">我的活动</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" href="/mock-mine">我的面试</el-link>
+                            <el-link :underline="false" @click="routeTo('mock-mine')">我的面试</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" href="/modify-pwd">修改密码</el-link>
+                            <el-link :underline="false" @click="routeTo('modify-pwd')">修改密码</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item @click.native="handleLogout" class="text-danger">
                             退出登录
@@ -123,219 +108,188 @@
 
 <script>
     import {mapGetters, mapMutations} from "vuex";
-    import {getUnReadMessageCount, getMessageList} from "@/api/message_api";
-    import {getActivityList, searchActivityTitle} from "@/api/activity_api";
-    import {searchJob, searchJobName} from "@/api/job_api";
-    import {getWikiList, serachByName} from "@/api/company_api";
     import {storage} from "@/utils/storage";
 
     export default {
         name: "MainNavBar",
         computed: {
-            ...mapGetters(["token", "name", "avatar", "messageCount"]),
-            searchPlaceHolder() {
-                if (this.activeIndex === "/activity-list") {
-                    return "搜索活动";
-                } else if (
-                    this.activeIndex === "/wiki-card" ||
-                    this.activeIndex.indexOf("/company") != -1
-                ) {
-                    return "搜索百科";
-                } else {
-                    return "搜索职位";
-                }
-            },
+            ...mapGetters(["token", "avatar", "messageCount"]),
         },
-        // mounted() {
-        //   this.restaurants = this.loadAll();
-        // },
         data() {
             return {
-                activeIndex: "",
-                timeout: null,
-                newMessageList: [],
-                messageListForm: {
-                    page: 1,
-                    limit: 5,
-                },
-                suggestionList: [],
-                suggestionWords: [],
-                keyword: this.$store.getters.keyword,
-                companyHomeUrl: process.env.VUE_APP_COMPANY_URL,
-
-                jobCategoryOptions: [],
+                activeIndex: "", // 激活的菜单名称
+                searchPlaceHolder: "", // 搜索栏的占位符
+                messageList: [], // 消息列表
+                keyword: undefined, // 搜索关键词
             };
         },
         watch: {
+            activeIndex() {
+                if (this.isJob()) {
+                    this.searchPlaceHolder = "搜索职位";
+                } else if (this.isWiki()) {
+                    this.searchPlaceHolder = "搜索百科";
+                } else if (this.isActivity()) {
+                    this.searchPlaceHolder = "搜索活动";
+                } else if (this.isMock()) {
+                    this.searchPlaceHolder = "搜索面试官";
+                }
+            },
             $route() {
-                this.activeIndex =
-                    this.$route.path === "/wiki-list" ? "/wiki-card" : this.$route.path;
+                if (this.isJob()) {
+                    this.activeIndex = "/job-list";
+                } else if (this.isWiki()) {
+                    this.activeIndex = "/wiki-card";
+                } else if (this.isActivity()) {
+                    this.activeIndex = "/activity-list";
+                } else if (this.isMock()) {
+                    this.activeIndex = "/mock/interview";
+                }
+                this.keyword = this.$route.query.searchWord;
                 this.getUnReadMessageCount();
-                if (this.isHomeListPage()) {
-                    this.keyword = this.$route.query.keyword;
-                    this.$store.commit("setting/SET_KEYWORD", this.keyword);
-                }
             },
-            keyword: function (val, oldval) {
-                if (this.keyword && this.keyword.length > 0) {
-                    this.loadAll();
-                }
-            },
-        },
-        created() {
-            this.activeIndex = this.$route.path;
-            this.getUnReadMessageCount();
         },
         methods: {
             ...mapMutations({
                 setMessageCount: "setting/MESSAGE_COUNT",
             }),
-            loadAll() {
-                if (this.activeIndex === "/activity-list") {
-                    this.getActivityList();
-                } else if (
-                    this.activeIndex === "/wiki-card" ||
-                    this.activeIndex === "/wiki-list" ||
-                    this.activeIndex.indexOf("/company") != -1
-                ) {
-                    this.getWikiList();
+
+            // 获取提示词
+            querySearch(queryString, cb) {
+                if (queryString) {
+                    if (this.isJob()) {
+                        this.$axios.get("/job/search-job-name", {
+                            params: {
+                                keyWords: this.keyword,
+                                page: 1,
+                                size: 99,
+                            }
+                        }).then((data) => {
+                            cb(data.data.list.map(item => {
+                                return {value: item}
+                            }));
+                        });
+                    } else if (this.isWiki()) {
+                        this.$axios.get("/company/search-company-name", {
+                            params: {
+                                keyWords: this.keyword,
+                                page: 1,
+                                size: 99
+                            }
+                        }).then(data => {
+                            cb(data.data.list.map(item => {
+                                return {value: item}
+                            }));
+                        })
+                    } else if (this.isActivity()) {
+                        this.$axios.get("/activity/search-activity-title", {
+                            params: {
+                                keyWords: this.keyword,
+                                page: 1,
+                                size: 99,
+                            }
+                        }).then((data) => {
+                            cb(data.data.list.map(item => {
+                                return {value: item}
+                            }));
+                        });
+                    } else {
+                        cb([]);
+                    }
                 } else {
-                    this.getJobList();
+                    cb([]);
                 }
             },
-            querySearch(queryString, cb) {
-                var suggestionWords = this.suggestionWords;
-                var results = queryString
-                    ? suggestionWords.filter(this.createFilter(queryString))
-                    : suggestionWords;
-                clearTimeout(this.timeout);
-                this.timeout = setTimeout(() => {
-                    cb(results);
-                }, 3000 * Math.random());
-            },
-            EmptyQuery() {
-            },
-            createFilter(queryString) {
-                return (suggestionWord) => {
-                    return (
-                        suggestionWord.value
-                            .toLowerCase()
-                            .indexOf(queryString.toLowerCase()) != -1
-                    );
-                };
-            },
-            handleSelectFilter(item) {
-            },
-            getActivityList() {
-                let data = {
-                    keyWords: this.keyword,
-                    page: 1,
-                    size: 100000,
-                };
-                searchActivityTitle(data).then((response) => {
-                    this.suggestionList = [];
-                    this.suggestionWords = [];
-                    this.suggestionList = response.data.list;
-                    for (const word of this.suggestionList) {
-                        this.suggestionWords.push({value: word});
+
+            // 执行搜索
+            handleSearch() {
+                let query = {...this.$route.query};
+                if (this.keyword) {
+                    query.searchWord = this.keyword;
+                } else {
+                    delete query.searchWord;
+                }
+                if (this.isJob()) {
+                    if (this.$route.path === '/job-list') {
+                        this.$router.replace({path: '/job-list', query});
+                    } else {
+                        this.$router.push({path: '/job-list', query});
                     }
-                });
+                } else if (this.isWiki()) {
+                    if (this.$route.path === '/wiki-list') {
+                        this.$router.replace({path: '/wiki-list', query});
+                    } else {
+                        this.$router.push({path: '/wiki-list', query});
+                    }
+                } else if (this.isActivity()) {
+                    if (this.$route.path === '/activity-list') {
+                        this.$router.replace({path: '/activity-list', query});
+                    } else {
+                        this.$router.push({path: '/activity-list', query});
+                    }
+                } else {
+                }
             },
-            getWikiList() {
-                let data = {
-                    page: 1,
-                    limit: 1000,
-                };
-                serachByName(data).then((response) => {
-                    this.suggestionList = response.data.list;
-                    this.suggestionWords = [];
-                    for (let i = 0; i < this.suggestionList.length; i++) {
-                        let name = this.suggestionList[i].name;
-                        let fullName = this.suggestionList[i].fullName;
-                        if (fullName.indexOf(name) == -1) {
-                            this.suggestionWords.push({value: name});
+
+            // 获取消息
+            getMessageList() {
+                if (this.token) {
+                    this.$axios.get('/message/list', {
+                        params: {
+                            page: 1,
+                            limit: 5
                         }
-                        this.suggestionWords.push({value: fullName});
-                    }
-                });
+                    }).then((response) => {
+                        this.messageList = response.data.list;
+                    });
+                }
             },
-            getJobList() {
-                let data = {
-                    keyWords: this.keyword,
-                    page: 1,
-                    size: 100,
-                };
-                searchJobName(data).then((response) => {
-                    this.suggestionList = [];
-                    this.suggestionWords = [];
-                    this.suggestionList = response.data.list;
-                    for (const word of this.suggestionList) {
-                        this.suggestionWords.push({value: word});
-                    }
-                });
+
+            // 获取未读消息
+            getUnReadMessageCount() {
+                if (this.token) {
+                    this.$axios.get("/message/unread-count").then((response) => {
+                        this.setMessageCount(response.data);
+                    });
+                }
             },
+
+            // 退出
             handleLogout() {
                 this.$store.dispatch("user/LOGOUT").then(() => {
                     storage.removeLoginInfo();
                     this.$router.push({path: "/"});
                 });
             },
-            handleSearch() {
-                if (this.isHomeListPage()) {
-                    this.$store.commit("setting/SET_KEYWORD", this.keyword);
-                } else if (this.activeIndex.indexOf("/company") != -1) {
-                    this.$router.push({
-                        path: "/wiki-list",
-                        query: {keyword: this.keyword},
-                    });
-                } else {
-                    this.$router.push({
-                        path: "/job-list",
-                        query: {keyword: this.keyword},
-                    });
-                }
-            },
-            isHomeListPage() {
-                const cur_path = this.$route.path;
-                return (
-                    cur_path === "/job-list" ||
-                    cur_path === "/activity-list" ||
-                    cur_path === "/wiki-card" ||
-                    cur_path === "/wiki-list"
-                );
-            },
+
+            // 切换菜单时清空关键词
             handleSelect() {
                 this.keyword = "";
-                this.$store.commit("setting/SET_KEYWORD", this.keyword);
-            },
-            getUnReadMessageCount() {
-                if (this.token && this.token !== "") {
-                    getUnReadMessageCount().then((response) => {
-                        this.setMessageCount(response.data);
-                    });
-                }
-            },
-            getMessageList() {
-                if (this.token && this.token !== "") {
-                    getMessageList(this.messageListForm).then((response) => {
-                        this.newMessageList = response.data.list;
-                    });
-                }
-            },
-            goMessageList() {
-                this.$router.push("/messages");
             },
 
-            handlerChat() {
-                if (this.$route.path !== "/chat") {
-                    this.$router.push({path: "/chat"});
-                }
+            // 当前路由是否激活职位菜单
+            isJob() {
+                return this.$route.path === "/job-list";
             },
 
-            handlerResume() {
-                if (this.$route.path !== "/edit-resume") {
-                    this.$router.push({path: "/edit-resume"});
-                }
+            // 当前路由是否激活百科菜单
+            isWiki() {
+                return this.$route.path === "/wiki-card" || this.$route.path === "/wiki-list" || this.$route.path.indexOf("/company") !== -1;
+            },
+
+            // 当前路由是否激活活动菜单
+            isActivity() {
+                return this.$route.path === "/activity-list";
+            },
+
+            // 当前路由是否激活模拟面试菜单
+            isMock() {
+                return this.$route.path === "/mock/interview";
+            },
+
+            // 路由跳转
+            routeTo(path) {
+                this.$router.push(path);
             }
         },
     };
@@ -351,16 +305,14 @@
         padding: 16px 10px 6px;
     }
 
-    .nav_container {
-        padding: 20px;
+    .nav-container {
+        padding-top: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-        max-width: 1140px;
-        margin: 0 auto;
 
-        .nav_left_container {
+        .nav-left-container {
             display: flex;
             align-items: center;
             flex: 1;
@@ -370,7 +322,8 @@
             }
 
             .logo-image {
-                width: 28%;
+                width: 289px;
+                min-width: 289px;
                 height: auto;
             }
 
@@ -379,7 +332,7 @@
                 align-items: center;
                 justify-content: space-around;
                 flex: 1;
-                margin: 0 6%;
+                margin: 0 30px;
 
                 .nav-item {
                     font-size: 18px;
@@ -387,7 +340,7 @@
             }
         }
 
-        .nav_right_container {
+        .nav-right-container {
             display: flex;
             align-items: center;
             flex: 1;
@@ -395,9 +348,10 @@
             .input-search {
                 flex: 1;
                 min-width: 140px;
+                margin-right: 10px;
             }
 
-            .user_container {
+            .user-container {
                 display: flex;
                 align-items: center;
 
@@ -405,41 +359,42 @@
                     width: 30px;
                     height: 30px;
                     margin-left: 10px;
-
-                    &:hover {
-                        cursor: pointer;
-                        color: #409eff;
-                    }
+                    cursor: pointer;
                 }
 
                 .join {
                     padding: 0 14px;
                 }
 
-                .icon-company {
-                    font-size: 26px;
-                    margin-left: 14px;
-                }
-
                 .nav-message {
                     font-size: 22px;
                     padding: 0 16px;
                 }
+
+
+                ::v-deep .message-item {
+                    padding: 10px 5px;
+                    border-bottom: 1px solid #eee;
+                    line-height: 1.5em;
+                    font-size: 14px;
+                    color: #888;
+                }
+
             }
         }
     }
 
     @media screen and (max-width: 850px) {
-        .nav_container {
+        .nav-container {
             flex-direction: column-reverse;
         }
     }
 
     @media screen and (max-width: 410px) {
-        .nav_container {
+        .nav-container {
             flex-direction: column-reverse;
 
-            .nav_left_container {
+            .nav-left-container {
                 .logo {
                     font-size: 22px;
                 }
@@ -453,13 +408,4 @@
         }
     }
 
-    .message-list {
-        .message-item {
-            padding: 10px 5px;
-            border-bottom: 1px solid #eee;
-            line-height: 1.5em;
-            font-size: 14px;
-            color: #888;
-        }
-    }
 </style>

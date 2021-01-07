@@ -34,6 +34,9 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     private Date returnTime; //回国时间
     @ResumeScore
     @JSONField(format = "yyyy-MM")
+    private Date updateTime;
+    @ResumeScore
+    @JSONField(format = "yyyy-MM")
     private Date graduateTime; //毕业时间
     @ResumeScore
     private String curPlace; //现居地址
@@ -49,6 +52,9 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     private Byte status; //简历状态
     private Byte type; //简历类型
 
+    private Byte maritalStatus; // 政治面貌
+    private Byte priority;
+
     private Integer resumeCompleteProgress; //简历完善进度
 
     @ResumeScore(4)
@@ -61,6 +67,24 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     private List<ResumeSkillVo> resumeSkillList;
 
     private List<ResumeLinkVo> resumeLinkList;
+
+    public void setResumeMergeAttachList(List<ResumeMergeAttachVo> resumeMergeAttachList) {
+        this.resumeMergeAttachList = resumeMergeAttachList;
+    }
+
+    private List<ResumeMergeAttachVo>resumeMergeAttachList;
+
+    public void setResumeLanguageList(List<ResumeLanguageVo> resumeLanguageList) {
+        this.resumeLanguageList = resumeLanguageList;
+    }
+
+    private List<ResumeLanguageVo>resumeLanguageList;
+
+    public void setResumeCertificateList(List<ResumeCertificateVo> resumeCertificateList) {
+        this.resumeCertificateList = resumeCertificateList;
+    }
+
+    private List<ResumeCertificateVo>resumeCertificateList;
 
     private UserExpectJobVo userExpectJob;
 
@@ -96,6 +120,9 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
         setGraduateTime(resume.getGraduateTime());
         setCurPlace(resume.getCurPlace());
         setIntroduction(resume.getIntroduction());
+        setAvatar(resume.getAvatar());
+        setPriority(resume.getPriority());
+        setEmail(resume.getEmail());
         return this;
     }
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.worldelite.job.mapper.ActivityReportMapper">
+
+<select id="selectAndList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_activity_report
+    <where>
+      <if test="activityId != null">
+        activity_id = #{activityId,jdbcType=INTEGER}
+      </if>
+      <if test="reportUserId != null">
+        and report_user_id = #{reportUserId,jdbcType=BIGINT}
+      </if>
+      <if test="optionId != null">
+        and option_id = #{optionId,jdbcType=INTEGER}
+      </if>
+      <if test="reason != null">
+        and reason = #{reason,jdbcType=VARCHAR}
+      </if>
+      <if test="evidence != null">
+        and evidence = #{evidence,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null">
+        and status = #{status,jdbcType=TINYINT}
+      </if>
+      <if test="result != null">
+        and result = #{result,jdbcType=VARCHAR}
+      </if>
+    </where>
+</select>
+
+</mapper>

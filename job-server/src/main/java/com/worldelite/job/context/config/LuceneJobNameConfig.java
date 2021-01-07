@@ -87,8 +87,8 @@ public class LuceneJobNameConfig {
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         IndexWriter indexWriter = new IndexWriter(jobDirectory, indexWriterConfig);
         // 清空索引
-        indexWriter.deleteAll();
-        indexWriter.commit();
+        //indexWriter.deleteAll();
+        //indexWriter.commit();
         return indexWriter;
     }
 

@@ -1,70 +1,260 @@
 <template>
-    <div class="app-container container">
-        <div class="activity-container" v-if="activity">
-            <el-image :src="activity.thumbnail"
-                      class="img-cover"
-                      :alt="activity.title">
-            </el-image>
-            <b-media-body>
-                <h5 class="mt-0 mb-2">{{activity.title}}</h5>
-                <div class="text-label" v-if="activity.organizer && activity.organizer != ''">
-                    <b>主办方：</b>
-                    {{activity.organizer}}
+    <div class="app-container">
+        <div class="info-container" v-if="activity">
+            <el-image :src="require('@/assets/activity/activity-top-bg.png')" class="image-bg" fit="cover"></el-image>
+            <div class="content-container">
+                <div class="line1">
+                    <div class="text" @click="$router.go(-1)" style="cursor: pointer;">活动</div>
+                    <div class="text">></div>
+                    <div class="text">{{activity.title}}</div>
                 </div>
-                <div class="text-label">
-                    <b>活动城市：</b>
-                    {{activity.city.name}}
+                <div class="line2">
+                    <div class="text">{{activity.title}}</div>
+                    <div class="tag">{{organizerTypeList[activity.organizerType]}}</div>
                 </div>
-                <div class="text-label">
-                    <b>活动地址：</b>
-                    {{activity.address}}
+                <div class="line3">
+                    <div class="name">活动形式：</div>
+                    <div class="value" :style="{color:activity.form===0?'#FFAB40':'#64FFDA'}">{{activity.form===0?'线上':'线下'}}</div>
+                    <div class="name">活动状态：</div>
+                    <div class="value status" :style="{background:statusBGColorList[activity.status]}">{{statusList[activity.status]}}</div>
                 </div>
-                <div class="text-label">
-                    <b>活动时间：</b>
-                    {{activity.startTime}} 到 {{activity.finishTime}}
+                <div class="line3">
+                    <div class="name">活动主办方：</div>
+                    <div class="value">{{getOrganizerType()}}</div>
+                    <div class="name">活动链接：</div>
+                    <!--  <a class="value" style="text-decoration:underline; cursor: pointer;" href="http://www.myworldelite.com" target="_blank">{{activity.address}}</a>-->
+                    <div class="value">{{activity.address}}</div>
                 </div>
-                <div class="mt-2">
-                    <el-button type="primary" @click="onJoinClick">{{activity.joinFlag?'已报名':'报名'}}</el-button>
+                <div class="line3">
+                    <div class="name">活动时间：</div>
+                    <div class="value">
+                        {{activity.activityStartTime | timestampToDateHourMinute}}-{{activity.activityFinishTime | timestampToDateHourMinute}}
+                    </div>
+                    <div class="name">报名时间：</div>
+                    <div class="value" style="color: #FF6E40;">
+                        {{activity.registrationStartTime | timestampToDateHourMinute}}-{{activity.registrationFinishTime | timestampToDateHourMinute}}
+                    </div>
                 </div>
-            </b-media-body>
+                <div class="line3">
+                    <div class="name">发布时间：</div>
+                    <div class="value">{{activity.createTime | timestampToDateHourMinute}}</div>
+                </div>
+            </div>
+            <div class="apply-container">
+                <div class="line1">
+                    <div class="image-button-bg" @click="onCollect">
+                        <el-image v-if="activity.attentionFlag" class="image" :src="require('@/assets/activity/collected.png')"></el-image>
+                        <el-image v-else class="image" :src="require('@/assets/activity/collect.png')"></el-image>
+                    </div>
+
+                    <el-popover placement="bottom-start" trigger="hover">
+                        <div slot="reference" class="image-button-bg">
+                            <el-image class="image" :src="require('@/assets/activity/share.png')"></el-image>
+                        </div>
+                        <share :config="shareConfig"></share>
+                    </el-popover>
+
+                    <div :class="activity.registrationFlag?'apply-button2':'apply-button'" @click="onApply">报名</div>
+                </div>
+                <div class="line2">
+                    报名名额还剩<span>{{activity.numberLimit - activity.applicantQuantity}}</span>个
+                </div>
+            </div>
+            <div class="report-button" @click="onReport">举报该活动</div>
         </div>
-        <div class="introdution mt-4 ql-editor" v-html="activity.description" v-if="activity"></div>
+        <div class="activity-container">
+            <el-image class="image" :src="activity.poster" fit="contain"></el-image>
+            <div v-html="activity.description"></div>
+        </div>
+        <el-dialog class="report-dialog"
+                   title="举报活动"
+                   :center="true"
+                   :visible.sync="reportDialogVisible"
+                   v-loading="reporting"
+                   width="445px">
+            <el-select v-model="reportForm.optionId" placeholder="请选择举报类型" class="option" size="small">
+                <el-option
+                    v-for="item in reportOptionList"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value">
+                </el-option>
+            </el-select>
+
+            <el-input type="textarea"
+                      :rows="3"
+                      placeholder="请详细描述举报原因（必填，300字以内）"
+                      v-model="reportForm.reason"
+                      resize="none"
+                      class="reason">
+            </el-input>
+            <el-upload class="upload"
+                       action=""
+                       v-loading.fullscreen.lock="fullscreenLoadingCount>0"
+                       :show-file-list="false"
+                       :on-success="handleEditorUploadSuccess"
+                       :on-error="handleEditorUploadError"
+                       :http-request="imageUpload"
+                       :accept="acceptFileType"
+                       multiple
+                       :limit="5">
+                <svg-icon icon-class="report-upload" class="report-upload"/>
+                <span class="text">上传照片等证明（选填，最多五份）</span>
+            </el-upload>
+            <div class="button-container">
+                <div class="cancel" @click="onCancel">取消</div>
+                <div class="confirm" @click="onConfirm">确定</div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-    import {getActivityInfo} from '@/api/activity_api'
-    import {doFavorite} from '@/api/favorite_api'
+    import Vue from "vue";
+    import Share from "vue-social-share";
+    import "vue-social-share/dist/client.css";
+    import {getUploadPicToken} from "@/api/upload_api";
+
+    Vue.use(Share);
 
     export default {
         name: "ActivityPage",
         data() {
             return {
                 activity: undefined,
-                favoriteForm: {
-                    objectId: undefined,
-                    type: 3,
-                    favorite: true
-                }
+                organizerTypeList: ['', '学生活动', '社会组织活动', '个人活动', '企业活动'],
+                statusList: ['审核中', '草稿', '下架', '即将开始', '报名中', '进行中', '活动结束'],
+
+                statusBGColorList: ['#B0BEC5', '#C6FF00', '#C6FF00', '#40C4FF', '#FBC02D', '#9CCC65', '#FF8A80'],
+                shareConfig: {
+                    url: window.location.href,
+                    source: "",
+                    title: "",
+                    description: "",
+                    image: "",
+                    sites: ["wechat", "qq", "weibo", "google", "facebook", "twitter"],
+                },
+
+                // 举报
+                reportDialogVisible: false, // 显示举报对话框
+                reportOptionList: [], // 举报选项
+                reportForm: { // 举报参数
+                    activityId: undefined,
+                    optionId: undefined,
+                    reason: undefined,
+                    evidence: [],
+                },
+                reporting: false, // 举报提交中
+
+                // 上传
+                fullscreenLoadingCount: 0,
+                acceptFileType: '.jpg,.jpeg,.png,.JPG,.JPEG,.PNG',
             };
         },
         created() {
             this.initData();
         },
         methods: {
+            // 初始化数据
             initData() {
-                getActivityInfo(this.$route.params.id).then(response => {
+                // 活动信息
+                this.$axios.get("/activity/activity-info", {params: {id: this.$route.params.id}}).then(response => {
                     this.activity = response.data;
-                    this.favoriteForm.objectId = this.activity.id;
-                    this.$emit("complete");
+                    this.shareConfig.title = this.activity.title;
+                    // this.shareConfig.description = this.activity.description;
+                })
+
+                // 举报选项
+                this.$axios.get("/dict/list", {params: {type: 24, limit: 99}}).then(data => {
+                    this.reportOptionList = data.data.list;
+                })
+
+            },
+
+            // 点击收藏
+            onCollect() {
+                this.$axios.post("/favorite/favorite", {objectId: this.$route.params.id, type: 3, favorite: !this.activity.attentionFlag}).then(() => {
+                    this.activity.attentionFlag = !this.activity.attentionFlag;
                 })
             },
-            onJoinClick() {
-                this.favoriteForm.favorite = this.activity.joinFlag ? (!this.activity.joinFlag) : true;
-                doFavorite(this.favoriteForm).then(() => {
-                    this.initData();
+
+            // 获取活动主办方
+            getOrganizerType() {
+                switch (this.activity.organizerType) {
+                    case 1:
+                        return this.activity.organizerInfoVo.school;
+                    case 2:
+                        return this.activity.organizerInfoVo.businessLicenseUrl;
+                    default :
+                        return this.activity.organizerInfoVo.organizerName;
+                }
+            },
+
+            // 点击报名按钮
+            onApply() {
+                if (!this.activity.registrationFlag) {
+                    this.$message.success("点击报名按钮");
+                }
+            },
+
+            // 点击举报活动按钮
+            onReport() {
+                this.reportDialogVisible = true;
+            },
+
+            // 图片上传成功
+            handleEditorUploadSuccess(response, file, fileList) {
+                console.log(fileList);
+                this.reportForm.evidence = fileList.map(item => item.response);
+                this.fullscreenLoadingCount--;
+            },
+
+            // 图片上传错误
+            handleEditorUploadError(err, file, fileList) {
+                this.$message.error("图片上传失败")
+                this.fullscreenLoadingCount--;
+            },
+
+            // 图片上传
+            imageUpload(request) {
+                return new Promise((resolve, reject) => {
+                    this.fullscreenLoadingCount++;
+                    getUploadPicToken(request.file.name).then(response => {
+                        const {data} = response
+                        this.$axios.upload(data.host, request.file, data).then(() => {
+                            resolve(data.host + '/' + data.key);
+                        }).catch(() => {
+                            reject();
+                        })
+                    })
                 })
-            }
+            },
+
+            // 取消举报对话框
+            onCancel() {
+                this.reportForm.activityId = undefined;
+                this.reportForm.optionId = undefined;
+                this.reportForm.reason = undefined;
+                this.reportForm.evidence = [];
+                this.reportDialogVisible = false;
+            },
+
+            // 提交举报
+            onConfirm() {
+                if (!this.reportForm.optionId) {
+                    this.$message.warning("请选择举报类型");
+                } else if (!this.reportForm.reason) {
+                    this.$message.warning("请输入举报原因");
+                } else {
+                    this.reportForm.activityId = this.$route.params.id;
+                    this.reporting = true;
+                    this.$axios.post("/activity/report", this.reportForm).then(data => {
+                        this.reporting = false;
+                        this.onCancel();
+                        this.$message.success("已提交举报信息");
+                    })
+                }
+            },
         }
     };
 </script>
@@ -72,30 +262,287 @@
 <style scoped lang="scss">
 
     .app-container {
-        min-height: calc(100vh - 477px);
+        width: 1200px !important;
 
-        .activity-container {
-            display: flex;
+        .info-container {
+            position: relative;
+            width: 100%;
+            height: 268px;
+            box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
 
-            .img-cover {
-                width: 150px;
-                height: 150px;
-                margin: 0 15px 0 0;
+            .image-bg {
+                width: 100%;
+                height: 100%;
+            }
+
+            .content-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                padding: 26px 20px;
+
+                .line1 {
+                    display: flex;
+                    align-items: center;
+
+                    .text {
+                        font-size: 16px;
+                        font-weight: 400;
+                        color: #DDDDDD;
+                        line-height: 22px;
+                        padding-right: 8px;
+                    }
+                }
+
+                .line2 {
+                    display: flex;
+                    align-items: center;
+                    margin-top: 15px;
+
+                    .text {
+                        font-size: 30px;
+                        color: #FFFFFF;
+                        line-height: 42px;
+                        margin-right: 17px;
+                    }
+
+                    .tag {
+                        height: 34px;
+                        background: #42A5F5;
+                        border-radius: 6px;
+                        line-height: 34px;
+                        padding: 0 23px;
+                        font-size: 18px;
+                        color: #FFFFFF;
+                    }
+                }
+
+                .line3 {
+                    display: flex;
+                    align-items: center;
+                    margin-top: 9px;
+
+                    .name {
+                        width: 110px;
+                        text-align: right;
+                        font-size: 18px;
+                        color: #EEEEEE;
+                        line-height: 25px;
+                    }
+
+                    .value {
+                        font-size: 18px;
+                        color: #FFFFFF;
+                        line-height: 25px;
+                        width: 372px;
+                    }
+
+                    .status {
+                        width: 87px;
+                        height: 30px;
+                        border-radius: 5px;
+                        line-height: 30px;
+                        text-align: center;
+                    }
+                }
+            }
+
+            .apply-container {
+                position: absolute;
+                top: 56px;
+                right: 20px;
+
+                .line1 {
+                    display: flex;
+                    align-items: center;
+
+                    .image-button-bg {
+                        width: 34px;
+                        height: 34px;
+                        background: #FFFFFF;
+                        box-shadow: 0 4px 7px 0 #253668;
+                        border-radius: 17px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-right: 10px;
+
+                        ::v-deep .el-image {
+                            line-height: 100%;
+                        }
+
+                        .image {
+
+                        }
+                    }
+
+                    .apply-button {
+                        width: 114px;
+                        height: 34px;
+                        background: #FFFFFF;
+                        box-shadow: 0 4px 7px 0 #253668;
+                        border-radius: 17px;
+                        font-size: 18px;
+                        color: #333333;
+                        line-height: 34px;
+                        text-align: center;
+                        cursor: pointer;
+                    }
+
+                    .apply-button2 {
+                        width: 114px;
+                        height: 34px;
+                        background: #DDDDDD;
+                        box-shadow: 0 4px 7px 0 #253668;
+                        border-radius: 17px;
+                        font-size: 18px;
+                        color: #666666;
+                        line-height: 34px;
+                        text-align: center;
+                        cursor: pointer;
+                    }
+                }
+
+                .line2 {
+                    margin-top: 21px;
+                    font-size: 18px;
+                    color: #DDDDDD;
+                    line-height: 25px;
+                    text-align: right;
+
+                    span {
+                        display: inline-block;
+                        padding: 0 10px;
+                        height: 25px;
+                        background: #0D47A1;
+                        border-radius: 3px;
+                        font-size: 18px;
+                        color: #FFFFFF;
+                        line-height: 25px;
+                        text-align: center;
+                        margin: 0 5px;
+                    }
+                }
+            }
+
+            .report-button {
+                position: absolute;
+                right: 35px;
+                bottom: 29px;
+                font-size: 18px;
+                color: #CFD8DC;
+                line-height: 25px;
+                cursor: pointer;
             }
         }
-    }
 
+        .activity-container {
+            width: 100%;
+            padding: 22px 36px 26px;
+            background: #FFFFFF;
+            box-shadow: 0 4px 16px 3px rgba(191, 199, 215, 0.31);
 
-    @media screen and (max-width: 850px) {
-        .app-container {
-            .activity-container {
-                flex-direction: column;
+            .image {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        .report-dialog {
+            ::v-deep .el-dialog {
+                border-radius: 13px;
+            }
+
+            .option {
+                ::v-deep .el-input__inner {
+                    background: #FFFFFF;
+                    border-radius: 6px;
+                    border: 1px solid #B0BEC5;
+                }
+            }
+
+            .reason {
+                margin-top: 17px;
+
+                ::-webkit-input-placeholder {
+                    font-size: 16px;
+                    line-height: 25px;
+                }
+
+                :-moz-placeholder {
+                    font-size: 16px;
+                    line-height: 25px;
+                }
+
+                :-ms-input-placeholder {
+                    font-size: 16px;
+                    line-height: 25px;
+                }
+
+                ::v-deep .el-textarea__inner {
+                    width: 395px;
+                    height: 93px;
+                    background: #FFFFFF;
+                    border-radius: 6px;
+                    border: 1px solid #B0BEC5;
+                }
+            }
+
+            .upload {
+                display: flex;
                 align-items: center;
+                margin-top: 10px;
 
-                .img-cover {
-                    margin: 0 0 15px 0;
+                .report-upload {
+                    width: 20px;
+                    height: 20px;
+                }
+
+                .text {
+                    font-size: 16px;
+                    font-weight: 400;
+                    color: #4895EF;
+                    line-height: 22px;
+                    margin-left: 9px;
+                }
+            }
+
+            .button-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 26px;
+
+                .cancel {
+                    width: 107px;
+                    height: 35px;
+                    background: #FFFFFF;
+                    border-radius: 18px;
+                    border: 1px solid #4895EF;
+                    font-size: 16px;
+                    color: #4895EF;
+                    line-height: 35px;
+                    text-align: center;
+                    cursor: pointer;
+                }
+
+                .confirm {
+                    margin-left: 21px;
+                    width: 107px;
+                    height: 35px;
+                    background: #4895EF;
+                    border-radius: 18px;
+                    border: 1px solid #FFFFFF;
+                    font-size: 16px;
+                    color: #FFFFFF;
+                    line-height: 35px;
+                    text-align: center;
+                    cursor: pointer;
                 }
             }
         }
     }
+
 </style>

@@ -1,15 +1,17 @@
 <template>
     <div id="app" ref="app">
-        <MainNavBar/>
+        <div style="background: white;">
+            <MainNavBar class="nav-bar"/>
+        </div>
         <transition name="fade-transform" mode="out-in">
-            <router-view @complete="onComplete" @receiveMessage="onReceiveMessage"/>
+            <router-view class="main-container page"/>
         </transition>
         <transition name="fade">
-            <FooterView @complete="onComplete" v-if="show"/>
+            <div style="background: white;">
+                <FooterView/>
+            </div>
         </transition>
         <el-backtop></el-backtop>
-        <!--    <svg-icon @click="handlerChat" icon-class="chat3" class="chat" />-->
-        <!--    <div class="red-dot" v-if="showRedDot" />-->
     </div>
 </template>
 
@@ -21,20 +23,10 @@
         data() {
             return {
                 noScroll: ["wiki-intro", "wiki-job", "wiki-activity", "wiki-community-post", "wiki-community-score", "wiki-community-post-detail"],
-                show: false,
-                showRedDot: false,
             };
         },
         components: {MainNavBar, FooterView},
         name: "App",
-        watch: {
-            $route(route) {
-                this.show = false;
-                if (this.$route.path === "/chat") {
-                    this.showRedDot = false;
-                }
-            },
-        },
         updated() {
             if (!this.noScroll.includes(this.$route.name)) {
                 setTimeout(() => {
@@ -42,23 +34,6 @@
                 }, 400)
             }
         },
-        methods: {
-            onComplete() {
-                this.show = true;
-            },
-
-            handlerChat() {
-                if (this.$route.path !== "/chat") {
-                    this.$router.push({path: "/chat"});
-                }
-            },
-
-            onReceiveMessage() {
-                if (this.$route.path !== "/chat") {
-                    this.showRedDot = true;
-                }
-            },
-        }
     };
 </script>
 
@@ -67,32 +42,28 @@
         font-family: "Avenir", Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        color: #2c3e50;
-        height: 100vh;
+        background: #f6f9fc;
+        min-height: 100vh;
+        width: 100%;
         overflow: auto;
+        display: flex;
+        flex-direction: column;
 
-        .chat {
-            position: fixed;
-            top: 650px;
-            right: 80px;
-            width: 60px;
-            height: 60px;
-            padding: 10px;
-
-            &:hover {
-                cursor: pointer;
-                color: #409eff;
-            }
+        .nav-bar {
+            width: 100%;
+            max-width: 1333px;
+            margin: 0 auto;
         }
 
-        .red-dot {
-            position: fixed;
-            top: 654px;
-            right: 85px;
-            background: red;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 17px 0;
+        }
+
+        .main-container {
+            flex: 1;
         }
     }
 </style>

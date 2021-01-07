@@ -224,7 +224,6 @@
 <style scoped lang="scss">
     .app-container {
         min-width: 375px;
-        min-height: calc(100vh - 477px);
 
         .section1-container {
             max-width: 1200px;
@@ -244,8 +243,7 @@
         }
 
         .company-recommend-box {
-            background: #f7fbfd;
-            padding: 50px;
+            padding: 50px 0;
 
             .main-title {
                 margin-bottom: 40px;
@@ -297,8 +295,6 @@
         }
 
         .job-recommend-box {
-            background: #f7fbfd;
-            padding: 0 50px 20px;
 
             .main-title {
                 margin-bottom: 40px;

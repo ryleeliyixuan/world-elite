@@ -68,6 +68,39 @@ public class ResumeDetail {
     //期望薪资
     private Dict salary;
 
+    private Byte priority;
+
+    public void setResumeMergeAttachList(List<ResumeMergeAttach> resumeMergeAttachList) {
+        this.resumeMergeAttachList = resumeMergeAttachList;
+    }
+
+    public List<ResumeMergeAttach> getResumeMergeAttachList() {
+        return resumeMergeAttachList;
+    }
+
+    private List<ResumeMergeAttach> resumeMergeAttachList;
+
+
+    public List<ResumeLanguage> getResumeLanguageList() {
+        return resumeLanguageList;
+    }
+
+    public void setResumeLanguageList(List<ResumeLanguage> resumeLanguageList) {
+        this.resumeLanguageList = resumeLanguageList;
+    }
+
+    private List<ResumeLanguage> resumeLanguageList;
+
+    public List<ResumeCertificate> getResumeCertificateList() {
+        return resumeCertificateList;
+    }
+
+    public void setResumeCertificateList(List<ResumeCertificate> resumeCertificateList) {
+        this.resumeCertificateList = resumeCertificateList;
+    }
+
+    private List<ResumeCertificate>resumeCertificateList;
+
     /**
      * 计算简历完成度评分,没有最高分 越高越好
      *
@@ -147,12 +180,26 @@ public class ResumeDetail {
                 }
             });
         }
-        if (resumeLinkList != null && resumeLinkList.size() > 0) {
-            resumeLinkList.forEach(resumeLink -> {
-                for (Field f : resumeLink.getClass().getDeclaredFields()) {
+//        if (resumeLinkList != null && resumeLinkList.size() > 0) {
+//            resumeLinkList.forEach(resumeLink -> {
+//                for (Field f : resumeLink.getClass().getDeclaredFields()) {
+//                    f.setAccessible(true);
+//                    try {
+//                        if (f.get(resumeLink) != null && StringUtils.isNotBlank(f.get(resumeLink).toString())) {
+//                            score.getAndIncrement();
+//                        }
+//                    } catch (IllegalAccessException ignored) {
+//                    }
+//                }
+//            });
+//        }
+        //language
+        if (resumeLanguageList != null && resumeLanguageList.size() > 0) {
+            resumeLanguageList.forEach(resumeLanguage -> {
+                for (Field f : resumeLanguage.getClass().getDeclaredFields()) {
                     f.setAccessible(true);
                     try {
-                        if (f.get(resumeLink) != null && StringUtils.isNotBlank(f.get(resumeLink).toString())) {
+                        if (f.get(resumeLanguage) != null && StringUtils.isNotBlank(f.get(resumeLanguage).toString())) {
                             score.getAndIncrement();
                         }
                     } catch (IllegalAccessException ignored) {
@@ -160,6 +207,22 @@ public class ResumeDetail {
                 }
             });
         }
+        
+        //certificate
+        if (resumeCertificateList != null && resumeCertificateList.size() > 0) {
+            resumeCertificateList.forEach(resumeCertificate -> {
+                for (Field f : resumeCertificate.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    try {
+                        if (f.get(resumeCertificate) != null && StringUtils.isNotBlank(f.get(resumeCertificate).toString())) {
+                            score.getAndIncrement();
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    }
+                }
+            });
+        }
+        
         if (categoryList != null && categoryList.size() > 0) {
             categoryList.forEach(jobCategory -> {
                 for (Field f : jobCategory.getClass().getDeclaredFields()) {

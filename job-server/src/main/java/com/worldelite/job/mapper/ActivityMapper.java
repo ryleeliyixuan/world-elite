@@ -62,11 +62,13 @@ public interface ActivityMapper {
      */
     int updateByPrimaryKey(Activity record);
 
-    Activity selectSimpleById(Integer id);
-
     List<Activity> selectAndList(ActivityOptions options);
 
     List<Activity> selectSimpleByIdAndStatus(String where);
 
     List<Activity> selectSmartTips(Activity record);
+
+    int minusFollower(Integer id);
+
+    int increaseFollower(Integer id);
 }

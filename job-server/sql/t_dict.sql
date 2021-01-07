@@ -22,3 +22,24 @@ INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (212, '3-5年', 21, '3', '2020-09-26 17:37:21', '2020-09-26 17:37:21', 0);
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (213, '5-10年', 21, '4', '2020-09-26 17:37:33', '2020-09-26 17:37:33', 0);
 INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (214, '10年以上', 21, '5', '2020-09-26 17:37:49', '2020-09-26 17:37:49', 0);
+
+-- 新版活动列表搜索页面时间
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (220, '3天内', 22, '3', '2020-09-26 17:36:38', '2020-09-26 17:36:38', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (221, '1周内', 22, '7', '2020-09-26 17:36:47', '2020-09-26 17:36:47', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (222, '1个月内', 22, '30', '2020-09-26 17:37:21', '2020-09-26 17:37:21', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (223, '3个月内', 22, '90', '2020-09-26 17:37:33', '2020-09-26 17:37:33', 0);
+
+-- 新版活动列表城市选项
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (230, '北京', 23, '110000', '2020-09-26 17:36:38', '2020-09-26 17:36:38', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (231, '天津', 23, '120000', '2020-09-26 17:36:47', '2020-09-26 17:36:47', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (232, '上海', 23, '310000', '2020-09-26 17:37:21', '2020-09-26 17:37:21', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (233, '广东', 23, '440000', '2020-09-26 17:37:33', '2020-09-26 17:37:33', 0);
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`, `create_time`, `update_time`, `del_flag`) VALUES (234, '重庆', 23, '500000', '2020-09-26 17:37:33', '2020-09-26 17:37:33', 0);
+
+-- 新版活动举报理由选项选项
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (250, '出现违规/违法内容', 24, '1');
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (251, '活动内容与活动介绍严重不符', 24, '2');
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (252, '强制推销', 24, '3');
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (253, '主办方言论不当', 24, '4');
+INSERT INTO `db_worldelite`.`t_dict`(`id`, `name`, `type`, `value`) VALUES (254, '其他', 24, '5');
+

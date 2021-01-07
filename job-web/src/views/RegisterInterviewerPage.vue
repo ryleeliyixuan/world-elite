@@ -126,7 +126,7 @@
                     <span style="font-size: 24px;font-weight: 400;color: #333333;line-height: 33px;padding-left: 75px">元/半小时</span>
 
                 </el-form-item>
-                
+
                 <el-form-item label="面试内容简介：" label-width="340px" prop="description">
                     <el-input type="textarea" style="width: 300px" v-model="formTwo.description"
                               placeholder="请做一个简要的自述"
@@ -661,7 +661,6 @@
         width: 1140px;
         padding: 20px 20px 200px 20px;
         margin: 0 auto;
-        min-height: calc(100vh - 477px);
 
         .title {
             font-size: 36px;
