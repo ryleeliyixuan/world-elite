@@ -1,168 +1,302 @@
 <template>
   <div class="resume-container" v-if="resume">
-    <div class="el-row--flex">
+    <div class="resume-box" style="display: flex">
       <el-image :src="resume.avatar" class="avatar" />
-      <div class="ml-4">
-        <h6>
-          {{ resume.name }}
-          <!-- <i
-            class="gender-text"
-            v-bind:class="[
-              resume.gender === 2
-                ? 'text-danger el-icon-female'
-                : 'text-primary el-icon-male',
-            ]"
-          ></i> -->
-        </h6>
-        <div>
-          <span v-if="resume.returnTime"
-            >{{ resume.maxResumeEdu.degree.name }}&nbsp;/&nbsp;</span
-          >
-          <span v-if="resume.graduateTime"
-            >{{ resume.graduateTime }}毕业&nbsp;/&nbsp;</span
-          >
-          <span v-if="resume.curPlace">{{ resume.curPlace }}&nbsp;/&nbsp;</span>
-          <span v-if="resume.age">{{ resume.age }}岁&nbsp;/&nbsp;</span>
-          <span v-if="resume.age">{{ resume.returnTime }} 回国</span>
-        </div>
-        <div class="mt-2">
-          <span class="mr-3">
-            <font-awesome-icon :icon="['fa', 'envelope']" />
-            {{ resume.email }}
-          </span>
-          <span class="ml-3" v-if="resume.phone && resume.phone != 0">
-            <font-awesome-icon :icon="['fa', 'mobile-alt']" />
-            +{{ resume.phoneCode }} {{ resume.phone }}
-          </span>
+      <div>
+<!--        基本信息-->
+        <div class="resume-info" style="display: flex">
+          <div class="info-other-row-l">
+            <el-row class="info-name">{{resume.name}}</el-row>
+            <el-row class="info-other">性别：
+              <span v-if="resume.gender==1">男</span>
+              <span v-if="resume.gender==2"></span>
+            </el-row>
+            <el-row class="info-other">年龄：{{resume.age}} 岁</el-row>
+            <el-row class="info-other">邮箱：{{resume.email}}</el-row>
+            <el-row class="info-other">手机：{{resume.phone}}</el-row>
+          </div>
+          <div class="info-other-row-m">
+            <el-row class="info-other">政治面貌：{{resume.maritalStatus}}</el-row>
+            <el-row class="info-other">现居地址：{{resume.curPlace}}</el-row>
+            <el-row class="info-other">入职时间：{{resume.returnTime}}</el-row>
+          </div>
         </div>
       </div>
     </div>
     <div
-      class="resume-box mt-4"
       v-if="resume.resumeEduList && resume.resumeEduList.length != 0"
+      class="resume-box"
     >
-      <div class="title-container">
-        <div class="dot"></div>
-        <h6 class="resume-title">教育经历</h6>
-      </div>
-      <div
-        class="mt-4"
-        v-for="resumeEdu in resume.resumeEduList"
-        :key="resumeEdu.id"
-      >
-        <h6>
-          {{ resumeEdu.schoolName }}
-          <span class="ml-3 time-text"
-            >{{ resumeEdu.startTime }}到{{ resumeEdu.finishTime }}</span
-          >
-        </h6>
-        <span>{{ resumeEdu.degree.name }} / {{ resumeEdu.majorName }}</span>
-        <span v-if="resumeEdu.gpa > 0 && resumeEdu.gpa !== ''">
-          / GPA <span v-if="resumeEdu.gpa != 0">{{ resumeEdu.gpa }}</span>
-        </span>
-      </div>
+
+      <el-row>
+        <div style="width: 540px;margin-right: 75px">
+          <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
+          <span class="resume-base">教育经历</span>
+          <span class="resume-red">*</span>
+        </div>
+      </el-row>
+
+
+          <div class="resume-edu" v-for="resumeEdu in resume.resumeEduList"
+               :key="resumeEdu.id">
+            <div style="display: flex;padding-top: 13px">
+            <div class="edu-box-l" style="width: 350px;">
+              <el-row class="edu-school ">{{resumeEdu.schoolName}}</el-row>
+              <el-row class="info-other">学历：{{resumeEdu.degree.name}}</el-row>
+              <el-row class="info-other">专业：{{resumeEdu.majorName}}</el-row>
+            </div>
+            <div class="edu-box-m">
+              <el-row class="info-other">在校时间：
+                <span style="font-size: 14px;
+                             font-family: PingFangSC-Regular, PingFang SC;
+                             font-weight: 400;">{{resumeEdu.startTime}}.{{resumeEdu.finishTime}}</span>
+              </el-row>
+              <el-row class="info-other">GPA：{{resumeEdu.gpa}}</el-row>
+            </div>
+            </div>
+          </div>
+
+
     </div>
+
+
     <div
       class="resume-box mt-4"
+      style="margin-top: 10px"
       v-if="resume.resumeExpList && resume.resumeExpList.length != 0"
     >
-      <div class="title-container">
-        <div class="dot"></div>
-        <h6 class="resume-title">工作经验</h6>
-      </div>
-      <div
-        class="mt-4"
-        v-for="resumeExp in resume.resumeExpList"
-        :key="resumeExp.id"
-      >
-        <h6>
-          {{ resumeExp.company }}
-          <span class="ml-3 position-text"
-            >{{ resumeExp.depart }} . {{ resumeExp.post }}</span
-          >
-          <span class="ml-3 time-text">{{
-            resumeExp.onWork == 1
-              ? "在职"
-              : `${resumeExp.startTime}到${resumeExp.finishTime}`
-          }}</span>
-        </h6>
-        <div class="description-text" v-html="resumeExp.description"></div>
+      <el-row>
+        <div style="width: 540px; display: inline-block;margin-right: 75px">
+          <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
+          <span class="resume-base">求职意向</span>
+          <span class="resume-red">*</span>
+        </div>
+      </el-row>
+
+
+
+
+      <div class="resume-eduinfo">
+        <div class="resume-edu" style="display: inline-flex">
+          <div class="edu-box-l1">
+            <el-row class="edu-school">
+              XXXXXX<!-- {{resumeExp.jobName}}-->
+            </el-row>
+            <el-row class="info-other">预期薪资：
+              <span v-if="resume.userExpectJob.salary"
+                    effect="plain"
+                    class="expjob-data"
+              >{{resume.userExpectJob.salary.name}}
+               </span>
+            </el-row>
+            <el-row class="info-other">工作类型：
+              <span v-for="jobType in  resume.userExpectJob.jobTypeList"
+                    :key="jobType.id"
+                    effect="plain"
+                    class="expjob-data"
+              >{{ jobType.name }}
+              </span>
+            </el-row>
+          </div>
+          <div class="edu-box-m1">
+            <el-row class="info-other">期望行业：
+              <span v-for="category in  resume.userExpectJob.categoryList"
+                    :key="category.id"
+                    effect="plain"
+                    class="expjob-data"
+              >{{ category.name }}
+                                                </span>
+            </el-row>
+            <el-row class="info-other">工作城市：
+              <span v-for="city in  resume.userExpectJob.cityList"
+                    :key="city.id"
+                    effect="plain"
+                    class="expjob-data"
+              >{{ city.name }}
+                                                </span>
+            </el-row>
+          </div>
+        </div>
       </div>
     </div>
+
+
     <div
       class="resume-box mt-4"
       v-if="resume.resumePracticeList && resume.resumePracticeList.length != 0"
     >
-      <div class="title-container">
-        <div class="dot"></div>
-        <h6 class="resume-title">实践经验</h6>
+      <div style="width: 615px">
+        <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
+        <span class="resume-base">工作/实习经历</span>
       </div>
-      <div
-        class="mt-4"
-        v-for="practice in resume.resumePracticeList"
-        :key="practice.id"
-      >
-        <h6>
-          {{ practice.title }}
-          <span class="ml-3 position-text" v-if="practice.post">{{
-            practice.post
-          }}</span>
-          <span class="ml-3 time-text">{{
-            practice.onWork == 1
-              ? "实践中"
-              : `${practice.startTime}到${practice.finishTime}`
-          }}</span>
-        </h6>
-        <div class="description-text" v-html="practice.description"></div>
+
+      <div v-for="resumeExp in resume.resumeExpList"
+           :key="resumeExp.id" style="display: grid;">
+        <div style="display: inline-flex;margin-top: 20px">
+          <div>
+            <span class="resume-box-text"> {{resumeExp.company}}</span>
+          </div>
+          <div style="padding-left: 31px">
+            <span>{{resumeExp.post}}</span>
+          </div>
+          <div style="padding-left: 31px">
+            <span>全职<!--{{resumeExp.jobType}}--> </span>
+          </div>
+        </div>
+        <div style="display: inline-flex">
+          <div style="width: 615px">
+            <div style="margin-top: 9px;display: inline-flex" >
+              <div style="width: 380px">
+                <span class="resume-box-text-title">行业：</span>
+                <span v-for="category in  resume.userExpectJob.categoryList"
+                      :key="category.id"
+                      class="resume-box-text-data"
+                >{{ category.name }}
+                </span>
+              </div>
+              <div>
+                <span class="resume-box-text-title">在职时间：</span>
+                <span class="resume-box-text-data">
+                    {{resumeExp.onWork == 1? '在职': `${resumeExp.startTime}到${resumeExp.finishTime}`}}
+                </span>
+              </div>
+            </div>
+            <div style="display: inline-flex;margin-top: 9px">
+              <span class="resume-box-text-title">工作描述：</span>
+              <span class="resume-box-text-html"
+                    v-html="resumeExp.description"></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+
     <div
-      class="mt-4 resume-box"
-      v-if="resume.resumeSkillList && resume.resumeSkillList.length != 0"
+            class="mt-4 resume-box"
+            v-if="resume.resumePracticeList && resume.resumePracticeList.length != 0"
     >
-      <div class="title-container mb-2">
-        <div class="dot"></div>
-        <h6 class="resume-title">能力标签</h6>
-        <div class="tag-acct">{{ resume.resumeSkillList.length }}/6</div>
-      </div>
-      <el-tag
-        v-for="skill in resume.resumeSkillList"
-        :key="skill.id"
-        effect="plain"
-        type="info"
-        size="mini"
-        class="mr-2"
-        >{{ skill.name }}</el-tag
-      >
-    </div>
-    <div class="resume-box mt-4">
-      <div class="title-container">
-        <div class="dot"></div>
-        <h6 class="resume-title">自我介绍</h6>
-      </div>
-      <div class="description-text" v-html="resume.introduction"></div>
-      <div
-        class="mt-3"
-        v-if="resume.resumeLinkList && resume.resumeLinkList.length !== 0"
-      >
-        <b>社交平台：</b>
-        <el-link
-          v-for="resumeLink in resume.resumeLinkList"
-          class="ml-2"
-          :underline="false"
-          :key="resumeLink.id"
-          :href="wholeLink(resumeLink.link)"
-          target="_blank"
-          >{{ resumeLink.name }}</el-link
-        >
-      </div>
-      <div class="mt-3" v-if="resume.attachResume">
-        <el-link :underline="false" type="primary" :href="resume.attachResume">
-          <b class="el-icon-link">附件简历</b>
-        </el-link>
+      <el-row>
+        <div style="width: 540px; display: inline-block;margin-right: 75px">
+          <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
+          <span class="resume-base">项目/其它经历</span>
+        </div>
+      </el-row>
+      <div class="resume-info" v-for="practice in resume.resumePracticeList"
+           :key="practice.id" style="margin-bottom: 10px">
+        <div class="resume-edu" style="width: 616px;padding-top: 10px;">
+          <el-row style="width: 616px;height: 40px;padding-top: 10px;">
+            <span class="resume-box-text">{{practice.title}}</span>
+            <span class="resume-box-text-title" style="padding-left: 31px">{{practice.onWork == 1? '项目进行中': `${practice.startTime}到${practice.finishTime}`}}</span>
+          </el-row>
+          <div class="edu-box">
+            <el-row class="expinfo-other-row">
+              <span class="expinfo-other" style="width: 42px">介绍：</span>
+              <span class="expinfo-other-html" v-html="practice.description"></span>
+            </el-row>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+
+
+    <div
+            class="mt-4 resume-box"
+            v-if="resume.resumeLanguageList && resume.resumeLanguageList.length != 0"
+    >
+      <el-row style="height: 30px">
+        <div style="width: 540px; display: inline-block;margin-right: 75px">
+          <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
+          <span class="resume-base">语言能力</span>
+        </div>
+      </el-row>
+      <el-row style="display: inline-flex" v-for="(language,index) in resume.resumeLanguageList"
+              :key="language.id">
+        <div class="resume-edu">
+          <el-row style="width: 615px;display: inline-flex">
+            <div style="width: 386px">
+              <span class="info-other">语种{{index+1}}: </span>
+                <span>{{language.title}}</span>
+            </div>
+            <div style="width: 200px">
+              <span class="info-other">证书或分数：</span>
+               <span>{{language.description}}</span>
+            </div>
+          </el-row>
+        </div>
+      </el-row>
+    </div>
+
+
+    <div
+            class="mt-4 resume-box"
+            v-if="resume.resumeSkillList && resume.resumeSkillList.length != 0"
+    >
+      <el-row style="height: 30px">
+        <div style="width: 540px; display: inline-block;margin-right: 75px">
+          <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
+          <span class="resume-base">证书/奖项</span>
+        </div>
+      </el-row>
+      <el-row style="display: inline-flex" v-for="(awards,index) in resume.resumeCertificateList"
+              :key="awards.id">
+        <div class="resume-edu">
+          <el-row style="width: 615px;display: inline-flex">
+            <div style="width: 386px">
+              <span class="info-other">证书/奖项名称：</span>
+              <span>{{awards.title}}</span>
+            </div>
+            <div style="width: 200px">
+              <span class="info-other">获得时间：</span>
+              <span>{{awards.time}}</span>
+            </div>
+          </el-row>
+        </div>
+      </el-row>
+    </div>
+
+
+    <div
+            class="mt-4 resume-box"
+            v-if="resume.resumeSkillList && resume.resumeSkillList.length != 0"
+    >
+      <el-row>
+        <div style="width: 540px; display: inline-block;margin-right: 75px">
+          <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
+          <span class="resume-base">能力标签</span>
+        </div>
+      </el-row>
+      <el-row style="margin-top: 15px">
+        <div class="resume-languageinfo">
+          <div class="resume-edu">
+            <el-tag
+                    v-for="skill in resume.resumeSkillList"
+                    :key="skill.id"
+                    class="tag-icon"
+            >{{ skill.name }}
+            </el-tag>
+          </div>
+        </div>
+      </el-row>
+    </div>
+
+
+    <div class="resume-box mt-4" style="margin-bottom: 100px">
+      <el-row style="height: 30px">
+        <div style="width: 540px; display: inline-block;margin-right: 75px">
+          <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
+          <span class="resume-base">自我介绍</span>
+        </div>
+      </el-row>
+      <div class="resume-languageinfo">
+        <div class="resume-introduction">
+          <span v-html="resume.introduction"></span>
+        </div>
+      </div>
+    </div>
+
+
+    </div>
 </template>
 
 <script>
@@ -215,6 +349,170 @@ export default {
 <style lang="scss">
 .resume-container {
   font-size: 15px;
+
+  .resume-box {
+    padding-left: 62px;
+    padding-top: 58px;
+    .resume-info{
+      padding-left: 13px;
+      .info-other-row-l {
+        /*margin-left: 20px;*/
+        width: 256px;
+        .info-name {
+          width: 97px;
+          height: 29px;
+          font-size: 21px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #333333;
+          line-height: 29px;
+        }
+        .info-other {
+          height: 20px;
+          font-size: 14px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #333333;
+        }
+      }
+      .info-other-row-m {
+        margin-top: 30px;
+        padding-bottom: 4px;
+      padding-left: 60px;
+      }
+    }
+      .resume-box-text{
+        font-size: 16px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+        line-height: 22px;
+      }
+      .resume-box-text-title{
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+        line-height: 20px;
+      }
+      .resume-box-text-data{
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #333333;
+        line-height: 20px;
+      }
+      .resume-box-text-html{
+        width: 478px;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #666666;
+        line-height: 20px;
+      }
+    .resume-base {
+      width: 117px;
+      height: 25px;
+      font-size: 18px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #333333;
+      line-height: 25px;
+      padding-right: 1px;
+      padding-bottom: 13px;
+    }
+    .resume-red {
+      padding-left: 5px;
+      color: #D9001B;
+      font-size: 20px;
+      height: 9px;
+      width: 9px;
+    }
+    .resume-languageinfo {
+      padding-left: 18px;
+      display: inline-flex;
+
+      .resume-introduction {
+        width: 548px;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #666666;
+        line-height: 20px;
+      }
+    }
+
+
+
+  }
+  .resume-eduinfo {
+
+
+    .resume-edu1 {
+      width: 616px;
+      padding-top: 13px;
+
+      .info-other {
+        height: 20px;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+      }
+    }
+
+    .resume-edu {
+      padding-top: 13px;
+      display: block;
+      .edu-box-l {
+        width: 346px;
+      }
+      .edu-box-l1 {
+        width: 346px;
+      }
+      .edu-box-m1 {
+           margin-top: 24px;
+           margin-right: 20px;
+
+           .info-other {
+             height: auto;
+             font-size: 14px;
+             font-family: PingFangSC-Medium, PingFang SC;
+             font-weight: 500;
+             color: #333333;
+           }
+         }
+      .edu-box {
+        display: inline-flex;
+      }
+
+
+      .edu-box-m {
+        margin-top: 24px;
+        width: 200px;
+        margin-right: 20px;
+      }
+      .edu-box-m1 {
+        margin-top: 24px;
+        margin-right: 20px;
+        .info-other{
+          height: auto;
+          font-size: 14px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #333333;
+        }
+      }
+
+      .resume-editbox {
+        padding-top: 30px;
+      }
+    }
+  }
+
+
+
+
   .title-container {
     display: flex;
     flex-direction: row;
@@ -246,23 +544,11 @@ export default {
     line-height: 17px;
   }
 
-  h5 {
-    font-size: 20px;
-    margin: 0px;
-  }
-  h6 {
-    font-size: 18px;
-    font-family: PingFangSC-Medium, PingFang SC;
-    font-weight: 500;
-    color: #333333;
-    line-height: 25px;
-    margin: 0px;
-  }
   .avatar {
-    width: 90px;
-    height: 90px;
+    width: 126px;
+    height: 126px;
     border-radius: 5px;
-    border: 1px solid #3f5ff4;
+    border: 1px solid #3F5FF4;
   }
   .description-text p {
     margin-bottom: 5px;

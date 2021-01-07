@@ -21,12 +21,12 @@ const constantRoutes = [
         meta: { title: '寰球菁英-注册' }
     },
 
-
     {
         path: '/edit-resume',
         component: () => import('@/views/EditResumePage'),
-        meta: { title: '寰球菁英-编辑简历' }
+        meta: { title: '寰球菁英-简历编辑' }
     },
+
     // {
     //   path: '/company/:id',
     //   name: 'company',
@@ -45,12 +45,12 @@ const constantRoutes = [
         component: () => import('@/views/JobPage'),
         meta: { title: '寰球菁英-职位详情' }
     },
-    {
-        path: '/resume/:id',
-        name: 'resume',
-        component: () => import('@/views/ResumePage'),
-        meta: { title: '寰球菁英-简历预览' }
-    },
+    // {
+    //     path: '/resume/:id',
+    //     name: 'resume',
+    //     component: () => import('@/views/ResumePage'),
+    //     meta: { title: '寰球菁英-简历预览' }
+    // },
     {
         path: '/job-list',
         component: () => import('@/views/JobListPage'),

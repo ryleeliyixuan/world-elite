@@ -110,21 +110,6 @@ export function saveResumeSkills(data){
   })
 }
 
-// export function saveResumeLink(data){
-//   return request({
-//     url: '/resume/save-resume-link',
-//     method: 'post',
-//     data
-//   })
-// }
-
-// export function delResumeLink(id){
-//   return request({
-//     url: '/resume/del-resume-link',
-//     method: 'post',
-//     params: {id: id}
-//   })
-// }
 
 export function getResumeDetail(id) {
   return request({
@@ -140,4 +125,13 @@ export function delResumeAttachment(resumeId){
     method: 'post',
     params: { resumeId: resumeId }
   })
+}
+export function delResume(id) {
+    return request({
+        url:'/resume/del-resume',
+        method:'post',
+        params:{ id : id }
+
+    })
+
 }
