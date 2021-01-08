@@ -1,8 +1,8 @@
 <template>
   <div class="background-wrapper">
     <Affix @on-change="scrollPane">
-      <div class="section1-wrapper">
-        <div class="section1-container" v-if="!collapse">
+      <div class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
+        <div class="section1-container">
           <!-- <el-cascader
           placeholder="城市"
           :show-all-levels="true"
@@ -115,7 +115,9 @@
             </div>
           </div>
         </div>
-        <div class="section1-container section1-collapse" v-else>
+      </div>
+      <div class="section1-wrapper section1-wrapper-collapse" v-else>
+        <div class="section1-container section1-collapse">
           <el-tag
             class="section1-collapse-tag"
             v-if="selectedIndustry && selectedIndustry.length > 0"
@@ -246,6 +248,7 @@ export default {
       moreFilter: false,
       quickFilter: false,
       collapse: false,
+      paneLoading: true,
 
       selectedSalary: "",
       selectedIndustry: "",
@@ -321,6 +324,7 @@ export default {
   },
   methods: {
     initData() {
+      this.paneLoading = true;
       listByType(5).then(
         (response) => (this.companyScaleOptions = response.data.list)
       );
@@ -366,6 +370,7 @@ export default {
             return { id: second.id, name: second.name, children };
           });
         });
+      this.paneLoading = false;
     },
     goToTop() {
       let top = document.documentElement.scrollTop || document.body.scrollTop;
@@ -488,42 +493,45 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.section1-collapse {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  /deep/ .el-tag + .el-tag {
-    margin-left: 15px;
-  }
-  .section1-collapse-tag {
-    background: #f4f5f8;
-    border-radius: 17px;
-    border: 1px solid #698ec7;
-    height: 25px;
-    width: fit-content;
+.section1-wrapper-collapse {
+  height: 38px;
+  .section1-collapse {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    /deep/ .el-tag + .el-tag {
+      margin-left: 15px;
+    }
+    .section1-collapse-tag {
+      background: #f4f5f8;
+      border-radius: 17px;
+      border: 1px solid #698ec7;
+      height: 25px;
+      width: fit-content;
+      display: flex;
+      align-items: center;
 
-    span {
+      span {
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #698ec7;
+        line-height: 20px;
+      }
+    }
+    /deep/ .el-button {
+      margin-left: 16px;
+      background: #4895ef;
+      border-radius: 17px;
+      width: 86px;
       font-size: 14px;
       font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 500;
-      color: #698ec7;
+      color: #ffffff;
       line-height: 20px;
+      padding-top: 3px;
+      padding-bottom: 3px;
     }
-  }
-  /deep/ .el-button {
-    margin-left: 16px;
-    background: #4895ef;
-    border-radius: 17px;
-    width: 86px;
-    font-size: 14px;
-    font-family: PingFangSC-Medium, PingFang SC;
-    font-weight: 500;
-    color: #ffffff;
-    line-height: 20px;
-    padding-top: 3px;
-    padding-bottom: 3px;
   }
 }
 
@@ -531,6 +539,7 @@ export default {
   background: #f6f9fc;
   max-width: 3000px !important;
   padding: 0 !important;
+  margin-top: 0 !important;
 }
 
 .section1-wrapper {
