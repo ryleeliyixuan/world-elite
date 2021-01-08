@@ -90,9 +90,7 @@ public class ActivityApi extends BaseApi {
     @GetMapping("my/draft-activity-info")
     @ApiDoc
     public ApiResult<PageResult<ActivityVo>> getMyDraftActivityInfo() {
-        final ActivityVo myDraftActivityInfo = activityService.getMyDraftActivityInfo();
-
-        return myDraftActivityInfo == null ? ApiResult.fail(message("draft.activity.not.exist")) : ApiResult.ok(myDraftActivityInfo);
+        return ApiResult.ok(activityService.getMyDraftActivityInfo());
     }
 
     /**
