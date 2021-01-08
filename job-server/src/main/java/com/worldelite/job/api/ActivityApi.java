@@ -1,9 +1,11 @@
 package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.ActivityStatus;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
+import com.worldelite.job.exception.CheckException;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.SearchNameForm;
@@ -14,11 +16,15 @@ import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.PageResult;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * 活动接口
@@ -35,6 +41,10 @@ public class ActivityApi extends BaseApi {
 
     @Autowired
     private ActivitySearchService activitySearchService;
+
+    @Qualifier("getValidator")
+    @Autowired
+    private Validator validator;
 
 
     /**
@@ -94,7 +104,15 @@ public class ActivityApi extends BaseApi {
     @RequireLogin
     @PostMapping("save")
     @ApiDoc
-    public ApiResult saveActivity(@Valid @RequestBody ActivityForm activityForm) {
+    public ApiResult saveActivity(@RequestBody ActivityForm activityForm) {
+        if(activityForm.getStatus() == null || activityForm.getStatus() != ActivityStatus.DRAFT.value){
+            final Set<ConstraintViolation<ActivityForm>> validateSet = validator.validate(activityForm);
+            if (validateSet.size() > 0) {
+                ConstraintViolation<ActivityForm> model = validateSet.iterator().next();
+                throw new CheckException(model.getPropertyPath() + model.getMessage());
+            }
+        }
+
         activityService.saveActivity(activityForm);
         return ApiResult.ok();
     }
