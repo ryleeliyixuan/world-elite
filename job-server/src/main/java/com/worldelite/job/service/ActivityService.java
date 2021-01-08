@@ -1,6 +1,7 @@
 package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.context.SpringContextHolder;
@@ -157,7 +158,7 @@ public class ActivityService extends BaseService {
         if (activity == null) {
             activity = new Activity();
         }
-        BeanUtil.copyProperties(activityForm, activity, "status");
+        BeanUtil.copyProperties(activityForm, activity,  CopyOptions.create().setIgnoreNullValue(true).setIgnoreError(true).setIgnoreProperties("status"));
 
         activity.setPoster(AppUtils.getOssKey(activityForm.getPoster()));
 
