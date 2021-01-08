@@ -204,14 +204,13 @@ public class ActivityService extends BaseService {
 
             if (activityForm.getStatus() != null) {
                 activity.setStatus(activityForm.getStatus());
-                activityMapper.updateByPrimaryKeySelective(activity);
             } else {
                 //原本草稿状态,更新时不带状态,设为待审核
                 if (activity.getStatus() == ActivityStatus.DRAFT.value)
                     activity.setStatus(ActivityStatus.REVIEWING.value);
 
-                activityMapper.updateByPrimaryKeySelective(activity);
             }
+            activityMapper.updateByPrimaryKeySelective(activity);
 
             activityStatusManager.remove(activity.getId());
             activityStatusManager.put(activity);
