@@ -40,6 +40,12 @@ public class ActivityStatusManager implements CommandLineRunner {
     }
 
     public void put(Activity activity) {
+        //仅对有效的活动创建索引
+        if (activity.getStatus() == ActivityStatus.REVIEWING.value
+                || activity.getStatus() == ActivityStatus.DRAFT.value
+                || activity.getStatus() == ActivityStatus.OFFLINE.value
+                || activity.getDelFlag() == Bool.TRUE) return;
+
         long diff;
         if (activity.getRegistrationStartTime() != null && (diff = ChronoUnit.MILLIS.between(Instant.now(), activity.getRegistrationStartTime().toInstant())) > 0) {
             put(new DelayActivityInfo(activity.getId(), diff));
@@ -117,9 +123,9 @@ public class ActivityStatusManager implements CommandLineRunner {
         activities.forEach(activity -> {
             //仅对有效的活动创建索引
             if (activity.getStatus() == ActivityStatus.REVIEWING.value
-                    && activity.getStatus() == ActivityStatus.DRAFT.value
-                    && activity.getStatus() == ActivityStatus.OFFLINE.value
-                    && activity.getDelFlag() == Bool.TRUE) return;
+                    || activity.getStatus() == ActivityStatus.DRAFT.value
+                    || activity.getStatus() == ActivityStatus.OFFLINE.value
+                    || activity.getDelFlag() == Bool.TRUE) return;
 
             final ActivityStatus activityStatus = getActivityStatus(activity);
             //如果数据库中活动状态与算出来的不一样就要更新

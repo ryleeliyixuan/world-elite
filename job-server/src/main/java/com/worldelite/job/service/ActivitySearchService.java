@@ -204,9 +204,9 @@ public class ActivitySearchService {
     private void buildActivityIndex(Activity activity) {
         //仅对有效的活动创建索引
         if (activity.getStatus() == ActivityStatus.REVIEWING.value
-                && activity.getStatus() == ActivityStatus.DRAFT.value
-                && activity.getStatus() == ActivityStatus.OFFLINE.value
-                && activity.getDelFlag() == Bool.TRUE) return;
+                || activity.getStatus() == ActivityStatus.DRAFT.value
+                || activity.getStatus() == ActivityStatus.OFFLINE.value
+                || activity.getDelFlag() == Bool.TRUE) return;
 
         Document doc = new Document();
 

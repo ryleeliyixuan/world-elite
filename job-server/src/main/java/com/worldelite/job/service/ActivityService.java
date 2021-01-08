@@ -91,6 +91,17 @@ public class ActivityService extends BaseService {
         return pageResult;
     }
 
+    public ActivityVo getMyDraftActivityInfo() {
+        ActivityOptions options = new ActivityOptions();
+        options.setUserId(curUser().getId());
+        options.setStatus(ActivityStatus.DRAFT.value);
+        final List<Activity> activities = activityMapper.selectAndList(options);
+        if (activities.size() > 0)
+            return toActivityVo(activities.get(0));
+
+        return null;
+    }
+
     /**
      * 获取活动详情
      *
@@ -146,7 +157,7 @@ public class ActivityService extends BaseService {
         if (activity == null) {
             activity = new Activity();
         }
-        BeanUtil.copyProperties(activityForm, activity);
+        BeanUtil.copyProperties(activityForm, activity, "status");
 
         activity.setPoster(AppUtils.getOssKey(activityForm.getPoster()));
 
@@ -164,26 +175,42 @@ public class ActivityService extends BaseService {
                 }
             }
 
-            //新发布的活动都是未来将举办的,状态默认即将开始
-            activity.setStatus(ActivityStatus.WILL.value);
-            activityMapper.insertSelective(activity);
+            //草稿直接保存
+            if (activityForm.getStatus() != null && activityForm.getStatus() == ActivityStatus.DRAFT.value) {
+                activity.setStatus(ActivityStatus.DRAFT.value);
+                activityMapper.insertSelective(activity);
+            } else {
+                //新发布的活动状态默认待审核
+                activity.setStatus(ActivityStatus.REVIEWING.value);
+                activityMapper.insertSelective(activity);
 
-            //添加活动审核信息
-            ActivityReviewForm activityReviewForm = new ActivityReviewForm();
-            activityReviewForm.setActivityId(activity.getId());
-            activityReviewForm.setUserId(activity.getUserId());
-            activityReviewService.addActivityReview(activityReviewForm);
+                //添加活动审核信息
+                ActivityReviewForm activityReviewForm = new ActivityReviewForm();
+                activityReviewForm.setActivityId(activity.getId());
+                activityReviewForm.setUserId(activity.getUserId());
+                activityReviewService.addActivityReview(activityReviewForm);
 
-            activityStatusManager.put(activity);
+                activityStatusManager.put(activity);
+            }
         } else {
             activity.setUpdateTime(new Date());
-            activityMapper.updateByPrimaryKeySelective(activity);
 
             if (activityForm.getOrganizerInfoForm() != null) {
                 final OrganizerInfoVo organizerInfoVo = organizerInfoService.updateOrganizerInfo(activityForm.getOrganizerInfoForm());
                 if (organizerInfoVo != null) {
                     activity.setOrganizerId(organizerInfoVo.getId());
                 }
+            }
+
+            if (activityForm.getStatus() != null) {
+                activity.setStatus(activityForm.getStatus());
+                activityMapper.updateByPrimaryKeySelective(activity);
+            } else {
+                //原本草稿状态,更新时不带状态,设为待审核
+                if (activity.getStatus() == ActivityStatus.DRAFT.value)
+                    activity.setStatus(ActivityStatus.REVIEWING.value);
+
+                activityMapper.updateByPrimaryKeySelective(activity);
             }
 
             activityStatusManager.remove(activity.getId());
@@ -249,9 +276,9 @@ public class ActivityService extends BaseService {
 
         activityVo.setOrganizerInfoVo(organizerInfoService.getOrganizerInfo(activity.getOrganizerId()));
 
-        if(curUser() != null) {
+        if (curUser() != null) {
             final Registration registration = registrationMapper.selectRegistrationStatusByUserId(activity.getId(), curUser().getId());
-            if(registration != null){
+            if (registration != null) {
                 activityVo.setRegistrationFlag(true);
                 activityVo.setRegistrationTime(registration.getCreateTime().getTime());
             }
@@ -276,14 +303,14 @@ public class ActivityService extends BaseService {
     /**
      * 减去一个报名人数
      */
-    public boolean minusApplicant(Integer activityId){
+    public boolean minusApplicant(Integer activityId) {
         return activityMapper.minusApplicant(activityId) == 1;
     }
 
     /**
      * 增加一个报名人数
      */
-    public boolean increaseApplicant(Integer activityId){
+    public boolean increaseApplicant(Integer activityId) {
         return activityMapper.increaseApplicant(activityId) == 1;
     }
 
