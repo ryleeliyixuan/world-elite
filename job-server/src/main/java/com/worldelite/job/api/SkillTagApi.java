@@ -1,8 +1,10 @@
 package com.worldelite.job.api;
 
 import com.worldelite.job.entity.SkillTag;
+import com.worldelite.job.form.SkillTagListForm;
 import com.worldelite.job.service.SkillTagService;
 import com.worldelite.job.vo.ApiResult;
+import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.SkillTagGroupVo;
 import com.worldelite.job.vo.SkillTagVo;
 import io.github.yedaxia.apidocs.ApiDoc;
@@ -38,6 +40,13 @@ public class SkillTagApi {
         skillTag.setName(name);
         List<SkillTagVo> skillTagVoList = skillTagService.getSkillTagList(skillTag);
         return ApiResult.ok(skillTagVoList);
+    }
+
+
+    @GetMapping("list")
+    public ApiResult<PageResult<SkillTagVo>> getSkillList(SkillTagListForm skillTagListForm) {
+        PageResult<SkillTagVo> pageResult = skillTagService.getSkillTagPage(skillTagListForm);
+        return ApiResult.ok(pageResult);
     }
 
     /**

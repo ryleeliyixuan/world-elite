@@ -7,7 +7,7 @@ export function listByType(type){
         params: {
             type: type,
             page: 1,
-            limit: 100,
+            limit: 10,
             sort: '+id'
         } 
       })
