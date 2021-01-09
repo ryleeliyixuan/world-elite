@@ -1,10 +1,14 @@
 package com.worldelite.job.service;
 
+import com.github.pagehelper.Page;
 import com.worldelite.job.entity.Dict;
 import com.worldelite.job.entity.SkillTag;
 import com.worldelite.job.form.DictListForm;
+import com.worldelite.job.form.SkillTagListForm;
 import com.worldelite.job.mapper.SkillTagMapper;
+import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.DictVo;
+import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.SkillTagGroupVo;
 import com.worldelite.job.vo.SkillTagVo;
 import lombok.extern.slf4j.Slf4j;
@@ -80,4 +84,14 @@ public class SkillTagService extends BaseService{
         return type;
     }
 
+    public PageResult<SkillTagVo> getSkillTagPage(SkillTagListForm skillTagListForm) {
+        SkillTag options = new SkillTag();
+        options.setType(skillTagListForm.getType());
+        AppUtils.setPage(skillTagListForm);
+        Page<SkillTag> skillTagPage = (Page<SkillTag>) skillTagMapper.selectAndList(options);
+        PageResult<SkillTagVo> pageResult = new PageResult<>(skillTagPage);
+        pageResult.setList(AppUtils.asVoList(skillTagPage, SkillTagVo.class));
+        return pageResult;
+
+    }
 }

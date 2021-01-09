@@ -3,47 +3,86 @@
     <Affix @on-change="scrollPane">
       <div class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
         <div class="section1-container">
-          <!-- <el-cascader
-          placeholder="城市"
-          :show-all-levels="true"
-          :options="cityOptions"
-          :props="cityIdProps"
-          clearable
-          @change="handleFilter"
-          class="cascader"
-          v-model="listQuery.cityIds"
-        >
-        </el-cascader> -->
-          <!-- 行业类型 -->
-          <div class="section1-filter">
-            <span class="section1-filter-title">行业类型：</span>
-            <el-checkbox-group
-              v-model="listQuery.companyIndustryIds"
-              size="small"
-            >
-              <el-checkbox-button
-                v-for="item in companyIndustryOptions"
-                :label="item.id"
-                :key="item.id"
-                @change="handleFilter"
-                >{{ item.name }}</el-checkbox-button
-              >
-            </el-checkbox-group>
-          </div>
-          <!-- 月薪区间 -->
-          <div class="section1-filter">
-            <span class="section1-filter-title">月薪区间：</span>
-            <el-checkbox-group v-model="listQuery.salaryRangeIds" size="small">
-              <el-checkbox-button
-                v-for="item in salaryRangeOptions"
-                :label="item.id"
-                :key="item.id"
-                @change="handleFilter"
-                >{{ item.name }}</el-checkbox-button
-              >
-            </el-checkbox-group>
-          </div>
+
           <div v-show="moreFilter">
+            <!-- 所在城市 -->
+            <div class="section1-filter">
+              <span class="section1-filter-title">所在城市：</span>
+              <el-checkbox-group
+                      v-model="listQuery.cityIds"
+                      size="small"
+              >
+                <el-checkbox-button
+                        v-for="item in cityOptions"
+                        :label="item.id"
+                        :key="item.id"
+                        @change="handleFilter"
+                >{{ item.name }}</el-checkbox-button
+                >
+              </el-checkbox-group>
+              <el-input class="inp-city" v-model="inpCity" size="mini" placeholder="输入国内外其他城市名，支持多个"></el-input>
+            </div>
+
+            <!-- 行业类型 -->
+            <div class="section1-filter">
+              <span class="section1-filter-title">行业类型：</span>
+              <el-checkbox-group
+                      v-model="listQuery.companyIndustryIds"
+                      size="small"
+              >
+                <el-checkbox-button
+                        v-for="item in companyIndustryOptions"
+                        :label="item.id"
+                        :key="item.id"
+                        @change="handleFilter"
+                >{{ item.name }}</el-checkbox-button
+                >
+              </el-checkbox-group>
+            </div>
+
+            <!-- 月薪区间 -->
+            <div class="section1-filter">
+              <span class="section1-filter-title">月薪区间：</span>
+              <el-checkbox-group v-model="listQuery.salaryRangeIds" size="small">
+                <el-checkbox-button
+                        v-for="item in salaryRangeOptions"
+                        :label="item.id"
+                        :key="item.id"
+                        @change="handleFilter"
+                >{{ item.name }}</el-checkbox-button
+                >
+              </el-checkbox-group>
+            </div>
+
+            <!-- 学历要求 -->
+            <div class="section1-filter">
+              <span class="section1-filter-title">学历要求：</span>
+              <el-checkbox-group v-model="listQuery.degreeIds" size="small">
+                <el-checkbox-button
+                        v-for="item in degreeOptions"
+                        :label="item.id"
+                        :key="item.id"
+                        @change="handleFilter"
+                >{{ item.name }}</el-checkbox-button
+                >
+              </el-checkbox-group>
+            </div>
+
+            <!-- 工作经验 -->
+            <div class="section1-filter">
+              <span class="section1-filter-title">工作经验：</span>
+              <el-checkbox-group v-model="listQuery.experienceIds" size="small">
+                <el-checkbox-button
+                        v-for="item in experienceOptions"
+                        :label="item.id"
+                        :key="item.id"
+                        @change="handleFilter"
+                >{{ item.name }}</el-checkbox-button
+                >
+              </el-checkbox-group>
+            </div>
+
+            <!-- 公司规模 -->
             <div class="section1-filter">
               <span class="section1-filter-title">公司规模：</span>
               <el-checkbox-group
@@ -59,6 +98,25 @@
                 >
               </el-checkbox-group>
             </div>
+
+            <!-- 企业性质 -->
+            <div class="section1-filter">
+              <span class="section1-filter-title">企业性质：</span>
+              <el-checkbox-group
+                      v-model="listQuery.companyDefineIds"
+                      size="small"
+              >
+                <el-checkbox-button
+                        v-for="item in companyDefineOptions"
+                        :label="item.id"
+                        :key="item.id"
+                        @change="handleFilter"
+                >{{ item.name }}</el-checkbox-button
+                >
+              </el-checkbox-group>
+            </div>
+
+            <!-- 工作类型 -->
             <div class="section1-filter">
               <span class="section1-filter-title">工作类型：</span>
               <el-checkbox-group v-model="listQuery.jobTypes" size="small">
@@ -71,28 +129,77 @@
                 >
               </el-checkbox-group>
             </div>
-          </div>
-          <div class="section1-filter-option">
-            <el-button
-              class="quick"
-              @click="quickFilter = !quickFilter"
-              size="mini"
+
+            <!-- 语言要求 -->
+            <div class="section1-filter">
+              <span class="section1-filter-title">语言要求：</span>
+              <el-checkbox-group v-model="listQuery.lanRequiredIds" size="small">
+                <el-checkbox-button
+                        v-for="item in lanRequiredOptions"
+                        :label="item.id"
+                        :key="item.id"
+                        @change="handleFilter"
+                >{{ item.name }}</el-checkbox-button
+                >
+              </el-checkbox-group>
+            </div>
+
+            <!-- 特殊筛选 -->
+            <div class="section1-filter">
+              <span class="section1-filter-title">特殊筛选：</span>
+              <el-checkbox-group v-model="listQuery.specialIds" size="small">
+                <el-checkbox-button>
+                  内推
+                </el-checkbox-button>
+                <el-checkbox-button>
+                  留学经验优先
+                </el-checkbox-button>
+                <el-checkbox-button>
+                  线上工作
+                </el-checkbox-button>
+              </el-checkbox-group>
+            </div>
+
+            <div class="section1-filter-option">
+              <el-button
+                      class="quick"
+                      @click="quickFilter = !quickFilter"
+                      size="mini"
               >快速筛选</el-button
-            >
-            <el-button
-              class="more"
-              @click="moreFilter = !moreFilter"
-              size="mini"
-              >更多筛选</el-button
-            >
-            <el-button class="empty" @click="emptyFilter" type="text"
-              ><svg-icon
-                class="empty-icon"
-                icon-class="joblistdelete"
-                style="height: 19px; width: 19px"
-              />清除选项</el-button
-            >
+              >
+              <el-button
+                      class="more"
+                      @click="moreFilter = !moreFilter"
+                      size="mini"
+              >收起</el-button
+              >
+            </div>
+
           </div>
+
+          <div v-show="!moreFilter">
+            <div class="inp-search">
+              <el-input class="inp-search-child" size="mini" placeholder="城市"></el-input>
+              <el-input class="inp-search-child" size="mini" placeholder="行业"></el-input>
+              <el-input class="inp-search-child" size="mini" placeholder="薪资"></el-input>
+              <el-input class="inp-search-child" size="mini" placeholder="学历"></el-input>
+              <el-input class="inp-search-child" size="mini" placeholder="工作经验"></el-input>
+              <div class="section1-filter-option">
+                <el-button
+                        style="flex: 1; margin-left: 10px;"
+                        class="more"
+                        @click="moreFilter = !moreFilter"
+                        size="mini"
+                >更多筛选</el-button>
+              </div>
+
+              <el-link style="margin-left: 60px;" class="sort-options" target="_blank">推荐排序</el-link>
+              <el-link class="sort-options" target="_blank">最新发布</el-link>
+              <el-link class="sort-options" target="_blank">薪资降序</el-link>
+            </div>
+
+          </div>
+
           <div v-show="quickFilter" class="quickFilter">
             <div class="quickFilter-left">
               <span class="quickFilter-title">搜索记录：</span>
@@ -147,7 +254,23 @@
         </div>
       </div>
     </Affix>
+    <el-button style="position: absolute; top: 110px; left: 1520px; color: #2d3436; font-size: 14px;" class="empty" @click="emptyFilter" type="text"
+    ><svg-icon
+            class="empty-icon"
+            icon-class="joblistdelete"
+            style="height: 19px; width: 19px; margin-right: 6px; margin-bottom: 2px;"
+    />清除选项</el-button
+    >
     <div class="app-container">
+      <div class="section2-container" style="padding-bottom: 40px; padding-top: 70px;">
+        <pagination
+                v-show="total"
+                :total="total"
+                :page.sync="listQuery.page"
+                :limit.sync="listQuery.limit"
+                @pagination="handleRouteList"
+        />
+      </div>
       <div v-if="showNoResult" style="text-align: center; line-height: 40px">
         暂无搜索结果，显示推荐职位
       </div>
@@ -176,6 +299,7 @@
                   job.minDegree ? job.minDegree.name : ""
                 }`
               }}</span>
+              <el-link class="chat-link" :underline="false" icon="el-icon-chat-dot-round">聊一聊</el-link>
             </div>
           </div>
           <div
@@ -263,17 +387,27 @@ export default {
         companyIndustryIds: [],
         companyScaleIds: [],
         companyStageIds: [],
+        companyDefineIds: [],
         degreeIds: [],
+        experienceIds: [],
         categoryIds: [],
+        lanRequiredIds: [],
+        specialIds: [],
         page: 1,
         limit: 10,
       },
+      inpCity: "",
       total: 0,
       pageResult: {},
       salaryRangeOptions: [],
       companyScaleOptions: [],
       companyIndustryOptions: [],
       jobTypeOptions: [],
+      cityOptions: [],
+      degreeOptions: [],
+      experienceOptions: [],
+      companyDefineOptions: [],
+      lanRequiredOptions: [],
       showNoResult: false,
       cityIdProps: {
         multiple: true,
@@ -303,10 +437,6 @@ export default {
         emitPath: false,
         children: "children",
       },
-      cityOptions: [
-        { id: 1, name: "国内", children: [{ id: 0, name: "加载中" }] },
-        { id: 2, name: "国外" },
-      ],
     };
   },
   created() {
@@ -325,6 +455,9 @@ export default {
   methods: {
     initData() {
       this.paneLoading = true;
+      listByType(2).then(
+        (response) => (this.cityOptions = response.data.list)
+      );
       listByType(5).then(
         (response) => (this.companyScaleOptions = response.data.list)
       );
@@ -337,7 +470,28 @@ export default {
       listByType(9).then(
         (response) => (this.salaryRangeOptions = response.data.list)
       );
-      this.$axios
+      listByType(1).then(
+        (response) => (this.degreeOptions = response.data.list)
+      );
+      listByType(13).then(
+        (response) => (this.experienceOptions = response.data.list)
+      );
+      listByType(7).then(
+        (response) => (this.companyDefineOptions = response.data.list)
+      );
+      this.$axios.request({
+        url: "/skill-tag/list",
+        method: "get",
+        params: {
+          type: 163,
+          page: 1,
+          limit: 10,
+          sort: '+id'
+        }
+      }).then((resp) => {
+        this.lanRequiredOptions = resp.data.list;
+      });
+      /*this.$axios
         .request({
           url: "/city/list",
           method: "get",
@@ -369,7 +523,7 @@ export default {
               });
             return { id: second.id, name: second.name, children };
           });
-        });
+        });*/
       this.paneLoading = false;
     },
     goToTop() {
@@ -391,26 +545,26 @@ export default {
 
       for (let i = 0; i < this.salaryRangeOptions.length; i++) {
         let item = this.salaryRangeOptions[i];
-        if (this.listQuery.salaryRangeIds.indexOf(item.id) != -1) {
+        if (this.listQuery.salaryRangeIds.indexOf(item.id) !== -1) {
           this.selectedSalary += item.name + "，";
         }
       }
       for (let i = 0; i < this.companyIndustryOptions.length; i++) {
         let item = this.companyIndustryOptions[i];
-        if (this.listQuery.companyIndustryIds.indexOf(item.id) != -1) {
+        if (this.listQuery.companyIndustryIds.indexOf(item.id) !== -1) {
           this.selectedIndustry += item.name + "，";
         }
       }
       for (let i = 0; i < this.companyScaleOptions.length; i++) {
         let item = this.companyScaleOptions[i];
-        if (this.listQuery.companyScaleIds.indexOf(item.id) != -1) {
+        if (this.listQuery.companyScaleIds.indexOf(item.id) !== -1) {
           this.selectedScale += item.name + "，";
         }
       }
 
       for (let i = 0; i < this.jobTypeOptions.length; i++) {
         let item = this.jobTypeOptions[i];
-        if (this.listQuery.jobTypes.indexOf(item.id) != -1) {
+        if (this.listQuery.jobTypes.indexOf(item.id) !== -1) {
           this.selectedJobType += item.name + "，";
         }
       }
@@ -558,6 +712,25 @@ export default {
     max-width: 1140px;
     flex: 1;
     padding: 0px 30px;
+
+    .sort-options {
+      justify-content: flex-end;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    .inp-search {
+      display: flex;
+      justify-content: space-between;
+
+      .inp-search-child {
+        flex: 1;
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+
+    }
+
   }
 
   .quickFilter {
@@ -606,12 +779,21 @@ export default {
       }
     }
   }
-
   .section1-filter {
     display: flex;
     flex-direction: row;
     align-items: center;
     margin-bottom: 11px;
+
+
+    .inp-city {
+      width: 250px;
+      margin-left: 50px;
+
+      input {
+        height: 21px;
+      }
+    }
 
     .section1-filter-title {
       font-size: 16px;
@@ -682,10 +864,6 @@ export default {
       font-weight: 500;
       color: #333333;
       line-height: 20px;
-
-      .empty-icon {
-        margin-right: 6px;
-      }
     }
   }
 }
@@ -796,6 +974,13 @@ export default {
     min-width: 335px;
     margin-bottom: 62px;
 
+    .chat-link {
+      color: #74b9ff;
+      text-underline: none;
+      position: relative;
+      right: 8px;
+    }
+    
     .section3-item-container {
       margin-bottom: 16px;
       height: 130px;
