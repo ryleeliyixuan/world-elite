@@ -26,6 +26,7 @@
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="avatar" jdbcType="VARCHAR" property="avatar" />
     <result column="attach_resume" jdbcType="VARCHAR" property="attachResume" />
+    <result column="attach_other" jdbcType="VARCHAR" property="attachOther" />
     <result column="priority" jdbcType="TINYINT" property="priority" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.worldelite.job.entity.Resume">
@@ -42,7 +43,7 @@
     -->
     id, user_id, name, birth, gender, country_id, max_degree_id, marital_status, return_time, 
     graduate_time, cur_place, lang, create_time, update_time, status, type, email, phone, 
-    avatar, attach_resume, priority
+    avatar, attach_resume, priority, attach_other
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -82,8 +83,8 @@
       graduate_time, cur_place, lang, 
       create_time, update_time, status, 
       type, email, phone, 
-      avatar, attach_resume, priority, 
-      introduction)
+      avatar, attach_resume, priority,
+      introduction, attach_other)
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
       #{birth,jdbcType=TIMESTAMP}, #{gender,jdbcType=TINYINT}, #{countryId,jdbcType=INTEGER}, 
       #{maxDegreeId,jdbcType=INTEGER}, #{maritalStatus,jdbcType=TINYINT}, #{returnTime,jdbcType=TIMESTAMP}, 
@@ -91,7 +92,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
       #{type,jdbcType=TINYINT}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{avatar,jdbcType=VARCHAR}, #{attachResume,jdbcType=VARCHAR}, #{priority,jdbcType=TINYINT}, 
-      #{introduction,jdbcType=LONGVARCHAR})
+      #{introduction,jdbcType=LONGVARCHAR}, #{attachOther, jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.worldelite.job.entity.Resume">
     <!--
@@ -166,6 +167,9 @@
       <if test="introduction != null">
         introduction,
       </if>
+      <if test="attachOther != null">
+        attach_other,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -233,6 +237,9 @@
       </if>
       <if test="introduction != null">
         #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="attachOther != null">
+        #{attachOther,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -306,6 +313,9 @@
       <if test="introduction != null">
         introduction = #{introduction,jdbcType=LONGVARCHAR},
       </if>
+      <if test="attachOther != null">
+        attach_other = #{attachOther,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -335,7 +345,8 @@
       avatar = #{avatar,jdbcType=VARCHAR},
       attach_resume = #{attachResume,jdbcType=VARCHAR},
       priority = #{priority,jdbcType=TINYINT},
-      introduction = #{introduction,jdbcType=LONGVARCHAR}
+      introduction = #{introduction,jdbcType=LONGVARCHAR},
+      attach_other = #{attachOther, jdbcType=VARCHAR},
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.worldelite.job.entity.Resume">
@@ -363,7 +374,8 @@
       phone = #{phone,jdbcType=VARCHAR},
       avatar = #{avatar,jdbcType=VARCHAR},
       attach_resume = #{attachResume,jdbcType=VARCHAR},
-      priority = #{priority,jdbcType=TINYINT}
+      priority = #{priority,jdbcType=TINYINT},
+      attach_other = #{attachOther,jdbcType=VARCHAR},
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -47,6 +47,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     @ResumeScore(4)
     private String introduction; //个人介绍
     private String attachResume; //附件简历
+    private String attachOther; // 其他附件
     private String userId; //用户Id
     private String companyId; //企业Id
     private Byte status; //简历状态

@@ -42,6 +42,8 @@ public class ResumeForm {
     private String phoneCode; //电话区号
     private Long phone; //电话号码
 
+    private Byte maritalStatus; // 政治面貌
+
     public String getEmail() {
         return email;
     }

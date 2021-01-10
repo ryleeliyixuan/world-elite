@@ -11,6 +11,7 @@ import com.worldelite.job.vo.CityVo;
 import com.worldelite.job.vo.JobCategoryVo;
 import com.worldelite.job.vo.UserExpectJobVo;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -62,6 +64,7 @@ public class UserExpectJobService extends BaseService {
             for (UserExpectJob userExpectJob : userExpectJobList) {
                 categoryVoList.add(jobCategoryService.getById(userExpectJob.getCategoryId()));
             }
+            userExpectJobVo.setExpectWorkType(userExpectJobList.get(0).getExpectWorkType());
         }
         userExpectJobVo.setCategoryList(categoryVoList);
         UserExpectPlace expectPlaceOptions = new UserExpectPlace();
@@ -79,6 +82,7 @@ public class UserExpectJobService extends BaseService {
         if (userExpectSalary != null) {
             userExpectJobVo.setSalary(dictService.getById(userExpectSalary.getSalaryId()));
         }
+
         return userExpectJobVo;
     }
 
@@ -162,6 +166,7 @@ public class UserExpectJobService extends BaseService {
                 UserExpectJob userExpectJob = new UserExpectJob();
                 userExpectJob.setUserId(userId);
                 userExpectJob.setCategoryId(categoryId);
+                userExpectJob.setExpectWorkType(userExpectJobForm.getExpectWorkType());
                 expectJobMapper.insertSelective(userExpectJob);
             }
         }
@@ -181,5 +186,12 @@ public class UserExpectJobService extends BaseService {
 //            indexService.saveResumeItem(resumeId);
 //        }
         return getUserExpectJob(userId);
+    }
+
+    public String getExpectWorkType(Long id) {
+        UserExpectJob userExpectJob = new UserExpectJob();
+        userExpectJob.setUserId(id);
+        Optional<List<UserExpectJob>> optionalList = Optional.ofNullable(expectJobMapper.selectAndList(userExpectJob));
+        return optionalList.isPresent() ? optionalList.get().get(0).getExpectWorkType() : "";
     }
 }

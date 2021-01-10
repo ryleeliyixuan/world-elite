@@ -1,5 +1,6 @@
 package com.worldelite.job.service;
 
+import com.worldelite.job.util.SimpleFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,8 +9,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-
-import static org.springframework.util.ResourceUtils.getFile;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -28,7 +27,9 @@ public class FileService {
      * @return
      */
     public File getFile(String relativePath){
-        return  new File(tempPath, relativePath);
+        File file = new File(tempPath, relativePath);
+        SimpleFileUtils.createDir(file);
+        return file;
     }
 
     /**

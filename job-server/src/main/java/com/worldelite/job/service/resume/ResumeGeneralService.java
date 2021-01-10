@@ -316,6 +316,8 @@ public class ResumeGeneralService extends ResumeService {
         resume.setIntroduction(resumeForm.getIntroduction());
         resume.setEmail(resumeForm.getEmail());
         resume.setPhone(resumeForm.getPhone() + "");
+        resume.setMaritalStatus(resumeForm.getMaritalStatus());
+        resume.setPriority(resumeForm.getPriority());
         //******************************
         resumeMergeAttachService.saveResumeMergeAttaches(resumeForm.getAttachOthers(), resume);
 
@@ -394,9 +396,13 @@ public class ResumeGeneralService extends ResumeService {
         //名字
         resumeDetail.setName(userApplicant.getName());
         //邮箱
-        resumeDetail.setEmail(userApplicant.getEmail());
+        resumeDetail.setEmail(resume.getEmail());
         //电话
-        resumeDetail.setPhone(userApplicant.getPhone());
+        if (!StringUtils.isEmpty(resume.getPhone())){
+            resumeDetail.setPhone(Long.parseLong(resume.getPhone()));
+        }
+        // 工作类型
+//        resumeDetail.setWorkType(resume.getWorkType());
         //区号
         resumeDetail.setPhoneCode(userApplicant.getPhoneCode());
         //头像
@@ -421,6 +427,8 @@ public class ResumeGeneralService extends ResumeService {
         resumeDetail.setCityList(userExpectJobService.getExpectCityList(userApplicant.getId()));
         //薪资范围
         resumeDetail.setSalary(userExpectJobService.getSalary(userApplicant.getId()));
+        // 期望工作类型
+        resumeDetail.setExpectWorkType(userExpectJobService.getExpectWorkType(userApplicant.getId()));
         //language
         resumeDetail.setResumeLanguageList(resumeLanguageService.getResumeLanguageList(resumeId));
         //other attaches
@@ -481,6 +489,9 @@ public class ResumeGeneralService extends ResumeService {
             resumeVo.setUpdateTime(resumeDetail.getResumeBasic().getUpdateTime());
             resumeVo.setReturnTime(resumeDetail.getResumeBasic().getReturnTime());
             resumeVo.setMaritalStatus(resumeDetail.getResumeBasic().getMaritalStatus());
+            resumeVo.setPriority(resumeDetail.getResumeBasic().getPriority());
+            resumeVo.setAttachResume(resumeDetail.getResumeBasic().getAttachResume());
+            resumeVo.setAttachOther(resumeDetail.getResumeBasic().getAttachOther());
         }
 
         //教育信息
@@ -525,6 +536,9 @@ public class ResumeGeneralService extends ResumeService {
         }
         if (resumeDetail.getSalary() != null) {
             userExpectJobVo.setSalary(new DictVo().asVo(resumeDetail.getSalary()));
+        }
+        if (!StringUtils.isEmpty(resumeDetail.getExpectWorkType())) {
+            userExpectJobVo.setExpectWorkType(resumeDetail.getExpectWorkType());
         }
         resumeVo.setUserExpectJob(userExpectJobVo);
         //attach others
