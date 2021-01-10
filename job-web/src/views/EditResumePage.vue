@@ -36,17 +36,15 @@
                                 <span style="padding-left: 8px;padding-right: 9px">优先级
                                 <span style="color: #d9001b;font-size: 20px;height: 3px;width: 3px;vertical-align: sub;padding-right: 9px">*</span>
                                     ：</span>
-                                <el-select class="selectleave" v-model="resumeForm.poriority" placeholder="">
+                                <el-select class="selectleave" v-model="resumeForm.priority" placeholder="请选择优先级">
                                     <el-option
-                                            v-for="item in poriorityList"
-                                            :key="item.value"
-                                            :label="item.label"
-                                            :value="item.value"
-                                            @click="handleSaveResumeBasic"
-                                            style="width: 89px;height: 25px">
-                                    </el-option>
-
+                                            :label="dict.name"
+                                            :value="dict.value"
+                                            v-for="dict in priorityList"
+                                            :key="dict.id"
+                                    />
                                 </el-select>
+
                             </span>
                                     </div>
                                 </el-row>
@@ -84,7 +82,7 @@
                                                             <el-option
                                                                     v-for="item in maritalStatusList"
                                                                     :key="item.value"
-                                                                    :label="item.label"
+                                                                    :label="item.name"
                                                                     :value="item.value">
                                                             </el-option>
                                                         </el-select>
@@ -141,9 +139,7 @@
                                                                       class="m-input-text-width">
                                                             <el-date-picker
                                                                     v-model="resumeForm.returnTime"
-                                                                    :picker-options="oldDatePickerOptions"
                                                                     type="date"
-                                                                    value-format="yyyy-MM-dd"
                                                                     placeholder="选择日期"
                                                             ></el-date-picker>
                                                         </el-form-item>
@@ -199,7 +195,8 @@
                             </span>
                                         </el-row>
                                         <div class="resume-basicinfo row mt-3">
-                                            <div class="avatorHolder">
+                                            <div class="avatorHolder" ref="resumeForm" :model="resumeForm"
+                                                 :rules="resumeFormRules">
                                                 <el-upload
                                                         class="avatar-uploader"
                                                         :action="uploadPicOptions.action"
@@ -225,7 +222,7 @@
                                                     <el-row class="info-name">{{item.name}}</el-row>
                                                     <el-row class="info-other">性别：
                                                         <span v-if="item.gender==1">男</span>
-                                                        <span v-if="item.gender==2"></span>
+                                                        <span v-if="item.gender==2">女</span>
                                                     </el-row>
                                                     <el-row class="info-other">年龄：{{item.age}} 岁</el-row>
                                                     <el-row class="info-other">邮箱：{{item.email}}</el-row>
@@ -408,16 +405,16 @@
                                                      style="padding-right: 9px;padding-bottom: 7px">
                                                 <span class="resume-base">求职意向</span>
                                                 <span class="resume-red">*</span>
-<!--                                                <span class="jobcount">1/4</span>-->
-<!--                                                <span class="mark-row">-->
-<!--                                    <img src="../assets/resume_qmark.png"-->
-<!--                                         class="mark-icon"-->
-<!--                                         @mouseenter="onMouseOver2">-->
-<!--                                    </span>-->
-<!--                                                <span class="mark-text"-->
-<!--                                                      v-show="seen2"-->
-<!--                                                      @mouseleave="onMouseOut2">最多可显示4个求职意向-->
-<!--                                    </span>-->
+                                                <!--                                                <span class="jobcount">1/4</span>-->
+                                                <!--                                                <span class="mark-row">-->
+                                                <!--                                    <img src="../assets/resume_qmark.png"-->
+                                                <!--                                         class="mark-icon"-->
+                                                <!--                                         @mouseenter="onMouseOver2">-->
+                                                <!--                                    </span>-->
+                                                <!--                                                <span class="mark-text"-->
+                                                <!--                                                      v-show="seen2"-->
+                                                <!--                                                      @mouseleave="onMouseOut2">最多可显示4个求职意向-->
+                                                <!--                                    </span>-->
                                             </div>
                                             <span>
                                <img src="../assets/resume_edit.png"
@@ -435,10 +432,10 @@
                                                             XXXXXX<!-- {{resumeExp.jobName}}-->
                                                         </el-row>
                                                         <el-row class="info-other">预期薪资：
-                                                            <span>{{item.userExpectJob.salary.name}}
+                                                            <span v-if="item.userExpectJob.salary && item.userExpectJob.salary!=''">{{item.userExpectJob.salary.name}}
                                                 </span>
                                                         </el-row>
-                                                        <el-row class="info-other">工作类型：{{item.userExpectJob.expectWorkType}}
+                                                        <el-row class="info-other">工作类型：{{item.userExpectJob.workType}}
                                                             <!--                                                <span v-for="jobType in  resume.userExpectJob.jobTypeList"-->
                                                             <!--                                                      :key="jobType.id"-->
                                                             <!--                                                      effect="plain"-->
@@ -449,11 +446,13 @@
                                                     </div>
                                                     <div class="edu-box-m1">
                                                         <el-row class="info-other">期望行业：
-                                                            <span v-for="category in item.userExpectJob.categoryList"
+                                                            <span v-for="(category,index) in item.userExpectJob.categoryList"
+                                                                  :key="category.id"
                                                             > {{ category.name }} </span>
                                                         </el-row>
                                                         <el-row class="info-other">工作城市：
-                                                            <span v-for="city in item.userExpectJob.cityList"
+                                                            <span v-for="(city,index) in item.userExpectJob.cityList"
+                                                                  :key="city.id"
                                                             > {{city.name}} </span>
                                                         </el-row>
                                                     </div>
@@ -468,24 +467,8 @@
                                                      style="padding-right: 9px;padding-bottom: 7px">
                                                 <span class="resume-base">求职意向</span>
                                                 <span class="resume-red">*</span>
-                                                <span class="jobcount">1/4</span>
-                                                <span class="mark-row">
-                                    <img src="../assets/resume_qmark.png"
-                                         class="mark-icon"
-                                         @mouseenter="onMouseOver">
-                                    </span>
-                                                <span class="mark-text"
-                                                      v-show="seen3"
-                                                      @mouseleave="onMouseOut">最多可显示4个求职意向
-                                    </span>
                                             </div>
-                                            <span>
-                               <img src="../assets/resume_edit.png"
-                                    style="width: 18px;height: 20px;"
-                                    v-on:click="handleEditExpectJob()"
-                               >
-                                 </span>
-                             </el-row>
+                                        </el-row>
                                         <div class="resume-box-edit">
                                             <div style="padding-top: 20px">
                                                 <div style="display:flex;height: 70px;">
@@ -518,15 +501,16 @@
                                                         >
                                                             <el-form-item label="意向城市:" prop="cityIds"
                                                                           class="m-input-text-width">
-                                                                <el-cascader placeholder="最多选择三个"
-                                                                             :show-all-levels="false"
-                                                                             :options="cityOptions"
-                                                                             :props="cityIdProps"
-                                                                             filterable
-                                                                             clearable
-                                                                             collapse-tags
-                                                                             v-model="expectJobForm.cityIds">
-                                                                </el-cascader>
+                                                                <el-cascader
+                                                                        placeholder="最多选择三个"
+                                                                        :show-all-levels="false"
+                                                                        :options="cityOptions"
+                                                                        :props="cityIdProps"
+                                                                        filterable
+                                                                        collapse-tags
+                                                                        clearable
+                                                                        v-model="expectJobForm.cityIds"
+                                                                ></el-cascader>
                                                             </el-form-item>
                                                         </el-form>
                                                     </div>
@@ -541,13 +525,13 @@
                                                             <el-form-item label="工作类型:" prop="workType"
                                                                           class="m-input-text-width">
                                                                 <el-button class="ej-btn"
-                                                                           @click="expectJobForm.expectWorkType = '全职'">全职
+                                                                           @click="expectJobForm.workType = '全职'">全职
                                                                 </el-button>
                                                                 <el-button class="ej-btn"
-                                                                           @click="expectJobForm.expectWorkType = '兼职'">兼职
+                                                                           @click="expectJobForm.workType = '兼职'">兼职
                                                                 </el-button>
                                                                 <el-button class="ej-btn"
-                                                                           @click="expectJobForm.expectWorkType = '实习'">实习
+                                                                           @click="expectJobForm.workType = '实习'">实习
                                                                 </el-button>
                                                             </el-form-item>
                                                         </el-form>
@@ -635,7 +619,7 @@
                                                     <span>{{resumeExp.post}}</span>
                                                 </div>
                                                 <div style="padding-left: 31px">
-                                                    <span>{{resumeExp.workType}} </span>
+                                                    <span>全职<!--{{resumeExp.jobType}}--> </span>
                                                 </div>
                                             </div>
                                             <div style="display: inline-flex">
@@ -940,9 +924,9 @@
                                                         <el-form-item label=" 项目介绍:" prop="description"
                                                                       class="m1-input-text-width">
                                                             <el-input v-model="resumePracticeForm.description"
-                                                                          type="textarea"
-                                                                          :row="2"
-                                                                           autosize
+                                                                      type="textarea"
+                                                                      :row="2"
+                                                                      autosize
                                                             ></el-input>
                                                         </el-form-item>
                                                     </el-form>
@@ -980,7 +964,7 @@
                                                 <div class="resume-edu">
                                                     <el-row style="width: 615px;display: inline-flex">
                                                         <div style="width: 386px">
-                                                            <span class="info-other">语种{{index+1}}}：</span>
+                                                            <span class="info-other">语种{{index+1}}：</span>
                                                             <span>{{language.title}}</span>
                                                         </div>
                                                         <div style="width: 200px">
@@ -1078,7 +1062,8 @@
                                  </span>
                                         </el-row>
                                         <div style="display: inline-block">
-                                            <el-row style="display: inline-flex" v-for="(awards,index) in item.resumeCertificateList"
+                                            <el-row style="display: inline-flex"
+                                                    v-for="(awards,index) in item.resumeCertificateList"
                                                     :key="awards.id">
                                                 <div class="resume-edu">
                                                     <el-row style="width: 615px;display: inline-flex">
@@ -1263,7 +1248,7 @@
                                                                 style="width: 19px;height: 18px"
                                                                 v-on:click="handleAddNewSkillTag"
                                                         ></svg-icon>
-                                                        </el-row>
+                                                    </el-row>
                                                 </div>
                                             </div>
                                             <div style="padding-top: 20px">
@@ -1313,17 +1298,20 @@
                                         <div class="resume-box-edit">
                                             <div style="display: flex;padding: 30px 30px 30px 30px">
                                                 <span class="tag-title" style="width: 60px">自我介绍：</span>
-                                                <el-input v-model="resumeForm.introduction"
+                                                <el-form ref="resumeForm1" :model="resumeForm1"
+                                                          label-width="80px">
+                                                <el-input v-model="resumeForm1.introduction"
                                                           type="textarea"
                                                           autosize
                                                           :row="3"
                                                           class="intro-text"></el-input>
+                                                </el-form>
 
                                             </div>
 
                                             <div style="padding-top: 20px">
                                                 <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                                    <el-button class="btn1" @click="handleSaveResumeBasic(false)"
+                                                    <el-button class="btn1" @click="handleSaveResumeIntro(false)"
                                                                :loading="posting">保存
                                                     </el-button>
                                                     <el-button class="btn2" @click="showIntroDialog = false">取消
@@ -1374,8 +1362,10 @@
                                         font-family: PingFangSC-Regular, PingFang SC;
                                         font-weight: 400;"
                                         v-show="seen4"
-                                       @mouseleave="onMouseOut4"
+                                        @mouseleave="onMouseOut4"
                                 >附件简历内容也可被HR搜索到！</span>
+                                <el-form ref="resumeForm2" :model="resumeForm2"
+                                         label-width="80px">
                                 <el-row style="display: inline-flex;margin: 21px 0px 13px 0px">
                                     <div style="width: 210px">
                                         <el-row
@@ -1386,11 +1376,12 @@
                                         >
                                             <img src="../assets/PDF.png" style="width: 14px;height: 18px;">
                                             {{item.name}}个人简历
-<!--                                            {{item.attachResume}}-->
+                                            <!--                                            {{item.attachResume}}-->
                                         </el-row>
 
                                     </div>
                                 </el-row>
+
                                 <el-upload
                                         class="mt-2 upload-attach-box"
                                         :limit="1"
@@ -1409,16 +1400,16 @@
                                 </el-upload>
                                 <el-row style="display: inline-flex;margin: 21px 0px 13px 0px">
                                     <div style="width: 210px">
-<!--                                        <el-row-->
-<!--                                                v-if="(item.attachResume && item.attachResume.length > 0)"-->
-<!--                                                style="font-size: 14px;-->
-<!--                                                font-family: PingFangSC-Medium, PingFang SC;-->
-<!--                                                font-weight: 500;"-->
-<!--                                        >-->
-<!--                                            <img src="../assets/PDF.png" style="width: 14px;height: 18px;">-->
-<!--                                            {{item.name}}个人简历-->
-<!--                                            &lt;!&ndash;                                            {{item.attachResume}}&ndash;&gt;-->
-<!--                                        </el-row>-->
+                                        <!--                                        <el-row-->
+                                        <!--                                                v-if="(item.attachResume && item.attachResume.length > 0)"-->
+                                        <!--                                                style="font-size: 14px;-->
+                                        <!--                                                font-family: PingFangSC-Medium, PingFang SC;-->
+                                        <!--                                                font-weight: 500;"-->
+                                        <!--                                        >-->
+                                        <!--                                            <img src="../assets/PDF.png" style="width: 14px;height: 18px;">-->
+                                        <!--                                            {{item.name}}个人简历-->
+                                        <!--                                            &lt;!&ndash;                                            {{item.attachResume}}&ndash;&gt;-->
+                                        <!--                                        </el-row>-->
 
                                     </div>
                                 </el-row>
@@ -1440,6 +1431,7 @@
                                         ></svg-icon>
                                         <span style="padding-left: 4px">上传其他附件</span></el-button>
                                 </el-upload>
+                                </el-form>
                                 <el-divider></el-divider>
                             </div>
                             <div class="resume-preview resume-right-box1">
@@ -1515,7 +1507,7 @@
         faPencilAlt,
         faTrashAlt,
     } from "@fortawesome/free-solid-svg-icons";
-    import { downloadFile } from "@/utils/common";
+    import {downloadFile} from "@/utils/common";
     import ResumeView from "@/components/ResumeView";
     import {addResume} from "../api/resume_api";
 
@@ -1535,9 +1527,10 @@
         name: "EditResumePage",
         data() {
             return {
-                showResumeDialog:false,
-                editableTabsValue: "1",
-                tabIndex:1,
+                showResumeDialog: false,
+                i:0,
+                editableTabsValue: undefined,
+                tabIndex: 0,
                 editableTabs: [{
                     title: '简历1',
                     name: '1',
@@ -1549,32 +1542,54 @@
                 seen5: false,
                 maritalStatusList: [{
                     value: '0',
-                    label: '党员'
-                },
-                    {value: '1',
-                        label: '团员'
-                    },{value: '2',
-                        label: '群众'
-                    },],
-                poriorityList: [{value: '0',
-                    label: '第一'
-                    },{
-                        value: '1',
-                        label: '第二'
-                    },{
+                    id:1,
+                    name: '党员'
+                }, {
+                    id:2,
+                    value: '1',
+                    name: '团员'
+                }, {
+                    id:3,
                     value: '2',
-                    label: '第三'
-                    },{
+                    name: '群众'
+                },],
+                priorityList: [{
+                    id:1,
+                    value: '0',
+                    name: '第一'
+                }, {
+                    id:2,
+                    value: '1',
+                    name: '第二'
+                }, {
+                    id:3,
+                    value: '2',
+                    name: '第三'
+                }, {
+                    id:4,
                     value: '3',
-                    label: '第四'}],
+                    name: '第四'
+                }],
                 categoryList: {},
-                cityList:{},
+                cityList: {},
+                resumeForm1:{
+                    id: undefined,
+                    resumeId:undefined,
+                    introduction:undefined,
+                    attachResume:undefined,
+                },
+                resumeForm2:{
+                    id: undefined,
+                    resumeId:undefined,
+                    attachResume:undefined,
+                },
                 resumeForm: {
                     priority: undefined,
                     id: undefined,
                     name: undefined,
                     birth: undefined,
                     gender: undefined,
+                    avatar: undefined,
                     maritalStatus: undefined,
                     returnTime: undefined,
                     graduateTime: undefined,
@@ -1633,6 +1648,7 @@
                     id: undefined,
                     resumeId: undefined,
                     workingTimeFlag: 1,
+                    workType:undefined,
                     workingDates: undefined,
                     startTime: undefined,
                     finishTime: undefined,
@@ -1701,7 +1717,7 @@
                     time: [{required: true, message: "请输入获得时间", trigger: "blur"},],
                 },
                 expectJobForm: {
-                    expectWorkType: undefined,
+                    workType: undefined,
                     industryName: undefined,
                     cityIds: [],
                     categoryIds: [],
@@ -1720,9 +1736,9 @@
                     acceptFileType: ".pdf,.doc,docx",
                 },
                 resume: {},
-                newResumeId:undefined,
-                newIndex:undefined,
-                resumeId:undefined,
+                newResumeId: undefined,
+                newIndex: undefined,
+                resumeId: undefined,
                 countryOptions: [],
                 degreeOptions: [],
                 jobCategoryOptions: [],
@@ -1865,21 +1881,35 @@
             this.initData();
         },
         methods: {
-            saveResumeId(tab, event){
+            saveResumeId(tab, event) {
                 this.newResumeId = tab.name;
-                this.newIndex=tab.index;
+                this.newIndex = tab.index;
                 console.log(tab.index)
                 console.log(this.newResumeId)
+                console.log(this.editableTabsValue)
+                console.log(this.resume[0].id)
+
             },
             handleTabsEdit(targetName, action) {
                 if (action === 'add') {
-                    this.addResume()
-                    let newTabName = ++this.tabIndex + '';
-                    // this.editableTabs.push({
-                    //     title: '新简历',
-                    //     name: newTabName,
-                    // });
-                    this.editableTabsValue = newTabName;
+                    if (this.resume.length<4){
+                        this.addResume()
+                        let newTabName = this.resume.length+1;
+                        console.log(newTabName)
+                        console.log(this.resume[this.resume.length])
+                        // this.editableTabs.push({
+                        //     title: '新简历',
+                        //     name: newTabName,
+                        // });
+                        // this.editableTabsValue = newTabName;
+                    }
+                    else{
+                        this.$message({
+                            message: '最多可编辑4份在线简历',
+                            type: 'warning'
+                        });
+                    }
+
                 }
                 // if (action === 'remove') {
                 //     let tabs = this.editableTabs;
@@ -1906,13 +1936,13 @@
                 this.seen2 = true
             },
             onMouseOver3() {
-                this.seen3= true
+                this.seen3 = true
             },
             onMouseOver4() {
-                this.seen4= true
+                this.seen4 = true
             },
             onMouseOver5() {
-                this.seen5= true
+                this.seen5 = true
             },
             onMouseOut() {
                 this.seen = false
@@ -1971,9 +2001,25 @@
                 });
             },
             handleAvatarSuccess() {
-                this.resumeForm.avatar = this.uploadPicOptions.fileUrl;
-                this.resume.avatar = this.uploadPicOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
+                this.avatar = this.uploadPicOptions.fileUrl;
+                this.resume[this.newIndex].avatar = this.uploadPicOptions.fileUrl;
+                this.resumeForm.avatar = this.avatar
+                console.log(this.resumeForm.avatar)
+                this.$refs["resumeForm"].validate((valid) => {
+                    if (valid) {
+                        this.posting = true;
+                        this.resumeForm.resumeId = this.newResumeId;
+                        saveResumeBasic(this.resumeForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                                this.showBasicDialog = false;
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
+                    }
+                });
+                // this.handleSaveResumeBasic(false);
             },
             beforeAttachmengUpload(file) {
                 return new Promise((resolve, reject) => {
@@ -1995,19 +2041,27 @@
                 });
             },
             handleUploadAttachmengSuccess() {
-                this.resumeForm.attachResume = this.uploadAttachmentOptions.fileUrl;
+                this.resumeForm2.attachResume = this.uploadAttachmentOptions.fileUrl;
                 this.resume.attachResume = this.uploadAttachmentOptions.fileUrl;
-                this.handleSaveResumeBasic(false);
+                console.log(this.resume.attachResume)
+                this.handleSaveResumeAttachResume(false);
             },
             getResumeInfo() {
                 getResumeInfo().then((response) => {
                     this.resume = response.data;
-                    // console.log(this.resume)
-                    this.setResumeFormValues();
+                    if (this.newResumeId==''||this.newResumeId==undefined){
+                        this.tabIndex=this.resume.length
+                        console.log(this.tabIndex)
+                        // this.setResumeFormValues();
+                        // console.log(this.resume[this.tabIndex].id)
+                        this.editableTabsValue=this.resume[this.tabIndex-1].id
+                    }else{
+                        this.editableTabsValue=this.resume[this.newIndex].id
+                    }
                 });
             },
-            addResume(){
-                addResume().then((response)=>{
+            addResume() {
+                addResume().then((response) => {
                     this.getResumeInfo();
 
                 })
@@ -2015,6 +2069,7 @@
             setResumeFormValues() {
                 this.resumeForm.id = this.newResumeId;
                 this.resumeForm.name = this.resume.name;
+                this.resumeForm.avatar = this.resume.avatar;
                 this.resumeForm.birth = this.resume.birth;
                 this.resumeForm.gender = this.resume.gender;
                 this.resumeForm.email = this.resume.email;
@@ -2023,30 +2078,59 @@
                 this.resumeForm.curPlace = this.resume.curPlace;
                 this.resumeForm.phone = this.resume.phone;
                 this.resumeForm.priority = this.resume.priority;
+                this.resumeForm.maritalStatus = this.resume.maritalStatus
                 this.resumeForm.introduction = this.resume.introduction;
             },
-            handleEditResumeBasic(item) {
+            handleEditResumeBasic() {
                 console.log("-----")
                 this.showBasicDialog = true;
-                this.resumeForm.id=this.newResumeId;
-                this.resumeForm.name = item.name;
-                this.resumeForm.birth = item.birth;
-                this.resumeForm.gender = item.gender;
-                this.resumeForm.email = item.email;
-                this.resumeForm.returnTime = item.returnTime;
-                this.resumeForm.graduateTime = item.graduateTime;
-                this.resumeForm.curPlace = item.curPlace;
-                this.resumeForm.phone = item.phone;
-                this.resumeForm.introduction = item.introduction;
+                if(this.newResumeId&&this.newResumeId!=''){
+                    this.resumeForm.id = this.newResumeId;
+                    this.resumeForm.name = this.resume[this.newIndex].name;
+                    this.resumeForm.avatar = this.resume[this.newIndex].avatar;
+                    this.resumeForm.birth = this.resume[this.newIndex].birth;
+                    this.resumeForm.gender = this.resume[this.newIndex].gender;
+                    this.resumeForm.email = this.resume[this.newIndex].email;
+                    this.resumeForm.returnTime = this.resume[this.newIndex].returnTime;
+                    this.resumeForm.graduateTime = this.resume[this.newIndex].graduateTime;
+                    this.resumeForm.curPlace = this.resume[this.newIndex].curPlace;
+                    this.resumeForm.phone = this.resume[this.newIndex].phone;
+                    this.resumeForm.priority = this.resume[this.newIndex].priority;
+                    this.resumeForm.maritalStatus = this.resume[this.newIndex].maritalStatus
+                    this.resumeForm.introduction = this.resume[this.newIndex].introduction;
+                }else{
+                    this.resumeForm.id = this.resume[this.resume.length-1].id;
+                    this.resumeForm.name = this.resume[this.resume.length-1].name;
+                    this.resumeForm.avatar = this.resume[this.resume.length-1].avatar;
+                    this.resumeForm.birth = this.resume[this.resume.length-1].birth;
+                    this.resumeForm.gender = this.resume[this.resume.length-1].gender;
+                    this.resumeForm.email = this.resume[this.resume.length-1].email;
+                    this.resumeForm.returnTime = this.resume[this.resume.length-1].returnTime;
+                    this.resumeForm.graduateTime = this.resume[this.resume.length-1].graduateTime;
+                    this.resumeForm.curPlace = this.resume[this.resume.length-1].curPlace;
+                    this.resumeForm.phone = this.resume[this.resume.length-1].phone;
+                    this.resumeForm.priority = this.resume[this.resume.length-1].priority;
+                    this.resumeForm.maritalStatus = this.resume[this.resume.length-1].maritalStatus
+                    this.resumeForm.introduction = this.resume[this.resume.length-1].introduction;
+                }
+
                 this.$nextTick(() => {
                     this.$refs["resumeForm"][0].clearValidate();
                 });
             },
             handleEditResumeIntro() {
                 this.showIntroDialog = true;
-                this.setResumeFormValues();
+                if (this.newResumeId&&this.newResumeId!=''){
+                    this.resumeForm1.resumeId=this.newResumeId;
+                    this.resumeForm1.introduction=this.resume[this.newIndex].introduction;
+                }else{
+                    this.resumeForm1.resumeId=this.resume[this.resume.length-1].id;
+                    this.resumeForm1.introduction=this.resume[this.resume.length-1].introduction;
+
+                }
+                // this.setResumeFormValues();
                 this.$nextTick(() => {
-                    this.$refs["resumeForm"][0].clearValidate();
+                    this.$refs["resumeForm1"][0].clearValidate();
                 });
             },
             handleEditResumeEdu(type, resumeEdu) {
@@ -2080,15 +2164,30 @@
             },
             handleEditResumeLanguage(type, resumeLanguage) {
                 this.showLanguageDialog = true;
-                this.resumeLanguageForm.resumeId = this.newResumeId;
-                if (type === "update") {
-                    this.resumeLanguageForm.id = resumeLanguage.id;
-                    this.resumeLanguageForm.title = resumeLanguage.title;
-                    this.resumeEduForm.description = resumeLanguage.description;
-                } else {
-                    this.resumeLanguageForm.id = undefined;
-                    this.resumeLanguageForm.title = undefined;
-                    this.resumeLanguageForm.description = undefined;
+                // console.log(resumeLanguage.description)
+                if(this.newResumeId&&this.newResumeId!=''){
+                    this.resumeLanguageForm.resumeId = this.newResumeId;
+                    if (type === "update") {
+                        this.resumeLanguageForm.id = resumeLanguage.id;
+                        this.resumeLanguageForm.title = resumeLanguage.title;
+                        this.resumeLanguageForm.description = resumeLanguage.description;
+                    } else {
+                        this.resumeLanguageForm.id = undefined;
+                        this.resumeLanguageForm.title = undefined;
+                        this.resumeLanguageForm.description = undefined;
+                    }
+                }else {
+                    this.resumeLanguageForm.resumeId = this.resume[this.resume.length-1].id;
+                    if (type === "update") {
+                        this.resumeLanguageForm.id = resumeLanguage.id;
+                        this.resumeLanguageForm.title = resumeLanguage.title;
+                        this.resumeLanguageForm.description = resumeLanguage.description;
+                    } else {
+                        this.resumeLanguageForm.id = undefined;
+                        this.resumeLanguageForm.title = undefined;
+                        this.resumeLanguageForm.description = undefined;
+                    }
+
                 }
                 this.$nextTick(() => {
                     this.$refs["resumeLanguageForm"][0].clearValidate();
@@ -2096,16 +2195,30 @@
             },
             handleEditResumeAwards(type, resumeAwards) {
                 this.showAwardsDialog = true;
-                this.resumeAwardsForm.resumeId = this.newResumeId
-                if (type === "update") {
-                    this.resumeAwardsForm.id = resumeAwards.id;
-                    this.resumeAwardsForm.title = resumeAwards.title;
-                    this.resumeAwardsForm.time = resumeAwards.time;
-                } else {
-                    this.resumeAwardsForm.id = undefined;
-                    this.resumeAwardsForm.title = undefined;
-                    this.resumeAwardsForm.time = undefined;
+                if (this.newResumeId&&this.newResumeId!=''){
+                    this.resumeAwardsForm.resumeId = this.newResumeId
+                    if (type === "update") {
+                        this.resumeAwardsForm.id = resumeAwards.id;
+                        this.resumeAwardsForm.title = resumeAwards.title;
+                        this.resumeAwardsForm.time = resumeAwards.time;
+                    } else {
+                        this.resumeAwardsForm.id = undefined;
+                        this.resumeAwardsForm.title = undefined;
+                        this.resumeAwardsForm.time = undefined;
+                    }
+                }else {
+                    this.resumeAwardsForm.resumeId = this.resume[this.resume.length-1].id;
+                    if (type === "update") {
+                        this.resumeAwardsForm.id = resumeAwards.id;
+                        this.resumeAwardsForm.title = resumeAwards.title;
+                        this.resumeAwardsForm.time = resumeAwards.time;
+                    } else {
+                        this.resumeAwardsForm.id = undefined;
+                        this.resumeAwardsForm.title = undefined;
+                        this.resumeAwardsForm.time = undefined;
+                    }
                 }
+
                 this.$nextTick(() => {
                     this.$refs["resumeAwardsForm"][0].clearValidate();
                 });
@@ -2120,9 +2233,9 @@
                     this.resumeExpForm.company = resumeExp.company;
                     this.resumeExpForm.depart = resumeExp.depart;
                     this.resumeExpForm.post = resumeExp.post;
+                    this.resumeExpForm.workType=resumeExp.workType;
                     this.resumeExpForm.description = resumeExp.description;
                     this.resumeExpForm.onWork = resumeExp.onWork;
-                    this.resumeExpForm.workType = resumeExp.workType;
                     if (resumeExp.startTime && resumeExp.finishTime) {
                         this.resumeExpForm.workingDates = [
                             this.resumeExpForm.startTime,
@@ -2136,10 +2249,10 @@
                     this.resumeExpForm.company = undefined;
                     this.resumeExpForm.depart = undefined;
                     this.resumeExpForm.post = undefined;
+                    this.resumeExpForm.workType=undefined;
                     this.resumeExpForm.description = undefined;
                     this.resumeExpForm.workingDates = undefined;
                     this.resumeExpForm.onWork = 0;
-                    this.resumeExpForm.workType = undefined;
                 }
                 this.$nextTick(() => {
                     this.$refs["resumeExpForm"][0].clearValidate();
@@ -2147,28 +2260,54 @@
             },
             handleEditResumePractice(type, resumePractice) {
                 this.showPracticeDialog = true;
-                this.resumePracticeForm.resumeId = this.resume.id;
-                if (type === "update") {
-                    this.resumePracticeForm.id = resumePractice.id;
-                    this.resumePracticeForm.startTime = resumePractice.startTime;
-                    this.resumePracticeForm.finishTime = resumePractice.finishTime;
-                    this.resumePracticeForm.title = resumePractice.title;
-                    this.resumePracticeForm.description = resumePractice.description;
-                    this.resumePracticeForm.post = resumePractice.post;
-                    this.resumePracticeForm.onWork = resumePractice.onWork;
-                    this.resumePracticeForm.workingDates = [
-                        this.resumePracticeForm.startTime,
-                        this.resumePracticeForm.finishTime,
-                    ];
-                } else {
-                    this.resumePracticeForm.id = undefined;
-                    this.resumePracticeForm.workingDates = undefined;
-                    this.resumePracticeForm.startTime = undefined;
-                    this.resumePracticeForm.finishTime = undefined;
-                    this.resumePracticeForm.title = undefined;
-                    this.resumePracticeForm.description = undefined;
-                    this.resumePracticeForm.post = undefined;
-                    this.resumePracticeForm.onWork = undefined;
+                if (this.newResumeId&&this.newResumeId!=''){
+                    this.resumePracticeForm.resumeId = this.newResumeId;
+                    if (type === "update") {
+                        this.resumePracticeForm.id = resumePractice.id;
+                        this.resumePracticeForm.startTime = resumePractice.startTime;
+                        this.resumePracticeForm.finishTime = resumePractice.finishTime;
+                        this.resumePracticeForm.title = resumePractice.title;
+                        this.resumePracticeForm.description = resumePractice.description;
+                        this.resumePracticeForm.post = resumePractice.post;
+                        this.resumePracticeForm.onWork = resumePractice.onWork;
+                        this.resumePracticeForm.workingDates = [
+                            this.resumePracticeForm.startTime,
+                            this.resumePracticeForm.finishTime,
+                        ];
+                    } else {
+                        this.resumePracticeForm.id = undefined;
+                        this.resumePracticeForm.workingDates = undefined;
+                        this.resumePracticeForm.startTime = undefined;
+                        this.resumePracticeForm.finishTime = undefined;
+                        this.resumePracticeForm.title = undefined;
+                        this.resumePracticeForm.description = undefined;
+                        this.resumePracticeForm.post = undefined;
+                        this.resumePracticeForm.onWork = undefined;
+                    }
+                }else {
+                    this.resumePracticeForm.resumeId = this.resume[this.resume.length-1].id;
+                    if (type === "update") {
+                        this.resumePracticeForm.id = resumePractice.id;
+                        this.resumePracticeForm.startTime = resumePractice.startTime;
+                        this.resumePracticeForm.finishTime = resumePractice.finishTime;
+                        this.resumePracticeForm.title = resumePractice.title;
+                        this.resumePracticeForm.description = resumePractice.description;
+                        this.resumePracticeForm.post = resumePractice.post;
+                        this.resumePracticeForm.onWork = resumePractice.onWork;
+                        this.resumePracticeForm.workingDates = [
+                            this.resumePracticeForm.startTime,
+                            this.resumePracticeForm.finishTime,
+                        ];
+                    } else {
+                        this.resumePracticeForm.id = undefined;
+                        this.resumePracticeForm.workingDates = undefined;
+                        this.resumePracticeForm.startTime = undefined;
+                        this.resumePracticeForm.finishTime = undefined;
+                        this.resumePracticeForm.title = undefined;
+                        this.resumePracticeForm.description = undefined;
+                        this.resumePracticeForm.post = undefined;
+                        this.resumePracticeForm.onWork = undefined;
+                    }
                 }
                 this.$nextTick(() => {
                     this.$refs["resumePracticeForm"][0].clearValidate();
@@ -2176,16 +2315,30 @@
             },
             handleEditExpectJob() {
                 this.showExpectJobDialog = true;
-                this.expectJobForm.cityIds = this.resume.userExpectJob.cityList.map(
-                    (city) => {
-                        return city.id;
-                    }
-                );
-                this.expectJobForm.categoryIds = this.resume.userExpectJob.categoryList.map(
-                    (category) => {
-                        return category.id;
-                    }
-                );
+                if (this.newIndex==undefined||this.newIndex==''){
+                    this.expectJobForm.cityIds = this.resume[this.resume.length-1].userExpectJob.cityList.map(
+                        (city) => {
+                            return city.id;
+                        }
+                    );
+                    this.expectJobForm.categoryIds = this.resume[this.resume.length-1].userExpectJob.categoryList.map(
+                        (category) => {
+                            return category.id;
+                        }
+                    );
+                } else {
+                    this.expectJobForm.cityIds = this.resume[this.newIndex].userExpectJob.cityList.map(
+                        (city) => {
+                            return city.id;
+                        }
+                    );
+                    this.expectJobForm.categoryIds = this.resume[this.newIndex].userExpectJob.categoryList.map(
+                        (category) => {
+                            return category.id;
+                        }
+                    );
+                }
+
                 this.$nextTick(() => {
                     this.$refs["expectJobForm"][0].clearValidate();
                 });
@@ -2225,26 +2378,94 @@
             handleDelResumeAwards(id) {
                 this.handleDeleteItemById(delResumeAwards, id);
             },
+            handleSaveResumeAttachResume(){
+                this.$refs["resumeForm2"][0].validate((valid) => {
+                    if (valid) {
+                        this.posting = true;
+                        if (this.newResumeId&&this.newResumeId!=''){
+                            this.resumeForm2.id=this.newResumeId
+                            // this.resumeForm1.resumeId = this.newResumeId;
+                            saveResumeBasic(this.resumeForm2)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else{
+                            this.resumeForm2.id = this.resume[this.resume.length-1].id;
+                            saveResumeBasic(this.resumeForm2)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }
+                    }
+                });
+            },
+            handleSaveResumeIntro(){
+                this.$refs["resumeForm1"][0].validate((valid) => {
+                    if (valid) {
+                        this.posting = true;
+                        if (this.newResumeId&&this.newResumeId!=''){
+                            this.resumeForm1.id=this.newResumeId
+                            // this.resumeForm1.resumeId = this.newResumeId;
+                            saveResumeBasic(this.resumeForm1)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showIntroDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else{
+                            this.resumeForm1.id = this.resume[this.resume.length-1].id;
+                            saveResumeBasic(this.resumeForm1)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showIntroDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }
+                    }
+                });
+            },
             handleSaveResumeBasic() {
                 this.$refs["resumeForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
-                        this.resumeForm.resumeId=this.newResumeId;
-                        saveResumeBasic(this.resumeForm)
-                            .then(() => {
-                                this.getResumeInfo();
-                                this.showBasicDialog = false;
-                            })
-                            .finally(() => {
-                                this.posting = false;
-                            });
+                        if (this.newResumeId&&this.newResumeId!=''){
+                            this.resumeForm.resumeId = this.newResumeId;
+                            saveResumeBasic(this.resumeForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showBasicDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else{
+                            this.resumeForm.resumeId = this.resume[this.resume.length-1].id;
+                            saveResumeBasic(this.resumeForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showBasicDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }
                     }
                 });
 
             },
             postSaveResumeBasic() {
                 this.posting = true;
-                this.resumeForm.id=this.newResumeId
+                this.resumeForm.id = this.newResumeId
                 saveResumeBasic(this.resumeForm)
                     .then(() => {
                         this.showBasicDialog = false;
@@ -2260,17 +2481,33 @@
                 this.$refs["resumeEduForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
-                        this.resumeEduForm.resumeId=this.newResumeId;
-                        this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
-                        this.resumeEduForm.finishTime = this.resumeEduForm.workingDates[1];
-                        saveResumeEdu(this.resumeEduForm)
-                            .then(() => {
-                                this.getResumeInfo();
-                                this.showEduDialog = false;
-                            })
-                            .finally(() => {
-                                this.posting = false;
-                            });
+                        if (this.newResumeId&&this.newResumeId!=''){
+                            this.resumeEduForm.resumeId = this.newResumeId;
+                            this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
+                            this.resumeEduForm.finishTime = this.resumeEduForm.workingDates[1];
+                            saveResumeEdu(this.resumeEduForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showEduDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else {
+                                this.resumeEduForm.resumeId = this.resume[this.resume.length-1].id;
+                            this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
+                            this.resumeEduForm.finishTime = this.resumeEduForm.workingDates[1];
+                            saveResumeEdu(this.resumeEduForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showEduDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+
+                        }
+
                     }
                 });
             },
@@ -2278,22 +2515,42 @@
                 this.$refs["resumeExpForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
-                        this.resumeExpForm.resumeId=this.newResumeId;
-                        if (
-                            this.resumeExpForm.workingDates &&
-                            this.resumeExpForm.workingDates.length == 2
-                        ) {
-                            this.resumeExpForm.startTime = this.resumeExpForm.workingDates[0];
-                            this.resumeExpForm.finishTime = this.resumeExpForm.workingDates[1];
+                        if(this.newResumeId&&this.newResumeId!=''){
+                            this.resumeExpForm.resumeId = this.newResumeId;
+                            if (
+                                this.resumeExpForm.workingDates &&
+                                this.resumeExpForm.workingDates.length == 2
+                            ) {
+                                this.resumeExpForm.startTime = this.resumeExpForm.workingDates[0];
+                                this.resumeExpForm.finishTime = this.resumeExpForm.workingDates[1];
+                            }
+                            saveResumeExp(this.resumeExpForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showExpDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else{
+                            this.resumeExpForm.resumeId = this.resume[this.resume.length-1].id;
+                            if (
+                                this.resumeExpForm.workingDates &&
+                                this.resumeExpForm.workingDates.length == 2
+                            ) {
+                                this.resumeExpForm.startTime = this.resumeExpForm.workingDates[0];
+                                this.resumeExpForm.finishTime = this.resumeExpForm.workingDates[1];
+                            }
+                            saveResumeExp(this.resumeExpForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showExpDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
                         }
-                        saveResumeExp(this.resumeExpForm)
-                            .then(() => {
-                                this.getResumeInfo();
-                                this.showExpDialog = false;
-                            })
-                            .finally(() => {
-                                this.posting = false;
-                            });
+
                     }
                 });
             },
@@ -2301,22 +2558,42 @@
                 this.$refs["resumePracticeForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
-                        this.resumePracticeForm.resumeId=this.newResumeId;
-                        if (
-                            this.resumePracticeForm.workingDates &&
-                            this.resumePracticeForm.workingDates.length == 2
-                        ) {
-                            this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
-                            this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
+                        if (this.newResumeId&&this.newResumeId!=''){
+                            this.resumePracticeForm.resumeId = this.newResumeId;
+                            if (
+                                this.resumePracticeForm.workingDates &&
+                                this.resumePracticeForm.workingDates.length == 2
+                            ) {
+                                this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
+                                this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
+                            }
+                            saveResumePractice(this.resumePracticeForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showPracticeDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else{
+                            this.resumePracticeForm.resumeId = this.resume[this.resume.length-1].id;
+                            if (
+                                this.resumePracticeForm.workingDates &&
+                                this.resumePracticeForm.workingDates.length == 2
+                            ) {
+                                this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
+                                this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
+                            }
+                            saveResumePractice(this.resumePracticeForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showPracticeDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
                         }
-                        saveResumePractice(this.resumePracticeForm)
-                            .then(() => {
-                                this.getResumeInfo();
-                                this.showPracticeDialog = false;
-                            })
-                            .finally(() => {
-                                this.posting = false;
-                            });
+
                     }
                 });
             },
@@ -2324,14 +2601,28 @@
                 this.$refs["resumeLanguageForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
-                        saveResumeLanguage(this.resumeLanguageForm)
-                            .then(() => {
-                                this.getResumeInfo();
-                                this.showLanguageDialog = false;
-                            })
-                            .finally(() => {
-                                this.posting = false;
-                            });
+                        if (this.newResumeId&&this.newResumeId!=''){
+                            this.resumeLanguageForm.resumeId=this.newResumeId
+                            saveResumeLanguage(this.resumeLanguageForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showLanguageDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else{
+                            this.resumeLanguageForm.resumeId=this.resume[this.resume.length-1].id
+                            saveResumeLanguage(this.resumeLanguageForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showLanguageDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }
+
                     }
                 });
             },
@@ -2339,14 +2630,28 @@
                 this.$refs["resumeAwardsForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
-                        saveResumeAwards(this.resumeAwardsForm)
-                            .then(() => {
-                                this.getResumeInfo();
-                                this.showAwardsDialog = false;
-                            })
-                            .finally(() => {
-                                this.posting = false;
-                            });
+                        if (this.newResumeId&&this.newResumeId!=''){
+                            this.resumeAwardsForm.resumeId=this.newResumeId;
+                            saveResumeAwards(this.resumeAwardsForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showAwardsDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else {
+                            this.resumeAwardsForm.resumeId=this.resume[this.resume.length-1].id;
+                            saveResumeAwards(this.resumeAwardsForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showAwardsDialog = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }
+
                     }
                 });
             },
@@ -2367,23 +2672,46 @@
 
             },
             handleSaveResumeSkills() {
-                const selectSkillTags = {
-                    resumeId: this.newResumeId,
-                    tagList: this.skillTagListForm
-                        .filter((tag) => tag.select == true)
-                        .map((tag) => {
-                            return tag.name;
-                        }),
-                };
-                this.posting = true;
-                saveResumeSkills(selectSkillTags)
-                    .then(() => {
-                        this.getResumeInfo();
-                        this.showSkillDialog = false;
-                    })
-                    .finally(() => {
-                        this.posting = false;
-                    });
+                if (this.newResumeId&& this.newResumeId!=''){
+                    const selectSkillTags = {
+                        resumeId: this.newResumeId,
+                        tagList: this.skillTagListForm
+                            .filter((tag) => tag.select == true)
+                            .map((tag) => {
+                                return tag.name;
+                            }),
+                    };
+                    this.posting = true;
+                    saveResumeSkills(selectSkillTags)
+                        .then(() => {
+                            this.getResumeInfo();
+                            this.showSkillDialog = false;
+                        })
+                        .finally(() => {
+                            this.posting = false;
+                        });
+                }
+                else {
+                    const selectSkillTags = {
+                        resumeId: this.resume[this.resume.length-1].id,
+                        tagList: this.skillTagListForm
+                            .filter((tag) => tag.select == true)
+                            .map((tag) => {
+                                return tag.name;
+                            }),
+                    };
+                    this.posting = true;
+                    saveResumeSkills(selectSkillTags)
+                        .then(() => {
+                            this.getResumeInfo();
+                            this.showSkillDialog = false;
+                        })
+                        .finally(() => {
+                            this.posting = false;
+                        });
+                }
+
+
             },
             searchSchoolName(keyword, cb) {
                 if (!keyword || keyword.length < 2) {
@@ -2441,28 +2769,29 @@
                 }
             },
             handlePreview() {
-                this.showResumeDialog=true;
-                this.resume.id=this.newResumeId;
+                this.showResumeDialog = true;
+                this.resume.id = this.newResumeId;
                 // this.$router.push({path: `/resume/${this.resume.id}`});
             },
             exportPdf() {
-                this.resumeId=this.newResumeId
+                this.resumeId = this.newResumeId
                 exportResumeToPdf(this.resumeId)
                     .then(response => {
                         downloadFile({
                             fileKey: response.data,
                             fileName: `${this.$store.getters.name}_个人简历.pdf`,
-                            success: ()=>{
+                            success: () => {
                             }
                         });
                     }).catch(() => {
                 });
             },
-            handleDelResume(){
+            handleDelResume() {
                 this.$confirm("是否要删除该简历？", {
                     confirmButtonText: "删除",
                 }).then(() => {
-                    let id=this.newResumeId
+                    let id = this.resume[this.tabIndex-1].id
+                    console.log(id)
                     delResume(id).then(() => {
                         this.getResumeInfo();
                     });
@@ -3494,9 +3823,11 @@
         font-weight: 500;
         color: #333333;
     }
-    .el-tabs--card>.el-tabs__header .el-tabs__item.is-active.is-closable .el-icon-close, .el-tabs--card>.el-tabs__header .el-tabs__item.is-closable:hover .el-icon-close {
+
+    .el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable .el-icon-close, .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable:hover .el-icon-close {
         width: 0px;
     }
+
     .el-tabs--card > .el-tabs__header.el-tabs__new-tab {
         float: right;
         border: 1px solid #d3dce6;
