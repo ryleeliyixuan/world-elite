@@ -35,10 +35,10 @@
                                 ></svg-icon>
                                 <span style="padding-left: 8px;padding-right: 9px">优先级
                                 <span style="color: #d9001b;font-size: 20px;height: 3px;width: 3px;vertical-align: sub;padding-right: 9px">*</span>
-                                    ：</span>{{item.priority}} {{resumeForm.priority}}
-                                <el-select class="selectleave" v-model="resumeForm.priority" placeholder="">
+                                    ：</span>
+                                <el-select class="selectleave" v-model="resumeForm.poriority" placeholder="">
                                     <el-option
-                                            v-for="item in priorityList"
+                                            v-for="item in poriorityList"
                                             :key="item.value"
                                             :label="item.label"
                                             :value="item.value"
@@ -438,13 +438,13 @@
                                                             <span>{{item.userExpectJob.salary.name}}
                                                 </span>
                                                         </el-row>
-                                                        <el-row class="info-other">工作类型：{{item.userExpectJob.expectWorkType}}
-                                                            <!--<span v-for="jobType in  resume.userExpectJob.jobTypeList"
-                                                                  :key="jobType.id"
-                                                                  effect="plain"
-                                                                  class="expjob-data"
-                                                            >{{ jobType.name }}
-                                                            </span>-->
+                                                        <el-row class="info-other">工作类型：
+                                                            <!--                                                <span v-for="jobType in  resume.userExpectJob.jobTypeList"-->
+                                                            <!--                                                      :key="jobType.id"-->
+                                                            <!--                                                      effect="plain"-->
+                                                            <!--                                                      class="expjob-data"-->
+                                                            <!--                                                >{{ jobType.name }}-->
+                                                            <!--                                                </span>-->
                                                         </el-row>
                                                     </div>
                                                     <div class="edu-box-m1">
@@ -635,7 +635,7 @@
                                                     <span>{{resumeExp.post}}</span>
                                                 </div>
                                                 <div style="padding-left: 31px">
-                                                    <span>{{resumeExp.workType}} </span>
+                                                    <span>全职<!--{{resumeExp.jobType}}--> </span>
                                                 </div>
                                             </div>
                                             <div style="display: inline-flex">
@@ -690,11 +690,11 @@
                                                              :rules="resumeExpFormRules">
                                                         <el-form-item label="工作类型：" prop="workType"
                                                                       class="m-input-text-width">
-                                                            <el-select v-model="resumeExpForm.workType"
+                                                            <el-select v-model="resumeEduForm.workType"
                                                                        placeholder="请选择工作类型">
                                                                 <el-option
                                                                         :label="dict.name"
-                                                                        :value="dict.value"
+                                                                        :value="dict.id"
                                                                         v-for="dict in workTypeOptions"
                                                                         :key="dict.id"
                                                                 />
@@ -1379,7 +1379,7 @@
                                 <el-row style="display: inline-flex;margin: 21px 0px 13px 0px">
                                     <div style="width: 210px">
                                         <el-row
-                                                v-if="(item.attachResume && item.attachResume!='')"
+                                                v-if="(item.attachResume && item.attachResume.length > 0)"
                                                 style="font-size: 14px;
                                                 font-family: PingFangSC-Medium, PingFang SC;
                                                 font-weight: 500;"
@@ -1556,7 +1556,7 @@
                     },{value: '2',
                         label: '群众'
                     },],
-                priorityList: [{value: '0',
+                poriorityList: [{value: '0',
                     label: '第一'
                     },{
                         value: '1',
@@ -1641,7 +1641,6 @@
                     post: undefined,
                     description: undefined,
                     onWork: 0,
-                    workType: undefined,
                 },
                 resumeExpFormRules: {
                     company: [
@@ -1775,23 +1774,7 @@
                     checkStrictly: true
 
                 },
-                workTypeOptions: [
-                    {
-                        id:1,
-                        value: '全职',
-                        name: '全职'
-                    },
-                    {
-                        id:2,
-                        value: '兼职',
-                        name: '兼职'
-                    },
-                    {
-                        id:3,
-                        value: '实习',
-                        name: '实习'
-                    }
-                ],
+                workTypeOptions: [],
                 categoryListOptions: [],
                 newSkillTag: "",
                 skillTagListForm: [],
@@ -1998,7 +1981,6 @@
             handleUploadAttachmengSuccess() {
                 this.resumeForm.attachResume = this.uploadAttachmentOptions.fileUrl;
                 this.resume.attachResume = this.uploadAttachmentOptions.fileUrl;
-                console.log("my console:" + this.resume.attachResume);
                 this.handleSaveResumeBasic(false);
             },
             getResumeInfo() {
@@ -2124,7 +2106,6 @@
                     this.resumeExpForm.post = resumeExp.post;
                     this.resumeExpForm.description = resumeExp.description;
                     this.resumeExpForm.onWork = resumeExp.onWork;
-                    this.resumeExpForm.workType = resumeExp.workType;
                     if (resumeExp.startTime && resumeExp.finishTime) {
                         this.resumeExpForm.workingDates = [
                             this.resumeExpForm.startTime,
@@ -2141,7 +2122,6 @@
                     this.resumeExpForm.description = undefined;
                     this.resumeExpForm.workingDates = undefined;
                     this.resumeExpForm.onWork = 0;
-                    this.resumeExpForm.workType = undefined;
                 }
                 this.$nextTick(() => {
                     this.$refs["resumeExpForm"][0].clearValidate();
