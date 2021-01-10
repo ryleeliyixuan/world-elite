@@ -20,7 +20,7 @@
                 </div>
                 <div class="line3">
                     <div class="name">活动主办方：</div>
-                    <div class="value">{{getOrganizerType()}}</div>
+                    <div class="value">{{activity.organizerInfoVo.organizerName}}</div>
                     <div class="name">活动链接：</div>
                     <!--  <a class="value" style="text-decoration:underline; cursor: pointer;" href="http://www.myworldelite.com" target="_blank">{{activity.address}}</a>-->
                     <div class="value">{{activity.address}}</div>
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="apply-container">
-                <div class="line1">
+                <div class="line1" v-if="this.$route.params.id !== 'preview'">
                     <div class="image-button-bg" @click="onCollect">
                         <el-image v-if="activity.attentionFlag" class="image" :src="require('@/assets/activity/collected.png')"></el-image>
                         <el-image v-else class="image" :src="require('@/assets/activity/collect.png')"></el-image>
@@ -56,7 +56,7 @@
 
                     <div :class="activity.registrationFlag?'apply-button2':'apply-button'" @click="onApply">报名</div>
                 </div>
-                <div class="line2">
+                <div class="line2" v-if="activity.numberLimit && activity.numberLimit!==-1">
                     报名名额还剩<span>{{activity.numberLimit - activity.applicantQuantity}}</span>个
                 </div>
             </div>
@@ -74,10 +74,10 @@
                    width="445px">
             <el-select v-model="reportForm.optionId" placeholder="请选择举报类型" class="option" size="small">
                 <el-option
-                    v-for="item in reportOptionList"
-                    :key="item.value"
-                    :label="item.name"
-                    :value="item.value">
+                        v-for="item in reportOptionList"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.value">
                 </el-option>
             </el-select>
 
@@ -157,18 +157,22 @@
         methods: {
             // 初始化数据
             initData() {
-                // 活动信息
-                this.$axios.get("/activity/activity-info", {params: {id: this.$route.params.id}}).then(response => {
-                    this.activity = response.data;
-                    this.shareConfig.title = this.activity.title;
-                    // this.shareConfig.description = this.activity.description;
-                })
+                if (this.$route.params.id === "preview") {
+                    this.activity = this.$storage.getData("activityPreview");
+                    this.activity.organizerInfoVo = this.activity.organizerInfoForm;
+                } else {
+                    // 活动信息
+                    this.$axios.get("/activity/activity-info", {params: {id: this.$route.params.id}}).then(response => {
+                        this.activity = response.data;
+                        this.shareConfig.title = this.activity.title;
+                        // this.shareConfig.description = this.activity.description;
+                    })
 
-                // 举报选项
-                this.$axios.get("/dict/list", {params: {type: 24, limit: 99}}).then(data => {
-                    this.reportOptionList = data.data.list;
-                })
-
+                    // 举报选项
+                    this.$axios.get("/dict/list", {params: {type: 24, limit: 99}}).then(data => {
+                        this.reportOptionList = data.data.list;
+                    })
+                }
             },
 
             // 点击收藏
@@ -176,18 +180,6 @@
                 this.$axios.post("/favorite/favorite", {objectId: this.$route.params.id, type: 3, favorite: !this.activity.attentionFlag}).then(() => {
                     this.activity.attentionFlag = !this.activity.attentionFlag;
                 })
-            },
-
-            // 获取活动主办方
-            getOrganizerType() {
-                switch (this.activity.organizerType) {
-                    case 1:
-                        return this.activity.organizerInfoVo.school;
-                    case 2:
-                        return this.activity.organizerInfoVo.businessLicenseUrl;
-                    default :
-                        return this.activity.organizerInfoVo.organizerName;
-                }
             },
 
             // 点击报名按钮
