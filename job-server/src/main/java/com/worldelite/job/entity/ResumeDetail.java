@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -113,6 +114,10 @@ public class ResumeDetail {
      * @return 分数
      */
     public int calcCompletion() {
+
+        if (phone == null) {
+            return 0;
+        }
 
         if (StringUtils.isAnyBlank(resumeId.toString(), userId.toString(), name, email, phone.toString())) {
             return 0;
