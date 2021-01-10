@@ -16,14 +16,14 @@
                         <div class="text-minor">点击查看更多</div>
                     </div>
                 </div>
-                <div class="button-container">
+                <div class="button-container" @click="onPublish">
                     <div class="text-container">
                         <div class="text-major">我发布的活动</div>
                         <div class="text-minor">点击查看更多</div>
                     </div>
                     <el-image class="image" :src="require('@/assets/activity/2.png')" fit="scale-down"></el-image>
                 </div>
-                <div class="button-container" @click="onPublish">
+                <div class="button-container" @click="onNewActivity">
                     <el-image class="image" :src="require('@/assets/activity/3.png')" fit="scale-down"></el-image>
                     <div class="text-container">
                         <div class="text-major">发布新活动</div>
@@ -193,8 +193,15 @@
                 })
             },
 
-            // 发布新活动
+            // 我发布的活动
             onPublish() {
+                this.$router.push('/activity/publish');
+            },
+
+            // 发布新活动
+            onNewActivity() {
+                // 发布新活动前先清楚预览数据
+                this.$storage.removeObject('activityPreview');
                 this.$router.push('/activity/edit');
             },
 

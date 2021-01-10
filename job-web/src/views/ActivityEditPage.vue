@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <div class="title">活动发布<span class="button">查看我已发布的活动</span></div>
+        <div class="title">活动发布<span @click="onPublished">查看我已发布的活动</span></div>
         <div class="content-container">
             <div class="line">
                 <div class="name">
@@ -45,14 +45,12 @@
                             <div class="option-text">个人</div>
                         </div>
                     </div>
-                    <div v-if="activityForm.organizerType==='1' || activityForm.organizerType==='2'">
-                        <div class="line">
-                            <div class="name" style="width: auto;">组织名称</div>
-                            <el-input placeholder="请输入组织名称"
-                                      v-model="activityForm.organizerInfoForm.organizerName"
-                                      size="small"
-                                      class="input"></el-input>
-                        </div>
+                    <div class="line">
+                        <div class="name" style="width: auto;">组织名称</div>
+                        <el-input placeholder="请输入组织名称"
+                                  v-model="activityForm.organizerInfoForm.organizerName"
+                                  size="small"
+                                  class="input"></el-input>
                     </div>
                     <div v-if="activityForm.organizerType==='1'">
                         <div class="line">
@@ -216,10 +214,10 @@
                            size="small"
                            style="margin-right:15px;">
                     <el-option
-                        v-for="item in registrationTemplateList"
-                        :key="item.id"
-                        :label="item.templateName"
-                        :value="item.id">
+                            v-for="item in registrationTemplateList"
+                            :key="item.id"
+                            :label="item.templateName"
+                            :value="item.id">
                     </el-option>
                 </el-select>
                 <div class="add-button" @click="onAddRegistrationTemplate">
@@ -241,8 +239,8 @@
                            :show-file-list="false"
                            :on-success="posterUploadSuccess"
                            :before-upload="posterUpload">
-                    <el-image v-if="posterUploadPicOptions.localUrl"
-                              :src="posterUploadPicOptions.localUrl"
+                    <el-image v-if="posterUploadPicOptions.localUrl || activityForm.poster"
+                              :src="posterUploadPicOptions.localUrl || activityForm.poster"
                               v-loading="posterUploadPicOptions.loading"
                               fit="scale-down"
                               class="poster-uploader"/>
@@ -255,8 +253,20 @@
         <div class="button-container">
             <div class="cancel" @click="onCancel">取消</div>
             <div class="preview" @click="onPreview">预览</div>
-            <div class="submit" @click="onSubmit">提交</div>
+            <div class="submit" @click="onSubmit" :loading="publishing">提交</div>
         </div>
+        <el-dialog class="cancel-dialog"
+                   title="您确定要取消发布吗？"
+                   :center="true"
+                   :visible.sync="cancelDialogVisible"
+                   v-loading="draftSaving"
+                   width="445px">
+            <el-checkbox v-model="saveDraft">将已填内容保存至草稿，下次点击发布活动可恢复</el-checkbox>
+            <div class="button-container">
+                <div class="cancel" @click="cancelDialogVisible = false">取消</div>
+                <div class="confirm" @click="onSaveDraft">确定</div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -326,6 +336,12 @@
                     localUrl: "",
                     acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
                 },
+
+                cancelDialogVisible: false, // 取消发布
+                saveDraft: false, // 是否存草稿
+                draftSaving: false, // 草稿保存中
+
+                publishing: false, // 发布中
             };
         },
         watch: {
@@ -351,10 +367,28 @@
             }
         },
         created() {
-            let activityForm = this.$storage.getObject(this.$options.name)
+            // 优先加载预览的内容，从列表页进入时会删除预览数据
+            let activityForm = this.$storage.getObject('activityPreview');
             if (activityForm) {
                 this.activityForm = activityForm;
+                this.activityTime = [new Date(activityForm.activityStartTime), new Date(activityForm.activityFinishTime)];
+                this.registrationTime = [new Date(activityForm.registrationStartTime), new Date(activityForm.registrationFinishTime)];
+            } else { // 没有预览数据时加载远程草稿
+                this.$axios.get("/activity/my/draft-activity-info").then(data => {
+                    activityForm = data.data;
+                    console.log(activityForm);
+                    if (activityForm) {
+                        this.activityForm = activityForm;
+                        this.activityTime = [new Date(activityForm.activityStartTime), new Date(activityForm.activityFinishTime)];
+                        this.registrationTime = [new Date(activityForm.registrationStartTime), new Date(activityForm.registrationFinishTime)];
+                        if (this.activityForm.city) {
+                            this.activityForm.cityId = this.activityForm.city.id;
+                        }
+                        this.activityForm.organizerInfoForm = this.activityForm.organizerInfoVo;
+                    }
+                })
             }
+
             this.initData();
         },
         methods: {
@@ -475,27 +509,55 @@
 
             // 添加报名表
             onAddRegistrationTemplate() {
-                this.$storage.setData(this.$options.name, this.activityForm);
+                this.$storage.setObject('activityPreview', this.activityForm);
                 // this.$router.push("")
             },
 
             // 点击取消
             onCancel() {
-                this.$router.go(-1);
+                this.cancelDialogVisible = true;
+            },
+
+            // 保存草稿并取消
+            onSaveDraft() {
+                if (this.saveDraft) {
+                    this.draftSaving = true;
+                    this.activityForm.status = 1;
+                    this.$axios.post("/activity/save", this.activityForm).then(data => {
+                        this.draftSaving = false;
+                        this.$storage.removeObject('activityPreview');
+                        this.$router.go(-1);
+                    })
+                } else {
+                    this.$router.go(-1);
+                }
             },
 
             // 点击预览
             onPreview() {
                 if (this.checkForm()) {
-
+                    this.$storage.setObject("activityPreview", this.activityForm);
+                    this.$router.push('/activity/preview');
                 }
             },
 
             // 点击提交
             onSubmit() {
                 if (this.checkForm()) {
-
+                    this.activityForm.status = undefined; // 删除草稿状态
+                    this.activityForm.form = this.activityForm.cityId === 999993 || this.activityForm.cityId === 999992 ? 0 : 1; // 线上=0，线下=1
+                    this.publishing = true;
+                    this.$axios.post("/activity/save", this.activityForm).then(data => {
+                        this.publishing = false;
+                        this.$storage.removeObject('activityPreview');
+                        this.onPublished();
+                    })
                 }
+            },
+
+            // 查看我已发布的活动
+            onPublished() {
+                this.$router.push('/activity/publish');
             },
 
             // 检查参数是否填写完整
@@ -505,6 +567,8 @@
                     message = "请输入活动名称";
                 } else if (!this.activityForm.organizerType) {
                     message = "请选择主办方类型";
+                } else if (!this.activityForm.organizerInfoForm.organizerName) {
+                    message = "请输入组织名称";
                 } else if (!this.activityForm.cityId) {
                     message = "请选择活动城市";
                 } else if (!this.activityForm.activityStartTime || !this.activityForm.activityFinishTime) {
@@ -515,11 +579,12 @@
                     message = "请输入限制报名人数";
                 } else if (!this.activityForm.description) {
                     message = "请输入活动介绍";
-                } else if (!this.activityForm.registrationTemplateId) {
-                    message = "请选择报名表模板";
                 } else if (!this.activityForm.poster) {
                     message = "请上传活动海报";
                 }
+                // else if (!this.activityForm.registrationTemplateId) {
+                //     message = "请选择报名表模板";
+                // }
                 message && this.$message.warning(message);
                 return !message;
             }
@@ -569,6 +634,7 @@
                 line-height: 32px;
                 margin-left: 9px;
                 text-decoration: underline;
+                cursor: pointer;
             }
         }
 
@@ -761,6 +827,46 @@
                 line-height: 35px;
                 text-align: center;
                 cursor: pointer;
+            }
+        }
+
+        .cancel-dialog {
+            ::v-deep .el-dialog {
+                border-radius: 13px;
+            }
+
+            .button-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 26px;
+
+                .cancel {
+                    width: 107px;
+                    height: 35px;
+                    background: #FFFFFF;
+                    border-radius: 18px;
+                    border: 1px solid #4895EF;
+                    font-size: 16px;
+                    color: #4895EF;
+                    line-height: 35px;
+                    text-align: center;
+                    cursor: pointer;
+                }
+
+                .confirm {
+                    margin-left: 21px;
+                    width: 107px;
+                    height: 35px;
+                    background: #4895EF;
+                    border-radius: 18px;
+                    border: 1px solid #FFFFFF;
+                    font-size: 16px;
+                    color: #FFFFFF;
+                    line-height: 35px;
+                    text-align: center;
+                    cursor: pointer;
+                }
             }
         }
     }
