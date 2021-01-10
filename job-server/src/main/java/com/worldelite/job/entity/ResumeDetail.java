@@ -68,6 +68,12 @@ public class ResumeDetail {
     //期望薪资
     private Dict salary;
 
+    // 工作类型
+    private String workType;
+
+    // 期望工作类型
+    private String expectWorkType;
+
     private Byte priority;
 
     public void setResumeMergeAttachList(List<ResumeMergeAttach> resumeMergeAttachList) {

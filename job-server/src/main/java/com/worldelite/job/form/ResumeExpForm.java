@@ -27,4 +27,6 @@ public class ResumeExpForm {
     private String post; //职位
     @NotBlank(message = "{edit.resume.exp.description.not.blank}")
     private String description; //描述
+    @NotBlank(message = "{edit.resume.exp.worktype.not.blank}")
+    private String workType; // 工作类型
 }
