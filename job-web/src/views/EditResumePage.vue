@@ -435,7 +435,7 @@
                                                             <span v-if="item.userExpectJob.salary && item.userExpectJob.salary!=''">{{item.userExpectJob.salary.name}}
                                                 </span>
                                                         </el-row>
-                                                        <el-row class="info-other">工作类型：{{item.userExpectJob.workType}}
+                                                        <el-row class="info-other">工作类型：{{item.userExpectJob.expectWorkType}}
                                                             <!--                                                <span v-for="jobType in  resume.userExpectJob.jobTypeList"-->
                                                             <!--                                                      :key="jobType.id"-->
                                                             <!--                                                      effect="plain"-->
@@ -525,13 +525,13 @@
                                                             <el-form-item label="工作类型:" prop="workType"
                                                                           class="m-input-text-width">
                                                                 <el-button class="ej-btn"
-                                                                           @click="expectJobForm.workType = '全职'">全职
+                                                                           @click="expectJobForm.expectWorkType = '全职'">全职
                                                                 </el-button>
                                                                 <el-button class="ej-btn"
-                                                                           @click="expectJobForm.workType = '兼职'">兼职
+                                                                           @click="expectJobForm.expectWorkType = '兼职'">兼职
                                                                 </el-button>
                                                                 <el-button class="ej-btn"
-                                                                           @click="expectJobForm.workType = '实习'">实习
+                                                                           @click="expectJobForm.expectWorkType = '实习'">实习
                                                                 </el-button>
                                                             </el-form-item>
                                                         </el-form>
@@ -619,7 +619,7 @@
                                                     <span>{{resumeExp.post}}</span>
                                                 </div>
                                                 <div style="padding-left: 31px">
-                                                    <span>全职<!--{{resumeExp.jobType}}--> </span>
+                                                    <span>{{resumeExp.workType}} </span>
                                                 </div>
                                             </div>
                                             <div style="display: inline-flex">
@@ -1717,7 +1717,7 @@
                     time: [{required: true, message: "请输入获得时间", trigger: "blur"},],
                 },
                 expectJobForm: {
-                    workType: undefined,
+                    expectWorkType: undefined,
                     industryName: undefined,
                     cityIds: [],
                     categoryIds: [],
