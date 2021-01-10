@@ -438,7 +438,7 @@
                                                             <span>{{item.userExpectJob.salary.name}}
                                                 </span>
                                                         </el-row>
-                                                        <el-row class="info-other">工作类型：
+                                                        <el-row class="info-other">工作类型：{{item.userExpectJob.expectWorkType}}
                                                             <!--                                                <span v-for="jobType in  resume.userExpectJob.jobTypeList"-->
                                                             <!--                                                      :key="jobType.id"-->
                                                             <!--                                                      effect="plain"-->
@@ -541,13 +541,13 @@
                                                             <el-form-item label="工作类型:" prop="workType"
                                                                           class="m-input-text-width">
                                                                 <el-button class="ej-btn"
-                                                                           @click="expectJobForm.workType = '全职'">全职
+                                                                           @click="expectJobForm.expectWorkType = '全职'">全职
                                                                 </el-button>
                                                                 <el-button class="ej-btn"
-                                                                           @click="expectJobForm.workType = '兼职'">兼职
+                                                                           @click="expectJobForm.expectWorkType = '兼职'">兼职
                                                                 </el-button>
                                                                 <el-button class="ej-btn"
-                                                                           @click="expectJobForm.workType = '实习'">实习
+                                                                           @click="expectJobForm.expectWorkType = '实习'">实习
                                                                 </el-button>
                                                             </el-form-item>
                                                         </el-form>
@@ -635,7 +635,7 @@
                                                     <span>{{resumeExp.post}}</span>
                                                 </div>
                                                 <div style="padding-left: 31px">
-                                                    <span>全职<!--{{resumeExp.jobType}}--> </span>
+                                                    <span>{{resumeExp.workType}} </span>
                                                 </div>
                                             </div>
                                             <div style="display: inline-flex">
@@ -690,11 +690,11 @@
                                                              :rules="resumeExpFormRules">
                                                         <el-form-item label="工作类型：" prop="workType"
                                                                       class="m-input-text-width">
-                                                            <el-select v-model="resumeEduForm.workType"
+                                                            <el-select v-model="resumeExpForm.workType"
                                                                        placeholder="请选择工作类型">
                                                                 <el-option
                                                                         :label="dict.name"
-                                                                        :value="dict.id"
+                                                                        :value="dict.value"
                                                                         v-for="dict in workTypeOptions"
                                                                         :key="dict.id"
                                                                 />
@@ -1701,7 +1701,7 @@
                     time: [{required: true, message: "请输入获得时间", trigger: "blur"},],
                 },
                 expectJobForm: {
-                    workType: undefined,
+                    expectWorkType: undefined,
                     industryName: undefined,
                     cityIds: [],
                     categoryIds: [],
@@ -1774,7 +1774,23 @@
                     checkStrictly: true
 
                 },
-                workTypeOptions: [],
+                workTypeOptions: [
+                    {
+                        id:1,
+                        value: '全职',
+                        name: '全职'
+                    },
+                    {
+                        id:2,
+                        value: '兼职',
+                        name: '兼职'
+                    },
+                    {
+                        id:3,
+                        value: '实习',
+                        name: '实习'
+                    }
+                ],
                 categoryListOptions: [],
                 newSkillTag: "",
                 skillTagListForm: [],
@@ -2106,6 +2122,7 @@
                     this.resumeExpForm.post = resumeExp.post;
                     this.resumeExpForm.description = resumeExp.description;
                     this.resumeExpForm.onWork = resumeExp.onWork;
+                    this.resumeExpForm.workType = resumeExp.workType;
                     if (resumeExp.startTime && resumeExp.finishTime) {
                         this.resumeExpForm.workingDates = [
                             this.resumeExpForm.startTime,
@@ -2122,6 +2139,7 @@
                     this.resumeExpForm.description = undefined;
                     this.resumeExpForm.workingDates = undefined;
                     this.resumeExpForm.onWork = 0;
+                    this.resumeExpForm.workType = undefined;
                 }
                 this.$nextTick(() => {
                     this.$refs["resumeExpForm"][0].clearValidate();
