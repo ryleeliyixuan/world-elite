@@ -52,16 +52,25 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     public ActivityVo asVo(Activity activity) {
         if (activity == null) return null;
 
-        BeanUtil.copyProperties(activity, this, "activityStartTime", "activityFinishTime", "registrationStartTime", "registrationFinishTime", "attentionTime", "registrationTime", "curTime","createTime");
+        BeanUtil.copyProperties(activity, this, "activityStartTime", "activityFinishTime", "registrationStartTime", "registrationFinishTime", "attentionTime", "registrationTime", "curTime", "createTime");
 
         setPoster(AppUtils.absOssUrl(activity.getPoster()));
         setCurTime(System.currentTimeMillis());
 
-        setRegistrationStartTime(activity.getRegistrationStartTime().getTime());
-        setRegistrationFinishTime(activity.getRegistrationFinishTime().getTime());
-        setActivityStartTime(activity.getActivityStartTime().getTime());
-        setActivityFinishTime(activity.getActivityFinishTime().getTime());
-        setCreateTime(activity.getCreateTime().getTime());
+        if (activity.getRegistrationStartTime() != null)
+            setRegistrationStartTime(activity.getRegistrationStartTime().getTime());
+
+        if (activity.getRegistrationFinishTime() != null)
+            setRegistrationFinishTime(activity.getRegistrationFinishTime().getTime());
+
+        if (activity.getActivityStartTime() != null)
+            setActivityStartTime(activity.getActivityStartTime().getTime());
+
+        if (activity.getActivityFinishTime() != null)
+            setActivityFinishTime(activity.getActivityFinishTime().getTime());
+
+        if (activity.getCreateTime() != null)
+            setCreateTime(activity.getCreateTime().getTime());
 
         return this;
     }
