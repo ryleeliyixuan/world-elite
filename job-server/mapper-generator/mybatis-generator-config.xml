@@ -29,9 +29,9 @@
 
         <jdbcConnection
                 driverClass="com.mysql.jdbc.Driver"
-                connectionURL="jdbc:mysql://123.57.145.68:3306/db_worldelite?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull"
+                connectionURL="jdbc:mysql://127.0.0.1:3306/db_worldelite?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull"
                 userId="root"
-                password="123456">
+                password="password">
             <!--获取表的表注释，需要设置该值为 true-->
             <property name="useInformationSchema" value="true"/>
         </jdbcConnection>
@@ -56,11 +56,11 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="t_city" domainObjectName="City"  enableCountByExample="false" enableDeleteByExample="false"
+        <table tableName="t_resume_experience" domainObjectName="ResumeExperience"  enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false"
                enableUpdateByExample="false">
             <!--表的insert语句如果要返回自动生成的id值, 启用下面这行-->
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+<!--            <generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         </table>
 
     </context>

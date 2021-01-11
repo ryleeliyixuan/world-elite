@@ -491,7 +491,6 @@ public class ResumeGeneralService extends ResumeService {
             resumeVo.setMaritalStatus(resumeDetail.getResumeBasic().getMaritalStatus());
             resumeVo.setPriority(resumeDetail.getResumeBasic().getPriority());
             resumeVo.setAttachResume(resumeDetail.getResumeBasic().getAttachResume());
-            resumeVo.setAttachOther(resumeDetail.getResumeBasic().getAttachOther());
         }
 
         //教育信息

@@ -61,6 +61,5 @@ public interface ResumeExperienceMapper {
      */
     int updateByPrimaryKey(ResumeExperience record);
 
-
-    List<ResumeExperience> selectAndList(ResumeExperience options);
+    List<ResumeExperience>selectAndList(ResumeExperience record);
 }
