@@ -195,8 +195,7 @@
                             </span>
                                         </el-row>
                                         <div class="resume-basicinfo row mt-3">
-                                            <div class="avatorHolder" ref="resumeForm" :model="resumeForm"
-                                                 :rules="resumeFormRules">
+                                            <el-form class="avatorHolder" ref="resumeForm3" :model="resumeForm3">
                                                 <el-upload
                                                         class="avatar-uploader"
                                                         :action="uploadPicOptions.action"
@@ -216,7 +215,7 @@
                                                 <el-row style="padding-left: 5px">
                                                     <el-button class="img-button">上传照片</el-button>
                                                 </el-row>
-                                            </div>
+                                            </el-form>
                                             <div class="resume-info">
                                                 <div class="info-other-row-l">
                                                     <el-row class="info-name">{{item.name}}</el-row>
@@ -1421,7 +1420,7 @@
                                         :data="uploadAttachmentOptions.params"
                                         :accept="uploadAttachmentOptions.acceptFileType"
                                         :show-file-list="false"
-                                        :on-success="handleUploadAttachmengSuccess"
+                                        :on-success="handleUploadAttachOthersSuccess"
                                         :before-upload="beforeAttachmengUpload"
                                 >
                                     <el-button class="upload-btn">
@@ -1582,6 +1581,13 @@
                     id: undefined,
                     resumeId:undefined,
                     attachResume:undefined,
+                    attachOthers:undefined,
+
+                },
+                resumeForm3:{
+                    id: undefined,
+                    resumeId:undefined,
+                    avatar:undefined,
                 },
                 resumeForm: {
                     priority: undefined,
@@ -2001,25 +2007,10 @@
                 });
             },
             handleAvatarSuccess() {
-                this.avatar = this.uploadPicOptions.fileUrl;
-                this.resume[this.newIndex].avatar = this.uploadPicOptions.fileUrl;
-                this.resumeForm.avatar = this.avatar
-                console.log(this.resumeForm.avatar)
-                this.$refs["resumeForm"].validate((valid) => {
-                    if (valid) {
-                        this.posting = true;
-                        this.resumeForm.resumeId = this.newResumeId;
-                        saveResumeBasic(this.resumeForm)
-                            .then(() => {
-                                this.getResumeInfo();
-                                this.showBasicDialog = false;
-                            })
-                            .finally(() => {
-                                this.posting = false;
-                            });
-                    }
-                });
-                // this.handleSaveResumeBasic(false);
+                this.resumeForm3.avatar = this.uploadPicOptions.fileUrl;
+                this.resume.avatar = this.uploadPicOptions.fileUrl;
+                console.log(this.resumeForm3.avatar)
+                this.handleSaveResumeAvatar(false);
             },
             beforeAttachmengUpload(file) {
                 return new Promise((resolve, reject) => {
@@ -2045,6 +2036,9 @@
                 this.resume.attachResume = this.uploadAttachmentOptions.fileUrl;
                 console.log(this.resume.attachResume)
                 this.handleSaveResumeAttachResume(false);
+            },
+            handleUploadAttachOthersSuccess(){
+
             },
             getResumeInfo() {
                 getResumeInfo().then((response) => {
@@ -2130,7 +2124,34 @@
                 }
                 // this.setResumeFormValues();
                 this.$nextTick(() => {
-                    this.$refs["resumeForm1"][0].clearValidate();
+                    this.$refs["resumeForm1"].clearValidate();
+                });
+            },
+            handleSaveResumeAvatar(){
+                this.$refs["resumeForm3"][0].validate((valid) => {
+                    if (valid) {
+                        this.posting = true;
+                        if (this.newResumeId&&this.newResumeId!=''){
+                            this.resumeForm3.id=this.newResumeId
+                            // this.resumeForm1.resumeId = this.newResumeId;
+                            saveResumeBasic(this.resumeForm3)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else{
+                            this.resumeForm3.id = this.resume[this.resume.length-1].id;
+                            saveResumeBasic(this.resumeForm3)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }
+                    }
                 });
             },
             handleEditResumeEdu(type, resumeEdu) {
