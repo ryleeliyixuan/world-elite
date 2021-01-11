@@ -124,8 +124,8 @@ public class ActivityApi extends BaseApi {
     @RequireLogin
     @PostMapping("takeoff")
     @ApiDoc
-    public ApiResult takeOffActivity(@RequestParam Integer id) {
-        activityService.takeOffActivity(id);
+    public ApiResult takeOffActivity(@RequestParam Integer id, String reason) {
+        activityService.takeOffActivity(id, reason);
         return ApiResult.ok();
     }
 

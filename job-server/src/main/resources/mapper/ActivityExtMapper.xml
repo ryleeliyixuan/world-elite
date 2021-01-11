@@ -41,6 +41,8 @@
       <if test="onlyOverseasStudent != null">
         and only_overseas_student = #{onlyOverseasStudent,jdbcType=CHAR}
       </if>
+
+      and status != 1
     </where>
   </select>
 

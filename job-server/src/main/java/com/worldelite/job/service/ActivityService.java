@@ -5,16 +5,14 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.context.SpringContextHolder;
-import com.worldelite.job.entity.Activity;
-import com.worldelite.job.entity.ActivityOptions;
-import com.worldelite.job.entity.Favorite;
-import com.worldelite.job.entity.Registration;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.ActivityReviewForm;
 import com.worldelite.job.mapper.ActivityMapper;
+import com.worldelite.job.mapper.ActivityTakeOffMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.mapper.RegistrationMapper;
 import com.worldelite.job.util.AppUtils;
@@ -60,6 +58,9 @@ public class ActivityService extends BaseService {
 
     @Autowired
     private RegistrationMapper registrationMapper;
+
+    @Autowired
+    private ActivityTakeOffMapper activityTakeOffMapper;
 
     /**
      * 获取活动列表
@@ -158,7 +159,7 @@ public class ActivityService extends BaseService {
         if (activity == null) {
             activity = new Activity();
         }
-        BeanUtil.copyProperties(activityForm, activity,  CopyOptions.create().setIgnoreNullValue(true).setIgnoreError(true).setIgnoreProperties("status"));
+        BeanUtil.copyProperties(activityForm, activity, CopyOptions.create().setIgnoreNullValue(true).setIgnoreError(true).setIgnoreProperties("status"));
 
         activity.setPoster(AppUtils.getOssKey(activityForm.getPoster()));
 
@@ -225,17 +226,32 @@ public class ActivityService extends BaseService {
      *
      * @param id
      */
-    public void takeOffActivity(Integer id) {
+    @Transactional
+    public void takeOffActivity(Integer id, String reason) {
         Activity activity = activityMapper.selectByPrimaryKey(id);
         if (activity != null) {
             //自己发布的或者管理员才能下架活动
-            if (activity.getUserId().equals(curUser().getId()) || curUser().getType() == UserType.ADMIN.value) {
-                activity.setStatus(ActivityStatus.OFFLINE.value);
-                activityMapper.updateByPrimaryKeySelective(activity);
-                activityStatusManager.remove(activity.getId());
-            } else {
+            if (!activity.getUserId().equals(curUser().getId()) && curUser().getType() != UserType.ADMIN.value) {
                 throw new ServiceException(message("api.error.permission.denied"));
             }
+            //草稿,已下架,审核失败无法下架
+            if (activity.getStatus() == ActivityStatus.DRAFT.value
+                    || activity.getStatus() == ActivityStatus.OFFLINE.value
+                    || activity.getStatus() == ActivityStatus.REVIEW_FAILURE.value) {
+
+                throw new ServiceException(message("activity.takeoff.failed"));
+            }
+
+            activity.setStatus(ActivityStatus.OFFLINE.value);
+            activityMapper.updateByPrimaryKeySelective(activity);
+            activityStatusManager.remove(activity.getId());
+
+            ActivityTakeOff activityTakeOff = new ActivityTakeOff();
+            activityTakeOff.setActivityId(activity.getId());
+            activityTakeOff.setReason(reason);
+            activityTakeOffMapper.insertSelective(activityTakeOff);
+
+            //TODO 异步发送通知, 告知所有活动报名者活动下架
         } else {
             throw new ServiceException(message("activity.not.exist"));
         }
