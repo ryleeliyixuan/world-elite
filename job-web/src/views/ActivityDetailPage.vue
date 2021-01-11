@@ -85,6 +85,7 @@
                       :rows="3"
                       placeholder="请详细描述举报原因（必填，300字以内）"
                       v-model="reportForm.reason"
+                      maxlength="300"
                       resize="none"
                       class="reason">
             </el-input>
@@ -123,7 +124,7 @@
             return {
                 activity: undefined,
                 organizerTypeList: ['', '学生活动', '社会组织活动', '个人活动', '企业活动'],
-                statusList: ['审核中', '草稿', '下架', '即将开始', '报名中', '进行中', '活动结束'],
+                statusList: ['审核中', '草稿', '已停止', '即将开始', '报名中', '进行中', '活动结束'],
 
                 statusBGColorList: ['#B0BEC5', '#C6FF00', '#C6FF00', '#40C4FF', '#FBC02D', '#9CCC65', '#FF8A80'],
                 shareConfig: {

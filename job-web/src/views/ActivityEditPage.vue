@@ -214,10 +214,10 @@
                            size="small"
                            style="margin-right:15px;">
                     <el-option
-                            v-for="item in registrationTemplateList"
-                            :key="item.id"
-                            :label="item.templateName"
-                            :value="item.id">
+                        v-for="item in registrationTemplateList"
+                        :key="item.id"
+                        :label="item.templateName"
+                        :value="item.id">
                     </el-option>
                 </el-select>
                 <div class="add-button" @click="onAddRegistrationTemplate">
@@ -367,28 +367,26 @@
             }
         },
         created() {
-            // 优先加载预览的内容，从列表页进入时会删除预览数据
-            let activityForm = this.$storage.getObject('activityPreview');
-            if (activityForm) {
-                this.activityForm = activityForm;
-                this.activityTime = [new Date(activityForm.activityStartTime), new Date(activityForm.activityFinishTime)];
-                this.registrationTime = [new Date(activityForm.registrationStartTime), new Date(activityForm.registrationFinishTime)];
-            } else { // 没有预览数据时加载远程草稿
-                this.$axios.get("/activity/my/draft-activity-info").then(data => {
-                    activityForm = data.data;
-                    console.log(activityForm);
-                    if (activityForm) {
-                        this.activityForm = activityForm;
-                        this.activityTime = [new Date(activityForm.activityStartTime), new Date(activityForm.activityFinishTime)];
-                        this.registrationTime = [new Date(activityForm.registrationStartTime), new Date(activityForm.registrationFinishTime)];
-                        if (this.activityForm.city) {
-                            this.activityForm.cityId = this.activityForm.city.id;
-                        }
-                        this.activityForm.organizerInfoForm = this.activityForm.organizerInfoVo;
-                    }
+            // 编辑指定活动
+            if (this.$route.query.id) {
+                this.$axios.get("/activity/activity-info", {params: {id: this.$route.query.id}}).then(data => {
+                    this.handlerActivity(data.data);
                 })
+            } else {
+                // 优先加载预览的内容，从列表页进入时会删除预览数据
+                let activityForm = this.$storage.getObject('activityPreview');
+                if (activityForm) {
+                    Object.keys(activityForm).forEach(key => {
+                        this.activityForm[key] = activityForm[key];
+                    })
+                    this.activityTime = [new Date(activityForm.activityStartTime), new Date(activityForm.activityFinishTime)];
+                    this.registrationTime = [new Date(activityForm.registrationStartTime), new Date(activityForm.registrationFinishTime)];
+                } else { // 没有预览数据时加载远程草稿
+                    this.$axios.get("/activity/my/draft-activity-info").then(data => {
+                        this.handlerActivity(data.data);
+                    })
+                }
             }
-
             this.initData();
         },
         methods: {
@@ -426,6 +424,21 @@
                 this.$axios.get("/questionnaire-template/my/list").then(data => {
                     this.registrationTemplateList = data.data;
                 })
+            },
+
+            // 处理请求结果为本地对象
+            handlerActivity(activityForm) {
+                if (activityForm) {
+                    Object.keys(activityForm).forEach(key => {
+                        this.activityForm[key] = activityForm[key];
+                    })
+                    this.activityTime = [new Date(activityForm.activityStartTime), new Date(activityForm.activityFinishTime)];
+                    this.registrationTime = [new Date(activityForm.registrationStartTime), new Date(activityForm.registrationFinishTime)];
+                    if (this.activityForm.city) {
+                        this.activityForm.cityId = this.activityForm.city.id;
+                    }
+                    this.activityForm.organizerInfoForm = this.activityForm.organizerInfoVo;
+                }
             },
 
             // 点击留学生

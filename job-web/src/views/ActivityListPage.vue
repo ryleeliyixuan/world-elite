@@ -295,8 +295,6 @@
                     this.total = response.data.total;
                 });
             },
-
-
         }
     };
 </script>
