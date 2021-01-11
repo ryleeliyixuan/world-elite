@@ -30,9 +30,6 @@
             <if test="type != null">
                 and type = #{type}
             </if>
-            <if test="attachOther != null">
-                and attach_other = #{attachOther,jdbcType=VARCHAR}
-            </if>
             <if test="minAge != null and maxAge != null">
                 and age between #{minAge, jdbcType=INTEGER} and #{maxAge, jdbcType=INTEGER}
             </if>
