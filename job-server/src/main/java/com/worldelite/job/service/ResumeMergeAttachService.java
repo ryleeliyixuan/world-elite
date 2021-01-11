@@ -32,9 +32,9 @@ public class ResumeMergeAttachService{
             return;
         }
 
+        //delete old others
+        deleteResumeMergeAttaches(resume);
         for (String oneOther: others){
-            //delete old others
-            deleteResumeMergeAttaches(resume);
             //add new others
             ResumeMergeAttach record = new ResumeMergeAttach();
             record.setResumeAttach(AppUtils.getOssKey(oneOther));
