@@ -26,6 +26,7 @@ public class ResumeExpVo extends EditFlag implements VoConvertable<ResumeExpVo, 
     private Integer position; //排序
     private Byte onWork; //是在在职
     private String workType; // 工作类型
+    private String industry;
 
     @Override
     public ResumeExpVo asVo(ResumeExperience resumeExp) {
@@ -39,6 +40,7 @@ public class ResumeExpVo extends EditFlag implements VoConvertable<ResumeExpVo, 
         setPosition(resumeExp.getPosition());
         setOnWork(resumeExp.getOnWork());
         setWorkType(resumeExp.getWorkType());
+        setIndustry(resumeExp.getIndustry());
         return this;
     }
 }

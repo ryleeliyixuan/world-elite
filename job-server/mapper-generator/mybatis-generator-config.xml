@@ -56,11 +56,11 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="t_resume" domainObjectName="Resume"  enableCountByExample="false" enableDeleteByExample="false"
+        <table tableName="t_resume_experience" domainObjectName="ResumeExperience"  enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false"
                enableUpdateByExample="false">
             <!--表的insert语句如果要返回自动生成的id值, 启用下面这行-->
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+<!--            <generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         </table>
 
     </context>
