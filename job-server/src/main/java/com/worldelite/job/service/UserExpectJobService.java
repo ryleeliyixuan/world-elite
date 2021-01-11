@@ -7,12 +7,15 @@ import com.worldelite.job.mapper.UserExpectJobMapper;
 import com.worldelite.job.mapper.UserExpectPlaceMapper;
 import com.worldelite.job.mapper.UserExpectSalaryMapper;
 import com.worldelite.job.service.search.IndexService;
+import com.worldelite.job.util.ResponseUtils;
 import com.worldelite.job.vo.CityVo;
 import com.worldelite.job.vo.JobCategoryVo;
 import com.worldelite.job.vo.UserExpectJobVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,8 @@ import java.util.Optional;
  */
 @Service
 public class UserExpectJobService extends BaseService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ResponseUtils.class);
 
     @Autowired
     private UserExpectJobMapper expectJobMapper;
@@ -192,6 +197,6 @@ public class UserExpectJobService extends BaseService {
         UserExpectJob userExpectJob = new UserExpectJob();
         userExpectJob.setUserId(id);
         Optional<List<UserExpectJob>> optionalList = Optional.ofNullable(expectJobMapper.selectAndList(userExpectJob));
-        return optionalList.isPresent() ? optionalList.get().get(0).getExpectWorkType() : "";
+        return optionalList.isPresent() && optionalList.get().size()!=0 ? optionalList.get().get(0).getExpectWorkType() : "";
     }
 }

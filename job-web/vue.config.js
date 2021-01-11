@@ -39,6 +39,7 @@ module.exports = {
     proxy: {
       "/api": {
         target: "https://api.test.myworldelite.com",
+        // target: "http://localhost:9000/api",
         changeOrigin: true,
         ws: true,
         pathRewrite: {

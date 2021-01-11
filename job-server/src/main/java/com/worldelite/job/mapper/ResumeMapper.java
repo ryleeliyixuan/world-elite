@@ -70,11 +70,13 @@ public interface ResumeMapper {
 
     List<CountForm> countPlaceGroupBy();
 
-    List<TimePairForm>countGraduateTimeGroupBy();
+    List<TimePairForm> countGraduateTimeGroupBy();
 
     TimePairForm countAllByTime(ResumeOptions record);
 
     TimePairForm countOpResumeByTime(ResumeOptions record);
 
     TimePairForm countUserResumeByTime(ResumeOptions record);
+
+
 }
