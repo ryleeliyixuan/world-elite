@@ -406,7 +406,8 @@ public class ResumeGeneralService extends ResumeService {
         //区号
         resumeDetail.setPhoneCode(userApplicant.getPhoneCode());
         //头像
-        resumeDetail.setAvatar(AppUtils.absOssUrl(userApplicant.getAvatar()));
+//        resumeDetail.setAvatar(AppUtils.absOssUrl(userApplicant.getAvatar()));
+        resumeDetail.setAvatar(AppUtils.absOssUrl(resume.getAvatar()));
         //性别
         resumeDetail.setGender(userApplicant.getGender());
         //基础信息
