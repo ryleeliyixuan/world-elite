@@ -75,6 +75,7 @@ public class UserExpectJobService extends BaseService {
         userExpectJobVo.setExpectCity(userExpectJob.getExpectCity());
         userExpectJobVo.setExpectPosition(userExpectJob.getExpectPosition());
         userExpectJobVo.setSalaryId(userExpectJob.getSalaryId());
+        userExpectJobVo.setExpectWorkType(userExpectJob.getExpectWorkType());
 
         return userExpectJobVo;
     }
