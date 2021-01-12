@@ -43,6 +43,9 @@ public class RegistrationService extends BaseService{
     @Autowired
     private ActivityService activityService;
 
+    @Autowired
+    private DictService dictService;
+
     @Transactional
     public void addRegistration(RegistrationForm registrationForm){
         //报名者ID不存在，认为是当前用户进行报名
@@ -103,6 +106,7 @@ public class RegistrationService extends BaseService{
         }
         List<QuestionnaireAnswerVo> answerList = questionnaireAnswerService.getAnswerListByRegistrationId(id);
         RegistrationVo registrationVo = new RegistrationVo().asVo(registration);
+        registrationVo.setEducation(dictService.getById(registration.getEducationId()));
         registrationVo.setAnswerList(answerList);
         return registrationVo;
     }
@@ -177,7 +181,13 @@ public class RegistrationService extends BaseService{
         BeanUtil.copyProperties(registrationListForm,options);
         Page<Registration> registrationList = (Page<Registration>) registrationMapper.selectAndList(options);
         PageResult<RegistrationVo> pageResult = new PageResult<>(registrationList);
-        pageResult.setList(AppUtils.asVoList(registrationList,RegistrationVo.class));
+        List<RegistrationVo> registrationVoList = new ArrayList<>(registrationList.size());
+        for(Registration registration:registrationList){
+            RegistrationVo registrationVo = new RegistrationVo().asVo(registration);
+            registrationVo.setEducation(dictService.getById(registration.getEducationId()));
+            registrationVoList.add(registrationVo);
+        }
+        pageResult.setList(registrationVoList);
         return pageResult;
     }
 
