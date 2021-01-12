@@ -35,8 +35,8 @@ public class UserExpectJobService extends BaseService {
     @Autowired
     private UserExpectJobMapper expectJobMapper;
 
-//    @Autowired
-//    private UserExpectPlaceMapper expectPlaceMapper;
+    @Autowired
+    private UserExpectPlaceMapper expectPlaceMapper;
 //
 //    @Autowired
 //    private UserExpectSalaryMapper expectSalaryMapper;
@@ -47,11 +47,11 @@ public class UserExpectJobService extends BaseService {
 //    @Autowired
 //    private DictService dictService;
 //
-//    @Autowired
-//    private IndexService indexService;
-//
-//    @Autowired
-//    private CityService cityService;
+    @Autowired
+    private IndexService indexService;
+
+    @Autowired
+    private CityService cityService;
 
     /**
      * 获取用户求职意向
@@ -79,19 +79,25 @@ public class UserExpectJobService extends BaseService {
         return userExpectJobVo;
     }
 
-//    /**
-//     * 获取意向职位
-//     *
-//     * @param resumeId
-//     * @return
-//     */
-//    public JobCategory getExpectCategory(Long resumeId) {
-//        UserExpectJob expectJobOptions = new UserExpectJob();
-//        expectJobOptions.setResumeId(resumeId);
-//        //the length of the list should be 1
-//        List<UserExpectJob> userExpectJobList = expectJobMapper.selectAndList(expectJobOptions);
-//        return jobCategoryService.getCategory(userExpectJobList.get(0).getCategoryId());
-//    }
+    /**
+     * 获取意向职位
+     *
+     * @param resumeId
+     * @return
+     */
+    public List<JobCategory> getExpectCategoryList(Long resumeId) {
+        UserExpectJob expectJobOptions = new UserExpectJob();
+        expectJobOptions.setResumeId(resumeId);
+
+        List<UserExpectJob> userExpectJobList = expectJobMapper.selectAndList(expectJobOptions);
+        List<JobCategory> categoryList = new ArrayList<>(userExpectJobList.size());
+        if (CollectionUtils.isNotEmpty(userExpectJobList)) {
+            for (UserExpectJob userExpectJob : userExpectJobList) {
+                categoryList.add(jobCategoryService.getCategory(userExpectJob.getCategoryId()));
+            }
+        }
+        return categoryList;
+    }
 
     /**
      * 保存用户求职意向
@@ -115,6 +121,7 @@ public class UserExpectJobService extends BaseService {
         }
         else {
             UserExpectJob record = new UserExpectJob();
+            record.setResumeId(resumeId);
             record.setCategoryId(userExpectJobForm.getCategoryId());
             record.setExpectPosition(userExpectJobForm.getExpectPosition());
             record.setExpectCity(userExpectJobForm.getExpectCity());
@@ -124,5 +131,28 @@ public class UserExpectJobService extends BaseService {
         }
 
         return getUserExpectJob(resumeId);
+    }
+
+    /**
+     * 意向城市
+     *
+     * @param userId
+     * @return
+     */
+    public List<City> getExpectCityList(Long userId) {
+        UserExpectPlace expectPlaceOptions = new UserExpectPlace();
+        expectPlaceOptions.setUserId(userId);
+        List<UserExpectPlace> userExpectPlaceList = expectPlaceMapper.selectAndList(expectPlaceOptions);
+        List<City> cityList = new ArrayList<>(userExpectPlaceList.size());
+        if (CollectionUtils.isNotEmpty(userExpectPlaceList)) {
+            for (UserExpectPlace userExpectPlace : userExpectPlaceList) {
+                City city = cityService.getById(userExpectPlace.getCityId());
+                if (city == null) {
+                    throw new ServiceException(message("api.error.data.city"));
+                }
+                cityList.add(city);
+            }
+        }
+        return cityList;
     }
 }
