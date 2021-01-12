@@ -7,6 +7,7 @@ import com.worldelite.job.constants.*;
 import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
+import com.worldelite.job.event.ActivityTakeOffEvent;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListForm;
@@ -251,7 +252,8 @@ public class ActivityService extends BaseService {
             activityTakeOff.setReason(reason);
             activityTakeOffMapper.insertSelective(activityTakeOff);
 
-            //TODO 异步发送通知, 告知所有活动报名者活动下架
+            //发送通知, 告知所有活动报名者活动下架
+            SpringContextHolder.publishEvent(new ActivityTakeOffEvent(this, activity.getId()));
         } else {
             throw new ServiceException(message("activity.not.exist"));
         }
