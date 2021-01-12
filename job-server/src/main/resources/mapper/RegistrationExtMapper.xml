@@ -15,8 +15,8 @@
       <if test="keywords != null and keywords != ''">
         and (name like concat('%',#{keywords},'%'))
       </if>
-      <if test="statusList != null and statusList != ''">
-        and status in (${statusList})
+      <if test="status != null">
+        and status = #{status}
       </if>
     </where>
   </select>
