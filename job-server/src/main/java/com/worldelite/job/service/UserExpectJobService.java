@@ -63,6 +63,9 @@ public class UserExpectJobService extends BaseService {
         UserExpectJob expectJobOptions = new UserExpectJob();
         expectJobOptions.setResumeId(resumeId);
         List<UserExpectJob> userExpectJobList = expectJobMapper.selectAndList(expectJobOptions);
+        if (userExpectJobList.size()==0){
+            return new UserExpectJobVo();
+        }
         UserExpectJob userExpectJob = userExpectJobList.get(0);
         JobCategory jobCategory = jobCategoryService.getCategory(userExpectJob.getCategoryId());
         JobCategoryVo jobCategoryVo = new JobCategoryVo().asVo(jobCategory);
