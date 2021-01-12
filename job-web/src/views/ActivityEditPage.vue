@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <div class="title">活动发布<span @click="onPublished">查看我已发布的活动</span></div>
+        <div class="title">{{this.$route.query.id?'活动编辑':'活动发布'}}<span @click="onPublished">查看我已发布的活动</span></div>
         <div class="content-container">
             <div class="line">
                 <div class="name">
@@ -77,7 +77,7 @@
                                           fit="scale-down"
                                           class="business-license-uploader"/>
                                 <div v-else class="business-license-add">
-                                    <svg-icon icon-class="upload" class="upload"></svg-icon>
+                                    <svg-icon icon-class="activity-upload" class="upload"></svg-icon>
                                 </div>
                             </el-upload>
                         </div>
@@ -245,7 +245,7 @@
                               fit="scale-down"
                               class="poster-uploader"/>
                     <div v-else class="poster-add">
-                        <svg-icon icon-class="upload" class="upload"></svg-icon>
+                        <svg-icon icon-class="activity-upload" class="upload"></svg-icon>
                     </div>
                 </el-upload>
             </div>
@@ -528,7 +528,11 @@
 
             // 点击取消
             onCancel() {
-                this.cancelDialogVisible = true;
+                if (this.$route.query.id) { // 编辑时，不保存草稿
+                    this.$router.go(-1);
+                } else { // 发布新活动取消时，提示用户保存草稿
+                    this.cancelDialogVisible = true;
+                }
             },
 
             // 保存草稿并取消
