@@ -20,7 +20,24 @@
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
-              <el-input class="inp-city" v-model="inpCity" size="mini" placeholder="输入国内外其他城市名，支持多个"></el-input>
+              <!--<el-input class="inp-city" v-model="inpCity" size="mini" placeholder="输入国内外其他城市名，支持多个"></el-input>-->
+
+
+              <el-select
+                      class="inp-city"
+                      v-model="inpCity"
+                      clearable
+                      multiple
+                      filterable
+                      allow-create
+                      default-first-option
+                      remote
+                      reserve-keyword
+                      placeholder="输入国内外其他城市名，支持多个"
+                      size="mini"
+                      @change="inpCityChange"
+                      >
+              </el-select>
             </div>
 
             <!-- 行业类型 -->
@@ -86,15 +103,15 @@
             <div class="section1-filter">
               <span class="section1-filter-title">公司规模：</span>
               <el-checkbox-group
-                v-model="listQuery.companyScaleIds"
-                size="small"
+                      v-model="listQuery.companyScaleIds"
+                      size="small"
               >
                 <el-checkbox-button
-                  v-for="item in companyScaleOptions"
-                  :label="item.id"
-                  :key="item.id"
-                  @change="handleFilter"
-                  >{{ item.name }}</el-checkbox-button
+                        v-for="item in companyScaleOptions"
+                        :label="item.id"
+                        :key="item.id"
+                        @change="handleFilter"
+                >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
             </div>
@@ -121,11 +138,11 @@
               <span class="section1-filter-title">工作类型：</span>
               <el-checkbox-group v-model="listQuery.jobTypes" size="small">
                 <el-checkbox-button
-                  v-for="item in jobTypeOptions"
-                  :label="item.id"
-                  :key="item.id"
-                  @change="handleFilter"
-                  >{{ item.name }}</el-checkbox-button
+                        v-for="item in jobTypeOptions"
+                        :label="item.id"
+                        :key="item.id"
+                        @change="handleFilter"
+                >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
             </div>
@@ -148,15 +165,15 @@
             <div class="section1-filter">
               <span class="section1-filter-title">特殊筛选：</span>
               <el-checkbox-group v-model="listQuery.specialIds" size="small">
-                <el-checkbox-button>
+                <!--<el-checkbox-button>
                   内推
-                </el-checkbox-button>
+                </el-checkbox-button>-->
                 <el-checkbox-button>
                   留学经验优先
                 </el-checkbox-button>
-                <el-checkbox-button>
+                <!--<el-checkbox-button>
                   线上工作
-                </el-checkbox-button>
+                </el-checkbox-button>-->
               </el-checkbox-group>
             </div>
 
@@ -179,11 +196,11 @@
 
           <div v-show="!moreFilter">
             <div class="inp-search">
-              <el-input class="inp-search-child" size="mini" placeholder="城市"></el-input>
-              <el-input class="inp-search-child" size="mini" placeholder="行业"></el-input>
-              <el-input class="inp-search-child" size="mini" placeholder="薪资"></el-input>
-              <el-input class="inp-search-child" size="mini" placeholder="学历"></el-input>
-              <el-input class="inp-search-child" size="mini" placeholder="工作经验"></el-input>
+              <el-input class="inp-search-child" size="mini" :placeholder="placeholderCity" :readonly="true"></el-input>
+              <el-input class="inp-search-child" size="mini" :placeholder="placeholderIndustry" :readonly="true"></el-input>
+              <el-input class="inp-search-child" size="mini" :placeholder="placeholderSalary" :readonly="true"></el-input>
+              <el-input class="inp-search-child" size="mini" :placeholder="placeholderDegree" :readonly="true"></el-input>
+              <el-input class="inp-search-child" size="mini" :placeholder="placeholderExp" :readonly="true"></el-input>
               <div class="section1-filter-option">
                 <el-button
                         style="flex: 1; margin-left: 10px;"
@@ -214,8 +231,8 @@
               </div>
               <div class="quickFilter-right-click">
                 <svg-icon
-                  icon-class="joblistfilterplus"
-                  style="height: 20px; width: 20px"
+                        icon-class="joblistfilterplus"
+                        style="height: 20px; width: 20px"
                 />
                 <span class="quickFilter-right-click-text">点我订阅职位</span>
               </div>
@@ -226,30 +243,30 @@
       <div class="section1-wrapper section1-wrapper-collapse" v-else>
         <div class="section1-container section1-collapse">
           <el-tag
-            class="section1-collapse-tag"
-            v-if="selectedIndustry && selectedIndustry.length > 0"
-            >{{ selectedIndustry }}
+                  class="section1-collapse-tag"
+                  v-if="selectedIndustry && selectedIndustry.length > 0"
+          >{{ selectedIndustry }}
           </el-tag>
           <el-tag
-            class="section1-collapse-tag"
-            v-if="selectedSalary && selectedSalary.length > 0"
-            >{{ selectedSalary }}
+                  class="section1-collapse-tag"
+                  v-if="selectedSalary && selectedSalary.length > 0"
+          >{{ selectedSalary }}
           </el-tag>
           <el-tag
-            class="section1-collapse-tag"
-            v-if="selectedScale && selectedScale.length > 0"
-            >{{ selectedScale }}
+                  class="section1-collapse-tag"
+                  v-if="selectedScale && selectedScale.length > 0"
+          >{{ selectedScale }}
           </el-tag>
           <el-tag
-            class="section1-collapse-tag"
-            v-if="selectedJobType && selectedJobType.length > 0"
-            >{{ selectedJobType }}
+                  class="section1-collapse-tag"
+                  v-if="selectedJobType && selectedJobType.length > 0"
+          >{{ selectedJobType }}
           </el-tag>
           <el-button
-            class="more"
-            @click="(moreFilter = true), goToTop()"
-            size="mini"
-            >更多筛选</el-button
+                  class="more"
+                  @click="(moreFilter = true), goToTop()"
+                  size="mini"
+          >更多筛选</el-button
           >
         </div>
       </div>
@@ -275,26 +292,25 @@
         暂无搜索结果，显示推荐职位
       </div>
       <div
-        class="section3-container"
-        v-if="pageResult.list && pageResult.list.length !== 0"
+              class="section3-container"
+              v-if="pageResult.list && pageResult.list.length !== 0"
       >
         <el-card
-          v-show="job.salary && job.companyUser.company.name !== ''"
-          shadow="never"
-          :body-style="{ padding: '0px' }"
-          v-for="job in pageResult.list"
-          :key="job.id"
-          class="section3-item-container"
-          @click.native="openJobDetail(job.id)"
+                v-show="job.salary && job.companyUser.company.name !== ''"
+                shadow="never"
+                :body-style="{ padding: '0px' }"
+                v-for="job in pageResult.list"
+                :key="job.id"
+                class="section3-item-container"
+                @click.native="openJobDetail(job.id)"
         >
           <div class="section3-left-container">
-            <h6 class="section3-job-name">{{ job.name }}</h6>
+            <h6 class="section3-job-name" >{{ job.name }}</h6>
             <div>
-              <b class="section3-salary"
-                >{{ job.salary.name
-                }}{{ job.salaryMonths ? ` · ${job.salaryMonths}薪` : "" }}</b
+              <b class="section3-salary" style="font-size: 16px;"
+              >{{ job.salary.name}} · {{ job.salaryMonths ? `${job.salaryMonths}薪` : "12薪" }}</b
               >
-              <span class="section3-city-degree">{{
+              <span class="section3-city-degree" style="font-size: 15px;">{{
                 `${job.city ? job.city.name : ""} / ${
                   job.minDegree ? job.minDegree.name : ""
                 }`
@@ -303,8 +319,8 @@
             </div>
           </div>
           <div
-            class="section3-right-container"
-            v-if="job.companyUser && job.companyUser.company"
+                  class="section3-right-container"
+                  v-if="job.companyUser && job.companyUser.company"
           >
             <div class="section3-company-info-container">
               <h6 class="section3-company-name">
@@ -324,9 +340,9 @@
             </div>
             <el-link :href="`/company/${job.companyUser.company.id}`">
               <el-image
-                class="section3-logo"
-                :src="job.companyUser.company.logo"
-                v-if="
+                      class="section3-logo"
+                      :src="job.companyUser.company.logo"
+                      v-if="
                   job.companyUser.company.logo &&
                   job.companyUser.company.logo !== ''
                 "
@@ -341,11 +357,11 @@
       </div>
       <div class="section2-container">
         <pagination
-          v-show="total"
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.limit"
-          @pagination="handleRouteList"
+                v-show="total"
+                :total="total"
+                :page.sync="listQuery.page"
+                :limit.sync="listQuery.limit"
+                @pagination="handleRouteList"
         />
       </div>
     </div>
@@ -353,689 +369,740 @@
 </template>
 
 <script>
-import { listByType } from "@/api/dict_api";
-import { searchJob } from "@/api/job_api";
-import Pagination from "@/components/Pagination";
-import { mapGetters } from "vuex";
+  import { listByType, listByTypeAll } from "@/api/dict_api";
+  import { searchJob } from "@/api/job_api";
+  import Pagination from "@/components/Pagination";
+  import { mapGetters } from "vuex";
 
-import { formatListQuery, parseListQuery } from "@/utils/common";
-import { getRecommendList } from "@/api/recommend_api";
+  import { formatListQuery, parseListQuery } from "@/utils/common";
+  import { getRecommendList } from "@/api/recommend_api";
 
-export default {
-  name: "JobListPage",
-  components: { Pagination },
-  computed: {
-    ...mapGetters(["keyword"]),
-  },
-  data() {
-    return {
-      moreFilter: false,
-      quickFilter: false,
-      collapse: false,
-      paneLoading: true,
-
-      selectedSalary: "",
-      selectedIndustry: "",
-      selectedScale: "",
-      selectedJobType: "",
-
-      listQuery: {
-        keyword: "",
-        salaryRangeIds: [],
-        jobTypes: [],
-        cityIds: [],
-        companyIndustryIds: [],
-        companyScaleIds: [],
-        companyStageIds: [],
-        companyDefineIds: [],
-        degreeIds: [],
-        experienceIds: [],
-        categoryIds: [],
-        lanRequiredIds: [],
-        specialIds: [],
-        page: 1,
-        limit: 10,
-      },
-      inpCity: "",
-      total: 0,
-      pageResult: {},
-      salaryRangeOptions: [],
-      companyScaleOptions: [],
-      companyIndustryOptions: [],
-      jobTypeOptions: [],
-      cityOptions: [],
-      degreeOptions: [],
-      experienceOptions: [],
-      companyDefineOptions: [],
-      lanRequiredOptions: [],
-      showNoResult: false,
-      cityIdProps: {
-        multiple: true,
-        lazy: false,
-        // lazyLoad: (node, resolve) => {
-        //     if (node.level === 1) {
-        //         this.$axios.request({
-        //             url: "/city/list",
-        //             method: "get",
-        //             params: {type: node.value}
-        //         }).then(data => {
-        //             let nodes = data.data.map(second => {
-        //                 let children = second.children && second.children.map(third => {
-        //                     return {id: third.id, name: third.name, leaf: true}
-        //                 })
-        //                 return {id: second.id, name: second.name, children}
-        //             });
-        //             resolve(nodes);
-        //         })
-        //     } else {
-        //         resolve();
-        //     }
-        // },
-        expandTrigger: "hover",
-        value: "id",
-        label: "name",
-        emitPath: false,
-        children: "children",
-      },
-    };
-  },
-  created() {
-    this.initData();
-    this.getList();
-  },
-  watch: {
-    $route() {
-      this.getList();
+  export default {
+    name: "JobListPage",
+    components: { Pagination },
+    computed: {
+      ...mapGetters(["keyword"]),
     },
-    keyword() {
-      this.listQuery.keyword = this.keyword;
-      this.handleRouteList();
-    },
-  },
-  methods: {
-    initData() {
-      this.paneLoading = true;
-      listByType(2).then(
-        (response) => (this.cityOptions = response.data.list)
-      );
-      listByType(5).then(
-        (response) => (this.companyScaleOptions = response.data.list)
-      );
-      listByType(6).then(
-        (response) => (this.companyIndustryOptions = response.data.list)
-      );
-      listByType(8).then(
-        (response) => (this.jobTypeOptions = response.data.list)
-      );
-      listByType(9).then(
-        (response) => (this.salaryRangeOptions = response.data.list)
-      );
-      listByType(1).then(
-        (response) => (this.degreeOptions = response.data.list)
-      );
-      listByType(13).then(
-        (response) => (this.experienceOptions = response.data.list)
-      );
-      listByType(7).then(
-        (response) => (this.companyDefineOptions = response.data.list)
-      );
-      this.$axios.request({
-        url: "/skill-tag/list",
-        method: "get",
-        params: {
-          type: 163,
+    data() {
+      return {
+        moreFilter: false,
+        quickFilter: false,
+        collapse: false,
+        paneLoading: true,
+
+        selectedSalary: "",
+        selectedIndustry: "",
+        selectedScale: "",
+        selectedJobType: "",
+
+        cityWord: undefined,
+
+        placeholderCity: "城市",
+        placeholderIndustry: "行业",
+        placeholderSalary: "月薪",
+        placeholderDegree: "学历",
+        placeholderExp: "工作经验",
+
+        loading: false,
+        inpCityOptions: [],
+        inpCity: [],
+
+        listQuery: {
+          keyword: "",
+          salaryRangeIds: [],
+          jobTypes: [],
+          cityIds: [],
+          companyIndustryIds: [],
+          companyScaleIds: [],
+          companyStageIds: [],
+          companyDefineIds: [],
+          degreeIds: [],
+          experienceIds: [],
+          categoryIds: [],
+          lanRequiredIds: [],
+          specialIds: [],
           page: 1,
           limit: 10,
-          sort: '+id'
-        }
-      }).then((resp) => {
-        this.lanRequiredOptions = resp.data.list;
-      });
-      /*this.$axios
-        .request({
-          url: "/city/list",
-          method: "get",
-          params: { type: 1 },
-        })
-        .then((data) => {
-          this.cityOptions[0].children = data.data.map((second) => {
-            let children =
-              second.children &&
-              second.children.map((third) => {
-                return { id: third.id, name: third.name, leaf: true };
-              });
-            return { id: second.id, name: second.name, children };
-          });
-        });
-
-      this.$axios
-        .request({
-          url: "/city/list",
-          method: "get",
-          params: { type: 2 },
-        })
-        .then((data) => {
-          this.cityOptions[1].children = data.data.map((second) => {
-            let children =
-              second.children &&
-              second.children.map((third) => {
-                return { id: third.id, name: third.name, leaf: true };
-              });
-            return { id: second.id, name: second.name, children };
-          });
-        });*/
-      this.paneLoading = false;
-    },
-    goToTop() {
-      let top = document.documentElement.scrollTop || document.body.scrollTop;
-      // 实现滚动效果
-      const timeTop = setInterval(() => {
-        document.body.scrollTop = document.documentElement.scrollTop = top -= 50;
-        if (top <= 0) {
-          clearInterval(timeTop);
-        }
-      }, 10);
-    },
-    scrollPane(status) {
-      this.collapse = status;
-      this.selectedSalary = "";
-      this.selectedIndustry = "";
-      this.selectedScale = "";
-      this.selectedJobType = "";
-
-      for (let i = 0; i < this.salaryRangeOptions.length; i++) {
-        let item = this.salaryRangeOptions[i];
-        if (this.listQuery.salaryRangeIds.indexOf(item.id) !== -1) {
-          this.selectedSalary += item.name + "，";
-        }
-      }
-      for (let i = 0; i < this.companyIndustryOptions.length; i++) {
-        let item = this.companyIndustryOptions[i];
-        if (this.listQuery.companyIndustryIds.indexOf(item.id) !== -1) {
-          this.selectedIndustry += item.name + "，";
-        }
-      }
-      for (let i = 0; i < this.companyScaleOptions.length; i++) {
-        let item = this.companyScaleOptions[i];
-        if (this.listQuery.companyScaleIds.indexOf(item.id) !== -1) {
-          this.selectedScale += item.name + "，";
-        }
-      }
-
-      for (let i = 0; i < this.jobTypeOptions.length; i++) {
-        let item = this.jobTypeOptions[i];
-        if (this.listQuery.jobTypes.indexOf(item.id) !== -1) {
-          this.selectedJobType += item.name + "，";
-        }
-      }
-
-      this.selectedSalary = this.selectedSalary.substr(
-        0,
-        this.selectedSalary.length - 1
-      );
-      this.selectedIndustry = this.selectedIndustry.substr(
-        0,
-        this.selectedIndustry.length - 1
-      );
-      this.selectedScale = this.selectedScale.substr(
-        0,
-        this.selectedScale.length - 1
-      );
-      this.selectedJobType = this.selectedJobType.substr(
-        0,
-        this.selectedJobType.length - 1
-      );
-    },
-    handleFilter() {
-      this.listQuery.page = 1;
-      this.handleRouteList();
-    },
-    emptyFilter() {
-      this.listQuery = {
-        keyword: "",
-        salaryRangeIds: [],
-        jobTypes: [],
-        cityIds: [],
-        companyIndustryIds: [],
-        companyScaleIds: [],
-        companyStageIds: [],
-        degreeIds: [],
-        categoryIds: [],
-        page: 1,
-        limit: 10,
+        },
+        total: 0,
+        pageResult: {},
+        salaryRangeOptions: [],
+        companyScaleOptions: [],
+        companyIndustryOptions: [],
+        jobTypeOptions: [],
+        cityOptions: [],
+        cityOptionsAll: [],
+        degreeOptions: [],
+        experienceOptions: [],
+        companyDefineOptions: [],
+        lanRequiredOptions: [],
+        showNoResult: false,
+        cityIdProps: {
+          multiple: true,
+          lazy: false,
+          // lazyLoad: (node, resolve) => {
+          //     if (node.level === 1) {
+          //         this.$axios.request({
+          //             url: "/city/list",
+          //             method: "get",
+          //             params: {type: node.value}
+          //         }).then(data => {
+          //             let nodes = data.data.map(second => {
+          //                 let children = second.children && second.children.map(third => {
+          //                     return {id: third.id, name: third.name, leaf: true}
+          //                 })
+          //                 return {id: second.id, name: second.name, children}
+          //             });
+          //             resolve(nodes);
+          //         })
+          //     } else {
+          //         resolve();
+          //     }
+          // },
+          expandTrigger: "hover",
+          value: "id",
+          label: "name",
+          emitPath: false,
+          children: "children",
+        },
       };
-      this.handleRouteList();
     },
-    getList() {
-      this.showNoResult = false;
-      parseListQuery(this.$route.query, this.listQuery);
-      searchJob(this.listQuery).then((response) => {
-        if (!response.data.list || response.data.list.length === 0) {
-          this.showNoResult = true;
-          this.total = 10;
-          getRecommendList({
-            objectType: 1, // 职位
+    created() {
+      this.initData();
+      this.getList();
+    },
+    watch: {
+      $route() {
+        this.getList();
+      },
+      keyword() {
+        this.listQuery.keyword = this.keyword;
+        this.handleRouteList();
+      },
+    },
+    methods: {
+      initData() {
+        this.paneLoading = true;
+        listByType(2).then(
+                (response) => (this.cityOptions = response.data.list)
+        );
+        listByType(5).then(
+                (response) => (this.companyScaleOptions = response.data.list)
+        );
+        listByType(6).then(
+                (response) => (this.companyIndustryOptions = response.data.list)
+        );
+        listByType(8).then(
+                (response) => (this.jobTypeOptions = response.data.list)
+        );
+        listByType(9).then(
+                (response) => (this.salaryRangeOptions = response.data.list)
+        );
+        listByType(1).then(
+                (response) => (this.degreeOptions = response.data.list)
+        );
+        listByType(13).then(
+                (response) => (this.experienceOptions = response.data.list)
+        );
+        listByType(7).then(
+                (response) => (this.companyDefineOptions = response.data.list)
+        );
+        listByTypeAll(2).then(
+                (response) => (this.cityOptionsAll = response.data.list)
+        );
+        this.$axios.request({
+          url: "/skill-tag/list",
+          method: "get",
+          params: {
+            type: 163,
             page: 1,
             limit: 10,
-            sort: "+position",
-          }).then((response) => {
-            this.pageResult.list = response.data.list.map(
-              (item) => item.object
-            );
-            this.total = response.data.total;
-            this.$emit("complete");
-          });
-        } else {
-          this.pageResult = response.data;
-          this.total = this.pageResult.total;
-          this.$emit("complete");
-        }
-      });
-    },
+            sort: '+id'
+          }
+        }).then((resp) => {
+          this.lanRequiredOptions = resp.data.list;
+        });
+        this.paneLoading = false;
+      },
+      goToTop() {
+        let top = document.documentElement.scrollTop || document.body.scrollTop;
+        // 实现滚动效果
+        const timeTop = setInterval(() => {
+          document.body.scrollTop = document.documentElement.scrollTop = top -= 50;
+          if (top <= 0) {
+            clearInterval(timeTop);
+          }
+        }, 10);
+      },
+      scrollPane(status) {
+        this.collapse = status;
+        this.selectedSalary = "";
+        this.selectedIndustry = "";
+        this.selectedScale = "";
+        this.selectedJobType = "";
 
-    handleRouteList() {
-      this.$router.replace({
-        path: this.$route.path,
-        query: formatListQuery(this.listQuery),
-      });
+        for (let i = 0; i < this.salaryRangeOptions.length; i++) {
+          let item = this.salaryRangeOptions[i];
+          if (this.listQuery.salaryRangeIds.indexOf(item.id) !== -1) {
+            this.selectedSalary += item.name + "，";
+          }
+        }
+        for (let i = 0; i < this.companyIndustryOptions.length; i++) {
+          let item = this.companyIndustryOptions[i];
+          if (this.listQuery.companyIndustryIds.indexOf(item.id) !== -1) {
+            this.selectedIndustry += item.name + "，";
+          }
+        }
+        for (let i = 0; i < this.companyScaleOptions.length; i++) {
+          let item = this.companyScaleOptions[i];
+          if (this.listQuery.companyScaleIds.indexOf(item.id) !== -1) {
+            this.selectedScale += item.name + "，";
+          }
+        }
+
+        for (let i = 0; i < this.jobTypeOptions.length; i++) {
+          let item = this.jobTypeOptions[i];
+          if (this.listQuery.jobTypes.indexOf(item.id) !== -1) {
+            this.selectedJobType += item.name + "，";
+          }
+        }
+
+        this.selectedSalary = this.selectedSalary.substr(
+                0,
+                this.selectedSalary.length - 1
+        );
+        this.selectedIndustry = this.selectedIndustry.substr(
+                0,
+                this.selectedIndustry.length - 1
+        );
+        this.selectedScale = this.selectedScale.substr(
+                0,
+                this.selectedScale.length - 1
+        );
+        this.selectedJobType = this.selectedJobType.substr(
+                0,
+                this.selectedJobType.length - 1
+        );
+      },
+      inpCityChange() {
+        console.log("inpCityChange");
+        if (this.inpCity === undefined || this.inpCity.length === 0) {
+          return;
+        }
+        this.listQuery.cityIds = this.getIdByNameFromOptions(this.cityOptionsAll, this.inpCity);
+        this.handleFilter();
+      },
+      handleFilter() {
+        this.listQuery.page = 1;
+        this.refreshOptions();
+        this.handleRouteList();
+      },
+      refreshOptions() {
+        if (this.listQuery.cityIds.indexOf(255) !== -1) {
+          this.listQuery.cityIds = [];
+          this.placeholderCity = "不限";
+        }
+        if (this.listQuery.companyIndustryIds.indexOf(257) !== -1) {
+          this.listQuery.companyIndustryIds = [];
+          this.placeholderIndustry = "不限";
+        }
+        if (this.listQuery.salaryRangeIds.indexOf(260) !== -1) {
+          this.listQuery.salaryRangeIds = [];
+          this.placeholderSalary = "不限";
+        }
+        if (this.listQuery.degreeIds.indexOf(261) !== -1) {
+          this.listQuery.degreeIds = [];
+          this.placeholderDegree = "不限";
+        }
+        if (this.listQuery.experienceIds.indexOf(156) !== -1) {
+          this.listQuery.experienceIds = [];
+          this.placeholderExp = "不限";
+        }
+        if (this.listQuery.companyScaleIds.indexOf(256) !== -1) {
+          this.listQuery.companyScaleIds = [];
+        }
+        if (this.listQuery.companyDefineIds.indexOf(262) !== -1) {
+          this.listQuery.companyDefineIds = [];
+        }
+        if (this.listQuery.jobTypes.indexOf(259) !== -1) {
+          this.listQuery.jobTypes = [];
+        }
+
+        this.placeholderCity = this.getNameByIdFromOptions(this.cityOptions, this.listQuery.cityIds, "城市");
+        this.placeholderIndustry = this.getNameByIdFromOptions(this.companyIndustryOptions, this.listQuery.companyIndustryIds, "行业");
+        this.placeholderSalary = this.getNameByIdFromOptions(this.salaryRangeOptions, this.listQuery.salaryRangeIds, "月薪");
+        this.placeholderDegree = this.getNameByIdFromOptions(this.degreeOptions, this.listQuery.degreeIds, "学历");
+        this.placeholderExp = this.getNameByIdFromOptions(this.experienceOptions, this.listQuery.experienceIds, "工作经验");
+      },
+      getIdByNameFromOptions(options, names) {
+        let ids = [];
+        for (let i = 0; i < options; i++) {
+          for (let j = 0; j < names; j++) {
+            if (options[i].name === names[j]) {
+              ids.push(options[i].id);
+            }
+          }
+        }
+        return ids;
+      },
+      getNameByIdFromOptions(options, ids, origin) {
+        let name = "";
+        for (let i = 0; i < options.length; i++) {
+          for (let j = 0; j < ids.length; j++) {
+            if (options[i].id === ids[j]) {
+              name += options[i].name + ",";
+            }
+          }
+        }
+        if (name === "") {
+          return origin;
+        }
+        if (name.endsWith(",")) {
+          return name.substr(0, name.length - 1);
+        }
+      },
+      handleSearchCity() {
+        let query = {...this.$route.query};
+        if (this.cityWord) {
+          query.cityWord = this.cityWord;
+        } else {
+          delete query.cityWord;
+        }
+        if (this.isJob()) {
+          if (this.$route.path === '/job-list') {
+            this.$router.replace({path: '/job-list', query});
+          } else {
+            this.$router.push({path: '/job-list', query});
+          }
+        } else if (this.isWiki()) {
+          if (this.$route.path === '/wiki-list') {
+            this.$router.replace({path: '/wiki-list', query});
+          } else {
+            this.$router.push({path: '/wiki-list', query});
+          }
+        } else if (this.isActivity()) {
+          if (this.$route.path === '/activity-list') {
+            this.$router.replace({path: '/activity-list', query});
+          } else {
+            this.$router.push({path: '/activity-list', query});
+          }
+        } else {
+        }
+      },
+      emptyFilter() {
+        this.listQuery = {
+          keyword: "",
+          salaryRangeIds: [],
+          jobTypes: [],
+          cityIds: [],
+          companyIndustryIds: [],
+          companyScaleIds: [],
+          companyStageIds: [],
+          companyDefineIds: [],
+          degreeIds: [],
+          experienceIds: [],
+          categoryIds: [],
+          lanRequiredIds: [],
+          specialIds: [],
+          page: 1,
+          limit: 10,
+        };
+        this.refreshOptions();
+        this.handleRouteList();
+      },
+      getList() {
+        this.showNoResult = false;
+        parseListQuery(this.$route.query, this.listQuery);
+        searchJob(this.listQuery).then((response) => {
+          if (!response.data.list || response.data.list.length === 0) {
+            this.showNoResult = true;
+            this.total = 10;
+            getRecommendList({
+              objectType: 1, // 职位
+              page: 1,
+              limit: 10,
+              sort: "+position",
+            }).then((response) => {
+              this.pageResult.list = response.data.list.map(
+                      (item) => item.object
+              );
+              this.total = response.data.total;
+              this.$emit("complete");
+            });
+          } else {
+            this.pageResult = response.data;
+            this.total = this.pageResult.total;
+            this.$emit("complete");
+          }
+          // if (typeof(this.pageResult) === 'undefined' || !'list' in this.pageResult || this.pageResult.list.length <= 0) {
+          //   this.pageResult
+          // }
+        });
+      },
+
+      handleRouteList() {
+        this.$router.replace({
+          path: this.$route.path,
+          query: formatListQuery(this.listQuery),
+        });
+      },
+      openJobDetail(id) {
+        this.$router.push(`/job/${id}`);
+      },
     },
-    openJobDetail(id) {
-      this.$router.push(`/job/${id}`);
-    },
-  },
-};
+  };
 </script>
 
 <style scoped lang="scss">
-.section1-wrapper-collapse {
-  height: 38px;
-  .section1-collapse {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    /deep/ .el-tag + .el-tag {
-      margin-left: 15px;
-    }
-    .section1-collapse-tag {
-      background: #f4f5f8;
-      border-radius: 17px;
-      border: 1px solid #698ec7;
-      height: 25px;
-      width: fit-content;
+  .section1-wrapper-collapse {
+    height: 38px;
+    .section1-collapse {
       display: flex;
+      flex-direction: row;
       align-items: center;
+      /deep/ .el-tag + .el-tag {
+        margin-left: 15px;
+      }
+      .section1-collapse-tag {
+        background: #f4f5f8;
+        border-radius: 17px;
+        border: 1px solid #698ec7;
+        height: 25px;
+        width: fit-content;
+        display: flex;
+        align-items: center;
 
-      span {
+        span {
+          font-size: 14px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #698ec7;
+          line-height: 20px;
+        }
+      }
+      /deep/ .el-button {
+        margin-left: 16px;
+        background: #4895ef;
+        border-radius: 17px;
+        width: 86px;
         font-size: 14px;
         font-family: PingFangSC-Medium, PingFang SC;
         font-weight: 500;
-        color: #698ec7;
+        color: #ffffff;
         line-height: 20px;
+        padding-top: 3px;
+        padding-bottom: 3px;
       }
     }
-    /deep/ .el-button {
-      margin-left: 16px;
-      background: #4895ef;
-      border-radius: 17px;
-      width: 86px;
-      font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #ffffff;
-      line-height: 20px;
-      padding-top: 3px;
-      padding-bottom: 3px;
-    }
   }
-}
 
-.background-wrapper {
-  background: #f6f9fc;
-  max-width: 3000px !important;
-  padding: 0 !important;
-  margin-top: 0 !important;
-}
+  .background-wrapper {
+    background: #f6f9fc;
+    max-width: 3000px !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+  }
 
-.section1-wrapper {
-  width: 100%;
-  background: #fbfbfb;
-  box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
-  margin-bottom: 31px;
-  display: flex;
-  justify-content: center;
-  padding: 31px 0px;
-  position: sticky;
-  position: -webkit-sticky; // 兼容 -webkit 内核的浏览器
-  top: 10px; // 必须设一个值，否则不生效
+  .section1-wrapper {
+    width: 100%;
+    background: #fbfbfb;
+    box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
+    margin-bottom: 31px;
+    display: flex;
+    justify-content: center;
+    padding: 31px 0px;
+    position: sticky;
+    position: -webkit-sticky; // 兼容 -webkit 内核的浏览器
+    top: 10px; // 必须设一个值，否则不生效
 
-  .section1-container {
-    max-width: 1140px;
-    flex: 1;
-    padding: 0px 30px;
+    .section1-container {
+      max-width: 1140px;
+      flex: 1;
+      padding: 0px 30px;
 
-    .sort-options {
-      justify-content: flex-end;
-      margin-left: 5px;
-      margin-right: 5px;
-    }
-
-    .inp-search {
-      display: flex;
-      justify-content: space-between;
-
-      .inp-search-child {
-        flex: 1;
+      .sort-options {
+        justify-content: flex-end;
         margin-left: 5px;
         margin-right: 5px;
       }
 
-    }
-
-  }
-
-  .quickFilter {
-    display: flex;
-    flex-direction: row;
-    background: #eef5ff;
-    border-radius: 14px;
-    height: 136px;
-    padding: 13px 43px 17px 29px;
-    margin-bottom: 50px;
-    margin-top: 17px;
-
-    .quickFilter-title {
-      margin-bottom: 9px;
-      font-size: 16px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #4895ef;
-      line-height: 22px;
-    }
-    .quickFilter-caption {
-      font-size: 16px;
-      font-family: PingFangSC-Regular, PingFang SC;
-      font-weight: 400;
-      color: #666666;
-      line-height: 22px;
-    }
-
-    .quickFilter-left {
-      flex: 3;
-    }
-    .quickFilter-right {
-      flex: 1;
-      .quickFilter-right-click {
-        margin-top: 9px;
+      .inp-search {
         display: flex;
-        align-items: center;
-        .quickFilter-right-click-text {
-          margin-left: 4px;
-          font-size: 16px;
-          font-family: PingFangSC-Medium, PingFang SC;
-          font-weight: 500;
-          color: #333333;
-          line-height: 22px;
+        justify-content: space-between;
+
+        .inp-search-child {
+          flex: 1;
+          margin-left: 5px;
+          margin-right: 5px;
+        }
+
+      }
+
+    }
+
+    .quickFilter {
+      display: flex;
+      flex-direction: row;
+      background: #eef5ff;
+      border-radius: 14px;
+      height: 136px;
+      padding: 13px 43px 17px 29px;
+      margin-bottom: 50px;
+      margin-top: 17px;
+
+      .quickFilter-title {
+        margin-bottom: 9px;
+        font-size: 16px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #4895ef;
+        line-height: 22px;
+      }
+      .quickFilter-caption {
+        font-size: 16px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #666666;
+        line-height: 22px;
+      }
+
+      .quickFilter-left {
+        flex: 3;
+      }
+      .quickFilter-right {
+        flex: 1;
+        .quickFilter-right-click {
+          margin-top: 9px;
+          display: flex;
+          align-items: center;
+          .quickFilter-right-click-text {
+            margin-left: 4px;
+            font-size: 16px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+            line-height: 22px;
+          }
         }
       }
     }
-  }
-  .section1-filter {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 11px;
+    .section1-filter {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 11px;
 
-
-    .inp-city {
-      width: 250px;
-      margin-left: 50px;
-
-      input {
-        height: 21px;
+      .inp-city {
+        width: 250px;
+        margin-left: 50px;
       }
-    }
 
-    .section1-filter-title {
-      font-size: 16px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #333333;
-      line-height: 22px;
-    }
-    /deep/ .el-checkbox-button {
-      margin-bottom: 0px;
-    }
-    /deep/ .el-checkbox-button + .el-checkbox-button {
-      margin-left: 16px;
-    }
-    /deep/ .el-checkbox-button .el-checkbox-button__inner {
-      background: #f5f5f5;
-      border-radius: 17px;
-      border: 0px;
-      font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #333333;
-      line-height: 20px;
-      padding: 3px 12px;
-    }
-    /deep/ .is-checked {
-      background: #f4f5f8;
-      border-radius: 17px;
-      border: 1px solid #698ec7;
-
-      .el-checkbox-button__inner {
+      .section1-filter-title {
+        font-size: 16px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+        line-height: 22px;
+      }
+      /deep/ .el-checkbox-button {
+        margin-bottom: 0px;
+      }
+      /deep/ .el-checkbox-button + .el-checkbox-button {
+        margin-left: 16px;
+      }
+      /deep/ .el-checkbox-button .el-checkbox-button__inner {
+        background: #f5f5f5;
+        border-radius: 17px;
+        border: 0px;
         font-size: 14px;
         font-family: PingFangSC-Medium, PingFang SC;
         font-weight: 500;
-        color: #698ec7;
+        color: #333333;
+        line-height: 20px;
+        padding: 3px 12px;
+      }
+      /deep/ .is-checked {
+        background: #f4f5f8;
+        border-radius: 17px;
+        border: 1px solid #698ec7;
+
+        .el-checkbox-button__inner {
+          font-size: 14px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #698ec7;
+          line-height: 20px;
+        }
+      }
+    }
+    .section1-filter-option {
+      display: flex;
+      justify-content: flex-end;
+
+      /deep/ .el-button {
+        border-radius: 17px;
+        width: 86px;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #ffffff;
+        line-height: 20px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+      }
+
+      .quick {
+        background: #9ccc65;
+      }
+
+      .more {
+        background: #4895ef;
+      }
+
+      .empty {
+        background: #fbfbfb;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
         line-height: 20px;
       }
     }
   }
-  .section1-filter-option {
-    display: flex;
-    justify-content: flex-end;
+  .app-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 20px;
+    min-height: calc(100vh - 477px);
 
-    /deep/ .el-button {
-      border-radius: 17px;
-      width: 86px;
-      font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #ffffff;
-      line-height: 20px;
-      padding-top: 3px;
-      padding-bottom: 3px;
-    }
-
-    .quick {
-      background: #9ccc65;
-    }
-
-    .more {
-      background: #4895ef;
-    }
-
-    .empty {
-      background: #fbfbfb;
-      font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #333333;
-      line-height: 20px;
-    }
-  }
-}
-.app-container {
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 20px;
-  min-height: calc(100vh - 477px);
-
-  .section2-container {
-    width: 100%;
-    overflow-x: auto;
-    padding-bottom: 99px;
-    /deep/ .el-pager {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    /deep/ .pagination-container {
-      padding: 0px;
-    }
-    /deep/ .el-pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    /deep/ .el-pagination__total {
-      display: none;
-    }
-    /deep/.el-pagination__sizes {
-      display: none;
-    }
-    /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
-      background: #3d6ff4;
-      box-shadow: 0px 5px 11px 0px rgba(30, 150, 252, 0.5);
-      border-radius: 100%;
-      width: 29px;
-      height: 30px;
-      font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #ffffff;
-      line-height: 20px;
-    }
-    /deep/ .el-pagination.is-background .btn-next {
-      width: 29px;
-      height: 29px;
-      background: #eeeeee;
-      box-shadow: 0px 5px 11px 0px #cccccc;
-      border-radius: 100%;
-      font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #999999;
-      line-height: 20px;
-    }
-    /deep/ .el-pagination.is-background .btn-prev {
-      width: 29px;
-      height: 29px;
-      background: #eeeeee;
-      box-shadow: 0px 5px 11px 0px #cccccc;
-      border-radius: 100%;
-      font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #999999;
-      line-height: 20px;
-    }
-    /deep/ .el-pagination.is-background .el-pager li {
-      width: 29px;
-      height: 29px;
-      background: #eeeeee;
-      box-shadow: 0px 5px 11px 0px #cccccc;
-      border-radius: 100%;
-      font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #999999;
-      line-height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    /deep/ .el-pagination__jump {
-      margin-left: 13px;
-      font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #999999;
-      line-height: 20px;
-      padding: 4px;
-    }
-    /deep/.el-input__inner {
-      width: 48px;
-      height: 23px;
-      background: #ffffff;
-      border-radius: 7px;
-      opacity: 0.7;
-      border: 1px solid #cccccc;
-    }
-    /deep/.el-pagination__editor.el-input {
-      margin-left: 7px;
-      margin-right: 7px;
-    }
-  }
-
-  .section3-container {
-    min-width: 335px;
-    margin-bottom: 62px;
-
-    .chat-link {
-      color: #74b9ff;
-      text-underline: none;
-      position: relative;
-      right: 8px;
-    }
-    
-    .section3-item-container {
-      margin-bottom: 16px;
-      height: 130px;
-      cursor: pointer;
-      padding: 33px 31px 35px 33px;
-      background: #ffffff;
-      box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
-      border-radius: 8px;
-      border: 0px;
-
-      /deep/ .el-card__body {
+    .section2-container {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 99px;
+      /deep/ .el-pager {
         display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      /deep/ .pagination-container {
+        padding: 0px;
+      }
+      /deep/ .el-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      /deep/ .el-pagination__total {
+        display: none;
+      }
+      /deep/.el-pagination__sizes {
+        display: none;
+      }
+      /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
+        background: #3d6ff4;
+        box-shadow: 0px 5px 11px 0px rgba(30, 150, 252, 0.5);
+        border-radius: 100%;
+        width: 29px;
+        height: 30px;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #ffffff;
+        line-height: 20px;
+      }
+      /deep/ .el-pagination.is-background .btn-next {
+        width: 29px;
+        height: 29px;
+        background: #eeeeee;
+        box-shadow: 0px 5px 11px 0px #cccccc;
+        border-radius: 100%;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #999999;
+        line-height: 20px;
+      }
+      /deep/ .el-pagination.is-background .btn-prev {
+        width: 29px;
+        height: 29px;
+        background: #eeeeee;
+        box-shadow: 0px 5px 11px 0px #cccccc;
+        border-radius: 100%;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #999999;
+        line-height: 20px;
+      }
+      /deep/ .el-pagination.is-background .el-pager li {
+        width: 29px;
+        height: 29px;
+        background: #eeeeee;
+        box-shadow: 0px 5px 11px 0px #cccccc;
+        border-radius: 100%;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #999999;
+        line-height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      /deep/ .el-pagination__jump {
+        margin-left: 13px;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #999999;
+        line-height: 20px;
+        padding: 4px;
+      }
+      /deep/.el-input__inner {
+        width: 48px;
+        height: 23px;
+        background: #ffffff;
+        border-radius: 7px;
+        opacity: 0.7;
+        border: 1px solid #cccccc;
+      }
+      /deep/.el-pagination__editor.el-input {
+        margin-left: 7px;
+        margin-right: 7px;
       }
     }
 
-    .section3-left-container {
-      flex: 0.6;
-      min-width: 290px;
+    .section3-container {
+      min-width: 335px;
+      margin-bottom: 62px;
 
-      .section3-job-name {
-        margin: 0 0 13px 0;
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #333333;
-        line-height: 25px;
+      .chat-link {
+        color: #74b9ff;
+        text-underline: none;
+        position: relative;
+        right: 8px;
       }
 
-      .section3-salary {
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #4895ef;
-        line-height: 25px;
-        margin-right: 22px;
+      .section3-item-container {
+        margin-bottom: 16px;
+        height: 130px;
+        cursor: pointer;
+        padding: 33px 31px 35px 33px;
+        background: #ffffff;
+        box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
+        border-radius: 8px;
+        border: 0px;
+
+        /deep/ .el-card__body {
+          display: flex;
+        }
       }
 
-      .section3-city-degree {
-        margin-right: 22px;
-        font-size: 16px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #333333;
-        line-height: 22px;
-      }
-    }
+      .section3-left-container {
+        flex: 0.6;
+        min-width: 290px;
 
-    .section3-right-container {
-      flex: 1;
-      min-width: 290px;
-      display: flex;
-      justify-content: space-between;
-
-      .section3-company-info-container {
-        .section3-company-name {
+        .section3-job-name {
           margin: 0 0 13px 0;
           font-size: 18px;
           font-family: PingFangSC-Medium, PingFang SC;
@@ -1043,58 +1110,93 @@ export default {
           color: #333333;
           line-height: 25px;
         }
-        .section3-company-tag {
-          /deep/.el-tag {
-            height: 25px;
-            padding: 2px 12px;
-            background: #f4f5f8;
-            border-radius: 4px;
-            border: 0px;
-            font-size: 14px;
-            font-family: PingFangSC-Regular, PingFang SC;
-            font-weight: 400;
-            color: #698ec7;
-            line-height: 20px;
-          }
-          /deep/ .el-tag + .el-tag {
-            margin-left: 7px;
-          }
+
+        .section3-salary {
+          font-size: 18px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #4895ef;
+          line-height: 25px;
+          margin-right: 22px;
+        }
+
+        .section3-city-degree {
+          margin-right: 22px;
+          font-size: 16px;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          color: #333333;
+          line-height: 22px;
         }
       }
 
-      .section3-logo {
-        width: 48px;
+      .section3-right-container {
+        flex: 1;
+        min-width: 290px;
+        display: flex;
+        justify-content: space-between;
 
-        /deep/ .section3-logo-error {
+        .section3-company-info-container {
+          .section3-company-name {
+            margin: 0 0 13px 0;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+            line-height: 25px;
+          }
+          .section3-company-tag {
+            /deep/.el-tag {
+              height: 25px;
+              padding: 2px 12px;
+              background: #f4f5f8;
+              border-radius: 4px;
+              border: 0px;
+              font-size: 14px;
+              font-family: PingFangSC-Regular, PingFang SC;
+              font-weight: 400;
+              color: #698ec7;
+              line-height: 20px;
+            }
+            /deep/ .el-tag + .el-tag {
+              margin-left: 7px;
+            }
+          }
+        }
+
+        .section3-logo {
           width: 48px;
-          text-align: center;
-          font-size: 25px;
-        }
-      }
-    }
-  }
-}
 
-::-webkit-scrollbar {
-  display: none;
-}
-
-@media screen and (max-width: 850px) {
-  .app-container {
-    .section3-container {
-      .section3-item-container {
-        /deep/ .el-card__body {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-
-          .section3-left-container {
-            margin-bottom: 10px;
+          /deep/ .section3-logo-error {
+            width: 48px;
+            text-align: center;
+            font-size: 25px;
           }
         }
       }
     }
   }
-}
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media screen and (max-width: 850px) {
+    .app-container {
+      .section3-container {
+        .section3-item-container {
+          /deep/ .el-card__body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .section3-left-container {
+              margin-bottom: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
 </style>
 
