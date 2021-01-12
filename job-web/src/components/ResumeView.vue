@@ -72,48 +72,31 @@
           <span class="resume-red">*</span>
         </div>
       </el-row>
-
-
-
-
       <div class="resume-eduinfo">
         <div class="resume-edu" style="display: inline-flex">
           <div class="edu-box-l1">
             <el-row class="edu-school">
-              XXXXXX<!-- {{resumeExp.jobName}}-->
+              {{resume.userExpectJob.expectPosition}}
             </el-row>
             <el-row class="info-other">预期薪资：
-              <span v-if="resume.userExpectJob.salary"
-                    effect="plain"
-                    class="expjob-data"
-              >{{resume.userExpectJob.salary.name}}
+              <span v-if="resume.userExpectJob.salaryId && resume.userExpectJob.salaryId!=''"
+              >{{resume.userExpectJob.salaryId}}
                </span>
             </el-row>
             <el-row class="info-other">工作类型：
-              <span v-for="jobType in  resume.userExpectJob.jobTypeList"
-                    :key="jobType.id"
-                    effect="plain"
-                    class="expjob-data"
-              >{{ jobType.name }}
-              </span>
+              <span class="expjob-data"
+              >{{resume.userExpectJob.expectWorkType}}
+              </span >
             </el-row>
           </div>
           <div class="edu-box-m1">
             <el-row class="info-other">期望行业：
-              <span v-for="category in  resume.userExpectJob.categoryList"
-                    :key="category.id"
-                    effect="plain"
-                    class="expjob-data"
-              >{{ category.name }}
-                                                </span>
+              <span v-if="resume.userExpectJob.category&&resume.userExpectJob.category!=''"
+              > {{ resume.userExpectJob.category.name }} </span>
             </el-row>
             <el-row class="info-other">工作城市：
-              <span v-for="city in  resume.userExpectJob.cityList"
-                    :key="city.id"
-                    effect="plain"
-                    class="expjob-data"
-              >{{ city.name }}
-                                                </span>
+              <span class="resume"
+              >{{resume.userExpectJob.expectCity}}</span>
             </el-row>
           </div>
         </div>
@@ -140,7 +123,7 @@
             <span>{{resumeExp.post}}</span>
           </div>
           <div style="padding-left: 31px">
-            <span>全职<!--{{resumeExp.jobType}}--> </span>
+            <span>{{resumeExp.workType}}</span>
           </div>
         </div>
         <div style="display: inline-flex">
@@ -148,10 +131,9 @@
             <div style="margin-top: 9px;display: inline-flex" >
               <div style="width: 380px">
                 <span class="resume-box-text-title">行业：</span>
-                <span v-for="category in  resume.userExpectJob.categoryList"
-                      :key="category.id"
+                <span
                       class="resume-box-text-data"
-                >{{ category.name }}
+                >{{ resumeExp.industry}}
                 </span>
               </div>
               <div>
@@ -484,6 +466,27 @@ export default {
          }
       .edu-box {
         display: inline-flex;
+        .expinfo-other-row {
+          display: inline-flex;
+
+
+          .expinfo-other {
+            width: 70px;
+            font-size: 14px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+          }
+
+          .expinfo-other-html {
+            width: 478px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #666666;
+            line-height: 20px;
+          }
+        }
       }
 
 

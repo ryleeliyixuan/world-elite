@@ -434,7 +434,7 @@
                                             <div class="resume-eduinfo">
                                                 <div class="resume-edu">
                                                     <div class="edu-box-l1">
-                                                        <el-row class="edu-school" >
+                                                        <el-row class="edu-school" style="height: 24px" >
                                                             {{item.userExpectJob.expectPosition}}
                                                         </el-row>
                                                         <el-row class="info-other">预期薪资：
@@ -621,10 +621,9 @@
                                                     <div style="margin-top: 9px;display: inline-flex">
                                                         <div style="width: 380px">
                                                             <span class="resume-box-text-title">行业：</span>
-                                                            <span v-for="category in  item.userExpectJob.categoryList"
-                                                                  :key="category.id"
+                                                            <span
                                                                   class="resume-box-text-data"
-                                                            >{{ category.name }}
+                                                            >{{ resumeExp.industry}}
                                         </span>
                                                         </div>
                                                         <div>
@@ -751,37 +750,43 @@
                                                 </div>
 
                                                 <div>
-                                                    <el-form ref="resumeExpForm" :model="resumeExpForm"
-                                                             :rules="resumeExpFormRules">
-                                                        <el-form-item label="行业：" prop="categoryList"
-                                                                      class="m-input-text-width" label-width="80px">
-                                                            <el-select v-model="resumeEduForm.categoryList"
-                                                                       placeholder="请选择行业类型">
-                                                                <el-option
-                                                                        :label="dict.name"
-                                                                        :value="dict.id"
-                                                                        v-for="dict in categoryListOptions"
-                                                                        :key="dict.id"
-                                                                />
-                                                            </el-select>
-                                                        </el-form-item>
-                                                    </el-form>
+
+                                                        <el-form
+                                                                ref="resumeExpForm"
+                                                                :model="resumeExpForm"
+                                                                label-width="80px"
+                                                        >
+                                                            <el-form-item label="行业类型：" prop="industry"
+                                                                          class="m-input-text-width">
+                                                                <el-cascader
+                                                                        placeholder="最多选择三个"
+                                                                        :show-all-levels="false"
+                                                                        :options="jobCategoryOptions"
+                                                                        :props="jobCatetoryProps"
+                                                                        filterable
+                                                                        collapse-tags
+                                                                        clearable
+                                                                        v-model="resumeExpForm.industry"
+                                                                ></el-cascader>
+                                                            </el-form-item>
+                                                        </el-form>
+
                                                 </div>
                                             </div>
-                                            <div>
-                                                <el-form ref="resumeExpForm" :model="resumeExpForm"
-                                                         :rules="resumeExpFormRules" label-width="100px">
-                                                    <el-form-item label="所属部门：" prop="depart"
-                                                                  class="m-input-text-width">
-                                                        <el-input
-                                                                v-model="resumeExpForm.depart"
-                                                                placeholder="请填写部门信息"
-                                                                :maxlength="40"
-                                                                show-word-limit
-                                                        ></el-input>
-                                                    </el-form-item>
-                                                </el-form>
-                                            </div>
+<!--                                            <div>-->
+<!--                                                <el-form ref="resumeExpForm" :model="resumeExpForm"-->
+<!--                                                         :rules="resumeExpFormRules" label-width="100px">-->
+<!--                                                    <el-form-item label="所属部门：" prop="depart"-->
+<!--                                                                  class="m-input-text-width">-->
+<!--                                                        <el-input-->
+<!--                                                                v-model="resumeExpForm.depart"-->
+<!--                                                                placeholder="请填写部门信息"-->
+<!--                                                                :maxlength="40"-->
+<!--                                                                show-word-limit-->
+<!--                                                        ></el-input>-->
+<!--                                                    </el-form-item>-->
+<!--                                                </el-form>-->
+<!--                                            </div>-->
                                             <div style="padding-left: 10px">
                                                 <el-form ref="resumeExpForm" :model="resumeExpForm"
                                                          :rules="resumeExpFormRules">
@@ -1400,7 +1405,7 @@
                                         padding-left: 7px"
                                 >附件简历内容也可被HR搜索到！</span>
 
-                                <el-row style="display: inline-flex;margin: 21px 0px 13px 0px">
+                                <el-row style="display: inline-flex;">
                                     <div style="width: 210px">
                                         <el-row
                                                 v-if="(item.attachResume && item.attachResume.length > 0)"
@@ -1438,58 +1443,71 @@
                                             <span style="padding-left: 4px">上传附件简历</span></el-button>
                                     </el-upload>
                                 </el-form>
-                                <el-row style="display: inline-flex;margin: 21px 0px 13px 0px">
+                                <el-row style="display: inline-flex;">
                                     <div style="width: 210px">
+                                            <div v-if="showEditAttachOther==false">
 
-                                            <div style="display: inline-flex" v-if="showEditAttachOther==false">
                                                 <el-row
                                                         v-for="(others,index) in item.resumeMergeAttachList"
-                                                        :key="others.id"
-                                                        style="font-size: 14px;
-                                                font-family: PingFangSC-Medium, PingFang SC;
-                                                font-weight: 500;"
-                                                >
-                                                <div>
+                                                        :key="others.id">
+                                                    <div style="display: inline-flex">
+                                                    <div style="display: inline-flex;
+                                                                margin-bottom: 5px;
+                                                                font-size: 14px;
+                                                                font-family: PingFangSC-Medium, PingFang SC;
+                                                                font-weight: 500;color: #333333;">
+                                                            <div style="width: 230px">
+                                                                <span>
+                                                                    <svg-icon
+                                                                        icon-class="PDF"
+                                                                        style="width: 14px;height: 18px;"
+                                                                    ></svg-icon>
+                                                                </span>
+                                                                {{others.resumeAttach | ellipsis}}
+                                                            </div>
 
-                                                    <svg-icon
-                                                            icon-class="PDF"
-                                                            style="width: 14px;height: 18px;"
-                                                    ></svg-icon>
-                                                    <span>{{others.resumeAttach}}</span>
-                                                </div>
-                                                    <div>
-                                                    <span>
-                                                    <svg-icon
-                                                            icon-class="resumeOther-edit"
-                                                            style="width: 18px;height: 18px;"
-                                                            v-on:click="handleEditAttachOthers(index)"
-                                                    ></svg-icon>
-                                                    </span>
-                                                        <span>
-                                                    <svg-icon
-                                                            icon-class="resumeOther-del"
-                                                            style="width: 18px;height: 20px;"
-                                                            v-on:click="handleDelAttachOthers(index)"
-                                                    ></svg-icon>
-                                                    </span>
+                                                    </div>
+                                                    <div style="display: inline-flex;">
+                                                        <el-row>
+                                                            <svg-icon
+                                                                    icon-class="resumeOther-edit"
+                                                                    style="width: 18px;height: 18px;"
+                                                                    v-on:click="handleEditAttachOthers(index)"
+                                                            ></svg-icon>
+                                                        </el-row>
+                                                        <el-row>
+                                                            <svg-icon
+                                                                    icon-class="resumeOther-del"
+                                                                    style="width: 18px;height: 20px;"
+                                                                    v-on:click="handleDelAttachOthers(index)"
+                                                            ></svg-icon>
+                                                        </el-row>
+                                                    </div>
                                                     </div>
                                                 </el-row>
 
                                             </div>
-                                            <div style="display: inline-flex" v-if="showEditAttachOther==true">
-                                                <div v-cloak>
-                                                    <svg-icon
-                                                            icon-class="PDF"
-                                                            style="width: 14px;height: 18px;"
-                                                    ></svg-icon>
-                                                    <el-input
-                                                            v-model="resumeForm2.attachResume"
-                                                            placeholder="请输入附件名称"
-                                                            @change="HandleEditSaveAttachOthers(index)"
-                                                    ></el-input>
-<!--                                                    {{others.resumeAttach}}-->
-                                                </div>
-                                            </div>
+                                        <div v-if="showEditAttachOther==true">
+
+
+                                                    <div style="width: 230px">
+                                                                <span>
+                                                                    <svg-icon
+                                                                            icon-class="PDF"
+                                                                            style="width: 14px;height: 18px;"
+                                                                    ></svg-icon>
+                                                                </span>
+                                                        <el-form ref="resumeAttachForm" :model="resumeAttachForm">
+                                                                <el-input
+                                                                        @change="HandleEditSaveAttachOthers(index)"
+                                                                        v-model="resumeAttachForm.attachOthers"
+                                                                        placeholder="请输入附件名"
+                                                                        :maxlength="50"
+                                                                        @focus="showEditAttachOther==false"
+                                                                ></el-input>
+                                                            </el-form>
+                                                    </div>
+                                        </div>
 
 
                                     </div>
@@ -1755,6 +1773,7 @@
                     post: undefined,
                     description: undefined,
                     onWork: 0,
+                    industry:undefined,
                 },
                 resumeExpFormRules: {
                     company: [
@@ -2120,53 +2139,129 @@
                 this.handleSaveResumeAttachResume(false);
             },
             handleUploadAttachOthersSuccess(){
+                let otherAttach;
                 let nowAttachOthers=[];
-                let item;
-                console.log(this.resume[this.resume.length-1].resumeMergeAttachList)
-                // for (item in this.resume[this.resume.length-1].resumeMergeAttachList){
-                //    let  otherAttach=item.resumeAttach
-                //     console.log(otherAttach)
-                // }
-                // let otherAttach=this.resume[this.resume.length-1].resumeMergeAttachList.resumeAttach;
-                // if (otherAttach&&otherAttach!=''){
-                //     nowAttachOthers=otherAttach
-                //     console.log(this.uploadAttachmentOptions.fileUrl)
-                //     nowAttachOthers.push(this.uploadAttachmentOptions.fileUrl)
-                //     console.log(nowAttachOthers)
-                //     this.resumeAttachForm.attachOthers=nowAttachOthers
-                //     this.handleSaveAttachOthersResume(false);
-                // }else{
-                //     nowAttachOthers.push(this.uploadAttachmentOptions.fileUrl)
-                //     this.resumeAttachForm.attachOthers=nowAttachOthers
-                //     this.handleSaveAttachOthersResume(false);
-                // }
+                let i=0;
+                if (this.resumeId&&this.resumeId!=''){
 
+                        if (this.resume[this.newIndex].resumeMergeAttachList.length>0){
+                            for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
+                                otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i].resumeAttach
+                                nowAttachOthers.push(otherAttach)
+                            }
+                            if (otherAttach&&otherAttach!=''){
+                                console.log(this.uploadAttachmentOptions.fileUrl)
+                                nowAttachOthers.push(this.uploadAttachmentOptions.fileUrl)
+                                console.log(nowAttachOthers)
+                                this.resumeAttachForm.attachOthers=nowAttachOthers
+                                this.handleSaveAttachOthersResume(false);
+                            }else{
+                                nowAttachOthers.push(this.uploadAttachmentOptions.fileUrl)
+                                this.resumeAttachForm.attachOthers=nowAttachOthers
+                                this.handleSaveAttachOthersResume(false);
+                            }
+                        }else {
+                            this.resumeAttachForm.attachOthers=this.uploadAttachmentOptions.fileUrl
+                            this.handleSaveAttachOthersResume(false);
+                    }
+                }else {
+                    if (this.resume[this.resume.length-1].resumeMergeAttachList && this.resume[this.resume.length-1].resumeMergeAttachList.length>0){
+                        for (i;i<  this.resume[this.resume.length-1].resumeMergeAttachList.length;i++) {
+                            otherAttach=this.resume[this.resume.length-1].resumeMergeAttachList[i].resumeAttach
+                            nowAttachOthers.push(otherAttach)
+                        }
+                        if (otherAttach&&otherAttach!=''){
+                            console.log(this.uploadAttachmentOptions.fileUrl)
+                            nowAttachOthers.push(this.uploadAttachmentOptions.fileUrl)
+                            console.log(nowAttachOthers)
+                            this.resumeAttachForm.attachOthers=nowAttachOthers
+                            this.handleSaveAttachOthersResume(false);
+                        }else{
+                            nowAttachOthers.push(this.uploadAttachmentOptions.fileUrl)
+                            this.resumeAttachForm.attachOthers=nowAttachOthers
+                            this.handleSaveAttachOthersResume(false);
+                        }
+                    }
+                    else {
+                        this.resumeAttachForm.attachOthers=this.uploadAttachmentOptions.fileUrl
+                        this.handleSaveAttachOthersResume(false);
+                    }
+                }
             },
             handleEditAttachOthers(index){
                 this.showEditAttachOther=true;
+                console.log(index)
                 if (this.newResumeId&&this.newResumeId!=''){
-                    this.resumeForm2.attachResume=this.resume[this.newIndex].resumeMergeAttachList[index].attachOthers;
-                    console.log(this.resumeForm2.attachResume)
+                    this.resumeAttachForm.attachOthers=this.resume[this.newIndex].resumeMergeAttachList[index].resumeAttach;
+                    console.log(this.resumeAttachForm.attachResume)
+                    console.log(this.resume[this.newIndex].resumeMergeAttachList[index].resumeAttach)
                 }else {
-                    this.resumeForm2.attachResume=this.resume[this.resume.length-1].resumeMergeAttachList[index].attachOthers;
+                    this.resumeAttachForm.attachOthers=this.resume[this.resume.length-1].resumeMergeAttachList[index].resumeAttach;
                     console.log(this.resumeAttachForm.attachOthers)
+                    console.log(this.resume[this.resume.length-1].resumeMergeAttachList[index].resumeAttach)
                 }
             },
             HandleEditSaveAttachOthers(index){
-                if (this.newResumeId&&this.newResumeId!=''){
-                    this.resumeAttachForm.attachOthers=this.resume[this.newIndex].resumeMergeAttachList.splice(index,1,this.resumeForm2.attachResume)
-                    console.log(this.resumeAttachForm.attachOthers)
-                    this.handleSaveAttachOthersResume(false);
+                let otherAttach;
+                let nowAttachOthers=[];
+                let i=0;
+                if (this.resumeId&&this.resumeId!=''){
+                        for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
+                            otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i].resumeAttach
+                            nowAttachOthers.push(otherAttach)
+                        }
+                            console.log(this.uploadAttachmentOptions.fileUrl)
+                            nowAttachOthers.splice(index,1,this.resumeAttachForm.attachOthers)
+                            console.log(nowAttachOthers)
+                            this.resumeAttachForm.attachOthers=nowAttachOthers
+                            this.handleSaveAttachOthersResume(false);
                     this.showEditAttachOther=false
                 }else {
-                    this.resumeAttachForm.attachOthers=this.resume[this.resume.length-1].resumeMergeAttachList.splice(index,1,this.resumeForm2.attachResume)
-                    console.log(this.resumeAttachForm.attachOthers)
-                    this.handleSaveAttachOthersResume(false);
+                        for (i;i<  this.resume[this.resume.length-1].resumeMergeAttachList.length;i++) {
+                            otherAttach=this.resume[this.resume.length-1].resumeMergeAttachList[i].resumeAttach
+                            nowAttachOthers.push(otherAttach)
+                        }
+                            nowAttachOthers.splice(index,1,this.resumeAttachForm.attachOthers)
+                            console.log(nowAttachOthers)
+                            this.resumeAttachForm.attachOthers=nowAttachOthers
+                            this.handleSaveAttachOthersResume(false);
                     this.showEditAttachOther=false
+
                 }
             },
             handleDelAttachOthers(index){
                 // this.list.splice(index, 1);
+                let otherAttach;
+                let nowAttachOthers=[];
+                let i=0;
+                if (this.resumeId&&this.resumeId!=''){
+                    for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
+                        otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i].resumeAttach
+                        nowAttachOthers.push(otherAttach)
+                    }
+                    console.log(this.uploadAttachmentOptions.fileUrl)
+                    nowAttachOthers.splice(index,1)
+                    console.log(nowAttachOthers)
+                    this.resumeAttachForm.attachOthers=nowAttachOthers
+                    this.handleSaveAttachOthersResume(false);
+                    this.showEditAttachOther=false
+                }else {
+                    for (i;i<  this.resume[this.resume.length-1].resumeMergeAttachList.length;i++) {
+                        otherAttach=this.resume[this.resume.length-1].resumeMergeAttachList[i].resumeAttach
+                        nowAttachOthers.push(otherAttach)
+                    }
+                    console.log(this.uploadAttachmentOptions.fileUrl)
+                    nowAttachOthers.splice(index,1)
+                    console.log(nowAttachOthers)
+                    this.resumeAttachForm.attachOthers=nowAttachOthers
+                    this.handleSaveAttachOthersResume(false);
+                    this.showEditAttachOther=false
+
+                }
+
+
+
+
                 if (this.newResumeId&&this.newResumeId!=''){
                     this.resumeAttachForm.attachOthers=this.resume[this.newIndex].resumeMergeAttachList.splice(index,1)
                     console.log(this.resumeAttachForm.attachOthers)
@@ -2182,7 +2277,7 @@
                     this.resume = response.data;
                     if (this.newResumeId&&this.newResumeId!=''){
                         console.log(this.newResumeId);
-                        let newTabIndex=this.newIndex-1;
+                        let newTabIndex=this.newIndex;
                         this.editableTabsValue=this.resume[newTabIndex].id
                         console.log(this.tabIndex)
                     }else{
@@ -2913,6 +3008,12 @@
                     if (valid) {
                         this.posting = true;
                         this.expectJobForm.categoryId=this.expectJobForm.categoryId[0]
+                        if(this.newResumeId&&this.newResumeId!=''){
+                            this.expectJobForm.resumeId=this.newIndex
+                        }else {
+                            this.expectJobForm.resumeId=this.resume[this.resume.length-1].id
+                        }
+
                         saveUserExpectJob(this.expectJobForm)
                             .then(() => {
                                 this.getResumeInfo();
@@ -3063,6 +3164,17 @@
                     });
                 });
             },
+        },
+
+        filters: {
+            ellipsis (value) {
+                let len=value.length;
+                if (!value) return ''
+                if (value.length > 20) {
+                    return value.substring(0,8) + '......' +value.substring(len-8,len)
+                }
+                return value
+            }
         },
     };
 </script>
@@ -3244,6 +3356,7 @@
                 .expinfo-other-row {
                     display: inline-flex;
 
+
                     .expinfo-other {
                         width: 70px;
                         font-size: 14px;
@@ -3407,7 +3520,13 @@
                 font-weight: 500;
                 color: #FFFFFF;
             }
+            .input-others{
 
+                height: 23px;
+                background: #FFFFFF;
+                border-radius: 12px;
+                border: 1px solid #CCDBF5;
+            }
             .right-add {
 
                 font-size: 18px;
