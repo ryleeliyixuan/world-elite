@@ -87,6 +87,14 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
 
     private List<ResumeCertificateVo>resumeCertificateList;
 
+    public UserExpectJobVo getUserExpectJob() {
+        return userExpectJob;
+    }
+
+    public void setUserExpectJob(UserExpectJobVo userExpectJob) {
+        this.userExpectJob = userExpectJob;
+    }
+
     private UserExpectJobVo userExpectJob;
 
     //已投递职位总数

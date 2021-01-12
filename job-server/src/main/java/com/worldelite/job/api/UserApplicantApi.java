@@ -85,7 +85,6 @@ public class UserApplicantApi extends BaseController {
     @PostMapping("save-expect-job")
     @ApiDoc
     public ApiResult<UserExpectJobVo> saveUserExpectJob(@RequestBody UserExpectJobForm expectJobForm){
-        expectJobForm.setUserId(curUser().getId());
         UserExpectJobVo userExpectJobVo = userExpectJobService.saveUserExpectJob(expectJobForm);
         return ApiResult.ok(userExpectJobVo);
     }

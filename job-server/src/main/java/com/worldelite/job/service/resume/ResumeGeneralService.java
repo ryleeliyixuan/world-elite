@@ -421,14 +421,15 @@ public class ResumeGeneralService extends ResumeService {
         resumeDetail.setResumeSkillList(resumeSkillService.getResumeSkillList(resumeId));
 //        //社交主页
 //        resumeDetail.setResumeLinkList(resumeLinkService.getResumeLinkList(resumeId));
-        //意向职位
-        resumeDetail.setCategoryList(userExpectJobService.getExpectCategoryList(userApplicant.getId()));
-        //意向城市
-        resumeDetail.setCityList(userExpectJobService.getExpectCityList(userApplicant.getId()));
-        //薪资范围
-        resumeDetail.setSalary(userExpectJobService.getSalary(userApplicant.getId()));
-        // 期望工作类型
-        resumeDetail.setExpectWorkType(userExpectJobService.getExpectWorkType(userApplicant.getId()));
+//        //意向职位
+//        resumeDetail.setCategoryList(userExpectJobService.getExpectCategoryList(userApplicant.getId()));
+//        //意向城市
+//        resumeDetail.setCityList(userExpectJobService.getExpectCityList(userApplicant.getId()));
+//        //薪资范围
+//        resumeDetail.setSalary(userExpectJobService.getSalary(userApplicant.getId()));
+//        // 期望工作类型
+//        resumeDetail.setExpectWorkType(userExpectJobService.getExpectWorkType(userApplicant.getId()));
+        resumeDetail.setUserExpectJobVo(userExpectJobService.getUserExpectJob(resumeId));
         //language
         resumeDetail.setResumeLanguageList(resumeLanguageService.getResumeLanguageList(resumeId));
         //other attaches
@@ -526,20 +527,20 @@ public class ResumeGeneralService extends ResumeService {
 //            resumeVo.setResumeLinkList(resumeLinkVoList);
 //        }
         //求职意向
-        UserExpectJobVo userExpectJobVo = new UserExpectJobVo();
-        if (CollectionUtils.isNotEmpty(resumeDetail.getCategoryList())) {
-            userExpectJobVo.setCategoryList(AppUtils.asVoList(resumeDetail.getCategoryList(), JobCategoryVo.class));
-        }
-        if (CollectionUtils.isNotEmpty(resumeDetail.getCityList())) {
-            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(), CityVo.class));
-        }
-        if (resumeDetail.getSalary() != null) {
-            userExpectJobVo.setSalary(new DictVo().asVo(resumeDetail.getSalary()));
-        }
-        if (!StringUtils.isEmpty(resumeDetail.getExpectWorkType())) {
-            userExpectJobVo.setExpectWorkType(resumeDetail.getExpectWorkType());
-        }
-        resumeVo.setUserExpectJob(userExpectJobVo);
+//        UserExpectJobVo userExpectJobVo = new UserExpectJobVo();
+//        if (CollectionUtils.isNotEmpty(resumeDetail.getCategoryList())) {
+//            userExpectJobVo.setCategoryList(AppUtils.asVoList(resumeDetail.getCategoryList(), JobCategoryVo.class));
+//        }
+//        if (CollectionUtils.isNotEmpty(resumeDetail.getCityList())) {
+//            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(), CityVo.class));
+//        }
+//        if (resumeDetail.getSalary() != null) {
+//            userExpectJobVo.setSalary(new DictVo().asVo(resumeDetail.getSalary()));
+//        }
+//        if (!StringUtils.isEmpty(resumeDetail.getExpectWorkType())) {
+//            userExpectJobVo.setExpectWorkType(resumeDetail.getExpectWorkType());
+//        }
+        resumeVo.setUserExpectJob(resumeDetail.getUserExpectJobVo());
         //attach others
         List<ResumeMergeAttach>resumeMergeAttachList = resumeDetail.getResumeMergeAttachList();
         if (CollectionUtils.isNotEmpty(resumeMergeAttachList)){

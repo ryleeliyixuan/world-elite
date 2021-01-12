@@ -273,12 +273,12 @@ public class ResumeCompanyService extends ResumeService{
         resumeDetail.setResumeSkillList(resumeSkillService.getResumeSkillList(resumeId));
         //社交主页
         resumeDetail.setResumeLinkList(resumeLinkService.getResumeLinkList(resumeId));
-        //意向职位
-        resumeDetail.setCategoryList(userExpectJobService.getExpectCategoryList(userId));
-        //意向城市
-        resumeDetail.setCityList(userExpectJobService.getExpectCityList(userId));
-        //薪资范围
-        resumeDetail.setSalary(userExpectJobService.getSalary(userId));
+//        //意向职位
+//        resumeDetail.setCategoryList(userExpectJobService.getExpectCategoryList(userId));
+//        //意向城市
+//        resumeDetail.setCityList(userExpectJobService.getExpectCityList(userId));
+//        //薪资范围
+//        resumeDetail.setSalary(userExpectJobService.getSalary(userId));
         return resumeDetail;
     }
 
@@ -404,18 +404,18 @@ public class ResumeCompanyService extends ResumeService{
             List<ResumeLinkVo> resumeLinkVoList = AppUtils.asVoList(resumeLinkList,ResumeLinkVo.class);
             resumeVo.setResumeLinkList(resumeLinkVoList);
         }
-        //求职意向
-        UserExpectJobVo userExpectJobVo = new UserExpectJobVo();
-        if(CollectionUtils.isNotEmpty(resumeDetail.getCategoryList())){
-            userExpectJobVo.setCategoryList(AppUtils.asVoList(resumeDetail.getCategoryList(),JobCategoryVo.class));
-        }
-        if(CollectionUtils.isNotEmpty(resumeDetail.getCityList())){
-            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(),CityVo.class));
-        }
-        if(resumeDetail.getSalary()!=null){
-            userExpectJobVo.setSalary(new DictVo().asVo(resumeDetail.getSalary()));
-        }
-        resumeVo.setUserExpectJob(userExpectJobVo);
+//        //求职意向
+//        UserExpectJobVo userExpectJobVo = new UserExpectJobVo();
+//        if(CollectionUtils.isNotEmpty(resumeDetail.getCategoryList())){
+//            userExpectJobVo.setCategoryList(AppUtils.asVoList(resumeDetail.getCategoryList(),JobCategoryVo.class));
+//        }
+//        if(CollectionUtils.isNotEmpty(resumeDetail.getCityList())){
+//            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(),CityVo.class));
+//        }
+//        if(resumeDetail.getSalary()!=null){
+//            userExpectJobVo.setSalary(new DictVo().asVo(resumeDetail.getSalary()));
+//        }
+//        resumeVo.setUserExpectJob(userExpectJobVo);
         //计算简历完整度
         resumeVo.setResumeCompleteProgress(AppUtils.calCompleteProgress(resumeVo));
         return resumeVo;

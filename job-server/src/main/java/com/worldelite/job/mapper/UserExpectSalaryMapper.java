@@ -1,9 +1,6 @@
 package com.worldelite.job.mapper;
 
-import com.worldelite.job.entity.UserExpectPlace;
 import com.worldelite.job.entity.UserExpectSalary;
-
-import java.util.List;
 
 public interface UserExpectSalaryMapper {
     /**
@@ -54,7 +51,7 @@ public interface UserExpectSalaryMapper {
      */
     int updateByPrimaryKey(UserExpectSalary record);
 
-    int deleteByUserId(Long userId);
+    int deleteByResumeId(Long resumeId);
 
-    UserExpectSalary selectByUserId(Long userId);
+    UserExpectSalary selectByResumeId(Long resumeId);
 }
