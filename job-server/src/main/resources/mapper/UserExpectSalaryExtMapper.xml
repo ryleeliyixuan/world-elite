@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.UserExpectSalaryMapper">
-  <select id="selectByUserId" resultMap="BaseResultMap">
+  <select id="selectByResumeId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_user_expect_salary
     <where>
-      <if test="userId != null">
-        and user_id = #{userId,jdbcType=BIGINT}
+      <if test="resumeId != null">
+        and resume_id = #{resumeId,jdbcType=BIGINT}
       </if>
     </where>
   </select>
-  <delete id="deleteByUserId" parameterType="java.lang.Long">
+  <delete id="deleteByResumeId" parameterType="java.lang.Long">
     delete from t_user_expect_salary
-    where user_id = #{userId,jdbcType=BIGINT}
+    where resume_id = #{resumeId,jdbcType=BIGINT}
   </delete>
 </mapper>

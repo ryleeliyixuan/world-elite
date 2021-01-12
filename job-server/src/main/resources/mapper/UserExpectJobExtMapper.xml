@@ -9,13 +9,13 @@
       <if test="categoryId != null">
         and category_id = #{categoryId,jdbcType=INTEGER}
       </if>
-      <if test="userId != null">
-        and user_id = #{userId,jdbcType=BIGINT}
+      <if test="resumeId != null">
+        and resume_id = #{resumeId,jdbcType=BIGINT}
       </if>
     </where>
   </select>
-  <delete id="deleteByUserId" parameterType="java.lang.Long">
+  <delete id="deleteByResumeId" parameterType="java.lang.Long">
     delete from t_user_expect_job
-    where user_id = #{userId,jdbcType=BIGINT}
+    where resume_id = #{resumeId,jdbcType=BIGINT}
   </delete>
 </mapper>
