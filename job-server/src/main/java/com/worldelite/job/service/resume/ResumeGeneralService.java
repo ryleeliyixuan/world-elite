@@ -422,7 +422,7 @@ public class ResumeGeneralService extends ResumeService {
 //        //社交主页
 //        resumeDetail.setResumeLinkList(resumeLinkService.getResumeLinkList(resumeId));
 //        //意向职位
-//        resumeDetail.setCategoryList(userExpectJobService.getExpectCategoryList(userApplicant.getId()));
+//        resumeDetail.setCategoryList(userExpectJobService.getExpectCategoryList(resumeId));
 //        //意向城市
 //        resumeDetail.setCityList(userExpectJobService.getExpectCityList(userApplicant.getId()));
 //        //薪资范围
