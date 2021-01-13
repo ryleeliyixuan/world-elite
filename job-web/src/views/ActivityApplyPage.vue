@@ -31,9 +31,10 @@
             </div>
             <el-image :src="require('@/assets/activity/apply-icon1.png')" class="apply-info-right"></el-image>
         </div>
-        <div class="type-container">
+        <div class="type-container" v-if="activity">
             <div class="tab-container">
-                <div v-for="status in applyStatusList"
+                <div v-for="(status,index) in applyStatusList"
+                     v-if="activity.auditType==='0' || index===0"
                      :class="['tab-item',{'select':listQuery.status===status.id}]"
                      @click="onActivityStatus(status)">
                     {{status.name}}<span class="tab-item-mount">{{"("+status.total+")"}}</span>
@@ -52,7 +53,6 @@
                     <svg-icon slot="reference" icon-class="sort" class-name="sort"></svg-icon>
                 </el-popover>
             </div>
-
         </div>
         <div class="line"></div>
         <el-input v-model="listQuery.keywords" placeholder="请输入关键词" class="search-input" @keyup.enter.native="handleFilter">
@@ -96,20 +96,22 @@
                         @pagination="getList">
             </pagination>
         </div>
+        <export-apply v-if="activity" :visible.sync="exportDialogVisible" :activityId="activity.id"></export-apply>
     </div>
 
 </template>
 
 <script>
     import Pagination from "@/components/Pagination2";
+    import ExportApply from "@/components/activity/ExportApply";
+
 
     export default {
         name: "ActivityApplyPage",
-        components: {Pagination},
+        components: {Pagination, ExportApply},
         data() {
             return {
                 activity: undefined, // 当前管理的活动
-
                 statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
                 // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束;7审核未通过
                 statusList: [{id: 0, name: '审核中'}, {id: 1, name: '草稿'}, {id: 2, name: '已停止'}, {id: 3, name: '即将开始'},
@@ -135,6 +137,8 @@
                     page: 1,
                     limit: 10
                 },
+
+                exportDialogVisible: false, // 导出对话框
             }
         },
         created() {
@@ -161,7 +165,7 @@
 
             // 点击导出名单按钮
             onImportData() {
-                // TODO
+                this.exportDialogVisible = true;
             },
 
             // 是否显示通过报名按钮

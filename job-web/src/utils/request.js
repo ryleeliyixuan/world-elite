@@ -53,7 +53,7 @@ service.interceptors.response.use(
         console.log(response.config.url, response);
         const res = response.data
 
-        if (res.code !== 0) {
+        if (res.code !== undefined && res.code !== 0) {
             Toast.close(); // 最多显示一个错误信息
             Toast.error(res.msg);
 
@@ -64,8 +64,10 @@ service.interceptors.response.use(
                 });
             }
             return Promise.reject(new Error(res.msg || 'Error'))
+        } else if (res.code === undefined) {
+            return response
         } else {
-            return res
+            return res;
         }
     },
     error => {
