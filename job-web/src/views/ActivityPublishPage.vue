@@ -23,7 +23,7 @@
             <div class="activity-item-left">
                 <div class="activity-left-one">
                     <div class="activity-left-one-title">{{item.title}}</div>
-                    <div class="activity-left-one-state">{{getStatus(item.status)}}</div>
+                    <div class="activity-left-one-state" :style="{'background':statusBGColorList[item.status]}">{{getStatus(item)}}</div>
                 </div>
                 <div class="activity-left-two">{{item.organizerInfoVo.organizerName}} - <span class="activity-left-place">{{item.city.name}}</span> -
                     {{item.address}}
@@ -37,11 +37,12 @@
             <div class="activity-item-right">
                 <div class="activity-item-right-link">
                     <div class="activity-item-right-link-one" @click="onItem(item)">查看详情</div>
+                    <div v-if="item.status===7" class="activity-item-right-link-one" @click="onReason(item)">查看原因</div>
                     <div :class="['activity-item-right-link-one', {'edit-disable':!isEditInfoEnable(item)}]" @click="onEdit(item)">
                         {{isShowEditInfo(item)?'编辑信息':'重新编辑'}}
                     </div>
                     <div class="activity-item-right-link-one" v-if="!isShowRegistrationInformationManagement(item)"
-                         @click="onRegistrationInformationManagement">报名信息管理
+                         @click="onRegistrationInformationManagement(item)">报名信息管理
                     </div>
                 </div>
                 <div :class="['activity-item-right-button', {'disabled':!isCancelButtonEnable(item)}]" @click="onCancelActivity(item)">
@@ -101,7 +102,7 @@
                 // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束;7审核未通过
                 statusList: [{id: 0, name: '审核中'}, {id: 1, name: '草稿'}, {id: 2, name: '已停止'}, {id: 3, name: '即将开始'},
                     {id: 4, name: '报名中'}, {id: 5, name: '进行中'}, {id: 6, name: '已结束'}, {id: 7, name: '审核未通过'}],
-
+                statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
                 orderList: [ // 活动排序列表
                     {name: '按发布时间顺序', sort: '+CREATE_TIME'},
                     {name: '按发布时间倒序', sort: '-CREATE_TIME'},
@@ -122,6 +123,7 @@
                 dataList: [], // 活动列表
                 total: 0, // 活动总数
 
+                cancelActivity: undefined, // 要取消的活动
                 cancelActivityDialogVisible: false, // 取消活动确认对话框
                 cancelActivityReason: undefined, // 取消活动原因
 
@@ -178,7 +180,15 @@
                 this.$router.push(`/activity/${activity.id}`);
             },
 
-            // 点击活动，查看活动详情
+            // 查看审核未通过原因
+            onReason(activity) {
+                this.$axios.get(`/activity/review/${activity.id}`).then(data => {
+                    // TODO  待确认 是否有2个 data
+                    this.$alert(data.data.reason, {showClose: false});
+                })
+            },
+
+            // 编辑或重新编辑活动
             onEdit(activity) {
                 if (this.isEditInfoEnable(activity)) {
                     this.$router.push({path: '/activity/edit', query: {id: activity.id}});
@@ -187,32 +197,38 @@
 
             // 点击报名信息活动管理
             onRegistrationInformationManagement(activity) {
-                // TODO 跳转 报名信息活动管理
-                // this.$router.push({path: '/activity/edit', query: {id: activity.id}});
+                this.$router.push({path: '/activity/apply', query: {id: activity.id}});
             },
 
             // 取消活动
             onCancelActivity(activity) {
                 if (this.isCancelButtonEnable(activity)) {
+                    this.cancelActivity = activity;
                     this.cancelActivityDialogVisible = true;
                 }
             },
 
             // 关闭取消活动对话框
             onCancelActivityCancel() {
+                this.cancelActivity = undefined;
                 this.cancelActivityDialogVisible = false;
             },
 
             // 取消活动确认按钮
             onCancelActivityConfirm() {
-                this.$axios.request({
-                    method: "POST",
-                    url: "/activity/takeoff",
-                    params: {id: activity.id}
-                }).then(response => {
-                    this.cancelActivityDialogVisible = false;
-                    this.$message.success("已取消发布");
-                });
+                if (this.cancelActivityReason) {
+                    this.$axios.request({
+                        method: "POST",
+                        url: "/activity/takeoff",
+                        params: {id: this.cancelActivity.id, reason: this.cancelActivityReason}
+                    }).then(response => {
+                        this.cancelActivityReason = undefined;
+                        this.cancelActivityDialogVisible = false;
+                        this.$message.success("已取消发布");
+                    });
+                } else {
+                    this.$message.warning("请填写取消原因");
+                }
             },
 
             // 点击发布活动
@@ -248,8 +264,13 @@
             },
 
             // 获取活动状态
-            getStatus(status) {
-                return this.statusList.find(item => status === item.id).name;
+            getStatus(activity) {
+                let description = "";
+                if (activity.status === 5) {
+                    let number = new Date(activity.activityFinishTime).getDate() - new Date().getDate()
+                    description = number === 0 ? " 即将结束" : " " + number + "天后结束";
+                }
+                return this.statusList.find(item => activity.status === item.id).name + description;
             },
 
             // 加载数据

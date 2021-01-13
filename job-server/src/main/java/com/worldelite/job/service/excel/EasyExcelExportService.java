@@ -4,19 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.excel.EasyExcel;
-import com.worldelite.job.constants.Bool;
-import com.worldelite.job.constants.Gender;
-import com.worldelite.job.constants.UserStatus;
-import com.worldelite.job.constants.UserType;
+import com.worldelite.job.constants.*;
 import com.worldelite.job.entity.Download;
-import com.worldelite.job.form.CompanyListForm;
-import com.worldelite.job.form.JobListForm;
-import com.worldelite.job.form.ResumeListForm;
-import com.worldelite.job.form.UserListForm;
-import com.worldelite.job.service.DownloadService;
-import com.worldelite.job.service.FileService;
-import com.worldelite.job.service.JobService;
-import com.worldelite.job.service.UserService;
+import com.worldelite.job.form.*;
+import com.worldelite.job.service.*;
 import com.worldelite.job.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +39,9 @@ public class EasyExcelExportService implements IExportExcelService {
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private RegistrationService registrationService;
 
     @Override
     public String exportUserList(Long userId, UserListForm listForm) {
@@ -178,6 +172,53 @@ public class EasyExcelExportService implements IExportExcelService {
         downloadService.saveDownload(download);
 
         return excelFileName;
+    }
+
+    @Override
+    public String exportRegistrationList(Long userId, RegistrationListForm listForm) {
+        final String excelFileName = listForm.genExportExcelName();
+        final File excelFile = fileService.getFile(excelFileName);
+        if (excelFile.exists()) {
+            return excelFileName;
+        }
+
+        PageResult<RegistrationVo> pageResult;
+        List<RegistrationExcel> excelData = new ArrayList<>();
+
+        Download download = new Download();
+        download.setUrl(excelFileName);
+        download.setUserId(userId);
+        String taskName = "报名列表_" + DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN);
+        download.setName(taskName);
+        downloadService.saveDownload(download);
+
+        long exportRecordCount = 0;
+
+        do {
+            pageResult = registrationService.getRegistrationList(listForm);
+            for (RegistrationVo registrationVo : pageResult.getList()) {
+                excelData.add(toRegistrationExcel(registrationVo));
+                exportRecordCount++;
+            }
+            listForm.setPage(listForm.getPage() + 1);
+            // 更新进度
+            download.setProgress(Math.min(excelData.size() * 100 / pageResult.getTotal(), 99));
+            downloadService.saveDownload(download);
+        } while (pageResult.getHasMore() && exportRecordCount < excelMaxCount);
+
+        EasyExcel.write(fileService.getFile(excelFileName), RegistrationExcel.class).sheet().doWrite(excelData);
+        download.setProgress(100);
+        downloadService.saveDownload(download);
+        return excelFileName;
+    }
+
+    private RegistrationExcel toRegistrationExcel(RegistrationVo registrationVo) {
+        RegistrationExcel registrationExcel = new RegistrationExcel();
+        BeanUtil.copyProperties(registrationVo,registrationExcel);
+        registrationExcel.setNumber("");
+        registrationExcel.setEducation("");
+        registrationExcel.setStatus("");
+        return registrationExcel;
     }
 
     private UserExcel toUserExcel(UserVo user) {

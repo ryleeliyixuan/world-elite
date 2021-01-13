@@ -3,6 +3,7 @@ package com.worldelite.job.mq;
 import com.alibaba.fastjson.JSON;
 import com.worldelite.job.context.MessageTopic;
 import com.worldelite.job.form.JobListForm;
+import com.worldelite.job.form.RegistrationListForm;
 import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.form.UserListForm;
 import com.worldelite.job.service.JobService;
@@ -89,5 +90,14 @@ public class ExportTaskHandler implements MessageListener {
     private void handleExportJobList(ExportMessage message){
         JobListForm jobListForm = JSON.parseObject(message.getContent(), JobListForm.class);
         exportExcelService.exportJobList(message.getUserId(), jobListForm);
+    }
+
+    /**
+     * 导出报名列表
+     * @param message
+     */
+    private void handleExportRegistrationList(ExportMessage message){
+        RegistrationListForm registrationListForm = JSON.parseObject(message.getContent(), RegistrationListForm.class);
+        exportExcelService.exportRegistrationList(message.getUserId(), registrationListForm);
     }
 }
