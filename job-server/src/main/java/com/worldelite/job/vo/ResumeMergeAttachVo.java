@@ -26,6 +26,8 @@ public class ResumeMergeAttachVo extends EditFlag implements VoConvertable<Resum
     @JSONField(format = "yyyy-MM-dd")
     private Date updateTime; //更新时间
 
+    private String name;
+
     @Override
     public ResumeMergeAttachVo asVo(ResumeMergeAttach resumeMergeAttach) {
 
