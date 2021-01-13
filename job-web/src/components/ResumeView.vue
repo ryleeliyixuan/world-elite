@@ -9,14 +9,18 @@
             <el-row class="info-name">{{resume.name}}</el-row>
             <el-row class="info-other">性别：
               <span v-if="resume.gender==1">男</span>
-              <span v-if="resume.gender==2"></span>
+              <span v-if="resume.gender==2">女</span>
             </el-row>
             <el-row class="info-other">年龄：{{resume.age}} 岁</el-row>
             <el-row class="info-other">邮箱：{{resume.email}}</el-row>
             <el-row class="info-other">手机：{{resume.phone}}</el-row>
           </div>
           <div class="info-other-row-m">
-            <el-row class="info-other">政治面貌：{{resume.maritalStatus}}</el-row>
+            <el-row class="info-other">政治面貌：
+            <span v-if="resume.maritalStatus==0">党员</span>
+            <span v-if="resume.maritalStatus==1">团员</span>
+            <span v-if="resume.maritalStatus==2">群众</span>
+            </el-row>
             <el-row class="info-other">现居地址：{{resume.curPlace}}</el-row>
             <el-row class="info-other">入职时间：{{resume.returnTime}}</el-row>
           </div>
@@ -79,8 +83,16 @@
               {{resume.userExpectJob.expectPosition}}
             </el-row>
             <el-row class="info-other">预期薪资：
-              <span v-if="resume.userExpectJob.salaryId && resume.userExpectJob.salaryId!=''"
-              >{{resume.userExpectJob.salaryId}}
+              <span v-if="resume.userExpectJob.salaryId && resume.userExpectJob.salaryId!=''">
+                <span v-if="resume.userExpectJob.salaryId==109">5K-8K</span>
+                <span v-if="resume.userExpectJob.salaryId==110">8K-10K</span>
+                <span v-if="resume.userExpectJob.salaryId==111">10K-15K</span>
+                <span v-if="resume.userExpectJob.salaryId==112">15K-20K</span>
+                <span v-if="resume.userExpectJob.salaryId==113">20K-30K</span>
+                <span v-if="resume.userExpectJob.salaryId==114">30K-50K</span>
+                <span v-if="resume.userExpectJob.salaryId==115">50K以上</span>
+                <span v-if="resume.userExpectJob.salaryId==153">5K以下</span>
+                <span v-if="resume.userExpectJob.salaryId==259">不限</span>
                </span>
             </el-row>
             <el-row class="info-other">工作类型：
