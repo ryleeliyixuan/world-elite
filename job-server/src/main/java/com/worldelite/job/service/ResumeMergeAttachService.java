@@ -40,7 +40,7 @@ public class ResumeMergeAttachService{
             ResumeMergeAttach record = new ResumeMergeAttach();
             record.setResumeAttach(AppUtils.getOssKey(oneOther.getLink()));
             record.setResumeId(resume.getId());
-            record.setName(resume.getName());
+            record.setName(oneOther.getName());
             resumeMergeAttachMapper.insertSelective(record);
         }
     }
