@@ -53,11 +53,11 @@ public class ResumeForm {
 
     private Byte priority;
 
-    public List<String> getAttachOthers() {
+    public List<AttachOtherForm> getAttachOthers() {
         return attachOthers;
     }
 
-    private List<String> attachOthers;
+    private List<AttachOtherForm> attachOthers;
 
     public String getAttachResume() {
         return attachResume;

@@ -53,5 +53,5 @@ public interface ResumeMergeAttachMapper {
      */
     int updateByPrimaryKey(ResumeMergeAttach record);
 
-    List<ResumeMergeAttach>selectAndList(ResumeMergeAttach record);
+    List<ResumeMergeAttach> selectAndList(ResumeMergeAttach record);
 }
