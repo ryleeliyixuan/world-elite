@@ -32,6 +32,14 @@ export function searchJob(data) {
     })
 }
 
+export function searchJobOrderBySalary(data) {
+    return request({
+        url: '/job/search-job-order-by-salary',
+        method: 'post',
+        data
+    })
+}
+
 export function myApplyJobList(data) {
     return request({
         url: '/job/my-apply-jobs',
