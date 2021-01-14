@@ -27,4 +27,5 @@ public class JobSearchForm extends PageForm{
     private Integer[] categoryIds; //职位类型
     private Long companyId; //公司id -新百科搜索公司下职位时使用
     private Integer recruitId; //招聘类型
+    private Byte salaryAsc; // 薪资降序，1升序，0降序，薪资是指：月薪*月份+年终奖
 }

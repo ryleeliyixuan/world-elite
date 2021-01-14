@@ -265,6 +265,38 @@ public class JobApi extends BaseApi {
         return ApiResult.ok(pageResult);
     }
 
+
+    /**
+     * 搜索job，按照salary排序
+     * salary是 月薪*月份+年终奖
+     *
+     * @param searchForm
+     * @return
+     */
+    @PostMapping("search-job-order-by-salary")
+    public ApiResult<PageResult<JobVo>> searchJobListOrderBySalary(@RequestBody JobSearchForm searchForm) {
+        if (searchForm.getSalaryRangeId() != null) {
+            DictVo salaryRange = dictService.getById(searchForm.getSalaryRangeId());
+            if (salaryRange != null) {
+                String[] values = salaryRange.getValue().split("-");
+                if (values.length == 2) {
+                    searchForm.setMinSalary(NumberUtils.toInt(values[0]));
+                    searchForm.setMaxSalary(NumberUtils.toInt(values[1]));
+                }
+            }
+        }
+
+        PageResult pageResult;
+
+        if (jobService.isEmptySearch(searchForm)) {
+            pageResult = jobService.getUserRecommendJobList(searchForm);
+        } else {
+            pageResult = searchService.searchJob(searchForm);
+        }
+        pageResult = jobService.sortJobListBySalary(pageResult, searchForm.getSalaryAsc());
+        return ApiResult.ok(pageResult);
+    }
+
     /**
      * 获取工作列表
      *
