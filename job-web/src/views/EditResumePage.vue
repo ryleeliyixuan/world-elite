@@ -1515,6 +1515,7 @@
                                             :show-file-list="false"
                                             :on-success="handleUploadAttachOthersSuccess"
                                             :before-upload="beforeAttachmengUpload"
+                                            :file-list="fileList"
                                     >
                                         <el-button class="upload-btn">
                                             <svg-icon
@@ -1859,6 +1860,7 @@
                     fileUrl: "",
                     acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
                 },
+                fileList:[],
                 uploadAttachmentOptions: {
                     action: "",
                     params: {},
@@ -2012,9 +2014,6 @@
         },
         created() {
             this.initData();
-
-
-
         },
         methods: {
             saveResumeId(tab, event) {
@@ -2158,23 +2157,30 @@
                 let i=0;
                 this.resumeAttachForm1.link=this.uploadAttachmentOptions.fileUrl;
                 if (this.newIndex&&this.newIndex!=''){
-                        if (this.resume[this.newIndex].resumeMergeAttachList>0){
-                            for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
-                                this.resumeAttachForm2.link=this.resume[this.newIndex].resumeMergeAttachList[i].attachOthers
-                                this.resumeAttachForm2.name=this.resume[this.newIndex].resumeMergeAttachList[i].name
-                                nowAttachOthers.push(this.resumeAttachForm2)
-                            }
-                            console.log(nowAttachOthers)
-                                nowAttachOthers.push(this.resumeAttachForm1)
-                                console.log(nowAttachOthers)
-                                this.resumeAttachForm.attachOthers=nowAttachOthers
-                                this.handleSaveAttachOthersResume(false);
+                    console.log("+++")
+                    if (this.resume[this.newIndex].resumeMergeAttachList && this.resume[this.newIndex].resumeMergeAttachList.length>0){
+                        for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
+                            otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i]
+                            console.log(otherAttach)
+                            nowAttachOthers.push(otherAttach)
 
-                        }else {
-                            console.log("999")
-                            nowAttachOthers.push(this.resumeAttachForm1)
-                            this.resumeAttachForm.attachOthers=nowAttachOthers
-                            this.handleSaveAttachOthersResume(false);
+                        }
+                        console.log(nowAttachOthers)
+                        let result = nowAttachOthers.map(((value, index) => {
+                            return {link: value.resumeAttach, name: value.name}
+                        }))
+
+                        console.log(result)
+                        console.log("=====")
+                        result.push(this.resumeAttachForm1)
+                        console.log(result)
+                        this.resumeAttachForm.attachOthers=result
+                        this.handleSaveAttachOthersResume(false);
+                    }
+                    else {
+                        console.log("0000")
+                        this.resumeAttachForm.attachOthers.push(this.resumeAttachForm1)
+                        this.handleSaveAttachOthersResume(false);
                     }
                 }else {
                     console.log("------")
@@ -2203,6 +2209,7 @@
                         this.handleSaveAttachOthersResume(false);
                     }
                 }
+                this.fileList=[]
             },
             handleEditAttachOthers(index){
                 this.showEditAttachOther=true;
@@ -4262,7 +4269,6 @@
     .el-tabs--card > .el-tabs__header {
         width: fit-content;
         height: 35px;
-        background: #FFFFFF;
         border-radius: 18px;
         border-bottom: 0px;
         /*margin-left: 56px;*/
@@ -4323,6 +4329,21 @@
 
     .el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable .el-icon-close, .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable:hover .el-icon-close {
         width: 0px;
+    }
+    .el-tabs__new-tab {
+        float: right;
+        border: 1.5px solid #4B97F0;
+        height: 28px;
+        width: 28px;
+        line-height: 0px;
+        margin: 8px 0 10px 10px;
+        border-radius: 20px;
+        padding-top: 3px;
+        font-size: 20px;
+        color: #4B97F0;
+        cursor: pointer;
+        -webkit-transition: all .15s;
+        transition: all .15s;
     }
 
     .el-tabs--card > .el-tabs__header.el-tabs__new-tab {
