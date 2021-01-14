@@ -53,7 +53,7 @@ public interface ActivityQuestionnaireMapper {
      */
     int updateByPrimaryKey(ActivityQuestionnaire record);
 
-    ActivityQuestionnaire selectByActivityId(Integer activityId);
-
     List<ActivityQuestionnaire> selectAndList(ActivityQuestionnaire activityQuestionnaire);
+
+    void removeTemplate(Integer templateId);
 }

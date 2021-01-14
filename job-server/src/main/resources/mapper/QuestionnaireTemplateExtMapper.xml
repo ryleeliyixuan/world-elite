@@ -12,9 +12,20 @@
       <if test="userId != null">
         and user_id = #{userId}
       </if>
-      <if test="activityId != null">
-        and activity_id = #{activityId}
+      <if test="templateName != null and templateName != ''">
+        and template_name = #{templateName}
       </if>
     </where>
+  </select>
+
+  <select id="selectCountByUserId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select count(*) from t_questionnaire_template where user_id = #{userId}
+  </select>
+
+  <select id="selectByTemplateName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_questionnaire_template
+    where template_name = #{templateName} or template_name like concat(#{templateName},'（%）')
   </select>
 </mapper>

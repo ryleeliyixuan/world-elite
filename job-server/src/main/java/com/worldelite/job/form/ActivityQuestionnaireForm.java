@@ -7,7 +7,7 @@ import lombok.Data;
  */
 @Data
 public class ActivityQuestionnaireForm {
-    private Integer activityId; //活动ID
+    private Integer templateId; //模板ID
     private String title; //标题
     private String nameFlag; //姓名
     private String genderFlag; //性别

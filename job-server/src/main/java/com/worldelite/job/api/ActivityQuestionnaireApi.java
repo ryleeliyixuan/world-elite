@@ -29,9 +29,23 @@ public class ActivityQuestionnaireApi {
     @ApiDoc
     @PostMapping
     @RequireLogin
-    public ApiResult addActivityQuestionnaire(@RequestBody ActivityQuestionnaireForm form){
-        activityQuestionnaireService.addActivityQuestionnaire(form);
-        return ApiResult.ok();
+    public ApiResult<QuestionnaireTemplateVo> addActivityQuestionnaire(@RequestBody ActivityQuestionnaireForm form){
+        QuestionnaireTemplateVo activityQuestionnaire = activityQuestionnaireService.addActivityQuestionnaire(form);
+        return ApiResult.ok(activityQuestionnaire);
+    }
+
+    /**
+     * 修改报名表
+     * @param id 报名表ID
+     * @param form 报名表单
+     * @return
+     */
+    @ApiDoc
+    @PatchMapping("{id}")
+    @RequireLogin
+    public ApiResult<QuestionnaireTemplateVo> updateActivityQuestionnaire(@PathVariable Integer id,@RequestBody ActivityQuestionnaireForm form){
+        QuestionnaireTemplateVo activityQuestionnaire = activityQuestionnaireService.updateActivityQuestionnaire(id,form);
+        return ApiResult.ok(activityQuestionnaire);
     }
 
     /**
@@ -45,17 +59,4 @@ public class ActivityQuestionnaireApi {
         QuestionnaireTemplateVo template = activityQuestionnaireService.getActivityQuestionnaire(id);
         return ApiResult.ok(template);
     }
-
-    /**
-     * 获取活动报名表
-     * @return
-     */
-    @ApiDoc
-    @GetMapping("activity/{activityId}")
-    @RequireLogin
-    public ApiResult<QuestionnaireTemplateVo> getActivityQuestionnaireByActivityId(@PathVariable Integer activityId){
-        QuestionnaireTemplateVo template = activityQuestionnaireService.getActivityQuestionnaireByActivityId(activityId);
-        return ApiResult.ok(template);
-    }
-
 }
