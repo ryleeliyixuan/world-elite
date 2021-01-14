@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="tab-right-container">
-                <div class="import-button" @click="onImportData">导出名单</div>
+                <div class="import-button" @click="onExportData">导出名单</div>
                 <el-popover class="sort-container"
                             placement="bottom-end"
                             width="136"
@@ -78,7 +78,7 @@
                 </div>
                 <div class="apply-item-right">
                     <div class="button-container">
-                        <div class="button-text">查看报名表</div>
+                        <div class="button-text" @click="onViewApply(item)">查看报名表</div>
                         <div class="button-text">查看简历</div>
                     </div>
                     <div class="button-container" style="margin-top: 13px;" v-if="1">
@@ -96,7 +96,8 @@
                         @pagination="getList">
             </pagination>
         </div>
-        <export-apply v-if="activity" :visible.sync="exportDialogVisible" :activityId="activity.id"></export-apply>
+        <export-apply v-if="activity && exportDialogVisible" :visible.sync="exportDialogVisible" :activity="activity"></export-apply>
+        <view-apply v-if="activity && viewDialogVisible" :visible.sync="viewDialogVisible" :activity="activity" :data="selectItem"></view-apply>
     </div>
 
 </template>
@@ -104,11 +105,12 @@
 <script>
     import Pagination from "@/components/Pagination2";
     import ExportApply from "@/components/activity/ExportApply";
+    import ViewApply from "@/components/activity/ViewApply";
 
 
     export default {
         name: "ActivityApplyPage",
-        components: {Pagination, ExportApply},
+        components: {Pagination, ExportApply, ViewApply},
         data() {
             return {
                 activity: undefined, // 当前管理的活动
@@ -139,6 +141,9 @@
                 },
 
                 exportDialogVisible: false, // 导出对话框
+                viewDialogVisible: false, // 查看报名表对话框
+
+                selectItem: undefined, // 选中的数据
             }
         },
         created() {
@@ -164,8 +169,14 @@
             },
 
             // 点击导出名单按钮
-            onImportData() {
+            onExportData() {
                 this.exportDialogVisible = true;
+            },
+
+            // 点击查看报名表
+            onViewApply(item) {
+                this.selectItem = item;
+                this.viewDialogVisible = true;
             },
 
             // 是否显示通过报名按钮
@@ -418,6 +429,7 @@
                     line-height: 25px;
                     font-size: 14px;
                     color: #FFFFFF;
+                    cursor: pointer;
                 }
 
                 .sort-container {
