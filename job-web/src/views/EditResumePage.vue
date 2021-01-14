@@ -368,12 +368,14 @@
                                                         </el-form-item>
                                                     </el-form>
                                                 </div>
-                                                <div style="padding-left: 110px;padding-top: 10px">
+                                                <div style="padding-left: 25px;padding-top: 10px">
                                                     <el-form ref="resumeEduForm" :model="resumeEduForm"
-                                                             :rules="resumeEduFormRules" label-width="100px">
-                                                        <el-checkbox v-model="resumeEduForm.inSchool" label="1"
-                                                                     class="m-input-text-width">在读
-                                                        </el-checkbox>
+                                                             :rules="resumeEduFormRules">
+                                                        <el-form-item label="GPA:" prop="gpa" class="n-input-text-width"
+                                                                      label-width="90px">
+                                                            <el-input v-model="resumeEduForm.gpa" type="number"
+                                                                      placeholder="请输入GPA" min="0"></el-input>
+                                                        </el-form-item>
                                                     </el-form>
                                                 </div>
                                             </div>
@@ -389,14 +391,7 @@
                                                     </el-form>
                                                 </div>
                                                 <div>
-                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
-                                                             :rules="resumeEduFormRules">
-                                                        <el-form-item label="GPA:" prop="gpa" class="n-input-text-width"
-                                                                      label-width="90px">
-                                                            <el-input v-model="resumeEduForm.gpa" type="number"
-                                                                      placeholder="请输入GPA" min="0"></el-input>
-                                                        </el-form-item>
-                                                    </el-form>
+
                                                 </div>
                                             </div>
                                             <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
@@ -480,7 +475,8 @@
                                                         <el-form
                                                                 ref="expectJobForm"
                                                                 :model="expectJobForm"
-                                                                label-width="80px"
+                                                                :rules="expectJobFormRules"
+                                                                label-width="100px"
                                                         >
                                                             <el-form-item label="意向职位：" prop="expectPosition"
                                                                           class="m-input-text-width">
@@ -493,6 +489,7 @@
                                                         <el-form
                                                                 ref="expectJobForm"
                                                                 :model="expectJobForm"
+                                                                :rules="expectJobFormRules"
                                                                 label-width="80px"
                                                         >
                                                             <el-form-item label="意向城市:" prop="cityIds"
@@ -507,7 +504,8 @@
                                                         <el-form
                                                                 ref="expectJobForm"
                                                                 :model="expectJobForm"
-                                                                label-width="80px"
+                                                                :rules="expectJobFormRules"
+                                                                label-width="100px"
                                                         >
                                                             <el-form-item label="工作类型：" prop="expectWorkType" class="m-input-text-width">
                                                                 <el-radio-group v-model="expectJobForm.expectWorkType"class="radio-gender" >
@@ -518,7 +516,7 @@
                                                             </el-form-item>
                                                         </el-form>
                                                     </div>
-                                                    <div style="padding-left: 78px">
+                                                    <div style="padding-left: 60px">
                                                         <el-form
                                                                 ref="expectJobForm"
                                                                 :model="expectJobForm"
@@ -547,12 +545,12 @@
                                                         <el-form
                                                                 ref="expectJobForm"
                                                                 :model="expectJobForm"
-                                                                label-width="80px"
+                                                                label-width="100px"
                                                         >
                                                             <el-form-item label="期望行业：" prop="categoryId"
                                                                           class="m-input-text-width">
                                                                 <el-cascader
-                                                                        placeholder="最多选择三个"
+                                                                        placeholder=""
                                                                         :show-all-levels="false"
                                                                         :options="jobCategoryOptions"
                                                                         :props="jobCatetoryProps"
@@ -565,8 +563,8 @@
                                                         </el-form>
                                                     </div>
                                                     <div style="padding-left:100px;padding-top: 10px">
-                                                        <el-form ref="resumeEduForm" :model="resumeEduForm"
-                                                                 :rules="resumeEduFormRules" label-width="100px">
+                                                        <el-form ref="expectJobForm" :model="expectJobForm"
+                                                                 :rules="expectJobFormRules" label-width="100px">
 
                                                         </el-form>
                                                     </div>
@@ -790,7 +788,8 @@
                                                                   type="textarea"
                                                                   :rows="2"
                                                                   autosize
-                                                                  placeholder="请输入工作内容"></el-input>
+                                                                  placeholder="请输入工作内容"
+                                                                  class="intro-text"></el-input>
                                                     </el-form-item>
                                                 </el-form>
                                             </div>
@@ -927,7 +926,7 @@
                                                             <el-input v-model="resumePracticeForm.description"
                                                                       type="textarea"
                                                                       :row="2"
-                                                                      style="width: 420px;"
+                                                                      class="intro-text"
                                                                       autosize
                                                             ></el-input>
                                                         </el-form-item>
@@ -969,11 +968,11 @@
                                                     <el-row style="width: 600px;display: inline-flex">
                                                         <div style="width: 386px">
                                                             <span class="info-other">语种{{index+1}}：</span>
-                                                            <span>{{language.title}}</span>
+                                                            <span class="info-data">{{language.title}}</span>
                                                         </div>
                                                         <div style="width: 200px">
                                                             <span class="info-other">证书或分数：</span>
-                                                            <span>{{language.description}}</span>
+                                                            <span class="info-data">{{language.description}}</span>
                                                         </div>
                                                     </el-row>
                                                 </div>
@@ -996,7 +995,6 @@
                                             </el-row>
                                         </div>
                                     </div>
-
                                     <div v-if="showLanguageDialog==true">
                                         <el-row style="height: 30px">
                                             <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -1052,7 +1050,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <el-divider></el-divider>
                                 </div>
                                 <div class="resume-box" id="Resume-Awards">
@@ -1080,11 +1077,11 @@
                                                     <el-row style="width: 600px;display: inline-flex">
                                                         <div style="width: 386px">
                                                             <span class="info-other">证书/奖项名称：</span>
-                                                            <span>{{awards.title}}</span>
+                                                            <span class="info-data">{{awards.title}}</span>
                                                         </div>
                                                         <div style="width: 200px">
                                                             <span class="info-other">获得时间：</span>
-                                                            <span>{{awards.time}}</span>
+                                                            <span class="info-data">{{awards.time}}</span>
                                                         </div>
                                                     </el-row>
                                                 </div>
@@ -1851,6 +1848,11 @@
                     salaryId: undefined,
                     categoryId:undefined,
                 },
+                expectJobFormRules:{
+                    expectPosition:[{required: true, message: "请输入意向职位", trigger: "blur"}],
+                    expectWorkType: [{required: true, message: "请选择工作类型", trigger: "blur"}],
+                    expectCity:[{required: true, message: "请输入意向城市", trigger: "blur"}],
+                },
                 uploadPicOptions: {
                     action: "",
                     params: {},
@@ -1909,7 +1911,7 @@
                     },
                 },
                 jobCatetoryProps: {
-                    multiple: true,
+                    multiple: false,
                     expandTrigger: "hover",
                     value: "id",
                     label: "name",
@@ -2635,22 +2637,48 @@
             handleEditResumeSkill() {
                 this.showSkillDialog = true;
                 this.skillTagListForm.length = 0;
-                if (
-                    this.resume.resumeSkillList &&
-                    this.resume.resumeSkillList.length !== 0
-                ) {
-                    for (const resumeSkill of this.resume.resumeSkillList) {
-                        this.skillTagListForm.push({name: resumeSkill.name, select: true});
+                if (this.newIndex && this.newIndex!=''){
+                    if (
+                        this.resume[this.newIndex].resumeSkillList &&
+                        this.resume[this.newIndex].resumeSkillList.length != 0
+                    ) {
+                        for (const resumeSkill of this.resume[this.newIndex].resumeSkillList) {
+                            this.skillTagListForm.push({name: resumeSkill.name, select: true});
+                        }
+                        // console.log( this.skillTagListForm)
                     }
-                }
-                for (const skillTag of this.skillTagOptions) {
-                    const found = this.skillTagListForm.find(
-                        (selectTag) => skillTag.name == selectTag.name
-                    );
-                    if (!found) {
-                        this.skillTagListForm.push({name: skillTag.name, select: false});
+                    for (const skillTag of this.skillTagOptions) {
+                        const found = this.skillTagListForm.find(
+                            (selectTag) => skillTag.name == selectTag.name
+                        );
+                        if (!found) {
+                            this.skillTagListForm.push({name: skillTag.name, select: false});
+                        }
+
                     }
+                    // console.log( this.skillTagOptions)
+                }else{
+                    if (
+                        this.resume[this.resume.length-1].resumeSkillList &&
+                        this.resume[this.resume.length-1].resumeSkillList.length != 0
+                    ) {
+                        for (const resumeSkill of this.resume[this.resume.length-1].resumeSkillList) {
+                            this.skillTagListForm.push({name: resumeSkill.name, select: true});
+                        }
+                        // console.log( this.skillTagListForm)
+                    }
+                    for (const skillTag of this.skillTagOptions) {
+                        const found = this.skillTagListForm.find(
+                            (selectTag) => skillTag.name == selectTag.name
+                        );
+                        if (!found) {
+                            this.skillTagListForm.push({name: skillTag.name, select: false});
+                        }
+
+                    }
+                    // console.log( this.skillTagOptions)
                 }
+
             },
             handleDelResumeEdu(id) {
                 this.handleDeleteItemById(delResumeEdu, id);
@@ -3046,11 +3074,10 @@
                 });
             },
             handleSaveExpectJob() {
-                console.log(this.expectJobForm.categoryId[0])
+                console.log(this.expectJobForm.categoryId)
                 this.$refs["expectJobForm"][0].validate((valid) => {
                     if (valid) {
                         this.posting = true;
-                        this.expectJobForm.categoryId=this.expectJobForm.categoryId[0]
                         if(this.newResumeId&&this.newResumeId!=''){
                             this.expectJobForm.resumeId=this.newResumeId
                         }else {
@@ -3159,8 +3186,8 @@
                 const selectTagList = this.skillTagListForm.filter(
                     (tag) => tag.select == true
                 );
-                if (selectTagList.length > 4) {
-                    Toast.error("标签数量不能超过5个");
+                if (selectTagList.length > 5) {
+                    Toast.error("标签数量不能超过6个");
                     return false;
                 } else {
                     return true;
@@ -4011,7 +4038,12 @@
             .resume-edu {
                 padding-top: 13px;
                 display: inline-flex;
-
+                .info-data{
+                    font-size: 14px;
+                    font-family: PingFangSC-Regular, PingFang SC;
+                    font-weight: 400;
+                    color: #333333;
+                }
                 .edu-box {
                     display: inline-flex;
                 }
