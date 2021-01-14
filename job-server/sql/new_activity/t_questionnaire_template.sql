@@ -50,3 +50,7 @@ ALTER TABLE t_questionnaire_template CHANGE title title varchar(100) CHARACTER S
 ALTER TABLE t_questionnaire_template ADD name_flag char(1) NULL COMMENT '姓名选填flag.0 显示,1 选填,2 隐藏';
 ALTER TABLE t_questionnaire_template CHANGE name_flag name_flag char(1) NULL COMMENT '姓名选填flag.0 显示,1 选填,2 隐藏' AFTER title;
 
+-- 删除活动ID
+ALTER TABLE db_worldelite_activity.t_questionnaire_template DROP COLUMN activity_id;
+
+
