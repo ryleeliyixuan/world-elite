@@ -4,7 +4,6 @@
       <div class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
         <div class="section1-container">
 
-          <div v-show="moreFilter">
             <!-- 所在城市 -->
             <div class="section1-filter">
               <span class="section1-filter-title">所在城市：</span>
@@ -85,6 +84,7 @@
               </el-checkbox-group>
             </div>
 
+          <div v-show="moreFilter">
             <!-- 工作经验 -->
             <div class="section1-filter">
               <span class="section1-filter-title">工作经验：</span>
@@ -211,8 +211,8 @@
               </div>
 
               <el-link style="margin-left: 60px;" class="sort-options" target="_blank">推荐排序</el-link>
-              <el-link class="sort-options" target="_blank">最新发布</el-link>
-              <el-link class="sort-options" target="_blank">薪资降序</el-link>
+              <el-link class="sort-options" target="_blank" @click="onOrderPubTime">最新发布</el-link>
+              <el-link class="sort-options" target="_blank" @click="onOrderSalary">薪资降序</el-link>
             </div>
 
           </div>
@@ -306,6 +306,7 @@
         >
           <div class="section3-left-container">
             <h6 class="section3-job-name" >{{ job.name }}</h6>
+            <div class="recruit-type" v-if="job.recruitType === 154">内推</div>
             <div>
               <b class="section3-salary" style="font-size: 16px;"
               >{{ job.salary.name}} · {{ job.salaryMonths ? `${job.salaryMonths}薪` : "12薪" }}</b
@@ -315,7 +316,7 @@
                   job.minDegree ? job.minDegree.name : ""
                 }`
               }}</span>
-              <el-link class="chat-link" :underline="false" icon="el-icon-chat-dot-round">聊一聊</el-link>
+              <el-link class="chat-link" @click="handleChat($event, job.creatorId, job.id)" :underline="false" icon="el-icon-chat-dot-round">聊一聊</el-link>
             </div>
           </div>
           <div
@@ -376,6 +377,7 @@
 
   import { formatListQuery, parseListQuery } from "@/utils/common";
   import { getRecommendList } from "@/api/recommend_api";
+  import { getCityIdByName } from "@/api/city_api";
 
   export default {
     name: "JobListPage",
@@ -423,9 +425,13 @@
           specialIds: [],
           page: 1,
           limit: 10,
+          sort: undefined,
+          salaryAsc: 0
         },
+        orderPubTime: '+PUB_TIME',
         total: 0,
         pageResult: {},
+        unlimitedMap: {},
         salaryRangeOptions: [],
         companyScaleOptions: [],
         companyIndustryOptions: [],
@@ -484,31 +490,61 @@
       initData() {
         this.paneLoading = true;
         listByType(2).then(
-                (response) => (this.cityOptions = response.data.list)
+                (response) => {
+                  let names = [];
+                  this.cityOptions = response.data.list;
+                  this.buildUnlimitedMap(this.cityOptions, "city");
+                  for (let i = 1; i < this.cityOptions.length; i++) {
+                    names[i] = this.cityOptions[i].name;
+                  }
+                  this.$axios.post("/city/get-city-id-by-name", {cityNames: names}).then(resp => {
+                    for (let i = 1; i < resp.data.length; i++) {
+                      this.cityOptions[i].id = resp.data[i];
+                    }
+                  });
+                }
         );
         listByType(5).then(
-                (response) => (this.companyScaleOptions = response.data.list)
+                (response) => {
+                  this.companyScaleOptions = response.data.list;
+                  this.buildUnlimitedMap(this.companyScaleOptions, "scale");
+                }
         );
         listByType(6).then(
-                (response) => (this.companyIndustryOptions = response.data.list)
+                (response) => {
+                  this.companyIndustryOptions = response.data.list;
+                  this.buildUnlimitedMap(this.companyIndustryOptions, "industry");
+                }
         );
         listByType(8).then(
-                (response) => (this.jobTypeOptions = response.data.list)
+                (response) => {
+                  this.jobTypeOptions = response.data.list;
+                  this.buildUnlimitedMap(this.jobTypeOptions, "jobType");
+                }
         );
         listByType(9).then(
-                (response) => (this.salaryRangeOptions = response.data.list)
+                (response) => {
+                  this.salaryRangeOptions = response.data.list;
+                  this.buildUnlimitedMap(this.salaryRangeOptions, "salary");
+                }
         );
         listByType(1).then(
-                (response) => (this.degreeOptions = response.data.list)
+                (response) => {
+                  this.degreeOptions = response.data.list;
+                  this.buildUnlimitedMap(this.degreeOptions, "degree");
+                }
         );
         listByType(13).then(
-                (response) => (this.experienceOptions = response.data.list)
+                (response) => {
+                  this.experienceOptions = response.data.list;
+                  this.buildUnlimitedMap(this.experienceOptions, "exp");
+                }
         );
         listByType(7).then(
-                (response) => (this.companyDefineOptions = response.data.list)
-        );
-        listByTypeAll(2).then(
-                (response) => (this.cityOptionsAll = response.data.list)
+                (response) => {
+                  this.companyDefineOptions = response.data.list;
+                  this.buildUnlimitedMap(this.companyDefineOptions, "define");
+                }
         );
         this.$axios.request({
           url: "/skill-tag/list",
@@ -521,6 +557,7 @@
           }
         }).then((resp) => {
           this.lanRequiredOptions = resp.data.list;
+          this.buildUnlimitedMap(this.lanRequiredOptions, "lang");
         });
         this.paneLoading = false;
       },
@@ -533,6 +570,13 @@
             clearInterval(timeTop);
           }
         }, 10);
+      },
+      buildUnlimitedMap(options, key) {
+        for (let i = 0; i < options.length; i++) {
+          if (options[i].name === "不限") {
+            this.unlimitedMap[key] = options[i].id;
+          }
+        }
       },
       scrollPane(status) {
         this.collapse = status;
@@ -584,48 +628,92 @@
                 this.selectedJobType.length - 1
         );
       },
+      onOrderPubTime() {
+        this.listQuery.sort = this.orderPubTime;
+        this.handleFilter();
+      },
+      onOrderSalary() {
+        this.listQuery.salaryAsc = 0;
+        this.listQuery.limit = 100000;
+        this.$axios.post("/job/search-job-order-by-salary", this.listQuery).then(
+                (resp) => {
+                  if (!resp.data.list || resp.data.list.length === 0) {
+                    this.showNoResult = true;
+                    this.total = 10;
+                    getRecommendList({
+                      objectType: 1, // 职位
+                      page: 1,
+                      limit: 10,
+                      sort: "+position",
+                    }).then((resp) => {
+                      this.pageResult.list = resp.data.list.map(
+                              (item) => item.object
+                      );
+                      this.total = resp.data.total;
+                      this.$emit("complete");
+                    });
+                  } else {
+                    this.pageResult = resp.data;
+                    this.total = this.pageResult.total;
+                    this.$emit("complete");
+                  }
+                }
+        );
+
+      },
       inpCityChange() {
-        console.log("inpCityChange");
         if (this.inpCity === undefined || this.inpCity.length === 0) {
           return;
         }
-        this.listQuery.cityIds = this.getIdByNameFromOptions(this.cityOptionsAll, this.inpCity);
-        this.handleFilter();
+        this.$axios.post("/city/get-city-id-by-name", {cityNames: this.inpCity}).then(resp => {
+          this.listQuery.cityIds = resp.data;
+          this.handleFilter();
+        })
       },
       handleFilter() {
         this.listQuery.page = 1;
         this.refreshOptions();
         this.handleRouteList();
       },
+      handleChat(event, creatorId, jobId) {
+        this.$router.push({
+          path: "/chat",
+          query: { toUser: creatorId, jobId: jobId },
+        });
+        event.stopPropagation();
+      },
       refreshOptions() {
-        if (this.listQuery.cityIds.indexOf(255) !== -1) {
+        if (this.listQuery.cityIds.indexOf(this.unlimitedMap["city"]) !== -1) {
           this.listQuery.cityIds = [];
           this.placeholderCity = "不限";
         }
-        if (this.listQuery.companyIndustryIds.indexOf(257) !== -1) {
+        if (this.listQuery.companyIndustryIds.indexOf(this.unlimitedMap["industry"]) !== -1) {
           this.listQuery.companyIndustryIds = [];
           this.placeholderIndustry = "不限";
         }
-        if (this.listQuery.salaryRangeIds.indexOf(260) !== -1) {
+        if (this.listQuery.salaryRangeIds.indexOf(this.unlimitedMap["salary"]) !== -1) {
           this.listQuery.salaryRangeIds = [];
           this.placeholderSalary = "不限";
         }
-        if (this.listQuery.degreeIds.indexOf(261) !== -1) {
+        if (this.listQuery.degreeIds.indexOf(this.unlimitedMap["degree"]) !== -1) {
           this.listQuery.degreeIds = [];
           this.placeholderDegree = "不限";
         }
-        if (this.listQuery.experienceIds.indexOf(156) !== -1) {
+        if (this.listQuery.experienceIds.indexOf(this.unlimitedMap["exp"]) !== -1) {
           this.listQuery.experienceIds = [];
           this.placeholderExp = "不限";
         }
-        if (this.listQuery.companyScaleIds.indexOf(256) !== -1) {
+        if (this.listQuery.companyScaleIds.indexOf(this.unlimitedMap["scale"]) !== -1) {
           this.listQuery.companyScaleIds = [];
         }
-        if (this.listQuery.companyDefineIds.indexOf(262) !== -1) {
+        if (this.listQuery.companyDefineIds.indexOf(this.unlimitedMap["define"]) !== -1) {
           this.listQuery.companyDefineIds = [];
         }
-        if (this.listQuery.jobTypes.indexOf(259) !== -1) {
+        if (this.listQuery.jobTypes.indexOf(this.unlimitedMap["jobType"]) !== -1) {
           this.listQuery.jobTypes = [];
+        }
+        if (this.listQuery.lanRequiredIds.indexOf(this.unlimitedMap["lang"]) !== -1) {
+          this.listQuery.lanRequiredIds = [];
         }
 
         this.placeholderCity = this.getNameByIdFromOptions(this.cityOptions, this.listQuery.cityIds, "城市");
@@ -633,17 +721,6 @@
         this.placeholderSalary = this.getNameByIdFromOptions(this.salaryRangeOptions, this.listQuery.salaryRangeIds, "月薪");
         this.placeholderDegree = this.getNameByIdFromOptions(this.degreeOptions, this.listQuery.degreeIds, "学历");
         this.placeholderExp = this.getNameByIdFromOptions(this.experienceOptions, this.listQuery.experienceIds, "工作经验");
-      },
-      getIdByNameFromOptions(options, names) {
-        let ids = [];
-        for (let i = 0; i < options; i++) {
-          for (let j = 0; j < names; j++) {
-            if (options[i].name === names[j]) {
-              ids.push(options[i].id);
-            }
-          }
-        }
-        return ids;
       },
       getNameByIdFromOptions(options, ids, origin) {
         let name = "";
@@ -659,34 +736,6 @@
         }
         if (name.endsWith(",")) {
           return name.substr(0, name.length - 1);
-        }
-      },
-      handleSearchCity() {
-        let query = {...this.$route.query};
-        if (this.cityWord) {
-          query.cityWord = this.cityWord;
-        } else {
-          delete query.cityWord;
-        }
-        if (this.isJob()) {
-          if (this.$route.path === '/job-list') {
-            this.$router.replace({path: '/job-list', query});
-          } else {
-            this.$router.push({path: '/job-list', query});
-          }
-        } else if (this.isWiki()) {
-          if (this.$route.path === '/wiki-list') {
-            this.$router.replace({path: '/wiki-list', query});
-          } else {
-            this.$router.push({path: '/wiki-list', query});
-          }
-        } else if (this.isActivity()) {
-          if (this.$route.path === '/activity-list') {
-            this.$router.replace({path: '/activity-list', query});
-          } else {
-            this.$router.push({path: '/activity-list', query});
-          }
-        } else {
         }
       },
       emptyFilter() {
@@ -706,6 +755,8 @@
           specialIds: [],
           page: 1,
           limit: 10,
+          sort: undefined,
+          salaryAsc: 0
         };
         this.refreshOptions();
         this.handleRouteList();
@@ -734,9 +785,6 @@
             this.total = this.pageResult.total;
             this.$emit("complete");
           }
-          // if (typeof(this.pageResult) === 'undefined' || !'list' in this.pageResult || this.pageResult.list.length <= 0) {
-          //   this.pageResult
-          // }
         });
       },
 
@@ -893,7 +941,7 @@
       margin-bottom: 11px;
 
       .inp-city {
-        width: 250px;
+        width: 230px;
         margin-left: 50px;
       }
 
@@ -1081,6 +1129,7 @@
         text-underline: none;
         position: relative;
         right: 8px;
+        z-index: 999;
       }
 
       .section3-item-container {
@@ -1102,6 +1151,16 @@
         flex: 0.6;
         min-width: 290px;
 
+        .recruit-type {
+          color: #fff;
+          background-color: #ff9f43;
+          border-radius: 3px;
+          display: inline-block;
+          padding: 1px 4px;
+          margin-left: 10px;
+          vertical-align: top;
+        }
+
         .section3-job-name {
           margin: 0 0 13px 0;
           font-size: 18px;
@@ -1109,6 +1168,12 @@
           font-weight: 500;
           color: #333333;
           line-height: 25px;
+          display: inline-block;
+          max-width: 205px;
+
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow:ellipsis;
         }
 
         .section3-salary {
