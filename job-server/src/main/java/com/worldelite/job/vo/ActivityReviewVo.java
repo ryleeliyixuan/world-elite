@@ -9,6 +9,7 @@ import lombok.Data;
  **/
 @Data
 public class ActivityReviewVo implements VoConvertable<ActivityReviewVo, ActivityReview> {
+    private Integer id; //审核id
     private Integer activityId; //活动id
     private Long userId; //发布活动的用户id/企业id
     private String status; //状态.1:审核中,2:通过,3拒绝

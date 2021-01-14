@@ -37,14 +37,27 @@ public class ActivityReviewApi {
     }
 
     /**
-     * 获取指定活动id的审核信息
+     * 获取指定审核id的审核信息
+     *
      * @param id 活动id
      */
     @ApiDoc
     @RequireLogin
     @GetMapping("/{id}")
-    public ApiResult<ActivityReviewVo> getActivityReview(@PathVariable("id") Integer id) {
+    public ApiResult<ActivityReviewVo> getActivityReviewById(@PathVariable("id") Integer id) {
         return ApiResult.ok(activityReviewService.getActivityReview(id));
+    }
+
+    /**
+     * 获取指定活动id的审核信息
+     *
+     * @param activityId 活动id
+     */
+    @ApiDoc
+    @RequireLogin
+    @GetMapping("activity/{activityId}")
+    public ApiResult<PageResult<ActivityReviewVo>> getActivityReviewByActivityId(@PathVariable("activityId") Integer activityId, PageForm pageForm) {
+        return ApiResult.ok(activityReviewService.getActivityReviewByActivityId(activityId, pageForm));
     }
 
     /**

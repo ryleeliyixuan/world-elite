@@ -22,6 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_activity_review`;
 CREATE TABLE `t_activity_review`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '审核ID',
   `activity_id` int(11) NOT NULL COMMENT '活动id',
   `user_id` bigint(20) NULL DEFAULT NULL COMMENT '发布活动的用户id/企业id',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '1' COMMENT '状态.1:审核中,2:通过,3拒绝',
@@ -29,7 +30,7 @@ CREATE TABLE `t_activity_review`  (
   `del_flag` tinyint(4) NOT NULL DEFAULT 0,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`activity_id`) USING BTREE,
+  PRIMARY KEY (`id`) USING BTREE,
   CONSTRAINT `fk_auth_activity_id` FOREIGN KEY (`activity_id`) REFERENCES `t_activity` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '活动审核表' ROW_FORMAT = Dynamic;
 

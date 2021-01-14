@@ -37,11 +37,19 @@ public class ActivityReviewService extends BaseService {
         return new ActivityReviewVo().asVo(activityReview);
     }
 
+    public PageResult<ActivityReviewVo> getActivityReviewByActivityId(Integer activityId, PageForm pageForm) {
+        AppUtils.setPage(pageForm);
+        Page<ActivityReview> activityReviewPage = (Page<ActivityReview>) activityReviewMapper.selectByActivityId(activityId);
+        PageResult<ActivityReviewVo> pageResult = new PageResult<>(activityReviewPage);
+        pageResult.setList(AppUtils.asVoList(activityReviewPage, ActivityReviewVo.class));
+        return pageResult;
+    }
+
     public Boolean addActivityReview(ActivityReviewForm ActivityReviewForm) {
         ActivityReview activityReview = new ActivityReview();
         BeanUtil.copyProperties(ActivityReviewForm, activityReview);
 
-        if(activityReview.getUserId() == null)
+        if (activityReview.getUserId() == null)
             activityReview.setUserId(curUser().getId());
 
         activityReview.setStatus(String.valueOf(VerificationStatus.REVIEWING.value));
@@ -52,7 +60,7 @@ public class ActivityReviewService extends BaseService {
         ActivityReview activityReview = new ActivityReview();
         BeanUtil.copyProperties(ActivityReviewForm, activityReview);
 
-        if(activityReview.getUserId() == null)
+        if (activityReview.getUserId() == null)
             activityReview.setUserId(curUser().getId());
 
         return activityReviewMapper.updateByPrimaryKeySelective(activityReview) == 1;
@@ -61,4 +69,5 @@ public class ActivityReviewService extends BaseService {
     public Boolean delActivityReview(Integer id) {
         return activityReviewMapper.deleteByPrimaryKey(id) == 1;
     }
+
 }
