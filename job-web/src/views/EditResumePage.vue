@@ -1494,7 +1494,7 @@
                                                                 </span>
                                                         <el-form ref="resumeAttachForm1" :model="resumeAttachForm1">
                                                                 <el-input
-                                                                        @change="HandleEditSaveAttachOthers()"
+                                                                        @change="HandleEditSaveAttachOthers"
                                                                         v-model="resumeAttachForm1.name"
                                                                         placeholder="请输入附件名"
                                                                         :maxlength="50"
@@ -1554,7 +1554,7 @@
             </el-dialog>
             <el-dialog :visible.sync="showResumeDialog1"
                        width="70%">
-                <ResumeView :resumeId="this.resume[this.resume.length-1].id"></ResumeView>
+                <ResumeView :resumeId="this.nullResumeId"></ResumeView>
             </el-dialog>
 
         </b-container>
@@ -1629,6 +1629,7 @@
         name: "EditResumePage",
         data() {
             return {
+                nullResumeId:undefined,
                 editIndex:undefined,
                 workType:undefined,
                 showResumeDialog: false,
@@ -1638,15 +1639,8 @@
                 i:0,
                 editableTabsValue: undefined,
                 tabIndex: 0,
-                editableTabs: [{
-                    title: '简历1',
-                    name: '1',
-                }],
                 seen: false,
                 seen2: false,
-                seen3: false,
-                seen4: false,
-                seen5: false,
                 maritalStatusList: [{
                     value: '0',
                     id:1,
@@ -2018,6 +2012,7 @@
             this.initData();
 
 
+
         },
         methods: {
             saveResumeId(tab, event) {
@@ -2082,7 +2077,6 @@
                 this.seen2 = false
             },
             initData() {
-
                 getAllCountries().then((response) => {
                     this.countryOptions = response.data;
                 });
@@ -2216,11 +2210,13 @@
                     this.resumeAttachForm1.name=this.resume[this.newIndex].resumeMergeAttachList[index].name;
                     this.resumeAttachForm1.link=this.resume[this.newIndex].resumeMergeAttachList[index].resumeAttach;
                     console.log(this.resumeAttachForm1)
+                    console.log(this.resume[this.newIndex].resumeMergeAttachList[index])
                     console.log(this.resume[this.newIndex].resumeMergeAttachList[index].name)
                 }else {
                     this.resumeAttachForm1.name=this.resume[this.resume.length-1].resumeMergeAttachList[index].name;
                     this.resumeAttachForm1.link=this.resume[this.resume.length-1].resumeMergeAttachList[index].resumeAttach;
                     console.log(this.resumeAttachForm1)
+                    console.log(this.resume[this.resume.length-1].resumeMergeAttachList[index])
                     console.log(this.resume[this.resume.length-1].resumeMergeAttachList[index].name)
                 }
             },
@@ -2231,22 +2227,22 @@
                 let otherAttach;
                 let nowAttachOthers=[];
                 let i=0;
-                if (this.resumeId&&this.resumeId!=''){
-                        for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
-                            otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i]
-                            nowAttachOthers.push(otherAttach)
-                        }
-                            console.log(nowAttachOthers)
+                if (this.newIndex&&this.newIndex!=''){
+                    console.log("1111")
+                    for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
+                        otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i]
+                        nowAttachOthers.push(otherAttach)
+                    }
                     let result = nowAttachOthers.map(((value, index) => {
                         return {link: value.resumeAttach, name: value.name}
                     }))
                     this.$set(result,index,this.resumeAttachForm1)
-                             // nowAttachOthers.splice(index,1,this.resumeAttachForm1)
-                            console.log(result)
-                            this.resumeAttachForm.attachOthers=result
-                            this.handleSaveAttachOthersResume(false);
-                             this.showEditAttachOther=false
+                    console.log(result)
+                    this.resumeAttachForm.attachOthers=result
+                    this.handleSaveAttachOthersResume(false);
+                    this.showEditAttachOther=false
                 }else {
+                    console.log("2222")
                         for (i;i<  this.resume[this.resume.length-1].resumeMergeAttachList.length;i++) {
                             otherAttach=this.resume[this.resume.length-1].resumeMergeAttachList[i]
                             nowAttachOthers.push(otherAttach)
@@ -2256,11 +2252,9 @@
                     }))
                     this.$set(result,index,this.resumeAttachForm1)
                     console.log(result)
-
                     this.resumeAttachForm.attachOthers=result
                     this.handleSaveAttachOthersResume(false);
                     this.showEditAttachOther=false
-
                 }
             },
             handleDelAttachOthers(index){
@@ -2320,7 +2314,9 @@
             getResumeInfo() {
                 getResumeInfo().then((response) => {
                     this.resume = response.data;
-                    if (this.newResumeId&&this.newResumeId!=''){
+                    this.nullResumeId=this.resume[this.resume.length-1].id
+
+                    if (this.newIndex&&this.newIndex!=''){
                         console.log(this.newResumeId);
                         let newTabIndex=this.newIndex;
                         this.editableTabsValue=this.resume[newTabIndex].id
@@ -2715,6 +2711,9 @@
                                 .finally(() => {
                                     this.posting = false;
                                 });
+                            this.$nextTick(() => {
+                                this.$refs["resumeAttachForm"][0].clearValidate();
+                            });
                         }else{
                             this.resumeAttachForm.id=this.resume[this.resume.length-1].id
                             this.resumeAttachForm.resumeId=this.resume[this.resume.length-1].id
@@ -2725,10 +2724,14 @@
                                 .finally(() => {
                                     this.posting = false;
                                 });
+                            this.$nextTick(() => {
+                                this.$refs["resumeAttachForm"][0].clearValidate();
+                            });
                         }
 
                     }
                 });
+
             },
             handleEditPriority(){
                 if (this.newResumeId&&this.newResumeId!=''){
