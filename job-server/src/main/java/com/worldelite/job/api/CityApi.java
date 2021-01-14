@@ -1,14 +1,12 @@
 package com.worldelite.job.api;
 
+import com.worldelite.job.form.CityForm;
 import com.worldelite.job.service.CityService;
 import com.worldelite.job.vo.ApiResult;
 import com.worldelite.job.vo.CityVo;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,6 +32,12 @@ public class CityApi extends BaseApi{
     public ApiResult<List<CityVo>> list(@RequestParam Byte type){
         List<CityVo> cityVoList = cityService.getCacheTree(type);
         return ApiResult.ok(cityVoList);
+    }
+
+    @PostMapping("get-city-id-by-name")
+    public ApiResult<List<Integer>> getCityIdByFuzzy(@RequestBody CityForm cityForm) {
+        List<Integer> cityId = cityService.getCityId(cityForm.getCityNames());
+        return ApiResult.ok(cityId);
     }
 
 }

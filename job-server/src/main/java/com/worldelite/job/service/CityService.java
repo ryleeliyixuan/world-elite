@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 城市数据服务类
@@ -102,5 +103,13 @@ public class CityService {
     public CityVo getCityVo(Integer cityId) {
         City city = getById(cityId);
         return new CityVo().asVo(city);
+    }
+
+    public List<Integer> getCityId(String[] cityNames) {
+        List<Integer> ids = new ArrayList<>();
+        for (String cityName : cityNames) {
+            ids.addAll(cityMapper.selectIdByNameWithFuzzy("%" + cityName + "%"));
+        }
+        return ids.stream().distinct().collect(Collectors.toList());
     }
 }
