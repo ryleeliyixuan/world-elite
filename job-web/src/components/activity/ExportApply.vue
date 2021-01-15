@@ -5,7 +5,7 @@
                v-loading="exporting"
                width="445px">
         <div class="content">
-            <el-select v-model="query.status" placeholder="选择导出板块" class="select" size="small">
+            <el-select v-model="query.status" placeholder="选择导出板块" class="select" size="small" v-if="activity.audit==='0'">
                 <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -14,6 +14,7 @@
                 </el-option>
             </el-select>
             <div class="title-text">信息选择<span>(仅支持报名表默认信息)</span></div>
+
             <div class="select-container">
                 <div class="column">
                     <div class="checkbox" @click="onCheckBox('nameFlag')">
@@ -36,7 +37,7 @@
                         <svg-icon :icon-class="query.resumePdfFlag?'checked':'unchecked'"></svg-icon>
                         <div>同时下载该板块所有用户报名表</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('registrationPdfFlag')">
+                    <div class="checkbox" @click="onCheckBox('registrationPdfFlag')" v-if="activity.audit==='0'">
                         <svg-icon :icon-class="query.registrationPdfFlag?'checked':'unchecked'"></svg-icon>
                         <div>同时下载该板块所有用户简历</div>
                     </div>
@@ -63,7 +64,7 @@
         </div>
         <div class="button-container">
             <div class="cancel" @click="onCancel">取消</div>
-            <div class="confirm" @click="onRequire">确认</div>
+            <div class="confirm" @click="onConfirm">确认</div>
         </div>
     </el-dialog>
 </template>
@@ -77,9 +78,8 @@
             visible: {
                 type: Boolean
             },
-
-            activityId: {
-                type: Number
+            activity: {
+                type: Object
             }
         },
         computed: {
@@ -126,21 +126,42 @@
                 this.query[key] = this.query[key] === 1 ? 0 : 1;
             },
 
-            //取消
+            // 取消
             onCancel() {
                 this.dialogVisible = false;
             },
 
-            //确认
-            onRequire() {
-                this.query.activityId = this.activityId;
+            // 确认
+            onConfirm() {
+                this.query.activityId = this.activity.id;
                 this.exporting = true;
                 this.$axios.post("/export/export-registration-list", this.query).then(data => {
-                    downloadFile({
-                        fileKey: data.data.registrationExcel, fileName: '报名名单导出.xlsx', success: () => {
-                            this.exporting = false;
-                        }
-                    });
+                    if (data.data.registrationExcel) {
+                        downloadFile({
+                            fileKey: data.data.registrationExcel, fileName: '报名名单Excel.xlsx', success: () => {
+                                this.exporting = false;
+                                this.$set(this, "dialogVisible", false);
+                            }
+                        });
+                    }
+
+                    if (data.data.registrationPdf) {
+                        downloadFile({
+                            fileKey: data.data.registrationPdf, fileName: '报名名单PDF.pdf', success: () => {
+                                this.exporting = false;
+                                this.$set(this, "dialogVisible", false);
+                            }
+                        });
+                    }
+
+                    if (data.data.resumePdf) {
+                        downloadFile({
+                            fileKey: data.data.resumePdf, fileName: '报名简历PDF.pdf', success: () => {
+                                this.exporting = false;
+                                this.$set(this, "dialogVisible", false);
+                            }
+                        });
+                    }
                 })
             }
         }

@@ -20,6 +20,7 @@ import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.OrganizerInfoVo;
 import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.QuestionnaireTemplateVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,9 @@ public class ActivityService extends BaseService {
 
     @Autowired
     private OrganizerInfoService organizerInfoService;
+
+    @Autowired
+    private ActivityQuestionnaireService activityQuestionnaireService;
 
     @Autowired
     private RegistrationMapper registrationMapper;
@@ -181,10 +185,18 @@ public class ActivityService extends BaseService {
             //草稿直接保存
             if (activityForm.getStatus() != null && activityForm.getStatus() == ActivityStatus.DRAFT.value) {
                 activity.setStatus(ActivityStatus.DRAFT.value);
+                //关联报名表
+                QuestionnaireTemplateVo template = activityQuestionnaireService
+                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(),activityForm.getQuestionnaireId());
+                activity.setQuestionnaireId(template.getId());
                 activityMapper.insertSelective(activity);
             } else {
                 //新发布的活动状态默认待审核
                 activity.setStatus(ActivityStatus.REVIEWING.value);
+                //关联报名表
+                QuestionnaireTemplateVo template = activityQuestionnaireService
+                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(),activityForm.getQuestionnaireId());
+                activity.setQuestionnaireId(template.getId());
                 activityMapper.insertSelective(activity);
 
                 //添加活动审核信息
@@ -213,6 +225,10 @@ public class ActivityService extends BaseService {
                     activity.setStatus(ActivityStatus.REVIEWING.value);
 
             }
+
+            //活动编辑时不能修改报名表信息
+            activity.setQuestionnaireId(null);
+
             activityMapper.updateByPrimaryKeySelective(activity);
 
             activityStatusManager.remove(activity.getId());

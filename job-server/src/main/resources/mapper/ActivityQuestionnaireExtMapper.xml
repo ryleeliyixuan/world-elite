@@ -21,4 +21,12 @@
       </if>
     </where>
   </select>
+
+  <update id="removeTemplate" parameterType="java.lang.Integer">
+    update t_activity_questionnaire set template_id = NULL where template_id = #{templateId}
+  </update>
+
+  <delete id="deleteByActivityId">
+    delete from t_activity_questionnaire where activity_id = #{activityId}
+  </delete>
 </mapper>

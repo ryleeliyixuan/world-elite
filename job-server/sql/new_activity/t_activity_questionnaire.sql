@@ -17,3 +17,5 @@ CREATE TABLE `t_activity_questionnaire` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='活动报名表';
+
+ALTER TABLE db_worldelite_activity.t_activity_questionnaire CHANGE activity_id template_id int(11) NULL COMMENT '模板id';
