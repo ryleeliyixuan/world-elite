@@ -218,10 +218,11 @@
                                                             class="avatar"
                                                     />
                                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                    <el-row style="padding-left: 5px">
+                                                        <el-button class="img-button">上传照片</el-button>
+                                                    </el-row>
                                                 </el-upload>
-                                                <el-row style="padding-left: 5px">
-                                                    <el-button class="img-button">上传照片</el-button>
-                                                </el-row>
+
                                             </el-form>
                                             <div class="resume-info">
                                                 <div class="info-other-row-l">
@@ -494,7 +495,7 @@
                                                         >
                                                             <el-form-item label="意向城市:" prop="cityIds"
                                                                           class="m-input-text-width">
-                                                                <el-input v-model="expectJobForm.expectCity" placeholder="请输入意向职位"></el-input>
+                                                                <el-input v-model="expectJobForm.expectCity" placeholder="请输入意向城市"></el-input>
                                                             </el-form-item>
                                                         </el-form>
                                                     </div>
@@ -545,21 +546,18 @@
                                                         <el-form
                                                                 ref="expectJobForm"
                                                                 :model="expectJobForm"
-                                                                label-width="100px"
+                                                                label-width="80px"
                                                         >
-                                                            <el-form-item label="期望行业：" prop="categoryId"
-                                                                          class="m-input-text-width">
-                                                                <el-cascader
-                                                                        placeholder=""
-                                                                        :show-all-levels="false"
-                                                                        :options="jobCategoryOptions"
-                                                                        :props="jobCatetoryProps"
-                                                                        filterable
-                                                                        collapse-tags
-                                                                        clearable
-                                                                        v-model="expectJobForm.categoryId"
-                                                                ></el-cascader>
-                                                            </el-form-item>
+                                                        <el-form-item label="期望行业:" class="m-input-text-width">
+                                                            <el-select v-model="expectJobForm.categoryId"
+                                                                       placeholder="期望行业">
+                                                                <el-option v-for="item in companyIndustryOptions"
+                                                                           :key="item.id"
+                                                                           :label="item.name"
+                                                                           :value="item.id"
+                                                                ></el-option>
+                                                            </el-select>
+                                                        </el-form-item>
                                                         </el-form>
                                                     </div>
                                                     <div style="padding-left:100px;padding-top: 10px">
@@ -627,9 +625,8 @@
                                                         </div>
                                                     </div>
                                                     <div style="display: inline-flex;margin-top: 9px">
-                                                        <span class="resume-box-text-title">工作描述：</span>
-                                                        <span class="resume-box-text-html"
-                                                              v-html="resumeExp.description"></span>
+                                                        <div class="resume-box-text-title">工作描述：</div>
+                                                        <div class="resume-box-text-html">{{resumeExp.description}}</div>
                                                     </div>
                                                 </div>
                                                 <div style="width: 20px;">
@@ -706,8 +703,6 @@
                                                             <el-input
                                                                     v-model="resumeExpForm.company"
                                                                     placeholder="请输入公司名称"
-                                                                    :maxlength="100"
-                                                                    show-word-limit
                                                             />
                                                         </el-form-item>
                                                     </el-form>
@@ -734,8 +729,6 @@
                                                             <el-input
                                                                     v-model="resumeExpForm.post"
                                                                     placeholder="请填写职位名称"
-                                                                    :maxlength="40"
-                                                                    show-word-limit
                                                             >
                                                             </el-input>
                                                         </el-form-item>
@@ -743,26 +736,22 @@
                                                 </div>
 
                                                 <div>
-
-                                                        <el-form
-                                                                ref="resumeExpForm"
-                                                                :model="resumeExpForm"
-                                                                label-width="80px"
-                                                        >
-                                                            <el-form-item label="行业类型：" prop="industry"
-                                                                          class="m-input-text-width">
-                                                                <el-cascader
-                                                                        placeholder="请选择行业类型"
-                                                                        :show-all-levels="false"
-                                                                        :options="jobCategoryOptions"
-                                                                        :props="jobCatetoryProps1"
-                                                                        collapse-tags
-                                                                        clearable
-                                                                        v-model="resumeExpForm.industry"
-                                                                ></el-cascader>
-                                                            </el-form-item>
-                                                        </el-form>
-
+                                                    <el-form
+                                                            ref="resumeExpForm"
+                                                            :model="resumeExpForm"
+                                                            label-width="80px"
+                                                    >
+                                                        <el-form-item label="行业类型:" class="m-input-text-width">
+                                                            <el-select v-model="resumeExpForm.industry"
+                                                                       placeholder="行业类型">
+                                                                <el-option v-for="item in companyIndustryOptions"
+                                                                           :key="item.id"
+                                                                           :label="item.name"
+                                                                           :value="item.name"
+                                                                ></el-option>
+                                                            </el-select>
+                                                        </el-form-item>
+                                                    </el-form>
                                                 </div>
                                             </div>
                                             <div>
@@ -773,8 +762,6 @@
                                                         <el-input
                                                                 v-model="resumeExpForm.depart"
                                                                 placeholder="请填写部门信息"
-                                                                :maxlength="40"
-                                                                show-word-limit
                                                         ></el-input>
                                                     </el-form-item>
                                                 </el-form>
@@ -833,8 +820,7 @@
                                                             <el-row class="expinfo-other-row">
                                                                 <span class="expinfo-other"
                                                                       style="width: 42px">介绍：</span>
-                                                                <span class="expinfo-other-html"
-                                                                      v-html="practice.description"></span>
+                                                                <span class="expinfo-other-html">{{practice.description}}</span>
                                                             </el-row>
                                                         </div>
                                                     </div>
@@ -1173,7 +1159,7 @@
                                                 <img src="../assets/point.png"
                                                      style="padding-right: 9px;padding-bottom: 7px">
                                                 <span class="resume-base">能力标签</span>
-                                                <span class="jobcount">4/6</span>
+                                                <span class="jobcount">{{item.resumeSkillList.length}}/6</span>
                                                 <span class="mark-row">
                                                      <svg-icon
                                                              icon-class="resume_qmark"
@@ -1627,6 +1613,7 @@
         name: "EditResumePage",
         data() {
             return {
+                companyIndustryOptions: [],
                 nullResumeId:undefined,
                 editIndex:undefined,
                 workType:undefined,
@@ -2098,6 +2085,10 @@
                     (response) => (this.jobCategoryOptions = response.data)
                 );
                 this.getResumeInfo();
+                listByType(6).then(
+                    response => (this.companyIndustryOptions = response.data.list)
+                );
+
 
                 listByType(9).then(response => (this.salaryOptions = response.data.list));
             },
@@ -2273,14 +2264,14 @@
                 let otherAttach;
                 let nowAttachOthers=[];
                 let i=0;
-                if (this.resumeId&&this.resumeId!=''){
-                    if (this.resume[this.newIndex].resumeMergeAttachList<=1){
+                if (this.newIndex&&this.newIndex!=''){
+                    if (this.resume[this.newIndex].resumeMergeAttachList.length<=1){
                         console.log("1111")
                         this.resumeAttachForm.attachOthers=nowAttachOthers
                         this.handleSaveAttachOthersResume(false);
                         this.showEditAttachOther=false
                     }else{
-                        console("2222")
+                        console.log("2222")
                             for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
                                 otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i]
                                 nowAttachOthers.push(otherAttach)
@@ -2746,9 +2737,7 @@
                                 .finally(() => {
                                     this.posting = false;
                                 });
-                            this.$nextTick(() => {
-                                this.$refs["resumeAttachForm"][0].clearValidate();
-                            });
+
                         }else{
                             this.resumeAttachForm.id=this.resume[this.resume.length-1].id
                             this.resumeAttachForm.resumeId=this.resume[this.resume.length-1].id
@@ -2759,12 +2748,13 @@
                                 .finally(() => {
                                     this.posting = false;
                                 });
-                            this.$nextTick(() => {
-                                this.$refs["resumeAttachForm"][0].clearValidate();
-                            });
+
                         }
 
                     }
+                });
+                this.$nextTick(() => {
+                    this.$refs["resumeAttachForm"][0].clearValidate();
                 });
 
             },
@@ -3455,6 +3445,7 @@
                 }
 
                 .img-button {
+                    margin-top: 8px;
                     margin-left: 6px;
                     padding-left: 12px;
                     width: 75px;
@@ -3848,6 +3839,15 @@
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #333333;
+                ::v-deep.el-form-item__error{
+                    color: #F56C6C;
+                    font-size: 12px;
+                    line-height: 0px;
+                    padding-top: 4px;
+                    position: absolute;
+                     top: 90%;
+                    left: 0;
+                }
 
                 .ej-btn {
                     width: 75px;
@@ -4312,7 +4312,7 @@
         font-family: PingFangSC-Medium, PingFang SC;
         font-weight: 500;
         color: #FFFFFF;
-        margin: 3px 6px 3px 3px;
+        margin: 4px 4px 3px 4px;
     }
 
     .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable {
