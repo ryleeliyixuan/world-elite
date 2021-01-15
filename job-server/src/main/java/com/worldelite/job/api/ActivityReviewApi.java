@@ -1,6 +1,7 @@
 package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.UserType;
 import com.worldelite.job.form.ActivityReviewForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.service.ActivityReviewService;
@@ -60,6 +61,14 @@ public class ActivityReviewApi {
         return ApiResult.ok(activityReviewService.getActivityReviewByActivityId(activityId, pageForm));
     }
 
+
+    @ApiDoc
+    @RequireLogin
+    @GetMapping("newest/{activityId}")
+    public ApiResult<ActivityReviewVo> getActivityReviewNewestByActivityId(@PathVariable("activityId") Integer activityId) {
+        return ApiResult.ok(activityReviewService.getActivityReviewNewestByActivityId(activityId));
+    }
+
     /**
      * 添加新活动审核
      *
@@ -96,5 +105,33 @@ public class ActivityReviewApi {
     @DeleteMapping("/{id}")
     public ApiResult<PageResult<ActivityReviewVo>> deleteActivityReviewList(@PathVariable("id") Integer id) {
         return ApiResult.ok(activityReviewService.delActivityReview(id));
+    }
+
+    /**
+     * 活动审核通过
+     *
+     * @param activityId
+     * @return
+     */
+    @ApiDoc
+    @RequireLogin(allow = UserType.ADMIN)
+    @PatchMapping("pass/{activityId}")
+    public ApiResult activityReviewPass(@PathVariable("activityId") Integer activityId) {
+        return ApiResult.ok(activityReviewService.activityReviewPass(activityId));
+    }
+
+
+    /**
+     * 活动审核失败
+     *
+     * @param activityId
+     * @param reason
+     * @return
+     */
+    @ApiDoc
+    @RequireLogin(allow = UserType.ADMIN)
+    @PatchMapping("failure")
+    public ApiResult activityReviewFailure(Integer activityId, String reason) {
+        return ApiResult.ok(activityReviewService.activityReviewFailure(activityId, reason));
     }
 }

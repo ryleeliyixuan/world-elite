@@ -10,6 +10,7 @@ import com.worldelite.job.event.ActivityInfoRefreshEvent;
 import com.worldelite.job.event.ActivityTakeOffEvent;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.ActivityForm;
+import com.worldelite.job.form.ActivityListAdminForm;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.ActivityReviewForm;
 import com.worldelite.job.mapper.ActivityMapper;
@@ -75,6 +76,14 @@ public class ActivityService extends BaseService {
      */
     public PageResult<ActivityVo> getActivityList(ActivityListForm listForm) {
         ActivityOptions options = new ActivityOptions();
+
+        if (listForm instanceof ActivityListAdminForm) {
+            //status=传来的值或者-1, 当为-1时获取[非]待审核或审核失败的数据
+            if (listForm.getStatus() != null && listForm.getStatus() == -1) {
+                listForm.setStatus(null);
+            }
+        }
+
         BeanUtil.copyProperties(listForm, options);
 
         options.setCityIds(StringUtils.join(listForm.getCityIds(), ","));
@@ -88,7 +97,14 @@ public class ActivityService extends BaseService {
             }
         }
         AppUtils.setPage(listForm);
-        Page<Activity> activityPage = (Page<Activity>) activityMapper.selectAndList(options);
+        Page<Activity> activityPage;
+
+        if (listForm instanceof ActivityListAdminForm) {
+            activityPage = (Page<Activity>) activityMapper.selectAndListForAdmin(options);
+        } else {
+            activityPage = (Page<Activity>) activityMapper.selectAndList(options);
+        }
+
         PageResult<ActivityVo> pageResult = new PageResult<>(activityPage);
         List<ActivityVo> activityVoList = new ArrayList<>(activityPage.size());
         for (Activity activity : activityPage) {
@@ -98,6 +114,11 @@ public class ActivityService extends BaseService {
         return pageResult;
     }
 
+    /**
+     * 获取我的草稿活动信息
+     *
+     * @return
+     */
     public ActivityVo getMyDraftActivityInfo() {
         ActivityOptions options = new ActivityOptions();
         options.setUserId(curUser().getId());
@@ -203,6 +224,7 @@ public class ActivityService extends BaseService {
                 ActivityReviewForm activityReviewForm = new ActivityReviewForm();
                 activityReviewForm.setActivityId(activity.getId());
                 activityReviewForm.setUserId(activity.getUserId());
+                activityReviewForm.setStatus(String.valueOf(VerificationStatus.REVIEWING.value));
                 activityReviewService.addActivityReview(activityReviewForm);
 
                 activityStatusManager.put(activity);

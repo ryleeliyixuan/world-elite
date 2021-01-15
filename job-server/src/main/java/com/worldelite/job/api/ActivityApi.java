@@ -7,6 +7,7 @@ import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
 import com.worldelite.job.exception.CheckException;
 import com.worldelite.job.form.ActivityForm;
+import com.worldelite.job.form.ActivityListAdminForm;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.SearchNameForm;
 import com.worldelite.job.service.ActivitySearchService;
@@ -68,6 +69,20 @@ public class ActivityApi extends BaseApi {
     }
 
     /**
+     * 管理端获取活动列表
+     *
+     * @param listForm
+     * @return
+     * @throws IOException
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @GetMapping("admin/list")
+    @ApiDoc
+    public ApiResult<PageResult<ActivityVo>> getActivityList(ActivityListAdminForm listForm) throws IOException {
+        return ApiResult.ok(activityService.getActivityList(listForm));
+    }
+
+    /**
      * 活动信息
      *
      * @param id 活动ID
@@ -103,7 +118,7 @@ public class ActivityApi extends BaseApi {
     @PostMapping("save")
     @ApiDoc
     public ApiResult saveActivity(@RequestBody ActivityForm activityForm) {
-        if(activityForm.getStatus() == null || activityForm.getStatus() != ActivityStatus.DRAFT.value){
+        if (activityForm.getStatus() == null || activityForm.getStatus() != ActivityStatus.DRAFT.value) {
             final Set<ConstraintViolation<ActivityForm>> validateSet = validator.validate(activityForm);
             if (validateSet.size() > 0) {
                 ConstraintViolation<ActivityForm> model = validateSet.iterator().next();
