@@ -4,6 +4,7 @@
       <div class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
         <div class="section1-container">
 
+          <div v-show="A">
             <!-- 所在城市 -->
             <div class="section1-filter">
               <span class="section1-filter-title">所在城市：</span>
@@ -20,7 +21,6 @@
                 >
               </el-checkbox-group>
               <!--<el-input class="inp-city" v-model="inpCity" size="mini" placeholder="输入国内外其他城市名，支持多个"></el-input>-->
-
 
               <el-select
                       class="inp-city"
@@ -83,6 +83,21 @@
                 >
               </el-checkbox-group>
             </div>
+
+            <div class="section1-filter-option" v-show="!moreFilter">
+              <el-button
+                      class="quick"
+                      @click="quickFilter = !quickFilter"
+                      size="mini"
+              >快速筛选</el-button>
+              <el-button
+                      class="more"
+                      @click="showMoreFilter"
+                      size="mini"
+              >更多筛选</el-button>
+            </div>
+
+          </div>
 
           <div v-show="moreFilter">
             <!-- 工作经验 -->
@@ -177,7 +192,7 @@
               </el-checkbox-group>
             </div>
 
-            <div class="section1-filter-option">
+            <div class="section1-filter-option" v-show="moreFilter">
               <el-button
                       class="quick"
                       @click="quickFilter = !quickFilter"
@@ -186,15 +201,14 @@
               >
               <el-button
                       class="more"
-                      @click="moreFilter = !moreFilter"
+                      @click="closeMoreFilter"
                       size="mini"
               >收起</el-button
               >
             </div>
-
           </div>
 
-          <div v-show="!moreFilter">
+          <div v-show="C">
             <div class="inp-search">
               <el-input class="inp-search-child" size="mini" :placeholder="placeholderCity" :readonly="true"></el-input>
               <el-input class="inp-search-child" size="mini" :placeholder="placeholderIndustry" :readonly="true"></el-input>
@@ -205,7 +219,7 @@
                 <el-button
                         style="flex: 1; margin-left: 10px;"
                         class="more"
-                        @click="moreFilter = !moreFilter"
+                        @click="reShowMoreFilter"
                         size="mini"
                 >更多筛选</el-button>
               </div>
@@ -214,14 +228,39 @@
               <el-link class="sort-options" target="_blank" @click="onOrderPubTime">最新发布</el-link>
               <el-link class="sort-options" target="_blank" @click="onOrderSalary">薪资降序</el-link>
             </div>
-
           </div>
 
           <div v-show="quickFilter" class="quickFilter">
             <div class="quickFilter-left">
               <span class="quickFilter-title">搜索记录：</span>
-              <div class="quickFilter-caption">
+              <div class="quickFilter-caption" v-if="this.historyOptions.length <= 0">
                 您还没有搜索过职位哟，赶紧试一试吧
+              </div>
+              <div class="quickFilter-caption" v-if="this.historyOptions.length > 0">
+                <div class="quickFilter-history-box" v-for="(item, index) in this.historyOptions">
+                  <div>
+                    <span class="filter-keyword">产品经理<!--{{item.keyword}}--></span>
+                    <span class="filter-count">共{{item.filterCount}}个筛选条件</span>
+                  </div>
+                  <div class="filter-history-info">
+                    <span v-for="(cityValue, index) in item.cityValues"
+                          :id="item.cityIds[index]"
+                          class="city-value"
+                    >{{cityValue}}</span>
+                    <span v-for="(industryValue, index) in item.industryValues"
+                          :id="item.industryIds[index]"
+                          class="industry-value"
+                    >{{industryValue}}</span>
+                    <span v-for="(salaryValue, index) in item.salaryValues"
+                          :id="item.salaryIds[index]"
+                          class="salary-value"
+                    >{{salaryValue}}</span>
+                    <span v-for="(degreeValue, index) in item.degreeValues"
+                          :id="item.degreeIds[index]"
+                          class="degree-value"
+                    >{{degreeValue}}</span>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="quickFilter-right">
@@ -397,7 +436,8 @@
         selectedScale: "",
         selectedJobType: "",
 
-        cityWord: undefined,
+        A: true,
+        C: false,
 
         placeholderCity: "城市",
         placeholderIndustry: "行业",
@@ -409,6 +449,15 @@
         inpCityOptions: [],
         inpCity: [],
 
+        historyForm: {
+          keyword: undefined,
+          cityIds: [],
+          salaryIds: [],
+          degreeIds: [],
+          industryIds: [],
+          filterCount: undefined
+        },
+        historyOptions: [],
         listQuery: {
           keyword: "",
           salaryRangeIds: [],
@@ -489,6 +538,11 @@
     methods: {
       initData() {
         this.paneLoading = true;
+        this.$axios.get("/history/get-job-history").then(resp => {
+          if (resp !== undefined && resp.data.length >= 0){
+            this.historyOptions = resp.data;
+          }
+        });
         listByType(2).then(
                 (response) => {
                   let names = [];
@@ -570,6 +624,21 @@
             clearInterval(timeTop);
           }
         }, 10);
+      },
+      showMoreFilter() {
+        this.A = true;
+        this.moreFilter = true;
+        this.C = false;
+      },
+      closeMoreFilter() {
+        this.A = false;
+        this.moreFilter = false;
+        this.C = true;
+      },
+      reShowMoreFilter() {
+        this.A = true;
+        this.moreFilter = true;
+        this.C = false;
       },
       buildUnlimitedMap(options, key) {
         for (let i = 0; i < options.length; i++) {
@@ -672,8 +741,14 @@
       },
       handleFilter() {
         this.listQuery.page = 1;
+        this.saveSearchHistory();
         this.refreshOptions();
         this.handleRouteList();
+      },
+      saveSearchHistory() {
+        this.formatHistoryForm();
+        this.$axios.post("/history/save", this.historyForm).then(resp => {
+        });
       },
       handleChat(event, creatorId, jobId) {
         this.$router.push({
@@ -681,6 +756,20 @@
           query: { toUser: creatorId, jobId: jobId },
         });
         event.stopPropagation();
+      },
+      formatHistoryForm() {
+        if (this.$route.query.searchWord !== undefined) {
+          this.historyForm.keyword = this.$route.query.searchWord;
+        }
+        this.historyForm.cityIds = this.listQuery.cityIds;
+        this.historyForm.degreeIds = this.listQuery.degreeIds;
+        this.historyForm.salaryIds = this.listQuery.salaryRangeIds;
+        this.historyForm.industryIds = this.listQuery.companyIndustryIds;
+
+        this.historyForm.filterCount = this.historyForm.cityIds.length
+                + this.historyForm.degreeIds.length
+                + this.historyForm.salaryIds.length
+                + this.historyForm.industryIds.length;
       },
       refreshOptions() {
         if (this.listQuery.cityIds.indexOf(this.unlimitedMap["city"]) !== -1) {
@@ -912,6 +1001,59 @@
         font-weight: 400;
         color: #666666;
         line-height: 22px;
+        display: flex;
+
+        .quickFilter-history-box {
+          border-radius: 4px;
+          border: 1px solid #636e72;
+          padding: 2px 4px;
+          /*margin-left: 10px;*/
+          margin-right: 15px;
+          margin-top: 15px;
+          flex: 1;
+
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow:ellipsis;
+
+          .filter-keyword {
+            font-size: 14px;
+            color: #333333;
+            margin-left: 6px;
+            margin-right: 8px;
+            position: relative;
+            bottom: 2px;
+          }
+
+          .filter-history-info {
+            font-size: 11px;
+            color: #7F7F7F;
+
+            .city-value:nth-child(1) {
+              margin-left: 6px;
+            }
+
+            .city-value:after {
+              content: ' ';
+            }
+
+            .industry-value:nth-child(2) {
+              margin-left: 6px;
+            }
+
+          }
+
+
+          .filter-count {
+            font-size: 11px;
+            color: #027DB4;
+            cursor: pointer;
+          }
+
+
+        }
+
+
       }
 
       .quickFilter-left {
@@ -919,6 +1061,7 @@
       }
       .quickFilter-right {
         flex: 1;
+        margin-left: 25px;
         .quickFilter-right-click {
           margin-top: 9px;
           display: flex;
