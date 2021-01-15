@@ -182,7 +182,7 @@
 
             // 查看审核未通过原因
             onReason(activity) {
-                this.$axios.get(`/activity/review/${activity.id}`).then(data => {
+                this.$axios.get(`/activity/newest/${activity.id}`).then(data => {
                     // TODO  待确认 是否有2个 data
                     this.$alert(data.data.reason, {showClose: false});
                 })
