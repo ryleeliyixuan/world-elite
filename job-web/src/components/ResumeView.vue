@@ -6,7 +6,7 @@
 <!--        基本信息-->
         <div class="resume-info" style="display: flex">
           <div class="info-other-row-l">
-            <el-row class="info-name">{{resume.name}}</el-row>
+            <el-row class="info-name" style="width: 300px">{{resume.name}}</el-row>
             <el-row class="info-other">性别：
               <span v-if="resume.gender==1">男</span>
               <span v-if="resume.gender==2">女</span>
