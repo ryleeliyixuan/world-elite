@@ -1,6 +1,7 @@
 package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
+import com.worldelite.job.constants.UserType;
 import com.worldelite.job.form.ActivityReviewForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.service.ActivityReviewService;
@@ -37,14 +38,35 @@ public class ActivityReviewApi {
     }
 
     /**
-     * 获取指定活动id的审核信息
+     * 获取指定审核id的审核信息
+     *
      * @param id 活动id
      */
     @ApiDoc
     @RequireLogin
     @GetMapping("/{id}")
-    public ApiResult<ActivityReviewVo> getActivityReview(@PathVariable("id") Integer id) {
+    public ApiResult<ActivityReviewVo> getActivityReviewById(@PathVariable("id") Integer id) {
         return ApiResult.ok(activityReviewService.getActivityReview(id));
+    }
+
+    /**
+     * 获取指定活动id的审核信息
+     *
+     * @param activityId 活动id
+     */
+    @ApiDoc
+    @RequireLogin
+    @GetMapping("activity/{activityId}")
+    public ApiResult<PageResult<ActivityReviewVo>> getActivityReviewByActivityId(@PathVariable("activityId") Integer activityId, PageForm pageForm) {
+        return ApiResult.ok(activityReviewService.getActivityReviewByActivityId(activityId, pageForm));
+    }
+
+
+    @ApiDoc
+    @RequireLogin
+    @GetMapping("newest/{activityId}")
+    public ApiResult<ActivityReviewVo> getActivityReviewNewestByActivityId(@PathVariable("activityId") Integer activityId) {
+        return ApiResult.ok(activityReviewService.getActivityReviewNewestByActivityId(activityId));
     }
 
     /**
@@ -83,5 +105,33 @@ public class ActivityReviewApi {
     @DeleteMapping("/{id}")
     public ApiResult<PageResult<ActivityReviewVo>> deleteActivityReviewList(@PathVariable("id") Integer id) {
         return ApiResult.ok(activityReviewService.delActivityReview(id));
+    }
+
+    /**
+     * 活动审核通过
+     *
+     * @param activityId
+     * @return
+     */
+    @ApiDoc
+    @RequireLogin(allow = UserType.ADMIN)
+    @PatchMapping("pass/{activityId}")
+    public ApiResult activityReviewPass(@PathVariable("activityId") Integer activityId) {
+        return ApiResult.ok(activityReviewService.activityReviewPass(activityId));
+    }
+
+
+    /**
+     * 活动审核失败
+     *
+     * @param activityId
+     * @param reason
+     * @return
+     */
+    @ApiDoc
+    @RequireLogin(allow = UserType.ADMIN)
+    @PatchMapping("failure")
+    public ApiResult activityReviewFailure(Integer activityId, String reason) {
+        return ApiResult.ok(activityReviewService.activityReviewFailure(activityId, reason));
     }
 }

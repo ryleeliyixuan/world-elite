@@ -11,4 +11,7 @@ import lombok.EqualsAndHashCode;
 public class ActivityOptions extends Activity{
     private String cityIds;
     private String keyword;
+
+    private String organizerName;
+    private Integer reviewType;
 }

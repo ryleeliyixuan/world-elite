@@ -21,4 +21,16 @@
     </where>
 </select>
 
+<delete id="deleteByActivityId">
+    delete from t_activity_review
+    where activity_id = #{activity_id,jdbcType=INTEGER}
+</delete>
+
+<select id="selectByActivityId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_activity_review
+    where activity_id = #{activityId,jdbcType=INTEGER}
+</select>
+
 </mapper>

@@ -97,7 +97,7 @@
                     toolbar_sticky: false, // 粘性工具栏（或停靠工具栏），在向下滚动网页直到不再可见编辑器时，将工具栏和菜单停靠在屏幕顶部。
 
                     // 集成配置
-                    auto_focus: true, // 自动获得焦点
+                    auto_focus: false, // 自动获得焦点
                     cache_suffix: '?v=5.4.1', // 缓存请求后缀
                     setup: this.setup, // 初始化前执行
                     init_instance_callback: this.init_instance_callback, // 初始化结束后执行

@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container">
+    <div class="app-container" style="width: 1140px;">
         <div class="section1-container" style="margin-bottom: 15px;">
             <el-cascader placeholder="工作地点"
                          :show-all-levels="true"
