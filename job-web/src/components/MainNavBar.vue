@@ -31,7 +31,7 @@
                 <el-link :underline="false" class="join" @click="routeTo('register')">
                     <b>立即加入</b>
                 </el-link>
-                <el-button type="primary" @click="routeTo('login')" size="small">登录</el-button>
+                <el-button type="primary" @click="routeTo('/login')" size="small">登录</el-button>
             </div>
             <!-- 已登录 -->
             <div class="user-container" v-else>
@@ -109,6 +109,7 @@
 <script>
     import {mapGetters, mapMutations} from "vuex";
     import {storage} from "@/utils/storage";
+    import {curRelativePath} from "@/utils/common"
 
     export default {
         name: "MainNavBar",
@@ -289,7 +290,11 @@
 
             // 路由跳转
             routeTo(path) {
-                this.$router.push(path);
+                if (path === "/login") {
+                    this.$router.push({path, query: {redirect: curRelativePath()}})
+                } else {
+                    this.$router.push(path);
+                }
             }
         },
     };
