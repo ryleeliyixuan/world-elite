@@ -199,6 +199,11 @@ export const constantRoutes = [
       meta: { title: '活动列表' }
     },
     {
+      path: 'credit',
+      component: () => import('@/views/activity/index'),
+      meta: { title: '主办方信用等级' }
+    },
+    {
       path: 'edit',
       component: () => import('@/views/activity/EditActivityPage'),
       meta: { title: '活动编辑' },
