@@ -225,7 +225,7 @@
                                             </el-form>
                                             <div class="resume-info">
                                                 <div class="info-other-row-l">
-                                                    <el-row class="info-name">{{item.name}}</el-row>
+                                                    <el-row class="info-name" style="width: 300px">{{item.name}}</el-row>
                                                     <el-row class="info-other">性别：
                                                         <span v-if="item.gender==1">男</span>
                                                         <span v-if="item.gender==2">女</span>
@@ -615,7 +615,7 @@
                                                     <div style="margin-top: 9px;display: inline-flex">
                                                         <div style="width: 380px">
                                                             <span class="resume-box-text-title">行业：</span>
-                                                            <span class="resume-box-text-data">
+                                                            <span class="resume-box-text-data" v-if="resumeExp.industry&&resumeExp.industry!=''">
                                                                 {{ resumeExp.industry.split('"').join('').split('[').join('').split(']').join('').split(',').join(' ')}}
                                         </span>
                                                         </div>
