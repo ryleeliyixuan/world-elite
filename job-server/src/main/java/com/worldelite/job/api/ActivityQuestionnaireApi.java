@@ -49,7 +49,7 @@ public class ActivityQuestionnaireApi {
     }
 
     /**
-     * 根据ID获取报名表模板
+     * 根据ID获取报名表
      * @param id 报名表ID
      * @return
      */

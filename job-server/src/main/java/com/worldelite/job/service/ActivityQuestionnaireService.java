@@ -99,6 +99,9 @@ public class ActivityQuestionnaireService extends BaseService{
      */
     public QuestionnaireTemplateVo getActivityQuestionnaire(Integer id){
         ActivityQuestionnaire activityQuestionnaire = activityQuestionnaireMapper.selectByPrimaryKey(id);
+        if (activityQuestionnaire == null) {
+            throw new ServiceException(message("activity.questionnaire.not.exists"));
+        }
         return getActivityQuestionnaireDetail(activityQuestionnaire);
     }
 

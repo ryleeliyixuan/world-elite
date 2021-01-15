@@ -45,7 +45,8 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
 
     private String organizerType; //举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
     private OrganizerInfoVo organizerInfoVo; //举办方信息vo
-    private Integer questionnaireId; //问卷id
+    private Integer questionnaireId; //报名表id
+    private String questionnaireName; //报名表名
 
 
     @Override

@@ -317,6 +317,14 @@ public class ActivityService extends BaseService {
                 activityVo.setRegistrationTime(registration.getCreateTime().getTime());
             }
         }
+
+        //如果关联了报名表，则返回报名表名
+        Integer questionnaireId = activity.getQuestionnaireId();
+        if(questionnaireId != null){
+            QuestionnaireTemplateVo template = activityQuestionnaireService.getSimpleActivityQuestionnaire(questionnaireId);
+            activityVo.setQuestionnaireName(template.getTitle());
+        }
+
         return activityVo;
     }
 
