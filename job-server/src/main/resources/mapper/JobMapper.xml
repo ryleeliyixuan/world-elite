@@ -67,7 +67,7 @@
     ,
     <include refid="Blob_Column_List" />
     from t_job
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT} and status = 2
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     <!--
