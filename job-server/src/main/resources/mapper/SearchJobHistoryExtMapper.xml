@@ -10,6 +10,7 @@
                 and user_id = #{userId,jdbcType=BIGINT}
             </if>
         </where>
+        order by create_time desc
     </select>
 
 </mapper>
