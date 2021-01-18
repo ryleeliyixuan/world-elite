@@ -82,7 +82,7 @@ public class OrganizerInfoApi {
     @ApiDoc
     @RequireLogin
     @DeleteMapping("/{id}")
-    public ApiResult<PageResult<OrganizerInfoVo>> deleteOrganizerInfoList(@PathVariable("id") Integer id) {
+    public ApiResult deleteOrganizerInfo(@PathVariable("id") Integer id) {
         return ApiResult.ok(organizerInfoService.delOrganizerInfo(id));
     }
 }

@@ -115,12 +115,13 @@
       </if>
 
       <choose>
-        <when test="status != null">
+        <!--status=传来的值或者-1, 当为-1时获取[非]待审核或审核失败的数据-->
+        <when test="status != null and status != -1">
             and t_activity.status = #{status,jdbcType=TINYINT}
         </when>
-        <otherwise>
-            and t_activity.status not in(0, 7)
-        </otherwise>
+        <when test="status != null and status == -1">
+          and t_activity.status not in(0, 7)
+        </when>
       </choose>
 
       <choose>

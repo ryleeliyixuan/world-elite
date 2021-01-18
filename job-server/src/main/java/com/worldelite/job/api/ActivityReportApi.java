@@ -82,7 +82,7 @@ public class ActivityReportApi {
     @ApiDoc
     @RequireLogin
     @DeleteMapping("/{id}")
-    public ApiResult<PageResult<ActivityReportVo>> deleteActivityReportList(@PathVariable("id") Integer id) {
+    public ApiResult deleteActivityReport(@PathVariable("id") Integer id) {
         return ApiResult.ok(activityReportService.delActivityReport(id));
     }
 

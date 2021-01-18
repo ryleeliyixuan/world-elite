@@ -18,10 +18,7 @@ import com.worldelite.job.mapper.ActivityTakeOffMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.mapper.RegistrationMapper;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.ActivityVo;
-import com.worldelite.job.vo.OrganizerInfoVo;
-import com.worldelite.job.vo.PageResult;
-import com.worldelite.job.vo.QuestionnaireTemplateVo;
+import com.worldelite.job.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +65,9 @@ public class ActivityService extends BaseService {
     @Autowired
     private ActivityTakeOffMapper activityTakeOffMapper;
 
+    @Autowired
+    private OrganizerCreditService organizerCreditService;
+
     /**
      * 获取活动列表
      *
@@ -76,13 +76,6 @@ public class ActivityService extends BaseService {
      */
     public PageResult<ActivityVo> getActivityList(ActivityListForm listForm) {
         ActivityOptions options = new ActivityOptions();
-
-        if (listForm instanceof ActivityListAdminForm) {
-            //status=传来的值或者-1, 当为-1时获取[非]待审核或审核失败的数据
-            if (listForm.getStatus() != null && listForm.getStatus() == -1) {
-                listForm.setStatus(null);
-            }
-        }
 
         BeanUtil.copyProperties(listForm, options);
 
@@ -208,24 +201,39 @@ public class ActivityService extends BaseService {
                 activity.setStatus(ActivityStatus.DRAFT.value);
                 //关联报名表
                 QuestionnaireTemplateVo template = activityQuestionnaireService
-                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(),activityForm.getQuestionnaireId());
+                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
                 activity.setQuestionnaireId(template.getId());
                 activityMapper.insertSelective(activity);
             } else {
-                //新发布的活动状态默认待审核
-                activity.setStatus(ActivityStatus.REVIEWING.value);
+                final OrganizerCreditVo organizerCredit = organizerCreditService.getOrganizerCredit(activity.getUserId());
+                if (organizerCredit != null && organizerCredit.getCredit() == OrganizerCreditGrade.LEVEL1.value) {
+                    //新发布的活动 且账户信用等级为1级 直接通过
+                    activity.setStatus(ActivityStatus.WILL.value);
+
+                    //添加活动审核信息
+                    ActivityReviewForm activityReviewForm = new ActivityReviewForm();
+                    activityReviewForm.setActivityId(activity.getId());
+                    activityReviewForm.setUserId(activity.getUserId());
+                    activityReviewForm.setStatus(String.valueOf(VerificationStatus.PASS.value));
+                    activityReviewForm.setReason("Automatically pass the level1 account");
+                    activityReviewService.addActivityReview(activityReviewForm);
+                } else {
+                    //新发布的活动状态默认待审核
+                    activity.setStatus(ActivityStatus.REVIEWING.value);
+
+                    //添加活动审核信息
+                    ActivityReviewForm activityReviewForm = new ActivityReviewForm();
+                    activityReviewForm.setActivityId(activity.getId());
+                    activityReviewForm.setUserId(activity.getUserId());
+                    activityReviewForm.setStatus(String.valueOf(VerificationStatus.REVIEWING.value));
+                    activityReviewService.addActivityReview(activityReviewForm);
+                }
+
                 //关联报名表
                 QuestionnaireTemplateVo template = activityQuestionnaireService
-                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(),activityForm.getQuestionnaireId());
+                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
                 activity.setQuestionnaireId(template.getId());
                 activityMapper.insertSelective(activity);
-
-                //添加活动审核信息
-                ActivityReviewForm activityReviewForm = new ActivityReviewForm();
-                activityReviewForm.setActivityId(activity.getId());
-                activityReviewForm.setUserId(activity.getUserId());
-                activityReviewForm.setStatus(String.valueOf(VerificationStatus.REVIEWING.value));
-                activityReviewService.addActivityReview(activityReviewForm);
 
                 activityStatusManager.put(activity);
             }
@@ -245,7 +253,6 @@ public class ActivityService extends BaseService {
                 //原本草稿状态,更新时不带状态,设为待审核
                 if (activity.getStatus() == ActivityStatus.DRAFT.value)
                     activity.setStatus(ActivityStatus.REVIEWING.value);
-
             }
 
             //活动编辑时不能修改报名表信息
@@ -342,7 +349,7 @@ public class ActivityService extends BaseService {
 
         //如果关联了报名表，则返回报名表名
         Integer questionnaireId = activity.getQuestionnaireId();
-        if(questionnaireId != null){
+        if (questionnaireId != null) {
             QuestionnaireTemplateVo template = activityQuestionnaireService.getSimpleActivityQuestionnaire(questionnaireId);
             activityVo.setQuestionnaireName(template.getTitle());
         }

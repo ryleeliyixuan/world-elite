@@ -103,7 +103,7 @@ public class ActivityReviewApi {
     @ApiDoc
     @RequireLogin
     @DeleteMapping("/{id}")
-    public ApiResult<PageResult<ActivityReviewVo>> deleteActivityReviewList(@PathVariable("id") Integer id) {
+    public ApiResult deleteActivityReview(@PathVariable("id") Integer id) {
         return ApiResult.ok(activityReviewService.delActivityReview(id));
     }
 
