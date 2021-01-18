@@ -1159,7 +1159,8 @@
                                                 <img src="../assets/point.png"
                                                      style="padding-right: 9px;padding-bottom: 7px">
                                                 <span class="resume-base">能力标签</span>
-                                                <span class="jobcount">{{item.resumeSkillList.length}}/6</span>
+                                                <span class="jobcount" v-if="item.resumeSkillList && item.resumeSkillList.length>0">{{item.resumeSkillList.length}}/6</span>
+                                                <span class="jobcount" v-else>0/6</span>
                                                 <span class="mark-row">
                                                      <svg-icon
                                                              icon-class="resume_qmark"
@@ -1198,7 +1199,8 @@
                                                 <img src="../assets/point.png"
                                                      style="padding-right: 9px;padding-bottom: 7px">
                                                 <span class="resume-base">能力标签</span>
-                                                <span class="jobcount">4/6</span>
+                                                <span class="jobcount" v-if="item.resumeSkillList && item.resumeSkillList.length>0">{{item.resumeSkillList.length}}/6</span>
+                                                <span class="jobcount" v-else>0/6</span>
                                                 <span class="mark-row">
                                                      <svg-icon
                                                              icon-class="resume_qmark"
