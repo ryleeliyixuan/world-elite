@@ -2075,7 +2075,7 @@
                         this.resumeForm.phoneCode = data.phoneCode;
                     }
                 });
-                listByType(1).then(
+                listByType(25).then(
                     (response) => (this.degreeOptions = response.data.list)
                 );
                 listByType(3).then(
