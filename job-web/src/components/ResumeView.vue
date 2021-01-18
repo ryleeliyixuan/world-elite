@@ -157,8 +157,7 @@
             </div>
             <div style="display: inline-flex;margin-top: 9px">
               <span class="resume-box-text-title">工作描述：</span>
-              <span class="resume-box-text-html"
-                    v-html="resumeExp.description"></span>
+              <span class="resume-box-text-html">{{resumeExp.description}}</span>
             </div>
           </div>
         </div>
@@ -178,7 +177,7 @@
       </el-row>
       <div class="resume-info" v-for="practice in resume.resumePracticeList"
            :key="practice.id" style="margin-bottom: 10px">
-        <div class="resume-edu" style="width: 616px;padding-top: 10px;">
+        <div class="resume-edu" style="width: 540px;padding-top: 10px;">
           <el-row style="width: 616px;height: 40px;padding-top: 10px;">
             <span class="resume-box-text">{{practice.title}}</span>
             <span class="resume-box-text-title" style="padding-left: 31px">{{practice.onWork == 1? '项目进行中': `${practice.startTime}到${practice.finishTime}`}}</span>
@@ -186,7 +185,7 @@
           <div class="edu-box">
             <el-row class="expinfo-other-row">
               <span class="expinfo-other" style="width: 42px">介绍：</span>
-              <span class="expinfo-other-html" v-html="practice.description"></span>
+              <span class="expinfo-other-html" >{{practice.description}}</span>
             </el-row>
           </div>
         </div>
@@ -282,9 +281,9 @@
           <span class="resume-base">自我介绍</span>
         </div>
       </el-row>
-      <div class="resume-languageinfo">
+      <div class="resume-languageinfo" style="width: 550px">
         <div class="resume-introduction">
-          <span v-html="resume.introduction"></span>
+          <span>{{resume.introduction}}</span>
         </div>
       </div>
     </div>
@@ -397,6 +396,8 @@ export default {
         line-height: 20px;
       }
       .resume-box-text-html{
+        display:inline-block;
+        word-wrap: break-word;
         width: 478px;
         font-size: 14px;
         font-family: PingFangSC-Regular, PingFang SC;
@@ -427,6 +428,8 @@ export default {
       display: inline-flex;
 
       .resume-introduction {
+        display:inline-block;
+        word-wrap: break-word;
         width: 548px;
         font-size: 14px;
         font-family: PingFangSC-Regular, PingFang SC;
@@ -491,6 +494,8 @@ export default {
           }
 
           .expinfo-other-html {
+            display:inline-block;
+            word-wrap: break-word;
             width: 478px;
             font-size: 14px;
             font-family: PingFangSC-Regular, PingFang SC;

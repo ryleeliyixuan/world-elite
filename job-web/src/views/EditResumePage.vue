@@ -626,7 +626,7 @@
                                                     </div>
                                                     <div style="display: inline-flex;margin-top: 9px">
                                                         <div class="resume-box-text-title">工作描述：</div>
-                                                        <div class="resume-box-text-html">{{resumeExp.description}}</div>
+                                                        <div class="resume-box-text-html" >{{resumeExp.description}}</div>
                                                     </div>
                                                 </div>
                                                 <div style="width: 20px;">
@@ -1287,7 +1287,7 @@
                                         <el-row style="margin-bottom: 35px">
                                             <div class="resume-languageinfo">
                                                 <div class="resume-introduction">
-                                                    <span v-html="item.introduction"></span>
+                                                    <span>{{item.introduction}}</span>
                                                 </div>
                                             </div>
                                         </el-row>
@@ -3484,6 +3484,8 @@
 
                     .expinfo-other-html {
                         width: 478px;
+                        display:inline-block;
+                        word-wrap: break-word;
                         font-size: 14px;
                         font-family: PingFangSC-Regular, PingFang SC;
                         font-weight: 400;
@@ -4003,6 +4005,9 @@
             }
 
             .resume-box-text-html {
+                /*overflow:auto;*/
+                display:inline-block;
+                word-wrap: break-word;
                 width: 478px;
                 font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
@@ -4017,6 +4022,8 @@
             display: inline-flex;
 
             .resume-introduction {
+                display:inline-block;
+                word-wrap: break-word;
                 width: 548px;
                 font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
