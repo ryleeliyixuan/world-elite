@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 @Builder
-public class SearchJobHistoryVo implements VoConvertable<SearchJobHistoryVo, SearchJobHistory>{
+public class SearchJobHistoryVo{
 
     private String keyWord;
     private List<Integer> cityIds;
@@ -28,8 +28,4 @@ public class SearchJobHistoryVo implements VoConvertable<SearchJobHistoryVo, Sea
 
     private Byte filterCount;
 
-    @Override
-    public SearchJobHistoryVo asVo(SearchJobHistory searchJobHistory) {
-        return null;
-    }
 }
