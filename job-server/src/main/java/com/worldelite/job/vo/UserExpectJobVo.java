@@ -36,6 +36,12 @@ public class UserExpectJobVo {
     private String expectWorkType; // 工作类型
     private String expectPosition;
 
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    private String industry;
+
     private List<JobCategoryVo> categoryList;
     private List<CityVo> cityList;
 

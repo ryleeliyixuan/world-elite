@@ -8,7 +8,7 @@ import com.worldelite.job.mapper.SearchJobHistoryInfoMapper;
 import com.worldelite.job.mapper.SearchJobHistoryMapper;
 import com.worldelite.job.vo.SearchJobHistoryVo;
 import lombok.AllArgsConstructor;
-import org.omg.CORBA.INTERNAL;
+//import org.omg.CORBA.INTERNAL;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
