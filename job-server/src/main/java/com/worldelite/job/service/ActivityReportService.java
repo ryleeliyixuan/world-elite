@@ -4,7 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.ActivityReportStatus;
 import com.worldelite.job.entity.ActivityReport;
+import com.worldelite.job.entity.ActivityReportExt;
 import com.worldelite.job.form.ActivityReportForm;
+import com.worldelite.job.form.ActivityReportListForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.mapper.ActivityReportMapper;
 import com.worldelite.job.util.AppUtils;
@@ -12,6 +14,7 @@ import com.worldelite.job.vo.ActivityReportVo;
 import com.worldelite.job.vo.PageResult;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,11 +27,9 @@ public class ActivityReportService extends BaseService {
     private final ActivityReportMapper activityReportMapper;
     private final DictService dictService;
 
-    public PageResult<ActivityReportVo> getActivityReportList(ActivityReportForm activityReportForm, PageForm pageForm) {
-        ActivityReport options = new ActivityReport();
-        BeanUtil.copyProperties(activityReportForm, options);
-        AppUtils.setPage(pageForm);
-        Page<ActivityReport> activityReportPage = (Page<ActivityReport>) activityReportMapper.selectAndList(options);
+    public PageResult<ActivityReportVo> getActivityReportList(ActivityReportListForm reportListForm) {
+        AppUtils.setPage(reportListForm);
+        Page<ActivityReportExt> activityReportPage = (Page<ActivityReportExt>) activityReportMapper.selectAndList(reportListForm);
         PageResult<ActivityReportVo> pageResult = new PageResult<>(activityReportPage);
 
         List<ActivityReportVo> activityReportVos = new ArrayList<>(activityReportPage.size());

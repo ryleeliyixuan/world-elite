@@ -2,31 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.ActivityReportMapper">
 
-<select id="selectAndList" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
+<select id="selectAndList" resultType="com.worldelite.job.entity.ActivityReportExt">
+    select t_activity_report.id, t_activity_report.activity_id as activityId, t_activity_report.report_user_id as reportUserId,
+          t_activity_report.option_id as optionId, t_activity_report.reason, t_activity_report.evidence, t_activity_report.status,
+          t_activity_report.result, t_activity_report.del_flag as delFlag, t_activity_report.create_time as createTime, t_activity_report.update_time as updateTime,
+          t_activity.title, t_activity.organizer_type as organizerType, t_organizer_info.organizer_name as organizerName,
+          t_activity.activity_start_time as activityStartTime,t_activity.activity_finish_time as activityFinishTime, t_user_applicant.name as reportUserName
     from t_activity_report
+    left join t_activity on t_activity_report.activity_id = t_activity.id
+    left join t_organizer_info on t_activity.organizer_id = t_organizer_info.id
+    left join t_user_applicant on t_user_applicant.id = t_activity_report.report_user_id
     <where>
-      <if test="activityId != null">
-        activity_id = #{activityId,jdbcType=INTEGER}
+      <if test="activityId != null and activityId !=''">
+        t_activity_report.activity_id = #{activityId,jdbcType=INTEGER}
       </if>
-      <if test="reportUserId != null">
-        and report_user_id = #{reportUserId,jdbcType=BIGINT}
+      <if test="reportUserId != null and reportUserId !=''">
+        and t_activity_report.report_user_id = #{reportUserId,jdbcType=BIGINT}
       </if>
-      <if test="optionId != null">
-        and option_id = #{optionId,jdbcType=INTEGER}
+      <if test="optionId != null and optionId !=''">
+        and t_activity_report.option_id = #{optionId,jdbcType=INTEGER}
       </if>
-      <if test="reason != null">
-        and reason = #{reason,jdbcType=VARCHAR}
+      <if test="reason != null and reason !=''">
+        and t_activity_report.reason = #{reason,jdbcType=VARCHAR}
       </if>
-      <if test="evidence != null">
-        and evidence = #{evidence,jdbcType=VARCHAR}
+      <if test="evidence != null and evidence !=''">
+        and t_activity_report.evidence = #{evidence,jdbcType=VARCHAR}
       </if>
-      <if test="status != null">
-        and status = #{status,jdbcType=TINYINT}
+      <if test="status != null and status !=''">
+        and t_activity_report.status = #{status,jdbcType=TINYINT}
       </if>
-      <if test="result != null">
-        and result = #{result,jdbcType=VARCHAR}
+      <if test="result != null and result !=''">
+        and t_activity_report.result = #{result,jdbcType=VARCHAR}
+      </if>
+      <if test="title != null and title !=''">
+        and t_activity.title like CONCAT('%', #{title},'%')
+      </if>
+      <if test="organizerName != null and organizerName !=''">
+        and t_organizer_info.organizer_name like CONCAT('%', #{organizerName},'%')
+      </if>
+      <if test="organizerType != null and organizerType !=''">
+        and t_activity.organizer_type = #{organizerType,jdbcType=CHAR}
+      </if>
+      <if test="activityStartTime != null">
+        and t_activity.activity_start_time <![CDATA[>=]]> #{activityStartTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="activityFinishTime != null">
+        and t_activity.activity_finish_time <![CDATA[<=]]> #{activityFinishTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="reportUserName != null and reportUserName !=''">
+        and t_user_applicant.name like CONCAT('%', #{reportUserName},'%')
+      </if>
+      <if test="optionIds != null and optionIds != ''">
+        and t_activity_report.option_id in (${optionIds})
       </if>
     </where>
 </select>

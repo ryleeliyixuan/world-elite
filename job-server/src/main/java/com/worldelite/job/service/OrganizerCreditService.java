@@ -7,6 +7,7 @@ import com.worldelite.job.constants.OrganizerCreditGrade;
 import com.worldelite.job.constants.OrganizerType;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
+import com.worldelite.job.form.ActivityReportListForm;
 import com.worldelite.job.form.OrganizerCreditForm;
 import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.ActivityReportMapper;
@@ -109,10 +110,10 @@ public class OrganizerCreditService extends BaseService {
             if (activity.getStatus() == ActivityStatus.END.value)
                 endCount.getAndIncrement();
 
-            ActivityReport report = new ActivityReport();
-            report.setActivityId(Long.valueOf(activity.getId()));
+            ActivityReportListForm report = new ActivityReportListForm();
+            report.setActivityId(activity.getId());
             report.setStatus(ActivityReportStatus.OFFLINE.value);
-            final List<ActivityReport> activityReports = activityReportMapper.selectAndList(report);
+            final List<ActivityReportExt> activityReports = activityReportMapper.selectAndList(report);
             if (activityReports.size() != 0)
                 reportCount.getAndIncrement();
 

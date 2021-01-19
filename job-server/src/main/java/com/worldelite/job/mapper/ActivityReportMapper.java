@@ -1,6 +1,8 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.ActivityReport;
+import com.worldelite.job.entity.ActivityReportExt;
+import com.worldelite.job.form.ActivityReportListForm;
 
 import java.util.List;
 
@@ -53,5 +55,5 @@ public interface ActivityReportMapper {
      */
     int updateByPrimaryKey(ActivityReport record);
 
-    List<ActivityReport> selectAndList(ActivityReport record);
+    List<ActivityReportExt> selectAndList(ActivityReportListForm record);
 }
