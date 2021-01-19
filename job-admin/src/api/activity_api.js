@@ -62,3 +62,20 @@ export function activityReviewFailure(id, reason) {
         params: {activityId: id, reason: reason}
     })
 }
+
+export function getOrganizerCreditList(data) {
+    return request({
+        url: '/activity/organizercredit',
+        method: 'get',
+        params: data
+    })
+}
+
+export function getActivityReportList(data) {
+    return request({
+        url: '/activity/report',
+        method: 'get',
+        params: data
+    })
+}
+

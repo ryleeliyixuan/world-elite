@@ -69,7 +69,7 @@
       <el-table-column label="ID" prop="id" width="180">
          <template slot-scope="{row}">
             <el-link @click="goCompanyDetail(row.id)" type="primary">{{row.id}}</el-link>
-         </template>  
+         </template>
       </el-table-column>
       <el-table-column label="logo" prop="logo">
         <template slot-scope="{row}">
@@ -93,7 +93,7 @@
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleModify(row)" icon="el-icon-edit">编辑</el-button>
           <el-button type="success" size="mini" @click="handleEditWiki(row)" icon="el-icon-edit">百科</el-button>
-          <el-popconfirm title="你确定要删除该企业？" @onConfirm="handleDelete(row)"> 
+          <el-popconfirm title="你确定要删除该企业？" @onConfirm="handleDelete(row)">
             <el-button
               type="danger"
               size="mini"

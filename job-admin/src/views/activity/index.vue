@@ -381,9 +381,7 @@
             getActivityUrl(id) {
                 return `${process.env.VUE_APP_WEB_HOST}/activity/${id}`
             },
-            handleModify(activity) {
-                this.$router.push({path: "/activity/edit", query: {id: activity.id}});
-            },
+
             handleSelectMenu(index) {
                 this.reviewStatus = index;
 
