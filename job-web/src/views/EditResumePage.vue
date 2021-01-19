@@ -1468,8 +1468,6 @@
 
                                             </div>
                                         <div v-if="showEditAttachOther==true">
-
-
                                                     <div style="width: 230px">
                                                                 <span>
                                                                     <svg-icon
@@ -1533,15 +1531,11 @@
 
                 </el-tab-pane>
             </el-tabs>
-
             <el-dialog :visible.sync="showResumeDialog"
-                       width="70%">
-                <ResumeView :resumeId="this.newResumeId"></ResumeView>
+                       width="70%" >
+                <ResumeView :resumeId="resumeId"></ResumeView>
             </el-dialog>
-            <el-dialog :visible.sync="showResumeDialog1"
-                       width="70%">
-                <ResumeView :resumeId="this.nullResumeId"></ResumeView>
-            </el-dialog>
+
 
         </b-container>
     </div>
@@ -1620,7 +1614,6 @@
                 editIndex:undefined,
                 workType:undefined,
                 showResumeDialog: false,
-                showResumeDialog1: false,
                 showPriority:true,
                 showEditAttachOther:false,
                 i:0,
@@ -3194,42 +3187,34 @@
             },
             handlePreview() {
                 if (this.newResumeId&& this.newResumeId!=''){
-                    this.showResumeDialog = true;
-                    this.resume.id = this.newResumeId;
+                    this.resumeId = this.newResumeId;
                 }else{
-                    console.log(this.resume[this.resume.length-1].id)
-                    this.showResumeDialog1 = true;
-                    this.resume.id = this.resume[this.resume.length-1].id;
+                    this.resumeId = this.resume[this.resume.length-1].id;
                 }
+                this.showResumeDialog = true;
+                console.log( this.resumeId)
 
                 // this.$router.push({path: `/resume/${this.resume.id}`});
             },
             exportPdf() {
                 if (this.newResumeId && this.newResumeId!=''){
-                    let resumeId = this.newResumeId
-                    exportResumeToPdf(resumeId)
-                        .then(response => {
-                            downloadFile({
-                                fileKey: response.data,
-                                fileName: `${this.$store.getters.name}_个人简历.pdf`,
-                                success: () => {
-                                }
-                            });
-                        }).catch(() => {
-                    });
-                }else{
-                    let resumeId = this.resume[this.resume.length-1].id
-                    exportResumeToPdf(resumeId)
-                        .then(response => {
-                            downloadFile({
-                                fileKey: response.data,
-                                fileName: `${this.$store.getters.name}_个人简历.pdf`,
-                                success: () => {
-                                }
-                            });
-                        }).catch(() => {
-                    });
+                   this.resumeId = this.newResumeId
+                }else {
+                    this.resumeId = this.resume[this.resume.length-1].id
                 }
+                    exportResumeToPdf(this.resumeId)
+                        .then(response => {
+                            downloadFile({
+                                fileKey: response.data,
+                                fileName: `${this.$store.getters.name}_个人简历.pdf`,
+                                success: () => {
+                                    this.$set(this, "showResumeDialog", false);
+                                }
+                            });
+                        }).catch(() => {
+                    });
+
+
 
             },
             handleDelResume() {
@@ -3782,7 +3767,15 @@
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #333333;
-
+                ::v-deep .el-form-item__error {
+                    color: #F56C6C;
+                    font-size: 12px;
+                    line-height: 1;
+                    padding-top: 4px;
+                    position: absolute;
+                    top: 100%;
+                    left: 90px;
+                }
 
                 ::v-deep .el-date-editor .el-range-separator {
                     padding: 0 5px;
