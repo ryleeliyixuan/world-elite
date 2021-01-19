@@ -86,4 +86,10 @@ public class ActivityReportApi {
         return ApiResult.ok(activityReportService.delActivityReport(id));
     }
 
+    @ApiDoc
+    @RequireLogin
+    @PatchMapping("/turnDownReport")
+    public ApiResult turnDownReport(@RequestParam Integer id, String result) {
+        return ApiResult.ok(activityReportService.turnDownReport(id, result));
+    }
 }

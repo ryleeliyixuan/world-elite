@@ -13,8 +13,11 @@
     left join t_organizer_info on t_activity.organizer_id = t_organizer_info.id
     left join t_user_applicant on t_user_applicant.id = t_activity_report.report_user_id
     <where>
+      <if test="id != null and id !=''">
+        t_activity_report.id = #{id,jdbcType=INTEGER}
+      </if>
       <if test="activityId != null and activityId !=''">
-        t_activity_report.activity_id = #{activityId,jdbcType=INTEGER}
+          and t_activity_report.activity_id = #{activityId,jdbcType=INTEGER}
       </if>
       <if test="reportUserId != null and reportUserId !=''">
         and t_activity_report.report_user_id = #{reportUserId,jdbcType=BIGINT}

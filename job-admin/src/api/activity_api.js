@@ -79,3 +79,18 @@ export function getActivityReportList(data) {
     })
 }
 
+export function turnDownReport(data) {
+    return request({
+        url: '/activity/report/turnDownReport',
+        method: 'patch',
+        params: data
+    })
+}
+
+export function updateReport(data) {
+    return request({
+        url: '/activity/report',
+        method: 'patch',
+        data
+    })
+}
