@@ -20,7 +20,6 @@
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
-              <!--<el-input class="inp-city" v-model="inpCity" size="mini" placeholder="输入国内外其他城市名，支持多个"></el-input>-->
 
               <el-select
                       class="inp-city"
@@ -88,7 +87,6 @@
               <el-button
                       class="quick"
                       @mouseover.native="quickFilter = true"
-                      @mouseout.native="quickFilter = false"
                       size="mini"
               >快速筛选</el-button>
               <el-button
@@ -197,7 +195,6 @@
               <el-button
                       class="quick"
                       @mouseover.native="quickFilter = true"
-                      @mouseout.native="quickFilter = false"
                       size="mini"
               >快速筛选</el-button
               >
@@ -232,7 +229,7 @@
             </div>
           </div>
 
-          <div v-show="quickFilter" class="quickFilter">
+          <div v-show="quickFilter" class="quickFilter" @mouseleave="quickFilter = false">
             <div class="quickFilter-left">
               <span class="quickFilter-title">搜索记录：</span>
               <div class="quickFilter-caption" v-if="this.historyOptions.length <= 0">
@@ -319,6 +316,13 @@
             </div>
           </div>
         </div>
+        <el-button style="position: relative; color: #2d3436; font-size: 14px; height: 25px; bottom: 9px;" class="empty" @click="emptyFilter" type="text"
+        ><svg-icon
+                class="empty-icon"
+                icon-class="joblistdelete"
+                style="height: 19px; width: 19px; margin-right: 6px; margin-bottom: 2px;"
+        />清除选项</el-button
+        >
       </div>
       <div class="section1-wrapper section1-wrapper-collapse" v-else>
         <div class="section1-container section1-collapse">
@@ -351,13 +355,13 @@
         </div>
       </div>
     </Affix>
-    <el-button style="position: absolute; top: 110px; left: 1520px; color: #2d3436; font-size: 14px;" class="empty" @click="emptyFilter" type="text"
+    <!--<el-button style="position: fixed; top: 110px; left: 1520px; color: #2d3436; font-size: 14px;" class="empty" @click="emptyFilter" type="text"
     ><svg-icon
             class="empty-icon"
             icon-class="joblistdelete"
             style="height: 19px; width: 19px; margin-right: 6px; margin-bottom: 2px;"
     />清除选项</el-button
-    >
+    >-->
     <div class="app-container">
       <div class="section2-container" style="padding-bottom: 40px; padding-top: 70px;">
         <pagination
@@ -409,8 +413,8 @@
                 <el-tag v-if="job.companyUser.company.industry">
                   {{ job.companyUser.company.industry.name }}
                 </el-tag>
-                <el-tag v-if="job.companyUser.company.stage">
-                  {{ job.companyUser.company.stage.name }}
+                <el-tag v-if="job.companyUser.company.property">
+                  {{ job.companyUser.company.property.name }}
                 </el-tag>
                 <el-tag v-if="job.companyUser.company.scale">
                   {{ job.companyUser.company.scale.name }}
@@ -917,6 +921,13 @@
       },
       getNameByIdFromOptions(options, ids, origin) {
         let name = "";
+
+        if (origin === "城市" && this.inpCity.length >= 0) {
+          for (let i = 0; i < this.inpCity.length; i++) {
+            name += this.inpCity[i] + ",";
+          }
+        }
+
         for (let i = 0; i < options.length; i++) {
           for (let j = 0; j < ids.length; j++) {
             if (options[i].id === ids[j]) {
