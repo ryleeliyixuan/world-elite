@@ -127,7 +127,7 @@
             <el-table-column label="主办方" prop="organizerInfoVo.organizerName"></el-table-column>
             <el-table-column label="主办方类型">
                 <template slot-scope="{row}">
-                    {{organizerType[row.organizerType].name}}
+                    {{showOrganizerType(row.organizerType)}}
                 </template>
             </el-table-column>
             <el-table-column label="发布时间">
@@ -164,7 +164,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="操作" align="center" width="300">
+            <el-table-column label="操作" align="center" width="380px;">
                 <template slot-scope="{row}">
                     <span style="padding-right: 10px;">
                         <el-button type="primary" size="mini"
@@ -188,7 +188,7 @@
                         >拒绝</el-button>
                     </span>
 
-                    <span v-if="reviewStatus == -1">
+                    <span v-if="reviewStatus == -1" style="padding-left: 10px;">
                          <el-button
                                  type="danger"
                                  size="mini"
@@ -424,6 +424,14 @@
             showActivityStatus(status) {
                 const result = this.status.find(function (cc) {
                     return cc.id === status
+                });
+
+                if (result != null) return result.name;
+            },
+
+            showOrganizerType(type) {
+                const result = this.organizerType.find(function (cc) {
+                    return cc.id == type
                 });
 
                 if (result != null) return result.name;
