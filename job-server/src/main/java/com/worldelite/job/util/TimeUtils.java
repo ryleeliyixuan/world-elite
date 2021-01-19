@@ -1,7 +1,11 @@
 package com.worldelite.job.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -52,5 +56,83 @@ public class TimeUtils {
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);
         return calendar.getTime();
+    }
+
+
+    /**
+     * 获取几天前的日期
+     *
+     * @param days
+     * @param format
+     * @return
+     */
+    public static String getBeforeDate(Integer days, String format) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_MONTH,-days);
+        return new SimpleDateFormat(format).format(cal.getTime());
+    }
+
+
+    /**
+     * 获取当前日期
+     *
+     * @param format
+     * @return
+     */
+    public static String getDateNow(String format) {
+        return new SimpleDateFormat(format).format(new Date());
+    }
+
+
+    /**
+     * 获取日期集合
+     *
+     * @param dStart
+     * @param dEnd
+     * @return
+     */
+    public static List<String> getDateList(String dStart, String dEnd, String format) {
+        List<String> dateList = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            Date d1 = sdf.parse(dStart);
+            Date d2 = sdf.parse(dEnd);
+            Calendar cStart = Calendar.getInstance();
+            cStart.setTime(d1);
+
+            dateList = new ArrayList<>();
+            dateList.add(dStart);
+            while (d2.after(cStart.getTime())) {
+                if (format.contains("d")){
+                    cStart.add(Calendar.DAY_OF_MONTH, 1);
+                } else {
+                    cStart.add(Calendar.MONTH, 1);
+                }
+                dateList.add(sdf.format(cStart.getTime()));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateList;
+    }
+
+
+    /**
+     * 获取某个月有多少天
+     *
+     * @param date
+     * @return
+     * @throws ParseException
+     */
+    public static Integer getDaysOfMonth(String date){
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new SimpleDateFormat("yyyy-MM").parse(date));
+            return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
