@@ -118,6 +118,33 @@
                 </template>
             </el-table-column>
             <el-table-column label="举报原因" prop="reason"></el-table-column>
+            <el-table-column label="状态">
+                <template slot-scope="{row}">
+                    {{status[row.status]}}
+                </template>
+            </el-table-column>
+            <el-table-column label="处理结果" prop="result"></el-table-column>
+
+            <el-table-column label="操作" align="center" width="300">
+                <template slot-scope="{row}">
+                    <span style="padding-right: 10px;">
+                         <el-button
+                                 type="danger"
+                                 size="mini"
+                                 icon="el-icon-delete"
+                                 @click="handleTakeoff(row.id, row.activityId)"
+                         >下架</el-button>
+                    </span>
+                    <span>
+                         <el-button
+                                 type="danger"
+                                 size="mini"
+                                 icon="el-icon-delete"
+                                 @click="handleTurnDown(row.id)"
+                         >驳回举报</el-button>
+                    </span>
+                </template>
+            </el-table-column>
         </el-table>
 
         <pagination
@@ -133,7 +160,7 @@
 <script>
     import waves from "@/directive/waves"; // waves directive
     import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-    import {getActivityReportList, getOrganizerCreditList} from "@/api/activity_api";
+    import {getActivityReportList, takeoffActivity, turnDownReport, updateReport} from "@/api/activity_api";
     import {listByType} from "@/api/dict_api";
 
     export default {
@@ -157,10 +184,25 @@
                     limit: 20,
                     sort: undefined
                 },
+                takeoffForm: {
+                    id: undefined,
+                    reason: undefined
+                },
+                turnDownForm: {
+                    id: undefined,
+                    status: 1,
+                    result: undefined
+                },
                 optionIds: [],
                 activityDateRange: undefined,
                 organizerType: [{id: 4, name: "企业"}, {id: 1, name: "学生组织"}, {id: 2, name: "社会组织"}, {id: 3, name: "个人"}],
                 reasonList: {},
+
+                status: {
+                    0: "审核中",
+                    1: "驳回举报",
+                    2: "下架活动"
+                },
             };
         },
         created() {
@@ -238,6 +280,50 @@
                 });
 
                 if (result != null) return result.name;
+            },
+
+            handleTakeoff(id, activityId) {
+                this.$prompt("请填写下架理由", "提示", {
+                    confirmButtonText: "确定并通知主办方",
+                    cancelButtonText: "取消"
+                }).then(({value}) => {
+                    this.takeoffForm.id = activityId;
+                    this.takeoffForm.reason = value;
+                    takeoffActivity(this.takeoffForm).then(response => {
+                        if (response.code === 0) {
+                            const xx = {};
+                            xx.id = id;
+                            xx.status = 2;
+
+                            updateReport(xx).then(response =>{
+                                if (response.code === 0) {
+                                    this.getList();
+                                }
+                            });
+
+                            this.getList();
+                            this.$message.success("下架活动成功");
+                        } else
+                            this.$message.error("下架活动失败");
+                    });
+                });
+            },
+
+            handleTurnDown(id) {
+                this.$prompt("请填写驳回理由", "提示", {
+                    confirmButtonText: "确定并通知举报者",
+                    cancelButtonText: "取消"
+                }).then(({value}) => {
+                    this.turnDownForm.id = id;
+                    this.turnDownForm.result = value;
+                    turnDownReport(this.turnDownForm).then(response => {
+                        if (response.code === 0) {
+                            this.getList();
+                            this.$message.success("驳回举报成功");
+                        } else
+                            this.$message.error("驳回举报失败");
+                    });
+                });
             },
         }
     };

@@ -86,6 +86,7 @@ public class OrganizerCreditService extends BaseService {
      * @return
      */
     public OrganizerCreditVo getOrganizerCredit(List<Activity> list) {
+        if (list == null || list.size() == 0) return null;
 
         final int total = list.size();
         //已通过,未通过,已结束(计算举办成功率), 举报量
@@ -117,25 +118,30 @@ public class OrganizerCreditService extends BaseService {
             if (activityReports.size() != 0)
                 reportCount.getAndIncrement();
 
-            if (Byte.parseByte(activity.getOrganizerType()) == OrganizerType.SCHOOL.value) {
-                organizerTypeSet.add("学生组织/");
-            } else if (Byte.parseByte(activity.getOrganizerType()) == OrganizerType.BUSINESS.value) {
-                organizerTypeSet.add("社会组织/");
-            } else if (Byte.parseByte(activity.getOrganizerType()) == OrganizerType.PERSONAL.value) {
-                organizerTypeSet.add("个人/");
-            } else if (Byte.parseByte(activity.getOrganizerType()) == OrganizerType.COMPANY.value) {
-                organizerTypeSet.add("企业/");
+            if (activity.getOrganizerType() != null) {
+                if (Byte.parseByte(activity.getOrganizerType()) == OrganizerType.SCHOOL.value) {
+                    organizerTypeSet.add("学生组织/");
+                } else if (Byte.parseByte(activity.getOrganizerType()) == OrganizerType.BUSINESS.value) {
+                    organizerTypeSet.add("社会组织/");
+                } else if (Byte.parseByte(activity.getOrganizerType()) == OrganizerType.PERSONAL.value) {
+                    organizerTypeSet.add("个人/");
+                } else if (Byte.parseByte(activity.getOrganizerType()) == OrganizerType.COMPANY.value) {
+                    organizerTypeSet.add("企业/");
+                }
             }
 
             final OrganizerInfo organizerInfo = organizerInfoMapper.selectByPrimaryKey(activity.getOrganizerId());
             if (organizerInfo != null) organizerNameSet.add(organizerInfo.getOrganizerName() + "/");
         });
 
-        organizerTypeSet.forEach(organizerTypes::append);
-        organizerTypes.deleteCharAt(organizerTypes.length() - 1);
-
-        organizerNameSet.forEach(organizerNames::append);
-        organizerNames.deleteCharAt(organizerNames.length() - 1);
+        if (organizerTypeSet.size() > 0) {
+            organizerTypeSet.forEach(organizerTypes::append);
+            organizerTypes.deleteCharAt(organizerTypes.length() - 1);
+        }
+        if (organizerNameSet.size() > 0) {
+            organizerNameSet.forEach(organizerNames::append);
+            organizerNames.deleteCharAt(organizerNames.length() - 1);
+        }
 
         Long userId = list.size() > 0 ? list.get(0).getUserId() : null;
         //构造vo
@@ -172,34 +178,23 @@ public class OrganizerCreditService extends BaseService {
         return creditVo;
     }
 
-
-    public Boolean addOrganizerCredit(Long userId, Byte credit) {
+    public Boolean addOrUpdateOrganizerCredit(Long userId, Byte credit) {
         if (userId == null)
-            throw new ServiceException(message(""));
-
+            throw new ServiceException(message("用户ID不能为空"));
         final OrganizerCreditGrade organizerCreditGrade = OrganizerCreditGrade.valueOf(credit);
         if (organizerCreditGrade == null)
-            throw new ServiceException(message(""));
+            throw new ServiceException("信用等级值不正确");
 
         OrganizerCredit organizerCredit = new OrganizerCredit();
         organizerCredit.setUserId(userId);
         organizerCredit.setCredit(organizerCreditGrade.value);
 
-        return organizerCreditMapper.insertSelective(organizerCredit) == 1;
-    }
-
-    public Boolean updateOrganizerCredit(Long userId, Byte credit) {
-        if (userId == null)
-            throw new ServiceException(message(""));
-        final OrganizerCreditGrade organizerCreditGrade = OrganizerCreditGrade.valueOf(credit);
-        if (organizerCreditGrade == null)
-            throw new ServiceException(message(""));
-
-        OrganizerCredit organizerCredit = new OrganizerCredit();
-        organizerCredit.setUserId(userId);
-        organizerCredit.setCredit(organizerCreditGrade.value);
-
-        return organizerCreditMapper.updateByPrimaryKeySelective(organizerCredit) == 1;
+        final OrganizerCredit oCredit = organizerCreditMapper.selectByPrimaryKey(userId);
+        if (oCredit == null) {
+            return organizerCreditMapper.insertSelective(organizerCredit) == 1;
+        } else {
+            return organizerCreditMapper.updateByPrimaryKeySelective(organizerCredit) == 1;
+        }
     }
 
     public Boolean delOrganizerCredit(Long userId) {

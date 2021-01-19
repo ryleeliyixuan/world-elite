@@ -79,22 +79,22 @@
                     <el-avatar :size="35" icon="el-icon-user-solid" :src="avatar"></el-avatar>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>
-                            <el-link :underline="false" @click="routeTo('edit-resume')">我的简历</el-link>
+                            <el-link :underline="false" @click="routeTo('/edit-resume')">我的简历</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" @click="routeTo('apply-jobs')">我的投递</el-link>
+                            <el-link :underline="false" @click="routeTo('/apply-jobs')">我的投递</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" @click="routeTo('favorites')">我的收藏</el-link>
+                            <el-link :underline="false" @click="routeTo('/favorites')">我的收藏</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" @click="routeTo('my-activities')">我的活动</el-link>
+                            <el-link :underline="false" @click="routeTo('/my-activities')">我的活动</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" @click="routeTo('mock-mine')">我的面试</el-link>
+                            <el-link :underline="false" @click="routeTo('/mock-mine')">我的面试</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link :underline="false" @click="routeTo('modify-pwd')">修改密码</el-link>
+                            <el-link :underline="false" @click="routeTo('/modify-pwd')">修改密码</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item @click.native="handleLogout" class="text-danger">
                             退出登录

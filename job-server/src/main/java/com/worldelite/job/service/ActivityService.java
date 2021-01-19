@@ -205,10 +205,16 @@ public class ActivityService extends BaseService {
                 activity.setQuestionnaireId(template.getId());
                 activityMapper.insertSelective(activity);
             } else {
+                //关联报名表
+                QuestionnaireTemplateVo template = activityQuestionnaireService
+                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
+                activity.setQuestionnaireId(template.getId());
+
                 final OrganizerCreditVo organizerCredit = organizerCreditService.getOrganizerCredit(activity.getUserId());
                 if (organizerCredit != null && organizerCredit.getCredit() == OrganizerCreditGrade.LEVEL1.value) {
                     //新发布的活动 且账户信用等级为1级 直接通过
                     activity.setStatus(ActivityStatus.WILL.value);
+                    activityMapper.insertSelective(activity);
 
                     //添加活动审核信息
                     ActivityReviewForm activityReviewForm = new ActivityReviewForm();
@@ -220,6 +226,7 @@ public class ActivityService extends BaseService {
                 } else {
                     //新发布的活动状态默认待审核
                     activity.setStatus(ActivityStatus.REVIEWING.value);
+                    activityMapper.insertSelective(activity);
 
                     //添加活动审核信息
                     ActivityReviewForm activityReviewForm = new ActivityReviewForm();
@@ -228,12 +235,6 @@ public class ActivityService extends BaseService {
                     activityReviewForm.setStatus(String.valueOf(VerificationStatus.REVIEWING.value));
                     activityReviewService.addActivityReview(activityReviewForm);
                 }
-
-                //关联报名表
-                QuestionnaireTemplateVo template = activityQuestionnaireService
-                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
-                activity.setQuestionnaireId(template.getId());
-                activityMapper.insertSelective(activity);
 
                 activityStatusManager.put(activity);
             }
