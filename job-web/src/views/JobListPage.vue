@@ -87,7 +87,8 @@
             <div class="section1-filter-option" v-show="!moreFilter">
               <el-button
                       class="quick"
-                      @click="quickFilter = !quickFilter"
+                      @mouseover.native="quickFilter = true"
+                      @mouseout.native="quickFilter = false"
                       size="mini"
               >快速筛选</el-button>
               <el-button
@@ -195,7 +196,8 @@
             <div class="section1-filter-option" v-show="moreFilter">
               <el-button
                       class="quick"
-                      @click="quickFilter = !quickFilter"
+                      @mouseover.native="quickFilter = true"
+                      @mouseout.native="quickFilter = false"
                       size="mini"
               >快速筛选</el-button
               >
@@ -628,7 +630,7 @@
                   this.buildUnlimitedMap(this.salaryRangeOptions, "salary");
                 }
         );
-        listByType(1).then(
+        listByType(25).then(
                 (response) => {
                   this.degreeOptions = response.data.list;
                   this.buildUnlimitedMap(this.degreeOptions, "degree");
@@ -1390,7 +1392,7 @@
         text-underline: none;
         position: relative;
         right: 8px;
-        z-index: 999;
+        z-index: 2;
       }
 
       .section3-item-container {
