@@ -247,6 +247,7 @@ public class UserStatInfoService extends BaseService {
         if (stat == null) return null;
 
         List<Integer> totalGrowthNumStat = new ArrayList<>();
+        totalGrowthNumStat.add(null);
         for (int i = 0; i < stat.size() - 1; i++) {
             int j = i + 1;
             totalGrowthNumStat.add(Integer.parseInt(stat.get(j) - stat.get(i) + ""));
@@ -325,16 +326,15 @@ public class UserStatInfoService extends BaseService {
         if (stat == null) return null;
 
         List<BigDecimal> growthStat = new ArrayList<>();
+
+//        growthStat.add(BigDecimal.ZERO);
+        growthStat.add(null);
         for (int i = 0; i < stat.size() - 1; i++) {
             int j = i + 1;
-            if (stat.get(i) == 0) {
-                growthStat.add(BigDecimal.ZERO);
-            } else {
-                BigDecimal value = BigDecimal.valueOf((stat.get(j) - stat.get(i)) /
-                        Double.parseDouble(stat.get(i).toString()))
-                        .setScale(2, BigDecimal.ROUND_HALF_UP);
-                growthStat.add(value);
-            }
+            BigDecimal value = BigDecimal.valueOf((stat.get(j) - stat.get(i)) /
+                    Double.parseDouble(stat.get(i).toString()))
+                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+            growthStat.add(value);
         }
         return growthStat;
     }

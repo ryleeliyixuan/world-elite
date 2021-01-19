@@ -281,4 +281,8 @@
   <select id="selectFirstCreateTime" resultType="date">
     SELECT create_time FROM t_user_corporate ORDER BY create_time ASC limit 1
   </select>
+
+  <select id="selectStatInfoInDate" resultType="LONG">
+    SELECT COUNT(0) AS COUNT FROM t_user_applicant WHERE DATE_FORMAT(create_time, #{format}) &lt;= #{date}
+  </select>
 </mapper>
