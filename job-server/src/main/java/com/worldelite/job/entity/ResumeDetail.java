@@ -28,6 +28,8 @@ public class ResumeDetail {
     //名字
     private String name;
 
+    private String title;
+
     //邮箱
     private String email;
 

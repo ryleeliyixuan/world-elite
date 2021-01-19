@@ -51,6 +51,8 @@ public class ResumeForm {
     private String email; //邮箱
     private String avatar; //头像
 
+    private String title;
+
     private Byte priority;
 
     public List<AttachOtherForm> getAttachOthers() {

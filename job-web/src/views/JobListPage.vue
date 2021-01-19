@@ -389,11 +389,9 @@
               <b class="section3-salary" style="font-size: 16px;"
               >{{ job.salary.name}} · {{ job.salaryMonths ? `${job.salaryMonths}薪` : "12薪" }}</b
               >
-              <span class="section3-city-degree" style="font-size: 15px;">{{
-                `${job.city ? job.city.name : ""} / ${
-                  job.minDegree ? job.minDegree.name : ""
-                }`
-              }}</span>
+              <span class="section3-city-degree" style="font-size: 15px;">
+                {{`${job.city ? job.city.name : ""}/${job.minDegree ? job.minDegree.name.substring(0, 2) : ""}`}}
+              </span>
               <el-link class="chat-link" @click="handleChat($event, job.creatorId, job.id)" :underline="false" icon="el-icon-chat-dot-round">聊一聊</el-link>
             </div>
           </div>
@@ -405,7 +403,7 @@
               <h6 class="section3-company-name">
                 {{ job.companyUser.company.name }}
               </h6>
-              <div class="section3-company-tag">
+              <div class="section3-company-tag" >
                 <el-tag v-if="job.companyUser.company.industry">
                   {{ job.companyUser.company.industry.name }}
                 </el-tag>
@@ -1485,6 +1483,9 @@
               font-weight: 400;
               color: #698ec7;
               line-height: 20px;
+
+              position: relative;
+              top: 5px;
             }
             /deep/ .el-tag + .el-tag {
               margin-left: 7px;

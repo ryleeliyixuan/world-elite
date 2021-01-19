@@ -27,6 +27,7 @@
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.worldelite.job.entity.Resume">
     <!--
@@ -42,7 +43,7 @@
     -->
     id, user_id, name, birth, gender, country_id, max_degree_id, marital_status, return_time, 
     graduate_time, cur_place, lang, attach_resume, create_time, update_time, status, 
-    type, priority, email, phone, avatar
+    type, priority, email, phone, avatar, title
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -85,7 +86,7 @@
       cur_place, lang, attach_resume, 
       create_time, update_time, status, 
       type, priority, email, 
-      phone, avatar, introduction
+      phone, avatar, introduction, title
       )
     values (#{userId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{birth,jdbcType=TIMESTAMP}, 
       #{gender,jdbcType=TINYINT}, #{countryId,jdbcType=INTEGER}, #{maxDegreeId,jdbcType=INTEGER}, 
@@ -93,7 +94,7 @@
       #{curPlace,jdbcType=VARCHAR}, #{lang,jdbcType=TINYINT}, #{attachResume,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
       #{type,jdbcType=TINYINT}, #{priority,jdbcType=TINYINT}, #{email,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{introduction,jdbcType=LONGVARCHAR}
+      #{phone,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{introduction,jdbcType=LONGVARCHAR}, #{title, jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.worldelite.job.entity.Resume">
@@ -169,6 +170,9 @@
       <if test="introduction != null">
         introduction,
       </if>
+      <if test="title != null">
+        title,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -233,6 +237,9 @@
       </if>
       <if test="introduction != null">
         #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -306,6 +313,9 @@
       <if test="introduction != null">
         introduction = #{introduction,jdbcType=LONGVARCHAR},
       </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -335,7 +345,8 @@
       email = #{email,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       avatar = #{avatar,jdbcType=VARCHAR},
-      introduction = #{introduction,jdbcType=LONGVARCHAR}
+      introduction = #{introduction,jdbcType=LONGVARCHAR},
+    title = #{title, jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.worldelite.job.entity.Resume">
@@ -363,7 +374,8 @@
       priority = #{priority,jdbcType=TINYINT},
       email = #{email,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
-      avatar = #{avatar,jdbcType=VARCHAR}
+      avatar = #{avatar,jdbcType=VARCHAR},
+    title = #{title,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
