@@ -87,6 +87,8 @@
             <el-table-column label="信用等级">
                 <template slot-scope="{row}">
                     {{showCreditLevel(row.credit)}}
+
+                    <el-link type="primary" size="mini" @click="modifyCredit(row)">修改</el-link>
                 </template>
             </el-table-column>
         </el-table>
@@ -98,13 +100,36 @@
                 :limit.sync="listQuery.limit"
                 @pagination="handleRouteList"
         />
+
+        <el-dialog title="修改信用等级" :visible.sync="modifyCreditDialog" width="70%">
+            <el-select
+                    v-model="modifyCreditResult"
+                    filterable
+                    clearable
+                    size="medium"
+                    placeholder="信用等级"
+            >
+                <el-option
+                        v-for="item in creditType"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                ></el-option>
+            </el-select>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="modifyCreditDialog = false" style="width: 100px;" size="small">取消</el-button>
+                <el-button type="primary" @click="modifyCreditConfirm" style="width: 100px; margin-left: 20px;" size="small">确定
+                </el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     import waves from "@/directive/waves"; // waves directive
     import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-    import {getOrganizerCreditList} from "@/api/activity_api";
+    import {addOrganizerCredit, getOrganizerCreditList} from "@/api/activity_api";
 
     export default {
         name: "CreditList",
@@ -127,6 +152,10 @@
 
                 organizerType: [{id: 4, name: "企业"}, {id: 1, name: "学生组织"}, {id: 2, name: "社会组织"}, {id: 3, name: "个人"}],
                 creditType: [{id: 1, name: "一级"}, {id: 2, name: "二级"}, {id: 3, name: "三级"}],
+
+                modifyCreditId: undefined,
+                modifyCreditDialog: false,
+                modifyCreditResult: undefined,
             };
         },
         created() {
@@ -175,6 +204,30 @@
                 });
 
                 if (result != null) return result.name;
+            },
+            modifyCredit(data){
+                this.modifyCreditId = data.userId;
+                this.modifyCreditDialog = true;
+            },
+            modifyCreditConfirm(){
+                if (this.modifyCreditResult == null){
+                    this.$message.warning("请选择要设置的信用等级");
+                    return;
+                }
+
+                if (this.modifyCreditId == null)
+                    this.$message.warning("要编辑的记录ID不存在");
+                else{
+                    addOrganizerCredit(this.modifyCreditId, this.modifyCreditResult).then(response => {
+                        if (response.code === 0) {
+                            this.getList();
+                            this.$message.success("修改信用等级成功");
+                        } else
+                            this.$message.error("修改信用等级失败");
+
+                        this.modifyCreditDialog = false;
+                    });
+                }
             },
         }
     };

@@ -1,6 +1,8 @@
 package com.worldelite.job.vo;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.worldelite.job.entity.OrganizerCredit;
 import lombok.Data;
 
@@ -9,6 +11,7 @@ import lombok.Data;
  **/
 @Data
 public class OrganizerCreditVo implements VoConvertable<OrganizerCreditVo, OrganizerCredit> {
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long userId; //主办方用户id
     private String organizerName; //组织名称
     private String organizerType; //举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业

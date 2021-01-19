@@ -48,21 +48,7 @@ public class OrganizerCreditApi {
     }
 
     /**
-     * 添加信用等级白名单
-     *
-     * @param userId
-     * @param credit
-     * @return
-     */
-    @ApiDoc
-    @RequireLogin
-    @PostMapping
-    public ApiResult addOrganizerCredit(@RequestBody Long userId, @RequestBody Byte credit) {
-        return organizerCreditService.addOrganizerCredit(userId, credit) ? ApiResult.ok() : ApiResult.fail("");
-    }
-
-    /**
-     * 更新信用等级白名单
+     * 添加/更新信用等级白名单
      *
      * @param userId
      * @param credit
@@ -71,8 +57,8 @@ public class OrganizerCreditApi {
     @ApiDoc
     @RequireLogin
     @PatchMapping
-    public ApiResult updateOrganizerCredit(@RequestBody Long userId, @RequestBody Byte credit) {
-        return organizerCreditService.updateOrganizerCredit(userId, credit) ? ApiResult.ok() : ApiResult.fail("");
+    public ApiResult updateOrganizerCredit(@RequestParam Long userId, Byte credit) {
+        return organizerCreditService.addOrUpdateOrganizerCredit(userId, credit) ? ApiResult.ok() : ApiResult.fail("");
     }
 
     /**

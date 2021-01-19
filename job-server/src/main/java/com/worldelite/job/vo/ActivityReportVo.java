@@ -1,6 +1,8 @@
 package com.worldelite.job.vo;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.worldelite.job.entity.ActivityReport;
 import com.worldelite.job.entity.ActivityReportExt;
 import lombok.Data;
@@ -14,6 +16,7 @@ public class ActivityReportVo implements VoConvertable<ActivityReportVo, Activit
 
     private Integer id; //举报ID
     private Integer activityId; //活动ID
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long reportUserId; //举报者用户ID,留空为当前登录账户
     private DictVo optionVo; //举报理由选项Dictvo
     private String reason; //举报原因

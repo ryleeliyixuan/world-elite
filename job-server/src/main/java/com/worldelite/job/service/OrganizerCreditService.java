@@ -172,34 +172,23 @@ public class OrganizerCreditService extends BaseService {
         return creditVo;
     }
 
-
-    public Boolean addOrganizerCredit(Long userId, Byte credit) {
+    public Boolean addOrUpdateOrganizerCredit(Long userId, Byte credit) {
         if (userId == null)
-            throw new ServiceException(message(""));
-
+            throw new ServiceException(message("用户ID不能为空"));
         final OrganizerCreditGrade organizerCreditGrade = OrganizerCreditGrade.valueOf(credit);
         if (organizerCreditGrade == null)
-            throw new ServiceException(message(""));
+            throw new ServiceException("信用等级值不正确");
 
         OrganizerCredit organizerCredit = new OrganizerCredit();
         organizerCredit.setUserId(userId);
         organizerCredit.setCredit(organizerCreditGrade.value);
 
-        return organizerCreditMapper.insertSelective(organizerCredit) == 1;
-    }
-
-    public Boolean updateOrganizerCredit(Long userId, Byte credit) {
-        if (userId == null)
-            throw new ServiceException(message(""));
-        final OrganizerCreditGrade organizerCreditGrade = OrganizerCreditGrade.valueOf(credit);
-        if (organizerCreditGrade == null)
-            throw new ServiceException(message(""));
-
-        OrganizerCredit organizerCredit = new OrganizerCredit();
-        organizerCredit.setUserId(userId);
-        organizerCredit.setCredit(organizerCreditGrade.value);
-
-        return organizerCreditMapper.updateByPrimaryKeySelective(organizerCredit) == 1;
+        final OrganizerCredit oCredit = organizerCreditMapper.selectByPrimaryKey(userId);
+        if(oCredit == null){
+            return organizerCreditMapper.insertSelective(organizerCredit) == 1;
+        }else{
+            return organizerCreditMapper.updateByPrimaryKeySelective(organizerCredit) == 1;
+        }
     }
 
     public Boolean delOrganizerCredit(Long userId) {

@@ -71,6 +71,14 @@ export function getOrganizerCreditList(data) {
     })
 }
 
+export function addOrganizerCredit(userId, credit) {
+    return request({
+        url: '/activity/organizercredit',
+        method: 'patch',
+        params: {userId: userId, credit: credit}
+    })
+}
+
 export function getActivityReportList(data) {
     return request({
         url: '/activity/report',
