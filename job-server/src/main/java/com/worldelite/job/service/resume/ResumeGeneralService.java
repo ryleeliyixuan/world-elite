@@ -318,6 +318,7 @@ public class ResumeGeneralService extends ResumeService {
         resume.setPhone(resumeForm.getPhone() == null ? null : resumeForm.getPhone() + "");
         resume.setMaritalStatus(resumeForm.getMaritalStatus());
         resume.setPriority(resumeForm.getPriority());
+        resume.setTitle(resumeForm.getTitle());
         //******************************
         resumeMergeAttachService.saveResumeMergeAttaches(resumeForm.getAttachOthers(), resume);
 
@@ -397,6 +398,7 @@ public class ResumeGeneralService extends ResumeService {
         resumeDetail.setName(userApplicant.getName());
         //邮箱
         resumeDetail.setEmail(resume.getEmail());
+        resumeDetail.setTitle(resume.getTitle());
         //电话
         if (!StringUtils.isEmpty(resume.getPhone())){
             resumeDetail.setPhone(Long.parseLong(resume.getPhone()));
@@ -477,6 +479,8 @@ public class ResumeGeneralService extends ResumeService {
         resumeVo.setAvatar(resumeDetail.getAvatar());
         resumeVo.setEmail(resumeDetail.getEmail());
         resumeVo.setPhoneCode(resumeDetail.getPhoneCode());
+        resumeVo.setTitle(resumeDetail.getTitle());
+
         if (resumeDetail.getPhone() != null && resumeDetail.getPhone() != 0) {
             resumeVo.setPhone(String.valueOf(resumeDetail.getPhone()));
         }
