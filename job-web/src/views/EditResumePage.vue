@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container">
+    <div class="app-container" v-if="getResume==true">
         <b-container>
             <el-tabs v-model="editableTabsValue"
                      type="card"
@@ -10,13 +10,29 @@
                 <el-tab-pane
                         v-for="(item, index) in resume"
                         :key="item.id"
-                        :label="'简历'+(index+1)"
+                        :label="item.title"
                         :name="item.id"
                         style="margin-top: -100px"
                 >
                     <b-row>
                         <b-media class="resume-wrapper">
                             <div class="resume-body">
+                                <div style="display: inline-flex;padding-top: 20px" class="titleText">
+                                    <span style="padding-top: 6px;">简历名称：</span>
+                                    <div style="padding-top: 7px;" v-if="showEditTitle==false">
+                                        <span>{{item.title}}</span>
+                                        <svg-icon icon-class="edit" style="width: 18px;height: 19px;margin-left: 50px" @click="editTitle"></svg-icon>
+
+                                    </div>
+                                    <div v-if="showEditTitle==true">
+                                        <el-form ref="resumeTitleForm" :model="resumeTitleForm">
+                                            <el-form-item prop="title" class="editTitle">
+                                                <el-input v-model="resumeTitleForm.title" placeholder="请输入简历名称" @change="saveEditTitle"></el-input>
+                                            </el-form-item>
+                                        </el-form>
+                                    </div>
+                                </div>
+
                                 <el-row style="display: inline-flex;height: 100px;padding: 3px;">
                                     <div class="resume-updateTime">更新时间：{{item.updateTime}}</div>
                                     <div style="width: 262px">
@@ -226,7 +242,7 @@
                                             </el-form>
                                             <div class="resume-info">
                                                 <div class="info-other-row-l">
-                                                    <el-row class="info-name" style="width: 300px">{{item.name}}</el-row>
+                                                    <el-row class="info-name" style="width: 300px" v-if="item.name && item.name!=''">{{item.name}}</el-row>
                                                     <el-row class="info-other">性别：
                                                         <span v-if="item.gender==1">男</span>
                                                         <span v-if="item.gender==2">女</span>
@@ -276,7 +292,7 @@
                                                         <div class="edu-box-l" style="width: 330px">
                                                             <el-row class="edu-school ">{{resumeEdu.schoolName}}
                                                             </el-row>
-                                                            <el-row class="info-other">学历：{{resumeEdu.degree.name}}
+                                                            <el-row class="info-other" v-if="resumeEdu.degree && resumeEdu.degree!=''">学历：{{resumeEdu.degree.name}}
                                                             </el-row>
                                                             <el-row class="info-other">专业：{{resumeEdu.majorName}}
                                                             </el-row>
@@ -385,9 +401,10 @@
                                                     <el-form ref="resumeEduForm" :model="resumeEduForm"
                                                              :rules="resumeEduFormRules">
                                                         <el-form-item label="专业:" prop="majorName"
-                                                                      class="m-input-text-width">
+                                                                      class="m2-input-text-width">
                                                             <el-input v-model="resumeEduForm.majorName"
-                                                                      placeholder="请输入所在专业"></el-input>
+                                                                      placeholder="请输入所在专业"
+                                                            ></el-input>
                                                         </el-form-item>
                                                     </el-form>
                                                 </div>
@@ -449,8 +466,8 @@
                                                     </div>
                                                     <div class="edu-box-m1">
                                                         <el-row class="info-other">期望行业：
-                                                            <span v-if="item.userExpectJob.category&&item.userExpectJob.category!=''"
-                                                            > {{ item.userExpectJob.category.name }} </span>
+                                                            <span v-if="item.userExpectJob.industry&&item.userExpectJob.industry!=''"
+                                                            > {{ item.userExpectJob.industry }} </span>
                                                         </el-row>
                                                         <el-row class="info-other">工作城市：
                                                             <span> {{item.userExpectJob.expectCity}} </span>
@@ -549,12 +566,12 @@
                                                                 label-width="80px"
                                                         >
                                                         <el-form-item label="期望行业:" class="m-input-text-width">
-                                                            <el-select v-model="expectJobForm.categoryId"
+                                                            <el-select v-model="expectJobForm.industry"
                                                                        placeholder="期望行业">
                                                                 <el-option v-for="item in companyIndustryOptions"
                                                                            :key="item.id"
                                                                            :label="item.name"
-                                                                           :value="item.id"
+                                                                           :value="item.name"
                                                                 ></el-option>
                                                             </el-select>
                                                         </el-form-item>
@@ -1425,7 +1442,7 @@
                                 </el-form>
                                 <el-row style="display: inline-flex;">
                                     <div style="width: 210px">
-                                            <div v-if="showEditAttachOther==false">
+                                        <div v-if="showEditAttachOther==false">
 
                                                 <el-row
                                                         v-for="(others,index) in item.resumeMergeAttachList"
@@ -1468,23 +1485,21 @@
 
                                             </div>
                                         <div v-if="showEditAttachOther==true">
-                                                    <div style="width: 230px">
-                                                                <span>
-                                                                    <svg-icon
-                                                                            icon-class="PDF"
-                                                                            style="width: 14px;height: 18px;"
-                                                                    ></svg-icon>
-                                                                </span>
-                                                        <el-form ref="resumeAttachForm1" :model="resumeAttachForm1">
-                                                                <el-input
-                                                                        @change="HandleEditSaveAttachOthers"
-                                                                        v-model="resumeAttachForm1.name"
-                                                                        placeholder="请输入附件名"
-                                                                        :maxlength="50"
-                                                                        @focus="showEditAttachOther==false"
-                                                                ></el-input>
-                                                            </el-form>
-                                                    </div>
+                                            <div style="width: 230px;display: inline-flex">
+                                                        <span style="padding-right: 3px;line-height: 2px;">
+                                                            <svg-icon
+                                                                    icon-class="PDF"
+                                                                    style="width: 14px;height: 18px;"
+                                                            ></svg-icon>
+                                                        </span>
+                                                <el-form ref="resumeAttachForm1" :model="resumeAttachForm1"class="editTitle">
+                                                        <el-input
+                                                                @change="HandleEditSaveAttachOthers"
+                                                                v-model="resumeAttachForm1.name"
+                                                                placeholder="请输入附件名"
+                                                        ></el-input>
+                                                    </el-form>
+                                            </div>
                                         </div>
 
 
@@ -1615,8 +1630,15 @@
                 workType:undefined,
                 showResumeDialog: false,
                 showPriority:true,
+                showEditTitle:false,
+                shownew:false,
+                resumeTitleForm:{
+                    id:undefined,
+                    title:"新简历"
+                },
                 showEditAttachOther:false,
                 i:0,
+                getResume:false,
                 editableTabsValue: undefined,
                 tabIndex: 0,
                 seen: false,
@@ -1657,7 +1679,7 @@
                     id: undefined,
                     resumeId:undefined,
                     introduction:undefined,
-                    attachResume:undefined,
+                    title:undefined,
                 },
                 resumeForm2:{
                     id: undefined,
@@ -1799,6 +1821,10 @@
                     link:undefined,
                     name:"附件",
                 },
+                newResumeForm:{
+                    id:undefined,
+                    title:"新简历",
+                },
                 resumeAttachForm2:{
                     link:undefined,
                     name:undefined,
@@ -1830,6 +1856,8 @@
                     expectCity:undefined,
                     salaryId: undefined,
                     categoryId:undefined,
+                    industry:undefined,
+
                 },
                 expectJobFormRules:{
                     expectPosition:[{required: true, message: "请输入意向职位", trigger: "blur"}],
@@ -2015,9 +2043,10 @@
                         let newTabName = this.resume.length+1;
                         console.log(newTabName)
                         console.log(this.resume[this.resume.length])
-                        // this.editableTabs.push({
+                        // this.resume.push({
                         //     title: '新简历',
-                        //     name: newTabName,
+                        //     id:undefined,
+                        //     userExpectJob: {expectPosition:''},
                         // });
                         // this.editableTabsValue = newTabName;
                     }
@@ -2309,12 +2338,17 @@
             getResumeInfo() {
                 getResumeInfo().then((response) => {
                     this.resume = response.data;
+                    this.getResume=true
                     this.nullResumeId=this.resume[this.resume.length-1].id
-
                     if (this.newIndex&&this.newIndex!=''){
                         console.log(this.newResumeId);
                         let newTabIndex=this.newIndex;
-                        this.editableTabsValue=this.resume[newTabIndex].id
+                        if (this.resume[newTabIndex] &&this.resume[newTabIndex]!=''){
+                            this.editableTabsValue=this.resume[newTabIndex].id
+                        }else{
+                            this.editableTabsValue=this.resume[this.resume.length-1].id
+                        }
+
                         console.log(this.tabIndex)
                     }else{
                         this.tabIndex=this.resume.length
@@ -2322,11 +2356,21 @@
                         this.editableTabsValue=this.resume[this.resume.length-1].id
                     }
                 });
+
             },
             addResume() {
-                addResume().then((response) => {
-                    this.getResumeInfo();
-
+                addResume().then(()=>{
+                getResumeInfo().then((response) => {
+                        this.resume = response.data;
+                        this.$set(this.resume[this.resume.length-1],'title','新简历')
+                    this.newResumeForm.title="新简历"
+                    this.newResumeForm.id=this.resume[this.resume.length-1].id
+                    saveResumeBasic(this.newResumeForm).then(()=>{
+                        this.getResumeInfo()
+                        }
+                    )
+                    console.log(this.resume[this.resume.length-1])
+                })
                 })
             },
             setResumeFormValues() {
@@ -2343,6 +2387,43 @@
                 this.resumeForm.priority = this.resume.priority;
                 this.resumeForm.maritalStatus = this.resume.maritalStatus
                 this.resumeForm.introduction = this.resume.introduction;
+            },
+            editTitle(){
+                this.showEditTitle = true;
+                if (this.newIndex && this.newIndex){
+                    this.resumeTitleForm.title=this.resume[this.newIndex].title
+                }else {
+                    this.resumeTitleForm.title=this.resume[this.resume.length-1].title
+                }
+            },
+            saveEditTitle(){
+                this.$refs["resumeTitleForm"][0].validate((valid) => {
+                    if (valid) {
+                        this.posting = true;
+                        if (this.newResumeId&&this.newResumeId!=''){
+                            this.resumeTitleForm.id=this.newResumeId
+                            // this.resumeForm1.resumeId = this.newResumeId;
+                            saveResumeBasic(this.resumeTitleForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showEditTitle = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }else{
+                            this.resumeTitleForm.id = this.resume[this.resume.length-1].id;
+                            saveResumeBasic(this.resumeTitleForm)
+                                .then(() => {
+                                    this.getResumeInfo();
+                                    this.showEditTitle = false;
+                                })
+                                .finally(() => {
+                                    this.posting = false;
+                                });
+                        }
+                    }
+                });
             },
             handleEditResumeBasic() {
                 console.log("-----")
@@ -2615,6 +2696,7 @@
                     this.expectJobForm.expectPosition=this.resume[this.newIndex].userExpectJob.expectPosition;
                     this.expectJobForm.salaryId=this.resume[this.newIndex].userExpectJob.salaryId;
                     this.expectJobForm.expectCity=this.resume[this.newIndex].userExpectJob.expectCity
+                    this.expectJobForm.industry=this.resume[this.newIndex].userExpectJob.industry
                 } else {
                     this.expectJobForm.resumeId=this.resume[this.resume.length-1].id;
                     this.expectJobForm.categoryId = this.resume[this.resume.length-1].userExpectJob.category.id;
@@ -2622,6 +2704,8 @@
                     this.expectJobForm.expectPosition=this.resume[this.resume.length-1].userExpectJob.expectPosition;
                     this.expectJobForm.salaryId=this.resume[this.resume.length-1].userExpectJob.salaryId;
                     this.expectJobForm.expectCity=this.resume[this.resume.length-1].userExpectJob.expectCity
+                    this.expectJobForm.industry=this.resume[this.resume.length-1].userExpectJob.industry
+
                 }
                 this.$nextTick(() => {
                     this.$refs["expectJobForm"][0].clearValidate();
@@ -3328,6 +3412,99 @@
             .resume-body {
                 /*padding-top: 119px;*/
                 padding-left: 68px;
+                .titleText{
+                    font-size: 14px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #333333;
+                }
+                .editTitle{
+                        font-size: 12px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        ::v-deep.el-form-item__error{
+                            color: #F56C6C;
+                            font-size: 12px;
+                            line-height: 0px;
+                            padding-top: 4px;
+                            position: absolute;
+                            top: 90%;
+                            left: 0;
+                        }
+
+                        .ej-btn {
+                            width: 75px;
+                            height: 23px;
+                            border-radius: 12px;
+                            border: 1px solid #4895EF;
+                            font-size: 12px;
+                            font-family: PingFangSC-Medium, PingFang SC;
+                            font-weight: 500;
+                            color: #4895EF;
+                            line-height: 1px;
+                        }
+
+                        ::v-deep .el-date-editor .el-range-separator {
+                            padding: 0 5px;
+                            line-height: 14px;
+                            width: 5%;
+                            color: #303133;
+                        }
+
+                        ::v-deep .el-input__icon {
+                            height: 100%;
+                            width: 25px;
+                            text-align: center;
+                            -webkit-transition: all .3s;
+                            transition: all .3s;
+                            line-height: unset;
+                            color: #4895EF;
+                        }
+
+                        ::v-deep .el-input {
+                            position: relative;
+                            font-size: 14px;
+                            display: inline-block;
+                            width: 173px
+                        }
+
+                        ::v-deep .el-input__inner {
+                            width: 173px;
+                            height: 23px;
+                            background: #FFFFFF;
+                            border-radius: 12px;
+                            border: 1px solid #CCDBF5;
+                            font-size: 11px;
+                            font-family: PingFangSC-Regular, PingFang SC;
+                            font-weight: 400;
+                            color: #999999;
+                        }
+
+                        ::v-deep .el-form-item__label {
+                            width: 80px;
+                            font-size: 12px;
+                            font-weight: 500;
+                            color: #333333;
+                            line-height: 36px;
+                            /*padding: 0 0px 0 0;*/
+                        }
+
+                        ::v-deep.el-date-editor .el-range-input, .el-date-editor .el-range-separator {
+                            height: 100%;
+                            width: 70px;
+                            margin: 0;
+                            text-align: center;
+                            display: inline-block;
+                            font-size: 11px;
+                        }
+
+                        ::v-deep.el-form-item__content {
+                            line-height: 40px;
+                            position: relative;
+                            font-size: 11px;
+                        }
+                    }
 
                 .resume-point {
                     padding-top: 10px;
@@ -3616,6 +3793,93 @@
             padding: 10px 10px 0px 20px;
             /*<!--border: $border-style;-->*/
             /*margin-bottom: 15px;*/
+            .editTitle{
+                font-size: 12px;
+                font-family: PingFangSC-Medium, PingFang SC;
+                font-weight: 500;
+                color: #333333;
+                ::v-deep.el-form-item__error{
+                    color: #F56C6C;
+                    font-size: 12px;
+                    line-height: 0px;
+                    padding-top: 4px;
+                    position: absolute;
+                    top: 90%;
+                    left: 0;
+                }
+
+                .ej-btn {
+                    width: 75px;
+                    height: 23px;
+                    border-radius: 12px;
+                    border: 1px solid #4895EF;
+                    font-size: 12px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #4895EF;
+                    line-height: 1px;
+                }
+
+                ::v-deep .el-date-editor .el-range-separator {
+                    padding: 0 5px;
+                    line-height: 14px;
+                    width: 5%;
+                    color: #303133;
+                }
+
+                ::v-deep .el-input__icon {
+                    height: 100%;
+                    width: 25px;
+                    text-align: center;
+                    -webkit-transition: all .3s;
+                    transition: all .3s;
+                    line-height: unset;
+                    color: #4895EF;
+                }
+
+                ::v-deep .el-input {
+                    position: relative;
+                    font-size: 14px;
+                    display: inline-block;
+                    width: 173px
+                }
+
+                ::v-deep .el-input__inner {
+                    width: 173px;
+                    height: 23px;
+                    background: #FFFFFF;
+                    border-radius: 12px;
+                    border: 1px solid #CCDBF5;
+                    font-size: 11px;
+                    font-family: PingFangSC-Regular, PingFang SC;
+                    font-weight: 400;
+                    color: #999999;
+                }
+
+                ::v-deep .el-form-item__label {
+                    width: 80px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    color: #333333;
+                    line-height: 36px;
+                    /*padding: 0 0px 0 0;*/
+                }
+
+                ::v-deep.el-date-editor .el-range-input, .el-date-editor .el-range-separator {
+                    height: 100%;
+                    width: 70px;
+                    margin: 0;
+                    text-align: center;
+                    display: inline-block;
+                    font-size: 11px;
+                }
+
+                ::v-deep.el-form-item__content {
+                    line-height: 40px;
+                    position: relative;
+                    font-size: 11px;
+                }
+            }
             .upload-btn {
                 width: 192px;
                 height: 31px;
@@ -3830,7 +4094,93 @@
                     font-size: 15px;
                 }
             }
+            .m2-input-text-width {
+                font-size: 12px;
+                font-family: PingFangSC-Medium, PingFang SC;
+                font-weight: 500;
+                color: #333333;
+                ::v-deep.el-form-item__error{
+                    color: #F56C6C;
+                    font-size: 12px;
+                    line-height: 0px;
+                    padding-top: 4px;
+                    position: absolute;
+                    top: 90%;
+                    left: 90px;
+                }
 
+                .ej-btn {
+                    width: 75px;
+                    height: 23px;
+                    border-radius: 12px;
+                    border: 1px solid #4895EF;
+                    font-size: 12px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #4895EF;
+                    line-height: 1px;
+                }
+
+                ::v-deep .el-date-editor .el-range-separator {
+                    padding: 0 5px;
+                    line-height: 14px;
+                    width: 5%;
+                    color: #303133;
+                }
+
+                ::v-deep .el-input__icon {
+                    height: 100%;
+                    width: 25px;
+                    text-align: center;
+                    -webkit-transition: all .3s;
+                    transition: all .3s;
+                    line-height: unset;
+                    color: #4895EF;
+                }
+
+                ::v-deep .el-input {
+                    position: relative;
+                    font-size: 14px;
+                    display: inline-block;
+                    width: 173px
+                }
+
+                ::v-deep .el-input__inner {
+                    width: 173px;
+                    height: 23px;
+                    background: #FFFFFF;
+                    border-radius: 12px;
+                    border: 1px solid #CCDBF5;
+                    font-size: 11px;
+                    font-family: PingFangSC-Regular, PingFang SC;
+                    font-weight: 400;
+                    color: #999999;
+                }
+
+                ::v-deep .el-form-item__label {
+                    width: 80px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    color: #333333;
+                    line-height: 36px;
+                    /*padding: 0 0px 0 0;*/
+                }
+
+                ::v-deep.el-date-editor .el-range-input, .el-date-editor .el-range-separator {
+                    height: 100%;
+                    width: 70px;
+                    margin: 0;
+                    text-align: center;
+                    display: inline-block;
+                    font-size: 11px;
+                }
+
+                ::v-deep.el-form-item__content {
+                    line-height: 40px;
+                    position: relative;
+                    font-size: 11px;
+                }
+            }
             .m-input-text-width {
                 font-size: 12px;
                 font-family: PingFangSC-Medium, PingFang SC;
