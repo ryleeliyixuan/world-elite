@@ -191,6 +191,7 @@
             // 编辑或重新编辑活动
             onEdit(activity) {
                 if (this.isEditInfoEnable(activity)) {
+                    this.$storage.removeObject('activityPreview');
                     this.$router.push({path: '/activity/edit', query: {id: activity.id}});
                 }
             },

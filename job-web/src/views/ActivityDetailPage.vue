@@ -107,6 +107,8 @@
                 <div class="confirm" @click="onConfirm">确定</div>
             </div>
         </el-dialog>
+
+        <preview-apply :visible.sync="previewDialogVisible" :activityId="this.$route.query.id+''" :apply="applyTable" :resumeList="resumeList"></preview-apply>
     </div>
 </template>
 
@@ -115,11 +117,13 @@
     import Share from "vue-social-share";
     import "vue-social-share/dist/client.css";
     import {getUploadPicToken} from "@/api/upload_api";
+    import previewApply from "@/components/activity/PreviewApply";
 
     Vue.use(Share);
 
     export default {
         name: "ActivityDetailPage",
+        components: {previewApply},
         data() {
             return {
                 activity: undefined,
@@ -149,6 +153,10 @@
                 // 上传
                 fullscreenLoadingCount: 0,
                 acceptFileType: '.jpg,.jpeg,.png,.JPG,.JPEG,.PNG',
+
+                previewDialogVisible: false, // 报名表预览对话框
+                applyTable: undefined, // 报名表
+                resumeList:[], // 简历列表
             };
         },
         created() {
@@ -166,6 +174,11 @@
                         this.activity = response.data;
                         this.shareConfig.title = this.activity.title;
                         // this.shareConfig.description = this.activity.description;
+
+                        // 获取报名表信息
+                        return this.$axios.get(`/activity-questionnaire/${this.activity.questionnaireId}`)
+                    }).then(response => {
+                        this.applyTable = response.data;
                     })
 
                     // 举报选项
@@ -185,7 +198,10 @@
             // 点击报名按钮
             onApply() {
                 if (!this.activity.registrationFlag) {
-                    this.$message.success("点击报名按钮");
+                    this.$axios.get("/resume/my-resume").then(response => {
+                        this.resumeList = response.data;
+                    })
+                    this.previewDialogVisible = true;
                 }
             },
 

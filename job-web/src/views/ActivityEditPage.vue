@@ -207,22 +207,59 @@
                 <div class="name">
                     活动报名表<span>*</span>
                 </div>
-                <el-select v-model="activityForm.registrationTemplateId"
-                           v-if="activityForm.registrationTemplateList"
-                           placeholder="选择报名表模板"
-                           class="select"
-                           size="small"
-                           style="margin-right:15px;">
-                    <el-option
-                        v-for="item in registrationTemplateList"
-                        :key="item.id"
-                        :label="item.templateName"
-                        :value="item.id">
-                    </el-option>
-                </el-select>
-                <div class="add-button" @click="onAddRegistrationTemplate">
-                    <svg-icon icon-class="add" style="margin-right: 8px;"></svg-icon>
-                    添加报名表
+                <div v-if="this.$route.query.id" class="edit-button" @click="onPreviewRegistration">{{applyTableTitle}}</div>
+                <div v-else>
+                    <div v-if="applyTableTitle" :class="['edit-button',{'edit-button-disabled':useTemplate}]"
+                         @click="!useTemplate && onEditRegistrationTemplate()">
+                        {{applyTableTitle}}
+                    </div>
+                    <div v-else :class="['add-button',{'add-button-disabled':useTemplate}]" @click="!useTemplate && onAddRegistrationTemplate()">
+                        <svg-icon icon-class="add" style="margin-right: 8px;"></svg-icon>
+                        添加报名表
+                    </div>
+                    <el-switch v-model="useTemplate" size="small" style="margin: 0 10px;" :disabled="!!this.$route.query.id"></el-switch>
+                    <el-select v-model="templateId"
+                               placeholder="使用模板"
+                               class="select"
+                               size="small"
+                               :disabled="!useTemplate || !!this.$route.query.id"
+                               style="margin-right:15px;">
+                        <el-option
+                            v-for="item in registrationTemplateList"
+                            :key="item.id"
+                            :label="item.templateName"
+                            :value="item.id">
+                        </el-option>
+                    </el-select>
+                    <el-popover
+                        :disabled="!useTemplate"
+                        placement="top-start"
+                        trigger="click">
+                        <div class="template-settings-container">
+                            <div class="line1">
+                                模板管理
+                                <span>{{registrationTemplateList.length}}/{{templateCount.maxCount}}</span>
+                                <el-tooltip class="item" effect="dark" placement="top">
+                                    <div slot="content">最多可保存{{templateCount.maxCount}}份报名表模板</div>
+                                    <svg-icon icon-class="questionMask" style="width: 10px; height: 11px; margin: 4px;"></svg-icon>
+                                </el-tooltip>
+                            </div>
+                            <div class="line2" v-for="item in registrationTemplateList">
+                                <span>{{item.templateName}}</span>
+                                <div class="operate-container">
+                                    <svg-icon icon-class="template-edit" clickable @click="onTemplateEdit(item)"></svg-icon>
+                                    <svg-icon icon-class="template-delete" clickable @click="onTemplateDelete(item)"></svg-icon>
+                                </div>
+                            </div>
+                            <div class="line3" v-if="registrationTemplateList.length<templateCount.maxCount" @click="onTemplateAdd">
+                                添加模板
+                                <svg-icon icon-class="template-add" clickable style="margin-left: 5px;"></svg-icon>
+                            </div>
+                        </div>
+
+                        <svg-icon slot="reference" :icon-class="useTemplate?'settings-enable':'settings-disable'"
+                                  style="width: 17px; height: 17px; vertical-align: -4px;"></svg-icon>
+                    </el-popover>
                 </div>
             </div>
             <div class="poster-container">
@@ -267,6 +304,7 @@
                 <div class="confirm" @click="onSaveDraft">确定</div>
             </div>
         </el-dialog>
+        <preview-apply :visible.sync="previewDialogVisible" :activityId="this.$route.query.id+''" :apply="applyTable"></preview-apply>
     </div>
 </template>
 
@@ -274,14 +312,17 @@
     import {getUploadPicToken} from "@/api/upload_api";
     import {checkPicSize} from "@/utils/common";
     import tinymce from "@/components/Tinymce"
+    import previewApply from "@/components/activity/PreviewApply";
 
     export default {
         name: "ActivityEditPage",
-        components: {tinymce},
+        components: {tinymce, previewApply},
         data() {
             return {
+                templateCount: {},// 我的模板数量/总数
                 activityForm: { // 活动表单
                     title: undefined, // 活动名称
+                    address: undefined, // 详细地址/线上连接
                     onlyOverseasStudent: '0', // 是否仅留学生能参加,0不限制,1仅海外
                     organizerType: undefined, // 举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
                     cityId: undefined, // 城市id
@@ -293,13 +334,14 @@
                     numberLimit: -1, // 无需审核时的人数限制，无限制为-1
                     needResume: '1', // 是否需要报名者简历信息, 0不需要,1需要
                     description: undefined, // 活动详情
-                    registrationTemplateId: undefined, // 报名表模板ID
                     organizerInfoForm: { // 组织信息
                         organizerName: undefined, // 组织名称
                         school: undefined, // 所属学校,若是校园组织
                         businessLicenseUrl: undefined, // 营业执照,若是社会组
                     },
                     poster: undefined, // 活动海报
+                    questionnaireType: '0', // 0：报名表  1：报名模板
+                    questionnaireId: undefined, // 报名表或模板id
                 },
 
                 activityTime: [], // 活动起止时间，临时保存用户选择时间
@@ -342,6 +384,14 @@
                 draftSaving: false, // 草稿保存中
 
                 publishing: false, // 发布中
+
+                useTemplate: false, // 是否使用模板
+                applyTableTitle: undefined, // 报名表名称
+                applyTableId: undefined, // 报名表id
+                templateId: undefined, // 模板id
+                applyTable: undefined, // 报名表
+
+                previewDialogVisible: false, // 报名表预览对话框
             };
         },
         watch: {
@@ -364,34 +414,72 @@
                     this.activityForm.registrationStartTime = undefined;
                     this.activityForm.registrationFinishTime = undefined;
                 }
+            },
+            // 是否使用模板
+            useTemplate(value) {
+                this.activityForm.questionnaireType = value ? '1' : '0';
             }
         },
         created() {
-            // 编辑指定活动
-            if (this.$route.query.id) {
+            // 优先加载预览的内容，从列表页进入时会删除预览数据
+            let activityForm = this.$storage.getObject('activityPreview');
+            if (activityForm) {
+                Object.keys(activityForm).forEach(key => {
+                    this.activityForm[key] = activityForm[key];
+                })
+                if (activityForm.activityStartTime && activityForm.activityFinishTime) {
+                    this.activityTime = [new Date(activityForm.activityStartTime), new Date(activityForm.activityFinishTime)];
+                }
+                if (activityForm.registrationStartTime && activityForm.registrationFinishTime) {
+                    this.registrationTime = [new Date(activityForm.registrationStartTime), new Date(activityForm.registrationFinishTime)];
+                }
+                this.useTemplate = activityForm.questionnaireType === '1';
+            } else if (this.$route.query.id) { // 编辑指定活动
                 this.$axios.get("/activity/activity-info", {params: {id: this.$route.query.id}}).then(data => {
                     this.handlerActivity(data.data);
                 })
-            } else {
-                // 优先加载预览的内容，从列表页进入时会删除预览数据
-                let activityForm = this.$storage.getObject('activityPreview');
-                if (activityForm) {
-                    Object.keys(activityForm).forEach(key => {
-                        this.activityForm[key] = activityForm[key];
+            } else { // 没有预览数据时加载远程草稿
+                this.$axios.get("/activity/my/draft-activity-info").then(data => {
+                    this.handlerActivity(data.data);
+                })
+            }
+
+            let applyObject = this.$storage.getObject("报名表");
+            if (applyObject) {
+                if (applyObject.type === '0') {
+                    this.applyTableTitle = applyObject.title;
+                    this.applyTableId = applyObject.id;
+                    this.templateId = undefined;
+                } else if (applyObject.type === '1') {
+                    this.applyTableTitle = undefined;
+                    this.applyTableId = undefined;
+                    this.templateId = applyObject.id;
+                }
+                this.activityForm.questionnaireId = this.useTemplate ? this.templateId : this.applyTableId;
+                this.$storage.removeObject("报名表");
+                this.$storage.setObject('activityPreview', this.activityForm);
+            } else if (this.activityForm.questionnaireId) { // 存在报名表id 或 报名模板  0：报名表  1：报名模板
+                if (this.activityForm.questionnaireType === '0') { // 报名表
+                    this.$axios.get(`/activity-questionnaire/${this.activityForm.questionnaireId}`).then(response => {
+                        this.applyTableTitle = response.data.title;
+                        this.applyTableId = response.data.id;
+                        this.applyTable = response.data;
                     })
-                    this.activityTime = [new Date(activityForm.activityStartTime), new Date(activityForm.activityFinishTime)];
-                    this.registrationTime = [new Date(activityForm.registrationStartTime), new Date(activityForm.registrationFinishTime)];
-                } else { // 没有预览数据时加载远程草稿
-                    this.$axios.get("/activity/my/draft-activity-info").then(data => {
-                        this.handlerActivity(data.data);
+                } else if (this.activityForm.questionnaireType === '1') { // 报名模板
+                    this.$axios.get(`/questionnaire-template/${this.activityForm.questionnaireId}`).then(response => {
+                        this.templateId = response.data.id;
                     })
                 }
             }
+
             this.initData();
         },
         methods: {
             // 初始化数据
             initData() {
+                // 获取我的模板
+                this.getTemplate();
+
                 // 获取国内城市
                 this.$axios.request({
                     url: "/city/list",
@@ -419,11 +507,6 @@
                         return {id: second.id, name: second.name, children}
                     });
                 })
-
-                // 获取报名模板
-                this.$axios.get("/questionnaire-template/my/list").then(data => {
-                    this.registrationTemplateList = data.data;
-                })
             },
 
             // 处理请求结果为本地对象
@@ -438,6 +521,13 @@
                         this.activityForm.cityId = this.activityForm.city.id;
                     }
                     this.activityForm.organizerInfoForm = this.activityForm.organizerInfoVo;
+
+                    // 加载报名表
+                    this.$axios.get(`/activity-questionnaire/${this.activityForm.questionnaireId}`).then(response => {
+                        this.applyTable = response.data;
+                        this.applyTableTitle = response.data.title;
+                        this.applyTableId = response.data.id;
+                    });
                 }
             },
 
@@ -520,15 +610,47 @@
                 });
             },
 
+            // 预览报名表
+            onPreviewRegistration() {
+                this.previewDialogVisible = true;
+            },
+
             // 添加报名表
             onAddRegistrationTemplate() {
                 this.$storage.setObject('activityPreview', this.activityForm);
-                // this.$router.push("")
+                this.$router.push({path: "/activity/apply/table", query: {type: '0'}})
+            },
+
+            // 编辑报名表
+            onEditRegistrationTemplate() {
+                this.$storage.setObject('activityPreview', this.activityForm);
+                this.$router.push({path: "/activity/apply/table", query: {id: this.applyTableId, type: '0'}});
+            },
+
+            // 模板编辑
+            onTemplateEdit(template) {
+                this.$storage.setObject('activityPreview', this.activityForm);
+                this.$router.push({path: "/activity/apply/table", query: {id: template.id, type: '1'}})
+            },
+
+            // 模板删除
+            onTemplateDelete(template) {
+                this.$axios.delete(`/questionnaire-template/${template.id}`).then(() => {
+                    this.getTemplate();
+                    this.$message.success("模板已删除");
+                })
+            },
+
+            // 模板添加
+            onTemplateAdd() {
+                this.$storage.setObject('activityPreview', this.activityForm);
+                this.$router.push({path: "/activity/apply/table", query: {type: '1'}})
             },
 
             // 点击取消
             onCancel() {
                 if (this.$route.query.id) { // 编辑时，不保存草稿
+                    this.$storage.removeObject('activityPreview');
                     this.$router.go(-1);
                 } else { // 发布新活动取消时，提示用户保存草稿
                     this.cancelDialogVisible = true;
@@ -564,6 +686,7 @@
                     this.activityForm.status = undefined; // 删除草稿状态
                     this.activityForm.form = this.activityForm.cityId === 999993 || this.activityForm.cityId === 999992 ? 0 : 1; // 线上=0，线下=1
                     this.publishing = true;
+                    this.activityForm.id = this.$route.query.id;
                     this.$axios.post("/activity/save", this.activityForm).then(data => {
                         this.publishing = false;
                         this.$storage.removeObject('activityPreview');
@@ -580,6 +703,7 @@
             // 检查参数是否填写完整
             checkForm() {
                 let message = undefined;
+                this.activityForm.questionnaireId = this.useTemplate ? this.templateId : this.applyTableId;
                 if (!this.activityForm.title) {
                     message = "请输入活动名称";
                 } else if (!this.activityForm.organizerType) {
@@ -598,12 +722,24 @@
                     message = "请输入活动介绍";
                 } else if (!this.activityForm.poster) {
                     message = "请上传活动海报";
+                } else if (!this.activityForm.questionnaireId) {
+                    message = "请添加报名表或选择报名表模板";
                 }
-                // else if (!this.activityForm.registrationTemplateId) {
-                //     message = "请选择报名表模板";
-                // }
                 message && this.$message.warning(message);
                 return !message;
+            },
+
+            // 获取我的模板
+            getTemplate() {
+                // 获取报名模板
+                this.$axios.get("/questionnaire-template/my/list").then(data => {
+                    this.registrationTemplateList = data.data;
+                })
+
+                // 获取我的模板数量
+                this.$axios.get('/questionnaire-template/my/count').then(response => {
+                    this.templateCount = response.data;
+                })
             }
         }
     };
@@ -769,6 +905,23 @@
                     line-height: 30px;
                     cursor: pointer;
                 }
+
+                .add-button-disabled {
+                    background: #DDDDDD;
+                    cursor: not-allowed;
+                }
+
+                .edit-button {
+                    font-size: 16px;
+                    color: #4895EF;
+                    line-height: 22px;
+                    cursor: pointer;
+                }
+
+                .edit-button-disabled {
+                    color: #DDDDDD;
+                    cursor: not-allowed;
+                }
             }
 
             .poster-container {
@@ -885,6 +1038,56 @@
                     cursor: pointer;
                 }
             }
+        }
+    }
+
+    .template-settings-container {
+        display: flex;
+        flex-direction: column;
+
+        .line1 {
+            display: flex;
+            align-items: flex-end;
+            font-size: 18px;
+            color: #333333;
+            line-height: 25px;
+            font-weight: bold;
+
+            span {
+                font-size: 12px;
+                color: #999999;
+                line-height: 17px;
+                margin-left: 5px;
+            }
+        }
+
+        .line2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 16px;
+            color: #333333;
+            line-height: 22px;
+
+            .operate-container {
+                width: 38px;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-left: 46px;
+            }
+        }
+
+        .line3 {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 16px;
+            color: #333333;
+            line-height: 22px;
+            cursor: pointer;
         }
     }
 </style>
