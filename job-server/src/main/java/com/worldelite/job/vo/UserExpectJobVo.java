@@ -1,7 +1,5 @@
 package com.worldelite.job.vo;
 
-import com.worldelite.job.entity.City;
-import jdk.jfr.Category;
 import lombok.Data;
 
 import java.util.List;
@@ -38,7 +36,13 @@ public class UserExpectJobVo {
     private String expectWorkType; // 工作类型
     private String expectPosition;
 
-    private List<JobCategoryVo>categoryList;
-    private List<CityVo>cityList;
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    private String industry;
+
+    private List<JobCategoryVo> categoryList;
+    private List<CityVo> cityList;
 
 }

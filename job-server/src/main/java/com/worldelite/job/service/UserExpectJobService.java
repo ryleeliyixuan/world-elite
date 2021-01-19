@@ -76,6 +76,7 @@ public class UserExpectJobService extends BaseService {
         userExpectJobVo.setExpectPosition(userExpectJob.getExpectPosition());
         userExpectJobVo.setSalaryId(userExpectJob.getSalaryId());
         userExpectJobVo.setExpectWorkType(userExpectJob.getExpectWorkType());
+        userExpectJobVo.setIndustry(userExpectJob.getIndustry());
 
         return userExpectJobVo;
     }
@@ -118,6 +119,8 @@ public class UserExpectJobService extends BaseService {
             list.get(0).setExpectCity(userExpectJobForm.getExpectCity());
             list.get(0).setExpectWorkType(userExpectJobForm.getExpectWorkType());
             list.get(0).setSalaryId(userExpectJobForm.getSalaryId());
+            list.get(0).setIndustry(userExpectJobForm.getIndustry());
+            logger.info(" debug: " +userExpectJobForm.getIndustry());
             expectJobMapper.updateByPrimaryKeySelective(list.get(0));
         }
         else {
@@ -128,6 +131,7 @@ public class UserExpectJobService extends BaseService {
             record.setExpectCity(userExpectJobForm.getExpectCity());
             record.setExpectWorkType(userExpectJobForm.getExpectWorkType());
             record.setSalaryId(userExpectJobForm.getSalaryId());
+            record.setIndustry(userExpectJobForm.getIndustry());
             expectJobMapper.insertSelective(record);
         }
 

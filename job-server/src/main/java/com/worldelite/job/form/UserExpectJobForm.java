@@ -44,4 +44,10 @@ public class UserExpectJobForm {
 
     private String expectWorkType; // 工作类型
     private String expectPosition; //expect position
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    private String industry;
 }
