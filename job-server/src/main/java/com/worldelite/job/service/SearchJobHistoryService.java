@@ -1,9 +1,6 @@
 package com.worldelite.job.service;
 
-import com.worldelite.job.entity.Dict;
-import com.worldelite.job.entity.SearchJobHistory;
-import com.worldelite.job.entity.SearchJobHistoryInfo;
-import com.worldelite.job.entity.SearchJobHistoryOptions;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.form.SearchHistoryForm;
 import com.worldelite.job.mapper.CityMapper;
 import com.worldelite.job.mapper.DictMapper;
@@ -114,7 +111,7 @@ public class SearchJobHistoryService extends BaseService{
                     industryIds.add(jobHistoryInfo.getIndustryId());
 
                     Dict dict = new Dict();
-                    cityValues.add(cityMapper.selectByPrimaryKey(jobHistoryInfo.getCityId()).getName());
+                    cityValues.add(Optional.ofNullable(cityMapper.selectByPrimaryKey(jobHistoryInfo.getCityId())).orElse(new City()).getName());
                     salaryValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getSalaryId())).orElse(dict).getName());
                     degreeValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getDegreeId())).orElse(dict).getName());
                     industryValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getIndustryId())).orElse(dict).getName());

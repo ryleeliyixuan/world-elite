@@ -1,6 +1,6 @@
 <template>
   <div class="background-wrapper">
-    <Affix @on-change="scrollPane">
+    <Affix>
       <div class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
         <div class="section1-container">
 
@@ -72,7 +72,7 @@
 
             <!-- 学历要求 -->
             <div class="section1-filter">
-              <span class="section1-filter-title">学历要求：</span>
+              <span id="pointA" class="section1-filter-title">学历要求：</span>
               <el-checkbox-group v-model="listQuery.degreeIds" size="small">
                 <el-checkbox-button
                         v-for="item in degreeOptions"
@@ -178,7 +178,7 @@
 
             <!-- 特殊筛选 -->
             <div class="section1-filter">
-              <span class="section1-filter-title">特殊筛选：</span>
+              <span id="pointMore" class="section1-filter-title">特殊筛选：</span>
               <el-checkbox-group v-model="listQuery.specialIds" size="small">
                 <!--<el-checkbox-button>
                   内推
@@ -239,25 +239,32 @@
               <div class="quickFilter-caption" v-if="this.historyOptions.length > 0">
                 <div class="quickFilter-history-box" v-for="(item, index) in this.historyOptions">
                   <div>
-                    <span class="filter-keyword">产品经理<!--{{item.keyword}}--></span>
+                    <span class="filter-keyword">{{item.keyword}}</span>
                     <span class="filter-count">共{{item.filterCount}}个筛选条件</span>
                   </div>
                   <div class="filter-history-info">
                     <span v-for="(cityValue, index) in item.cityValues"
                           :id="item.cityIds[index]"
                           class="city-value"
+                          @click="reHandleFilter(item.cityIds[index], 'cityIds')"
                     >{{cityValue}}</span>
+                    <span style="margin-left: 6px;"></span>
                     <span v-for="(industryValue, index) in item.industryValues"
                           :id="item.industryIds[index]"
                           class="industry-value"
+                          @click="reHandleFilter(item.industryIds[index], 'companyIndustryIds')"
                     >{{industryValue}}</span>
+                    <span style="margin-left: 6px;"></span>
                     <span v-for="(salaryValue, index) in item.salaryValues"
                           :id="item.salaryIds[index]"
                           class="salary-value"
+                          @click="reHandleFilter(item.salaryIds[index], 'salaryRangeIds')"
                     >{{salaryValue}}</span>
+                    <span style="margin-left: 6px;"></span>
                     <span v-for="(degreeValue, index) in item.degreeValues"
                           :id="item.degreeIds[index]"
                           class="degree-value"
+                          @click="reHandleFilter(item.degreeIds[index], 'degreeIds')"
                     >{{degreeValue}}</span>
                   </div>
                 </div>
@@ -265,15 +272,47 @@
             </div>
             <div class="quickFilter-right">
               <span class="quickFilter-title">订阅的职位：</span>
-              <div class="quickFilter-caption">
-                暂未订阅职位哦，点击下方及时获取职位信息
+              <div v-if="!this.subscribeOptions">
+                <div class="quickFilter-caption">
+                  暂未订阅职位哦，点击下方及时获取职位信息
+                </div>
+                <div class="quickFilter-right-click">
+                  <svg-icon
+                          icon-class="joblistfilterplus"
+                          style="height: 20px; width: 20px"
+                  />
+                  <span class="quickFilter-right-click-text" @click="handleSubscribe">点我订阅职位</span>
+                </div>
               </div>
-              <div class="quickFilter-right-click">
-                <svg-icon
-                        icon-class="joblistfilterplus"
-                        style="height: 20px; width: 20px"
-                />
-                <span class="quickFilter-right-click-text">点我订阅职位</span>
+              <div v-if="this.subscribeOptions" class="quickFilter-caption">
+                <div class="quickFilter-history-box">
+                  <div>
+                    <span class="filter-keyword">{{this.subscribeOptions.keyword}}</span>
+                    <span class="filter-count">共{{this.subscribeOptions.filterCount}}个筛选条件</span>
+                  </div>
+                  <div class="filter-history-info">
+                    <span v-for="(cityValue, index) in this.subscribeOptions.cityValues"
+                          :id="this.subscribeOptions.cityIds[index]"
+                          class="city-value"
+                          @click=""
+                    >{{cityValue}}</span>
+                    <span style="margin-left: 6px;"></span>
+                    <span v-for="(industryValue, index) in this.subscribeOptions.industryValues"
+                          :id="this.subscribeOptions.industryIds[index]"
+                          class="industry-value"
+                    >{{industryValue}}</span>
+                    <span style="margin-left: 6px;"></span>
+                    <span v-for="(salaryValue, index) in this.subscribeOptions.salaryValues"
+                          :id="this.subscribeOptions.salaryIds[index]"
+                          class="salary-value"
+                    >{{salaryValue}}</span>
+                    <span style="margin-left: 6px;"></span>
+                    <span v-for="(degreeValue, index) in this.subscribeOptions.degreeValues"
+                          :id="this.subscribeOptions.degreeIds[index]"
+                          class="degree-value"
+                    >{{degreeValue}}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -458,6 +497,7 @@
           filterCount: undefined
         },
         historyOptions: [],
+        subscribeOptions: undefined,
         listQuery: {
           keyword: "",
           salaryRangeIds: [],
@@ -526,6 +566,9 @@
       this.initData();
       this.getList();
     },
+    mounted() {
+      window.addEventListener("scroll", this.checkScrollFilter);
+    },
     watch: {
       $route() {
         this.getList();
@@ -543,6 +586,11 @@
             this.historyOptions = resp.data;
           }
         });
+        this.$axios.get("/subscribe/search-job-history").then(resp => {
+          if (resp !== undefined && this.checkSubscribeData(resp.data)) {
+            this.subscribeOptions = resp.data;
+          }
+        });
         listByType(2).then(
                 (response) => {
                   let names = [];
@@ -553,7 +601,7 @@
                   }
                   this.$axios.post("/city/get-city-id-by-name", {cityNames: names}).then(resp => {
                     for (let i = 1; i < resp.data.length; i++) {
-                      this.cityOptions[i].id = resp.data[i];
+                      this.cityOptions[i].id = resp.data[i - 1];
                     }
                   });
                 }
@@ -625,10 +673,37 @@
           }
         }, 10);
       },
+      checkScrollFilter() {
+        if (this.A && !this.moreFilter) {
+          let top1 = document.getElementById("pointA").offsetTop;
+          let gun = document.documentElement.scrollTop || document.body.scrollTop;
+          let top = top1 - gun;
+          if (top <= 0) {
+            this.closeMoreFilter();
+          }else{
+            this.reShowMoreFilter();
+          }
+        }
+
+        if (this.moreFilter && this.A) {
+          let top1 = document.getElementById("pointMore").offsetTop;
+          let gun = document.documentElement.scrollTop || document.body.scrollTop;
+          let top = top1 - gun;
+          if (top <= 0) {
+            this.closeMoreFilter();
+          }else{
+            this.reShowMoreFilter();
+          }
+        }
+      },
       showMoreFilter() {
         this.A = true;
         this.moreFilter = true;
         this.C = false;
+      },
+      checkSubscribeData(data) {
+        if (data === undefined) return false;
+        return !(data.cityIds.length <= 0 && data.degreeIds.length <= 0 && data.industryIds.length <= 0 && data.salaryIds.length <= 0);
       },
       closeMoreFilter() {
         this.A = false;
@@ -647,7 +722,7 @@
           }
         }
       },
-      scrollPane(status) {
+      /*scrollPane(status) {
         this.collapse = status;
         this.selectedSalary = "";
         this.selectedIndustry = "";
@@ -696,7 +771,7 @@
                 0,
                 this.selectedJobType.length - 1
         );
-      },
+      },*/
       onOrderPubTime() {
         this.listQuery.sort = this.orderPubTime;
         this.handleFilter();
@@ -739,6 +814,14 @@
           this.handleFilter();
         })
       },
+      reHandleFilter(id, key) {
+        this.emptyFilter();
+        this.listQuery[key].push(id);
+        this.listQuery.page = 1;
+        this.saveSearchHistory();
+        this.refreshOptions();
+        this.handleRouteList();
+      },
       handleFilter() {
         this.listQuery.page = 1;
         this.saveSearchHistory();
@@ -757,19 +840,40 @@
         });
         event.stopPropagation();
       },
+      handleSubscribe() {
+        this.$router.push({
+          path: "/favorites",
+        });
+      },
       formatHistoryForm() {
         if (this.$route.query.searchWord !== undefined) {
           this.historyForm.keyword = this.$route.query.searchWord;
         }
-        this.historyForm.cityIds = this.listQuery.cityIds;
+
+        this.historyForm.cityIds = this.arrCopy(this.listQuery.cityIds);
+        // this.historyForm.cityIds = this.listQuery.cityIds;
         this.historyForm.degreeIds = this.listQuery.degreeIds;
         this.historyForm.salaryIds = this.listQuery.salaryRangeIds;
         this.historyForm.industryIds = this.listQuery.companyIndustryIds;
 
+        this.removeEl(this.historyForm.cityIds);
         this.historyForm.filterCount = this.historyForm.cityIds.length
                 + this.historyForm.degreeIds.length
                 + this.historyForm.salaryIds.length
                 + this.historyForm.industryIds.length;
+      },
+      arrCopy(originArr) {
+        let newArr = [];
+        for (let i = 0; i < originArr.length; i++) {
+          newArr.push(originArr[i]);
+        }
+        return newArr;
+      },
+      removeEl(arr) {
+        let i = arr.indexOf(this.unlimitedMap["city"]);
+        if (i > -1) {
+          arr.splice(i, 1);
+        }
       },
       refreshOptions() {
         if (this.listQuery.cityIds.indexOf(this.unlimitedMap["city"]) !== -1) {
@@ -876,7 +980,6 @@
           }
         });
       },
-
       handleRouteList() {
         this.$router.replace({
           path: this.$route.path,
@@ -886,6 +989,9 @@
       openJobDetail(id) {
         this.$router.push(`/job/${id}`);
       },
+    },
+    beforeDestroy() {
+      window.removeEventListener("scroll",this.checkScrollFilter)
     },
   };
 </script>
@@ -1029,7 +1135,16 @@
             font-size: 11px;
             color: #7F7F7F;
 
-            .city-value:nth-child(1) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow:ellipsis;
+
+            span {
+              margin-left: 3px;
+              cursor: pointer;
+            }
+
+            /*.city-value:nth-child(1) {
               margin-left: 6px;
             }
 
@@ -1040,6 +1155,10 @@
             .industry-value:nth-child(2) {
               margin-left: 6px;
             }
+
+            .salary-value:nth-child(3) {
+              margin-left: 6px;
+            }*/
 
           }
 
@@ -1073,6 +1192,7 @@
             font-weight: 500;
             color: #333333;
             line-height: 22px;
+            cursor: pointer;
           }
         }
       }
