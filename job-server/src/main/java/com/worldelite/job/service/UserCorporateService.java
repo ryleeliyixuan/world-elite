@@ -13,6 +13,7 @@ import com.worldelite.job.mapper.*;
 import com.worldelite.job.service.sdk.AliEmailService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.RequestUtils;
+import com.worldelite.job.util.TimeUtils;
 import com.worldelite.job.vo.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -315,31 +316,66 @@ public class UserCorporateService extends BaseService {
      * @return
      */
     public List<Long> selectStatInfo(Integer days) {
-        List<Map<String, Object>> maps = userCorporateMapper.selectStatInfo(days);
-        return formatStatInfo(maps, days);
+        String format = "yyyy-MM-dd";
+        String formatMysql = "%Y-%m-%d";
+        String startDate = TimeUtils.getBeforeDate(days, format);
+        String endDate = TimeUtils.getDateNow(format);
+        List<String> dateList = TimeUtils.getDateList(startDate, endDate, format);
+        dateList = dateList.subList(0, dateList.size() - 1);
+        List<Long> result = new ArrayList<>();
+        for (String date : dateList) {
+            result.add(userCorporateMapper.selectStatInfoInDate(formatMysql, date));
+        }
+        return result;
+//        List<Map<String, Object>> maps = userCorporateMapper.selectStatInfo(days);
+//        return formatStatInfo(maps, days);
     }
 
     /**
-     *  获取指定月份的学生统计数据
+     *  获取指定月份的企业统计数据
      *
-     * @param dateStr 日期
+     * @param date 日期
      * @return
      */
-    public List<Long> selectSpecifyMonthStatInfo(String dateStr) {
-        List<Map<String, Object>> maps = userCorporateMapper.selectSpecifyMonthStatInfo(dateStr);
-        return formatStatInfo(maps, dateStr);
+    public List<Long> selectSpecifyMonthStatInfo(String date) {
+        String format = "yyyy-MM-dd";
+        String formatMysql = "%Y-%m-%d";
+        String dStart = date + "-01";
+        String dEnd = date + "-" + TimeUtils.getDaysOfMonth(date);
+        List<String> dateList = TimeUtils.getDateList(dStart, dEnd, format);
+        dateList = dateList.subList(0, dateList.size() - 1);
+        List<Long> result = new ArrayList<>();
+        for (String d : dateList) {
+            result.add(userCorporateMapper.selectStatInfoInDate(formatMysql, d));
+        }
+        return result;
+
+//        List<Map<String, Object>> maps = userCorporateMapper.selectSpecifyMonthStatInfo(dateStr);
+//        return formatStatInfo(maps, dateStr);
     }
 
 
     /**
-     * 获取指定年份的学生统计数据
+     * 获取指定年份的企业统计数据
      *
-     * @param dateStr 日期
+     * @param date 日期
      * @return
      */
-    public List<Long> selectSpecifyYearStatInfo(String dateStr) {
-        List<Map<String, Object>> maps = userCorporateMapper.selectSpecifyYearStatInfo(dateStr);
-        return formatYearStatInfo(maps, dateStr);
+    public List<Long> selectSpecifyYearStatInfo(String date) {
+        String format = "yyyy-MM";
+        String formatMysql = "%Y-%m";
+        String dStart = date + "-01";
+        String dEnd = date + "-12";
+        List<String> dateList = TimeUtils.getDateList(dStart, dEnd, format);
+        dateList = dateList.subList(0, dateList.size() - 1);
+        List<Long> result = new ArrayList<>();
+        for (String d : dateList) {
+            result.add(userCorporateMapper.selectStatInfoInDate(formatMysql, d));
+        }
+        return result;
+
+//        List<Map<String, Object>> maps = userCorporateMapper.selectSpecifyYearStatInfo(dateStr);
+//        return formatYearStatInfo(maps, dateStr);
     }
 
 
@@ -399,7 +435,7 @@ public class UserCorporateService extends BaseService {
 
 
     private List<Long> formatStatInfo(List<Map<String, Object>> maps, String date) {
-        Integer days = getDaysOfMonth(date);
+        Integer days = TimeUtils.getDaysOfMonth(date);
         if (maps == null || maps.size() == 0) {
             return getEmptyList(days);
         }
@@ -467,22 +503,4 @@ public class UserCorporateService extends BaseService {
         }
     }
 
-
-    /**
-     * 获取某个月有多少天
-     *
-     * @param date
-     * @return
-     * @throws ParseException
-     */
-    private Integer getDaysOfMonth(String date){
-        try {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new SimpleDateFormat("yyyy-MM").parse(date));
-            return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

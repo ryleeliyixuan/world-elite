@@ -17,6 +17,7 @@ import com.worldelite.job.mapper.UserMapper;
 import com.worldelite.job.service.sdk.AliEmailService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.RequestUtils;
+import com.worldelite.job.util.TimeUtils;
 import com.worldelite.job.vo.*;
 import me.zhyd.oauth.enums.AuthUserGender;
 import me.zhyd.oauth.model.AuthUser;
@@ -572,9 +573,21 @@ public class UserApplicantService extends BaseService {
      * @return
      */
     public List<Long> selectStatInfo(Integer days) {
-        List<Map<String, Object>> maps = userApplicantMapper.selectStatInfo(days);
-        return formatStatInfo(maps, days);
+        String format = "yyyy-MM-dd";
+        String formatMysql = "%Y-%m-%d";
+        String startDate = TimeUtils.getBeforeDate(days, format);
+        String endDate = TimeUtils.getDateNow(format);
+        List<String> dateList = TimeUtils.getDateList(startDate, endDate, format);
+        dateList = dateList.subList(0, dateList.size() - 1);
+        List<Long> result = new ArrayList<>();
+        for (String date : dateList) {
+            result.add(userApplicantMapper.selectStatInfoInDate(formatMysql, date));
+        }
+        return result;
+        //        List<Map<String, Object>> maps = userApplicantMapper.selectStatInfo(days);
+//        return formatStatInfo(maps, days);
     }
+
 
 
     /**
@@ -584,20 +597,44 @@ public class UserApplicantService extends BaseService {
      * @return
      */
     public List<Long> selectSpecifyMonthStatInfo(String date) {
-        List<Map<String, Object>> maps = userApplicantMapper.selectSpecifyMonthStatInfo(date);
-        return formatStatInfo(maps, date);
+        String format = "yyyy-MM-dd";
+        String formatMysql = "%Y-%m-%d";
+        String dStart = date + "-01";
+        String dEnd = date + "-" + TimeUtils.getDaysOfMonth(date);
+        List<String> dateList = TimeUtils.getDateList(dStart, dEnd, format);
+        dateList = dateList.subList(0, dateList.size() - 1);
+        List<Long> result = new ArrayList<>();
+        for (String d : dateList) {
+            result.add(userApplicantMapper.selectStatInfoInDate(formatMysql, d));
+        }
+        return result;
+
+//        List<Map<String, Object>> maps = userApplicantMapper.selectSpecifyMonthStatInfo(date);
+//        return formatStatInfo(maps, date);
     }
 
 
     /**
      * 获取指定年份的学生统计数据
      *
-     * @param dateStr 日期 yyyy
+     * @param date 日期 yyyy
      * @return
      */
-    public List<Long> selectSpecifyYearStatInfo(String dateStr) {
-        List<Map<String, Object>> maps = userApplicantMapper.selectSpecifyYearStatInfo(dateStr);
-        return formatYearStatInfo(maps, dateStr);
+    public List<Long> selectSpecifyYearStatInfo(String date) {
+        String format = "yyyy-MM";
+        String formatMysql = "%Y-%m";
+        String dStart = date + "-01";
+        String dEnd = date + "-12";
+        List<String> dateList = TimeUtils.getDateList(dStart, dEnd, format);
+        dateList = dateList.subList(0, dateList.size() - 1);
+        List<Long> result = new ArrayList<>();
+        for (String d : dateList) {
+            result.add(userApplicantMapper.selectStatInfoInDate(formatMysql, d));
+        }
+        return result;
+
+//        List<Map<String, Object>> maps = userApplicantMapper.selectSpecifyYearStatInfo(dateStr);
+//        return formatYearStatInfo(maps, dateStr);
     }
 
 

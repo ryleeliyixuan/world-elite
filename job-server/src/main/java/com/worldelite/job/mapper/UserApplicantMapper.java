@@ -5,6 +5,7 @@ import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.entity.UserOptions;
 import com.worldelite.job.form.CountForm;
 import com.worldelite.job.form.FlagPairForm;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -75,4 +76,5 @@ public interface UserApplicantMapper {
 
     List<Map<String, Object>> selectSpecifyYearStatInfo(String dateStr);
 
+    Long selectStatInfoInDate(@Param("format")String format, @Param("date")String date);
 }
