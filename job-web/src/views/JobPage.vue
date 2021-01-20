@@ -193,11 +193,11 @@
     <div class="resume">
       <el-dialog :visible.sync="previewDialog" width="854px">
         <div class="resume-preview">
-          <el-button type="text"
+          <!-- <el-button type="text"
             ><svg-icon
               icon-class="resumedownload"
               style="height: 23px; width: 29px"
-          /></el-button>
+          /></el-button> -->
           <el-button @click="previewDialog = false" type="text"
             ><svg-icon
               icon-class="resumereviewclose"
