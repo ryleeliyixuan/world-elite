@@ -84,11 +84,11 @@
             </div>
 
             <div class="section1-filter-option" v-show="!moreFilter">
-              <el-button
+              <!-- <el-button
                       class="quick"
                       @mouseover.native="quickFilter = true"
                       size="mini"
-              >快速筛选</el-button>
+              >快速筛选</el-button> -->
               <el-button
                       class="more"
                       @click="showMoreFilter"
@@ -192,12 +192,12 @@
             </div>
 
             <div class="section1-filter-option" v-show="moreFilter">
-              <el-button
+              <!-- <el-button
                       class="quick"
                       @mouseover.native="quickFilter = true"
                       size="mini"
               >快速筛选</el-button
-              >
+              > -->
               <el-button
                       class="more"
                       @click="closeMoreFilter"
