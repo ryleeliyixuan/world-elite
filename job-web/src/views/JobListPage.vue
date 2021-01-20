@@ -1,7 +1,7 @@
 <template>
   <div class="background-wrapper">
-    <Affix>
-      <div class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
+    <!--<Affix>-->
+      <div v-show="A" class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
         <div class="section1-container">
 
           <div v-show="A">
@@ -95,7 +95,6 @@
                       size="mini"
               >更多筛选</el-button>
             </div>
-
           </div>
 
           <div v-show="moreFilter">
@@ -206,28 +205,36 @@
               >
             </div>
           </div>
+        </div>
+      </div>
 
-          <div v-show="C">
-            <div class="inp-search">
-              <el-input class="inp-search-child" size="mini" v-model="valueCity" :placeholder="placeholderCity" :readonly="true"></el-input>
-              <el-input class="inp-search-child" size="mini" v-model="valueIndustry" :placeholder="placeholderIndustry" :readonly="true"></el-input>
-              <el-input class="inp-search-child" size="mini" v-model="valueSalary" :placeholder="placeholderSalary" :readonly="true"></el-input>
-              <el-input class="inp-search-child" size="mini" v-model="valueDegree" :placeholder="placeholderDegree" :readonly="true"></el-input>
-              <el-input class="inp-search-child" size="mini" v-model="valueExp" :placeholder="placeholderExp" :readonly="true"></el-input>
-              <div class="section1-filter-option">
-                <el-button
-                        style="flex: 1; margin-left: 10px;"
-                        class="more"
-                        @click="reShowMoreFilter"
-                        size="mini"
-                >更多筛选</el-button>
+
+    <Affix>
+    <div v-show="C" class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
+      <div class="section1-container">
+
+              <div v-show="C" class="inp-search">
+                <el-input class="inp-search-child" size="mini" :placeholder="placeholderCity" :readonly="true"></el-input>
+                <el-input class="inp-search-child" size="mini" :placeholder="placeholderIndustry" :readonly="true"></el-input>
+                <el-input class="inp-search-child" size="mini" :placeholder="placeholderSalary" :readonly="true"></el-input>
+                <el-input class="inp-search-child" size="mini" :placeholder="placeholderDegree" :readonly="true"></el-input>
+                <el-input class="inp-search-child" size="mini" :placeholder="placeholderExp" :readonly="true"></el-input>
+                <div class="section1-filter-option">
+                  <el-button
+                          style="flex: 1; margin-left: 10px;"
+                          class="more"
+                          @click="reShowMoreFilter"
+                          size="mini"
+                  >更多筛选</el-button>
+                </div>
+
+                <el-link style="margin-left: 60px;" class="sort-options" target="_blank">推荐排序</el-link>
+                <el-link class="sort-options" target="_blank" @click="onOrderPubTime">最新发布</el-link>
+                <el-link class="sort-options" target="_blank" @click="onOrderSalary">薪资降序</el-link>
               </div>
-
-              <el-link style="margin-left: 60px;" class="sort-options" target="_blank">推荐排序</el-link>
-              <el-link class="sort-options" target="_blank" @click="onOrderPubTime">最新发布</el-link>
-              <el-link class="sort-options" target="_blank" @click="onOrderSalary">薪资降序</el-link>
-            </div>
-          </div>
+    </div>
+  </div>
+    </Affix>
 
           <div v-show="quickFilter" class="quickFilter" @mouseleave="quickFilter = false">
             <div class="quickFilter-left">
@@ -309,8 +316,7 @@
                 </div>
               </div>
             </div>-->
-          </div>
-        </div>
+
         <el-button style="position: relative; color: #2d3436; font-size: 14px; height: 25px; bottom: 9px;" class="empty" @click="emptyFilter" type="text"
         ><svg-icon
                 class="empty-icon"
@@ -319,7 +325,7 @@
         />清除选项</el-button
         >
       </div>
-      <div class="section1-wrapper section1-wrapper-collapse" v-else>
+      <div class="section1-wrapper section1-wrapper-collapse" v-if="this.collapse">
         <div class="section1-container section1-collapse">
           <el-tag
                   class="section1-collapse-tag"
@@ -349,7 +355,7 @@
           >
         </div>
       </div>
-    </Affix>
+    <!--</Affix>-->
     <!--<el-button style="position: fixed; top: 110px; left: 1520px; color: #2d3436; font-size: 14px;" class="empty" @click="emptyFilter" type="text"
     ><svg-icon
             class="empty-icon"
@@ -723,9 +729,9 @@
           }
         }
       },
-      /*scrollPane(status) {
+      scrollPane(status) {
         this.collapse = status;
-        this.selectedSalary = "";
+        /*this.selectedSalary = "";
         this.selectedIndustry = "";
         this.selectedScale = "";
         this.selectedJobType = "";
@@ -771,8 +777,8 @@
         this.selectedJobType = this.selectedJobType.substr(
                 0,
                 this.selectedJobType.length - 1
-        );
-      },*/
+        );*/
+      },
       onOrderPubTime() {
         this.listQuery.sort = this.orderPubTime;
         this.handleFilter();
@@ -881,31 +887,36 @@
       },
       refreshOptions() {
         if (this.listQuery.cityIds.indexOf(this.unlimitedMap["city"]) !== -1) {
-          this.listQuery.cityIds = [];
+          this.listQuery.cityIds = [this.unlimitedMap["city"]];
+          this.placeholderCity = "不限";
         }
         if (this.listQuery.companyIndustryIds.indexOf(this.unlimitedMap["industry"]) !== -1) {
-          this.listQuery.companyIndustryIds = [];
+          this.listQuery.companyIndustryIds = [this.unlimitedMap["industry"]];
+          this.placeholderIndustry = "不限";
         }
         if (this.listQuery.salaryRangeIds.indexOf(this.unlimitedMap["salary"]) !== -1) {
-          this.listQuery.salaryRangeIds = [];
+          this.listQuery.salaryRangeIds = [this.unlimitedMap["salary"]];
+          this.placeholderSalary = "不限";
         }
         if (this.listQuery.degreeIds.indexOf(this.unlimitedMap["degree"]) !== -1) {
-          this.listQuery.degreeIds = [];
+          this.listQuery.degreeIds = [this.unlimitedMap["degree"]];
+          this.placeholderDegree = "不限";
         }
         if (this.listQuery.experienceIds.indexOf(this.unlimitedMap["exp"]) !== -1) {
-          this.listQuery.experienceIds = [];
+          this.listQuery.experienceIds = [this.unlimitedMap["exp"]];
+          this.placeholderExp = "不限";
         }
         if (this.listQuery.companyScaleIds.indexOf(this.unlimitedMap["scale"]) !== -1) {
-          this.listQuery.companyScaleIds = [];
+          this.listQuery.companyScaleIds = [this.unlimitedMap["scale"]];
         }
         if (this.listQuery.companyDefineIds.indexOf(this.unlimitedMap["define"]) !== -1) {
-          this.listQuery.companyDefineIds = [];
+          this.listQuery.companyDefineIds = [this.unlimitedMap["define"]];
         }
         if (this.listQuery.jobTypes.indexOf(this.unlimitedMap["jobType"]) !== -1) {
-          this.listQuery.jobTypes = [];
+          this.listQuery.jobTypes = [this.unlimitedMap["jobType"]];
         }
         if (this.listQuery.lanRequiredIds.indexOf(this.unlimitedMap["lang"]) !== -1) {
-          this.listQuery.lanRequiredIds = [];
+          this.listQuery.lanRequiredIds = [this.unlimitedMap["lang"]];
         }
 
         this.valueCity = this.getNameByIdFromOptions(this.cityOptions, this.listQuery.cityIds, "城市");
