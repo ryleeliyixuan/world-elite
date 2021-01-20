@@ -142,18 +142,18 @@
                 </div>
                 <div class="value-container">
                     <div class="value-line-container">
-                        <div class="option-container" @click="onAuditType('1')">
-                            <svg-icon v-if="activityForm.auditType!=='1'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                        <div class="option-container" @click="onAuditType('0')">
+                            <svg-icon v-if="activityForm.auditType!=='0'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
                             <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
                             <div class="option-text">需要审核</div>
                         </div>
-                        <div class="option-container" @click="onAuditType('0')" style="margin-left: 21px">
-                            <svg-icon v-if="activityForm.auditType!=='0'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                        <div class="option-container" @click="onAuditType('1')" style="margin-left: 21px">
+                            <svg-icon v-if="activityForm.auditType!=='1'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
                             <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
                             <div class="option-text">无需审核</div>
                         </div>
                     </div>
-                    <div v-if="activityForm.auditType==='0'">
+                    <div v-if="activityForm.auditType==='1'">
                         <div class="line">
                             <div class="name" style="width: auto;">人数限制</div>
                             <div class="option-container" @click="onNumberLimit(-1)">
@@ -208,7 +208,7 @@
                     活动报名表<span>*</span>
                 </div>
                 <div v-if="this.$route.query.id" class="edit-button" @click="onPreviewRegistration">{{applyTableTitle}}</div>
-                <div v-else>
+                <div v-else style="display: flex; align-items: center;">
                     <div v-if="applyTableTitle" :class="['edit-button',{'edit-button-disabled':useTemplate}]"
                          @click="!useTemplate && onEditRegistrationTemplate()">
                         {{applyTableTitle}}
@@ -330,7 +330,7 @@
                     activityFinishTime: undefined, // 活动结束时间
                     registrationStartTime: undefined, // 报名开始时间
                     registrationFinishTime: undefined, // 报名结束时间
-                    auditType: '1', // 报名审核类型(是否需要审核),0不需要,1需要
+                    auditType: '1', // 报名审核类型(是否需要审核),0需要,1不需要
                     numberLimit: -1, // 无需审核时的人数限制，无限制为-1
                     needResume: '1', // 是否需要报名者简历信息, 0不需要,1需要
                     description: undefined, // 活动详情
@@ -523,11 +523,13 @@
                     this.activityForm.organizerInfoForm = this.activityForm.organizerInfoVo;
 
                     // 加载报名表
-                    this.$axios.get(`/activity-questionnaire/${this.activityForm.questionnaireId}`).then(response => {
-                        this.applyTable = response.data;
-                        this.applyTableTitle = response.data.title;
-                        this.applyTableId = response.data.id;
-                    });
+                    if(this.activityForm.questionnaireId) {
+                        this.$axios.get(`/activity-questionnaire/${this.activityForm.questionnaireId}`).then(response => {
+                            this.applyTable = response.data;
+                            this.applyTableTitle = response.data.title;
+                            this.applyTableId = response.data.id;
+                        });
+                    }
                 }
             },
 
@@ -716,7 +718,7 @@
                     message = "请选择活动时间";
                 } else if (!this.activityForm.registrationStartTime || !this.activityForm.registrationFinishTime) {
                     message = "请选择报名时间";
-                } else if (this.activityForm.auditType === '0' && !this.activityForm.numberLimit) {
+                } else if (this.activityForm.auditType === '1' && !this.activityForm.numberLimit) {
                     message = "请输入限制报名人数";
                 } else if (!this.activityForm.description) {
                     message = "请输入活动介绍";
@@ -867,6 +869,7 @@
                     .value-line-container {
                         display: flex;
                         align-items: center;
+                        height: 32px;
                     }
 
                     .business-license-uploader {

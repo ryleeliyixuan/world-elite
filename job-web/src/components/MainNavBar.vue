@@ -545,6 +545,10 @@ export default {
         padding: 0 15px;
       }
     }
+
+    .nav-right-container {
+      padding: 0 15px;
+    }
   }
 }
 </style>
