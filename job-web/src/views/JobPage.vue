@@ -204,7 +204,10 @@
               style="height: 17px; width: 17px"
           /></el-button>
         </div>
-        <ResumeView :resumeId="previewResumeId" class="resume-preview-content"></ResumeView
+        <ResumeView
+          :resumeId="previewResumeId"
+          class="resume-preview-content"
+        ></ResumeView
       ></el-dialog>
     </div>
     <!--  选择投递简历  -->
@@ -244,15 +247,35 @@
         ></span>
       </div>
       <el-table
+        ref="multipleTable"
         class="dialog-table"
         :data="resume"
         style="width: 100%"
         :show-header="false"
-        @selection-change="handleSelectionChange"
         v-loading="resumeListLoading"
       >
-        <el-table-column type="selection" width="30"> </el-table-column>
-        <el-table-column prop="name" label="简历名称" width="180">
+        <el-table-column width="30">
+          <template slot-scope="scope">
+            <el-radio
+              @change="
+                handleCurrentChange(
+                  scope.row.id,
+                  scope.row.resumeCompleteProgress
+                )
+              "
+              v-model="checked"
+              :label="scope.row.id"
+            ></el-radio>
+          </template>
+        </el-table-column>
+        <el-table-column prop="title" label="简历名称" width="180">
+          <template slot-scope="scope">
+            <span>{{
+              scope.row.title && scope.row.title != ""
+                ? scope.row.title
+                : "未命名简历"
+            }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="resumeCompleteProgress"
@@ -279,13 +302,13 @@
               @click="(previewDialog = true), (previewResumeId = scope.row.id)"
               >预览</el-button
             >
-            <el-button @click="handleEditResume()">修改</el-button>
+            <el-button @click="handleEditResume(scope.row.id)">修改</el-button>
           </template>
         </el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleApplyJob()">确 定</el-button>
         <el-button @click="applyDialog = false">取 消</el-button>
+        <el-button type="primary" @click="handleApplyJob()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -315,30 +338,14 @@ export default {
   components: { ResumeView },
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "UI/UX 设计师",
-          resumeCompleteProgress: "20",
-        },
-        {
-          date: "2016-05-04",
-          name: "UI/UX 设计师 1",
-          resumeCompleteProgress: "80",
-        },
-        {
-          date: "2016-05-01",
-          name: "UI/UX 设计师2 2",
-          resumeCompleteProgress: "100",
-        },
-      ],
       //resume
+      selectedId: undefined,
       resume: undefined,
-      multipleSelection: [],
       previewDialog: false,
       previewResumeId: undefined,
       resumeListLoading: true,
       progressAlertDialog: false,
+      checked: null,
 
       //map
       activeAddress: 0,
@@ -413,12 +420,17 @@ export default {
         this.$emit("complete");
       });
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-      // console.log(this.multipleSelection);
+    handleCurrentChange(id, progess) {
+      this.selectedId = id;
+      this.selectedProgress = progess;
+      console.log(this.selectedProgress);
     },
-    handleEditResume() {
-      this.$router.replace("/edit-resume");
+    handleEditResume(id) {
+      let page = this.$router.resolve({
+        path: "/edit-resume",
+        query: { resumeId: id },
+      });
+      window.open(page.href, "_blank");
     },
     handleFavorite() {
       this.favoriteLoading = true;
@@ -433,30 +445,26 @@ export default {
         });
     },
     handleApplyJob() {
-      for (let i = 0; i < this.multipleSelection.length; i++) {
-        if (this.multipleSelection[i].resumeCompleteProgress < 80) {
-          this.progressAlertDialog = true;
-          return;
-        }
+      if (this.selectedProgress < 80) {
+        this.progressAlertDialog = true;
+        return;
       }
       this.submitResume();
     },
     submitResume() {
       this.applyLoading = true;
-      for (let i = 0; i < this.multipleSelection.length; i++) {
-        let data = {
-          id: this.job.id,
-          resumeId: this.multipleSelection[i].id,
-        };
-        applyJob(data)
-          .then(() => {
-            this.job.applyFlag = 1;
-            this.$message("申请成功");
-          })
-          .finally(() => {
-            this.applyLoading = false;
-          });
-      }
+      let data = {
+        id: this.job.id,
+        resumeId: this.selectedId,
+      };
+      applyJob(data)
+        .then(() => {
+          this.job.applyFlag = 1;
+          this.$message("申请成功");
+        })
+        .finally(() => {
+          this.applyLoading = false;
+        });
       this.applyDialog = false;
     },
     handleChat() {
@@ -564,6 +572,14 @@ export default {
 }
 
 .dialog-table {
+  /deep/ .el-radio {
+    margin: 0;
+  }
+
+  /deep/ .el-radio__label {
+    display: none;
+  }
+
   /deep/ .cell {
     display: flex;
     padding: 0;
