@@ -14,4 +14,8 @@
       </if>
     </where>
   </select>
+
+  <delete id="deleteByTemplateId">
+    delete from t_questionnaire where registration_template_id = #{templateId}
+  </delete>
 </mapper>

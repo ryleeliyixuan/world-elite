@@ -21,6 +21,9 @@
             <if test="name != null and name != ''">
                 and name like CONCAT('%', #{name},'%')
             </if>
+            <if test="title != null and title != ''">
+                and title like CONCAT('%', #{title},'%')
+            </if>
             <if test="gender != null">
                 and gender = #{gender,jdbcType=TINYINT}
             </if>

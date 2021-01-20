@@ -41,6 +41,8 @@
       <if test="onlyOverseasStudent != null">
         and only_overseas_student = #{onlyOverseasStudent,jdbcType=CHAR}
       </if>
+
+      and status != 1
     </where>
   </select>
 
@@ -64,4 +66,74 @@
 <update id="increaseApplicant">
     update t_activity set applicant_quantity = applicant_quantity+1 where id = #{id,jdbcType=INTEGER} and (number_limit=-1 or applicant_quantity+1 <![CDATA[<=]]> number_limit)
 </update>
+
+<select id="selectAndListForAdmin" resultMap="BaseResultMap">
+    select
+    t_activity.id, t_activity.user_id, t_activity.form, t_activity.city_id, t_activity.user_type, t_activity.title, t_activity.poster, t_activity.organizer_id, t_activity.organizer_type, t_activity.
+    activity_start_time, t_activity.activity_finish_time, t_activity.registration_start_time, t_activity.registration_finish_time, t_activity.
+    need_resume, t_activity.only_overseas_student, t_activity.audit_type, t_activity.number_limit, t_activity.address, t_activity.status, t_activity.questionnaire_id, t_activity.
+    follower, t_activity.applicant_quantity, t_activity.weight, t_activity.send_notice_confirm, t_activity.del_flag, t_activity.create_time, t_activity.
+    update_time, t_activity.description
+    from t_activity left join t_organizer_info on t_activity.organizer_id = t_organizer_info.id
+    <where>
+      <if test="id != null">
+        t_activity.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="userId != null">
+        and t_activity.user_id = #{userId,jdbcType=BIGINT}
+      </if>
+      <if test="userType != null">
+        and t_activity.user_type = #{userType,jdbcType=CHAR}
+      </if>
+      <if test="form != null">
+        and t_activity.form = #{form,jdbcType=TINYINT}
+      </if>
+      <if test="cityIds != null and cityIds != ''">
+        and city_id in (${cityIds})
+      </if>
+      <if test="title != null and title != ''">
+        and t_activity.title like CONCAT('%', #{title},'%')
+      </if>
+      <if test="delFlag != null">
+       and t_activity.del_flag = #{delFlag,jdbcType=TINYINT}
+      </if>
+      <if test="onlyOverseasStudent != null">
+        and t_activity.only_overseas_student = #{onlyOverseasStudent,jdbcType=CHAR}
+      </if>
+      <if test="organizerType != null and organizerType != ''">
+        and t_activity.organizer_type = #{organizerType,jdbcType=CHAR}
+      </if>
+      <if test="organizerName != null and organizerName != ''">
+        and t_organizer_info.organizer_name like CONCAT('%', #{organizerName},'%')
+      </if>
+
+      <if test="activityStartTime != null">
+        and t_activity.activity_start_time <![CDATA[>=]]> #{activityStartTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="activityFinishTime != null">
+        and t_activity.activity_finish_time <![CDATA[<=]]> #{activityFinishTime,jdbcType=TIMESTAMP}
+      </if>
+
+      <choose>
+        <!--status=传来的值或者-1, 当为-1时获取[非]待审核或审核失败的数据-->
+        <when test="status != null and status != -1">
+            and t_activity.status = #{status,jdbcType=TINYINT}
+        </when>
+        <when test="status != null and status == -1">
+          and t_activity.status not in(0, 7)
+        </when>
+      </choose>
+
+      <choose>
+        <when test="reviewType != null and reviewType == 1">
+            and (select count(*) from t_activity_review where t_activity_review.activity_id = t_activity.id) = 1
+        </when>
+        <when test="reviewType != null and reviewType == 2">
+            and (select count(*) from t_activity_review where t_activity_review.activity_id = t_activity.id) > 1
+        </when>
+      </choose>
+
+      and status != 1
+    </where>
+</select>
 </mapper>

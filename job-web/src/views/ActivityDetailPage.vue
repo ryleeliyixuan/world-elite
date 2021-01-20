@@ -74,10 +74,10 @@
                    width="445px">
             <el-select v-model="reportForm.optionId" placeholder="请选择举报类型" class="option" size="small">
                 <el-option
-                        v-for="item in reportOptionList"
-                        :key="item.value"
-                        :label="item.name"
-                        :value="item.value">
+                    v-for="item in reportOptionList"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value">
                 </el-option>
             </el-select>
 
@@ -85,6 +85,7 @@
                       :rows="3"
                       placeholder="请详细描述举报原因（必填，300字以内）"
                       v-model="reportForm.reason"
+                      maxlength="300"
                       resize="none"
                       class="reason">
             </el-input>
@@ -106,6 +107,8 @@
                 <div class="confirm" @click="onConfirm">确定</div>
             </div>
         </el-dialog>
+
+        <preview-apply :visible.sync="previewDialogVisible" :activityId="this.$route.query.id+''" :apply="applyTable" :resumeList="resumeList"></preview-apply>
     </div>
 </template>
 
@@ -114,18 +117,19 @@
     import Share from "vue-social-share";
     import "vue-social-share/dist/client.css";
     import {getUploadPicToken} from "@/api/upload_api";
+    import previewApply from "@/components/activity/PreviewApply";
 
     Vue.use(Share);
 
     export default {
         name: "ActivityDetailPage",
+        components: {previewApply},
         data() {
             return {
                 activity: undefined,
                 organizerTypeList: ['', '学生活动', '社会组织活动', '个人活动', '企业活动'],
-                statusList: ['审核中', '草稿', '下架', '即将开始', '报名中', '进行中', '活动结束'],
-
-                statusBGColorList: ['#B0BEC5', '#C6FF00', '#C6FF00', '#40C4FF', '#FBC02D', '#9CCC65', '#FF8A80'],
+                statusList: ['审核中', '草稿', '已停止', '即将开始', '报名中', '进行中', '活动结束', '审核未通过'],
+                statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
                 shareConfig: {
                     url: window.location.href,
                     source: "",
@@ -149,6 +153,10 @@
                 // 上传
                 fullscreenLoadingCount: 0,
                 acceptFileType: '.jpg,.jpeg,.png,.JPG,.JPEG,.PNG',
+
+                previewDialogVisible: false, // 报名表预览对话框
+                applyTable: undefined, // 报名表
+                resumeList:[], // 简历列表
             };
         },
         created() {
@@ -166,6 +174,11 @@
                         this.activity = response.data;
                         this.shareConfig.title = this.activity.title;
                         // this.shareConfig.description = this.activity.description;
+
+                        // 获取报名表信息
+                        return this.$axios.get(`/activity-questionnaire/${this.activity.questionnaireId}`)
+                    }).then(response => {
+                        this.applyTable = response.data;
                     })
 
                     // 举报选项
@@ -185,7 +198,10 @@
             // 点击报名按钮
             onApply() {
                 if (!this.activity.registrationFlag) {
-                    this.$message.success("点击报名按钮");
+                    this.$axios.get("/resume/my-resume").then(response => {
+                        this.resumeList = response.data;
+                    })
+                    this.previewDialogVisible = true;
                 }
             },
 

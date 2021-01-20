@@ -57,3 +57,6 @@ CREATE TABLE `t_activity`  (
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+-- 将模板ID改成报名表ID
+ALTER TABLE db_worldelite_activity.t_activity CHANGE registration_template_id questionnaire_id int(11) NULL COMMENT '报名表ID';
+

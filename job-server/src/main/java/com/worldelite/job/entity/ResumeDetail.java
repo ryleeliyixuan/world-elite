@@ -1,5 +1,6 @@
 package com.worldelite.job.entity;
 
+import com.worldelite.job.vo.UserExpectJobVo;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,6 +27,8 @@ public class ResumeDetail {
 
     //名字
     private String name;
+
+    private String title;
 
     //邮箱
     private String email;
@@ -60,6 +63,17 @@ public class ResumeDetail {
     //社交主页
     private List<ResumeLink> resumeLinkList;
 
+
+    public UserExpectJobVo getUserExpectJobVo() {
+        return userExpectJobVo;
+    }
+
+    public void setUserExpectJobVo(UserExpectJobVo userExpectJobVo) {
+        this.userExpectJobVo = userExpectJobVo;
+    }
+
+    private UserExpectJobVo userExpectJobVo;
+
     //期望职位
     private List<JobCategory> categoryList;
 
@@ -68,12 +82,12 @@ public class ResumeDetail {
 
     //期望薪资
     private Dict salary;
-
-    // 工作类型
-    private String workType;
-
-    // 期望工作类型
-    private String expectWorkType;
+//
+//    // 工作类型
+//    private String workType;
+//
+//    // 期望工作类型
+//    private String expectWorkType;
 
     private Byte priority;
 
@@ -234,36 +248,36 @@ public class ResumeDetail {
             });
         }
         
-        if (categoryList != null && categoryList.size() > 0) {
-            categoryList.forEach(jobCategory -> {
-                for (Field f : jobCategory.getClass().getDeclaredFields()) {
-                    f.setAccessible(true);
-                    try {
-                        if (f.get(jobCategory) != null && StringUtils.isNotBlank(f.get(jobCategory).toString())) {
-                            score.getAndIncrement();
-                        }
-                    } catch (IllegalAccessException ignored) {
-                    }
-                }
-            });
-        }
-        if (cityList != null && cityList.size() > 0) {
-            cityList.forEach(city -> {
-                for (Field f : city.getClass().getDeclaredFields()) {
-                    f.setAccessible(true);
-                    try {
-                        if (f.get(city) != null && StringUtils.isNotBlank(f.get(city).toString())) {
-                            score.getAndIncrement();
-                        }
-                    } catch (IllegalAccessException ignored) {
-                    }
-                }
-            });
-        }
-
-        if (salary != null) {
-            score.getAndIncrement();
-        }
+//        if (categoryList != null && categoryList.size() > 0) {
+//            categoryList.forEach(jobCategory -> {
+//                for (Field f : jobCategory.getClass().getDeclaredFields()) {
+//                    f.setAccessible(true);
+//                    try {
+//                        if (f.get(jobCategory) != null && StringUtils.isNotBlank(f.get(jobCategory).toString())) {
+//                            score.getAndIncrement();
+//                        }
+//                    } catch (IllegalAccessException ignored) {
+//                    }
+//                }
+//            });
+//        }
+//        if (cityList != null && cityList.size() > 0) {
+//            cityList.forEach(city -> {
+//                for (Field f : city.getClass().getDeclaredFields()) {
+//                    f.setAccessible(true);
+//                    try {
+//                        if (f.get(city) != null && StringUtils.isNotBlank(f.get(city).toString())) {
+//                            score.getAndIncrement();
+//                        }
+//                    } catch (IllegalAccessException ignored) {
+//                    }
+//                }
+//            });
+//        }
+//
+//        if (salary != null) {
+//            score.getAndIncrement();
+//        }
 
 
         return score.get();

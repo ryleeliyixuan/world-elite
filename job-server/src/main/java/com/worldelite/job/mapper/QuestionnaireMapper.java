@@ -54,4 +54,6 @@ public interface QuestionnaireMapper {
     int updateByPrimaryKey(Questionnaire record);
 
     List<Questionnaire> selectAndList(Questionnaire questionnaire);
+
+    void deleteByTemplateId(Integer templateId);
 }

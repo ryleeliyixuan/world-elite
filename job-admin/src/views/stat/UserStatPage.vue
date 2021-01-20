@@ -44,13 +44,13 @@
       highlight-current-row
       style="margin-top: 10px">
       <el-table-column prop="date"></el-table-column>
-      <el-table-column prop="userTotalNum" label="用户总计增数"></el-table-column>
+      <el-table-column prop="userTotalNum" label="用户总计数量"></el-table-column>
       <el-table-column prop="totalDayGrowthNum" label="用户总计当日增加数"></el-table-column>
       <el-table-column prop="totalDayGrowth" label="用户总计当日增长率"></el-table-column>
-      <el-table-column prop="studentNum" label="学生用户增数"></el-table-column>
+      <el-table-column prop="studentNum" label="学生用户总计数量"></el-table-column>
       <el-table-column prop="studentDayGrowthNum" label="学生用户当日增加数"></el-table-column>
       <el-table-column prop="studentDayGrowth" label="学生用户当日增长率"></el-table-column>
-      <el-table-column prop="companyNum" label="企业用户增数"></el-table-column>
+      <el-table-column prop="companyNum" label="企业用户总计数量"></el-table-column>
       <el-table-column prop="companyDayGrowthNum" label="企业用户当日增加数"></el-table-column>
       <el-table-column prop="companyDayGrowth" label="企业用户当日增长率"></el-table-column>
     </el-table>

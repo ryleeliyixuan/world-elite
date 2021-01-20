@@ -15,9 +15,11 @@ import com.worldelite.job.service.resume.ResumeService;
 import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.service.search.SearchService;
+import com.worldelite.job.service.strategy.SalaryMaxStrategy;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.document.Document;
@@ -28,10 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -624,9 +623,111 @@ public class JobService extends BaseService {
         }
     }
 
+    private static final Integer MONTH_NUMBER = 12;
+
+    public PageResult<JobVo> sortJobListBySalary(PageResult<JobVo> pageResult, Byte salaryAsc) {
+        PageResult<JobVo> result = new PageResult<>();
+        Optional<PageResult> pageResultOptional = Optional.ofNullable(pageResult);
+        if (!pageResultOptional.isPresent()) {
+            return result;
+        }
+        Optional<List> optionalList = Optional.ofNullable(pageResultOptional.get().getList());
+        if (!optionalList.isPresent() || optionalList.get().size() <= 0) {
+            return result;
+        }
+        List<JobVo> jobList = optionalList.get();
+
+        jobList.sort(new SalaryMaxStrategy());
+        if (salaryAsc != 1) Collections.reverse(jobList);
+//            mergeSortDesc(jobList, 0, jobList.size() - 1);
+
+//        Collections.reverse(jobList);
+        List<JobVo> jobVos = jobList.subList(0, 10);
+        pageResult.setList(jobVos);
+        return pageResult;
+    }
 
 
+    private void mergeSortDesc(List<JobVo> jobList, int p, int r) {
+        if (p < r) {
+            int q = (p + r) / 2;
+            mergeSortDesc(jobList, p, q);
+            mergeSortDesc(jobList, q + 1, r);
+            merge(jobList, p, q, r);
+        }
+    }
 
+    private void merge(List<JobVo> jobList, int p, int q, int r) {
+        int n1 = q - p + 1;
+        int n2 = r - q;
+        JobVo[] LJobVo = new JobVo[n1];
+        JobVo[] RJobVo = new JobVo[n2];
+        int i, j, k;
+        for (i = 0, k = p; i < n1; i++, k++) {
+            LJobVo[i] = jobList.get(k);
+        }
+        for (j = 0, k = q + 1; j < n2; j++, k++) {
+            if (k == jobList.size()) {
+                return;
+            }
+            RJobVo[j] = jobList.get(k);
+        }
+        for (i = 0, j = 0, k = p; i < n1 && j < n2; k++) {
+            if (compare(LJobVo[i], RJobVo[j]) > 0) {
+                jobList.set(k, RJobVo[j]);
+                j++;
+            } else {
+                jobList.set(k, LJobVo[i]);
+                i++;
+            }
+        }
+        if (i < n1) {
+            for (j = i; j < n1; j++, k++) {
+                jobList.set(k, LJobVo[j]);
+            }
+        }
+        if(j<n2){
+            for(i=j; i<n2; i++,k++){
+                jobList.set(k, RJobVo[i]);
+            }
+        }
+    }
 
+    private Integer compare(JobVo LJobVo, JobVo RJobVo) {
+        Integer LSalary;
+        Integer RSalary;
+
+        String[] LSalarySplit = LJobVo.getSalary().getValue().split("-");
+        Integer LSalaryMonths = Optional.ofNullable(LJobVo.getSalaryMonths()).orElse(0);
+
+        if (LSalarySplit.length > 1) {
+            Integer maxSalary = Integer.parseInt(LSalarySplit[1]);
+            if (LSalaryMonths == 0) {
+                LSalary = maxSalary * MONTH_NUMBER;
+            } else {
+                LSalary = maxSalary * LSalaryMonths;
+            }
+        } else {
+            LSalary = 0;
+        }
+
+        String[] RSalarySplit = RJobVo.getSalary().getValue().split("-");
+        Integer RSalaryMonths = Optional.ofNullable(RJobVo.getSalaryMonths()).orElse(0);
+
+        if (RSalarySplit.length > 1) {
+            Integer maxSalary = Integer.parseInt(RSalarySplit[1]);
+            if (RSalaryMonths == 0) {
+                RSalary = maxSalary * MONTH_NUMBER;
+            } else {
+                RSalary = maxSalary * RSalaryMonths;
+            }
+        } else {
+            RSalary = 0;
+        }
+
+        if (LSalary > RSalary) return 1;
+        if (LSalary < RSalary) return -1;
+        return 0;
+    }
 
 }

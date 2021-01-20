@@ -5,22 +5,20 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.context.SpringContextHolder;
-import com.worldelite.job.entity.Activity;
-import com.worldelite.job.entity.ActivityOptions;
-import com.worldelite.job.entity.Favorite;
-import com.worldelite.job.entity.Registration;
+import com.worldelite.job.entity.*;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
+import com.worldelite.job.event.ActivityTakeOffEvent;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.ActivityForm;
+import com.worldelite.job.form.ActivityListAdminForm;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.ActivityReviewForm;
 import com.worldelite.job.mapper.ActivityMapper;
+import com.worldelite.job.mapper.ActivityTakeOffMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.mapper.RegistrationMapper;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.ActivityVo;
-import com.worldelite.job.vo.OrganizerInfoVo;
-import com.worldelite.job.vo.PageResult;
+import com.worldelite.job.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +57,16 @@ public class ActivityService extends BaseService {
     private OrganizerInfoService organizerInfoService;
 
     @Autowired
+    private ActivityQuestionnaireService activityQuestionnaireService;
+
+    @Autowired
     private RegistrationMapper registrationMapper;
+
+    @Autowired
+    private ActivityTakeOffMapper activityTakeOffMapper;
+
+    @Autowired
+    private OrganizerCreditService organizerCreditService;
 
     /**
      * 获取活动列表
@@ -69,6 +76,7 @@ public class ActivityService extends BaseService {
      */
     public PageResult<ActivityVo> getActivityList(ActivityListForm listForm) {
         ActivityOptions options = new ActivityOptions();
+
         BeanUtil.copyProperties(listForm, options);
 
         options.setCityIds(StringUtils.join(listForm.getCityIds(), ","));
@@ -82,7 +90,14 @@ public class ActivityService extends BaseService {
             }
         }
         AppUtils.setPage(listForm);
-        Page<Activity> activityPage = (Page<Activity>) activityMapper.selectAndList(options);
+        Page<Activity> activityPage;
+
+        if (listForm instanceof ActivityListAdminForm) {
+            activityPage = (Page<Activity>) activityMapper.selectAndListForAdmin(options);
+        } else {
+            activityPage = (Page<Activity>) activityMapper.selectAndList(options);
+        }
+
         PageResult<ActivityVo> pageResult = new PageResult<>(activityPage);
         List<ActivityVo> activityVoList = new ArrayList<>(activityPage.size());
         for (Activity activity : activityPage) {
@@ -92,6 +107,11 @@ public class ActivityService extends BaseService {
         return pageResult;
     }
 
+    /**
+     * 获取我的草稿活动信息
+     *
+     * @return
+     */
     public ActivityVo getMyDraftActivityInfo() {
         ActivityOptions options = new ActivityOptions();
         options.setUserId(curUser().getId());
@@ -158,7 +178,7 @@ public class ActivityService extends BaseService {
         if (activity == null) {
             activity = new Activity();
         }
-        BeanUtil.copyProperties(activityForm, activity,  CopyOptions.create().setIgnoreNullValue(true).setIgnoreError(true).setIgnoreProperties("status"));
+        BeanUtil.copyProperties(activityForm, activity, CopyOptions.create().setIgnoreNullValue(true).setIgnoreError(true).setIgnoreProperties("status"));
 
         activity.setPoster(AppUtils.getOssKey(activityForm.getPoster()));
 
@@ -179,17 +199,42 @@ public class ActivityService extends BaseService {
             //草稿直接保存
             if (activityForm.getStatus() != null && activityForm.getStatus() == ActivityStatus.DRAFT.value) {
                 activity.setStatus(ActivityStatus.DRAFT.value);
+                //关联报名表
+                QuestionnaireTemplateVo template = activityQuestionnaireService
+                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
+                activity.setQuestionnaireId(template.getId());
                 activityMapper.insertSelective(activity);
             } else {
-                //新发布的活动状态默认待审核
-                activity.setStatus(ActivityStatus.REVIEWING.value);
-                activityMapper.insertSelective(activity);
+                //关联报名表
+                QuestionnaireTemplateVo template = activityQuestionnaireService
+                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
+                activity.setQuestionnaireId(template.getId());
 
-                //添加活动审核信息
-                ActivityReviewForm activityReviewForm = new ActivityReviewForm();
-                activityReviewForm.setActivityId(activity.getId());
-                activityReviewForm.setUserId(activity.getUserId());
-                activityReviewService.addActivityReview(activityReviewForm);
+                final OrganizerCreditVo organizerCredit = organizerCreditService.getOrganizerCredit(activity.getUserId());
+                if (organizerCredit != null && organizerCredit.getCredit() == OrganizerCreditGrade.LEVEL1.value) {
+                    //新发布的活动 且账户信用等级为1级 直接通过
+                    activity.setStatus(ActivityStatus.WILL.value);
+                    activityMapper.insertSelective(activity);
+
+                    //添加活动审核信息
+                    ActivityReviewForm activityReviewForm = new ActivityReviewForm();
+                    activityReviewForm.setActivityId(activity.getId());
+                    activityReviewForm.setUserId(activity.getUserId());
+                    activityReviewForm.setStatus(String.valueOf(VerificationStatus.PASS.value));
+                    activityReviewForm.setReason("Automatically pass the level1 account");
+                    activityReviewService.addActivityReview(activityReviewForm);
+                } else {
+                    //新发布的活动状态默认待审核
+                    activity.setStatus(ActivityStatus.REVIEWING.value);
+                    activityMapper.insertSelective(activity);
+
+                    //添加活动审核信息
+                    ActivityReviewForm activityReviewForm = new ActivityReviewForm();
+                    activityReviewForm.setActivityId(activity.getId());
+                    activityReviewForm.setUserId(activity.getUserId());
+                    activityReviewForm.setStatus(String.valueOf(VerificationStatus.REVIEWING.value));
+                    activityReviewService.addActivityReview(activityReviewForm);
+                }
 
                 activityStatusManager.put(activity);
             }
@@ -209,8 +254,11 @@ public class ActivityService extends BaseService {
                 //原本草稿状态,更新时不带状态,设为待审核
                 if (activity.getStatus() == ActivityStatus.DRAFT.value)
                     activity.setStatus(ActivityStatus.REVIEWING.value);
-
             }
+
+            //活动编辑时不能修改报名表信息
+            activity.setQuestionnaireId(null);
+
             activityMapper.updateByPrimaryKeySelective(activity);
 
             activityStatusManager.remove(activity.getId());
@@ -225,17 +273,33 @@ public class ActivityService extends BaseService {
      *
      * @param id
      */
-    public void takeOffActivity(Integer id) {
+    @Transactional
+    public void takeOffActivity(Integer id, String reason) {
         Activity activity = activityMapper.selectByPrimaryKey(id);
         if (activity != null) {
             //自己发布的或者管理员才能下架活动
-            if (activity.getUserId().equals(curUser().getId()) || curUser().getType() == UserType.ADMIN.value) {
-                activity.setStatus(ActivityStatus.OFFLINE.value);
-                activityMapper.updateByPrimaryKeySelective(activity);
-                activityStatusManager.remove(activity.getId());
-            } else {
+            if (!activity.getUserId().equals(curUser().getId()) && curUser().getType() != UserType.ADMIN.value) {
                 throw new ServiceException(message("api.error.permission.denied"));
             }
+            //草稿,已下架,审核失败无法下架
+            if (activity.getStatus() == ActivityStatus.DRAFT.value
+                    || activity.getStatus() == ActivityStatus.OFFLINE.value
+                    || activity.getStatus() == ActivityStatus.REVIEW_FAILURE.value) {
+
+                throw new ServiceException(message("activity.takeoff.failed"));
+            }
+
+            activity.setStatus(ActivityStatus.OFFLINE.value);
+            activityMapper.updateByPrimaryKeySelective(activity);
+            activityStatusManager.remove(activity.getId());
+
+            ActivityTakeOff activityTakeOff = new ActivityTakeOff();
+            activityTakeOff.setActivityId(activity.getId());
+            activityTakeOff.setReason(reason);
+            activityTakeOffMapper.insertSelective(activityTakeOff);
+
+            //发送通知, 告知所有活动报名者活动下架
+            SpringContextHolder.publishEvent(new ActivityTakeOffEvent(this, activity.getId()));
         } else {
             throw new ServiceException(message("activity.not.exist"));
         }
@@ -283,6 +347,14 @@ public class ActivityService extends BaseService {
                 activityVo.setRegistrationTime(registration.getCreateTime().getTime());
             }
         }
+
+        //如果关联了报名表，则返回报名表名
+        Integer questionnaireId = activity.getQuestionnaireId();
+        if (questionnaireId != null) {
+            QuestionnaireTemplateVo template = activityQuestionnaireService.getSimpleActivityQuestionnaire(questionnaireId);
+            activityVo.setQuestionnaireName(template.getTitle());
+        }
+
         return activityVo;
     }
 

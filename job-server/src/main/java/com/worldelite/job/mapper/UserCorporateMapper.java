@@ -3,6 +3,7 @@ package com.worldelite.job.mapper;
 import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.entity.UserCorporate;
 import com.worldelite.job.entity.UserOptions;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -68,4 +69,6 @@ public interface UserCorporateMapper {
     Date selectFirstCreateTime();
 
     List<Map<String, Object>> selectSpecifyYearStatInfo(String dateStr);
+
+    Long selectStatInfoInDate(@Param("format")String format, @Param("date")String date);
 }

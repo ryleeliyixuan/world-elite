@@ -11,7 +11,8 @@ public enum ActivityStatus {
     WILL(3), //即将开始
     SIGN_UP(4), //报名中
     ACTIVE(5), //进行中
-    END(6); //已结束
+    END(6), //已结束
+    REVIEW_FAILURE(7); //审核失败
     public final byte value;
 
     ActivityStatus(int value) {

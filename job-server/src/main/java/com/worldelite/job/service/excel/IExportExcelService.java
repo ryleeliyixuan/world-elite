@@ -31,4 +31,12 @@ public interface IExportExcelService {
      * @param listForm
      */
     String exportJobList(Long userId, JobListForm listForm);
+
+    /**
+     * 导出报名列表
+     * @param userId
+     * @param listForm
+     * @return
+     */
+    String exportRegistrationList(Long userId, RegistrationListForm listForm);
 }

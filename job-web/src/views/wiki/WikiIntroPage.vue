@@ -342,12 +342,11 @@
                 :data="companyWiki.honorList"
                 style="width: 100%"
                 max-height="330"
+                :default-sort="{prop: 'year', order: 'descending'}"
               >
-                <el-table-column prop="year" label="年份" width="100">
+                <el-table-column prop="year" sortable  label="年份" width="100">
                 </el-table-column>
-                <el-table-column prop="point" label="" width="10">
-                </el-table-column>
-                <el-table-column prop="honor" label="荣誉"> </el-table-column>
+                <el-table-column prop="honor"  label="荣誉"> </el-table-column>
               </el-table>
             </el-card>
           </el-col>

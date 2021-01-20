@@ -55,6 +55,9 @@ public class ActivityForm {
     private String organizerType; //举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
     private OrganizerInfoForm organizerInfoForm; //组织信息
 
+    private String questionnaireType; //报名表类型，0=报名表，1=报名表模板
+    private Integer questionnaireId; //报名表ID，当类型为0时传报名表ID，当类型为1时传模板ID
+
 
     public Timestamp getActivityStartTime() {
         return Timestamp.from(Instant.ofEpochMilli(activityStartTime));

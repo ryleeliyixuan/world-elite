@@ -199,6 +199,11 @@ export const constantRoutes = [
       meta: { title: '活动列表' }
     },
     {
+      path: 'credit',
+      component: () => import('@/views/activity/OrganizerCredit'),
+      meta: { title: '主办方信用等级' }
+    },
+    {
       path: 'edit',
       component: () => import('@/views/activity/EditActivityPage'),
       meta: { title: '活动编辑' },
@@ -240,6 +245,32 @@ export const constantRoutes = [
         meta: { title: '面试官信息' },
       }
     ]
+  },
+  {
+    path: '/report',
+    component: Layout,
+    redirect: '/report/activity',
+    meta: { title: '举报管理', icon: 'activity' },
+    children: [{
+      path: 'activity',
+      component: () => import('@/views/report/ActivityReport'),
+      meta: { title: '活动举报' }
+      }
+      /*{
+        path: 'job',
+        component: () => import('@/views/report/JobReport'),
+        meta: { title: '职位举报' }
+      },
+      {
+        path: 'community',
+        component: () => import('@/views/report/CommunityReport'),
+        meta: { title: '圈子举报' }
+      },
+      {
+        path: 'im',
+        component: () => import('@/views/report/ImReport'),
+        meta: { title: '即时通讯举报' }
+      }*/]
   },
   {
     path: '/dict',

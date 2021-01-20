@@ -54,6 +54,4 @@ public interface UserExpectJobMapper {
     int updateByPrimaryKey(UserExpectJob record);
 
     List<UserExpectJob> selectAndList(UserExpectJob options);
-
-    int deleteByUserId(Long userId);
 }

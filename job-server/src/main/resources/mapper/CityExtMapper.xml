@@ -17,4 +17,9 @@
       </if>
     </where>
   </select>
+  
+  <select id="selectIdByNameWithFuzzy" resultType="INTEGER">
+    select id from t_city where name like #{name}
+  </select>
+
 </mapper>

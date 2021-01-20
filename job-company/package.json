@@ -6,6 +6,7 @@
     "dev": "vue-cli-service serve --port 8082",
     "build:prod": "vue-cli-service build --modern",
     "build:stage": "vue-cli-service build --modern --mode staging",
+    "build:preprod": "vue-cli-service build --modern --mode preprod",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

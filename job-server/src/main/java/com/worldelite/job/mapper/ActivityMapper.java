@@ -95,4 +95,6 @@ public interface ActivityMapper {
      * @return
      */
     int increaseApplicant(Integer id);
+
+    List<Activity> selectAndListForAdmin(ActivityOptions options);
 }

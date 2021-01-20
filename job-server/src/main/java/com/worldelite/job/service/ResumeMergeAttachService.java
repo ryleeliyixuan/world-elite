@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeLanguage;
 import com.worldelite.job.entity.ResumeMergeAttach;
+import com.worldelite.job.form.AttachOtherForm;
 import com.worldelite.job.form.ResumeForm;
 import com.worldelite.job.form.ResumeLanguageForm;
 import com.worldelite.job.mapper.ResumeLanguageMapper;
@@ -27,18 +28,19 @@ public class ResumeMergeAttachService{
     private ResumeMergeAttachMapper resumeMergeAttachMapper;
 
 
-    public void saveResumeMergeAttaches(List<String>others, Resume resume){
-        if (others == null) {
+    public void saveResumeMergeAttaches(List<AttachOtherForm>others, Resume resume){
+        if (others==null) {
             return;
         }
 
         //delete old others
         deleteResumeMergeAttaches(resume);
-        for (String oneOther: others){
+        for (AttachOtherForm oneOther: others){
             //add new others
             ResumeMergeAttach record = new ResumeMergeAttach();
-            record.setResumeAttach(AppUtils.getOssKey(oneOther));
+            record.setResumeAttach(AppUtils.getOssKey(oneOther.getLink()));
             record.setResumeId(resume.getId());
+            record.setName(oneOther.getName());
             resumeMergeAttachMapper.insertSelective(record);
         }
     }

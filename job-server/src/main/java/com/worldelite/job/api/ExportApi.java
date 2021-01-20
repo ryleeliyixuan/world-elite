@@ -2,14 +2,12 @@ package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
-import com.worldelite.job.form.JobListForm;
-import com.worldelite.job.form.ResumeLinkForm;
-import com.worldelite.job.form.ResumeListForm;
-import com.worldelite.job.form.UserListForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.mq.ExportMessageType;
 import com.worldelite.job.service.ExportService;
 import com.worldelite.job.util.ResponseUtils;
 import com.worldelite.job.vo.ApiResult;
+import com.worldelite.job.vo.RegistrationExportVo;
 import io.github.yedaxia.apidocs.ApiDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -97,5 +95,18 @@ public class ExportApi extends BaseApi{
     public ApiResult exportJobList(@RequestBody JobListForm listForm){
         exportService.queueExportExcel(ExportMessageType.EXPORT_JOB, listForm);
         return ApiResult.ok();
+    }
+
+    /***
+     * 导出报名列表
+     * @param listForm
+     * @return
+     */
+    @RequireLogin
+    @PostMapping("export-registration-list")
+    @ApiDoc
+    public ApiResult<RegistrationExportVo> exportJobList(@RequestBody RegistrationExportForm listForm){
+        RegistrationExportVo registrationExportVo = exportService.exportRegistrationWithResume(listForm);
+        return ApiResult.ok(registrationExportVo);
     }
 }

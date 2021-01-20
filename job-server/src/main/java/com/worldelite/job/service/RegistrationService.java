@@ -38,10 +38,13 @@ public class RegistrationService extends BaseService{
     private QuestionnaireAnswerService questionnaireAnswerService;
 
     @Autowired
-    private QuestionnaireTemplateService questionnaireTemplateService;
+    private ActivityQuestionnaireService activityQuestionnaireService;
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private DictService dictService;
 
     @Transactional
     public void addRegistration(RegistrationForm registrationForm){
@@ -99,22 +102,23 @@ public class RegistrationService extends BaseService{
     public RegistrationVo getRegistrationDetail(Integer id){
         Registration registration = registrationMapper.selectByPrimaryKey(id);
         if(registration == null){
-            throw new ServiceException(message("registration.no.exists"));
+            throw new ServiceException(message("registration.not.exists"));
         }
         List<QuestionnaireAnswerVo> answerList = questionnaireAnswerService.getAnswerListByRegistrationId(id);
         RegistrationVo registrationVo = new RegistrationVo().asVo(registration);
+        registrationVo.setEducation(dictService.getById(registration.getEducationId()));
         registrationVo.setAnswerList(answerList);
         return registrationVo;
     }
 
     /**
-     * 获取带模板信息的活动报名详情
+     * 获取带报名表的活动报名详情
      * @param id
      * @return
      */
     public QuestionnaireTemplateWithAnswerVo getRegistrationWithTemplateDetail(Integer id){
         RegistrationVo registration = getRegistrationDetail(id);
-        QuestionnaireTemplateVo template = questionnaireTemplateService
+        QuestionnaireTemplateVo template = activityQuestionnaireService
                 .getTemplateDetailByActivityId(registration.getActivityId());
         QuestionnaireTemplateWithAnswerVo registrationVo = new QuestionnaireTemplateWithAnswerVo();
         BeanUtil.copyProperties(registration,registrationVo);
@@ -175,9 +179,16 @@ public class RegistrationService extends BaseService{
         AppUtils.setPage(registrationListForm);
         RegistrationOptions options = new RegistrationOptions();
         BeanUtil.copyProperties(registrationListForm,options);
+        log.debug("查询报名信息，活动ID：{}",options.getActivityId());
         Page<Registration> registrationList = (Page<Registration>) registrationMapper.selectAndList(options);
         PageResult<RegistrationVo> pageResult = new PageResult<>(registrationList);
-        pageResult.setList(AppUtils.asVoList(registrationList,RegistrationVo.class));
+        List<RegistrationVo> registrationVoList = new ArrayList<>(registrationList.size());
+        for(Registration registration:registrationList){
+            RegistrationVo registrationVo = new RegistrationVo().asVo(registration);
+            registrationVo.setEducation(dictService.getById(registration.getEducationId()));
+            registrationVoList.add(registrationVo);
+        }
+        pageResult.setList(registrationVoList);
         return pageResult;
     }
 

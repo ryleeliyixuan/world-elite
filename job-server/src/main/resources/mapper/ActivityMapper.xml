@@ -26,7 +26,7 @@
     <result column="number_limit" jdbcType="INTEGER" property="numberLimit" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="registration_template_id" jdbcType="INTEGER" property="registrationTemplateId" />
+    <result column="questionnaire_id" jdbcType="INTEGER" property="questionnaireId" />
     <result column="follower" jdbcType="INTEGER" property="follower" />
     <result column="applicant_quantity" jdbcType="INTEGER" property="applicantQuantity" />
     <result column="weight" jdbcType="INTEGER" property="weight" />
@@ -49,7 +49,7 @@
     -->
     id, user_id, form, city_id, user_type, title, poster, organizer_id, organizer_type, 
     activity_start_time, activity_finish_time, registration_start_time, registration_finish_time, 
-    need_resume, only_overseas_student, audit_type, number_limit, address, status, registration_template_id, 
+    need_resume, only_overseas_student, audit_type, number_limit, address, status, questionnaire_id, 
     follower, applicant_quantity, weight, send_notice_confirm, del_flag, create_time, 
     update_time
   </sql>
@@ -94,7 +94,7 @@
       activity_finish_time, registration_start_time, 
       registration_finish_time, need_resume, only_overseas_student, 
       audit_type, number_limit, address, 
-      status, registration_template_id, follower, 
+      status, questionnaire_id, follower, 
       applicant_quantity, weight, send_notice_confirm, 
       del_flag, create_time, update_time, 
       description)
@@ -104,7 +104,7 @@
       #{activityFinishTime,jdbcType=TIMESTAMP}, #{registrationStartTime,jdbcType=TIMESTAMP}, 
       #{registrationFinishTime,jdbcType=TIMESTAMP}, #{needResume,jdbcType=CHAR}, #{onlyOverseasStudent,jdbcType=CHAR}, 
       #{auditType,jdbcType=CHAR}, #{numberLimit,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{registrationTemplateId,jdbcType=INTEGER}, #{follower,jdbcType=INTEGER}, 
+      #{status,jdbcType=TINYINT}, #{questionnaireId,jdbcType=INTEGER}, #{follower,jdbcType=INTEGER}, 
       #{applicantQuantity,jdbcType=INTEGER}, #{weight,jdbcType=INTEGER}, #{sendNoticeConfirm,jdbcType=CHAR}, 
       #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{description,jdbcType=LONGVARCHAR})
@@ -173,8 +173,8 @@
       <if test="status != null">
         status,
       </if>
-      <if test="registrationTemplateId != null">
-        registration_template_id,
+      <if test="questionnaireId != null">
+        questionnaire_id,
       </if>
       <if test="follower != null">
         follower,
@@ -256,8 +256,8 @@
       <if test="status != null">
         #{status,jdbcType=TINYINT},
       </if>
-      <if test="registrationTemplateId != null">
-        #{registrationTemplateId,jdbcType=INTEGER},
+      <if test="questionnaireId != null">
+        #{questionnaireId,jdbcType=INTEGER},
       </if>
       <if test="follower != null">
         #{follower,jdbcType=INTEGER},
@@ -346,8 +346,8 @@
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
       </if>
-      <if test="registrationTemplateId != null">
-        registration_template_id = #{registrationTemplateId,jdbcType=INTEGER},
+      <if test="questionnaireId != null">
+        questionnaire_id = #{questionnaireId,jdbcType=INTEGER},
       </if>
       <if test="follower != null">
         follower = #{follower,jdbcType=INTEGER},
@@ -400,7 +400,7 @@
       number_limit = #{numberLimit,jdbcType=INTEGER},
       address = #{address,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
-      registration_template_id = #{registrationTemplateId,jdbcType=INTEGER},
+      questionnaire_id = #{questionnaireId,jdbcType=INTEGER},
       follower = #{follower,jdbcType=INTEGER},
       applicant_quantity = #{applicantQuantity,jdbcType=INTEGER},
       weight = #{weight,jdbcType=INTEGER},
@@ -435,7 +435,7 @@
       number_limit = #{numberLimit,jdbcType=INTEGER},
       address = #{address,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
-      registration_template_id = #{registrationTemplateId,jdbcType=INTEGER},
+      questionnaire_id = #{questionnaireId,jdbcType=INTEGER},
       follower = #{follower,jdbcType=INTEGER},
       applicant_quantity = #{applicantQuantity,jdbcType=INTEGER},
       weight = #{weight,jdbcType=INTEGER},

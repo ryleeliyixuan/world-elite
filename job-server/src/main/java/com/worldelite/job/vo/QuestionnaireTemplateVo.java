@@ -14,8 +14,8 @@ import java.util.List;
 @Data
 public class QuestionnaireTemplateVo implements VoConvertable<QuestionnaireTemplateVo, QuestionnaireTemplate>{
 
-    private Integer id; //模板ID
-    private Integer activityId; //活动ID
+    private Integer id; //ID
+    private Integer templateId; //模板ID，报名表用
     private String userId; //用户ID
     private String templateName; //模板名
     private String title; //报名表标题
@@ -31,6 +31,9 @@ public class QuestionnaireTemplateVo implements VoConvertable<QuestionnaireTempl
 
     @Override
     public QuestionnaireTemplateVo asVo(QuestionnaireTemplate questionnaireTemplate) {
+        if(questionnaireTemplate == null){
+            return null;
+        }
         BeanUtil.copyProperties(questionnaireTemplate,this);
         setUserId(String.valueOf(questionnaireTemplate.getUserId()));
         return this;

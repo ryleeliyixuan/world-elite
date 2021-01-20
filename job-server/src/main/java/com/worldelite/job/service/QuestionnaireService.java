@@ -58,4 +58,12 @@ public class QuestionnaireService extends BaseService{
         return questionnaireVoList;
     }
 
+    /**
+     * 删除模板对应的问卷
+     * @param templateId
+     */
+    public void deleteByTemplateId(Integer templateId){
+        questionnaireMapper.deleteByTemplateId(templateId);
+    }
+
 }

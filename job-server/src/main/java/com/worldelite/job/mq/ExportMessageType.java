@@ -24,4 +24,9 @@ public interface ExportMessageType {
      * 导出职位列表
      */
     byte EXPORT_JOB = 4;
+
+    /**
+     * 导出报名表
+     */
+    byte EXPORT_REGISTRATION = 5;
 }

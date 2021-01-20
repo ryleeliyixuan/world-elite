@@ -87,6 +87,8 @@ public class SkillTagService extends BaseService{
     public PageResult<SkillTagVo> getSkillTagPage(SkillTagListForm skillTagListForm) {
         SkillTag options = new SkillTag();
         options.setType(skillTagListForm.getType());
+        options.setDelFlag((byte) 0);
+        skillTagListForm.setSort("value desc");
         AppUtils.setPage(skillTagListForm);
         Page<SkillTag> skillTagPage = (Page<SkillTag>) skillTagMapper.selectAndList(options);
         PageResult<SkillTagVo> pageResult = new PageResult<>(skillTagPage);

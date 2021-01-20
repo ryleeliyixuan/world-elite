@@ -21,6 +21,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     private String avatar; //头像
     @ResumeScore
     private String name; //名字
+    private String title; // 简历名字
     @ResumeScore
     private Byte gender; //性别
     @ResumeScore
@@ -86,6 +87,14 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     }
 
     private List<ResumeCertificateVo>resumeCertificateList;
+
+    public UserExpectJobVo getUserExpectJob() {
+        return userExpectJob;
+    }
+
+    public void setUserExpectJob(UserExpectJobVo userExpectJob) {
+        this.userExpectJob = userExpectJob;
+    }
 
     private UserExpectJobVo userExpectJob;
 

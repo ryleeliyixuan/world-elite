@@ -51,13 +51,15 @@ public class ResumeForm {
     private String email; //邮箱
     private String avatar; //头像
 
+    private String title;
+
     private Byte priority;
 
-    public List<String> getAttachOthers() {
+    public List<AttachOtherForm> getAttachOthers() {
         return attachOthers;
     }
 
-    private List<String> attachOthers;
+    private List<AttachOtherForm> attachOthers;
 
     public String getAttachResume() {
         return attachResume;

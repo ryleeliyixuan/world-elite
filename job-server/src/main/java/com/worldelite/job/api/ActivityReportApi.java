@@ -2,6 +2,7 @@ package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.form.ActivityReportForm;
+import com.worldelite.job.form.ActivityReportListForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.service.ActivityReportService;
 import com.worldelite.job.vo.ActivityReportVo;
@@ -26,14 +27,13 @@ public class ActivityReportApi {
      * 获取活动举报列表
      *
      * @param activityReportForm
-     * @param pageForm
      * @return
      */
     @ApiDoc
     @RequireLogin
     @GetMapping
-    public ApiResult<PageResult<ActivityReportVo>> getActivityReportList(ActivityReportForm activityReportForm, PageForm pageForm) {
-        return ApiResult.ok(activityReportService.getActivityReportList(activityReportForm, pageForm));
+    public ApiResult<PageResult<ActivityReportVo>> getActivityReportList(ActivityReportListForm activityReportForm) {
+        return ApiResult.ok(activityReportService.getActivityReportList(activityReportForm));
     }
 
     /**
@@ -82,8 +82,14 @@ public class ActivityReportApi {
     @ApiDoc
     @RequireLogin
     @DeleteMapping("/{id}")
-    public ApiResult<PageResult<ActivityReportVo>> deleteActivityReportList(@PathVariable("id") Integer id) {
+    public ApiResult deleteActivityReport(@PathVariable("id") Integer id) {
         return ApiResult.ok(activityReportService.delActivityReport(id));
     }
 
+    @ApiDoc
+    @RequireLogin
+    @PatchMapping("/turnDownReport")
+    public ApiResult turnDownReport(@RequestParam Integer id, String result) {
+        return ApiResult.ok(activityReportService.turnDownReport(id, result));
+    }
 }

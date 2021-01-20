@@ -10,8 +10,39 @@ import java.util.List;
 @Data
 public class UserExpectJobVo {
 
-    private List<JobCategoryVo> categoryList; //期望职位
-    private List<CityVo> cityList; //期望城市
-    private DictVo salary; //薪资范围
+    public void setCategory(JobCategoryVo category) {
+        this.category = category;
+    }
+
+    public void setExpectCity(String expectCity) {
+        this.expectCity = expectCity;
+    }
+
+    public void setSalaryId(Byte salaryId) {
+        this.salaryId = salaryId;
+    }
+
+    public void setExpectWorkType(String expectWorkType) {
+        this.expectWorkType = expectWorkType;
+    }
+
+    public void setExpectPosition(String expectPosition) {
+        this.expectPosition = expectPosition;
+    }
+
+    private JobCategoryVo category; //期望职位
+    private String expectCity; //期望城市
+    private Byte salaryId; //薪资范围
     private String expectWorkType; // 工作类型
+    private String expectPosition;
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    private String industry;
+
+    private List<JobCategoryVo> categoryList;
+    private List<CityVo> cityList;
+
 }

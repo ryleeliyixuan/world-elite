@@ -52,6 +52,7 @@ public class DictService extends BaseService{
         Dict options = new Dict();
         options.setName(listForm.getName());
         options.setType(listForm.getType());
+        listForm.setSort("value desc");
         AppUtils.setPage(listForm);
         Page<Dict> dictPage = (Page<Dict>) dictMapper.selectAndList(options);
         PageResult<DictVo> pageResult = new PageResult<>(dictPage);

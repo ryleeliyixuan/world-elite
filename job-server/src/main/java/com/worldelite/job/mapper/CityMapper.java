@@ -1,6 +1,7 @@
 package com.worldelite.job.mapper;
 
 import com.worldelite.job.entity.City;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -54,4 +55,6 @@ public interface CityMapper {
     int updateByPrimaryKey(City record);
 
     List<City> selectByType(Byte type);
+
+    List<Integer> selectIdByNameWithFuzzy(@Param("name") String name);
 }

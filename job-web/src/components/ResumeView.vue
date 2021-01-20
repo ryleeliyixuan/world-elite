@@ -6,17 +6,21 @@
 <!--        基本信息-->
         <div class="resume-info" style="display: flex">
           <div class="info-other-row-l">
-            <el-row class="info-name">{{resume.name}}</el-row>
+            <el-row class="info-name" style="width: 300px">{{resume.name}}</el-row>
             <el-row class="info-other">性别：
               <span v-if="resume.gender==1">男</span>
-              <span v-if="resume.gender==2"></span>
+              <span v-if="resume.gender==2">女</span>
             </el-row>
             <el-row class="info-other">年龄：{{resume.age}} 岁</el-row>
             <el-row class="info-other">邮箱：{{resume.email}}</el-row>
             <el-row class="info-other">手机：{{resume.phone}}</el-row>
           </div>
           <div class="info-other-row-m">
-            <el-row class="info-other">政治面貌：{{resume.maritalStatus}}</el-row>
+            <el-row class="info-other">政治面貌：
+            <span v-if="resume.maritalStatus==0">党员</span>
+            <span v-if="resume.maritalStatus==1">团员</span>
+            <span v-if="resume.maritalStatus==2">群众</span>
+            </el-row>
             <el-row class="info-other">现居地址：{{resume.curPlace}}</el-row>
             <el-row class="info-other">入职时间：{{resume.returnTime}}</el-row>
           </div>
@@ -72,48 +76,39 @@
           <span class="resume-red">*</span>
         </div>
       </el-row>
-
-
-
-
       <div class="resume-eduinfo">
         <div class="resume-edu" style="display: inline-flex">
           <div class="edu-box-l1">
             <el-row class="edu-school">
-              XXXXXX<!-- {{resumeExp.jobName}}-->
+              {{resume.userExpectJob.expectPosition}}
             </el-row>
             <el-row class="info-other">预期薪资：
-              <span v-if="resume.userExpectJob.salary"
-                    effect="plain"
-                    class="expjob-data"
-              >{{resume.userExpectJob.salary.name}}
+              <span v-if="resume.userExpectJob.salaryId && resume.userExpectJob.salaryId!=''">
+                <span v-if="resume.userExpectJob.salaryId==109">5K-8K</span>
+                <span v-if="resume.userExpectJob.salaryId==110">8K-10K</span>
+                <span v-if="resume.userExpectJob.salaryId==111">10K-15K</span>
+                <span v-if="resume.userExpectJob.salaryId==112">15K-20K</span>
+                <span v-if="resume.userExpectJob.salaryId==113">20K-30K</span>
+                <span v-if="resume.userExpectJob.salaryId==114">30K-50K</span>
+                <span v-if="resume.userExpectJob.salaryId==115">50K以上</span>
+                <span v-if="resume.userExpectJob.salaryId==153">5K以下</span>
+                <span v-if="resume.userExpectJob.salaryId==259">不限</span>
                </span>
             </el-row>
             <el-row class="info-other">工作类型：
-              <span v-for="jobType in  resume.userExpectJob.jobTypeList"
-                    :key="jobType.id"
-                    effect="plain"
-                    class="expjob-data"
-              >{{ jobType.name }}
-              </span>
+              <span class="expjob-data"
+              >{{resume.userExpectJob.expectWorkType}}
+              </span >
             </el-row>
           </div>
           <div class="edu-box-m1">
             <el-row class="info-other">期望行业：
-              <span v-for="category in  resume.userExpectJob.categoryList"
-                    :key="category.id"
-                    effect="plain"
-                    class="expjob-data"
-              >{{ category.name }}
-                                                </span>
+              <span v-if="resume.userExpectJob.category&&resume.userExpectJob.category!=''"
+              > {{ resume.userExpectJob.category.name }} </span>
             </el-row>
             <el-row class="info-other">工作城市：
-              <span v-for="city in  resume.userExpectJob.cityList"
-                    :key="city.id"
-                    effect="plain"
-                    class="expjob-data"
-              >{{ city.name }}
-                                                </span>
+              <span class="resume"
+              >{{resume.userExpectJob.expectCity}}</span>
             </el-row>
           </div>
         </div>
@@ -140,7 +135,7 @@
             <span>{{resumeExp.post}}</span>
           </div>
           <div style="padding-left: 31px">
-            <span>全职<!--{{resumeExp.jobType}}--> </span>
+            <span>{{resumeExp.workType}}</span>
           </div>
         </div>
         <div style="display: inline-flex">
@@ -148,10 +143,9 @@
             <div style="margin-top: 9px;display: inline-flex" >
               <div style="width: 380px">
                 <span class="resume-box-text-title">行业：</span>
-                <span v-for="category in  resume.userExpectJob.categoryList"
-                      :key="category.id"
+                <span
                       class="resume-box-text-data"
-                >{{ category.name }}
+                >{{ resumeExp.industry}}
                 </span>
               </div>
               <div>
@@ -163,8 +157,7 @@
             </div>
             <div style="display: inline-flex;margin-top: 9px">
               <span class="resume-box-text-title">工作描述：</span>
-              <span class="resume-box-text-html"
-                    v-html="resumeExp.description"></span>
+              <span class="resume-box-text-html">{{resumeExp.description}}</span>
             </div>
           </div>
         </div>
@@ -184,7 +177,7 @@
       </el-row>
       <div class="resume-info" v-for="practice in resume.resumePracticeList"
            :key="practice.id" style="margin-bottom: 10px">
-        <div class="resume-edu" style="width: 616px;padding-top: 10px;">
+        <div class="resume-edu" style="width: 540px;padding-top: 10px;">
           <el-row style="width: 616px;height: 40px;padding-top: 10px;">
             <span class="resume-box-text">{{practice.title}}</span>
             <span class="resume-box-text-title" style="padding-left: 31px">{{practice.onWork == 1? '项目进行中': `${practice.startTime}到${practice.finishTime}`}}</span>
@@ -192,7 +185,7 @@
           <div class="edu-box">
             <el-row class="expinfo-other-row">
               <span class="expinfo-other" style="width: 42px">介绍：</span>
-              <span class="expinfo-other-html" v-html="practice.description"></span>
+              <span class="expinfo-other-html" >{{practice.description}}</span>
             </el-row>
           </div>
         </div>
@@ -288,9 +281,9 @@
           <span class="resume-base">自我介绍</span>
         </div>
       </el-row>
-      <div class="resume-languageinfo">
+      <div class="resume-languageinfo" style="width: 550px">
         <div class="resume-introduction">
-          <span v-html="resume.introduction"></span>
+          <span>{{resume.introduction}}</span>
         </div>
       </div>
     </div>
@@ -403,6 +396,8 @@ export default {
         line-height: 20px;
       }
       .resume-box-text-html{
+        display:inline-block;
+        word-wrap: break-word;
         width: 478px;
         font-size: 14px;
         font-family: PingFangSC-Regular, PingFang SC;
@@ -433,6 +428,8 @@ export default {
       display: inline-flex;
 
       .resume-introduction {
+        display:inline-block;
+        word-wrap: break-word;
         width: 548px;
         font-size: 14px;
         font-family: PingFangSC-Regular, PingFang SC;
@@ -484,6 +481,29 @@ export default {
          }
       .edu-box {
         display: inline-flex;
+        .expinfo-other-row {
+          display: inline-flex;
+
+
+          .expinfo-other {
+            width: 70px;
+            font-size: 14px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+          }
+
+          .expinfo-other-html {
+            display:inline-block;
+            word-wrap: break-word;
+            width: 478px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #666666;
+            line-height: 20px;
+          }
+        }
       }
 
 
