@@ -1233,6 +1233,7 @@
       }
       /deep/ .el-checkbox-button {
         margin-bottom: 0px;
+        border: 1px solid #F6F9FC;
       }
       /deep/ .el-checkbox-button + .el-checkbox-button {
         margin-left: 16px;
@@ -1240,7 +1241,7 @@
       /deep/ .el-checkbox-button .el-checkbox-button__inner {
         background: #f5f5f5;
         border-radius: 17px;
-        border: 0px;
+        border: 1px solid #F6F9FC;
         font-size: 14px;
         font-family: PingFangSC-Medium, PingFang SC;
         font-weight: 500;
