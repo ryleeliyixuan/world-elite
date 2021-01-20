@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="601px" height="656px" viewBox="0 0 601 656" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>编组 15</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M24.9932303,0 L600.99323,0 L600.99323,0 L600.99323,655 L24.9932303,655 C11.7383963,655 0.993230296,644.254834 0.993230296,631 L0.993230296,24 C0.993230296,10.745166 11.7383963,2.4348735e-15 24.9932303,0 Z" id="path-1"></path>
+    </defs>
+    <g id="注册流程优化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="登录页面" transform="translate(-359.000000, -125.000000)">
+            <g id="路径-3" transform="translate(359.000000, 125.000000)">
+                <g id="编组-16" transform="translate(0.000000, 0.336796)">
+                    <g id="编组-15">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="蒙版" fill="#EBF3FD" xlink:href="#path-1"></use>
+                        <path d="M191.686129,3.55271368e-15 C203.560126,158 139.995827,237 0.993230296,237 C-138.009366,237 -144.056078,152.554401 -17.1469051,-16.3367957 L191.686129,3.55271368e-15 Z" id="路径-3" fill-opacity="0.3" fill="#A1C7FD" mask="url(#mask-2)"></path>
+                        <path d="M809.168259,195.280535 C824.627557,401.093512 741.870299,504 560.896484,504 C379.922669,504 372.050179,394 537.279015,174 L809.168259,195.280535 Z" id="路径-3备份" fill-opacity="0.3" fill="#A1C7FD" mask="url(#mask-2)" transform="translate(614.993230, 339.000000) scale(-1, 1) rotate(-53.000000) translate(-614.993230, -339.000000) "></path>
+                        <path d="M0.993230296,161 C132.853475,256.965705 162.186808,358.373798 88.9932303,465.224279 C15.7996522,572.07476 -35.5336812,603.102829 -65.0067697,558.308486 L0.993230296,161 Z" id="路径-2" fill-opacity="0.3" fill="#B9D5FD" mask="url(#mask-2)"></path>
+                        <path d="M106.338705,-16.3367957 C136.832147,152.554401 209.930873,243.5 325.634882,256.5 C441.338891,269.5 545.125007,232.833333 636.99323,146.5 L655.688704,-35 L106.338705,-16.3367957 Z" id="路径-4" fill-opacity="0.3" fill="#CCE1FF" mask="url(#mask-2)"></path>
+                        <ellipse id="椭圆形" fill-opacity="0.2" fill="#7EB2FF" mask="url(#mask-2)" cx="205.49323" cy="617" rx="270.5" ry="278"></ellipse>
+                        <ellipse id="椭圆形备份" fill-opacity="0.3" fill="#CEE2FC" mask="url(#mask-2)" cx="571.99323" cy="638" rx="165" ry="170"></ellipse>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
