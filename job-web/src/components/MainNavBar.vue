@@ -540,6 +540,10 @@ export default {
           font-size: 16px;
         }
       }
+
+      .nav-right-container {
+        padding: 0 15px;
+      }
     }
 
     .nav-right-container {
