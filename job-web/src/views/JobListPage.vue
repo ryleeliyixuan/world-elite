@@ -236,7 +236,7 @@
                 您还没有搜索过职位哟，赶紧试一试吧
               </div>
               <div class="quickFilter-caption" v-if="this.historyOptions.length > 0">
-                <div class="quickFilter-history-box" v-for="(item, index) in this.historyOptions">
+                <div class="quickFilter-history-box" v-for="(item, index) in this.historyOptions" @click="reHandleFilter(item)">
                   <div>
                     <span class="filter-keyword">{{item.keyword}}</span>
                     <span class="filter-count">共{{item.filterCount}}个筛选条件</span>
@@ -245,31 +245,27 @@
                     <span v-for="(cityValue, index) in item.cityValues"
                           :id="item.cityIds[index]"
                           class="city-value"
-                          @click="reHandleFilter(item.cityIds[index], 'cityIds')"
                     >{{cityValue}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(industryValue, index) in item.industryValues"
                           :id="item.industryIds[index]"
                           class="industry-value"
-                          @click="reHandleFilter(item.industryIds[index], 'companyIndustryIds')"
                     >{{industryValue}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(salaryValue, index) in item.salaryValues"
                           :id="item.salaryIds[index]"
                           class="salary-value"
-                          @click="reHandleFilter(item.salaryIds[index], 'salaryRangeIds')"
                     >{{salaryValue}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(degreeValue, index) in item.degreeValues"
                           :id="item.degreeIds[index]"
                           class="degree-value"
-                          @click="reHandleFilter(item.degreeIds[index], 'degreeIds')"
                     >{{degreeValue}}</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="quickFilter-right">
+            <!--<div class="quickFilter-right">
               <span class="quickFilter-title">订阅的职位：</span>
               <div v-if="!this.subscribeOptions">
                 <div class="quickFilter-caption">
@@ -293,7 +289,6 @@
                     <span v-for="(cityValue, index) in this.subscribeOptions.cityValues"
                           :id="this.subscribeOptions.cityIds[index]"
                           class="city-value"
-                          @click=""
                     >{{cityValue}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(industryValue, index) in this.subscribeOptions.industryValues"
@@ -313,7 +308,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div>-->
           </div>
         </div>
         <el-button style="position: relative; color: #2d3436; font-size: 14px; height: 25px; bottom: 9px;" class="empty" @click="emptyFilter" type="text"
@@ -363,15 +358,6 @@
     />清除选项</el-button
     >-->
     <div class="app-container">
-      <div class="section2-container" style="padding-bottom: 40px; padding-top: 70px;">
-        <pagination
-                v-show="total"
-                :total="total"
-                :page.sync="listQuery.page"
-                :limit.sync="listQuery.limit"
-                @pagination="handleRouteList"
-        />
-      </div>
       <div v-if="showNoResult" style="text-align: center; line-height: 40px">
         暂无搜索结果，显示推荐职位
       </div>
@@ -823,9 +809,12 @@
           this.handleFilter();
         })
       },
-      reHandleFilter(id, key) {
+      reHandleFilter(options) {
         this.emptyFilter();
-        this.listQuery[key].push(id);
+        this.listQuery.cityIds = options.cityIds;
+        this.listQuery.companyIndustryIds = options.industryIds;
+        this.listQuery.degreeIds = options.degreeIds;
+        this.listQuery.salaryRangeIds = options.salaryIds;
         this.listQuery.page = 1;
         this.saveSearchHistory();
         this.refreshOptions();
@@ -1134,6 +1123,7 @@
           margin-right: 15px;
           margin-top: 15px;
           flex: 1;
+          cursor: pointer;
 
           white-space: nowrap;
           overflow: hidden;
@@ -1234,6 +1224,7 @@
       }
       /deep/ .el-checkbox-button {
         margin-bottom: 0px;
+        border: 1px solid #F6F9FC;
       }
       /deep/ .el-checkbox-button + .el-checkbox-button {
         margin-left: 16px;
@@ -1241,7 +1232,7 @@
       /deep/ .el-checkbox-button .el-checkbox-button__inner {
         background: #f5f5f5;
         border-radius: 17px;
-        border: 0px;
+        border: 1px solid #F6F9FC;
         font-size: 14px;
         font-family: PingFangSC-Medium, PingFang SC;
         font-weight: 500;
