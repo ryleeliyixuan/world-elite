@@ -81,14 +81,19 @@ const constantRoutes = [
         component: () => import('@/views/ActivityListPage'),
         meta: { title: '寰球菁英-活动列表' }
     },
-    {
-        path: '/activity/edit',
-        component: () => import('@/views/ActivityEditPage'),
-        meta: { title: '寰球菁英-活动发布' }
-    },
+    // {
+    //     path: '/activity/edit',
+    //     component: () => import('@/views/ActivityEditPage'),
+    //     meta: { title: '寰球菁英-活动发布' }
+    // },
+    // {
+    //     path: '/activity/:id',
+    //     component: () => import('@/views/ActivityDetailPage'),
+    //     meta: { title: '寰球菁英-活动详情' }
+    // },
     {
         path: '/activity/:id',
-        component: () => import('@/views/ActivityDetailPage'),
+        component: () => import('@/views/ActivityPage'),
         meta: { title: '寰球菁英-活动详情' }
     },
     {

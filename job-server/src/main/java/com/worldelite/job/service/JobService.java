@@ -463,12 +463,14 @@ public class JobService extends BaseService {
         AppUtils.setPage(listForm);
         Page<JobApply> jobApplyPage = (Page<JobApply>) jobApplyMapper.selectAndList(options);
         PageResult<JobVo> pageResult = new PageResult<>(jobApplyPage);
-        List<JobVo> jobVoList = new ArrayList<>(jobApplyPage.size());
+        List<JobVo> jobVoList = new ArrayList<>();
         for (JobApply jobApply : jobApplyPage) {
             JobVo jobVo = getJobInfo(jobApply.getJobId(), true);
-            jobVo.setApplyStatus(jobApply.getStatus());
-            jobVo.setApplyTime(jobApply.getCreateTime());
-            jobVoList.add(jobVo);
+            if(jobVo != null) {
+                jobVo.setApplyStatus(jobApply.getStatus());
+                jobVo.setApplyTime(jobApply.getCreateTime());
+                jobVoList.add(jobVo);
+            }
         }
         pageResult.setList(jobVoList);
         return pageResult;
