@@ -32,7 +32,6 @@
                                         </el-form>
                                     </div>
                                 </div>
-
                                 <el-row style="display: inline-flex;height: 100px;padding: 3px;">
                                     <div class="resume-updateTime">更新时间：{{item.updateTime}}</div>
                                     <div style="width: 262px">
@@ -1855,7 +1854,7 @@
                     expectPosition:undefined,
                     expectCity:undefined,
                     salaryId: undefined,
-                    categoryId:undefined,
+                    categoryId:122,
                     industry:undefined,
 
                 },
@@ -2691,7 +2690,6 @@
                 this.showExpectJobDialog = true;
                 if (this.newResumeId && this.newResumeId!=''){
                     this.expectJobForm.resumeId=this.newResumeId;
-                    this.expectJobForm.categoryId = this.resume[this.newIndex].userExpectJob.category.id;
                     this.expectJobForm.expectWorkType=this.resume[this.newIndex].userExpectJob.expectWorkType;
                     this.expectJobForm.expectPosition=this.resume[this.newIndex].userExpectJob.expectPosition;
                     this.expectJobForm.salaryId=this.resume[this.newIndex].userExpectJob.salaryId;
@@ -2699,7 +2697,6 @@
                     this.expectJobForm.industry=this.resume[this.newIndex].userExpectJob.industry
                 } else {
                     this.expectJobForm.resumeId=this.resume[this.resume.length-1].id;
-                    this.expectJobForm.categoryId = this.resume[this.resume.length-1].userExpectJob.category.id;
                     this.expectJobForm.expectWorkType=this.resume[this.resume.length-1].userExpectJob.expectWorkType;
                     this.expectJobForm.expectPosition=this.resume[this.resume.length-1].userExpectJob.expectPosition;
                     this.expectJobForm.salaryId=this.resume[this.resume.length-1].userExpectJob.salaryId;
