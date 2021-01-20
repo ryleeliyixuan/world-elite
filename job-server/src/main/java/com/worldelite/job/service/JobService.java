@@ -642,8 +642,8 @@ public class JobService extends BaseService {
 //            mergeSortDesc(jobList, 0, jobList.size() - 1);
 
 //        Collections.reverse(jobList);
-        List<JobVo> jobVos = jobList.subList(0, 10);
-        pageResult.setList(jobVos);
+//        List<JobVo> jobVos = jobList.subList(0, 10);
+        pageResult.setList(jobList);
         return pageResult;
     }
 
