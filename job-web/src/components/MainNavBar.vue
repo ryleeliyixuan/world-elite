@@ -162,7 +162,7 @@
     </div> -->
 
     <!-- 图标 -->
-    <el-link
+    <!-- <el-link
       :underline="false"
       class="nav-message m-2"
       slot="reference"
@@ -172,10 +172,10 @@
         <i class="el-icon-message-solid"></i>
       </el-badge>
       <i v-else class="el-icon-message-solid"></i>
-    </el-link>
+    </el-link> -->
 
     <!-- 用户头像 -->
-    <el-dropdown>
+    <!-- <el-dropdown>
       <el-avatar :size="35" icon="el-icon-user-solid" :src="avatar"></el-avatar>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>
@@ -212,7 +212,7 @@
           退出登录
         </el-dropdown-item>
       </el-dropdown-menu>
-    </el-dropdown>
+    </el-dropdown> -->
   </div>
 </template>
 
