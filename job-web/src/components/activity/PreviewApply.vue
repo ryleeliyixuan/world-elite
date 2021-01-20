@@ -103,7 +103,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="resumeList" class="resume-container">
+        <div class="resume-container" v-if="needResume==='1'">
             <div class="resume-title"><span>*</span>请提交在线简历</div>
             <el-select v-model="applyForm.resumeId" placeholder="选择在线简历版本" size="small" class="resume-select">
                 <el-option v-for="item in resumeList"
@@ -113,10 +113,10 @@
                            :value="item.id">
                 </el-option>
             </el-select>
-            <div class="resume-button-container">
-                <div class="cancel" @click="onCancel">取消</div>
-                <div class="submit" @click="onSubmit">提交</div>
-            </div>
+        </div>
+        <div v-if="submit" class="resume-button-container">
+            <div class="cancel" @click="onCancel">取消</div>
+            <div class="submit" @click="onSubmit">提交</div>
         </div>
         <div v-else class="button-container">
             <div class="cancel" @click="onCancel">关闭</div>
@@ -134,6 +134,9 @@
             visible: {
                 type: Boolean
             },
+            submit: {
+                type: Boolean
+            },
             apply: {
                 type: Object
             },
@@ -142,15 +145,18 @@
             },
             resumeList: {
                 type: Array
+            },
+            needResume: {
+                type: String
             }
         },
         computed: {
             dialogVisible: {
                 get() {
-                    return this.visible
+                    return this.visible;
                 },
                 set(val) {
-                    this.$emit('update:visible', val)
+                    this.$emit('update:visible', val);
                 }
             }
         },
@@ -167,7 +173,7 @@
                     profession: undefined, // 专业
                     educationId: undefined, // 学历Id，通过获取学历列表接口获取
                     resumeId: undefined, // 活动不需要上传简历时可为空，通过获取简历列表接口获取
-                    answerList: [] // 答案列表
+                    answerList: undefined // 答案列表
                 },
 
                 questionFileUpload: {}, // 当前上传附件的题目
@@ -183,6 +189,8 @@
             }
         },
         mounted() {
+            this.applyForm.activityId = this.activityId;
+
             // 加载学历列表
             this.$axios.get('/dict/list', {params: {type: 25, limit: 99}}).then(response => {
                 this.educationList = response.data.list;
@@ -242,7 +250,29 @@
 
             // 提交
             onSubmit() {
-                // TODO
+                this.applyForm.answerList = this.apply.questionnaireList.map(item => {
+                    let answer = {questionnaireId: undefined, answerContentList: undefined, answerOptionsIdList: undefined};
+                    answer.questionnaireId = item.id;
+                    switch (item.type) {
+                        case '1':
+                            answer.answerContentList = [item.answer];
+                            break;
+                        case '2':
+                            answer.answerOptionsIdList = item.optionsList.filter(option => option.checked).map(option => option.id);
+                            break;
+                        case '3':
+                            answer.answerOptionsIdList = item.optionsList.filter(option => option.checked).map(option => option.id);
+                            break;
+                        case '4':
+                            answer.answerContentList = [item.fileUrl];
+                            break;
+                    }
+                    return answer;
+                })
+                this.$axios.post('/registration', this.applyForm).then(() => {
+                    this.$message.success("报名成功");
+                    this.$set(this, 'dialogVisible', false);
+                })
             }
         }
     }
@@ -558,39 +588,39 @@
                     border-radius: 16px;
                 }
             }
+        }
 
-            .resume-button-container {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-top: 34px;
+        .resume-button-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 34px;
 
-                .cancel {
-                    width: 107px;
-                    height: 35px;
-                    background: #FFFFFF;
-                    border-radius: 18px;
-                    border: 1px solid #4895EF;
-                    font-size: 16px;
-                    color: #4895EF;
-                    line-height: 35px;
-                    text-align: center;
-                    cursor: pointer;
-                }
+            .cancel {
+                width: 107px;
+                height: 35px;
+                background: #FFFFFF;
+                border-radius: 18px;
+                border: 1px solid #4895EF;
+                font-size: 16px;
+                color: #4895EF;
+                line-height: 35px;
+                text-align: center;
+                cursor: pointer;
+            }
 
-                .submit {
-                    width: 106px;
-                    height: 35px;
-                    background: #4895EF;
-                    border-radius: 18px;
-                    font-size: 16px;
-                    font-weight: 500;
-                    color: #FFFFFF;
-                    line-height: 35px;
-                    text-align: center;
-                    margin-left: 21px;
-                    cursor: pointer;
-                }
+            .submit {
+                width: 106px;
+                height: 35px;
+                background: #4895EF;
+                border-radius: 18px;
+                font-size: 16px;
+                font-weight: 500;
+                color: #FFFFFF;
+                line-height: 35px;
+                text-align: center;
+                margin-left: 21px;
+                cursor: pointer;
             }
         }
 

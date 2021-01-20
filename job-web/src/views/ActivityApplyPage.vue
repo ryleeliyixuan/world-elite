@@ -1,103 +1,125 @@
 <template>
     <div class="app-container">
-        <div class="line1">
-            <div class="text" @click="$router.go(-1)" style="cursor: pointer;">活动管理</div>
-            <div class="text">></div>
-            <div class="text">报名信息管理</div>
-        </div>
-        <div class="title">报名信息管理</div>
-        <div class="apply-info-container" v-if="activity">
-            <div class="apply-info-left">
-                <div class="apply-info-one">
-                    {{activity.title}}
-                    <div class="apply-info-one-state" :style="{'background':statusBGColorList[activity.status]}">{{getStatus()}}</div>
-                </div>
-                <div class="apply-info-two" style="margin-top:12px">
-                    <div class="name">活动时间：</div>
-                    <div class="value">
-                        {{activity.activityStartTime | timestampToDateHourMinute}}-{{activity.activityFinishTime | timestampToDateHourMinute}}
-                    </div>
-                    <span class="name">活动地址：</span>
-                    <div class="value">{{activity.city && activity.city.name}}-{{activity.address}}</div>
-                </div>
-                <div class="apply-info-two">
-                    <div class="name">报名时间：</div>
-                    <div class="value">
-                        {{activity.registrationStartTime | timestampToDateHourMinute}}-{{activity.registrationFinishTime | timestampToDateHourMinute}}
-                    </div>
-                    <div class="name">主办方：</div>
-                    <div class="value">{{activity.organizerInfoVo.organizerName}}</div>
-                </div>
+        <div v-if="activity">
+            <div class="line1">
+                <div class="text" @click="$router.go(-1)" style="cursor: pointer;">活动管理</div>
+                <div class="text">></div>
+                <div class="text">报名信息管理</div>
             </div>
-            <el-image :src="require('@/assets/activity/apply-icon1.png')" class="apply-info-right"></el-image>
-        </div>
-        <div class="type-container" v-if="activity">
-            <div class="tab-container">
-                <div v-for="(status,index) in applyStatusList"
-                     v-if="activity.auditType==='0' || index===0"
-                     :class="['tab-item',{'select':listQuery.status===status.id}]"
-                     @click="onActivityStatus(status)">
-                    {{status.name}}<span class="tab-item-mount">{{"("+status.total+")"}}</span>
-                </div>
-            </div>
-            <div class="tab-right-container">
-                <div class="import-button" @click="onExportData">导出名单</div>
-                <el-popover class="sort-container"
-                            placement="bottom-end"
-                            width="136"
-                            popper-class="option"
-                            trigger="hover">
-                    <div class="order-item-container">
-                        <div class="order-item" v-for="order in orderList" @click="onOrderItem(order)">{{order.name}}</div>
+            <div class="title">报名信息管理</div>
+            <div class="apply-info-container">
+                <div class="apply-info-left">
+                    <div class="apply-info-one">
+                        {{activity.title}}
+                        <div class="apply-info-one-state" :style="{'background':statusBGColorList[activity.status]}">{{getStatus()}}</div>
                     </div>
-                    <svg-icon slot="reference" icon-class="sort" class-name="sort"></svg-icon>
-                </el-popover>
+                    <div class="apply-info-two" style="margin-top:12px">
+                        <div class="name">活动时间：</div>
+                        <div class="value">
+                            {{activity.activityStartTime | timestampToDateHourMinute}}-{{activity.activityFinishTime | timestampToDateHourMinute}}
+                        </div>
+                        <span class="name">活动地址：</span>
+                        <div class="value">{{activity.city && activity.city.name}}-{{activity.address}}</div>
+                    </div>
+                    <div class="apply-info-two">
+                        <div class="name">报名时间：</div>
+                        <div class="value">
+                            {{activity.registrationStartTime | timestampToDateHourMinute}}-{{activity.registrationFinishTime | timestampToDateHourMinute}}
+                        </div>
+                        <div class="name">主办方：</div>
+                        <div class="value">{{activity.organizerInfoVo.organizerName}}</div>
+                    </div>
+                </div>
+                <el-image :src="require('@/assets/activity/apply-icon1.png')" class="apply-info-right"></el-image>
             </div>
-        </div>
-        <div class="line"></div>
-        <el-input v-model="listQuery.keywords" placeholder="请输入关键词" class="search-input" @keyup.enter.native="handleFilter">
-            <el-button slot="prepend" icon="el-icon-search" @click="handleFilter"></el-button>
-        </el-input>
 
-        <div v-for="applyStatus in applyStatusList" v-if="applyStatus.id === listQuery.status">
-            <div class="apply-item" v-for="item in applyStatus.dataList" :key="item.id">
-                <div class="info-container">
-                    <div class="name">{{item.name}}</div>
-                    <div class="apply-info-two">
-                        <span class="apply-info-two-title">手机：</span>
-                        <span class="apply-info-two-content">{{item.phone}}</span>
-                        <span class="apply-info-two-title" style="margin-left: 147px">性别：</span>
-                        <span class="apply-info-two-content">{{item.gender==='1'?'男':'女'}}</span>
-                    </div>
-                    <div class="apply-info-two">
-                        <span class="apply-info-two-title">邮箱：</span>
-                        <span class="apply-info-two-content">{{item.email}}</span>
-                        <span class="apply-info-two-title" style="margin-left: 147px">学校：</span>
-                        <span class="apply-info-two-content">{{item.school}}</span>
+            <el-input v-model="listQuery.keywords" placeholder="请输入关键词" class="search-input" @keyup.enter.native="handleFilter">
+                <el-button slot="prepend" icon="el-icon-search" @click="handleFilter"></el-button>
+            </el-input>
+
+            <div class="type-container">
+                <div class="tab-container">
+                    <div v-for="(status,index) in applyStatusList"
+                         v-if="activity.auditType==='0' || index===0"
+                         :class="['tab-item',{'select':listQuery.status===status.id}]"
+                         @click="onActivityStatus(status)">
+                        {{status.name}}<span class="tab-item-mount">{{"("+status.total+")"}}</span>
                     </div>
                 </div>
-                <div class="apply-item-right">
-                    <div class="button-container">
-                        <div class="button-text" @click="onViewApply(item)">查看报名表</div>
-                        <div class="button-text">查看简历</div>
-                    </div>
-                    <div class="button-container" style="margin-top: 13px;" v-if="1">
-                        <div class="button-primary" v-if="isShowPassApply(item)">通过报名</div>
-                        <div class="button-primary green" v-if="isShowPassed(item)">已通过</div>
-                        <div class="button-plain" v-if="isShowNoPass(item)">不合适</div>
-                        <div class="button-disabled" v-if="isShowRePass(item)">重新通过</div>
-                        <div class="button-primary red" v-if="isShowRefuse(item)">不合适</div>
-                    </div>
+                <div class="tab-right-container">
+                    <div class="import-button" @click="onExportData">导出名单</div>
+                    <el-popover class="sort-container"
+                                placement="bottom-end"
+                                width="136"
+                                popper-class="option"
+                                trigger="hover">
+                        <div class="apply-order-item-container">
+                            <div class="apply-order-item" v-for="order in orderList" @click="onOrderItem(order)">{{order.name}}</div>
+                        </div>
+                        <svg-icon slot="reference" icon-class="sort" class-name="sort"></svg-icon>
+                    </el-popover>
                 </div>
             </div>
-            <pagination :total="applyStatus.total"
-                        :limit="10"
-                        :page.sync="listQuery.page"
-                        @pagination="getList">
-            </pagination>
+            <div class="line"></div>
+
+            <div v-for="applyStatus in applyStatusList" v-if="applyStatus.id === listQuery.status" class="apply-container">
+                <div class="apply-item" v-for="item in applyStatus.dataList" :key="item.id" @click="onViewApply(item)">
+                    <div class="info-container">
+                        <div class="name">{{item.name}}</div>
+                        <div class="apply-info-base" v-if="applyTable">
+                            <div class="apply-info-base-item" v-if="applyTable.phoneFlag!=='2'">
+                                <span class="apply-info-base-name">手机：</span>
+                                <span class="apply-info-base-value">{{item.phone}}</span>
+                            </div>
+                            <div class="apply-info-base-item" v-if="applyTable.genderFlag!=='2'">
+                                <span class="apply-info-base-name">性别：</span>
+                                <span class="apply-info-base-value">{{item.gender==='1'?'男':'女'}}</span>
+                            </div>
+                            <div class="apply-info-base-item" v-if="applyTable.emailFlag!=='2'">
+                                <span class="apply-info-base-name">邮箱：</span>
+                                <span class="apply-info-base-value">{{item.email}}</span>
+                            </div>
+                            <div class="apply-info-base-item" v-if="applyTable.schoolFlag!=='2'">
+                                <span class="apply-info-base-name">学校：</span>
+                                <span class="apply-info-base-value">{{item.school}}</span>
+                            </div>
+                            <div class="apply-info-base-item" v-if="applyTable.gradeFlag!=='2'">
+                                <span class="apply-info-base-name">年级：</span>
+                                <span class="apply-info-base-value">{{item.grade}}</span>
+                            </div>
+                            <div class="apply-info-base-item" v-if="applyTable.professionFlag!=='2'">
+                                <span class="apply-info-base-name">专业：</span>
+                                <span class="apply-info-base-value">{{item.profession}}</span>
+                            </div>
+                            <div class="apply-info-base-item" v-if="applyTable.educationFlag!=='2'">
+                                <span class="apply-info-base-name">学历：</span>
+                                <span class="apply-info-base-value">{{item.education && item.education.name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="apply-item-right">
+                        <div class="button-container">
+                            <div class="button-text">查看报名表</div>
+                            <div class="button-text" @click.stop="onViewResume" v-if="activity.needResume==='1'">查看简历</div>
+                        </div>
+                        <div class="button-container" style="margin-top: 13px;" v-if="1">
+                            <div class="button-primary" v-if="isShowPassApply(item)">通过报名</div>
+                            <div class="button-primary green" v-if="isShowPassed(item)">已通过</div>
+                            <div class="button-plain" v-if="isShowNoPass(item)">不合适</div>
+                            <div class="button-disabled" v-if="isShowRePass(item)">重新通过</div>
+                            <div class="button-primary red" v-if="isShowRefuse(item)">不合适</div>
+                        </div>
+                    </div>
+                </div>
+                <pagination :total="applyStatus.total"
+                            :limit="10"
+                            :page.sync="listQuery.page"
+                            @pagination="getList">
+                </pagination>
+            </div>
+            <export-apply v-if="exportDialogVisible" :visible.sync="exportDialogVisible" :activity="activity" :applyTable="applyTable"></export-apply>
+            <view-apply v-if="viewDialogVisible" :visible.sync="viewDialogVisible" :activity="activity" :data="selectItem"></view-apply>
         </div>
-        <export-apply v-if="activity && exportDialogVisible" :visible.sync="exportDialogVisible" :activity="activity"></export-apply>
-        <view-apply v-if="activity && viewDialogVisible" :visible.sync="viewDialogVisible" :activity="activity" :data="selectItem"></view-apply>
     </div>
 
 </template>
@@ -114,6 +136,7 @@
         data() {
             return {
                 activity: undefined, // 当前管理的活动
+                applyTable: undefined, // 报名表详情
                 statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
                 // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束;7审核未通过
                 statusList: [{id: 0, name: '审核中'}, {id: 1, name: '草稿'}, {id: 2, name: '已停止'}, {id: 3, name: '即将开始'},
@@ -133,6 +156,7 @@
                 ],
 
                 listQuery: {
+                    activityId: undefined, // 活动id
                     keywords: undefined, // 搜索关键字
                     status: undefined, // 报名状态，默认全部
                     sort: undefined, // 排序条件
@@ -152,9 +176,16 @@
         methods: {
             // 初始化数据
             initData() {
+                this.listQuery.activityId = this.$route.query.id;
+
                 // 活动信息
                 this.$axios.get("/activity/activity-info", {params: {id: this.$route.query.id}}).then(response => {
                     this.activity = response.data;
+
+                    // 获取报名表信息
+                    return this.$axios.get(`/activity-questionnaire/${this.activity.questionnaireId}`)
+                }).then(response => {
+                    this.applyTable = response.data;
                 })
 
                 // 加载报名信息列表
@@ -177,6 +208,11 @@
             onViewApply(item) {
                 this.selectItem = item;
                 this.viewDialogVisible = true;
+            },
+
+            // 查看简历
+            onViewResume() {
+                console.log("查看简历");
             },
 
             // 是否显示通过报名按钮
@@ -257,7 +293,7 @@
         border-radius: 9px;
     }
 
-    .order-item-container {
+    .apply-order-item-container {
         height: 109px;
         background: #ECEFF1;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.26);
@@ -269,7 +305,7 @@
         overflow: hidden;
     }
 
-    .order-item {
+    .apply-order-item {
         width: 100%;
         flex: 1;
         font-size: 14px;
@@ -280,7 +316,7 @@
         justify-content: center;
     }
 
-    .order-item:hover {
+    .apply-order-item:hover {
         color: #656565;
         background: #d8dadb;
         cursor: pointer;
@@ -383,8 +419,24 @@
             line-height: 42px;
         }
 
+        .search-input {
+            width: 452px;
+            height: 38px;
+            background: #ECEFF1;
+            border: 1px solid #ECEFF1;
+            border-radius: 19px;
+            overflow: hidden;
+            margin: 17px auto 36px;
+            display: flex;
+            align-items: center;
+
+            ::v-deep .el-input-group__prepend, ::v-deep .el-input__inner {
+                background: #ECEFF1;
+                border: none;
+            }
+        }
+
         .type-container {
-            margin-top: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -452,127 +504,125 @@
             margin-top: -3px;
         }
 
-        .search-input {
-            width: 452px;
-            height: 38px;
-            background: #ECEFF1;
-            border: 1px solid #ECEFF1;
-            border-radius: 19px;
-            overflow: hidden;
-            margin: 17px auto 36px;
-            display: flex;
-            align-items: center;
+        .apply-container {
+            padding: 14px 16px 0;
 
-            ::v-deep .el-input-group__prepend, ::v-deep .el-input__inner {
-                background: #ECEFF1;
-                border: none;
-            }
-        }
-
-        .apply-item {
-            width: 1095px;
-            margin: 0 auto 21px;
-            padding: 21px 7px 20px 15px;
-            border-radius: 8px;
-            border: 1px solid #4895EF;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            .info-container {
-                height: 100%;
-
-                .name {
-                    font-size: 18px;
-                    color: #333333;
-                }
-
-                .apply-info-two {
-                    font-size: 14px;
-                    color: #333333;
-                    margin-top: 9px;
-
-                    .apply-info-two-title {
-                        color: #999999;
-                    }
-
-                    .apply-info-two-content {
-                        display: inline-block;
-                        width: 120px;
-                    }
-                }
-            }
-
-            .apply-item-right {
+            .apply-item {
+                margin-bottom: 21px;
+                padding: 21px 7px 20px 15px;
+                border-radius: 8px;
+                border: 1px solid #4895EF;
                 display: flex;
-                flex-direction: column;
-                justify-content: center;
-                width: 220px;
+                align-items: center;
+                justify-content: space-between;
+                cursor: pointer;
 
-                .button-container {
+                .info-container {
+                    flex: 1;
+
+                    .name {
+                        font-size: 18px;
+                        color: #333333;
+                    }
+
+                    .apply-info-base {
+                        font-size: 14px;
+                        color: #333333;
+                        margin-top: 9px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        height: 52px;
+                        overflow: hidden;
+
+                        .apply-info-base-item {
+                            width: 50%;
+                            height: 26px;
+
+                            .apply-info-base-name {
+                                color: #999999;
+                            }
+
+                            .apply-info-base-value {
+                                display: inline-block;
+                                width: 120px;
+                            }
+                        }
+                    }
+                }
+
+                .apply-item-right {
                     display: flex;
-                    align-items: center;
-                    justify-content: space-around;
+                    flex-direction: column;
+                    justify-content: center;
+                    width: 220px;
+                    flex-shrink: 0;
 
-                    .button-text {
-                        width: 96px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        color: #4895EF;
-                        line-height: 20px;
-                        text-decoration: underline;
-                        text-align: center;
-                        cursor: pointer;
-                    }
+                    .button-container {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-around;
 
-                    .button-plain {
-                        width: 96px;
-                        height: 28px;
-                        background: #E3F0FF;
-                        border-radius: 21px;
-                        border: 1px solid #4895EF;
-                        font-size: 14px;
-                        color: #4895EF;
-                        line-height: 28px;
-                        text-align: center;
-                        cursor: pointer;
-                    }
+                        .button-text {
+                            width: 96px;
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #4895EF;
+                            line-height: 20px;
+                            text-decoration: underline;
+                            text-align: center;
+                            cursor: pointer;
+                        }
 
-                    .button-primary {
-                        width: 96px;
-                        height: 28px;
-                        background: #4895EF;
-                        border-radius: 21px;
-                        font-size: 14px;
-                        color: #FFFFFF;
-                        line-height: 28px;
-                        text-align: center;
-                        cursor: pointer;
-                    }
+                        .button-plain {
+                            width: 96px;
+                            height: 28px;
+                            background: #E3F0FF;
+                            border-radius: 21px;
+                            border: 1px solid #4895EF;
+                            font-size: 14px;
+                            color: #4895EF;
+                            line-height: 28px;
+                            text-align: center;
+                            cursor: pointer;
+                        }
 
-                    .button-disabled {
-                        width: 96px;
-                        height: 28px;
-                        background: #ECEFF1;
-                        border-radius: 21px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        color: #78909C;
-                        line-height: 28px;
-                        text-align: center;
-                        cursor: pointer;
-                    }
+                        .button-primary {
+                            width: 96px;
+                            height: 28px;
+                            background: #4895EF;
+                            border-radius: 21px;
+                            font-size: 14px;
+                            color: #FFFFFF;
+                            line-height: 28px;
+                            text-align: center;
+                            cursor: pointer;
+                        }
 
-                    .green {
-                        background: #81C784;
-                    }
+                        .button-disabled {
+                            width: 96px;
+                            height: 28px;
+                            background: #ECEFF1;
+                            border-radius: 21px;
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #78909C;
+                            line-height: 28px;
+                            text-align: center;
+                            cursor: pointer;
+                        }
 
-                    .red {
-                        background: #EC5454;
+                        .green {
+                            background: #81C784;
+                        }
+
+                        .red {
+                            background: #EC5454;
+                        }
                     }
                 }
             }
         }
+
 
         .cancel-dialog {
             ::v-deep .el-dialog {
