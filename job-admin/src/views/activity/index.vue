@@ -344,7 +344,11 @@
                     this.reviewStatus = "0";
                 else {
                     this.reviewStatus = "-1";
-                    this.listQuery.status = this.activityStatus;
+
+                    if(this.activityStatus == null)
+                        this.listQuery.status = -1;
+                    else
+                        this.listQuery.status = this.activityStatus;
                 }
 
 
@@ -371,7 +375,10 @@
                     this.listQuery.status = this.reviewStatus;
                     this.activityStatus = null;
                 } else {
-                    this.listQuery.status = this.activityStatus;
+                    if(this.activityStatus == null)
+                        this.listQuery.status = -1;
+                    else
+                        this.listQuery.status = this.activityStatus;
                 }
 
                 this.listQuery.page = 1;
@@ -389,7 +396,10 @@
                     this.listQuery.status = this.reviewStatus;
                     this.activityStatus = null;
                 } else {
-                    this.listQuery.status = this.activityStatus;
+                    if(this.activityStatus == null)
+                        this.listQuery.status = -1;
+                    else
+                        this.listQuery.status = this.activityStatus;
                 }
 
                 this.$router.push({path: this.$route.path, query: this.listQuery});
