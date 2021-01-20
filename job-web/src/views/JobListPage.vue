@@ -607,6 +607,7 @@
                     for (let i = 1; i < resp.data.length; i++) {
                       this.cityOptions[i].id = resp.data[i - 1];
                     }
+                    this.refreshOptions();
                   });
                 }
         );
@@ -620,6 +621,7 @@
                 (response) => {
                   this.companyIndustryOptions = response.data.list;
                   this.buildUnlimitedMap(this.companyIndustryOptions, "industry");
+                  this.refreshOptions();
                 }
         );
         listByType(8).then(
@@ -632,18 +634,21 @@
                 (response) => {
                   this.salaryRangeOptions = response.data.list;
                   this.buildUnlimitedMap(this.salaryRangeOptions, "salary");
+                  this.refreshOptions();
                 }
         );
         listByType(25).then(
                 (response) => {
                   this.degreeOptions = response.data.list;
                   this.buildUnlimitedMap(this.degreeOptions, "degree");
+                  this.refreshOptions();
                 }
         );
         listByType(13).then(
                 (response) => {
                   this.experienceOptions = response.data.list;
                   this.buildUnlimitedMap(this.experienceOptions, "exp");
+                  this.refreshOptions();
                 }
         );
         listByType(7).then(
@@ -920,6 +925,7 @@
         this.placeholderExp = this.getNameByIdFromOptions(this.experienceOptions, this.listQuery.experienceIds, "工作经验");
       },
       getNameByIdFromOptions(options, ids, origin) {
+        console.log("refresh options = " + JSON.stringify(options));
         let name = "";
 
         if (origin === "城市" && this.inpCity.length >= 0) {
