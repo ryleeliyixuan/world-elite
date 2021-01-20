@@ -265,7 +265,7 @@
                 </div>
               </div>
             </div>
-            <div class="quickFilter-right">
+            <!--<div class="quickFilter-right">
               <span class="quickFilter-title">订阅的职位：</span>
               <div v-if="!this.subscribeOptions">
                 <div class="quickFilter-caption">
@@ -308,7 +308,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div>-->
           </div>
         </div>
         <el-button style="position: relative; color: #2d3436; font-size: 14px; height: 25px; bottom: 9px;" class="empty" @click="emptyFilter" type="text"
@@ -358,15 +358,6 @@
     />清除选项</el-button
     >-->
     <div class="app-container">
-      <div class="section2-container" style="padding-bottom: 40px; padding-top: 70px;">
-        <pagination
-                v-show="total"
-                :total="total"
-                :page.sync="listQuery.page"
-                :limit.sync="listQuery.limit"
-                @pagination="handleRouteList"
-        />
-      </div>
       <div v-if="showNoResult" style="text-align: center; line-height: 40px">
         暂无搜索结果，显示推荐职位
       </div>
