@@ -238,14 +238,19 @@ public class JobService extends BaseService {
                 && jobSearchForm.getJobType() == null
                 && (jobSearchForm.getRecruitId() ==null || jobSearchForm.getRecruitId() == 0)
                 && jobSearchForm.getCompanyId() == null
-                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getSalaryRangeIds())
-                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getJobTypes())
-                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCityIds())
+                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getSalaryRangeIds()) || useList(jobSearchForm.getSalaryRangeIds(), 259))
+                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getJobTypes()) || useList(jobSearchForm.getJobTypes(), 258))
+                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCityIds()) || useList(jobSearchForm.getCityIds(), 255))
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCategoryIds())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyStageIds())
-                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyIndustryIds())
-                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyScaleIds())
-                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getDegreeIds());
+                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyIndustryIds()) || useList(jobSearchForm.getCompanyIndustryIds(), 257))
+                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyScaleIds()) || useList(jobSearchForm.getCompanyScaleIds(), 256))
+                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getDegreeIds()) || useList(jobSearchForm.getDegreeIds(), 269));
+    }
+
+
+    private static boolean useList(Integer[] arr, Integer targetValue) {
+        return Arrays.asList(arr).contains(targetValue);
     }
 
     private PageResult<JobVo> getNewestJobList(PageForm pageForm) {
