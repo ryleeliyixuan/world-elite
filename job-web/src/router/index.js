@@ -20,6 +20,11 @@ const constantRoutes = [
         component: () => import('@/views/RegisterPage'),
         meta: { title: '寰球菁英-注册' }
     },
+    // {
+    //     path: '/register-basic',
+    //     component: () => import('@/views/Register/RegisterBasicPage'),
+    //     meta: { title: '寰球菁英-注册' }
+    // },
 
 
     {
