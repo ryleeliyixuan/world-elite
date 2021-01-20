@@ -1,9 +1,7 @@
 <template>
   <div class="nav-container">
     <div class="nav-left-container">
-      <router-link class="logo-image" to="/">
-        <img style="width: 100%" src="../assets/logo.png" />
-      </router-link>
+      <router-link class="logo-image" to="/"></router-link>
       <el-menu
         :router="true"
         mode="horizontal"
@@ -455,9 +453,11 @@ export default {
     }
 
     .logo-image {
+      display: block;
       width: 289px;
       min-width: 289px;
-      height: auto;
+      height: 78px;
+      background: url("../assets/logo.png");
     }
 
     .menu-container {
@@ -518,6 +518,11 @@ export default {
 @media screen and (max-width: 850px) {
   .nav-container {
     flex-direction: column-reverse;
+    .nav-left-container {
+      .logo-image {
+        display: none;
+      }
+    }
   }
 }
 
@@ -535,6 +540,10 @@ export default {
           font-size: 16px;
         }
       }
+    }
+
+    .nav-right-container {
+      padding: 0 15px;
     }
   }
 }
