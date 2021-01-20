@@ -33,7 +33,7 @@
         and status = #{status,jdbcType=TINYINT}
       </if>
       <if test="keyword != null and keyword != ''">
-        and (title like CONCAT('%', #{keyword},'%') or organizer like CONCAT('%', #{keyword},'%'))
+        and title like CONCAT('%', #{keyword},'%')
       </if>
       <if test="delFlag != null">
        and del_flag = #{delFlag,jdbcType=TINYINT}
@@ -136,4 +136,12 @@
       and status != 1
     </where>
 </select>
+
+<select id="selectMyDraftActivity" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  ,
+  <include refid="Blob_Column_List" />
+  from t_activity where user_id = #{userId,jdbcType=BIGINT} and status = 1 order by id desc
+  </select>
 </mapper>
