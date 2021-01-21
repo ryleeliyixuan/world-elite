@@ -5,7 +5,7 @@
                v-loading="exporting"
                width="445px">
         <div class="content">
-            <el-select v-model="query.status" placeholder="选择导出板块" class="select" size="small" v-if="activity.audit==='0'">
+            <el-select v-model="query.status" placeholder="选择导出板块" class="select" size="small" v-if="activity.auditType==='0'">
                 <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -17,45 +17,45 @@
 
             <div class="select-container">
                 <div class="column">
-                    <div class="checkbox" @click="onCheckBox('nameFlag')">
-                        <svg-icon :icon-class="query.nameFlag?'checked':'unchecked'"></svg-icon>
+                    <div class="checkbox" style="cursor: default;">
+                        <svg-icon icon-class="checked-disabled"></svg-icon>
                         <div>姓名</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('phoneFlag')">
+                    <div class="checkbox" @click="onCheckBox('phoneFlag')" v-if="applyTable.phoneFlag!=='2'">
                         <svg-icon :icon-class="query.phoneFlag?'checked':'unchecked'"></svg-icon>
                         <div>手机号</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('schoolFlag')">
+                    <div class="checkbox" @click="onCheckBox('schoolFlag')" v-if="applyTable.schoolFlag!=='2'">
                         <svg-icon :icon-class="query.schoolFlag?'checked':'unchecked'"></svg-icon>
                         <div>学校</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('gradeFlag')">
+                    <div class="checkbox" @click="onCheckBox('gradeFlag')" v-if="applyTable.gradeFlag!=='2'">
                         <svg-icon :icon-class="query.gradeFlag?'checked':'unchecked'"></svg-icon>
                         <div>年级</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('resumePdfFlag')">
-                        <svg-icon :icon-class="query.resumePdfFlag?'checked':'unchecked'"></svg-icon>
+                    <div class="checkbox" @click="onCheckBox('registrationPdfFlag')">
+                        <svg-icon :icon-class="query.registrationPdfFlag?'checked':'unchecked'"></svg-icon>
                         <div>同时下载该板块所有用户报名表</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('registrationPdfFlag')" v-if="activity.audit==='0'">
-                        <svg-icon :icon-class="query.registrationPdfFlag?'checked':'unchecked'"></svg-icon>
+                    <div class="checkbox" @click="onCheckBox('resumePdfFlag')" v-if="applyTable.needResume==='1'">
+                        <svg-icon :icon-class="query.resumePdfFlag?'checked':'unchecked'"></svg-icon>
                         <div>同时下载该板块所有用户简历</div>
                     </div>
                 </div>
                 <div class="column">
-                    <div class="checkbox" @click="onCheckBox('genderFlag')">
+                    <div class="checkbox" @click="onCheckBox('genderFlag')" v-if="applyTable.genderFlag!=='2'">
                         <svg-icon :icon-class="query.genderFlag?'checked':'unchecked'"></svg-icon>
                         <div>性别</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('emailFlag')">
+                    <div class="checkbox" @click="onCheckBox('emailFlag')" v-if="applyTable.emailFlag!=='2'">
                         <svg-icon :icon-class="query.emailFlag?'checked':'unchecked'"></svg-icon>
                         <div>邮箱</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('professionFlag')">
+                    <div class="checkbox" @click="onCheckBox('professionFlag')" v-if="applyTable.professionFlag!=='2'">
                         <svg-icon :icon-class="query.professionFlag?'checked':'unchecked'"></svg-icon>
                         <div>专业</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('educationFlag')">
+                    <div class="checkbox" @click="onCheckBox('educationFlag')" v-if="applyTable.educationFlag!=='2'">
                         <svg-icon :icon-class="query.educationFlag?'checked':'unchecked'"></svg-icon>
                         <div>学历</div>
                     </div>
@@ -79,6 +79,9 @@
                 type: Boolean
             },
             activity: {
+                type: Object
+            },
+            applyTable:{
                 type: Object
             }
         },
@@ -121,6 +124,9 @@
                 }
             }
         },
+        mounted() {
+            this.query.resumePdfFlag = this.activity.needResume;
+        },
         methods: {
             onCheckBox(key) {
                 this.query[key] = this.query[key] === 1 ? 0 : 1;
@@ -138,7 +144,7 @@
                 this.$axios.post("/export/export-registration-list", this.query).then(data => {
                     if (data.data.registrationExcel) {
                         downloadFile({
-                            fileKey: data.data.registrationExcel, fileName: '报名名单Excel.xlsx', success: () => {
+                            fileKey: data.data.registrationExcel, fileName: '报名名单.xlsx', success: () => {
                                 this.exporting = false;
                                 this.$set(this, "dialogVisible", false);
                             }
@@ -147,7 +153,7 @@
 
                     if (data.data.registrationPdf) {
                         downloadFile({
-                            fileKey: data.data.registrationPdf, fileName: '报名名单PDF.pdf', success: () => {
+                            fileKey: data.data.registrationPdf, fileName: '所有用户报名表.zip', success: () => {
                                 this.exporting = false;
                                 this.$set(this, "dialogVisible", false);
                             }
@@ -156,7 +162,7 @@
 
                     if (data.data.resumePdf) {
                         downloadFile({
-                            fileKey: data.data.resumePdf, fileName: '报名简历PDF.pdf', success: () => {
+                            fileKey: data.data.resumePdf, fileName: '所有用户简历.zip', success: () => {
                                 this.exporting = false;
                                 this.$set(this, "dialogVisible", false);
                             }
