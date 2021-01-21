@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <div class="left-container" v-if="industryList.length>0" :style="{'top':top}">
+        <div class="left-container" :style="{'top':top}" v-if="industryList.length>0 && Object.keys(companyList).length>0">
             <el-link class="left-item"
                      :type="item.select?'primary':'default'"
                      :underline="false"
