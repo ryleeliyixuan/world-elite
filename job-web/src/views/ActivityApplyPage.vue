@@ -63,7 +63,7 @@
             <div class="line"></div>
 
             <div v-for="applyStatus in applyStatusList" v-if="applyStatus.id === listQuery.status" class="apply-container">
-                <div class="apply-item" v-for="item in applyStatus.dataList" :key="item.id" @click="onViewApply(item)">
+                <div class="apply-item" v-for="(item, index) in applyStatus.dataList" :key="item.id" @click="onViewApply(item,index, applyStatus.total)">
                     <div class="info-container">
                         <div class="name">{{item.name}}</div>
                         <div class="apply-info-base" v-if="applyTable">
@@ -100,14 +100,15 @@
                     <div class="apply-item-right">
                         <div class="button-container">
                             <div class="button-text">查看报名表</div>
-                            <div class="button-text" @click.stop="onViewResume" v-if="activity.needResume==='1'">查看简历</div>
+                            <div class="button-text" @click.stop="onViewResume(item)" v-if="activity.needResume==='1'">查看简历</div>
                         </div>
-                        <div class="button-container" style="margin-top: 13px;" v-if="1">
-                            <div class="button-primary" v-if="isShowPassApply(item)">通过报名</div>
-                            <div class="button-primary green" v-if="isShowPassed(item)">已通过</div>
-                            <div class="button-plain" v-if="isShowNoPass(item)">不合适</div>
-                            <div class="button-disabled" v-if="isShowRePass(item)">重新通过</div>
-                            <div class="button-primary red" v-if="isShowRefuse(item)">不合适</div>
+                        <div class="button-container" style="margin-top: 13px;" v-if="activity.auditType==='0'">
+                            <div class="button button1-1" v-if="item.status === 1" @click.stop="onResolve1(item)">通过报名</div>
+                            <div class="button button1-2" v-if="item.status === 1" @click.stop="onReject1(item)">不合适</div>
+                            <div class="button button2-1" v-if="item.status === 2" @click.stop="">已通过</div>
+                            <div class="button button2-2" v-if="item.status === 2" @click.stop="onReject2(item)">不合适</div>
+                            <div class="button button3-1" v-if="item.status === 3" @click.stop="onResolve3(item)">重新通过</div>
+                            <div class="button button3-2" v-if="item.status === 3" @click.stop="">不合适</div>
                         </div>
                     </div>
                 </div>
@@ -119,20 +120,41 @@
             </div>
             <export-apply v-if="exportDialogVisible" :visible.sync="exportDialogVisible" :activity="activity" :applyTable="applyTable"></export-apply>
             <view-apply v-if="viewDialogVisible" :visible.sync="viewDialogVisible" :activity="activity" :data="selectItem"></view-apply>
+
+            <el-dialog :visible.sync="resumeDialogVisible" width="750px" :show-close="false" class="load-resume-dialog">
+                <div slot="title" class="dialog-title">
+                    <svg-icon icon-class="download-icon" class="download-icon" clickable @click="onLoadResume"/>
+                    <svg-icon icon-class="close-icon" class="close-icon" @click="resumeDialogVisible = false;"/>
+                </div>
+                <ResumeView :resumeId="resumeId"></ResumeView>
+
+                <el-dialog class="resume-cancel-dialog"
+                           title="是否同时下载报名表？"
+                           :center="true"
+                           :visible.sync="loadResumeDialogVisible"
+                           append-to-body
+                           width="445px">
+                    <el-checkbox v-model="andLoadingApplyTableNoTips">下载该活动简历时不再提示</el-checkbox>
+                    <div class="resume-button-container">
+                        <div class="cancel" @click="onLoadResumeOnly">否</div>
+                        <div class="confirm" @click="onLoadResumeAndResume">是</div>
+                    </div>
+                </el-dialog>
+            </el-dialog>
         </div>
     </div>
-
 </template>
 
 <script>
     import Pagination from "@/components/Pagination2";
     import ExportApply from "@/components/activity/ExportApply";
     import ViewApply from "@/components/activity/ViewApply";
-
+    import ResumeView from "@/components/ResumeView";
+    import {downloadFile} from "@/utils/common";
 
     export default {
         name: "ActivityApplyPage",
-        components: {Pagination, ExportApply, ViewApply},
+        components: {Pagination, ExportApply, ViewApply, ResumeView},
         data() {
             return {
                 activity: undefined, // 当前管理的活动
@@ -144,9 +166,9 @@
 
                 applyStatusList: [ // 报名列表
                     {id: undefined, name: '全部', dataList: [], total: 0},
-                    {id: 1, name: '已通过', dataList: [], total: 0},
-                    {id: 2, name: '不合适', dataList: [], total: 0},
-                    {id: 3, name: '待处理', dataList: [], total: 0}
+                    {id: 2, name: '已通过', dataList: [], total: 0},
+                    {id: 3, name: '不合适', dataList: [], total: 0},
+                    {id: 1, name: '待处理', dataList: [], total: 0}
                 ],
 
                 orderList: [ // 报名人员排序选项
@@ -168,6 +190,14 @@
                 viewDialogVisible: false, // 查看报名表对话框
 
                 selectItem: undefined, // 选中的数据
+
+                resumeId: undefined, // 要查看的简历id
+                applyTableId: undefined, // 要查看的报名表id
+
+                resumeDialogVisible: false, // 简历对话框
+                andLoadingApplyTableNoTips: false, // 下载简历时，是否不要提示用户下载报名表
+                onlyResume: false, // 不显示下载简历提示对话框时，是否仅下载简历
+                loadResumeDialogVisible: false, // 是否显示下载简历对话框
             }
         },
         created() {
@@ -197,6 +227,11 @@
                         item.total = response.data.total;
                     });
                 })
+
+                // 下载简历用到的信息
+                let object = this.$storage.getData('andLoadingApplyTableNoTips:' + this.listQuery.activityId);
+                this.andLoadingApplyTableNoTips = object.tips || false;
+                this.onlyResume = object.onlyResume || false;
             },
 
             // 点击导出名单按钮
@@ -205,39 +240,109 @@
             },
 
             // 点击查看报名表
-            onViewApply(item) {
-                this.selectItem = item;
+            onViewApply(item, index, total) {
+                let data = {};
+                data.number = (this.listQuery.page - 1) * this.listQuery.limit + (index + 1);
+                data.query = this.listQuery;
+                this.selectItem = data;
                 this.viewDialogVisible = true;
             },
 
             // 查看简历
-            onViewResume() {
-                console.log("查看简历");
+            onViewResume(item) {
+                this.resumeId = item.resumeId;
+                this.applyTableId = item.id;
+                this.resumeDialogVisible = true;
             },
 
-            // 是否显示通过报名按钮
-            isShowPassApply() {
-                // TODO
+            // 点击下载简历
+            onLoadResume() {
+                if (this.andLoadingApplyTableNoTips) {
+                    if (this.onlyResume) {
+                        this.loadResume();
+                    } else {
+                        this.loadResume();
+                        this.loadApplyTable();
+                    }
+                } else {
+                    this.loadResumeDialogVisible = true;
+                }
             },
 
-            // 是否显示不合适按钮
-            isShowNoPass() {
-                // TODO
+            // 下载简历对话框中点击 否
+            onLoadResumeOnly() {
+                this.$storage.setData('andLoadingApplyTableNoTips:' + this.activity.id, {tips: this.andLoadingApplyTableNoTips, onlyResume: true});
+                this.onlyResume = true;
+                this.loadResumeDialogVisible = false;
+                this.loadResume();
             },
 
-            // 是否显示重新通过按钮
-            isShowRePass() {
-                // TODO
+            // 下载简历对话框中点击 是
+            onLoadResumeAndResume() {
+                this.$storage.setData('andLoadingApplyTableNoTips:' + this.activity.id, {tips: this.andLoadingApplyTableNoTips, onlyResume: false});
+                this.onlyResume = false;
+                this.loadResumeDialogVisible = false;
+                this.loadApplyTable();
+                this.loadResume();
             },
 
-            // 是否显示已通过状态
-            isShowPassed() {
-                // TODO
+            // 下载报名表
+            loadApplyTable() {
+                this.$axios.get("/export/registration-to-pdf", {params: {registrationId: this.applyTableId}}).then(response => {
+                    if (response.data) {
+                        downloadFile({
+                            fileKey: response.data, fileName: '报名表.pdf', success: () => {
+                            }
+                        });
+                    }
+                })
             },
 
-            // 是否显示不合适状态
-            isShowRefuse() {
-                // TODO
+            // 下载简历
+            loadResume() {
+                this.$axios.get("/export/resume-to-pdf", {params: {resumeId: this.resumeId}}).then(response => {
+                    downloadFile({
+                        fileKey: response.data, fileName: '简历.pdf', success: () => {
+                        }
+                    });
+                })
+            },
+
+
+            // 点击通过报名（待处理中）
+            onResolve1(item) {
+                this.$axios.patch(`/registration/pass/${item.id}`).then(() => {
+                    this.getList();
+                    this.applyStatusList[1].total++;
+                    this.applyStatusList[3].total--;
+                })
+            },
+
+            // 点击不合适（待处理中）
+            onReject1(item) {
+                this.$axios.patch(`/registration/inappropriate/${item.id}`).then(() => {
+                    this.getList();
+                    this.applyStatusList[2].total++;
+                    this.applyStatusList[3].total--;
+                })
+            },
+
+            // 点击通过报名（不合适中）
+            onResolve3(item) {
+                this.$axios.patch(`/registration/pass/${item.id}`).then(() => {
+                    this.getList();
+                    this.applyStatusList[1].total++;
+                    this.applyStatusList[2].total--;
+                })
+            },
+
+            // 点击不合适（已通过中）
+            onReject2(item) {
+                this.$axios.patch(`/registration/inappropriate/${item.id}`).then(() => {
+                    this.getList();
+                    this.applyStatusList[1].total--;
+                    this.applyStatusList[2].total++;
+                })
             },
 
             // 获取活动状态
@@ -573,29 +678,45 @@
                             cursor: pointer;
                         }
 
-                        .button-plain {
+                        .button {
                             width: 96px;
                             height: 28px;
-                            background: #E3F0FF;
-                            border-radius: 21px;
-                            border: 1px solid #4895EF;
+                            border-radius: 4px;
                             font-size: 14px;
-                            color: #4895EF;
                             line-height: 28px;
                             text-align: center;
                             cursor: pointer;
                         }
 
-                        .button-primary {
-                            width: 96px;
-                            height: 28px;
+                        .button1-1 {
                             background: #4895EF;
-                            border-radius: 21px;
-                            font-size: 14px;
                             color: #FFFFFF;
-                            line-height: 28px;
-                            text-align: center;
-                            cursor: pointer;
+                        }
+
+                        .button1-2 {
+                            background: #E3F0FF;
+                            border: 1px solid #4895EF;
+                            color: #4895EF;
+                        }
+
+                        .button2-1 {
+                            background: #81C784;
+                            color: #FFFFFF;
+                        }
+
+                        .button2-2 {
+                            background: #ECEFF1;
+                            color: #78909C;
+                        }
+
+                        .button3-1 {
+                            background: #ECEFF1;
+                            color: #78909C;
+                        }
+
+                        .button3-2 {
+                            background: #EC5454;
+                            color: #FFFFFF;
                         }
 
                         .button-disabled {
@@ -623,6 +744,28 @@
             }
         }
 
+
+        .load-resume-dialog {
+            .dialog-title {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+
+                .download-icon {
+                    width: 29px;
+                    height: 23px;
+                    margin-left: 14px;
+                    cursor: pointer;
+                }
+
+                .close-icon {
+                    width: 29px;
+                    height: 29px;
+                    margin-left: 14px;
+                    cursor: pointer;
+                }
+            }
+        }
 
         .cancel-dialog {
             ::v-deep .el-dialog {
@@ -669,6 +812,52 @@
                     text-align: center;
                     cursor: pointer;
                 }
+            }
+        }
+    }
+
+    .resume-cancel-dialog {
+        ::v-deep .el-dialog {
+            border-radius: 13px;
+        }
+
+        /deep/ .el-dialog__body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .resume-button-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 26px;
+
+            .cancel {
+                width: 107px;
+                height: 35px;
+                background: #FFFFFF;
+                border-radius: 18px;
+                border: 1px solid #4895EF;
+                font-size: 16px;
+                color: #4895EF;
+                line-height: 35px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .confirm {
+                margin-left: 21px;
+                width: 107px;
+                height: 35px;
+                background: #4895EF;
+                border-radius: 18px;
+                border: 1px solid #FFFFFF;
+                font-size: 16px;
+                color: #FFFFFF;
+                line-height: 35px;
+                text-align: center;
+                cursor: pointer;
             }
         }
     }

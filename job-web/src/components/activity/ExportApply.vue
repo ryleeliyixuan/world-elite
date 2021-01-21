@@ -5,7 +5,7 @@
                v-loading="exporting"
                width="445px">
         <div class="content">
-            <el-select v-model="query.status" placeholder="选择导出板块" class="select" size="small" v-if="activity.audit==='0'">
+            <el-select v-model="query.status" placeholder="选择导出板块" class="select" size="small" v-if="activity.auditType==='0'">
                 <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -21,15 +21,15 @@
                         <svg-icon icon-class="checked-disabled"></svg-icon>
                         <div>姓名</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('phoneFlag')" v-if="applyTable.phoneFlag">
+                    <div class="checkbox" @click="onCheckBox('phoneFlag')" v-if="applyTable.phoneFlag!=='2'">
                         <svg-icon :icon-class="query.phoneFlag?'checked':'unchecked'"></svg-icon>
                         <div>手机号</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('schoolFlag')" v-if="applyTable.schoolFlag">
+                    <div class="checkbox" @click="onCheckBox('schoolFlag')" v-if="applyTable.schoolFlag!=='2'">
                         <svg-icon :icon-class="query.schoolFlag?'checked':'unchecked'"></svg-icon>
                         <div>学校</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('gradeFlag')" v-if="applyTable.gradeFlag">
+                    <div class="checkbox" @click="onCheckBox('gradeFlag')" v-if="applyTable.gradeFlag!=='2'">
                         <svg-icon :icon-class="query.gradeFlag?'checked':'unchecked'"></svg-icon>
                         <div>年级</div>
                     </div>
@@ -43,19 +43,19 @@
                     </div>
                 </div>
                 <div class="column">
-                    <div class="checkbox" @click="onCheckBox('genderFlag')" v-if="applyTable.genderFlag">
+                    <div class="checkbox" @click="onCheckBox('genderFlag')" v-if="applyTable.genderFlag!=='2'">
                         <svg-icon :icon-class="query.genderFlag?'checked':'unchecked'"></svg-icon>
                         <div>性别</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('emailFlag')" v-if="applyTable.emailFlag">
+                    <div class="checkbox" @click="onCheckBox('emailFlag')" v-if="applyTable.emailFlag!=='2'">
                         <svg-icon :icon-class="query.emailFlag?'checked':'unchecked'"></svg-icon>
                         <div>邮箱</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('professionFlag')" v-if="applyTable.professionFlag">
+                    <div class="checkbox" @click="onCheckBox('professionFlag')" v-if="applyTable.professionFlag!=='2'">
                         <svg-icon :icon-class="query.professionFlag?'checked':'unchecked'"></svg-icon>
                         <div>专业</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('educationFlag')" v-if="applyTable.educationFlag">
+                    <div class="checkbox" @click="onCheckBox('educationFlag')" v-if="applyTable.educationFlag!=='2'">
                         <svg-icon :icon-class="query.educationFlag?'checked':'unchecked'"></svg-icon>
                         <div>学历</div>
                     </div>
