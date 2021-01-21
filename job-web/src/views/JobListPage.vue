@@ -456,9 +456,6 @@
   export default {
     name: "JobListPage",
     components: { Pagination },
-    computed: {
-      ...mapGetters(["keyword"]),
-    },
     data() {
       return {
         moreFilter: false,
@@ -576,7 +573,7 @@
         this.getList();
       },
       keyword() {
-        this.listQuery.keyword = this.keyword;
+        this.listQuery.keyword = this.$route.query.searchWord;
         this.handleRouteList();
       },
     },
@@ -975,6 +972,8 @@
       getList() {
         this.showNoResult = false;
         parseListQuery(this.$route.query, this.listQuery);
+        this.listQuery.keyword = this.$route.query.searchWord;
+        
         searchJob(this.listQuery).then((response) => {
           if (!response.data.list || response.data.list.length === 0) {
             this.showNoResult = true;
