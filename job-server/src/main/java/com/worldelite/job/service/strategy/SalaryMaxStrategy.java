@@ -20,11 +20,11 @@ public class SalaryMaxStrategy implements Comparator<JobVo> {
         Integer LSalary;
         Integer RSalary;
 
-        String[] LSalarySplit = LJobVo.getSalary().getValue().split("-");
+        String[] LSalarySplit = LJobVo.getSalary().getName().split("-");
         Integer LSalaryMonths = Optional.ofNullable(LJobVo.getSalaryMonths()).orElse(0);
 
         if (LSalarySplit.length > 1) {
-            Integer maxSalary = Integer.parseInt(LSalarySplit[1]);
+            Integer maxSalary = Integer.parseInt(LSalarySplit[1].substring(0, LSalarySplit[1].length() - 1));
             if (LSalaryMonths == 0) {
                 LSalary = maxSalary * MONTH_NUMBER;
             } else {
@@ -34,11 +34,11 @@ public class SalaryMaxStrategy implements Comparator<JobVo> {
             LSalary = 0;
         }
 
-        String[] RSalarySplit = RJobVo.getSalary().getValue().split("-");
+        String[] RSalarySplit = RJobVo.getSalary().getName().split("-");
         Integer RSalaryMonths = Optional.ofNullable(RJobVo.getSalaryMonths()).orElse(0);
 
         if (RSalarySplit.length > 1) {
-            Integer maxSalary = Integer.parseInt(RSalarySplit[1]);
+            Integer maxSalary = Integer.parseInt(RSalarySplit[1].substring(0, RSalarySplit[1].length() - 1));
             if (RSalaryMonths == 0) {
                 RSalary = maxSalary * MONTH_NUMBER;
             } else {
