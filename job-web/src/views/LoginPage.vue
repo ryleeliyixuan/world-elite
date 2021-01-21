@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="login-box">
       <div class="section1">
-        <div class="section1-header bold">We build your CAREER</div>
+        <div class="section1-header bold"></div>
       </div>
       <div class="section2">
         <div class="bold section2-header">Hello, <br />Welcome Back!</div>

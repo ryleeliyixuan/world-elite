@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="login-box">
       <div class="section1">
-        <div class="section1-header bold">We build your CAREER</div>
+        <div class="section1-header"></div>
       </div>
       <div class="section2" v-loading="submitLoading" v-if="!success">
         <div class="section2-header text-center">重新设置登录密码</div>
@@ -222,11 +222,11 @@ export default {
     margin-top: 35px;
     margin-bottom: 88px;
     .section1 {
-      background: url("../assets/login-background.svg") repeat;
       flex: 1;
 
       .section1-header {
-        margin: 84px 20px 26px 20px;
+        background: url("../assets/login-background.svg") repeat;
+        background-size: cover;
       }
     }
     .section2 {
