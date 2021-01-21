@@ -326,9 +326,9 @@ export default {
     handleSearch() {
       let query = { ...this.$route.query };
       if (this.keyword) {
-        query.keyword = this.keyword;
+        query.searchWord = this.keyword;
       } else {
-        delete query.keyword;
+        delete query.searchWord;
       }
       if (this.isJob()) {
         if (this.$route.path === "/job-list") {
