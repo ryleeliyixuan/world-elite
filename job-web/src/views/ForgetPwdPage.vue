@@ -223,10 +223,10 @@ export default {
     margin-bottom: 88px;
     .section1 {
       flex: 1;
+      background: url("../assets/login-background.svg") repeat;
+      background-size: cover;
 
       .section1-header {
-        background: url("../assets/login-background.svg") repeat;
-        background-size: cover;
       }
     }
     .section2 {

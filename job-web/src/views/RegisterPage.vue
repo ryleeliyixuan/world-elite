@@ -272,6 +272,9 @@ export default {
           .short {
             /deep/.el-input__inner {
               width: 195px;
+              height: 0;
+              padding: 1.4em 0.5em;
+              background-clip: content-box;
             }
           }
 
@@ -282,10 +285,17 @@ export default {
 
           /deep/ .el-input__inner {
             width: 339px;
-            height: 39px;
+            // height: 39px;
             background: #ffffff;
             border-radius: 20px;
             border: 1px solid #cccccc;
+            height: 0;
+            padding: 1.4em 0.5em;
+            background-clip: content-box;
+          }
+
+          /deep/ .el-input__inner::placeholder {
+            padding-left: 18px;
           }
 
           /deep/ .el-input__inner:focus {
