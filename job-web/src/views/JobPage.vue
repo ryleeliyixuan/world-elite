@@ -228,12 +228,12 @@
           您所选的简历完整度较低（建议提升至80%以上），是否确认投递？
         </div>
         <span slot="footer" class="dialog-footer">
+          <el-button @click="progressAlertDialog = false">去修改</el-button>
           <el-button
             type="primary"
             @click="submitResume(), (progressAlertDialog = false)"
             >确 定</el-button
           >
-          <el-button @click="progressAlertDialog = false">去修改</el-button>
         </span>
       </el-dialog>
       <!-- resume alert end -->
