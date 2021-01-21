@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <div class="left-container" :style="{'top':top}" v-if="industryList.length>0 && Object.keys(companyList).length>0">
+        <div class="left-container" :style="{'top':top}" v-if="industryList.length>0 && showMenu">
             <el-link class="left-item"
                      :type="item.select?'primary':'default'"
                      :underline="false"
@@ -58,6 +58,7 @@
                 industryList: [],//行业列表
                 companyList: {}, // 公司列表
                 companyCount: 4, // 显示公司数
+                showMenu:false, //
                 top: "93px" // 目录距离顶部距离
             };
         },
@@ -115,6 +116,10 @@
                 }).then(data => {
                     this.$set(this.companyList, item.id, data.data.list);
                     this.$set(item, "total", data.data.total);
+
+                    setTimeout(()=>{
+                        this.showMenu = true;
+                    },500)
                 })
             },
 
