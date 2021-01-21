@@ -1,9 +1,22 @@
 <template>
   <div class="background-wrapper">
-    <!--<Affix>-->
-      <div v-show="A" class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
+    <el-button style="position: absolute;
+        left: 100%;
+        color: #2d3436;
+        height: 25px;
+        transform: translateX(-450%);
+        top: 110px;
+        z-index: 20;
+        bottom: 9px;" class="empty" @click="emptyFilter" type="text"
+    ><svg-icon
+            class="empty-icon"
+            icon-class="joblistdelete"
+            style="height: 19px; width: 19px; margin-right: 6px; margin-bottom: 2px;"
+    />清除选项</el-button
+    >
+    
+    <div v-show="A" class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
         <div class="section1-container">
-
           <div v-show="A">
             <!-- 所在城市 -->
             <div class="section1-filter">
@@ -16,7 +29,7 @@
                         v-for="item in cityOptions"
                         :label="item.id"
                         :key="item.id"
-                        @change="handleFilter"
+                        @change="handleFilter(item.id)"
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
@@ -49,7 +62,7 @@
                         v-for="item in companyIndustryOptions"
                         :label="item.id"
                         :key="item.id"
-                        @change="handleFilter"
+                        @change="handleFilter(item.id)"
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
@@ -63,7 +76,7 @@
                         v-for="item in salaryRangeOptions"
                         :label="item.id"
                         :key="item.id"
-                        @change="handleFilter"
+                        @change="handleFilter(item.id)"
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
@@ -77,7 +90,7 @@
                         v-for="item in degreeOptions"
                         :label="item.id"
                         :key="item.id"
-                        @change="handleFilter"
+                        @change="handleFilter(item.id)"
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
@@ -106,7 +119,7 @@
                         v-for="item in experienceOptions"
                         :label="item.id"
                         :key="item.id"
-                        @change="handleFilter"
+                        @change="handleFilter(item.id)"
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
@@ -123,7 +136,7 @@
                         v-for="item in companyScaleOptions"
                         :label="item.id"
                         :key="item.id"
-                        @change="handleFilter"
+                        @change="handleFilter(item.id)"
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
@@ -140,7 +153,7 @@
                         v-for="item in companyDefineOptions"
                         :label="item.id"
                         :key="item.id"
-                        @change="handleFilter"
+                        @change="handleFilter(item.id)"
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
@@ -154,7 +167,7 @@
                         v-for="item in jobTypeOptions"
                         :label="item.id"
                         :key="item.id"
-                        @change="handleFilter"
+                        @change="handleFilter(item.id)"
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
@@ -168,7 +181,7 @@
                         v-for="item in lanRequiredOptions"
                         :label="item.id"
                         :key="item.id"
-                        @change="handleFilter"
+                        @change="handleFilter(item.id)"
                 >{{ item.name }}</el-checkbox-button
                 >
               </el-checkbox-group>
@@ -205,38 +218,8 @@
               >
             </div>
           </div>
-        </div>
-      </div>
 
-
-    <Affix>
-    <div v-show="C" class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
-      <div class="section1-container">
-
-              <div v-show="C" class="inp-search">
-                <el-input class="inp-search-child" size="mini" :placeholder="placeholderCity" :readonly="true"></el-input>
-                <el-input class="inp-search-child" size="mini" :placeholder="placeholderIndustry" :readonly="true"></el-input>
-                <el-input class="inp-search-child" size="mini" :placeholder="placeholderSalary" :readonly="true"></el-input>
-                <el-input class="inp-search-child" size="mini" :placeholder="placeholderDegree" :readonly="true"></el-input>
-                <el-input class="inp-search-child" size="mini" :placeholder="placeholderExp" :readonly="true"></el-input>
-                <div class="section1-filter-option">
-                  <el-button
-                          style="flex: 1; margin-left: 10px;"
-                          class="more"
-                          @click="reShowMoreFilter"
-                          size="mini"
-                  >更多筛选</el-button>
-                </div>
-
-                <el-link style="margin-left: 60px;" class="sort-options" target="_blank">推荐排序</el-link>
-                <el-link class="sort-options" target="_blank" @click="onOrderPubTime">最新发布</el-link>
-                <el-link class="sort-options" target="_blank" @click="onOrderSalary">薪资降序</el-link>
-              </div>
-    </div>
-  </div>
-    </Affix>
-
-          <div v-show="quickFilter" class="quickFilter" @mouseleave="quickFilter = false">
+          <div v-show="quickFilter"  class="quickFilter" @mouseleave="quickFilter = false">
             <div class="quickFilter-left">
               <span class="quickFilter-title">搜索记录：</span>
               <div class="quickFilter-caption" v-if="this.historyOptions.length <= 0">
@@ -249,10 +232,10 @@
                     <span class="filter-count">共{{item.filterCount}}个筛选条件</span>
                   </div>
                   <div class="filter-history-info">
-                    <span v-for="(cityValue, index) in item.cityValues"
-                          :id="item.cityIds[index]"
-                          class="city-value"
-                    >{{cityValue}}</span>
+              <span v-for="(cityValue, index) in item.cityValues"
+                    :id="item.cityIds[index]"
+                    class="city-value"
+              >{{cityValue}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(industryValue, index) in item.industryValues"
                           :id="item.industryIds[index]"
@@ -316,16 +299,37 @@
                 </div>
               </div>
             </div>-->
+          </div>
+        </div>
+    </div>
 
-        <el-button style="position: relative; color: #2d3436; font-size: 14px; height: 25px; bottom: 9px;" class="empty" @click="emptyFilter" type="text"
-        ><svg-icon
-                class="empty-icon"
-                icon-class="joblistdelete"
-                style="height: 19px; width: 19px; margin-right: 6px; margin-bottom: 2px;"
-        />清除选项</el-button
-        >
+    <Affix>
+      <div v-show="C" class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
+        <div class="section1-container">
+          <div v-show="C" class="inp-search">
+            <el-input class="inp-search-child" size="mini" :placeholder="placeholderCity" :readonly="true"></el-input>
+            <el-input class="inp-search-child" size="mini" :abc="placeholderIndustry" :placeholder="placeholderIndustry" :readonly="true"></el-input>
+            <el-input class="inp-search-child" size="mini" :placeholder="placeholderSalary" :readonly="true"></el-input>
+            <el-input class="inp-search-child" size="mini" :placeholder="placeholderDegree" :readonly="true"></el-input>
+            <el-input class="inp-search-child" size="mini" :placeholder="placeholderExp" :readonly="true"></el-input>
+            <div class="section1-filter-option">
+              <el-button
+                      style="flex: 1; margin-left: 10px;"
+                      class="more"
+                      @click="reShowMoreFilter"
+                      size="mini"
+              >更多筛选</el-button>
+            </div>
+
+            <el-link style="margin-left: 60px;" class="sort-options" target="_blank">推荐排序</el-link>
+            <el-link class="sort-options" target="_blank" @click="onOrderPubTime">最新发布</el-link>
+            <el-link class="sort-options" target="_blank" @click="onOrderSalary">薪资降序</el-link>
+          </div>
+        </div>
       </div>
-      <div class="section1-wrapper section1-wrapper-collapse" v-if="this.collapse">
+    </Affix>
+
+    <div class="section1-wrapper section1-wrapper-collapse" v-if="this.collapse">
         <div class="section1-container section1-collapse">
           <el-tag
                   class="section1-collapse-tag"
@@ -458,18 +462,22 @@
     components: { Pagination },
     data() {
       return {
-        moreFilter: false,
         quickFilter: false,
         collapse: false,
         paneLoading: true,
-
         selectedSalary: "",
+
         selectedIndustry: "",
         selectedScale: "",
         selectedJobType: "",
 
         A: true,
         C: false,
+        moreFilter: false,
+
+        lastA: true,
+        lastC: false,
+        lastMoreFilter: false,
 
         placeholderCity: "城市",
         placeholderIndustry: "行业",
@@ -477,11 +485,17 @@
         placeholderDegree: "学历",
         placeholderExp: "工作经验",
 
-        valueCity: undefined,
-        valueIndustry: undefined,
-        valueSalary: undefined,
-        valueDegree: undefined,
-        valueExp: undefined,
+        initCityIds: [],
+        initIndustryIds: [],
+        initSalaryIds: [],
+        initDegreeIds: [],
+        initExpIds: [],
+        initJobTypeIds: [],
+        initStageIds: [],
+        initDefineIds: [],
+        initCategoryIds: [],
+        initLanRequiredIds: [],
+        initScaleIds: [],
 
         loading: false,
         inpCityOptions: [],
@@ -603,19 +617,23 @@
                       this.cityOptions[i].id = resp.data[i - 1];
                     }
                     this.refreshOptions();
+                    this.buildInitIds(this.initCityIds, this.cityOptions);
                   });
+
                 }
         );
         listByType(5).then(
                 (response) => {
                   this.companyScaleOptions = response.data.list;
                   this.buildUnlimitedMap(this.companyScaleOptions, "scale");
+                  this.buildInitIds(this.initScaleIds, this.companyScaleOptions);
                 }
         );
         listByType(6).then(
                 (response) => {
                   this.companyIndustryOptions = response.data.list;
                   this.buildUnlimitedMap(this.companyIndustryOptions, "industry");
+                  this.buildInitIds(this.initIndustryIds, this.companyIndustryOptions);
                   this.refreshOptions();
                 }
         );
@@ -623,12 +641,14 @@
                 (response) => {
                   this.jobTypeOptions = response.data.list;
                   this.buildUnlimitedMap(this.jobTypeOptions, "jobType");
+                  this.buildInitIds(this.initJobTypeIds, this.jobTypeOptions);
                 }
         );
         listByType(9).then(
                 (response) => {
                   this.salaryRangeOptions = response.data.list;
                   this.buildUnlimitedMap(this.salaryRangeOptions, "salary");
+                  this.buildInitIds(this.initSalaryIds, this.salaryRangeOptions);
                   this.refreshOptions();
                 }
         );
@@ -636,6 +656,7 @@
                 (response) => {
                   this.degreeOptions = response.data.list;
                   this.buildUnlimitedMap(this.degreeOptions, "degree");
+                  this.buildInitIds(this.initDegreeIds, this.degreeOptions);
                   this.refreshOptions();
                 }
         );
@@ -643,6 +664,7 @@
                 (response) => {
                   this.experienceOptions = response.data.list;
                   this.buildUnlimitedMap(this.experienceOptions, "exp");
+                  this.buildInitIds(this.initExpIds, this.experienceOptions);
                   this.refreshOptions();
                 }
         );
@@ -650,6 +672,7 @@
                 (response) => {
                   this.companyDefineOptions = response.data.list;
                   this.buildUnlimitedMap(this.companyDefineOptions, "define");
+                  this.buildInitIds(this.initDefineIds, this.companyDefineOptions);
                 }
         );
         this.$axios.request({
@@ -664,6 +687,7 @@
         }).then((resp) => {
           this.lanRequiredOptions = resp.data.list;
           this.buildUnlimitedMap(this.lanRequiredOptions, "lang");
+          this.buildInitIds(this.initLanRequiredIds, this.lanRequiredOptions);
         });
         this.paneLoading = false;
       },
@@ -677,28 +701,56 @@
           }
         }, 10);
       },
+      saveLastShowStatus(A, C, moreFilter) {
+        this.lastA = A;
+        this.lastC = C;
+        this.lastMoreFilter = moreFilter;
+      },
+      buildInitIds(ids, options) {
+        for (let i = 0; i < options.length; i++) {
+          ids.push(options[i].id);
+        }
+        return ids;
+      },
       checkScrollFilter() {
         if (this.A && !this.moreFilter) {
-          let top1 = document.getElementById("pointA").offsetTop;
-          let gun = document.documentElement.scrollTop || document.body.scrollTop;
-          let top = top1 - gun;
-          if (top <= 0) {
+
+          let top1 = document.getElementById("pointA").getBoundingClientRect().top;
+          if (top1 <= 0) {
+            this.saveLastShowStatus(this.A, this.C, this.moreFilter);
             this.closeMoreFilter();
-          }else{
-            this.reShowMoreFilter();
           }
         }
 
         if (this.moreFilter && this.A) {
-          let top1 = document.getElementById("pointMore").offsetTop;
-          let gun = document.documentElement.scrollTop || document.body.scrollTop;
-          let top = top1 - gun;
-          if (top <= 0) {
+          let top1 = document.getElementById("pointMore").getBoundingClientRect().top;
+          if (top1 <= 0) {
+            this.saveLastShowStatus(this.A, this.C, this.moreFilter);
             this.closeMoreFilter();
-          }else{
-            this.reShowMoreFilter();
           }
         }
+
+        if (!this.moreFilter && !this.A && this.C) {
+          if (this.getScrollTop() <= 0) {
+            this.reShowMoreFilterByArgs();
+          }
+        }
+      },
+      getScrollTop() {
+        let scrollTop = 0,
+                bodyScrollTop = 0,
+                documentScrollTop = 0;
+        if (document.body) {
+          bodyScrollTop = document.body.scrollTop;
+        }
+        if (document.documentElement) {
+          documentScrollTop = document.documentElement.scrollTop;
+        }
+        scrollTop =
+                bodyScrollTop - documentScrollTop > 0
+                        ? bodyScrollTop
+                        : documentScrollTop;
+        return scrollTop;
       },
       showMoreFilter() {
         this.A = true;
@@ -719,6 +771,11 @@
         this.moreFilter = true;
         this.C = false;
       },
+      reShowMoreFilterByArgs() {
+        this.A = this.lastA;
+        this.C = this.lastC;
+        this.moreFilter = this.lastMoreFilter;
+      },
       buildUnlimitedMap(options, key) {
         for (let i = 0; i < options.length; i++) {
           if (options[i].name === "不限") {
@@ -726,63 +783,13 @@
           }
         }
       },
-      scrollPane(status) {
-        this.collapse = status;
-        /*this.selectedSalary = "";
-        this.selectedIndustry = "";
-        this.selectedScale = "";
-        this.selectedJobType = "";
-
-        for (let i = 0; i < this.salaryRangeOptions.length; i++) {
-          let item = this.salaryRangeOptions[i];
-          if (this.listQuery.salaryRangeIds.indexOf(item.id) !== -1) {
-            this.selectedSalary += item.name + "，";
-          }
-        }
-        for (let i = 0; i < this.companyIndustryOptions.length; i++) {
-          let item = this.companyIndustryOptions[i];
-          if (this.listQuery.companyIndustryIds.indexOf(item.id) !== -1) {
-            this.selectedIndustry += item.name + "，";
-          }
-        }
-        for (let i = 0; i < this.companyScaleOptions.length; i++) {
-          let item = this.companyScaleOptions[i];
-          if (this.listQuery.companyScaleIds.indexOf(item.id) !== -1) {
-            this.selectedScale += item.name + "，";
-          }
-        }
-
-        for (let i = 0; i < this.jobTypeOptions.length; i++) {
-          let item = this.jobTypeOptions[i];
-          if (this.listQuery.jobTypes.indexOf(item.id) !== -1) {
-            this.selectedJobType += item.name + "，";
-          }
-        }
-
-        this.selectedSalary = this.selectedSalary.substr(
-                0,
-                this.selectedSalary.length - 1
-        );
-        this.selectedIndustry = this.selectedIndustry.substr(
-                0,
-                this.selectedIndustry.length - 1
-        );
-        this.selectedScale = this.selectedScale.substr(
-                0,
-                this.selectedScale.length - 1
-        );
-        this.selectedJobType = this.selectedJobType.substr(
-                0,
-                this.selectedJobType.length - 1
-        );*/
-      },
       onOrderPubTime() {
         this.listQuery.sort = this.orderPubTime;
         this.handleFilter();
       },
       onOrderSalary() {
         this.listQuery.salaryAsc = 0;
-        this.listQuery.limit = 10;
+        this.listQuery.limit = 100000;
         this.$axios.post("/job/search-job-order-by-salary", this.listQuery).then(
                 (resp) => {
                   if (!resp.data.list || resp.data.list.length === 0) {
@@ -820,19 +827,19 @@
       },
       reHandleFilter(options) {
         this.emptyFilter();
-        this.listQuery.cityIds = options.cityIds;
-        this.listQuery.companyIndustryIds = options.industryIds;
-        this.listQuery.degreeIds = options.degreeIds;
-        this.listQuery.salaryRangeIds = options.salaryIds;
+        this.listQuery.cityIds = (options.cityIds.indexOf(null) === -1) ? options.cityIds : [];
+        this.listQuery.companyIndustryIds = (options.industryIds.indexOf(null) === -1) ? options.industryIds : [];
+        this.listQuery.degreeIds = (options.degreeIds.indexOf(null) === -1) ? options.degreeIds : [];
+        this.listQuery.salaryRangeIds = (options.salaryIds.indexOf(null) === -1) ? options.salaryIds : [];
         this.listQuery.page = 1;
         this.saveSearchHistory();
         this.refreshOptions();
         this.handleRouteList();
       },
-      handleFilter() {
+      handleFilter(id) {
         this.listQuery.page = 1;
         this.saveSearchHistory();
-        this.refreshOptions();
+        this.refreshOptions(id);
         this.handleRouteList();
       },
       saveSearchHistory() {
@@ -863,7 +870,7 @@
         this.historyForm.salaryIds = this.listQuery.salaryRangeIds;
         this.historyForm.industryIds = this.listQuery.companyIndustryIds;
 
-        this.removeEl(this.historyForm.cityIds);
+        // this.removeEl(this.historyForm.cityIds);
         this.historyForm.filterCount = this.historyForm.cityIds.length
                 + this.historyForm.degreeIds.length
                 + this.historyForm.salaryIds.length
@@ -876,56 +883,99 @@
         }
         return newArr;
       },
-      removeEl(arr) {
-        let i = arr.indexOf(this.unlimitedMap["city"]);
+      removeElByValue(arr, value) {
+        let i = arr.indexOf(value);
         if (i > -1) {
           arr.splice(i, 1);
         }
       },
-      refreshOptions() {
-        if (this.listQuery.cityIds.indexOf(this.unlimitedMap["city"]) !== -1) {
+      refreshChecked(selectedIds, key, selectiveId, initIds) {
+        return selectedIds.indexOf(this.unlimitedMap[key]) !== -1 && selectiveId !== this.unlimitedMap[key] && initIds.indexOf(selectiveId) !== -1;
+      },
+      refreshOptions(id) {
+        this.placeholderCity = this.getNameByIdFromOptions(this.cityOptions, this.listQuery.cityIds, "城市");
+        this.placeholderIndustry = this.getNameByIdFromOptions(this.companyIndustryOptions, this.listQuery.companyIndustryIds, "行业");
+        this.placeholderSalary = this.getNameByIdFromOptions(this.salaryRangeOptions, this.listQuery.salaryRangeIds, "月薪");
+        this.placeholderDegree = this.getNameByIdFromOptions(this.degreeOptions, this.listQuery.degreeIds, "学历");
+        this.placeholderExp = this.getNameByIdFromOptions(this.experienceOptions, this.listQuery.experienceIds, "工作经验");
+
+        if (id === undefined) return;
+
+        if (id === this.unlimitedMap["city"]) {
           this.listQuery.cityIds = [this.unlimitedMap["city"]];
-          this.placeholderCity = "不限";
+          this.placeholderCity = "城市不限";
         }
-        if (this.listQuery.companyIndustryIds.indexOf(this.unlimitedMap["industry"]) !== -1) {
-          this.listQuery.companyIndustryIds = [this.unlimitedMap["industry"]];
-          this.placeholderIndustry = "不限";
-        }
-        if (this.listQuery.salaryRangeIds.indexOf(this.unlimitedMap["salary"]) !== -1) {
-          this.listQuery.salaryRangeIds = [this.unlimitedMap["salary"]];
-          this.placeholderSalary = "不限";
-        }
-        if (this.listQuery.degreeIds.indexOf(this.unlimitedMap["degree"]) !== -1) {
-          this.listQuery.degreeIds = [this.unlimitedMap["degree"]];
-          this.placeholderDegree = "不限";
-        }
-        if (this.listQuery.experienceIds.indexOf(this.unlimitedMap["exp"]) !== -1) {
-          this.listQuery.experienceIds = [this.unlimitedMap["exp"]];
-          this.placeholderExp = "不限";
-        }
-        if (this.listQuery.companyScaleIds.indexOf(this.unlimitedMap["scale"]) !== -1) {
-          this.listQuery.companyScaleIds = [this.unlimitedMap["scale"]];
-        }
-        if (this.listQuery.companyDefineIds.indexOf(this.unlimitedMap["define"]) !== -1) {
-          this.listQuery.companyDefineIds = [this.unlimitedMap["define"]];
-        }
-        if (this.listQuery.jobTypes.indexOf(this.unlimitedMap["jobType"]) !== -1) {
-          this.listQuery.jobTypes = [this.unlimitedMap["jobType"]];
-        }
-        if (this.listQuery.lanRequiredIds.indexOf(this.unlimitedMap["lang"]) !== -1) {
-          this.listQuery.lanRequiredIds = [this.unlimitedMap["lang"]];
+        if (this.refreshChecked(this.listQuery.cityIds, "city", id, this.initCityIds)) {
+          this.removeElByValue(this.listQuery.cityIds, this.unlimitedMap["city"]);
         }
 
-        this.valueCity = this.getNameByIdFromOptions(this.cityOptions, this.listQuery.cityIds, "城市");
-        this.valueIndustry = this.getNameByIdFromOptions(this.companyIndustryOptions, this.listQuery.companyIndustryIds, "行业");
-        this.valueSalary = this.getNameByIdFromOptions(this.salaryRangeOptions, this.listQuery.salaryRangeIds, "月薪");
-        this.valueDegree = this.getNameByIdFromOptions(this.degreeOptions, this.listQuery.degreeIds, "学历");
-        this.valueExp = this.getNameByIdFromOptions(this.experienceOptions, this.listQuery.experienceIds, "工作经验");
+        if (id === this.unlimitedMap["industry"]) {
+          this.listQuery.companyIndustryIds = [this.unlimitedMap["industry"]];
+          this.placeholderIndustry = "行业不限";
+        }
+        if (this.refreshChecked(this.listQuery.companyIndustryIds, "industry", id, this.initIndustryIds)) {
+          this.removeElByValue(this.listQuery.companyIndustryIds, this.unlimitedMap["industry"]);
+        }
+
+        if (id === this.unlimitedMap["salary"]) {
+          this.listQuery.salaryRangeIds = [this.unlimitedMap["salary"]];
+          this.placeholderSalary = "月薪不限";
+        }
+        if (this.refreshChecked(this.listQuery.salaryRangeIds, "salary", id, this.initSalaryIds)) {
+          this.removeElByValue(this.listQuery.salaryRangeIds, this.unlimitedMap["salary"]);
+        }
+
+        if (id === this.unlimitedMap["degree"]) {
+          this.listQuery.degreeIds = [this.unlimitedMap["degree"]];
+          this.placeholderDegree = "学历不限";
+        }
+        if (this.refreshChecked(this.listQuery.degreeIds, "degree", id, this.initSalaryIds)) {
+          this.removeElByValue(this.listQuery.degreeIds, this.unlimitedMap["degree"]);
+        }
+
+        if (id === this.unlimitedMap["exp"]) {
+          this.listQuery.experienceIds = [this.unlimitedMap["exp"]];
+          this.placeholderExp = "工作经验不限";
+        }
+        if (this.refreshChecked(this.listQuery.experienceIds, "exp", id, this.initExpIds)) {
+          this.removeElByValue(this.listQuery.experienceIds, this.unlimitedMap["exp"]);
+        }
+
+        if (id === this.unlimitedMap["scale"]) {
+          this.listQuery.companyScaleIds = [this.unlimitedMap["scale"]];
+          this.placeholderExp = "工作经验不限";
+        }
+        if (this.refreshChecked(this.listQuery.companyScaleIds, "scale", id, this.initScaleIds)) {
+          this.removeElByValue(this.listQuery.companyScaleIds, this.unlimitedMap["scale"]);
+        }
+
+        if (id === this.unlimitedMap["define"]) {
+          this.listQuery.companyDefineIds = [this.unlimitedMap["define"]];
+          this.placeholderExp = "工作经验不限";
+        }
+        if (this.refreshChecked(this.listQuery.companyDefineIds, "define", id, this.initDefineIds)) {
+          this.removeElByValue(this.listQuery.companyDefineIds, this.unlimitedMap["define"]);
+        }
+
+        if (id === this.unlimitedMap["jobType"]) {
+          this.listQuery.jobTypes = [this.unlimitedMap["jobType"]];
+          this.placeholderExp = "工作经验不限";
+        }
+        if (this.refreshChecked(this.listQuery.jobTypes, "jobType", id, this.initJobTypeIds)) {
+          this.removeElByValue(this.listQuery.jobTypes, this.unlimitedMap["jobType"]);
+        }
+
+        if (id === this.unlimitedMap["lang"]) {
+          this.listQuery.lanRequiredIds = [this.unlimitedMap["lang"]];
+          this.placeholderExp = "工作经验不限";
+        }
+        if (this.refreshChecked(this.listQuery.lanRequiredIds, "lang", id, this.initLanRequiredIds)) {
+          this.removeElByValue(this.listQuery.lanRequiredIds, this.unlimitedMap["lang"]);
+        }
+
       },
       getNameByIdFromOptions(options, ids, origin) {
-        console.log("refresh options = " + JSON.stringify(options));
         let name = "";
-
         if (origin === "城市" && this.inpCity.length >= 0) {
           for (let i = 0; i < this.inpCity.length; i++) {
             name += this.inpCity[i] + ",";
@@ -934,16 +984,20 @@
 
         for (let i = 0; i < options.length; i++) {
           for (let j = 0; j < ids.length; j++) {
-            if (options[i].id === ids[j]) {
+            if (options[i].id === ids[j] && options[i].name !== "不限") {
               name += options[i].name + ",";
             }
           }
         }
-        /*if (name === "") {
+        if (name === "") {
           return origin;
-        }*/
+        }
         if (name.endsWith(",")) {
-          return name.substr(0, name.length - 1);
+          if (name.substr(0, name.length - 1) === origin) {
+            return origin + name.substr(0, name.length - 1);
+          } else {
+            return name.substr(0, name.length - 1);
+          }
         }
       },
       emptyFilter() {
@@ -1061,6 +1115,11 @@
     max-width: 3000px !important;
     padding: 0 !important;
     margin-top: 0 !important;
+
+    .clear-btn {
+
+    }
+
   }
 
   .section1-wrapper {
@@ -1079,6 +1138,124 @@
       max-width: 1140px;
       flex: 1;
       padding: 0px 30px;
+
+
+      .quickFilter {
+        display: flex;
+        flex-direction: row;
+        background: #eef5ff;
+        border-radius: 14px;
+        height: 136px;
+        padding: 13px 43px 17px 29px;
+        margin-bottom: 50px;
+        margin-top: 17px;
+
+        .quickFilter-title {
+          margin-bottom: 9px;
+          font-size: 16px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #4895ef;
+          line-height: 22px;
+        }
+        .quickFilter-caption {
+          font-size: 16px;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          color: #666666;
+          line-height: 22px;
+          display: flex;
+
+          .quickFilter-history-box {
+            border-radius: 4px;
+            border: 1px solid #636e72;
+            padding: 2px 4px;
+            /*margin-left: 10px;*/
+            margin-right: 15px;
+            margin-top: 15px;
+            flex: 1;
+            cursor: pointer;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow:ellipsis;
+
+            .filter-keyword {
+              font-size: 14px;
+              color: #333333;
+              margin-left: 6px;
+              margin-right: 8px;
+              position: relative;
+              bottom: 2px;
+            }
+
+            .filter-history-info {
+              font-size: 11px;
+              color: #7F7F7F;
+
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow:ellipsis;
+
+              span {
+                margin-left: 3px;
+                cursor: pointer;
+              }
+
+              /*.city-value:nth-child(1) {
+                margin-left: 6px;
+              }
+
+              .city-value:after {
+                content: ' ';
+              }
+
+              .industry-value:nth-child(2) {
+                margin-left: 6px;
+              }
+
+              .salary-value:nth-child(3) {
+                margin-left: 6px;
+              }*/
+
+            }
+
+
+            .filter-count {
+              font-size: 11px;
+              color: #027DB4;
+              cursor: pointer;
+            }
+
+
+          }
+
+
+        }
+
+        .quickFilter-left {
+          flex: 3;
+        }
+        .quickFilter-right {
+          flex: 1;
+          margin-left: 25px;
+          .quickFilter-right-click {
+            margin-top: 9px;
+            display: flex;
+            align-items: center;
+            .quickFilter-right-click-text {
+              margin-left: 4px;
+              font-size: 16px;
+              font-family: PingFangSC-Medium, PingFang SC;
+              font-weight: 500;
+              color: #333333;
+              line-height: 22px;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+
 
       .sort-options {
         justify-content: flex-end;
@@ -1107,121 +1284,6 @@
 
     }
 
-    .quickFilter {
-      display: flex;
-      flex-direction: row;
-      background: #eef5ff;
-      border-radius: 14px;
-      height: 136px;
-      padding: 13px 43px 17px 29px;
-      margin-bottom: 50px;
-      margin-top: 17px;
-
-      .quickFilter-title {
-        margin-bottom: 9px;
-        font-size: 16px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #4895ef;
-        line-height: 22px;
-      }
-      .quickFilter-caption {
-        font-size: 16px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #666666;
-        line-height: 22px;
-        display: flex;
-
-        .quickFilter-history-box {
-          border-radius: 4px;
-          border: 1px solid #636e72;
-          padding: 2px 4px;
-          /*margin-left: 10px;*/
-          margin-right: 15px;
-          margin-top: 15px;
-          flex: 1;
-          cursor: pointer;
-
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow:ellipsis;
-
-          .filter-keyword {
-            font-size: 14px;
-            color: #333333;
-            margin-left: 6px;
-            margin-right: 8px;
-            position: relative;
-            bottom: 2px;
-          }
-
-          .filter-history-info {
-            font-size: 11px;
-            color: #7F7F7F;
-
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow:ellipsis;
-
-            span {
-              margin-left: 3px;
-              cursor: pointer;
-            }
-
-            /*.city-value:nth-child(1) {
-              margin-left: 6px;
-            }
-
-            .city-value:after {
-              content: ' ';
-            }
-
-            .industry-value:nth-child(2) {
-              margin-left: 6px;
-            }
-
-            .salary-value:nth-child(3) {
-              margin-left: 6px;
-            }*/
-
-          }
-
-
-          .filter-count {
-            font-size: 11px;
-            color: #027DB4;
-            cursor: pointer;
-          }
-
-
-        }
-
-
-      }
-
-      .quickFilter-left {
-        flex: 3;
-      }
-      .quickFilter-right {
-        flex: 1;
-        margin-left: 25px;
-        .quickFilter-right-click {
-          margin-top: 9px;
-          display: flex;
-          align-items: center;
-          .quickFilter-right-click-text {
-            margin-left: 4px;
-            font-size: 16px;
-            font-family: PingFangSC-Medium, PingFang SC;
-            font-weight: 500;
-            color: #333333;
-            line-height: 22px;
-            cursor: pointer;
-          }
-        }
-      }
-    }
     .section1-filter {
       display: flex;
       flex-direction: row;
