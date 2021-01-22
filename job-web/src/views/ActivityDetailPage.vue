@@ -54,7 +54,7 @@
                         <share :config="shareConfig"></share>
                     </el-popover>
 
-                    <div :class="activity.registrationFlag?'apply-button2':'apply-button'" @click="onApply">报名</div>
+                    <div :class="activity.registrationFlag?'apply-button2':'apply-button'" @click="onApply">{{activity.registrationFlag?'已报名':'报名'}}</div>
                 </div>
                 <div class="line2" v-if="activity.numberLimit && activity.numberLimit!==-1">
                     报名名额还剩<span>{{activity.numberLimit - activity.applicantQuantity}}</span>个
