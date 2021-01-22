@@ -191,6 +191,11 @@ public class LuceneIndexService implements IndexService {
         }
         // lanRequiredIds TODO 创建索引，数据库中没有这方面的数据
 
+        if (jobVo.getTime() != null) {
+            doc.add(new LongPoint(JobIndexFields.JOB_PUBLISH_TIME_INDEX, jobVo.getTime().getTime()));
+            doc.add(new NumericDocValuesField(JobIndexFields.JOB_PUBLISH_TIME_INDEX, jobVo.getTime().getTime()));
+        }
+
         if (jobVo.getExperience() != null) {
             doc.add(new IntPoint(JobIndexFields.EXPERIENCE_INDEX, jobVo.getExperience().getId()));
         }

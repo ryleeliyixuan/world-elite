@@ -50,6 +50,11 @@ public interface JobIndexFields {
     String EXPERIENCE_INDEX = "experience";
 
     /**
+     * 发布时间
+     */
+    String JOB_PUBLISH_TIME_INDEX = "pub_time";
+
+    /**
      * 行业
      */
     String COMPANY_INDUSTRY_INDEX = "industry";
