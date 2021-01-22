@@ -236,22 +236,22 @@
               <span v-for="(cityValue, index) in item.cityValues"
                     :id="item.cityIds[index]"
                     class="city-value"
-              >{{cityValue}}</span>
+              >{{cityValue ? cityValue : `城市不限`}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(industryValue, index) in item.industryValues"
                           :id="item.industryIds[index]"
                           class="industry-value"
-                    >{{industryValue}}</span>
+                    >{{industryValue ? industryValue : `行业不限`}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(salaryValue, index) in item.salaryValues"
                           :id="item.salaryIds[index]"
                           class="salary-value"
-                    >{{salaryValue}}</span>
+                    >{{salaryValue ? salaryValue : `月薪不限`}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(degreeValue, index) in item.degreeValues"
                           :id="item.degreeIds[index]"
                           class="degree-value"
-                    >{{degreeValue}}</span>
+                    >{{degreeValue ? degreeValue : `学历不限`}}</span>
                   </div>
                 </div>
               </div>
@@ -836,14 +836,14 @@
         this.listQuery.degreeIds = (options.degreeIds.indexOf(null) === -1) ? options.degreeIds : [];
         this.listQuery.salaryRangeIds = (options.salaryIds.indexOf(null) === -1) ? options.salaryIds : [];
         this.listQuery.page = 1;
-        this.saveSearchHistory();
         this.refreshOptions();
+        this.saveSearchHistory();
         this.handleRouteList();
       },
       handleFilter(id) {
         this.listQuery.page = 1;
-        this.saveSearchHistory();
         this.refreshOptions(id);
+        this.saveSearchHistory();
         this.handleRouteList();
       },
       saveSearchHistory() {
@@ -933,7 +933,7 @@
           this.listQuery.degreeIds = [this.unlimitedMap["degree"]];
           this.placeholderDegree = "学历不限";
         }
-        if (this.refreshChecked(this.listQuery.degreeIds, "degree", id, this.initSalaryIds)) {
+        if (this.refreshChecked(this.listQuery.degreeIds, "degree", id, this.initDegreeIds)) {
           this.removeElByValue(this.listQuery.degreeIds, this.unlimitedMap["degree"]);
         }
 
@@ -947,7 +947,6 @@
 
         if (id === this.unlimitedMap["scale"]) {
           this.listQuery.companyScaleIds = [this.unlimitedMap["scale"]];
-          this.placeholderExp = "工作经验不限";
         }
         if (this.refreshChecked(this.listQuery.companyScaleIds, "scale", id, this.initScaleIds)) {
           this.removeElByValue(this.listQuery.companyScaleIds, this.unlimitedMap["scale"]);
@@ -955,7 +954,6 @@
 
         if (id === this.unlimitedMap["define"]) {
           this.listQuery.companyDefineIds = [this.unlimitedMap["define"]];
-          this.placeholderExp = "工作经验不限";
         }
         if (this.refreshChecked(this.listQuery.companyDefineIds, "define", id, this.initDefineIds)) {
           this.removeElByValue(this.listQuery.companyDefineIds, this.unlimitedMap["define"]);
@@ -963,7 +961,6 @@
 
         if (id === this.unlimitedMap["jobType"]) {
           this.listQuery.jobTypes = [this.unlimitedMap["jobType"]];
-          this.placeholderExp = "工作经验不限";
         }
         if (this.refreshChecked(this.listQuery.jobTypes, "jobType", id, this.initJobTypeIds)) {
           this.removeElByValue(this.listQuery.jobTypes, this.unlimitedMap["jobType"]);
@@ -971,7 +968,6 @@
 
         if (id === this.unlimitedMap["lang"]) {
           this.listQuery.lanRequiredIds = [this.unlimitedMap["lang"]];
-          this.placeholderExp = "工作经验不限";
         }
         if (this.refreshChecked(this.listQuery.lanRequiredIds, "lang", id, this.initLanRequiredIds)) {
           this.removeElByValue(this.listQuery.lanRequiredIds, this.unlimitedMap["lang"]);

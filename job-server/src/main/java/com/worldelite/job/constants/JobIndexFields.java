@@ -35,6 +35,21 @@ public interface JobIndexFields {
     String CITY_INDEX = "city";
 
     /**
+     * 定位
+     */
+    String COMPANY_DEFINE_INDEX = "company_define";
+
+    /**
+     * 语言要求
+     */
+    String LAN_REQUIRED_INDEX = "lan_required";
+
+    /**
+     * 工作经验
+     */
+    String EXPERIENCE_INDEX = "experience";
+
+    /**
      * 行业
      */
     String COMPANY_INDUSTRY_INDEX = "industry";
