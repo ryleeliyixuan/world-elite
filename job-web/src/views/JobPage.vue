@@ -12,12 +12,10 @@
             </div>
             <div class="session1-job-name mb-2">
               {{ job.name }}
-              <span class="salary-text ml-4"
-                >{{ job.salary.name
-                }}{{
-                  job.salaryMonths ? ` × ${job.salaryMonths}个月` : ""
-                }}</span
-              >
+              <span class="salary-text ml-4">
+                <!--{{ job.salary.name}} {{job.salaryMonths ? ` × ${job.salaryMonths}个月` : ""}}-->
+                {{ job.salary.name}}
+              </span>
             </div>
             <div class="text3 mb-2">
               {{ job.city ? job.city.name : "" }} |
