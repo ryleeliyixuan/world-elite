@@ -14,5 +14,6 @@ public class QuestionnaireWithAnswerVo {
     private Integer sort; //序号
     private String type; //问题类型
     private List<String> answerContent; //答案列表
-    private List<QuestionnaireOptionsVo> answerOptions; //选项列表
+    private List<QuestionnaireOptionsVo> answerOptions; //选择列表
+    private List<QuestionnaireOptionsVo> questionnaireOptions; //选项列表
 }
