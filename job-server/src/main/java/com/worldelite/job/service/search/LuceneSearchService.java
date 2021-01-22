@@ -1,5 +1,6 @@
 package com.worldelite.job.service.search;
 
+import com.worldelite.job.constants.ActivityIndexFields;
 import com.worldelite.job.constants.JobIndexFields;
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.constants.ResumeIndexFields;
@@ -171,7 +172,14 @@ public class LuceneSearchService implements SearchService {
             queryBuilder.add(IntPoint.newExactQuery(JobIndexFields.RECRUIT_TYPE_INDEX, searchForm.getRecruitId()), BooleanClause.Occur.MUST);
         }
 
-        return searchJobByQuery(queryBuilder.build(), searchForm);
+        Sort sort = null;
+        if (!StringUtils.isEmpty(searchForm.getSort()) && searchForm.getSort().equalsIgnoreCase("+PUB_TIME")) {
+            sort = new Sort();
+            SortField sortField = new SortField(JobIndexFields.JOB_PUBLISH_TIME_INDEX, SortField.Type.LONG, true);
+            sort.setSort(sortField);
+        }
+
+        return searchJobByQuery(queryBuilder.build(), searchForm, sort);
     }
 
     private static boolean useList(Integer[] arr, Integer targetValue) {
@@ -456,11 +464,18 @@ public class LuceneSearchService implements SearchService {
         return queryBuilder.build();
     }
 
-    private PageResult<JobVo> searchJobByQuery(Query query, PageForm pageForm) {
+    private PageResult<JobVo> searchJobByQuery(Query query, PageForm pageForm, Sort sort) {
         IndexSearcher indexSearcher = getIndexSearcher();
         try {
-            ScoreDoc lastScoreDoc = getLastScoreDoc(pageForm, query, indexSearcher);
-            TopDocs topDocs = indexSearcher.searchAfter(lastScoreDoc, query, pageForm.getLimit());
+            ScoreDoc lastScoreDoc = null;
+            TopDocs topDocs = null;
+            if (sort == null) {
+                lastScoreDoc = getLastScoreDoc(pageForm, query, indexSearcher);
+                topDocs = indexSearcher.searchAfter(lastScoreDoc, query, pageForm.getLimit());
+            } else {
+                lastScoreDoc = getLastScoreDoc(pageForm, query, indexSearcher, sort);
+                topDocs = indexSearcher.searchAfter(lastScoreDoc, query, pageForm.getLimit(), sort);
+            }
             PageResult<JobVo> pageResult = new PageResult<>();
             pageResult.setTotal(topDocs.totalHits);
             pageResult.setCurrentPage(pageForm.getPage());
@@ -518,6 +533,18 @@ public class LuceneSearchService implements SearchService {
         }
         int num = pagerForm.getLimit() * (pagerForm.getPage() - 1);
         TopDocs tds = indexSearcher.search(query, num);
+        if (tds.scoreDocs.length == 0) {
+            return null;
+        }
+        return num <= tds.scoreDocs.length ? tds.scoreDocs[num - 1] : tds.scoreDocs[tds.scoreDocs.length - 1];
+    }
+
+    private ScoreDoc getLastScoreDoc(PageForm pagerForm, Query query, IndexSearcher indexSearcher, Sort sort) throws IOException {
+        if (pagerForm.getPage() == 1) {
+            return null;//如果是第一页返回空
+        }
+        int num = pagerForm.getLimit() * (pagerForm.getPage() - 1);
+        TopDocs tds = indexSearcher.search(query, num, sort);
         if (tds.scoreDocs.length == 0) {
             return null;
         }
