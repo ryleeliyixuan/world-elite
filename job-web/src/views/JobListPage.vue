@@ -1,20 +1,21 @@
 <template>
   <div class="background-wrapper">
-    <el-button style="position: absolute;
-        left: 100%;
-        color: #2d3436;
-        height: 25px;
-        transform: translateX(-450%);
-        top: 110px;
-        z-index: 20;
-        bottom: 9px;" class="empty" @click="emptyFilter" type="text"
-    ><svg-icon
-            class="empty-icon"
-            icon-class="joblistdelete"
-            style="height: 19px; width: 19px; margin-right: 6px; margin-bottom: 2px;"
-    />清除选项</el-button
-    >
-    
+    <div style="position: relative;
+          left: 1330px;
+          top: 25px;
+          bottom: 9px;">
+      <el-button style="position: absolute;
+          color: #2d3436;
+          height: 25px;
+          z-index: 20;" class="empty" @click="emptyFilter" type="text"
+      ><svg-icon
+              class="empty-icon"
+              icon-class="joblistdelete"
+              style="height: 19px; width: 19px; margin-right: 6px; margin-bottom: 2px;"
+      />清除选项</el-button
+      >
+    </div>
+
     <div v-show="A" class="section1-wrapper" v-if="!collapse"  v-loading="paneLoading">
         <div class="section1-container">
           <div v-show="A">
@@ -388,9 +389,10 @@
             <h6 class="section3-job-name" >{{ job.name }}</h6>
             <div class="recruit-type" v-if="job.recruitType === 154">内推</div>
             <div>
-              <b class="section3-salary" style="font-size: 16px;"
-              >{{ job.salary.name}} · {{ job.salaryMonths ? `${job.salaryMonths}薪` : "12薪" }}</b
-              >
+              <b class="section3-salary" style="font-size: 16px;">
+                <!--{{ job.salary.name}} · {{ job.salaryMonths ? `${job.salaryMonths}薪` : "12薪" }}-->
+                {{ job.salary.name}}
+              </b>
               <span class="section3-city-degree" style="font-size: 15px;">
                 {{`${job.city ? job.city.name : ""}/${job.minDegree ? job.minDegree.name.substring(0, 2) : ""}`}}
               </span>
@@ -821,7 +823,9 @@
           return;
         }
         this.$axios.post("/city/get-city-id-by-name", {cityNames: this.inpCity}).then(resp => {
-          this.listQuery.cityIds = resp.data;
+          for (let i = 0; i < resp.data.length; i++) {
+            this.listQuery.cityIds.push(resp.data[i]);
+          }
           this.handleFilter();
         })
       },
@@ -1001,6 +1005,7 @@
         }
       },
       emptyFilter() {
+        this.inpCity = [];
         this.listQuery = {
           keyword: "",
           salaryRangeIds: [],
@@ -1141,7 +1146,7 @@
 
 
       .quickFilter {
-        display: flex;
+        display: block;
         flex-direction: row;
         background: #eef5ff;
         border-radius: 14px;
