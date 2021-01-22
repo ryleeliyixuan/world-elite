@@ -1,24 +1,23 @@
 package com.worldelite.job.service;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.Page;
-import com.microsoft.schemas.office.office.STInsetMode;
 import com.worldelite.job.anatation.SysLog;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.context.RedisKeys;
-import com.worldelite.job.entity.*;
+import com.worldelite.job.entity.Auth;
+import com.worldelite.job.entity.LoginLog;
+import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.AuthMapper;
 import com.worldelite.job.mapper.LoginLogMapper;
 import com.worldelite.job.mapper.UserApplicantMapper;
-import com.worldelite.job.mapper.UserMapper;
 import com.worldelite.job.service.sdk.AliEmailService;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.RequestUtils;
 import com.worldelite.job.util.TimeUtils;
-import com.worldelite.job.vo.*;
+import com.worldelite.job.vo.ApiCode;
+import com.worldelite.job.vo.UserApplicantVo;
 import me.zhyd.oauth.enums.AuthUserGender;
 import me.zhyd.oauth.model.AuthUser;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -149,17 +148,28 @@ public class UserApplicantService extends BaseService {
     public void modifyUser(UserForm userForm) {
         UserApplicant user = userApplicantMapper.selectByPrimaryKey(userForm.getId());
         if (user != null) {
-            if(StringUtils.isNotEmpty(userForm.getAvatar())){
+            if (StringUtils.isNotBlank(userForm.getAvatar()))
                 user.setAvatar(AppUtils.getOssKey(userForm.getAvatar()));
-            }
-            user.setPhoneCode(userForm.getPhoneCode());
-            user.setPhone(userForm.getPhone());
-            user.setGender(userForm.getGender());
-            user.setName(userForm.getName());
-            user.setStatus(userForm.getStatus());
-            user.setUpdateTime(new Date());
+
+            if (StringUtils.isNotBlank(userForm.getPhoneCode()))
+                user.setPhoneCode(userForm.getPhoneCode());
+
+            if (userForm.getPhone() != null)
+                user.setPhone(userForm.getPhone());
+
+            if (userForm.getGender() != null)
+                user.setGender(userForm.getGender());
+
+            if (StringUtils.isNotBlank(userForm.getName()))
+                user.setName(userForm.getName());
+
+            if (userForm.getStatus() != null)
+                user.setStatus(userForm.getStatus());
+
             userApplicantMapper.updateByPrimaryKeySelective(user);
             authService.updateLoginUserInfo(user);
+        }else{
+            throw new ServiceException(message("user.not.exists"));
         }
     }
 
