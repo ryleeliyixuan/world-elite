@@ -236,22 +236,22 @@
               <span v-for="(cityValue, index) in item.cityValues"
                     :id="item.cityIds[index]"
                     class="city-value"
-              >{{cityValue ? cityValue : `城市不限`}}</span>
+              >{{cityValue === "不限" ? "城市不限" : cityValue}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(industryValue, index) in item.industryValues"
                           :id="item.industryIds[index]"
                           class="industry-value"
-                    >{{industryValue ? industryValue : `行业不限`}}</span>
+                    >{{industryValue === "不限" ? "行业不限" : industryValue}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(salaryValue, index) in item.salaryValues"
                           :id="item.salaryIds[index]"
                           class="salary-value"
-                    >{{salaryValue ? salaryValue : `月薪不限`}}</span>
+                    >{{salaryValue === "不限" ? "月薪不限" : salaryValue}}</span>
                     <span style="margin-left: 6px;"></span>
                     <span v-for="(degreeValue, index) in item.degreeValues"
                           :id="item.degreeIds[index]"
                           class="degree-value"
-                    >{{degreeValue ? degreeValue : `学历不限`}}</span>
+                    >{{degreeValue === "不限" ? "学历不限" : degreeValue}}</span>
                   </div>
                 </div>
               </div>
@@ -451,7 +451,7 @@
 
 <script>
   import { listByType, listByTypeAll } from "@/api/dict_api";
-  import { searchJob } from "@/api/job_api";
+  import { searchJob, getCompanyJobList } from "@/api/job_api";
   import Pagination from "@/components/Pagination";
   import { mapGetters } from "vuex";
 
@@ -481,11 +481,11 @@
         lastC: false,
         lastMoreFilter: false,
 
-        placeholderCity: "城市",
-        placeholderIndustry: "行业",
-        placeholderSalary: "月薪",
-        placeholderDegree: "学历",
-        placeholderExp: "工作经验",
+        placeholderCity: "城市不限",
+        placeholderIndustry: "行业不限",
+        placeholderSalary: "月薪不限",
+        placeholderDegree: "学历不限",
+        placeholderExp: "工作经验不限",
 
         initCityIds: [],
         initIndustryIds: [],
@@ -579,7 +579,7 @@
     },
     created() {
       this.initData();
-      this.getList();
+      // this.getList();
     },
     mounted() {
       window.addEventListener("scroll", this.checkScrollFilter);
@@ -605,6 +605,11 @@
           if (resp !== undefined && this.checkSubscribeData(resp.data)) {
             this.subscribeOptions = resp.data;
           }
+        });
+        getCompanyJobList(this.listQuery).then((response) => {
+          this.pageResult = response.data;
+          this.total = this.pageResult.total;
+          this.$emit("complete");
         });
         listByType(2).then(
                 (response) => {
@@ -791,7 +796,7 @@
       },
       onOrderSalary() {
         this.listQuery.salaryAsc = 0;
-        this.listQuery.limit = 100000;
+        this.listQuery.limit = 10;
         this.$axios.post("/job/search-job-order-by-salary", this.listQuery).then(
                 (resp) => {
                   if (!resp.data.list || resp.data.list.length === 0) {
@@ -848,6 +853,9 @@
       },
       saveSearchHistory() {
         this.formatHistoryForm();
+        if (this.historyForm.filterCount <= 0) {
+          return;
+        }
         this.$axios.post("/history/save", this.historyForm).then(resp => {
         });
       },
@@ -869,16 +877,54 @@
         }
 
         this.historyForm.cityIds = this.arrCopy(this.listQuery.cityIds);
-        // this.historyForm.cityIds = this.listQuery.cityIds;
-        this.historyForm.degreeIds = this.listQuery.degreeIds;
-        this.historyForm.salaryIds = this.listQuery.salaryRangeIds;
-        this.historyForm.industryIds = this.listQuery.companyIndustryIds;
+        this.historyForm.degreeIds = this.arrCopy(this.listQuery.degreeIds);
+        this.historyForm.salaryIds = this.arrCopy(this.listQuery.salaryRangeIds);
+        this.historyForm.industryIds = this.arrCopy(this.listQuery.companyIndustryIds);
+
+        let count = this.getUnlimitedCount();
 
         // this.removeEl(this.historyForm.cityIds);
         this.historyForm.filterCount = this.historyForm.cityIds.length
                 + this.historyForm.degreeIds.length
                 + this.historyForm.salaryIds.length
-                + this.historyForm.industryIds.length;
+                + this.listQuery.experienceIds.length
+                + this.listQuery.companyScaleIds.length
+                + this.listQuery.companyDefineIds.length
+                + this.listQuery.jobTypes.length
+                + this.listQuery.lanRequiredIds.length
+                + this.historyForm.industryIds.length
+                - count;
+      },
+      getUnlimitedCount() {
+        let count = 0;
+        if (this.listQuery.cityIds.indexOf(this.unlimitedMap["city"]) !== -1 ) {
+          count++;
+        }
+        if (this.listQuery.companyIndustryIds.indexOf(this.unlimitedMap["industry"]) !== -1 ) {
+          count++;
+        }
+        if (this.listQuery.salaryRangeIds.indexOf(this.unlimitedMap["salary"]) !== -1 ) {
+          count++;
+        }
+        if (this.listQuery.degreeIds.indexOf(this.unlimitedMap["degree"]) !== -1 ) {
+          count++;
+        }
+        if (this.listQuery.experienceIds.indexOf(this.unlimitedMap["exp"]) !== -1 ) {
+          count++;
+        }
+        if (this.listQuery.companyScaleIds.indexOf(this.unlimitedMap["scale"]) !== -1 ) {
+          count++;
+        }
+        if (this.listQuery.companyDefineIds.indexOf(this.unlimitedMap["define"]) !== -1 ) {
+          count++;
+        }
+        if (this.listQuery.jobTypes.indexOf(this.unlimitedMap["jobType"]) !== -1 ) {
+          count++;
+        }
+        if (this.listQuery.lanRequiredIds.indexOf(this.unlimitedMap["lang"]) !== -1 ) {
+          count++;
+        }
+        return count;
       },
       arrCopy(originArr) {
         let newArr = [];
@@ -897,11 +943,11 @@
         return selectedIds.indexOf(this.unlimitedMap[key]) !== -1 && selectiveId !== this.unlimitedMap[key] && initIds.indexOf(selectiveId) !== -1;
       },
       refreshOptions(id) {
-        this.placeholderCity = this.getNameByIdFromOptions(this.cityOptions, this.listQuery.cityIds, "城市");
-        this.placeholderIndustry = this.getNameByIdFromOptions(this.companyIndustryOptions, this.listQuery.companyIndustryIds, "行业");
-        this.placeholderSalary = this.getNameByIdFromOptions(this.salaryRangeOptions, this.listQuery.salaryRangeIds, "月薪");
-        this.placeholderDegree = this.getNameByIdFromOptions(this.degreeOptions, this.listQuery.degreeIds, "学历");
-        this.placeholderExp = this.getNameByIdFromOptions(this.experienceOptions, this.listQuery.experienceIds, "工作经验");
+        this.placeholderCity = this.getNameByIdFromOptions(this.cityOptions, this.listQuery.cityIds, "城市不限");
+        this.placeholderIndustry = this.getNameByIdFromOptions(this.companyIndustryOptions, this.listQuery.companyIndustryIds, "行业不限");
+        this.placeholderSalary = this.getNameByIdFromOptions(this.salaryRangeOptions, this.listQuery.salaryRangeIds, "月薪不限");
+        this.placeholderDegree = this.getNameByIdFromOptions(this.degreeOptions, this.listQuery.degreeIds, "学历不限");
+        this.placeholderExp = this.getNameByIdFromOptions(this.experienceOptions, this.listQuery.experienceIds, "工作经验不限");
 
         if (id === undefined) return;
 
@@ -1028,7 +1074,7 @@
         this.showNoResult = false;
         parseListQuery(this.$route.query, this.listQuery);
         this.listQuery.keyword = this.$route.query.searchWord;
-        
+
         searchJob(this.listQuery).then((response) => {
           if (!response.data.list || response.data.list.length === 0) {
             this.showNoResult = true;

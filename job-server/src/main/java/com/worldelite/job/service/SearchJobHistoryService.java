@@ -111,7 +111,10 @@ public class SearchJobHistoryService extends BaseService{
                     industryIds.add(jobHistoryInfo.getIndustryId());
 
                     Dict dict = new Dict();
-                    cityValues.add(Optional.ofNullable(cityMapper.selectByPrimaryKey(jobHistoryInfo.getCityId())).orElse(new City()).getName());
+                    City city = new City();
+                    dict.setName("不限");
+                    city.setName("不限");
+                    cityValues.add(Optional.ofNullable(cityMapper.selectByPrimaryKey(jobHistoryInfo.getCityId())).orElse(city).getName());
                     salaryValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getSalaryId())).orElse(dict).getName());
                     degreeValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getDegreeId())).orElse(dict).getName());
                     industryValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getIndustryId())).orElse(dict).getName());
@@ -138,6 +141,7 @@ public class SearchJobHistoryService extends BaseService{
     private int getMaxIdsLength(SearchHistoryForm searchHistoryForm) {
         List<Integer> lengthList = Arrays.asList(searchHistoryForm.getCityIds().length,
                 searchHistoryForm.getDegreeIds().length,
+                searchHistoryForm.getIndustryIds().length,
                 searchHistoryForm.getSalaryIds().length);
         Collections.sort(lengthList);
         return lengthList.get(lengthList.size() - 1);
