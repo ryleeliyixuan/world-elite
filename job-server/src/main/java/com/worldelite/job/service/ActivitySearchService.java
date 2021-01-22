@@ -68,6 +68,13 @@ public class ActivitySearchService {
         ActivityOptions options = new ActivityOptions();
         List<Activity> activities = activityMapper.selectAndList(options);
         activities.forEach(activity -> {
+            //仅对有效的活动创建索引
+            if (activity.getStatus() == ActivityStatus.REVIEWING.value
+                    || activity.getStatus() == ActivityStatus.REVIEW_FAILURE.value
+                    || activity.getStatus() == ActivityStatus.DRAFT.value
+                    || activity.getStatus() == ActivityStatus.OFFLINE.value
+                    || activity.getDelFlag() == Bool.TRUE) return;
+
             Document doc = new Document();
             doc.add(new TextField(ActivityIndexFields.ACTIVITY_TITLE, activity.getTitle(), Field.Store.YES));
             docs.add(doc);
