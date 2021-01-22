@@ -232,20 +232,68 @@ public class JobService extends BaseService {
         }
     }
 
+    private Integer[] removeElByValue(Integer[] arrays, Integer value) {
+        int index = -1;
+        for (int i = 0; i < arrays.length; i++) {
+            if (arrays[i].equals(value)) {
+                index = i;
+            }
+        }
+        if (index == -1) return arrays;
+        int length = arrays.length;
+        if (index < length) {
+            Integer[] arrays_result = new Integer[arrays.length - 1];
+            System.arraycopy(arrays, 0, arrays_result, 0, index);
+            if (index < length - 1) {
+                System.arraycopy(arrays, index + 1, arrays_result, index, arrays_result.length - index);
+            }
+            return arrays_result;
+        }
+        return arrays;
+    }
+
     public Boolean isEmptySearch(JobSearchForm jobSearchForm) {
+        jobSearchForm.setCityIds(removeElByValue(jobSearchForm.getCityIds(), 255));
+        jobSearchForm.setSalaryRangeIds(removeElByValue(jobSearchForm.getSalaryRangeIds(), 259));
+        jobSearchForm.setJobTypes(removeElByValue(jobSearchForm.getJobTypes(), 258));
+        jobSearchForm.setCompanyIndustryIds(removeElByValue(jobSearchForm.getCompanyIndustryIds(), 257));
+        jobSearchForm.setCompanyScaleIds(removeElByValue(jobSearchForm.getCompanyScaleIds(), 256));
+        jobSearchForm.setDegreeIds(removeElByValue(jobSearchForm.getDegreeIds(), 269));
+        jobSearchForm.setCompanyDefineIds(removeElByValue(jobSearchForm.getCompanyDefineIds(), 262));
+        jobSearchForm.setExperienceIds(removeElByValue(jobSearchForm.getExperienceIds(), 999));
+        jobSearchForm.setLanRequiredIds(removeElByValue(jobSearchForm.getLanRequiredIds(), 252));
+
+        // 没有搜索条件，全为empty
         return org.apache.commons.lang.StringUtils.isEmpty(jobSearchForm.getKeyword())
                 && jobSearchForm.getSalaryRangeId() == null
                 && jobSearchForm.getJobType() == null
                 && (jobSearchForm.getRecruitId() ==null || jobSearchForm.getRecruitId() == 0)
                 && jobSearchForm.getCompanyId() == null
-                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getSalaryRangeIds()) || useList(jobSearchForm.getSalaryRangeIds(), 259))
-                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getJobTypes()) || useList(jobSearchForm.getJobTypes(), 258))
-                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCityIds()) || useList(jobSearchForm.getCityIds(), 255))
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getSalaryRangeIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getJobTypes())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCityIds())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCategoryIds())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyStageIds())
-                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyIndustryIds()) || useList(jobSearchForm.getCompanyIndustryIds(), 257))
-                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyScaleIds()) || useList(jobSearchForm.getCompanyScaleIds(), 256))
-                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getDegreeIds()) || useList(jobSearchForm.getDegreeIds(), 269));
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyIndustryIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyScaleIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getDegreeIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyDefineIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getExperienceIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getLanRequiredIds());
+
+//        return org.apache.commons.lang.StringUtils.isEmpty(jobSearchForm.getKeyword())
+//                && jobSearchForm.getSalaryRangeId() == null
+//                && jobSearchForm.getJobType() == null
+//                && (jobSearchForm.getRecruitId() ==null || jobSearchForm.getRecruitId() == 0)
+//                && jobSearchForm.getCompanyId() == null
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getSalaryRangeIds()) || useList(jobSearchForm.getSalaryRangeIds(), 259))
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getJobTypes()) || useList(jobSearchForm.getJobTypes(), 258))
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCityIds()) || useList(jobSearchForm.getCityIds(), 255))
+//                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCategoryIds())
+//                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyStageIds())
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyIndustryIds()) || useList(jobSearchForm.getCompanyIndustryIds(), 257))
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyScaleIds()) || useList(jobSearchForm.getCompanyScaleIds(), 256))
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getDegreeIds()) || useList(jobSearchForm.getDegreeIds(), 269));
     }
 
 

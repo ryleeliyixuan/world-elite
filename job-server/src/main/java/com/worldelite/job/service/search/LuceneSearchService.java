@@ -44,10 +44,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * lucene 搜索实现
@@ -105,19 +102,31 @@ public class LuceneSearchService implements SearchService {
             Query query = new QueryBuilder(analyzer).createBooleanQuery(JobIndexFields.KEYWORD_INDEX, searchForm.getKeyword());
             queryBuilder.add(query, BooleanClause.Occur.MUST);
         }
-        if (ArrayUtils.isNotEmpty(searchForm.getCityIds())) {
+        if (ArrayUtils.isNotEmpty(searchForm.getCityIds()) && !useList(searchForm.getCityIds(), 255)) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getCityIds(), JobIndexFields.CITY_INDEX), BooleanClause.Occur.MUST);
         }
-        if (ArrayUtils.isNotEmpty(searchForm.getCompanyIndustryIds())) {
+
+        if (ArrayUtils.isNotEmpty(searchForm.getCompanyDefineIds())) {
+            queryBuilder.add(addMultiShouldQuery(searchForm.getCompanyDefineIds(), JobIndexFields.COMPANY_DEFINE_INDEX), BooleanClause.Occur.MUST);
+        }
+        if (ArrayUtils.isNotEmpty(searchForm.getExperienceIds())) {
+            queryBuilder.add(addMultiShouldQuery(searchForm.getExperienceIds(), JobIndexFields.EXPERIENCE_INDEX), BooleanClause.Occur.MUST);
+        }
+        // TODO 为简历skilltag索引
+        /*if (ArrayUtils.isNotEmpty(searchForm.getLanRequiredIds())) {
+            queryBuilder.add(addMultiShouldQuery(searchForm.getLanRequiredIds(), JobIndexFields.LAN_REQUIRED_INDEX), BooleanClause.Occur.MUST);
+        }*/
+
+        if (ArrayUtils.isNotEmpty(searchForm.getCompanyIndustryIds()) && !useList(searchForm.getCompanyIndustryIds(), 257)) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getCompanyIndustryIds(), JobIndexFields.COMPANY_INDUSTRY_INDEX), BooleanClause.Occur.MUST);
         }
-        if (ArrayUtils.isNotEmpty(searchForm.getCompanyScaleIds())) {
+        if (ArrayUtils.isNotEmpty(searchForm.getCompanyScaleIds()) && !useList(searchForm.getCompanyScaleIds(), 256)) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getCompanyScaleIds(), JobIndexFields.COMPANY_SCALE_INDEX), BooleanClause.Occur.MUST);
         }
         if (ArrayUtils.isNotEmpty(searchForm.getCompanyStageIds())) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getCompanyStageIds(), JobIndexFields.COMPANY_STAGE_INDEX), BooleanClause.Occur.MUST);
         }
-        if (ArrayUtils.isNotEmpty(searchForm.getDegreeIds())) {
+        if (ArrayUtils.isNotEmpty(searchForm.getDegreeIds()) && !useList(searchForm.getDegreeIds(), 269)) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getDegreeIds(), JobIndexFields.MIN_DEGREE_INDEX), BooleanClause.Occur.MUST);
         }
         if (ArrayUtils.isNotEmpty(searchForm.getCategoryIds())) {
@@ -140,7 +149,7 @@ public class LuceneSearchService implements SearchService {
             Query query = IntPoint.newRangeQuery(JobIndexFields.AVER_SALARY_INDEX, searchForm.getMinSalary(), searchForm.getMaxSalary());
             queryBuilder.add(query, BooleanClause.Occur.MUST);
         }
-        if (ArrayUtils.isNotEmpty(searchForm.getSalaryRangeIds())) {
+        if (ArrayUtils.isNotEmpty(searchForm.getSalaryRangeIds()) && !useList(searchForm.getSalaryRangeIds(), 259)) {
             BooleanQuery.Builder salaryRangeQueryBuilder = new BooleanQuery.Builder();
             for (Integer rangeId : searchForm.getSalaryRangeIds()) {
                 Query query = IntPoint.newExactQuery(JobIndexFields.AVER_SALARY_INDEX,rangeId);
@@ -152,7 +161,7 @@ public class LuceneSearchService implements SearchService {
             Query query = IntPoint.newExactQuery(JobIndexFields.JOB_TYPE_INDEX, searchForm.getJobType());
             queryBuilder.add(query, BooleanClause.Occur.MUST);
         }
-        if (ArrayUtils.isNotEmpty(searchForm.getJobTypes())) {
+        if (ArrayUtils.isNotEmpty(searchForm.getJobTypes()) && !useList(searchForm.getJobTypes(), 258)) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getJobTypes(), JobIndexFields.JOB_TYPE_INDEX), BooleanClause.Occur.MUST);
         }
         if(searchForm.getCompanyId() != null){
@@ -162,8 +171,11 @@ public class LuceneSearchService implements SearchService {
             queryBuilder.add(IntPoint.newExactQuery(JobIndexFields.RECRUIT_TYPE_INDEX, searchForm.getRecruitId()), BooleanClause.Occur.MUST);
         }
 
-
         return searchJobByQuery(queryBuilder.build(), searchForm);
+    }
+
+    private static boolean useList(Integer[] arr, Integer targetValue) {
+        return Arrays.asList(arr).contains(targetValue);
     }
 
     @Override
