@@ -2702,7 +2702,7 @@
                 }
                 if (this.resume[i].userExpectJob.salaryId==9){
                     this.salaryCheck==true;
-                    this.expectJobForm.salaryId=undefined
+                    this.expectJobForm.salaryId="  "
                 }
                 this.expectJobForm.resumeId=this.resume[i].id;
                 this.expectJobForm.expectWorkType=this.resume[i].userExpectJob.expectWorkType;
@@ -2966,7 +2966,7 @@
                 this.$refs["resumeForm"][index].validate((valid) => {
                     if (valid) {
                         this.posting = true;
-                        if (this.resumeForm.maritalStatus="中共党员（含预备党员）"){
+                        if (this.resumeForm.maritalStatus=="中共党员（含预备党员）"){
                             this.resumeForm.maritalStatus=0 ;
                         }else if (this.resumeForm.maritalStatus=="民主党派"){
                             this.resumeForm.maritalStatus=1;
@@ -2982,6 +2982,7 @@
                             saveResumeBasic(this.resumeForm)
                                 .then(() => {
                                     this.getResumeInfo();
+                                    this.handleEditResumeBasic()
                                     this.showBasicDialog = false;
                                 })
                                 .finally(() => {
@@ -3204,6 +3205,7 @@
                         saveUserExpectJob(this.expectJobForm)
                             .then(() => {
                                 this.getResumeInfo();
+                                this.expectJobForm.salaryId="  "
                                 this.showExpectJobDialog = false;
                             })
                             .finally(() => {
