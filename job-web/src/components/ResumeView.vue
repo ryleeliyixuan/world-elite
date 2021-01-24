@@ -6,7 +6,7 @@
                 :src="resume.avatar"
                 class="avatar" />
       <i v-else>
-        <span style="width: 100px;height: 100px;font-size: 14px;padding-left: 21px;">暂无照片</span>
+        <span style="width: 100px;height: 100px;font-size: 14px;padding-left: 32px;line-height: 9;">暂无照片</span>
       </i>
       </div>
       <div>
