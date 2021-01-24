@@ -1762,6 +1762,7 @@
                 newResumeForm:{
                     id:undefined,
                     title:"新简历",
+                    priority:undefined,
                 },
                 resumeAttachForm2:{
                     link:undefined,
@@ -2266,10 +2267,12 @@
                         }else{
                             this.newResumeForm.title='简历'+i
                             this.newResumeForm.id=this.resume[i-1].id
+                            this.newResumeForm.priority=5
                             saveResumeBasic(this.newResumeForm).then(()=>{
                                     this.getResumeInfo()
                                 }
                             )
+
                         }
                     }
                     if (this.newIndex&&this.newIndex!=''){
@@ -2838,6 +2841,8 @@
                     }
                     else if (this.resume[this.newIndex].priority==3){
                         this.resumeForm5.priority="第四";
+                    }else if (this.resume[this.newIndex].priority==5){
+                        this.resumeForm5.priority=" ";
                     }
 
                 }else{
@@ -2861,29 +2866,68 @@
                 });
             },
             handleSavePriority(){
+                let i;
+                if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                }else{
+                    i=this.resume.length-1
+                }
                 this.$refs["resumeForm5"][0].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeForm5.id=this.newResumeId
-                            // this.resumeForm1.resumeId = this.newResumeId;
-                            saveResumeBasic(this.resumeForm5)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
+                        for (const item of this.resume){
+                            if(this.resumeForm5.priority==item.priority){
+                                this.$confirm('该优先级已存在'+item.title+'中，确认将会把'+item.title+'的优先级后延', '', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                    type: 'warning',
+                                    center: true
+                                }).then(() => {
+                                    this.resumeForm5.id = this.resume[i].id;
+                                    saveResumeBasic(this.resumeForm5)
+                                        .then(() => {
+                                            this.getResumeInfo();
+                                            this.resumeForm5.id=item.id
+                                            this.resumeForm5.priority=item.priority+1
+                                            saveResumeBasic(this.resumeForm5)
+                                                .then(() => {
+                                                    this.getResumeInfo();
+                                                    this.handleEditPriority()
+                                                })
+                                                .finally(() => {
+                                                    this.posting = false;
+                                                });
+                                        })
+                                        .finally(() => {
+                                            this.posting = false;
+                                        });
+
+
+                                    this.$message({
+                                        type: 'success',
+                                        message: '修改成功!'
+                                    });
+                                }).catch(() => {
+                                    this.$message({
+                                        type: 'info',
+                                        message: '已取消'
+                                    });
                                 });
-                        }else{
-                            this.resumeForm5.id = this.resume[this.resume.length-1].id;
-                            saveResumeBasic(this.resumeForm5)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+
+                            }
+                            else {
+                                this.resumeForm5.id = this.resume[i].id;
+                                saveResumeBasic(this.resumeForm5)
+                                    .then(() => {
+                                        this.getResumeInfo();
+                                    })
+                                    .finally(() => {
+                                        this.posting = false;
+                                    });
+                            }
+
+
                         }
+
                     }
                 });
             },
