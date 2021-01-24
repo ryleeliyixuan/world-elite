@@ -9,8 +9,8 @@
       @pagination="handleRouteList"
     />
     <el-tabs class="nav-bar" v-model="activeName" @tab-click="handleTabSelect">
-      <el-tab-pane label="全部关注" name="0"></el-tab-pane>
-      <el-tab-pane label="即将开始" name="4"></el-tab-pane>
+      <el-tab-pane label="全部关注" name="-1"></el-tab-pane>
+      <el-tab-pane label="即将开始" name="3"></el-tab-pane>
       <el-tab-pane label="进行中" name="5"></el-tab-pane>
       <el-tab-pane label="已结束" name="6"></el-tab-pane>
     </el-tabs>
@@ -104,7 +104,7 @@ export default {
         page: 1,
         limit: 10,
         sort: "-id",
-        status: "0",
+        status: "-1",
       },
       total: 0,
       pageResult: 0,
@@ -113,7 +113,7 @@ export default {
         favorite: false,
         type: 3,
       },
-      activeName: "0",
+      activeName: "-1",
     };
   },
   created() {
@@ -127,6 +127,9 @@ export default {
   methods: {
     getList() {
       parseListQuery(this.$route.query, this.listQuery);
+      if(this.listQuery.status==="-1") {
+        delete this.listQuery.status;
+      }
       getFavoriteActivityList(this.listQuery).then((response) => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
