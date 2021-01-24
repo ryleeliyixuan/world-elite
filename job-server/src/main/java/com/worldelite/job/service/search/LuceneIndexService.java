@@ -189,6 +189,17 @@ public class LuceneIndexService implements IndexService {
             doc.add(new IntPoint(JobIndexFields.CITY_INDEX, jobVo.getCity().getId()));
             keyWordBuilder.append(jobVo.getCity().getName());
         }
+        // lanRequiredIds TODO 创建索引，数据库中没有这方面的数据
+
+        if (jobVo.getTime() != null) {
+            doc.add(new LongPoint(JobIndexFields.JOB_PUBLISH_TIME_INDEX, jobVo.getTime().getTime()));
+            doc.add(new NumericDocValuesField(JobIndexFields.JOB_PUBLISH_TIME_INDEX, jobVo.getTime().getTime()));
+        }
+
+        if (jobVo.getExperience() != null) {
+            doc.add(new IntPoint(JobIndexFields.EXPERIENCE_INDEX, jobVo.getExperience().getId()));
+        }
+
         if (jobVo.getCompanyUser() != null) {
             CompanyVo companyVo = jobVo.getCompanyUser().getCompany();
             if (companyVo != null) {
@@ -202,6 +213,9 @@ public class LuceneIndexService implements IndexService {
                 if (companyVo.getIndustry() != null) {
                     doc.add(new IntPoint(JobIndexFields.COMPANY_INDUSTRY_INDEX, companyVo.getIndustry().getId()));
                     keyWordBuilder.append(companyVo.getIndustry().getName());
+                }
+                if (companyVo.getProperty() != null) {
+                    doc.add(new IntPoint(JobIndexFields.COMPANY_DEFINE_INDEX, jobVo.getCompanyUser().getCompany().getProperty().getId()));
                 }
             }
         }

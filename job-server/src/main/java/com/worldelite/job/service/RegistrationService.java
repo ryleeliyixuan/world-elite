@@ -165,6 +165,7 @@ public class RegistrationService extends BaseService{
             log.debug("获取活动问卷回答选项：{}",answerOptionsMap.get(template.getId()));
             questionnaire.setAnswerContent(answerContentMap.get(template.getId()));
             questionnaire.setAnswerOptions(answerOptionsMap.get(template.getId()));
+            questionnaire.setQuestionnaireOptions(template.getOptionsList());
             questionnaireList.add(questionnaire);
         }
         return questionnaireList;

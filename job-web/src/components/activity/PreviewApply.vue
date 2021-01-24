@@ -43,8 +43,8 @@
                 <div class="name"><span v-if="apply.professionFlag==='0'">*</span>专业</div>
                 <el-input size="small" class="value" v-model="applyForm.profession"></el-input>
             </div>
-            <div class="form-item" v-if="apply.genderFlag!=='2'">
-                <div class="name"><span v-if="apply.genderFlag==='0'">*</span>学历</div>
+            <div class="form-item" v-if="apply.educationFlag!=='2'">
+                <div class="name"><span v-if="apply.educationFlag==='0'">*</span>学历</div>
                 <div class="value">
                     <div class="value-item" v-for="education in educationList" :key="education.id" @click="applyForm.educationId = education.id">
                         <svg-icon :icon-class="education.id===applyForm.educationId?'apply-table-selected':'apply-table-unselected'" clickable></svg-icon>
@@ -240,7 +240,6 @@
             // 上传附件
             onFileUpload(question) {
                 this.questionFileUpload = question;
-                console.log("上传附件", question);
             },
 
             // 取消
@@ -250,29 +249,79 @@
 
             // 提交
             onSubmit() {
-                this.applyForm.answerList = this.apply.questionnaireList.map(item => {
-                    let answer = {questionnaireId: undefined, answerContentList: undefined, answerOptionsIdList: undefined};
-                    answer.questionnaireId = item.id;
-                    switch (item.type) {
-                        case '1':
-                            answer.answerContentList = [item.answer];
-                            break;
-                        case '2':
-                            answer.answerOptionsIdList = item.optionsList.filter(option => option.checked).map(option => option.id);
-                            break;
-                        case '3':
-                            answer.answerOptionsIdList = item.optionsList.filter(option => option.checked).map(option => option.id);
-                            break;
-                        case '4':
-                            answer.answerContentList = [item.fileUrl];
-                            break;
+                if (this.checkParams()) {
+                    this.applyForm.answerList = this.apply.questionnaireList.map(item => {
+                        let answer = {questionnaireId: undefined, answerContentList: undefined, answerOptionsIdList: undefined};
+                        answer.questionnaireId = item.id;
+                        switch (item.type) {
+                            case '1':
+                                answer.answerContentList = [item.answer];
+                                break;
+                            case '2':
+                                answer.answerOptionsIdList = item.optionsList.filter(option => option.checked).map(option => option.id);
+                                break;
+                            case '3':
+                                answer.answerOptionsIdList = item.optionsList.filter(option => option.checked).map(option => option.id);
+                                break;
+                            case '4':
+                                answer.answerContentList = [item.fileUrl];
+                                break;
+                        }
+                        return answer;
+                    })
+                    this.$axios.post('/registration', this.applyForm).then(() => {
+                        this.$message.success("报名成功");
+                        this.$set(this, 'dialogVisible', false);
+                    })
+                }
+            },
+
+            // 参数检查
+            checkParams() {
+                let message = undefined;
+
+                let index = this.apply.questionnaireList.findIndex(question => {
+                    let result = false;
+                    if (question.mustAnswer === '1') {
+                        switch (question.type) {
+                            case '1':
+                                result = !question.answer;
+                                break;
+                            case '2':
+                            case '3':
+                                result = question.optionsList.filter(q => q.checked===true).length === 0;
+                                break;
+                            case '4':
+                                result = !question.fileUrl;
+                                break;
+                        }
                     }
-                    return answer;
-                })
-                this.$axios.post('/registration', this.applyForm).then(() => {
-                    this.$message.success("报名成功");
-                    this.$set(this, 'dialogVisible', false);
-                })
+                    return result;
+                });
+
+                if (!this.applyForm.name) {
+                    message = "请输入姓名";
+                } else if (this.apply.genderFlag === '0' && !this.applyForm.gender) {
+                    message = "请选择性别";
+                } else if (this.apply.phoneFlag === '0' && !this.applyForm.phone) {
+                    message = "请输入手机号";
+                } else if (this.apply.emailFlag === '0' && !this.applyForm.email) {
+                    message = "请输入邮箱";
+                } else if (this.apply.schoolFlag === '0' && !this.applyForm.school) {
+                    message = "请输入学校";
+                } else if (this.apply.gradeFlag === '0' && !this.applyForm.grade) {
+                    message = "请输入年级";
+                } else if (this.apply.professionFlag === '0' && !this.applyForm.profession) {
+                    message = "请输入专业";
+                } else if (this.apply.educationFlag === '0' && !this.applyForm.educationId) {
+                    message = "请选择学历";
+                } else if (index >= 0) {
+                    message = "请完成其他必答题";
+                } else if (this.needResume === '1' && !this.applyForm.resumeId) {
+                    message = "请选择在线简历";
+                }
+                !!message && this.$message.warning(message);
+                return !message;
             }
         }
     }

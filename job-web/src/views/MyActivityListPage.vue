@@ -52,7 +52,7 @@
           </div>
           <div class="text-label">
             <b>活动时间：</b>
-            {{ activity.startTime }} 到 {{ activity.finishTime }}
+            {{ activity.activityStartTime | timestampToDateHourMinute }} 到 {{ activity.activityFinishTime | timestampToDateHourMinute}}
           </div>
           <template v-slot:aside>
             <el-button
@@ -104,7 +104,7 @@ export default {
         page: 1,
         limit: 10,
         sort: "-id",
-        status: undefined,
+        status: "0",
       },
       total: 0,
       pageResult: 0,
@@ -130,7 +130,6 @@ export default {
       getFavoriteActivityList(this.listQuery).then((response) => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
-        this.$emit("complete");
       });
     },
     openActivityDetail(id) {
