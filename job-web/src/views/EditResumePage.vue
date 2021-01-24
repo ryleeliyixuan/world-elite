@@ -2030,6 +2030,7 @@
                 );
 
 
+
                 // listByType(9).then(response => (this.salaryOptions = response.data.list));
             },
             openUploadPhoto(){
@@ -2762,6 +2763,7 @@
             },
             handleDelResumeAwards(id) {
                 this.handleDeleteItemById(delResumeAwards, id);
+                console.log(id)
             },
             handleSaveResumeAttachResume(){
                 this.$refs["resumeForm2"][0].validate((valid) => {
@@ -3325,17 +3327,27 @@
                 }
             },
             handlePreview() {
-                this.getResumeInfo();
                 if (this.newResumeId&& this.newResumeId!=''){
                     this.resumeId = this.newResumeId;
+                    this.getResumeInfo();
                 }else{
                     this.resumeId = this.resume[this.resume.length-1].id;
+                    this.getResumeInfo();
                 }
                 this.showResumeDialog = true;
                 console.log(this.resumeId)
 
                 // this.$router.push({path: `/resume/${this.resume.id}`});
             },
+            handleClose(){
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        this.getResumeInfo()
+                        this.showResumeDialog=false
+                    })
+                    .catch(_ => {});
+            },
+
             exportPdf() {
                 if (this.newResumeId && this.newResumeId!=''){
                     this.resumeId = this.newResumeId
