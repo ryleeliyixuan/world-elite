@@ -9,6 +9,7 @@ import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeDetail;
 import com.worldelite.job.entity.ResumeOptions;
 import com.worldelite.job.entity.UserApplicant;
+import com.worldelite.job.form.ParseAttachmentForm;
 import com.worldelite.job.form.ResumeForm;
 import com.worldelite.job.form.ResumeListForm;
 import com.worldelite.job.mapper.ResumeMapper;
@@ -74,10 +75,11 @@ public abstract class ResumeService extends BaseService{
 
     /**
      * 解析简历文件
-     * @param attachmentName 存在OSS上的简历文件名
-     * @return 解析后的简历详情
+     * @param parseAttachmentForm 简历解析表单
      */
-    public abstract ResumeDetail parseAttachment(String attachmentName);
+    public abstract void parseAttachment(ParseAttachmentForm parseAttachmentForm);
+
+    public abstract void parseAttachment(String attachmentName);
 
     /**
      * 删除简历附件

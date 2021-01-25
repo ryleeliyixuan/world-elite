@@ -17,6 +17,12 @@
                     <b-row>
                         <b-media class="resume-wrapper">
                             <div class="resume-body">
+                                <div class="required" v-if="item.name==null||item.email==null||item.birth==null||item.gender==null||
+                                !item.userExpectJob.expectCity||!item.userExpectJob.expectPosition||!item.userExpectJob.expectWorkType
+                                ||!item.resumeEduList">
+                                    <span class="required-text">还有必填没有填完，此简历将无法投递和被HR搜索到哦。</span>
+                                    <span ><el-link  class="required-link" @click="requiredEdit">去填写</el-link></span>
+                                </div>
                                 <el-row class="rowbasic" style="display: inline-flex;height:70px;padding: 3px;position: relative;">
                                     <div style="display: inline-flex;position: absolute;" class="titleText">
                                         <span style="padding-top: 6px;">简历名称：</span>
@@ -81,10 +87,11 @@
                                             </div>
                                         </el-row>
                                         <div class="resume-box-edit">
+                                            <el-form ref="resumeForm" :model="resumeForm"
+                                                     :rules="resumeFormRules" label-width="80px">
                                             <div style="display:flex;height: 45px;">
                                                 <div style="width: 350px">
-                                                    <el-form ref="resumeForm" :model="resumeForm"
-                                                             :rules="resumeFormRules" label-width="80px">
+
                                                         <el-form-item label="姓名:" prop="name"
                                                                       class="m-input-text-width">
                                                             <el-input
@@ -94,7 +101,6 @@
                                                                     show-word-limit
                                                             ></el-input>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                                 <div>
                                                     <div style="padding-top: 8px">
@@ -113,19 +119,14 @@
                                             </div>
                                             <div style="display:flex;height: 45px">
                                                 <div style="width: 310px">
-                                                    <el-form ref="resumeForm" :model="resumeForm"
-                                                             :rules="resumeFormRules" label-width="80px">
                                                         <el-form-item label="性别:" prop="gender" class="radio-gender">
                                                             <el-radio-group v-model="resumeForm.gender">
                                                                 <el-radio :label="1">男</el-radio>
                                                                 <el-radio :label="2">女</el-radio>
                                                             </el-radio-group>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                                 <div style="padding-left: 23px;">
-                                                    <el-form ref="resumeForm" :model="resumeForm"
-                                                             :rules="resumeFormRules" label-width="80px">
                                                         <el-form-item label="现居城市:" prop="curPlace"
                                                                       class="m-input-text-width">
                                                             <el-input
@@ -133,13 +134,10 @@
                                                                     placeholder="请输入现居城市"
                                                             ></el-input>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                             </div>
                                             <div style="display: flex;height: 45px">
                                                 <div style="width: 334px">
-                                                    <el-form ref="resumeForm" :model="resumeForm"
-                                                             :rules="resumeFormRules" label-width="80px">
                                                         <el-form-item label="生日:" prop="birth"
                                                                       class="m-input-text-width">
                                                             <el-date-picker
@@ -150,11 +148,8 @@
                                                                     placeholder="选择日期"
                                                             ></el-date-picker>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                                 <div>
-                                                    <el-form ref="resumeForm" :model="resumeForm"
-                                                             :rules="resumeFormRules" label-width="80px">
                                                         <el-form-item label="入职时间:" prop="returnTime"
                                                                       class="m-input-text-width">
                                                             <el-date-picker
@@ -163,13 +158,10 @@
                                                                     placeholder="选择日期"
                                                             ></el-date-picker>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                             </div>
                                             <div style="display: flex">
                                                 <div style="width: 334px">
-                                                    <el-form ref="resumeForm" :model="resumeForm"
-                                                             :rules="resumeFormRules" label-width="80px">
                                                         <el-form-item label="邮箱:" prop="email"
                                                                       class="m-input-text-width">
                                                             <el-input
@@ -177,11 +169,8 @@
                                                                     placeholder="请输入新邮箱"
                                                             ></el-input>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                                 <div>
-                                                    <el-form ref="resumeForm" :model="resumeForm"
-                                                             :rules="resumeFormRules" label-width="80px">
                                                         <el-form-item label="手机号码:" prop="phone"
                                                                       class="m-input-text-width">
                                                             <el-input
@@ -189,16 +178,18 @@
                                                                     placeholder="请输入新手机号码"
                                                             ></el-input>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                             </div>
                                             <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
-                                                <el-button class="btn1" @click="handleSaveResumeBasic"
+                                                <el-button class="btn1" @click="handleSaveResumeBasic(index)"
                                                 >保存
                                                 </el-button>
                                                 <el-button class="btn2" @click="showBasicDialog = false">取消</el-button>
                                             </div>
+
+                                            </el-form>
                                         </div>
+
                                     </div>
                                     <div v-if="showBasicDialog==false">
                                         <el-row>
@@ -233,11 +224,10 @@
                                                             class="avatar"
                                                     />
                                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                                    <el-row style="padding-left: 5px">
+                                                    <el-row style="margin-left: -5px;">
                                                         <el-button class="img-button">上传照片</el-button>
                                                     </el-row>
                                                 </el-upload>
-
                                             </el-form>
                                             <div class="resume-info">
                                                 <div class="info-other-row-l">
@@ -302,7 +292,9 @@
                                                             <el-row class="info-other">在校时间：
                                                                 <span style="font-size: 14px;
                                         font-family: PingFangSC-Regular, PingFang SC;
-                                        font-weight: 400;">{{resumeEdu.startTime}}.{{resumeEdu.finishTime}}</span>
+                                        font-weight: 400;">
+                                                                    {{resumeEdu.startTime == resumeEdu.finishTime? '在读': `${resumeEdu.startTime}到${resumeEdu.finishTime}`}}
+                                                                </span>
                                                             </el-row>
                                                             <el-row class="info-other">GPA：{{resumeEdu.gpa}}</el-row>
                                                         </div>
@@ -337,10 +329,11 @@
                                             </div>
                                         </el-row>
                                         <div class="resume-box-edit">
+                                            <el-form ref="resumeEduForm" :model="resumeEduForm"
+                                                     :rules="resumeEduFormRules" label-width="100px">
                                             <div style="display:flex;height: 45px;">
                                                 <div style="width: 324px">
-                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
-                                                             :rules="resumeEduFormRules" label-width="80px">
+
                                                         <el-form-item label="学校:" prop="schoolName"
                                                                       class="m-input-text-width">
                                                             <el-input
@@ -348,11 +341,8 @@
                                                                     placeholder="请输入学校名称"
                                                             ></el-input>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                                 <div>
-                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
-                                                             :rules="resumeEduFormRules" label-width="90px">
                                                         <el-form-item label="在校时间：" prop="workingDates"
                                                                       class="m-input-text-width">
                                                             <el-date-picker
@@ -363,15 +353,13 @@
                                                                     end-placeholder="毕业时间"
                                                                     value-format="yyyy-MM"
                                                                     v-model="resumeEduForm.workingDates"
+                                                                    :disabled="schoolCheck==1"
                                                             />
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                             </div>
                                             <div style="display:flex;height: 45px">
                                                 <div style="width: 310px">
-                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
-                                                             :rules="resumeEduFormRules">
                                                         <el-form-item label="学历" prop="degreeId"
                                                                       class="m-input-text-width">
                                                             <el-select v-model="resumeEduForm.degreeId"
@@ -384,44 +372,40 @@
                                                                 />
                                                             </el-select>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
-                                                <div style="padding-left: 25px;padding-top: 10px">
-                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
-                                                             :rules="resumeEduFormRules">
-                                                        <el-form-item label="GPA:" prop="gpa" class="n-input-text-width"
-                                                                      label-width="90px">
-                                                            <el-input v-model="resumeEduForm.gpa" type="number"
-                                                                      placeholder="请输入GPA" min="0"></el-input>
-                                                        </el-form-item>
-                                                    </el-form>
+                                                <div style="padding-left: 110px;padding-top: 10px">
+                                                        <el-checkbox v-model="schoolCheck" :true-label="1"
+                                                                     :false-label="0" class="m-input-text-width"
+                                                        >在读
+                                                        </el-checkbox>
                                                 </div>
                                             </div>
                                             <div style="display: flex;height: 45px">
                                                 <div style="width: 334px">
-                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
-                                                             :rules="resumeEduFormRules">
                                                         <el-form-item label="专业:" prop="majorName"
                                                                       class="m2-input-text-width">
                                                             <el-input v-model="resumeEduForm.majorName"
                                                                       placeholder="请输入所在专业"
                                                             ></el-input>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                                 <div>
-
+                                                        <el-form-item label="GPA:" prop="gpa" class="n-input-text-width"
+                                                                      label-width="90px">
+                                                            <el-input v-model="resumeEduForm.gpa" type="number"
+                                                                      placeholder="请输入GPA" min="0"></el-input>
+                                                        </el-form-item>
                                                 </div>
                                             </div>
                                             <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
-                                                <el-button class="btn1" @click="handleSaveResumeEdu">
+                                                <el-button class="btn1" @click="handleSaveResumeEdu(index)">
                                                     保存
                                                 </el-button>
                                                 <el-button class="btn2" @click="showEduDialog = false">取消</el-button>
                                             </div>
+                                            </el-form>
                                         </div>
                                     </div>
-
                                     <el-divider></el-divider>
                                 </div>
                                 <div class="resume-box" id="Resume-ExpectJob">
@@ -451,15 +435,15 @@
                                                         </el-row>
                                                         <el-row class="info-other">预期薪资：
                                                             <span v-if="item.userExpectJob.salaryId && item.userExpectJob.salaryId!=''">
-                                                                <span v-if="item.userExpectJob.salaryId==109">5K-8K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==110">8K-10K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==111">10K-15K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==112">15K-20K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==113">20K-30K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==114">30K-50K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==115">50K以上</span>
-                                                                <span v-if="item.userExpectJob.salaryId==153">5K以下</span>
-                                                                <span v-if="item.userExpectJob.salaryId==259">不限</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1">5K-8K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==2">8K-10K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==3">10K-15K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==4">15K-20K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==5">20K-30K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==6">30K-50K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==7">50K以上</span>
+                                                                <span v-if="item.userExpectJob.salaryId==8">5K以下</span>
+                                                                <span v-if="item.userExpectJob.salaryId==9">面议</span>
                                                             </span>
                                                         </el-row>
                                                         <el-row class="info-other">工作类型：{{item.userExpectJob.expectWorkType}}
@@ -489,43 +473,30 @@
                                         </el-row>
                                         <div class="resume-box-edit">
                                             <div style="padding-top: 20px">
-                                                <div style="display:flex;height: 70px;">
+                                                <el-form
+                                                        ref="expectJobForm"
+                                                        :model="expectJobForm"
+                                                        :rules="expectJobFormRules"
+                                                        label-width="100px"
+                                                >
+                                                <div style="display:flex;height: 50px;">
                                                     <div style="width: 324px;padding-left: 10px">
-                                                        <el-form
-                                                                ref="expectJobForm"
-                                                                :model="expectJobForm"
-                                                                :rules="expectJobFormRules"
-                                                                label-width="100px"
-                                                        >
+
                                                             <el-form-item label="意向职位：" prop="expectPosition"
                                                                           class="m-input-text-width">
                                                                 <el-input v-model="expectJobForm.expectPosition" placeholder="请输入意向职位"></el-input>
                                                             </el-form-item>
-                                                        </el-form>
+
                                                     </div>
                                                     <div style="padding-left:30px">
-
-                                                        <el-form
-                                                                ref="expectJobForm"
-                                                                :model="expectJobForm"
-                                                                :rules="expectJobFormRules"
-                                                                label-width="80px"
-                                                        >
-                                                            <el-form-item label="意向城市:" prop="cityIds"
+                                                            <el-form-item label="意向城市:" prop="expectCity"
                                                                           class="m-input-text-width">
                                                                 <el-input v-model="expectJobForm.expectCity" placeholder="请输入意向城市"></el-input>
                                                             </el-form-item>
-                                                        </el-form>
                                                     </div>
                                                 </div>
-                                                <div style="display:flex;height: 45px;padding-left:10px">
+                                                <div style="display:flex;height: 30px;padding-left:10px">
                                                     <div>
-                                                        <el-form
-                                                                ref="expectJobForm"
-                                                                :model="expectJobForm"
-                                                                :rules="expectJobFormRules"
-                                                                label-width="100px"
-                                                        >
                                                             <el-form-item label="工作类型：" prop="expectWorkType" class="m-input-text-width">
                                                                 <el-radio-group v-model="expectJobForm.expectWorkType"class="radio-gender" >
                                                                     <el-radio label="全职" >全职</el-radio>
@@ -533,34 +504,24 @@
                                                                     <el-radio label="实习" >实习</el-radio>
                                                                 </el-radio-group>
                                                             </el-form-item>
-                                                        </el-form>
                                                     </div>
                                                     <div style="padding-left: 60px">
-                                                        <el-form
-                                                                ref="expectJobForm"
-                                                                :model="expectJobForm"
-                                                                label-width="80px"
-                                                        >
                                                             <el-form-item label="薪资范围:" class="m-input-text-width">
                                                                 <el-select v-model="expectJobForm.salaryId"
-                                                                           placeholder="薪资范围">
+                                                                           placeholder="薪资范围"
+                                                                           :disabled="salaryCheck==1">
                                                                     <el-option v-for="item in salaryOptions"
                                                                                :key="item.id"
                                                                                :label="item.name"
                                                                                :value="item.id"
+
                                                                     ></el-option>
                                                                 </el-select>
                                                             </el-form-item>
-                                                       </el-form>
                                                     </div>
                                                 </div>
                                                 <div style="display: flex;height: 45px;padding-top: 16px;margin-bottom: 40px">
-                                                    <div style="width: 334px;padding-left: 10px">
-                                                        <el-form
-                                                                ref="expectJobForm"
-                                                                :model="expectJobForm"
-                                                                label-width="80px"
-                                                        >
+                                                    <div style="width: 334px">
                                                             <el-form-item label="期望行业:" class="m-input-text-width">
                                                                 <el-select v-model="expectJobForm.industry"
                                                                            placeholder="期望行业">
@@ -571,22 +532,21 @@
                                                                     ></el-option>
                                                                 </el-select>
                                                             </el-form-item>
-                                                        </el-form>
                                                     </div>
-                                                    <div style="padding-left:100px;padding-top: 10px">
-                                                        <el-form ref="expectJobForm" :model="expectJobForm"
-                                                                 :rules="expectJobFormRules" label-width="100px">
-
-                                                        </el-form>
+                                                    <div style="padding-left: 116px;padding-top: 10px">
+                                                        <el-checkbox v-model="salaryCheck" :true-label="1"
+                                                                     :false-label="0" class="m-input-text-width">面议
+                                                        </el-checkbox>
                                                     </div>
                                                 </div>
                                                 <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                                    <el-button class="btn1" @click="handleSaveExpectJob"
+                                                    <el-button class="btn1" @click="handleSaveExpectJob(index)"
                                                     >保存
                                                     </el-button>
                                                     <el-button class="btn2" @click="showExpectJobDialog = false">取消
                                                     </el-button>
                                                 </div>
+                                                </el-form>
                                             </div>
                                         </div>
                                     </div>
@@ -668,10 +628,11 @@
                                             <span class="resume-base">工作/实习经历</span>
                                         </div>
                                         <div class="resume-box-edit">
+                                            <el-form ref="resumeExpForm" :model="resumeExpForm"
+                                                     :rules="resumeExpFormRules" label-width="100px">
                                             <div style="display:flex;height: 45px;">
                                                 <div style="width: 324px;">
-                                                    <el-form ref="resumeExpForm" :model="resumeExpForm"
-                                                             :rules="resumeExpFormRules" label-width="100px">
+
                                                         <el-form-item label="工作类型：" prop="workType"
                                                                       class="m-input-text-width">
                                                                 <el-radio-group v-model="resumeExpForm.workType"class="radio-gender" >
@@ -680,11 +641,8 @@
                                                                     <el-radio label="实习" >实习</el-radio>
                                                                 </el-radio-group>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                                 <div>
-                                                    <el-form ref="resumeExpForm" :model="resumeExpForm"
-                                                             :rules="resumeExpForm" label-width="90px">
                                                         <el-form-item label="在职时间："
                                                                       class="m-input-text-width">
                                                             <el-date-picker
@@ -696,17 +654,10 @@
                                                                     :disabled="resumeExpForm.onWork == 1"
                                                             />
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                             </div>
                                             <div style="display:flex;height: 45px">
                                                 <div style="width: 310px">
-                                                    <el-form
-                                                            ref="resumeExpForm"
-                                                            :model="resumeExpForm"
-                                                            :rules="resumeExpFormRules"
-                                                            label-width="80px"
-                                                    >
                                                         <el-form-item label="公司名称：" prop="company"
                                                                       class="m-input-text-width" label-width="100px">
                                                             <el-input
@@ -716,25 +667,15 @@
                                                                     show-word-limit
                                                             />
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                                 <div style="padding-left: 110px;padding-top: 10px">
-                                                    <el-form ref="resumeEduForm" :model="resumeEduForm"
-                                                             :rules="resumeEduFormRules">
                                                         <el-checkbox v-model="resumeExpForm.onWork" :true-label="1"
                                                                      :false-label="0" class="m-input-text-width">在职
                                                         </el-checkbox>
-                                                    </el-form>
                                                 </div>
                                             </div>
                                             <div style="display: flex;height: 45px">
-                                                <div style="width: 334px">
-                                                    <el-form
-                                                            ref="resumeExpForm"
-                                                            :model="resumeExpForm"
-                                                            :rules="resumeExpFormRules"
-                                                            label-width="80px"
-                                                    >
+                                                <div style="width: 320px">
                                                         <el-form-item label="职位名称：" prop="post"
                                                                       class="m-input-text-width" label-width="100px">
                                                             <el-input
@@ -743,15 +684,8 @@
                                                             >
                                                             </el-input>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
-
                                                 <div>
-                                                    <el-form
-                                                            ref="resumeExpForm"
-                                                            :model="resumeExpForm"
-                                                            label-width="80px"
-                                                    >
                                                         <el-form-item label="行业类型:" class="m-input-text-width">
                                                             <el-select v-model="resumeExpForm.industry"
                                                                        placeholder="行业类型">
@@ -762,12 +696,9 @@
                                                                 ></el-option>
                                                             </el-select>
                                                         </el-form-item>
-                                                    </el-form>
                                                 </div>
                                             </div>
                                             <div v-if="showdepart==true">
-                                                <el-form ref="resumeExpForm" :model="resumeExpForm"
-                                                         :rules="resumeExpFormRules" label-width="100px">
                                                     <el-form-item label="所属部门：" prop="depart"
                                                                   class="m-input-text-width">
                                                         <el-input
@@ -775,11 +706,8 @@
                                                                 placeholder="请填写部门信息"
                                                         ></el-input>
                                                     </el-form-item>
-                                                </el-form>
                                             </div>
-                                            <div style="padding-left: 10px;padding-top: 10px">
-                                                <el-form ref="resumeExpForm" :model="resumeExpForm"
-                                                         :rules="resumeExpFormRules">
+                                            <div style="padding-top: 10px">
                                                     <el-form-item label="工作内容:" prop="description"
                                                                   class="m1-input-text-width">
                                                         <el-input v-model="resumeExpForm.description"
@@ -788,17 +716,18 @@
                                                                   maxlength="500"
                                                                   show-word-limit
                                                                   placeholder="请输入工作内容"
-                                                                  class="intro-text"></el-input>
+                                                                  class="intro-text">
+                                                        </el-input>
                                                     </el-form-item>
-                                                </el-form>
                                             </div>
 
                                             <div style="display: flex;padding-bottom: 22px;margin-left: 238px">
-                                                <el-button class="btn1" @click="handleSaveResumeExp" >
+                                                <el-button class="btn1" @click="handleSaveResumeExp(index)" >
                                                     保存
                                                 </el-button>
                                                 <el-button class="btn2" @click="showExpDialog = false">取消</el-button>
                                             </div>
+                                            </el-form>
                                         </div>
                                     </div>
                                     <el-divider></el-divider>
@@ -867,27 +796,24 @@
                                         </el-row>
                                         <div class="resume-box-edit">
                                             <div style="padding-top: 20px">
+                                                <el-form
+                                                        ref="resumePracticeForm"
+                                                        :model="resumePracticeForm"
+                                                        :rules="resumePracticeFormRules"
+                                                        label-width="100px">
                                                 <div style="display:flex;height: 70px;">
                                                     <div>
-                                                        <el-form
-                                                                ref="resumePracticeForm"
-                                                                :model="resumePracticeForm"
-                                                                :rules="resumePracticeFormRules"
-                                                                label-width="100px">
-                                                            <el-form-item label="项目名称：" prop="title"
-                                                                          class="m-input-text-width">
-                                                                <el-input
-                                                                        v-model="resumePracticeForm.title"
-                                                                        placeholder="请填写项目名称"
-                                                                        :maxlength="50"
-                                                                        show-word-limit
-                                                                ></el-input>
-                                                            </el-form-item>
-                                                        </el-form>
+                                                        <el-form-item label="项目名称：" prop="title"
+                                                                      class="m-input-text-width">
+                                                            <el-input
+                                                                    v-model="resumePracticeForm.title"
+                                                                    placeholder="请填写项目名称"
+                                                                    :maxlength="50"
+                                                                    show-word-limit
+                                                            ></el-input>
+                                                        </el-form-item>
                                                     </div>
-                                                    <div style="padding-right: 30px">
-                                                        <el-form ref="resumePracticeForm" :model="resumePracticeForm"
-                                                                 :rules="resumePracticeFormRules" label-width="90px">
+                                                    <div style="padding-right: 30px;display:contents">
                                                             <el-form-item label="时间："
                                                                           class="m-input-text-width"
                                                                           prop="workingTimeFlag"
@@ -901,34 +827,32 @@
                                                                         :disabled="resumePracticeForm.onWork == 1"
                                                                 ></el-date-picker>
                                                                 <el-checkbox v-model="resumePracticeForm.onWork" :true-label="1"
-                                                                             :false-label="0" class="m-input-text-width">进行中
+                                                                             :false-label="0" class="m-input-text-width" style="margin-left: 10px">进行中
                                                                 </el-checkbox>
                                                             </el-form-item>
-                                                        </el-form>
                                                     </div>
                                                 </div>
                                                 <div style="padding-left: 10px">
-                                                    <el-form ref="resumePracticeForm" :model="resumePracticeForm"
-                                                             :rules="resumePracticeFormRules">
-                                                        <el-form-item label=" 项目介绍:" prop="description"
-                                                                      class="m1-input-text-width">
-                                                            <el-input v-model="resumePracticeForm.description"
-                                                                      type="textarea"
-                                                                      :row="2"
-                                                                      :maxlength="500"
-                                                                      show-word-limit
-                                                                      class="intro-text"
-                                                            ></el-input>
-                                                        </el-form-item>
-                                                    </el-form>
+                                                    <el-form-item label=" 项目介绍:" prop="description"
+                                                                  class="m1-input-text-width">
+                                                        <el-input v-model="resumePracticeForm.description"
+                                                                  type="textarea"
+                                                                  :row="2"
+                                                                  :maxlength="500"
+                                                                  show-word-limit
+                                                                  class="intro-text"
+                                                        ></el-input>
+                                                    </el-form-item>
                                                 </div>
                                                 <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                                    <el-button class="btn1" @click="handleSaveResumePractice"
+                                                    <el-button class="btn1" @click="handleSaveResumePractice(index)"
                                                     >保存
                                                     </el-button>
                                                     <el-button class="btn2" @click="showPracticeDialog = false">取消
                                                     </el-button>
                                                 </div>
+
+                                                </el-form>
                                             </div>
                                         </div>
                                     </div>
@@ -995,48 +919,43 @@
                                         </el-row>
                                         <div class="resume-box-edit">
                                             <div style="padding-top: 20px">
+                                                <el-form
+                                                        ref="resumeLanguageForm"
+                                                        :model="resumeLanguageForm"
+                                                        :rules="resumeLanguageFormRules"
+                                                        label-width="100px"
+                                                >
                                                 <div style="display:flex;height: 70px;">
                                                     <div>
-                                                        <el-form
-                                                                ref="resumeLanguageForm"
-                                                                :model="resumeLanguageForm"
-                                                                :rules="resumeLanguageFormRules"
-                                                                label-width="80px"
-                                                        >
-                                                            <el-form-item label="语种:" prop="title"
-                                                                          class="m-input-text-width">
-                                                                <el-input
-                                                                        v-model="resumeLanguageForm.title"
-                                                                        placeholder="请填写语种名称"
-                                                                        :maxlength="50"
-                                                                        show-word-limit
-                                                                ></el-input>
-                                                            </el-form-item>
-                                                        </el-form>
+                                                        <el-form-item label="语种:" prop="title"
+                                                                      class="m-input-text-width">
+                                                            <el-input
+                                                                    v-model="resumeLanguageForm.title"
+                                                                    placeholder="请填写语种名称"
+                                                                    :maxlength="50"
+                                                                    show-word-limit
+                                                            ></el-input>
+                                                        </el-form-item>
                                                     </div>
-                                                    <div style="padding-right: 30px">
-                                                        <el-form
-                                                                ref="resumeLanguageForm"
-                                                                :model="resumeLanguageForm"
-                                                                :rules="resumeLanguageFormRules"
-                                                                label-width="130px">
-                                                            <el-form-item label="证书或分数：" prop="description"
-                                                                          class="m-input-text-width">
-                                                                <el-input
-                                                                        v-model="resumeLanguageForm.description"
-                                                                        placeholder="请填写证书或分数"
-                                                                ></el-input>
-                                                            </el-form-item>
-                                                        </el-form>
+                                                    <div style="padding-right: 30px;margin-left: 45px;">
+                                                        <el-form-item label="证书或分数：" prop="description"
+                                                                      class="m-input-text-width">
+                                                            <el-input
+                                                                    v-model="resumeLanguageForm.description"
+                                                                    placeholder="请填写证书或分数"
+                                                            ></el-input>
+                                                        </el-form-item>
                                                     </div>
                                                 </div>
                                                 <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                                    <el-button class="btn1" @click="handleSaveResumeLanguage"
+                                                    <el-button class="btn1" @click="handleSaveResumeLanguage(index)"
                                                     >保存
                                                     </el-button>
                                                     <el-button class="btn2" @click="showLanguageDialog = false">取消
                                                     </el-button>
                                                 </div>
+
+                                                </el-form>
                                             </div>
                                         </div>
                                     </div>
@@ -1104,53 +1023,47 @@
                                             </div>
                                         </el-row>
                                         <div class="resume-box-edit">
+                                            <el-form
+                                                    ref="resumeAwardsForm"
+                                                    :model="resumeAwardsForm"
+                                                    :rules="resumeAwardsFormRules"
+                                                    label-width="80px"
+                                            >
                                             <div style="padding-top: 20px">
                                                 <div style="display:flex;height: 70px;">
                                                     <div>
-                                                        <el-form
-                                                                ref="resumeAwardsForm"
-                                                                :model="resumeAwardsForm"
-                                                                :rules="resumeAwardsFormRules"
-                                                                label-width="80px"
-                                                        >
-                                                            <el-form-item label="证书/奖项:" prop="title"
-                                                                          label-width="130px"
-                                                                          class="m-input-text-width">
-                                                                <el-input
-                                                                        v-model="resumeAwardsForm.title"
-                                                                        placeholder="请填写证书/奖项名称"
-                                                                        :maxlength="50"
-                                                                ></el-input>
-                                                            </el-form-item>
-                                                        </el-form>
+                                                        <el-form-item label="证书/奖项:" prop="title"
+                                                                      label-width="130px"
+                                                                      class="m-input-text-width">
+                                                            <el-input
+                                                                    v-model="resumeAwardsForm.title"
+                                                                    placeholder="请填写证书/奖项名称"
+                                                                    :maxlength="50"
+                                                            ></el-input>
+                                                        </el-form-item>
                                                     </div>
                                                     <div style="padding-right: 30px">
-                                                        <el-form
-                                                                ref="resumeAwardsForm"
-                                                                :model="resumeAwardsForm"
-                                                                :rules="resumeAwardsFormRules"
-                                                                label-width="80px">
-                                                            <el-form-item label=" 获得时间：" prop="time" label-width="130px"
-                                                                          class="m-input-text-width">
-                                                                <el-date-picker
-                                                                        v-model="resumeAwardsForm.time"
-                                                                        :picker-options="oldDatePickerOptions"
-                                                                        type="date"
-                                                                        value-format="yyyy-MM-dd"
-                                                                        placeholder="请选择获得时间"
-                                                                ></el-date-picker>
-                                                            </el-form-item>
-                                                        </el-form>
+                                                        <el-form-item label=" 获得时间：" prop="time" label-width="130px"
+                                                                      class="m-input-text-width">
+                                                            <el-date-picker
+                                                                    v-model="resumeAwardsForm.time"
+                                                                    :picker-options="oldDatePickerOptions"
+                                                                    type="date"
+                                                                    value-format="yyyy-MM-dd"
+                                                                    placeholder="请选择获得时间"
+                                                            ></el-date-picker>
+                                                        </el-form-item>
                                                     </div>
                                                 </div>
                                                 <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
-                                                    <el-button class="btn1" @click="handleSaveResumeAwards"
+                                                    <el-button class="btn1" @click="handleSaveResumeAwards(index)"
                                                     >保存
                                                     </el-button>
                                                     <el-button class="btn2" @click="showAwardsDialog = false">取消
                                                     </el-button>
                                                 </div>
                                             </div>
+                                            </el-form>
                                         </div>
                                     </div>
 
@@ -1203,18 +1116,15 @@
                                                 <img src="../assets/point.png"
                                                      style="padding-right: 9px;padding-bottom: 7px">
                                                 <span class="resume-base">能力标签</span>
-                                                <span class="jobcount" v-if="item.resumeSkillList && item.resumeSkillList.length>0">{{item.resumeSkillList.length}}/6</span>
-                                                <span class="jobcount" v-else>0/6</span>
+                                                <span class="jobcount">4/6</span>
                                                 <span class="mark-row">
-                                                     <svg-icon
-                                                             icon-class="resume_qmark"
-                                                             class="mark-icon"
-                                                             @mouseenter="onMouseOver2"
-                                                     ></svg-icon>
-                                                </span>
+                                    <img src="../assets/resume_qmark.png"
+                                         class="mark-icon"
+                                         @mouseenter="onMouseOver">
+                                </span>
                                                 <span class="mark-text"
-                                                      v-show="seen2"
-                                                      @mouseleave="onMouseOut2">最多可显示6个标签</span>
+                                                      v-show="seen"
+                                                      @mouseleave="onMouseOut">最多可显示6个标签</span>
                                             </div>
                                         </el-row>
                                         <div class="resume-box-edit">
@@ -1223,7 +1133,7 @@
                                                     <div class="resume-edu">
                                                         <span class="tag-title">已选择：</span>
                                                         <el-tag
-                                                                v-for="skill in item.resumeSkillList"
+                                                                v-for="skill in listshowskill"
                                                                 :key="skill.id"
                                                                 class="tag-icon"
                                                                 style="height: 21px;line-height: 0px;border-radius: 5px;"
@@ -1263,7 +1173,7 @@
                                             <div style="padding-top: 20px">
                                                 <div style="display: flex;padding-bottom: 22px;margin-left: 238px;margin-top: 10px">
                                                     <el-button class="btn1" @click="handleSaveResumeSkills"
-                                                    >保存
+                                                               :loading="posting">保存
                                                     </el-button>
                                                     <el-button class="btn2" @click="showSkillDialog = false">取消
                                                     </el-button>
@@ -1536,9 +1446,41 @@
                 </el-tab-pane>
             </el-tabs>
             <el-dialog :visible.sync="showResumeDialog"
-                       width="70%" >
+                       width="70%"
+            >
                 <ResumeView :resumeId="resumeId"></ResumeView>
             </el-dialog>
+            <el-dialog :visible.sync="photoEditDialog"
+                       title="图片剪裁"
+                       width="50%"
+                       ></el-dialog>
+<!--            <el-dialog :visible.sync="photoDialog"-->
+<!--                       width="50%" >-->
+<!--                <div style="margin-left: 105px">-->
+<!--            <el-form ref="resumeForm3" :model="resumeForm3">-->
+<!--                <el-upload-->
+<!--                        class="avatar-uploader"-->
+<!--                        drag-->
+<!--                        :action="uploadPicOptions.action"-->
+<!--                        :data="uploadPicOptions.params"-->
+<!--                        :accept="uploadPicOptions.acceptFileType"-->
+<!--                        :before-upload="beforeAvatarUpload"-->
+<!--                        multiple>-->
+<!--                    <div>-->
+<!--                    <div style="padding-top: 60px;padding-bottom: 30px;">-->
+<!--                    <span class="photoText">拖动头像到这里</span>-->
+<!--                    </div>-->
+<!--                    <div style="width: 250px;margin-left: 76px;">-->
+<!--                    <span class="photoText-size">建议使用JPG文件,文件大小不超过8MB,建议尺寸500×500</span>-->
+<!--                    </div>-->
+<!--                    </div>-->
+<!--                </el-upload>-->
+<!--            </el-form>-->
+<!--                    <el-row style="padding-left: 106px;padding-bottom: 10px;padding-top: 5px;">-->
+<!--                        <el-button class="img-button" @click="handleAvatarSuccess">上传照片</el-button>-->
+<!--                    </el-row>-->
+<!--                </div>-->
+<!--            </el-dialog>-->
 
 
         </b-container>
@@ -1613,11 +1555,18 @@
         name: "EditResumePage",
         data() {
             return {
+                salaryCheck:false,
+                schoolCheck:false,
+                resumeIndex:undefined,
+                showQequired:false,
+                requiredCount:0,
                 companyIndustryOptions: [],
                 nullResumeId:undefined,
                 editIndex:undefined,
                 workType:undefined,
                 showResumeDialog: false,
+                photoEditDialog:false,
+                photoDialog:false,
                 showPriority:true,
                 showEditTitle:false,
                 shownew:false,
@@ -1731,6 +1680,7 @@
                     finishTime: undefined,
                     workingDates: undefined,
                     gpa: undefined,
+                    showEditFlag:0,
                 },
                 resumeEduFormRules: {
                     schoolName: [
@@ -1812,6 +1762,7 @@
                 newResumeForm:{
                     id:undefined,
                     title:"新简历",
+                    priority:undefined,
                 },
                 resumeAttachForm2:{
                     link:undefined,
@@ -1930,26 +1881,26 @@
 
                 },
                 workTypeOptions: [
-                    {
-                        id:1,
-                        value: '全职',
-                        name: '全职'
-                    },
-                    {
-                        id:2,
-                        value: '兼职',
-                        name: '兼职'
-                    },
-                    {
-                        id:3,
-                        value: '实习',
-                        name: '实习'
-                    }
+                    {id:1, value: '全职', name: '全职'},
+                    {id:2, value: '兼职', name: '兼职'},
+                    {id:3, value: '实习', name: '实习'}
                 ],
                 categoryListOptions: [],
                 newSkillTag: "",
                 skillTagListForm: [],
-                salaryOptions: [],//薪资范围
+                listskill:[],
+                listshowskill:[],
+                salaryOptions: [
+                    {id:1,value:1,name:"5K-8K"},
+                    {id:2,value:2,name:"8K-10K"},
+                    {id:3,value:3,name:"10K-15K"},
+                    {id:4,value:4,name:"15K-20K"},
+                    {id:5,value:5,name:"20K-30K"},
+                    {id:6,value:6,name:"30K-50K"},
+                    {id:7,value:7,name:"50K以上"},
+                    {id:8,value:8,name:"5K以下"},
+                ],//薪资范围
+
                 oldDatePickerOptions: {
                     disabledDate(time) {
                         return time.getTime() >= Date.now() - 8.64e7;
@@ -2079,7 +2030,11 @@
                 );
 
 
-                listByType(9).then(response => (this.salaryOptions = response.data.list));
+
+                // listByType(9).then(response => (this.salaryOptions = response.data.list));
+            },
+            openUploadPhoto(){
+                this.photoDialog = true;
             },
             beforeAvatarUpload(file) {
                 return new Promise((resolve, reject) => {
@@ -2105,6 +2060,7 @@
                 this.resume.avatar = this.uploadPicOptions.fileUrl;
                 console.log(this.resumeForm3.avatar)
                 this.handleSaveResumeAvatar(false);
+                this.photoDialog=false
             },
             beforeAttachmengUpload(file) {
                 return new Promise((resolve, reject) => {
@@ -2305,36 +2261,38 @@
                     this.resume = response.data;
                     this.nullResumeId=this.resume[this.resume.length-1].id
                     this.getResume=true
+                    let newTabIndex;
                     let i=this.resume.length;
                     for (i;i>0;i--){
                         if (this.resume[i-1].title && this.resume[i-1].title!=''){
                         }else{
                             this.newResumeForm.title='简历'+i
                             this.newResumeForm.id=this.resume[i-1].id
+                            this.newResumeForm.priority=5
                             saveResumeBasic(this.newResumeForm).then(()=>{
                                     this.getResumeInfo()
                                 }
                             )
+
                         }
                     }
-                    if (this.resumeId && this.resumeId!=''){
-                        this.editableTabsValue=this.resumeId
-                    }else{
-                        if (this.newIndex&&this.newIndex!=''){
-                            console.log(this.newResumeId);
-                            let newTabIndex=this.newIndex;
-                            if (this.resume[newTabIndex] &&this.resume[newTabIndex]!=''){
-                                this.editableTabsValue=this.resume[newTabIndex].id
-                            }else{
-                                this.editableTabsValue=this.resume[this.resume.length-1].id
-                            }
-                            console.log(this.tabIndex)
+                    if (this.newIndex&&this.newIndex!=''){
+                        newTabIndex=this.newIndex;
+                        if (this.resume[newTabIndex]&& this.resume[newTabIndex]!='' ){
+                            this.editableTabsValue=this.resume[newTabIndex].id
+                            this.resumeIndex=this.newIndex
+
                         }else{
-                            this.tabIndex=this.resume.length
-                            console.log(this.tabIndex)
                             this.editableTabsValue=this.resume[this.resume.length-1].id
+                            this.resumeIndex=this.resume.length-1
                         }
-                    }
+
+
+                    }else{
+                        this.editableTabsValue=this.resume[this.resume.length-1].id
+                        this.resumeIndex=this.resume.length-1
+                        }
+
                 });
 
             },
@@ -2406,6 +2364,29 @@
                     }
                 });
             },
+            requiredEdit(){
+                let index;
+                if(this.newIndex&& this.newIndex!=''){
+                    index=this.newIndex
+                }else {
+                    index=this.resume.length-1
+                }
+                if ( this.resume[index].name==''||!this.resume[index].name||
+                    this.resume[index].birth==''||!this.resume[index].birth||
+                    this.resume[index].gender==''||!this.resume[index].gender||
+                    this.resume[index].email==''||!this.resume[index].email) {
+                    this.handleEditResumeBasic();
+                } else if(this.resume[index].priority==''||!this.resume[index].priority) {
+                    this.handleEditPriority();
+                }else if(this.resume[index].resumeEduList==''||!this.resume[index].resumeEduList){
+                    this.handleEditResumeEdu()
+                }else if (this.resume[index].userExpectJob.expectPosition==''||!this.resume[index].userExpectJob.expectPosition||
+                    this.resume[index].userExpectJob.expectCity==''||!this.resume[index].userExpectJob.expectCity||
+                    this.resume[index].userExpectJob.expectWorkType==''||!this.resume[index].userExpectJob.expectWorkType){
+                    this.handleEditExpectJob()
+                }
+
+            },
             handleEditResumeBasic() {
                 console.log("-----")
                 this.showBasicDialog = true;
@@ -2421,7 +2402,18 @@
                     this.resumeForm.curPlace = this.resume[this.newIndex].curPlace;
                     this.resumeForm.phone = this.resume[this.newIndex].phone;
                     this.resumeForm.priority = this.resume[this.newIndex].priority;
-                    this.resumeForm.maritalStatus=this.resume[this.newIndex].maritalStatus;
+                    if (this.resume[this.newIndex].maritalStatus==0){
+                        this.resumeForm.maritalStatus="中共党员（含预备党员）";
+                    }else if (this.resume[this.newIndex].maritalStatus==1){
+                        this.resumeForm.maritalStatus="民主党派";
+                    }else if (this.resume[this.newIndex].maritalStatus==2){
+                        this.resumeForm.maritalStatus="无党派人士";
+                    }else if (this.resume[this.newIndex].maritalStatus==3){
+                        this.resumeForm.maritalStatus="团员";
+                    }else if (this.resume[this.newIndex].maritalStatus==4){
+                        this.resumeForm.maritalStatus="群众";
+                    }
+
                     this.resumeForm.introduction = this.resume[this.newIndex].introduction;
                 }else{
                     this.resumeForm.id = this.resume[this.resume.length-1].id;
@@ -2434,7 +2426,17 @@
                     this.resumeForm.graduateTime = this.resume[this.resume.length-1].graduateTime;
                     this.resumeForm.curPlace = this.resume[this.resume.length-1].curPlace;
                     this.resumeForm.phone = this.resume[this.resume.length-1].phone;
-                    this.resumeForm.maritalStatus = this.resume[this.resume.length-1].maritalStatus;
+                    if (this.resume[this.resume.length-1].maritalStatus==0){
+                        this.resumeForm.maritalStatus="中共党员（含预备党员）";
+                    }else if (this.resume[this.resume.length-1].maritalStatus==1){
+                        this.resumeForm.maritalStatus="民主党派";
+                    }else if (this.resume[this.resume.length-1].maritalStatus==2){
+                        this.resumeForm.maritalStatus="无党派人士";
+                    }else if (this.resume[this.resume.length-1].maritalStatus==3){
+                        this.resumeForm.maritalStatus="团员";
+                    }else if (this.resume[this.resume.length-1].maritalStatus==4){
+                        this.resumeForm.maritalStatus="群众";
+                    }
                     this.resumeForm.introduction = this.resume[this.resume.length-1].introduction;
                 }
 
@@ -2486,7 +2488,14 @@
             },
             handleEditResumeEdu(type, resumeEdu) {
                 this.showEduDialog = true;
-                this.resumeEduForm.resumeId = this.newResumeId;
+                let i;
+                if (this.newIndex && this.newIndex!=''){
+                   i = this.newIndex;
+                }else {
+                    i=this.resume.length-1
+                }
+                this.resumeEduForm.resumeId = this.resume[i].id;
+
                 if (type === "update") {
                     this.resumeEduForm.id = resumeEdu.id;
                     this.resumeEduForm.schoolName = resumeEdu.schoolName;
@@ -2494,18 +2503,32 @@
                     this.resumeEduForm.degreeId = resumeEdu.degree.id;
                     this.resumeEduForm.startTime = resumeEdu.startTime;
                     this.resumeEduForm.finishTime = resumeEdu.finishTime;
+                    if (this.resumeEduForm.startTime==this.resumeEduForm.finishTime){
+                        this.schoolCheck==true
+                    }
                     this.resumeEduForm.gpa = resumeEdu.gpa;
-                    this.resumeEduForm.workingDates = [
-                        this.resumeEduForm.startTime,
-                        this.resumeEduForm.finishTime,
-                    ];
+                    if (this.schoolCheck==true){
+                        this.resumeEduForm.workingDates = [
+                            this.resume[i].updateTime,
+                            this.resume[i].updateTime
+                        ];
+                    }else {
+                        this.resumeEduForm.workingDates = [
+                            this.resumeEduForm.startTime,
+                            this.resumeEduForm.finishTime,
+                        ];
+                    }
+                        console.log( this.resumeEduForm.workingDates)
+
+
                 } else {
+                    this.schoolCheck=false
                     this.resumeEduForm.id = undefined;
                     this.resumeEduForm.schoolName = undefined;
                     this.resumeEduForm.majorName = undefined;
                     this.resumeEduForm.degreeId = undefined;
-                    (this.resumeEduForm.workingDates = undefined),
-                        (this.resumeEduForm.startTime = undefined);
+                    this.resumeEduForm.workingDates = undefined;
+                    (this.resumeEduForm.startTime = undefined);
                     this.resumeEduForm.finishTime = undefined;
                     this.resumeEduForm.gpa = undefined;
                 }
@@ -2672,22 +2695,22 @@
             },
             handleEditExpectJob() {
                 this.showExpectJobDialog = true;
-                if (this.newResumeId && this.newResumeId!=''){
-                    this.expectJobForm.resumeId=this.newResumeId;
-                    this.expectJobForm.expectWorkType=this.resume[this.newIndex].userExpectJob.expectWorkType;
-                    this.expectJobForm.expectPosition=this.resume[this.newIndex].userExpectJob.expectPosition;
-                    this.expectJobForm.salaryId=this.resume[this.newIndex].userExpectJob.salaryId;
-                    this.expectJobForm.expectCity=this.resume[this.newIndex].userExpectJob.expectCity
-                    this.expectJobForm.industry=this.resume[this.newIndex].userExpectJob.industry
-                } else {
-                    this.expectJobForm.resumeId=this.resume[this.resume.length-1].id;
-                    this.expectJobForm.expectWorkType=this.resume[this.resume.length-1].userExpectJob.expectWorkType;
-                    this.expectJobForm.expectPosition=this.resume[this.resume.length-1].userExpectJob.expectPosition;
-                    this.expectJobForm.salaryId=this.resume[this.resume.length-1].userExpectJob.salaryId;
-                    this.expectJobForm.expectCity=this.resume[this.resume.length-1].userExpectJob.expectCity
-                    this.expectJobForm.industry=this.resume[this.resume.length-1].userExpectJob.industry
-
+                let i;
+                if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                }else{
+                    i=this.resume.length-1
                 }
+                if (this.resume[i].userExpectJob.salaryId==9){
+                    this.salaryCheck==true;
+                    this.expectJobForm.salaryId="  "
+                }
+                this.expectJobForm.resumeId=this.resume[i].id;
+                this.expectJobForm.expectWorkType=this.resume[i].userExpectJob.expectWorkType;
+                this.expectJobForm.expectPosition=this.resume[i].userExpectJob.expectPosition;
+
+                this.expectJobForm.expectCity=this.resume[i].userExpectJob.expectCity
+                this.expectJobForm.industry=this.resume[i].userExpectJob.industry
                 this.$nextTick(() => {
                     this.$refs["expectJobForm"][0].clearValidate();
                 });
@@ -2695,51 +2718,39 @@
             handleEditResumeSkill() {
                 this.showSkillDialog = true;
                 this.skillTagListForm.length = 0;
-                if (this.newIndex && this.newIndex!=''){
-                    if (
-                        this.resume[this.newIndex].resumeSkillList &&
-                        this.resume[this.newIndex].resumeSkillList.length != 0
-                    ) {
-                        for (const resumeSkill of this.resume[this.newIndex].resumeSkillList) {
-                            this.skillTagListForm.push({name: resumeSkill.name, select: true});
-                        }
-                        // console.log( this.skillTagListForm)
-                    }
-                    for (const skillTag of this.skillTagOptions) {
-                        const found = this.skillTagListForm.find(
-                            (selectTag) => skillTag.name == selectTag.name
-                        );
-                        if (!found) {
-                            this.skillTagListForm.push({name: skillTag.name, select: false});
-                        }
-
-                    }
-                    // console.log( this.skillTagOptions)
+                let i;
+                if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
                 }else{
-                    if (
-                        this.resume[this.resume.length-1].resumeSkillList &&
-                        this.resume[this.resume.length-1].resumeSkillList.length != 0
-                    ) {
-                        for (const resumeSkill of this.resume[this.resume.length-1].resumeSkillList) {
-                            this.skillTagListForm.push({name: resumeSkill.name, select: true});
-                        }
-                        // console.log( this.skillTagListForm)
-                    }
-                    for (const skillTag of this.skillTagOptions) {
-                        const found = this.skillTagListForm.find(
-                            (selectTag) => skillTag.name == selectTag.name
-                        );
-                        if (!found) {
-                            this.skillTagListForm.push({name: skillTag.name, select: false});
-                        }
-
-                    }
-                    // console.log( this.skillTagOptions)
+                    i=this.resume.length-1
                 }
-
+                if (
+                    this.resume[i].resumeSkillList &&
+                    this.resume[i].resumeSkillList.length !== 0
+                ) {
+                    for (const resumeSkill of this.resume[i].resumeSkillList) {
+                        this.skillTagListForm.push({name: resumeSkill.name, select: true});
+                    }
+                }
+                for (const skillTag of this.skillTagOptions) {
+                    const found = this.skillTagListForm.find(
+                        (selectTag) => skillTag.name == selectTag.name
+                    );
+                    if (!found) {
+                        this.skillTagListForm.push({name: skillTag.name, select: false});
+                    }
+                }
+                console.log(this.resume[i].resumeSkillList)
+                let result = this.resume[i].resumeSkillList.map(((value, index) => {
+                    return {name: value.name,select:true}
+                }))
+                this.listshowskill=result
+                this.listskill=this.listshowskill
+                console.log(this.listskill)
             },
             handleDelResumeEdu(id) {
                 this.handleDeleteItemById(delResumeEdu, id);
+                this.getResumeInfo();
             },
             handleDelResumeExp(id) {
                 this.handleDeleteItemById(delResumeExp, id);
@@ -2752,6 +2763,7 @@
             },
             handleDelResumeAwards(id) {
                 this.handleDeleteItemById(delResumeAwards, id);
+                console.log(id)
             },
             handleSaveResumeAttachResume(){
                 this.$refs["resumeForm2"][0].validate((valid) => {
@@ -2831,6 +2843,8 @@
                     }
                     else if (this.resume[this.newIndex].priority==3){
                         this.resumeForm5.priority="第四";
+                    }else if (this.resume[this.newIndex].priority==5){
+                        this.resumeForm5.priority=" ";
                     }
 
                 }else{
@@ -2854,29 +2868,68 @@
                 });
             },
             handleSavePriority(){
+                let i;
+                if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                }else{
+                    i=this.resume.length-1
+                }
                 this.$refs["resumeForm5"][0].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeForm5.id=this.newResumeId
-                            // this.resumeForm1.resumeId = this.newResumeId;
-                            saveResumeBasic(this.resumeForm5)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
+                        for (const item of this.resume){
+                            if(this.resumeForm5.priority==item.priority){
+                                this.$confirm('该优先级已存在'+item.title+'中，确认将会把'+item.title+'的优先级后延', '', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                    type: 'warning',
+                                    center: true
+                                }).then(() => {
+                                    this.resumeForm5.id = this.resume[i].id;
+                                    saveResumeBasic(this.resumeForm5)
+                                        .then(() => {
+                                            this.getResumeInfo();
+                                            this.resumeForm5.id=item.id
+                                            this.resumeForm5.priority=item.priority+1
+                                            saveResumeBasic(this.resumeForm5)
+                                                .then(() => {
+                                                    this.getResumeInfo();
+                                                    this.handleEditPriority()
+                                                })
+                                                .finally(() => {
+                                                    this.posting = false;
+                                                });
+                                        })
+                                        .finally(() => {
+                                            this.posting = false;
+                                        });
+
+
+                                    this.$message({
+                                        type: 'success',
+                                        message: '修改成功!'
+                                    });
+                                }).catch(() => {
+                                    this.$message({
+                                        type: 'info',
+                                        message: '已取消'
+                                    });
                                 });
-                        }else{
-                            this.resumeForm5.id = this.resume[this.resume.length-1].id;
-                            saveResumeBasic(this.resumeForm5)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+
+                            }
+                            else {
+                                this.resumeForm5.id = this.resume[i].id;
+                                saveResumeBasic(this.resumeForm5)
+                                    .then(() => {
+                                        this.getResumeInfo();
+                                    })
+                                    .finally(() => {
+                                        this.posting = false;
+                                    });
+                            }
+
+
                         }
+
                     }
                 });
             },
@@ -2909,15 +2962,29 @@
                     }
                 });
             },
-            handleSaveResumeBasic() {
-                this.$refs["resumeForm"][0].validate((valid) => {
+            handleSaveResumeBasic(index) {
+                console.log(index)
+                console.log(this.$refs["resumeForm"][index].validate)
+                this.$refs["resumeForm"][index].validate((valid) => {
                     if (valid) {
                         this.posting = true;
+                        if (this.resumeForm.maritalStatus=="中共党员（含预备党员）"){
+                            this.resumeForm.maritalStatus=0 ;
+                        }else if (this.resumeForm.maritalStatus=="民主党派"){
+                            this.resumeForm.maritalStatus=1;
+                        }else if (this.resumeForm.maritalStatus=="无党派人士"){
+                            this.resumeForm.maritalStatus=2;
+                        }else if (this.resumeForm.maritalStatus=="团员"){
+                            this.resumeForm.maritalStatus=3;
+                        }else if (this.resumeForm.maritalStatus=="群众"){
+                            this.resumeForm.maritalStatus=4;
+                        }
                         if (this.newResumeId&&this.newResumeId!=''){
                             this.resumeForm.resumeId = this.newResumeId;
                             saveResumeBasic(this.resumeForm)
                                 .then(() => {
                                     this.getResumeInfo();
+                                    this.handleEditResumeBasic()
                                     this.showBasicDialog = false;
                                 })
                                 .finally(() => {
@@ -2952,42 +3019,38 @@
                         this.posting = false;
                     });
             },
-            handleSaveResumeEdu() {
-                this.$refs["resumeEduForm"][0].validate((valid) => {
+            handleSaveResumeEdu(index) {
+                let i;
+                if (this.newIndex && this.newIndex!=''){
+                    i=this.newIndex;
+                }else{
+                    i=this.resume.length-1
+                }
+                if(this.schoolCheck==true){
+                    this.resumeEduForm.workingDates=[
+                        this.resume[i].updateTime,
+                        this.resume[i].updateTime
+                    ]
+                }
+                console.log(this.resume[i].updateTime)
+                this.$refs["resumeEduForm"][index].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeEduForm.resumeId = this.newResumeId;
-                            this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
-                            this.resumeEduForm.finishTime = this.resumeEduForm.workingDates[1];
-                            saveResumeEdu(this.resumeEduForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showEduDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else {
-                            this.resumeEduForm.resumeId = this.resume[this.resume.length-1].id;
-                            this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
-                            this.resumeEduForm.finishTime = this.resumeEduForm.workingDates[1];
-                            saveResumeEdu(this.resumeEduForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showEduDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-
-                        }
-
+                        this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
+                        this.resumeEduForm.finishTime = this.resumeEduForm.workingDates[1];
+                        this.resumeEduForm.resumeId = this.resume[i].id;
+                        saveResumeEdu(this.resumeEduForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                                this.showEduDialog = false;
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
                     }
                 });
             },
-            handleSaveResumeExp() {
-                this.$refs["resumeExpForm"][0].validate((valid) => {
+            handleSaveResumeExp(index) {
+                this.$refs["resumeExpForm"][index].validate((valid) => {
                     if (valid) {
                         this.posting = true;
                         this.resumeExpForm.depart = "xxx";
@@ -3030,10 +3093,9 @@
                     }
                 });
             },
-            handleSaveResumePractice() {
-                this.$refs["resumePracticeForm"][0].validate((valid) => {
+            handleSaveResumePractice(index) {
+                this.$refs["resumePracticeForm"][index].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
                         if (this.newResumeId&&this.newResumeId!=''){
                             this.resumePracticeForm.resumeId = this.newResumeId;
                             if (
@@ -3073,10 +3135,9 @@
                     }
                 });
             },
-            handleSaveResumeLanguage() {
-                this.$refs["resumeLanguageForm"][0].validate((valid) => {
+            handleSaveResumeLanguage(index) {
+                this.$refs["resumeLanguageForm"][index].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
                         if (this.newResumeId&&this.newResumeId!=''){
                             this.resumeLanguageForm.resumeId=this.newResumeId
                             saveResumeLanguage(this.resumeLanguageForm)
@@ -3102,8 +3163,8 @@
                     }
                 });
             },
-            handleSaveResumeAwards() {
-                this.$refs["resumeAwardsForm"][0].validate((valid) => {
+            handleSaveResumeAwards(index) {
+                this.$refs["resumeAwardsForm"][index].validate((valid) => {
                     if (valid) {
                         this.posting = true;
                         if (this.newResumeId&&this.newResumeId!=''){
@@ -3131,20 +3192,22 @@
                     }
                 });
             },
-            handleSaveExpectJob() {
-                console.log(this.expectJobForm.categoryId)
-                this.$refs["expectJobForm"][0].validate((valid) => {
+            handleSaveExpectJob(index) {
+                this.$refs["expectJobForm"][index].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
                         if(this.newResumeId&&this.newResumeId!=''){
                             this.expectJobForm.resumeId=this.newResumeId
                         }else {
                             this.expectJobForm.resumeId=this.resume[this.resume.length-1].id
                         }
+                        if (this.salaryCheck==true){
+                            this.expectJobForm.salaryId=9
+                        }
 
                         saveUserExpectJob(this.expectJobForm)
                             .then(() => {
                                 this.getResumeInfo();
+                                this.expectJobForm.salaryId="  "
                                 this.showExpectJobDialog = false;
                             })
                             .finally(() => {
@@ -3225,11 +3288,23 @@
             selectSkillTag(skillTag) {
                 if (skillTag.select) {
                     skillTag.select = false;
+                    console.log(skillTag)
                 } else {
                     if (this.checkSelectSkillTagCount()) {
                         skillTag.select = true;
+                        console.log(skillTag)
                     }
                 }
+                this.listskill.push()
+                console.log(this.listskill)
+                const selectTagList = this.skillTagListForm.filter(
+                    (tag) => tag.select == true
+                );
+                console.log(selectTagList)
+               this.listshowskill=selectTagList
+
+
+
             },
             handleAddNewSkillTag() {
                 if (this.newSkillTag != "" && this.checkSelectSkillTagCount()) {
@@ -3244,25 +3319,35 @@
                 const selectTagList = this.skillTagListForm.filter(
                     (tag) => tag.select == true
                 );
-                if (selectTagList.length > 5) {
-                    Toast.error("标签数量不能超过6个");
+                if (selectTagList.length > 4) {
+                    Toast.error("标签数量不能超过5个");
                     return false;
                 } else {
                     return true;
                 }
             },
             handlePreview() {
-                this.getResumeInfo();
                 if (this.newResumeId&& this.newResumeId!=''){
                     this.resumeId = this.newResumeId;
+                    this.getResumeInfo();
                 }else{
                     this.resumeId = this.resume[this.resume.length-1].id;
+                    this.getResumeInfo();
                 }
                 this.showResumeDialog = true;
-                console.log( this.resumeId)
+                console.log(this.resumeId)
 
                 // this.$router.push({path: `/resume/${this.resume.id}`});
             },
+            handleClose(){
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        this.getResumeInfo()
+                        this.showResumeDialog=false
+                    })
+                    .catch(_ => {});
+            },
+
             exportPdf() {
                 if (this.newResumeId && this.newResumeId!=''){
                     this.resumeId = this.newResumeId
@@ -3322,6 +3407,7 @@
                     });
 
                 }
+                this.getResumeInfo();
 
 
             },
@@ -3396,6 +3482,28 @@
             .resume-body {
                 /*padding-top: 119px;*/
                 padding-left: 68px;
+                .required{
+                    margin-left: -53px;
+                    margin-top: -20px;
+                    height: 25px;
+                    background: #FFEBEE;
+                    font-size: 11px;
+                    font-family: PingFangSC-Regular, PingFang SC;
+                    font-weight: 400;
+                    color: #666666;
+                    line-height: 23px;
+                    .required-text{
+                        padding-left: 54px;
+                    }
+                    .required-link{
+                        font-size: 11px;
+                        font-family: PingFangSC-Regular, PingFang SC;
+                        font-weight: 400;
+                        color: #4895EF;
+
+                    }
+                }
+
                 .titleText{
                     font-size: 14px;
                     font-family: PingFangSC-Medium, PingFang SC;
@@ -3618,7 +3726,7 @@
 
                 .img-button {
                     margin-top: 8px;
-                    margin-left: -4px;
+                    margin-left: 6px;
                     padding-left: 12px;
                     width: 75px;
                     height: 17px;
@@ -4046,7 +4154,6 @@
                     padding-top: 4px;
                     position: absolute;
                     top: 100%;
-                    left: 90px;
                 }
 
                 ::v-deep .el-date-editor .el-range-separator {
@@ -4086,7 +4193,6 @@
                     line-height: 40px;
                     position: relative;
                     font-size: 11px;
-                    padding-left: 90px;
                 }
 
                 ::v-deep.ql-bubble {
@@ -4114,7 +4220,6 @@
                     padding-top: 4px;
                     position: absolute;
                     top: 90%;
-                    left: 90px;
                 }
 
                 .ej-btn {
@@ -4565,6 +4670,46 @@
         font-style: normal;
         color: #c0c4cc;
         font-size: 15px;
+    }
+    .el-dialog__headerbtn .el-dialog__close {
+        color: #4895EF;
+        border: 1px solid;
+        line-height: 16px;
+        border-radius: 50%;
+    }
+    .el-upload-dragger {
+        width: 408px;
+        height: 200px;
+        background: #FFFFFF;
+        border-radius: 20px;
+        border: 2px dashed  #4895EF;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .photoText{
+        font-size: 16px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+    }
+    .photoText-size{
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #999999;
+    }
+    .img-button{
+        width: 192px;
+        height: 31px;
+        background: #4895EF;
+        border-radius: 16px;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #FFFFFF;
+        line-height: 0px;
     }
 
     .avatar-uploader .el-upload {

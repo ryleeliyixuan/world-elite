@@ -112,4 +112,15 @@ public class CityService {
         }
         return ids.stream().distinct().collect(Collectors.toList());
     }
+
+    public List<CityVo> getCitiesByName(String name){
+        City options = new City();
+        options.setName(name);
+        List<City>list = cityMapper.selectAndList(options);
+        List<CityVo>listVo = new ArrayList<>();
+        for (City city: list){
+            listVo.add(new CityVo().asVo(city));
+        }
+        return listVo;
+    }
 }
