@@ -48,7 +48,7 @@ public class LuceneCompanyNameConfig{
         ADictionary dictionary = DictionaryFactory.createDefaultDictionary(config);
         //重置同义词网络
         dictionary.resetSynonymsNet();
-        return new JcsegAnalyzer(ISegment.COMPLEX, config, dictionary);
+        return new JcsegAnalyzer(ISegment.NGRAM, config, dictionary);
     }
 
 
