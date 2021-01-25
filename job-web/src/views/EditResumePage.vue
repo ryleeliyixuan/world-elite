@@ -1446,7 +1446,7 @@
                 </el-tab-pane>
             </el-tabs>
             <el-dialog :visible.sync="showResumeDialog"
-                       width="70%"
+                       :width="customWidth"
             >
                 <ResumeView :resumeDetail="this.resumeDetail"></ResumeView>
             </el-dialog>
@@ -1556,6 +1556,7 @@
         name: "EditResumePage",
         data() {
             return {
+                customWidth:"800px",
                 salaryCheck:false,
                 schoolCheck:false,
                 resumeIndex:undefined,
@@ -1941,6 +1942,13 @@
                 cityOptions: [{id: 1, name: "国内"}, {id: 2, name: "国外"}],
             };
         },
+        mounted(){
+            window.onresize=()=>{
+                return(()=>{
+                    this.setDialogWidth();
+                })
+            }
+        },
         watch: {
             "expectJobForm.cityIds": function (newVal, oldVal) {
                 if (newVal.length > 3) {
@@ -1967,6 +1975,15 @@
             this.initData();
         },
         methods: {
+            setDialogWidth() {
+                var val = document.body.clientWidth
+                const def = 450 // 默认宽度
+                if (val < def) {
+                    this.dialogWidth = '100%'
+                } else {
+                    this.dialogWidth = def + 'px'
+                }
+            },
             saveResumeId(tab, event) {
                 this.newResumeId = tab.name;
                 this.newIndex = tab.index;
