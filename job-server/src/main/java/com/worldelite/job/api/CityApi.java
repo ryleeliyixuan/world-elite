@@ -40,4 +40,10 @@ public class CityApi extends BaseApi{
         return ApiResult.ok(cityId);
     }
 
+    @GetMapping("get-city-by-name")
+    public ApiResult<List<CityVo>> list(@RequestParam String name){
+        List<CityVo> cityVoList = cityService.getCitiesByName(name);
+        return ApiResult.ok(cityVoList);
+    }
+
 }
