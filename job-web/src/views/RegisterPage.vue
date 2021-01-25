@@ -143,7 +143,7 @@ export default {
         return;
       }
       this.$store.dispatch("user/REGISTER", this.form).then(() => {
-        this.$router.replace({ path: "/regist-success" });
+        this.$router.push({ path: "/register-basic" });
       });
     },
     recieveEmailCode() {
