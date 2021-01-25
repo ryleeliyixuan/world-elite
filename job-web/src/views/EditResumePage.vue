@@ -28,7 +28,7 @@
                                         <span style="padding-top: 6px;">简历名称：</span>
                                         <div style="padding-top: 6px;" v-if="showEditTitle==false">
                                             <span>{{item.title}}</span>
-                                            <svg-icon icon-class="edit" style="width: 18px;height: 19px;margin-left: 50px;margin-right:50px" @click="editTitle"></svg-icon>
+                                            <svg-icon class="svg-cls" icon-class="edit" style="width: 18px;height: 19px;margin-left: 50px;margin-right:50px" @click="editTitle"></svg-icon>
 
                                         </div>
                                         <div v-if="showEditTitle==true">
@@ -51,6 +51,7 @@
                                         <div style="display: flex">
                                             <div>
                                                 <svg-icon
+                                                        class="svg-cls"
                                                         icon-class="help-mark"
                                                         style="width: 13px;height: 31px;padding-top: 12px;padding-left: 3px"
                                                         @mouseenter="onMouseOver"
@@ -201,14 +202,17 @@
                                             </div>
                                             <span>
                                              <svg-icon
+                                                     class="svg-cls"
                                                      icon-class="edit"
                                                      style="width: 18px;height: 19px;"
-                                                     v-on:click="handleEditResumeBasic"
+                                                     v-on:click="handleEditResumeBasic(index)"
                                              ></svg-icon>
                                             </span>
                                         </el-row>
                                         <div class="resume-basicinfo row mt-3">
                                             <el-form class="avatorHolder" ref="resumeForm3" :model="resumeForm3">
+<!--                                                :on-change文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用-->
+<!--                                                :auto-upload是否在选取文件后立即进行上传-->
                                                 <el-upload
                                                         class="avatar-uploader"
                                                         :action="uploadPicOptions.action"
@@ -281,7 +285,7 @@
                                                     <div class="resume-edu" v-for="resumeEdu in item.resumeEduList"
                                                          :key="resumeEdu.id">
                                                         <div class="edu-box-l" style="width: 330px">
-                                                            <el-row class="edu-school ">{{resumeEdu.schoolName}}
+                                                            <el-row class="edu-school">{{resumeEdu.schoolName}}
                                                             </el-row>
                                                             <el-row class="info-other" v-if="resumeEdu.degree && resumeEdu.degree!=''">学历：{{resumeEdu.degree.name}}
                                                             </el-row>
@@ -1135,8 +1139,7 @@
                                                         <el-tag
                                                                 v-for="skill in listshowskill"
                                                                 :key="skill.id"
-                                                                class="tag-icon"
-                                                                style="height: 21px;line-height: 0px;border-radius: 5px;"
+                                                                style="height: 21px;line-height: 19px;border-radius: 5px;"
                                                         >{{ skill.name }}
                                                         </el-tag>
                                                     </div>
@@ -1247,7 +1250,7 @@
                         </b-media>
                         <b-col class="right-box">
                             <div class="resume-preview resume-right-box">
-                                <el-row style="padding: 10px">
+                                <el-row style="padding: 10px 10px 2px 4px;">
 <!--                                    <el-button-->
 <!--                                            class="left-btn"-->
 <!--                                    >-->
@@ -1260,6 +1263,7 @@
                                             class="left-btn"
                                             @click="handlePreview"
                                     > <svg-icon
+                                            class="svg-cls"
                                             icon-class="preview"
                                             style="width: 16px;height: 17px;margin-right: 2px"
                                     ></svg-icon>预览简历
@@ -1268,6 +1272,7 @@
                                             @click="handleDelResume"
                                             class="left-btn"
                                     ><svg-icon
+                                            class="svg-cls"
                                             icon-class="resume-del"
                                             style="width: 16px;height: 17px;margin-right: 2px"
                                     ></svg-icon>简历删除
@@ -1290,6 +1295,7 @@
                                 <span class="right-add">附件：</span>
                                 <span>
                                     <svg-icon
+                                            class="svg-cls"
                                             icon-class="tips"
                                             style="width: 13px;height: 13px;"
                                     ></svg-icon>
@@ -1334,6 +1340,7 @@
                                     >
                                         <el-button class="upload-btn">
                                             <svg-icon
+                                                    class="svg-cls"
                                                     icon-class="upload"
                                                     style="width: 18px;height: 15px"></svg-icon>
                                             <span style="padding-left: 4px">上传附件简历</span></el-button>
@@ -1418,7 +1425,7 @@
                                             :file-list="fileList"
                                     >
                                         <el-button class="upload-btn">
-                                            <svg-icon
+                                            <svg-icon class="svg-cls"
                                                     icon-class="upload"
                                                     style="width: 18px;height: 15px"
                                             ></svg-icon>
@@ -1432,6 +1439,7 @@
                                 <span class="right-add">简历完成度：</span>
                                 <span class="right-num">{{item.resumeCompleteProgress}}%</span>
                                 <el-progress
+                                        class="pro-ress"
                                         :stroke-width="22"
                                         :percentage="item.resumeCompleteProgress"
                                         :status="item.resumeCompleteProgress == 100? 'success': 'warning'"
@@ -1539,6 +1547,7 @@
     import {downloadFile} from "@/utils/common";
     import ResumeView from "@/components/ResumeView";
     import {addResume} from "../api/resume_api";
+    import UploadImg from '@/components/UploadImg';
 
 
     library.add(
@@ -1969,12 +1978,14 @@
         components: {
             EditResumeTitle,
             quillEditor,
-            ResumeView
+            ResumeView,
+            UploadImg,
         },
         created() {
             this.initData();
         },
         methods: {
+
             setDialogWidth() {
                 var val = document.body.clientWidth
                 const def = 450 // 默认宽度
@@ -2406,7 +2417,7 @@
                 }
 
             },
-            handleEditResumeBasic() {
+            handleEditResumeBasic(index) {
                 console.log("-----")
                 this.showBasicDialog = true;
                 if(this.newResumeId&&this.newResumeId!=''){
@@ -2460,7 +2471,7 @@
                 }
 
                 this.$nextTick(() => {
-                    this.$refs["resumeForm"][0].clearValidate();
+                    this.$refs["resumeForm"][index].clearValidate();
                 });
             },
             handleEditResumeIntro() {
@@ -2921,8 +2932,6 @@
                                         .finally(() => {
                                             this.posting = false;
                                         });
-
-
                                     this.$message({
                                         type: 'success',
                                         message: '修改成功!'
@@ -2934,8 +2943,7 @@
                                     });
                                 });
 
-                            }
-                            else {
+                            } else {
                                 this.resumeForm5.id = this.resume[i].id;
                                 saveResumeBasic(this.resumeForm5)
                                     .then(() => {
@@ -3467,6 +3475,128 @@
         /*min-height: calc(100vh - 477px);*/
         /*background: rgba(213, 226, 240, 0.21);*/
         min-width: 375px;
+        ::v-deep    .el-tabs__nav-scroll {
+            width: fit-content;
+            height: 45px;
+            background: #FFFFFF;
+            border-radius: 25px;
+            border: 1px solid #CCCCCC;
+
+        }
+        ::v-deep    .el-tabs--card > .el-tabs__header {
+            width: fit-content;
+            height: 35px;
+            border-radius: 18px;
+            border-bottom: 0px;
+            /*margin-left: 56px;*/
+
+        }
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__nav {
+            border: 0px;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        ::v-deep.el-tabs__item .el-icon-close:before {
+            transform: scale(.9);
+            display: none;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item {
+            border-left: none;
+            width: 80px;
+            height: 35px;
+            background: #4895EF;
+            border-radius: 18px;
+            margin: 5px;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #FFFFFF;
+            line-height: 34px;
+            text-align: center;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable {
+            width: fit-content;
+            height: 35px;
+            background: #4895EF;
+            border-radius: 18px;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #FFFFFF;
+            line-height: 35px;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #FFFFFF;
+            margin: 4px 4px 3px 4px;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item.is-closable {
+            width: fit-content;
+            height: 35px;
+            margin: 3px 6px 3px 3px;
+            background: #FFFFFF;
+            border-radius: 18px;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable .el-icon-close, .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable:hover .el-icon-close {
+            width: 0px;
+        }
+        ::v-deep.el-tabs__new-tab {
+            float: right;
+            border: 1.5px solid #4B97F0;
+            height: 28px;
+            width: 28px;
+            line-height: 0px;
+            margin: 8px 0 10px 10px;
+            border-radius: 20px;
+            padding-top: 3px;
+            font-size: 20px;
+            color: #4B97F0;
+            cursor: pointer;
+            -webkit-transition: all .15s;
+            transition: all .15s;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header.el-tabs__new-tab {
+            float: right;
+            border: 1px solid #d3dce6;
+            height: 18px;
+            width: 18px;
+            line-height: 18px;
+            margin: 12px 0 9px 10px;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #d3dce6;
+            cursor: pointer;
+            transition: all .15s;
+        } ;
+       ::v-deep .el-dialog__headerbtn .el-dialog__close {
+            color: #4895EF;
+            border: 1px solid;
+            line-height: 16px;
+            border-radius: 50%;
+        }
+        ::v-deep.el-tag--light {
+            height: 21px;
+            font-size: 12px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #FFFFFF;
+            background: #4CC9F0;
+            border-radius: 5px;
+            line-height: 20px;
+            margin: 5px;
+        }
 
         .selectleave {
             ::v-deep.el-input--suffix .el-input__inner {
@@ -3532,6 +3662,12 @@
                     font-family: PingFangSC-Medium, PingFang SC;
                     font-weight: 500;
                     color: #333333;
+                    ::v-deep.svg-cls{
+                        width: 1em;
+                        vertical-align: -0.25em;
+                        fill: currentColor;
+                        overflow: hidden;
+                    }
                 }
                 .editTitle{
                     font-size: 12px;
@@ -3653,6 +3789,50 @@
 
                 .avatorHolder {
                     padding-left: 30px;
+                    .avatar-uploader .el-upload {
+                        cursor: pointer;
+                        position: relative;
+                        overflow: hidden;
+                        margin-bottom: 7px;
+                    }
+
+                    $avatarSize: 100px;
+
+                    .avatar-uploader .avatar-uploader-icon {
+                        border: 1px solid #3F5FF4;
+                        border-radius: 5px;
+                        font-size: 28px;
+                        color: #8c939d;
+                        width: $avatarSize;
+                        height: $avatarSize;
+                        line-height: $avatarSize;
+                        text-align: center;
+                    }
+
+                    .avatar-uploader .avatar {
+                        width: $avatarSize;
+                        height: $avatarSize;
+                        display: block;
+                    }
+
+                    .upload-attach-box .el-upload {
+                        display: block;
+
+                    }
+
+                    .upload-attach-box .el-upload button {
+                        height: 31px;
+                        margin-top: 17px;
+                        font-size: 18px;
+                        padding-top: 7px;
+                        width: 192px;
+                        background: #4895EF;
+                        border-radius: 50px;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #FFFFFF;
+                    }
                 }
 
                 .resume-red {
@@ -3699,6 +3879,12 @@
                     vertical-align: text-top;
                 }
                 .rowbasic{
+                    ::v-deep.svg-cls{
+                        width: 1em;
+                        vertical-align: -0.25em;
+                        fill: currentColor;
+                        overflow: hidden;
+                    }
                     .resume-updateTime {
                         width: 204px;
                         height: 20px;
@@ -3763,15 +3949,7 @@
                     border-color: #EDF2FF;
                 }
 
-                .info-name {
-                    width: 97px;
-                    height: 29px;
-                    font-size: 21px;
-                    font-family: PingFangSC-Medium, PingFang SC;
-                    font-weight: 500;
-                    color: #333333;
-                    line-height: 29px;
-                }
+
 
                 .expinfo-other-row {
                     display: inline-flex;
@@ -3800,11 +3978,34 @@
                 .info-other-row-m {
                     margin-top: 30px;
                     padding-bottom: 4px;
+                    .info-other {
+                        height: 20px;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                    }
                 }
 
                 .info-other-row-l {
                     margin-left: 20px;
                     width: 256px;
+                    .info-name {
+                        width: 97px;
+                        height: 29px;
+                        font-size: 21px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        line-height: 29px;
+                    }
+                    .info-other {
+                        height: 20px;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                    }
                 }
 
                 .info-other-row-c {
@@ -3820,13 +4021,7 @@
                         line-height: 20px;
                     }
 
-                    .info-other {
-                        height: 20px;
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                    }
+
                 }
 
                 .info-other-row {
@@ -3914,6 +4109,12 @@
             padding: 41px 25px 0px 20px;
             /*<!--border: $border-style;-->*/
             /*margin-bottom: 15px;*/
+            ::v-deep.svg-cls{
+                width: 1em;
+                vertical-align: -0.25em;
+                fill: currentColor;
+                overflow: hidden;
+            }
             .left-btn {
                 height: 39px;
                 background: #FFFFFF;
@@ -3924,6 +4125,12 @@
                 font-weight: 500;
                 color: #4895EF;
                 line-height: 12px;
+                ::v-deep.svg-cls{
+                    width: 1em;
+                    vertical-align: -0.25em;
+                    fill: currentColor;
+                    overflow: hidden;
+                }
             }
         }
 
@@ -4028,6 +4235,14 @@
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #FFFFFF;
+                padding-top: 7px;
+                margin-left: 36px;
+                ::v-deep.svg-cls{
+                    width: 1em;
+                    vertical-align: -0.25em;
+                    fill: currentColor;
+                    overflow: hidden;
+                }
             }
             .input-others{
 
@@ -4045,6 +4260,12 @@
                 line-height: 25px;
                 margin-right: 10px;
             }
+            ::v-deep.svg-cls{
+                width: 1em;
+                vertical-align: -0.25em;
+                fill: currentColor;
+                overflow: hidden;
+            }
 
             .right-num {
                 height: 25px;
@@ -4054,6 +4275,21 @@
                 color: #4895EF;
                 line-height: 25px;
             }
+            .pro-ress{
+                ::v-deep.el-progress-bar__outer {
+                    height: 6px;
+                    border-radius: 100px;
+                    background-color: #EBEEF5;
+                    overflow: hidden;
+                    position: relative;
+                    vertical-align: middle;
+                }
+
+                ::v-deep.el-progress.is-warning .el-progress-bar__inner {
+                    background-color: #FDC500;
+                }
+            }
+
 
         }
 
@@ -4093,6 +4329,9 @@
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 vertical-align: text-top;
+
+
+
             }
 
             .tag-title-1 {
@@ -4460,7 +4699,12 @@
         .resume-box {
             margin-bottom: 21px;
             width: 640px;
-
+            ::v-deep.svg-cls{
+                width: 1em;
+                vertical-align: -0.25em;
+                fill: currentColor;
+                overflow: hidden;
+            }
             .resume-box-text {
                 font-size: 16px;
                 font-family: PingFangSC-Medium, PingFang SC;
@@ -4533,6 +4777,15 @@
             .resume-edu {
                 padding-top: 13px;
                 display: inline-flex;
+                .info-other {
+                    height: auto;
+                    font-size: 14px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #333333;
+                }
+
+
                 .info-data{
                     font-size: 14px;
                     font-family: PingFangSC-Regular, PingFang SC;
@@ -4545,16 +4798,56 @@
 
                 .edu-box-l {
                     width: 346px;
+                    .edu-school{
+
+                        font-size: 16px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        line-height: 22px;
+                        height: 22px;
+                    }
+                    .info-other {
+                        height: auto;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                    }
                 }
 
                 .edu-box-l1 {
                     width: 346px;
+
+                    .edu-school{
+                        font-size: 16px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        line-height: 22px;
+                        height: 22px;
+                    }
+                    .info-other {
+                        height: auto;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                    }
                 }
 
                 .edu-box-m {
                     margin-top: 24px;
                     width: 250px;
                     margin-right: 20px;
+                    .info-other {
+                        height: auto;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                    }
+
                 }
 
                 .edu-box-m1 {
@@ -4617,274 +4910,8 @@
 <style lang="scss">
     @import "bootstrap/scss/bootstrap.scss";
 
-    .svg-icon[data-v-c8a70580] {
-        width: 1em;
-        vertical-align: -0.25em;
-        fill: currentColor;
-        overflow: hidden;
-    }
 
-    .info-other {
-        height: 20px;
-        font-size: 14px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #333333;
-        margin-top: 4px;
-    }
 
-    .el-progress-bar__outer {
-        height: 6px;
-        border-radius: 100px;
-        background-color: #EBEEF5;
-        overflow: hidden;
-        position: relative;
-        vertical-align: middle;
-    }
 
-    .el-progress.is-warning .el-progress-bar__inner {
-        background-color: #FDC500;
-    }
 
-    .tag-icon {
-        margin-right: 7px;
-        padding: 10px;
-        display: inline-block;
-        background: #4CC9F0;
-        border-radius: 10px;
-        font-size: 12px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        line-height: 10px;
-    }
-
-    .ql-container .ql-editor {
-        min-height: 200px;
-        font-size: 15px;
-    }
-
-    .ql-editor p {
-        margin-bottom: 10px;
-    }
-
-    .ql-editor ol,
-    .ql-editor ul {
-        padding-left: 0.5em;
-        margin-bottom: 10px;
-    }
-
-    .ql-bubble {
-        border: 1px solid #dcdfe6;
-        border-radius: 4px;
-    }
-
-    .b-toaster {
-        z-index: 10000;
-    }
-
-    a.edit-text {
-        cursor: pointer;
-        font-size: 14px;
-        color: $info;
-    }
-
-    .ql-editor.ql-blank::before {
-        font-style: normal;
-        color: #c0c4cc;
-        font-size: 15px;
-    }
-    .el-dialog__headerbtn .el-dialog__close {
-        color: #4895EF;
-        border: 1px solid;
-        line-height: 16px;
-        border-radius: 50%;
-    }
-    .el-upload-dragger {
-        width: 408px;
-        height: 200px;
-        background: #FFFFFF;
-        border-radius: 20px;
-        border: 2px dashed  #4895EF;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .photoText{
-        font-size: 16px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #333333;
-    }
-    .photoText-size{
-        font-size: 14px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #999999;
-    }
-    .img-button{
-        width: 192px;
-        height: 31px;
-        background: #4895EF;
-        border-radius: 16px;
-        font-size: 14px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        line-height: 0px;
-    }
-
-    .avatar-uploader .el-upload {
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 7px;
-    }
-
-    .avatar-uploader .el-upload:hover {
-        border-color: $info;
-    }
-
-    $avatarSize: 100px;
-
-    .avatar-uploader .avatar-uploader-icon {
-        border: 1px solid #3F5FF4;
-        border-radius: 5px;
-        font-size: 28px;
-        color: #8c939d;
-        width: $avatarSize;
-        height: $avatarSize;
-        line-height: $avatarSize;
-        text-align: center;
-    }
-
-    .avatar-uploader .avatar {
-        width: $avatarSize;
-        height: $avatarSize;
-        display: block;
-    }
-
-    .upload-attach-box .el-upload {
-        display: block;
-
-    }
-
-    .upload-attach-box .el-upload button {
-        height: 31px;
-        margin-top: 17px;
-        font-size: 18px;
-        padding-top: 7px;
-        width: 192px;
-        background: #4895EF;
-        border-radius: 50px;
-        font-size: 14px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-    }
-
-    .el-tabs__nav-scroll {
-        width: fit-content;
-        height: 45px;
-        background: #FFFFFF;
-        border-radius: 25px;
-        border: 1px solid #CCCCCC;
-
-    }
-
-    .el-tabs--card > .el-tabs__header {
-        width: fit-content;
-        height: 35px;
-        border-radius: 18px;
-        border-bottom: 0px;
-        /*margin-left: 56px;*/
-
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__nav {
-        border: 0px;
-        border-bottom: none;
-        border-radius: 4px 4px 0 0;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__item {
-        border-left: none;
-        width: 80px;
-        height: 35px;
-        background: #4895EF;
-        border-radius: 18px;
-        margin: 5px;
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        line-height: 34px;
-        text-align: center;
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable {
-        width: fit-content;
-        height: 35px;
-        background: #4895EF;
-        border-radius: 18px;
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        line-height: 35px;
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        margin: 4px 4px 3px 4px;
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable {
-        width: fit-content;
-        height: 35px;
-        margin: 3px 6px 3px 3px;
-        background: #FFFFFF;
-        border-radius: 18px;
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #333333;
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable .el-icon-close, .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable:hover .el-icon-close {
-        width: 0px;
-    }
-    .el-tabs__new-tab {
-        float: right;
-        border: 1.5px solid #4B97F0;
-        height: 28px;
-        width: 28px;
-        line-height: 0px;
-        margin: 8px 0 10px 10px;
-        border-radius: 20px;
-        padding-top: 3px;
-        font-size: 20px;
-        color: #4B97F0;
-        cursor: pointer;
-        -webkit-transition: all .15s;
-        transition: all .15s;
-    }
-
-    .el-tabs--card > .el-tabs__header.el-tabs__new-tab {
-        float: right;
-        border: 1px solid #d3dce6;
-        height: 18px;
-        width: 18px;
-        line-height: 18px;
-        margin: 12px 0 9px 10px;
-        border-radius: 50px;
-        text-align: center;
-        font-size: 12px;
-        color: #d3dce6;
-        cursor: pointer;
-        transition: all .15s;
-    }
 </style>
