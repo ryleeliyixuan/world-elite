@@ -20,12 +20,21 @@ const constantRoutes = [
         component: () => import('@/views/RegisterPage'),
         meta: { title: '寰球菁英-注册' }
     },
-    // {
-    //     path: '/register-basic',
-    //     component: () => import('@/views/Register/RegisterBasicPage'),
-    //     meta: { title: '寰球菁英-注册' }
-    // },
-
+    {
+        path: '/register-basic',
+        component: () => import('@/views/RegisterBasicPage'),
+        meta: { title: '寰球菁英-注册' }
+    },
+    {
+        path: '/register-job-orientation',
+        component: () => import('@/views/RegisterJobOriPage'),
+        meta: { title: '寰球菁英-注册' }
+    },
+    {
+        path: '/register-success',
+        component: () => import('@/views/RegisterSuccessPage'),
+        meta: { title: '寰球菁英-注册成功' }
+    },
 
     {
         path: '/edit-resume',
@@ -140,11 +149,6 @@ const constantRoutes = [
         path: '/wiki-list',
         component: () => import('@/views/CompanyWikiListPage'),
         meta: { title: '寰球菁英-百科' }
-    },
-    {
-        path: '/regist-success',
-        component: () => import('@/views/RegisterSuccessPage'),
-        meta: { title: '寰球菁英-注册成功' }
     },
     {
         path: '/modify-pwd',

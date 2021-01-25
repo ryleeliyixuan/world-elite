@@ -303,7 +303,7 @@ public class LuceneIndexService implements IndexService {
         //必须有简历基础信息才开始生成索引
         if (resume == null || resume.getResumeId() == null || resume.getResumeBasic() == null) return null;
         if (StringUtils.isAnyBlank(resume.getName(), resume.getResumeBasic().getName())) return null;
-        if (StringUtils.isAllBlank(resume.getPhone().toString(), resume.getEmail())) return null;
+        if (StringUtils.isAllBlank(resume.getEmail())) return null;
 
         Document document = new Document();
         Resume resumeBasic = resume.getResumeBasic();

@@ -1,41 +1,97 @@
 <template>
-    <div class="app-container container">
-        <div class="m-4 text-center">
-            <i class="el-icon-success success-icon"></i>
-        </div>
-        <h3 class="m-4 text-center">注册成功</h3>
-        <div class="m-4 text-center">
-            <el-button type="primary" @click="goEditResume">完善简历</el-button>
-        </div>
-        <div class="text-center mt-4">
-            <p>关注我们公众号</p>
-            <el-image src="https://oss.myworldelite.com/static/worldelite-gongzhonghao.jpg"/>
-        </div>
+  <div class="app-container">
+    <div class="login-box text-center">
+      <div class="header1 text">已成功注册World Elite账号！</div>
+      <svg-icon
+        icon-class="forgetpwd-success"
+        style="height: 164px; width: 297px"
+      />
+      <div class="header2 text">完善简历信息，让HR更容易发现你。</div>
+      <el-button @click="goToEditResume">填写简历</el-button>
     </div>
+  </div>
 </template>
-
 <script>
-    export default {
-        name: "RegisteSuccessrPage",
+import Toast from "@/utils/toast";
 
-        data() {
-            return {};
-        },
-        created() {
-            this.$emit("complete");
-        },
-        methods: {
-            goEditResume() {
-                this.$router.replace("/edit-resume");
-            }
-        }
-    };
+export default {
+  name: "RegisterSuccessPage",
+
+  data() {
+    return {};
+  },
+  created() {
+    this.$emit("complete");
+  },
+  methods: {
+    goToEditResume() {
+      this.$router.push("/edit-resume");
+    },
+  },
+};
 </script>
-<style scoped>
-    .app-container {
+
+<style scoped lang="scss">
+.app-container {
+  max-width: 1200px;
+  .bold {
+    font-size: 36px;
+    font-family: Roboto-Medium, Roboto;
+    font-weight: 500;
+    color: #333333;
+    line-height: 39px;
+  }
+
+  .login-box {
+    height: 655px;
+    box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
+    border-radius: 24px;
+    background: #ffffff;
+    margin-top: 35px;
+    margin-bottom: 88px;
+    padding-top: 87px;
+    .text {
+      font-size: 24px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #333333;
+      line-height: 33px;
     }
-    .success-icon {
-        font-size: 60px;
-        color: #67c23a;
+    .header1 {
+      margin-bottom: 55px;
     }
+    .header2 {
+      margin-top: 67px;
+      margin-bottom: 37px;
+    }
+    /deep/.el-button {
+      width: 151px;
+      height: 35px;
+      background: #4895ef;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+      color: #ffffff;
+    }
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .app-container {
+    padding: 20px 20px 0;
+    .text-center {
+      font-size: 18px;
+    }
+
+    .register-form {
+      width: 300px;
+
+      .item-container {
+        margin-top: 20px;
+      }
+    }
+  }
+}
 </style>
