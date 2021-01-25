@@ -73,10 +73,10 @@ public class RegistrationService extends BaseService{
         }
         registration.setNumber(number);
         //如果报名需要审核，则状态改成待审核，否则状态为无需审核
-        if(activity.getAuditType().equals("0")){
+        if(activity.getAuditType().equals("1")){
             registration.setStatus(RegistrationStatus.DIRECT.value);
         }
-        if(activity.getAuditType().equals("1")){
+        if(activity.getAuditType().equals("0")){
             registration.setStatus(RegistrationStatus.NOT_ACTIVITY.value);
         }
         registrationMapper.insertSelective(registration);
@@ -165,6 +165,7 @@ public class RegistrationService extends BaseService{
             log.debug("获取活动问卷回答选项：{}",answerOptionsMap.get(template.getId()));
             questionnaire.setAnswerContent(answerContentMap.get(template.getId()));
             questionnaire.setAnswerOptions(answerOptionsMap.get(template.getId()));
+            questionnaire.setQuestionnaireOptions(template.getOptionsList());
             questionnaireList.add(questionnaire);
         }
         return questionnaireList;

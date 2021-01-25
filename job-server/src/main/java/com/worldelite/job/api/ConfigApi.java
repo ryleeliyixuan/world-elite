@@ -4,6 +4,7 @@ import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.ConfigType;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.form.HomeConfigForm;
+import com.worldelite.job.form.WebHomeConfigForm;
 import com.worldelite.job.service.ConfigService;
 import com.worldelite.job.vo.ApiResult;
 import io.github.yedaxia.apidocs.ApiDoc;
@@ -49,6 +50,30 @@ public class ConfigApi {
         return ApiResult.ok(homeConfigForm);
     }
 
+    /**
+     * 保存用户端首页配置
+     * @param configForm
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PostMapping("save-web-home-config")
+    @ApiDoc
+    public ApiResult saveWebHomeConfig(@RequestBody WebHomeConfigForm configForm){
+        configService.saveWebHomeConfig(configForm);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 获取用户端首页配置
+     *
+     * @param configType 配置类型
+     * @return
+     */
+    @GetMapping("get-web-home-config")
+    @ApiDoc
+    public ApiResult<WebHomeConfigForm> getWebHomeConfig(@RequestParam Integer configType){
+        WebHomeConfigForm webHomeConfigForm = configService.getWebHomeConfig(configType);
+        return ApiResult.ok(webHomeConfigForm);
+    }
 
     /**
      * 用户协议

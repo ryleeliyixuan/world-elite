@@ -113,10 +113,7 @@ public class ActivityService extends BaseService {
      * @return
      */
     public ActivityVo getMyDraftActivityInfo() {
-        ActivityOptions options = new ActivityOptions();
-        options.setUserId(curUser().getId());
-        options.setStatus(ActivityStatus.DRAFT.value);
-        final List<Activity> activities = activityMapper.selectAndList(options);
+        final List<Activity> activities = activityMapper.selectMyDraftActivity(curUser().getId());
         if (activities.size() > 0)
             return toActivityVo(activities.get(0));
 
@@ -200,9 +197,12 @@ public class ActivityService extends BaseService {
             if (activityForm.getStatus() != null && activityForm.getStatus() == ActivityStatus.DRAFT.value) {
                 activity.setStatus(ActivityStatus.DRAFT.value);
                 //关联报名表
-                QuestionnaireTemplateVo template = activityQuestionnaireService
-                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
-                activity.setQuestionnaireId(template.getId());
+                if(StringUtils.isNotBlank(activityForm.getQuestionnaireType()) && activityForm.getQuestionnaireId() != null) {
+                    QuestionnaireTemplateVo template = activityQuestionnaireService
+                            .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
+                    activity.setQuestionnaireId(template.getId());
+                }
+
                 activityMapper.insertSelective(activity);
             } else {
                 //关联报名表

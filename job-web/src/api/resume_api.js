@@ -14,6 +14,7 @@ export function saveResumeBasic(data){
         data
       })
 }
+
 export function addResume(data){
     return request({
         url: '/resume/add-resume',
@@ -95,7 +96,7 @@ export function saveResumeAwards(data) {
 
 export function delResumeAwards(id) {
     return request({
-        url:'/resume/delete-resume-certificate',
+        url:'/resume/del-resume-certificate',
         method:'post',
         params:{id:id}
     })

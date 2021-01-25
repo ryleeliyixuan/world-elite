@@ -54,7 +54,7 @@
                         <share :config="shareConfig"></share>
                     </el-popover>
 
-                    <div :class="activity.registrationFlag?'apply-button2':'apply-button'" @click="onApply">报名</div>
+                    <div :class="activity.registrationFlag?'apply-button2':'apply-button'" @click="onApply">{{activity.registrationFlag?'已报名':'报名'}}</div>
                 </div>
                 <div class="line2" v-if="activity.numberLimit && activity.numberLimit!==-1">
                     报名名额还剩<span>{{activity.numberLimit - activity.applicantQuantity}}</span>个
@@ -108,7 +108,13 @@
             </div>
         </el-dialog>
 
-        <preview-apply :visible.sync="previewDialogVisible" :activityId="this.$route.query.id+''" :apply="applyTable" :resumeList="resumeList"></preview-apply>
+        <preview-apply v-if="activity"
+                       submit
+                       :visible.sync="previewDialogVisible"
+                       :activityId="this.$route.params.id+''"
+                       :apply="applyTable"
+                       :resumeList="resumeList"
+                       :needResume="activity.needResume"></preview-apply>
     </div>
 </template>
 
@@ -156,7 +162,7 @@
 
                 previewDialogVisible: false, // 报名表预览对话框
                 applyTable: undefined, // 报名表
-                resumeList:[], // 简历列表
+                resumeList: [], // 简历列表
             };
         },
         created() {

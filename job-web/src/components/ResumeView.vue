@@ -1,7 +1,14 @@
 <template>
   <div class="resume-container" v-if="resume">
     <div class="resume-box" style="display: flex">
-      <el-image :src="resume.avatar" class="avatar" />
+      <div class="avatar-uploader">
+      <el-image v-if="resume.avatar && resume.avatar!=''"
+                :src="resume.avatar"
+                class="avatar" />
+      <i v-else>
+        <span style="width: 100px;height: 100px;font-size: 14px;padding-left: 32px;line-height: 9;">暂无照片</span>
+      </i>
+      </div>
       <div>
 <!--        基本信息-->
         <div class="resume-info" style="display: flex">
@@ -31,7 +38,6 @@
       v-if="resume.resumeEduList && resume.resumeEduList.length != 0"
       class="resume-box"
     >
-
       <el-row>
         <div style="width: 540px;margin-right: 75px">
           <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
@@ -39,8 +45,6 @@
           <span class="resume-red">*</span>
         </div>
       </el-row>
-
-
           <div class="resume-edu" v-for="resumeEdu in resume.resumeEduList"
                :key="resumeEdu.id">
             <div style="display: flex;padding-top: 13px">
@@ -49,21 +53,19 @@
               <el-row class="info-other">学历：{{resumeEdu.degree.name}}</el-row>
               <el-row class="info-other">专业：{{resumeEdu.majorName}}</el-row>
             </div>
-            <div class="edu-box-m">
+            <div class="edu-box-m" style="padding-top: 22px">
               <el-row class="info-other">在校时间：
                 <span style="font-size: 14px;
                              font-family: PingFangSC-Regular, PingFang SC;
-                             font-weight: 400;">{{resumeEdu.startTime}}.{{resumeEdu.finishTime}}</span>
+                             font-weight: 400;">
+                   {{resumeEdu.startTime == resumeEdu.finishTime? '在读': `${resumeEdu.startTime}到${resumeEdu.finishTime}`}}
+                </span>
               </el-row>
               <el-row class="info-other">GPA：{{resumeEdu.gpa}}</el-row>
             </div>
             </div>
           </div>
-
-
     </div>
-
-
     <div
       class="resume-box mt-4"
       style="margin-top: 10px"
@@ -84,15 +86,15 @@
             </el-row>
             <el-row class="info-other">预期薪资：
               <span v-if="resume.userExpectJob.salaryId && resume.userExpectJob.salaryId!=''">
-                <span v-if="resume.userExpectJob.salaryId==109">5K-8K</span>
-                <span v-if="resume.userExpectJob.salaryId==110">8K-10K</span>
-                <span v-if="resume.userExpectJob.salaryId==111">10K-15K</span>
-                <span v-if="resume.userExpectJob.salaryId==112">15K-20K</span>
-                <span v-if="resume.userExpectJob.salaryId==113">20K-30K</span>
-                <span v-if="resume.userExpectJob.salaryId==114">30K-50K</span>
-                <span v-if="resume.userExpectJob.salaryId==115">50K以上</span>
-                <span v-if="resume.userExpectJob.salaryId==153">5K以下</span>
-                <span v-if="resume.userExpectJob.salaryId==259">不限</span>
+                <span v-if="resume.userExpectJob.salaryId==1">5K-8K</span>
+                <span v-if="resume.userExpectJob.salaryId==2">8K-10K</span>
+                <span v-if="resume.userExpectJob.salaryId==3">10K-15K</span>
+                <span v-if="resume.userExpectJob.salaryId==4">15K-20K</span>
+                <span v-if="resume.userExpectJob.salaryId==5">20K-30K</span>
+                <span v-if="resume.userExpectJob.salaryId==6">30K-50K</span>
+                <span v-if="resume.userExpectJob.salaryId==7">50K以上</span>
+                <span v-if="resume.userExpectJob.salaryId==8">5K以下</span>
+                <span v-if="resume.userExpectJob.salaryId==9">面议</span>
                </span>
             </el-row>
             <el-row class="info-other">工作类型：
@@ -114,8 +116,6 @@
         </div>
       </div>
     </div>
-
-
     <div
       class="resume-box mt-4"
       v-if="resume.resumePracticeList && resume.resumePracticeList.length != 0"
@@ -164,7 +164,6 @@
       </div>
     </div>
 
-
     <div
             class="mt-4 resume-box"
             v-if="resume.resumePracticeList && resume.resumePracticeList.length != 0"
@@ -180,7 +179,7 @@
         <div class="resume-edu" style="width: 540px;padding-top: 10px;">
           <el-row style="width: 616px;height: 40px;padding-top: 10px;">
             <span class="resume-box-text">{{practice.title}}</span>
-            <span class="resume-box-text-title" style="padding-left: 31px">{{practice.onWork == 1? '项目进行中': `${practice.startTime}到${practice.finishTime}`}}</span>
+            <span class="resume-box-text-title" style="padding-left: 31px">{{practice.onWork == 1? '项目进行中': `${practice.startTime} - ${practice.finishTime}`}}</span>
           </el-row>
           <div class="edu-box">
             <el-row class="expinfo-other-row">
@@ -209,11 +208,11 @@
           <el-row style="width: 615px;display: inline-flex">
             <div style="width: 386px">
               <span class="info-other">语种{{index+1}}: </span>
-                <span>{{language.title}}</span>
+                <span class="info-other">{{language.title}}</span>
             </div>
             <div style="width: 200px">
               <span class="info-other">证书或分数：</span>
-               <span>{{language.description}}</span>
+               <span class="info-other">{{language.description}}</span>
             </div>
           </el-row>
         </div>
@@ -237,18 +236,16 @@
           <el-row style="width: 615px;display: inline-flex">
             <div style="width: 386px">
               <span class="info-other">证书/奖项名称：</span>
-              <span>{{awards.title}}</span>
+              <span class="info-other">{{awards.title}}</span>
             </div>
             <div style="width: 200px">
               <span class="info-other">获得时间：</span>
-              <span>{{awards.time}}</span>
+              <span class="info-other">{{awards.time}}</span>
             </div>
           </el-row>
         </div>
       </el-row>
     </div>
-
-
     <div
             class="mt-4 resume-box"
             v-if="resume.resumeSkillList && resume.resumeSkillList.length != 0"
@@ -272,8 +269,6 @@
         </div>
       </el-row>
     </div>
-
-
     <div class="resume-box mt-4" style="margin-bottom: 100px">
       <el-row style="height: 30px">
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -287,8 +282,6 @@
         </div>
       </div>
     </div>
-
-
     </div>
 </template>
 
@@ -329,6 +322,7 @@ export default {
         );
       }
     },
+
     linkName(link) {
       return linkName(link);
     },
@@ -345,7 +339,17 @@ export default {
 
   .resume-box {
     padding-left: 62px;
-    padding-top: 58px;
+    padding-top: 18px;
+    .avatar-uploader{
+      border: 1px solid #3F5FF4;
+      border-radius: 5px;
+      color: #8c939d;
+      width: 126px;
+      height: 126px;
+      line-height: 100px;
+
+
+    }
     .resume-info{
       padding-left: 13px;
       .info-other-row-l {
@@ -562,8 +566,13 @@ export default {
     font-weight: 500;
     color: #ffffff;
     line-height: 17px;
+    padding-top: 7px;
   }
-
+  .avatar-uploader .avatar {
+    width: 126px;
+    height: 126px;
+    display: block;
+  }
   .avatar {
     width: 126px;
     height: 126px;

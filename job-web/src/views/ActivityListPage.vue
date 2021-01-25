@@ -9,7 +9,7 @@
                 </el-carousel>
             </div>
             <div class="right-container">
-                <div class="button-container">
+                <div class="button-container" @click="onMyActivity">
                     <el-image class="image" :src="require('@/assets/activity/1.png')" fit="scale-down"></el-image>
                     <div class="text-container">
                         <div class="text-major">我报名的活动</div>
@@ -191,6 +191,11 @@
                 this.$axios.get("/dict/list", {params: {type: 23, limit: 99}}).then(data => {
                     this.cityList = data.data.list;
                 })
+            },
+
+            // 我报名的活动
+            onMyActivity() {
+                this.$router.push('/my-activities');
             },
 
             // 我发布的活动

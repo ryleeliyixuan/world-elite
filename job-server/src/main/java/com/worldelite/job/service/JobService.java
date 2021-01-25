@@ -232,7 +232,38 @@ public class JobService extends BaseService {
         }
     }
 
+    private Integer[] removeElByValue(Integer[] arrays, Integer value) {
+        int index = -1;
+        for (int i = 0; i < arrays.length; i++) {
+            if (arrays[i].equals(value)) {
+                index = i;
+            }
+        }
+        if (index == -1) return arrays;
+        int length = arrays.length;
+        if (index < length) {
+            Integer[] arrays_result = new Integer[arrays.length - 1];
+            System.arraycopy(arrays, 0, arrays_result, 0, index);
+            if (index < length - 1) {
+                System.arraycopy(arrays, index + 1, arrays_result, index, arrays_result.length - index);
+            }
+            return arrays_result;
+        }
+        return arrays;
+    }
+
     public Boolean isEmptySearch(JobSearchForm jobSearchForm) {
+        jobSearchForm.setCityIds(removeElByValue(jobSearchForm.getCityIds(), 255));
+        jobSearchForm.setSalaryRangeIds(removeElByValue(jobSearchForm.getSalaryRangeIds(), 259));
+        jobSearchForm.setJobTypes(removeElByValue(jobSearchForm.getJobTypes(), 258));
+        jobSearchForm.setCompanyIndustryIds(removeElByValue(jobSearchForm.getCompanyIndustryIds(), 257));
+        jobSearchForm.setCompanyScaleIds(removeElByValue(jobSearchForm.getCompanyScaleIds(), 256));
+        jobSearchForm.setDegreeIds(removeElByValue(jobSearchForm.getDegreeIds(), 269));
+        jobSearchForm.setCompanyDefineIds(removeElByValue(jobSearchForm.getCompanyDefineIds(), 262));
+        jobSearchForm.setExperienceIds(removeElByValue(jobSearchForm.getExperienceIds(), 999));
+        jobSearchForm.setLanRequiredIds(removeElByValue(jobSearchForm.getLanRequiredIds(), 252));
+
+        // 没有搜索条件，全为empty
         return org.apache.commons.lang.StringUtils.isEmpty(jobSearchForm.getKeyword())
                 && jobSearchForm.getSalaryRangeId() == null
                 && jobSearchForm.getJobType() == null
@@ -245,7 +276,29 @@ public class JobService extends BaseService {
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyStageIds())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyIndustryIds())
                 && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyScaleIds())
-                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getDegreeIds());
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getDegreeIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyDefineIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getExperienceIds())
+                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getLanRequiredIds());
+
+//        return org.apache.commons.lang.StringUtils.isEmpty(jobSearchForm.getKeyword())
+//                && jobSearchForm.getSalaryRangeId() == null
+//                && jobSearchForm.getJobType() == null
+//                && (jobSearchForm.getRecruitId() ==null || jobSearchForm.getRecruitId() == 0)
+//                && jobSearchForm.getCompanyId() == null
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getSalaryRangeIds()) || useList(jobSearchForm.getSalaryRangeIds(), 259))
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getJobTypes()) || useList(jobSearchForm.getJobTypes(), 258))
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCityIds()) || useList(jobSearchForm.getCityIds(), 255))
+//                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCategoryIds())
+//                && org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyStageIds())
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyIndustryIds()) || useList(jobSearchForm.getCompanyIndustryIds(), 257))
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getCompanyScaleIds()) || useList(jobSearchForm.getCompanyScaleIds(), 256))
+//                && (org.apache.commons.lang.ArrayUtils.isEmpty(jobSearchForm.getDegreeIds()) || useList(jobSearchForm.getDegreeIds(), 269));
+    }
+
+
+    private static boolean useList(Integer[] arr, Integer targetValue) {
+        return Arrays.asList(arr).contains(targetValue);
     }
 
     private PageResult<JobVo> getNewestJobList(PageForm pageForm) {
@@ -642,92 +695,9 @@ public class JobService extends BaseService {
 //            mergeSortDesc(jobList, 0, jobList.size() - 1);
 
 //        Collections.reverse(jobList);
-        List<JobVo> jobVos = jobList.subList(0, 10);
-        pageResult.setList(jobVos);
+//        List<JobVo> jobVos = jobList.subList(0, 10);
+        pageResult.setList(jobList);
         return pageResult;
-    }
-
-
-    private void mergeSortDesc(List<JobVo> jobList, int p, int r) {
-        if (p < r) {
-            int q = (p + r) / 2;
-            mergeSortDesc(jobList, p, q);
-            mergeSortDesc(jobList, q + 1, r);
-            merge(jobList, p, q, r);
-        }
-    }
-
-    private void merge(List<JobVo> jobList, int p, int q, int r) {
-        int n1 = q - p + 1;
-        int n2 = r - q;
-        JobVo[] LJobVo = new JobVo[n1];
-        JobVo[] RJobVo = new JobVo[n2];
-        int i, j, k;
-        for (i = 0, k = p; i < n1; i++, k++) {
-            LJobVo[i] = jobList.get(k);
-        }
-        for (j = 0, k = q + 1; j < n2; j++, k++) {
-            if (k == jobList.size()) {
-                return;
-            }
-            RJobVo[j] = jobList.get(k);
-        }
-        for (i = 0, j = 0, k = p; i < n1 && j < n2; k++) {
-            if (compare(LJobVo[i], RJobVo[j]) > 0) {
-                jobList.set(k, RJobVo[j]);
-                j++;
-            } else {
-                jobList.set(k, LJobVo[i]);
-                i++;
-            }
-        }
-        if (i < n1) {
-            for (j = i; j < n1; j++, k++) {
-                jobList.set(k, LJobVo[j]);
-            }
-        }
-        if(j<n2){
-            for(i=j; i<n2; i++,k++){
-                jobList.set(k, RJobVo[i]);
-            }
-        }
-    }
-
-    private Integer compare(JobVo LJobVo, JobVo RJobVo) {
-        Integer LSalary;
-        Integer RSalary;
-
-        String[] LSalarySplit = LJobVo.getSalary().getValue().split("-");
-        Integer LSalaryMonths = Optional.ofNullable(LJobVo.getSalaryMonths()).orElse(0);
-
-        if (LSalarySplit.length > 1) {
-            Integer maxSalary = Integer.parseInt(LSalarySplit[1]);
-            if (LSalaryMonths == 0) {
-                LSalary = maxSalary * MONTH_NUMBER;
-            } else {
-                LSalary = maxSalary * LSalaryMonths;
-            }
-        } else {
-            LSalary = 0;
-        }
-
-        String[] RSalarySplit = RJobVo.getSalary().getValue().split("-");
-        Integer RSalaryMonths = Optional.ofNullable(RJobVo.getSalaryMonths()).orElse(0);
-
-        if (RSalarySplit.length > 1) {
-            Integer maxSalary = Integer.parseInt(RSalarySplit[1]);
-            if (RSalaryMonths == 0) {
-                RSalary = maxSalary * MONTH_NUMBER;
-            } else {
-                RSalary = maxSalary * RSalaryMonths;
-            }
-        } else {
-            RSalary = 0;
-        }
-
-        if (LSalary > RSalary) return 1;
-        if (LSalary < RSalary) return -1;
-        return 0;
     }
 
 }

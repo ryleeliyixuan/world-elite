@@ -113,6 +113,22 @@ public class UserApplicantApi extends BaseController {
     }
 
     /**
+     * 修改用户基础信息
+     *
+     * @param userForm
+     * @return
+     */
+    @RequireLogin(allow = UserType.GENERAL)
+    @PostMapping("modify-user")
+    @ApiDoc
+    public ApiResult modifyUser(@RequestBody UserForm userForm){
+        userForm.setId(curUser().getId());
+
+        userApplicantService.modifyUser(userForm);
+        return ApiResult.ok();
+    }
+
+    /**
      * 修改邮箱
      * @param session
      * @param modifyEmailForm

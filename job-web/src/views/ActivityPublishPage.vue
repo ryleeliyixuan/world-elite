@@ -2,15 +2,15 @@
     <div class="app-container">
         <div class="title">发布活动管理</div>
         <div class="type-container">
-            <div v-for="status in statusList" :class="['text',{'select':listQuery.status===status.id}]" @click="onActivityStatus(status)">{{status.name}}</div>
+            <div v-for="status in menuList" :class="['text',{'select':listQuery.status===status.id}]" @click="onActivityStatus(status)">{{status.name}}</div>
             <div class="publish-button" @click="onPublish">发布活动</div>
             <el-popover class="sort-container"
                         placement="bottom-end"
                         width="136"
                         popper-class="option"
                         trigger="hover">
-                <div class="order-item-container">
-                    <div class="order-item" v-for="order in orderList" @click="onOrderItem(order)">{{order.name}}</div>
+                <div class="publish-order-item-container">
+                    <div class="publish-order-item" v-for="order in orderList" @click="onOrderItem(order)">{{order.name}}</div>
                 </div>
                 <svg-icon slot="reference" icon-class="sort" class-name="sort"></svg-icon>
             </el-popover>
@@ -84,8 +84,8 @@
                       class="reason">
             </el-input>
             <div class="button-container">
-                <div class="cancel" @click="onCancelActivityCancel">否</div>
-                <div class="confirm" @click="onCancelActivityConfirm">是</div>
+                <div class="cancel" @click="onCancelActivityCancel">取消</div>
+                <div class="confirm" @click="onCancelActivityConfirm">确定</div>
             </div>
         </el-dialog>
     </div>
@@ -103,6 +103,8 @@
                 statusList: [{id: 0, name: '审核中'}, {id: 1, name: '草稿'}, {id: 2, name: '已停止'}, {id: 3, name: '即将开始'},
                     {id: 4, name: '报名中'}, {id: 5, name: '进行中'}, {id: 6, name: '已结束'}, {id: 7, name: '审核未通过'}],
                 statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
+                menuList: [{id: undefined, name: '全部活动'}, {id: 3, name: '即将开始'}, {id: 4, name: '报名中'}, {id: 5, name: '进行中'},
+                    {id: 6, name: '已结束'}, {id: 7, name: '审核未通过'}],
                 orderList: [ // 活动排序列表
                     {name: '按发布时间顺序', sort: '+CREATE_TIME'},
                     {name: '按发布时间倒序', sort: '-CREATE_TIME'},
@@ -182,9 +184,8 @@
 
             // 查看审核未通过原因
             onReason(activity) {
-                this.$axios.get(`/activity/newest/${activity.id}`).then(data => {
-                    // TODO  待确认 是否有2个 data
-                    this.$alert(data.data.reason, {showClose: false});
+                this.$axios.get(`/activity/review/newest/${activity.id}`).then(data => {
+                    this.$alert(data.data && data.data.reason || "原因未知", {showClose: false});
                 })
             },
 
@@ -222,10 +223,11 @@
                         method: "POST",
                         url: "/activity/takeoff",
                         params: {id: this.cancelActivity.id, reason: this.cancelActivityReason}
-                    }).then(response => {
+                    }).then(() => {
                         this.cancelActivityReason = undefined;
                         this.cancelActivityDialogVisible = false;
                         this.$message.success("已取消发布");
+                        this.getList();
                     });
                 } else {
                     this.$message.warning("请填写取消原因");
@@ -344,7 +346,7 @@
         border-radius: 9px;
     }
 
-    .order-item-container {
+    .publish-order-item-container {
         height: 183px;
         background: #ECEFF1;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.26);
@@ -356,7 +358,7 @@
         overflow: hidden;
     }
 
-    .order-item {
+    .publish-order-item {
         width: 100%;
         flex: 1;
         font-size: 14px;
@@ -367,7 +369,7 @@
         justify-content: center;
     }
 
-    .order-item:hover {
+    .publish-order-item:hover {
         color: #656565;
         background: #d8dadb;
         cursor: pointer;
@@ -565,9 +567,17 @@
             }
         }
 
+        .reason {
+            margin-top: 14px;
+        }
+
         .cancel-dialog {
             ::v-deep .el-dialog {
                 border-radius: 13px;
+            }
+
+            ::v-deep .el-dialog__body {
+                padding-top: 4px;
             }
 
             .content {
@@ -582,7 +592,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-top: 34px;
+                margin-top: 14px;
 
                 .cancel {
                     width: 107px;
