@@ -18,7 +18,7 @@ public class UserExpectJobVo {
         this.expectCity = expectCity;
     }
 
-    public void setSalaryId(Byte salaryId) {
+    public void setSalaryId(Integer salaryId) {
         this.salaryId = salaryId;
     }
 
@@ -32,7 +32,7 @@ public class UserExpectJobVo {
 
     private JobCategoryVo category; //期望职位
     private String expectCity; //期望城市
-    private Byte salaryId; //薪资范围
+    private Integer salaryId; //薪资范围
     private String expectWorkType; // 工作类型
     private String expectPosition;
 

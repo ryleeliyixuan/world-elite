@@ -25,6 +25,18 @@ public class SearchJobHistoryInfo implements Serializable {
 
     private Integer industryId;
 
+    private Integer expId;
+
+    private Integer scaleId;
+
+    private Integer defineId;
+
+    private Integer jobTypeId;
+
+    private Integer lanId;
+
+    private Integer specialId;
+
     private Date createTime;
 
     private Date updateTime;

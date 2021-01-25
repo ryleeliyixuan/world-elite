@@ -53,3 +53,19 @@ export function logout(){
     method: 'post'
   })
 }
+
+export function defaultAvatar(){
+  return request({
+    url: '/avatar',
+    method: 'get'
+  })
+}
+
+
+export function modifyUser(data){
+  return request({
+    url: '/userapplicant/modify-user',
+    method: 'post',
+    data
+  })
+}
