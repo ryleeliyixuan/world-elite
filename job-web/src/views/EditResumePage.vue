@@ -39,7 +39,7 @@
                                             </el-form>
                                         </div>
                                     </div>
-                                    <div class="resume-updateTime" style="margin-left: 230px;">更新时间：{{item.updateTime}}</div>
+                                    <div class="resume-updateTime" style="margin-left: 210px;">更新时间：{{item.updateTime}}</div>
                                     <div style="position: absolute;margin-left: 146px;">
                                         <div class="help-text" v-show="seen" @mouseleave="onMouseOut">
                                             HR在搜索简历时只会搜索到最符合搜索条件的那一版简历。
@@ -1448,7 +1448,7 @@
             <el-dialog :visible.sync="showResumeDialog"
                        width="70%"
             >
-                <ResumeView :resumeId="resumeId"></ResumeView>
+                <ResumeView :resumeDetail="this.resumeDetail"></ResumeView>
             </el-dialog>
             <el-dialog :visible.sync="photoEditDialog"
                        title="图片剪裁"
@@ -1494,6 +1494,7 @@
     import {getAllCountries, getCurrentCountry} from "@/api/country_api";
     import {
         getResumeInfo,
+        getResumeDetail,
         saveResumeBasic,
         saveResumeEdu,
         saveResumeOther,
@@ -1820,6 +1821,7 @@
                 newResumeId: undefined,
                 newIndex: undefined,
                 resumeId: undefined,
+                resumeDetail:undefined,
                 countryOptions: [],
                 degreeOptions: [],
                 jobCategoryOptions: [],
@@ -3329,11 +3331,15 @@
             handlePreview() {
                 if (this.newResumeId&& this.newResumeId!=''){
                     this.resumeId = this.newResumeId;
-                    this.getResumeInfo();
                 }else{
                     this.resumeId = this.resume[this.resume.length-1].id;
-                    this.getResumeInfo();
                 }
+                getResumeDetail(this.resumeId).then((response) =>{
+                        this.resumeDetail = response.data;
+                        console.log(this.resumeDetail)
+                }
+                );
+
                 this.showResumeDialog = true;
                 console.log(this.resumeId)
 
@@ -3677,7 +3683,7 @@
                 }
                 .rowbasic{
                     .resume-updateTime {
-                        width: 184px;
+                        width: 204px;
                         height: 20px;
                         font-size: 14px;
                         font-family: PingFangSC-Medium, PingFang SC;
