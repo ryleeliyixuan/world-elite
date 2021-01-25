@@ -365,7 +365,7 @@
             ></el-input>
             <div class="section1-filter-option">
               <el-button
-                style="flex: 1; margin-left: 10px"
+                style="flex: 1; margin-left: 10px; height: 30px;"
                 class="more"
                 @click="reShowMoreFilter"
                 size="mini"
@@ -388,7 +388,7 @@
             <el-link class="sort-options" target="_blank" @click="onOrderSalary"
               >薪资降序</el-link
             >
-            <el-button class="empty" @click="emptyFilter" type="text"
+            <el-button class="empty" @click="emptyFilter" type="text" style="position: relative; bottom: 8px;"
               ><svg-icon
                 class="empty-icon"
                 icon-class="joblistdelete"
@@ -597,6 +597,12 @@ export default {
         salaryIds: [],
         degreeIds: [],
         industryIds: [],
+        expIds: [],
+        scaleIds: [],
+        defineIds: [],
+        jobTypeIds: [],
+        lanIds: [],
+        specialIds: [],
         filterCount: undefined,
       },
       historyOptions: [],
@@ -916,14 +922,17 @@ export default {
     },
     reHandleFilter(options) {
       this.emptyFilter();
-      this.listQuery.cityIds =
-        options.cityIds.indexOf(null) === -1 ? options.cityIds : [];
-      this.listQuery.companyIndustryIds =
-        options.industryIds.indexOf(null) === -1 ? options.industryIds : [];
-      this.listQuery.degreeIds =
-        options.degreeIds.indexOf(null) === -1 ? options.degreeIds : [];
-      this.listQuery.salaryRangeIds =
-        options.salaryIds.indexOf(null) === -1 ? options.salaryIds : [];
+      this.listQuery.cityIds = options.cityIds.indexOf(null) === -1 ? options.cityIds : [];
+      this.listQuery.companyIndustryIds = options.industryIds.indexOf(null) === -1 ? options.industryIds : [];
+      this.listQuery.degreeIds = options.degreeIds.indexOf(null) === -1 ? options.degreeIds : [];
+      this.listQuery.salaryRangeIds = options.salaryIds.indexOf(null) === -1 ? options.salaryIds : [];
+      this.listQuery.experienceIds = options.expIds.indexOf(null) === -1 ? options.expIds : [];
+      this.listQuery.companyScaleIds = options.scaleIds.indexOf(null) === -1 ? options.scaleIds : [];
+      this.listQuery.companyDefineIds = options.defineIds.indexOf(null) === -1 ? options.defineIds : [];
+      this.listQuery.lanRequiredIds = options.lanIds.indexOf(null) === -1 ? options.lanIds : [];
+      this.listQuery.jobTypes = options.jobTypeIds.indexOf(null) === -1 ? options.jobTypeIds : [];
+      // this.listQuery.specialIds = options.specialIds.indexOf(null) === -1 ? options.specialIds : [];
+
       this.listQuery.page = 1;
       this.refreshOptions();
       this.saveSearchHistory();
@@ -962,9 +971,14 @@ export default {
       this.historyForm.cityIds = this.arrCopy(this.listQuery.cityIds);
       this.historyForm.degreeIds = this.arrCopy(this.listQuery.degreeIds);
       this.historyForm.salaryIds = this.arrCopy(this.listQuery.salaryRangeIds);
-      this.historyForm.industryIds = this.arrCopy(
-        this.listQuery.companyIndustryIds
-      );
+      this.historyForm.industryIds = this.arrCopy(this.listQuery.companyIndustryIds);
+
+      this.historyForm.expIds = this.arrCopy(this.listQuery.experienceIds);
+      this.historyForm.scaleIds = this.arrCopy(this.listQuery.companyScaleIds);
+      this.historyForm.defineIds = this.arrCopy(this.listQuery.companyDefineIds);
+      this.historyForm.jobTypeIds = this.arrCopy(this.listQuery.jobTypes);
+      this.historyForm.lanIds = this.arrCopy(this.listQuery.lanRequiredIds);
+      this.historyForm.specialIds = this.arrCopy(this.listQuery.specialIds);
 
       let count = this.getUnlimitedCount();
 
@@ -973,12 +987,13 @@ export default {
         this.historyForm.cityIds.length +
         this.historyForm.degreeIds.length +
         this.historyForm.salaryIds.length +
-        this.listQuery.experienceIds.length +
-        this.listQuery.companyScaleIds.length +
-        this.listQuery.companyDefineIds.length +
-        this.listQuery.jobTypes.length +
-        this.listQuery.lanRequiredIds.length +
-        this.historyForm.industryIds.length -
+        this.historyForm.industryIds.length +
+        this.historyForm.expIds.length +
+        this.historyForm.scaleIds.length +
+        this.historyForm.defineIds.length +
+        this.historyForm.jobTypeIds.length +
+        this.historyForm.lanIds.length +
+        this.historyForm.specialIds.length -
         count;
     },
     getUnlimitedCount() {
@@ -1258,9 +1273,14 @@ export default {
       if (name.endsWith(",")) {
         if (name.substr(0, name.length - 1) === origin) {
           return origin + name.substr(0, name.length - 1);
-        } else {
-          return name.substr(0, name.length - 1);
         }
+        if (origin === "月薪不限") {
+          return "月薪" + name.substr(0, name.length - 1);
+        }
+        if (origin === "工作经验不限") {
+          return "工作经验" + name.substr(0, name.length - 1);
+        }
+        return name.substr(0, name.length - 1);
       }
     },
     emptyFilter() {
@@ -1520,9 +1540,11 @@ export default {
     .inp-search {
       display: flex;
       justify-content: space-between;
+      height: 30px;
 
       .inp-search-child {
         padding: 0px 5px;
+        height: 30px;
 
         /deep/ .el-input__inner {
           flex: 1;

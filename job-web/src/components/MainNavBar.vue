@@ -425,6 +425,11 @@ export default {
   },
 };
 </script>
+<style>
+  .el-link--inner {
+    white-space: nowrap;
+  }
+</style>
 <style scoped lang="scss">
 .message-text {
   text-align: center;
