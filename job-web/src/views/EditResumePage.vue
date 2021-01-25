@@ -1947,7 +1947,7 @@
                 return(()=>{
                     this.setDialogWidth();
                 })
-            }
+            };
         },
         watch: {
             "expectJobForm.cityIds": function (newVal, oldVal) {
