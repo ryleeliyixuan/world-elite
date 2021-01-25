@@ -102,7 +102,7 @@
 
             <div class="activity-container">
                 <div class="activity-item" v-for="item in dataList" :key="item.id" @click="onItem(item)">
-                    <el-image class="background-image" :src="img" fit="cover"></el-image>
+                    <el-image class="background-image" :src="item.poster" fit="cover"></el-image>
                     <el-image class="subscript" :src="require('@/assets/activity/geren.png')" v-if="item.userType==='1'"></el-image>
                     <el-image class="subscript" :src="require('@/assets/activity/qiye.png')" v-if="item.userType==='2'"></el-image>
                     <div class="brief">
@@ -148,7 +148,7 @@
                     {id: 5, name: '进行中'}, {id: 6, name: '已结束'}], // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束
                 timeList: [], // 活动时间列表
                 orderList: [{id: "PUBLISH_TIME", name: '最新发布'}, {id: "FOLLOWER", name: '最多关注'},
-                    {id: "REGISTRATION_TIME", name: '最多报名'}, {id: "ACTIVITY_TIME", name: '最多开始'}], // 活动排序列表
+                    {id: "REGISTRATION_TIME", name: '最近报名'}, {id: "ACTIVITY_TIME", name: '最近开始'}], // 活动排序列表
                 listQuery: {
                     keyword: undefined, // 搜索关键字
                     form: undefined, // 活动形式
@@ -279,7 +279,6 @@
                 this.listQuery.status = undefined;
                 this.listQuery.timeId = undefined;
                 this.listQuery.sortField = undefined;
-                this.listQuery.publisherType = 2;
                 this.handleFilter();
             },
 
