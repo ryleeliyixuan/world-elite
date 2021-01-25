@@ -4,7 +4,9 @@
             <MainNavBar class="nav-bar"/>
         </div>
         <transition name="fade-transform" mode="out-in">
-            <router-view class="main-container page"/>
+            <keep-alive include='JobListPage'>
+                <router-view class="main-container page"/>
+            </keep-alive>
         </transition>
         <transition name="fade">
             <div style="background: white;">
