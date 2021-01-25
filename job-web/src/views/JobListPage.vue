@@ -989,6 +989,7 @@ export default {
           for (let i = 0; i < resp.data.length; i++) {
             this.listQuery.cityIds.push(resp.data[i]);
           }
+          this.listQuery.cityIds = this.distinct(this.listQuery.cityIds);
           this.handleFilter();
         });
     },
@@ -1012,11 +1013,18 @@ export default {
     },
     handleFilter(id) {
       this.listQuery.page = 1;
-      if (arguments.length === 1) {
-        this.refreshOptions(id);
-      }
+      this.refreshOptions(id);
       this.saveSearchHistory();
       this.handleRouteList();
+    },
+    distinct(arr) {
+      let hash = [];
+      for (let i = 0; i < arr.length; i++) {
+        if(hash.indexOf(arr[i]) === -1){
+          hash.push(arr[i]);
+        }
+      }
+      return hash;
     },
     saveSearchHistory() {
       this.formatHistoryForm();
@@ -1143,31 +1151,11 @@ export default {
       );
     },
     refreshOptions(id) {
-      this.placeholderCity = this.getNameByIdFromOptions(
-        this.cityOptions,
-        this.listQuery.cityIds,
-        "城市不限"
-      );
-      this.placeholderIndustry = this.getNameByIdFromOptions(
-        this.companyIndustryOptions,
-        this.listQuery.companyIndustryIds,
-        "行业不限"
-      );
-      this.placeholderSalary = this.getNameByIdFromOptions(
-        this.salaryRangeOptions,
-        this.listQuery.salaryRangeIds,
-        "月薪不限"
-      );
-      this.placeholderDegree = this.getNameByIdFromOptions(
-        this.degreeOptions,
-        this.listQuery.degreeIds,
-        "学历不限"
-      );
-      this.placeholderExp = this.getNameByIdFromOptions(
-        this.experienceOptions,
-        this.listQuery.experienceIds,
-        "工作经验不限"
-      );
+      this.placeholderCity = this.getNameByIdFromOptions(this.cityOptions, this.listQuery.cityIds, "城市不限");
+      this.placeholderIndustry = this.getNameByIdFromOptions( this.companyIndustryOptions, this.listQuery.companyIndustryIds, "行业不限");
+      this.placeholderSalary = this.getNameByIdFromOptions( this.salaryRangeOptions, this.listQuery.salaryRangeIds, "月薪不限");
+      this.placeholderDegree = this.getNameByIdFromOptions( this.degreeOptions, this.listQuery.degreeIds, "学历不限");
+      this.placeholderExp = this.getNameByIdFromOptions( this.experienceOptions, this.listQuery.experienceIds, "工作经验不限");
 
       if (id === undefined) return;
 
@@ -1175,14 +1163,7 @@ export default {
         this.listQuery.cityIds = [this.unlimitedMap["city"]];
         this.placeholderCity = "城市不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.cityIds,
-          "city",
-          id,
-          this.initCityIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.cityIds,"city",id,this.initCityIds)) {
         this.removeElByValue(this.listQuery.cityIds, this.unlimitedMap["city"]);
       }
 
@@ -1190,14 +1171,7 @@ export default {
         this.listQuery.companyIndustryIds = [this.unlimitedMap["industry"]];
         this.placeholderIndustry = "行业不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.companyIndustryIds,
-          "industry",
-          id,
-          this.initIndustryIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.companyIndustryIds,"industry",id,this.initIndustryIds)) {
         this.removeElByValue(
           this.listQuery.companyIndustryIds,
           this.unlimitedMap["industry"]
@@ -1208,14 +1182,7 @@ export default {
         this.listQuery.salaryRangeIds = [this.unlimitedMap["salary"]];
         this.placeholderSalary = "月薪不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.salaryRangeIds,
-          "salary",
-          id,
-          this.initSalaryIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.salaryRangeIds,"salary",id,this.initSalaryIds)) {
         this.removeElByValue(
           this.listQuery.salaryRangeIds,
           this.unlimitedMap["salary"]
@@ -1226,14 +1193,7 @@ export default {
         this.listQuery.degreeIds = [this.unlimitedMap["degree"]];
         this.placeholderDegree = "学历不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.degreeIds,
-          "degree",
-          id,
-          this.initDegreeIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.degreeIds,"degree",id,this.initDegreeIds)) {
         this.removeElByValue(
           this.listQuery.degreeIds,
           this.unlimitedMap["degree"]
@@ -1244,14 +1204,7 @@ export default {
         this.listQuery.experienceIds = [this.unlimitedMap["exp"]];
         this.placeholderExp = "工作经验不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.experienceIds,
-          "exp",
-          id,
-          this.initExpIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.experienceIds,"exp",id,this.initExpIds)) {
         this.removeElByValue(
           this.listQuery.experienceIds,
           this.unlimitedMap["exp"]
@@ -1261,14 +1214,7 @@ export default {
       if (id === this.unlimitedMap["scale"]) {
         this.listQuery.companyScaleIds = [this.unlimitedMap["scale"]];
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.companyScaleIds,
-          "scale",
-          id,
-          this.initScaleIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.companyScaleIds,"scale",id,this.initScaleIds)) {
         this.removeElByValue(
           this.listQuery.companyScaleIds,
           this.unlimitedMap["scale"]
@@ -1278,14 +1224,7 @@ export default {
       if (id === this.unlimitedMap["define"]) {
         this.listQuery.companyDefineIds = [this.unlimitedMap["define"]];
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.companyDefineIds,
-          "define",
-          id,
-          this.initDefineIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.companyDefineIds,"define",id,this.initDefineIds)) {
         this.removeElByValue(
           this.listQuery.companyDefineIds,
           this.unlimitedMap["define"]
@@ -1295,14 +1234,7 @@ export default {
       if (id === this.unlimitedMap["jobType"]) {
         this.listQuery.jobTypes = [this.unlimitedMap["jobType"]];
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.jobTypes,
-          "jobType",
-          id,
-          this.initJobTypeIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.jobTypes,"jobType",id,this.initJobTypeIds)) {
         this.removeElByValue(
           this.listQuery.jobTypes,
           this.unlimitedMap["jobType"]
@@ -1312,14 +1244,7 @@ export default {
       if (id === this.unlimitedMap["lang"]) {
         this.listQuery.lanRequiredIds = [this.unlimitedMap["lang"]];
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.lanRequiredIds,
-          "lang",
-          id,
-          this.initLanRequiredIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.lanRequiredIds,"lang",id,this.initLanRequiredIds)) {
         this.removeElByValue(
           this.listQuery.lanRequiredIds,
           this.unlimitedMap["lang"]
