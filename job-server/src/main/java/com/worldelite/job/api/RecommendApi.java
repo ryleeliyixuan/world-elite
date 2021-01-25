@@ -2,10 +2,12 @@ package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
+import com.worldelite.job.form.PageForm;
 import com.worldelite.job.form.RecommendForm;
 import com.worldelite.job.form.RecommendListForm;
 import com.worldelite.job.service.RecommendService;
 import com.worldelite.job.vo.ApiResult;
+import com.worldelite.job.vo.CompanyVo;
 import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.RecommendVo;
 import io.github.yedaxia.apidocs.ApiDoc;
@@ -60,6 +62,13 @@ public class RecommendApi {
     @ApiDoc
     public ApiResult<PageResult<RecommendVo>> getRecommendList(RecommendListForm listForm){
         PageResult pageResult = recommendService.getRecommendList(listForm);
+        return ApiResult.ok(pageResult);
+    }
+
+    @GetMapping("recent-job-company")
+    @ApiDoc
+    public ApiResult<PageResult<CompanyVo>> getRecentJobCompany(PageForm pageForm){
+        PageResult<CompanyVo> pageResult = recommendService.getRecentJobCompany(pageForm);
         return ApiResult.ok(pageResult);
     }
 }

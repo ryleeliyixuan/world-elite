@@ -88,23 +88,34 @@
               class="quick"
               @mouseover.native="quickFilter = true"
               size="mini"
-              >快速筛选</el-button
-            >
+              >快速筛选</el-button>
             <el-button class="more" @click="showMoreFilter" size="mini"
-              >更多筛选</el-button
-            >
+              >更多筛选</el-button>
+            <el-select
+                    size="mini"
+                    style="margin-left: 20px; margin-right: 15px; max-width: 100px;"
+                    v-model="sortValue"
+                    @change="sortChange"
+                    class="sort-options"
+                    placeholder="推荐排序">
+              <el-option
+                      v-for="item in sortOptions"
+                      :key="item.sortValue"
+                      :label="item.label"
+                      :value="item.sortValue">
+              </el-option>
+            </el-select>
             <el-button class="empty" @click="emptyFilter" type="text"
-              ><svg-icon
-                class="empty-icon"
-                icon-class="joblistdelete"
-                style="
-                  height: 19px;
-                  width: 19px;
-                  margin-right: 6px;
-                  margin-bottom: 2px;
-                "
-              />清除选项</el-button
-            >
+            ><svg-icon
+                    class="empty-icon"
+                    icon-class="joblistdelete"
+                    style="
+                      height: 19px;
+                      width: 19px;
+                      margin-right: 6px;
+                      margin-bottom: 2px;
+                    "
+            />清除选项</el-button>
           </div>
         </div>
 
@@ -201,11 +212,34 @@
               class="quick"
               @mouseover.native="quickFilter = true"
               size="mini"
-              >快速筛选</el-button
-            >
+              >快速筛选</el-button>
             <el-button class="more" @click="closeMoreFilter" size="mini"
-              >收起</el-button
-            >
+              >收起</el-button>
+            <el-select
+                    size="mini"
+                    style="margin-left: 20px; margin-right: 15px; max-width: 100px;"
+                    v-model="sortValue"
+                    @change="sortChange"
+                    class="sort-options"
+                    placeholder="推荐排序">
+              <el-option
+                      v-for="item in sortOptions"
+                      :key="item.sortValue"
+                      :label="item.label"
+                      :value="item.sortValue">
+              </el-option>
+            </el-select>
+            <el-button class="empty" @click="emptyFilter" type="text"
+            ><svg-icon
+                    class="empty-icon"
+                    icon-class="joblistdelete"
+                    style="
+                      height: 19px;
+                      width: 19px;
+                      margin-right: 6px;
+                      margin-bottom: 2px;
+                    "
+            />清除选项</el-button>
           </div>
         </div>
 
@@ -373,7 +407,7 @@
               >
             </div>
 
-            <el-link
+            <!--<el-link
               style="margin-left: 60px"
               class="sort-options"
               target="_blank"
@@ -387,7 +421,21 @@
             >
             <el-link class="sort-options" target="_blank" @click="onOrderSalary"
               >薪资降序</el-link
-            >
+            >-->
+            <el-select
+                    size="mini"
+                    v-model="sortValue"
+                    @change="sortChange"
+                    class="sort-options"
+                    placeholder="推荐排序">
+              <el-option
+                      v-for="item in sortOptions"
+                      :key="item.sortValue"
+                      :label="item.label"
+                      :value="item.sortValue">
+              </el-option>
+            </el-select>
+
             <el-button class="empty" @click="emptyFilter" type="text" style="position: relative; bottom: 8px;"
               ><svg-icon
                 class="empty-icon"
@@ -448,7 +496,7 @@
     >-->
     <div class="app-container">
       <div v-if="showNoResult" style="text-align: center; line-height: 40px">
-        暂无搜索结果，显示推荐职位
+        暂无搜索结果，显示全部职位
       </div>
       <div
         class="section3-container"
@@ -552,6 +600,21 @@ export default {
   components: { Pagination },
   data() {
     return {
+      sortValue: '',
+      sortOptions: [
+        {
+          sortValue: "1",
+          label: "推荐排序"
+        },
+        {
+          sortValue: "2",
+          label: "最新发布",
+        },
+        {
+          sortValue: "3",
+          label: "薪资降序"
+        }
+      ],
       quickFilter: false,
       collapse: false,
       paneLoading: true,
@@ -626,7 +689,7 @@ export default {
         sort: undefined,
         salaryAsc: 0,
       },
-      orderPubTime: "+PUB_TIME",
+      orderPubTime: "-PUB_TIME",
       total: 0,
       pageResult: {},
       unlimitedMap: {},
@@ -700,7 +763,7 @@ export default {
           this.subscribeOptions = resp.data;
         }
       });
-      getCompanyJobList(this.listQuery).then((response) => {
+      getCompanyJobList().then((response) => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
         this.$emit("complete");
@@ -788,6 +851,27 @@ export default {
           clearInterval(timeTop);
         }
       }, 10);
+    },
+    sortChange() {
+      switch (this.sortValue) {
+        case "1":
+          // todo 推荐职位列表 ， 暂时获取全部职位
+          getCompanyJobList().then((response) => {
+            this.pageResult = response.data;
+            this.total = this.pageResult.total;
+            this.$emit("complete");
+          });
+          break;
+        case "2":
+          this.onOrderPubTime();
+          break;
+        case "3":
+          this.onOrderSalary();
+          break;
+        default:
+          // 兜底
+          break;
+      }
     },
     saveLastShowStatus(A, C, moreFilter) {
       this.lastA = A;
@@ -879,25 +963,47 @@ export default {
     },
     onOrderPubTime() {
       this.listQuery.sort = this.orderPubTime;
-      this.handleFilter();
+      searchJob(this.listQuery).then((response) => {
+        if (!response.data.list || response.data.list.length === 0) {
+          this.showNoResult = true;
+          this.total = 10;
+          getCompanyJobList().then((response) => {
+            this.pageResult = response.data;
+            this.total = this.pageResult.total;
+            this.$emit("complete");
+          });
+          /*getRecommendList({
+            objectType: 1, // 职位
+            page: 1,
+            limit: 10,
+            sort: "+position",
+          }).then((response) => {
+            this.pageResult.list = response.data.list.map(
+                    (item) => item.object
+            );
+            this.total = response.data.total;
+            this.$emit("complete");
+          });*/
+        } else {
+          this.pageResult = response.data;
+          this.total = this.pageResult.total;
+          this.$emit("complete");
+        }
+      });
     },
     onOrderSalary() {
       this.listQuery.salaryAsc = 0;
       this.listQuery.limit = 10;
+      this.listQuery.sort = undefined;
       this.$axios
         .post("/job/search-job-order-by-salary", this.listQuery)
         .then((resp) => {
           if (!resp.data.list || resp.data.list.length === 0) {
             this.showNoResult = true;
             this.total = 10;
-            getRecommendList({
-              objectType: 1, // 职位
-              page: 1,
-              limit: 10,
-              sort: "+position",
-            }).then((resp) => {
-              this.pageResult.list = resp.data.list.map((item) => item.object);
-              this.total = resp.data.total;
+            getCompanyJobList().then((response) => {
+              this.pageResult = response.data;
+              this.total = this.pageResult.total;
               this.$emit("complete");
             });
           } else {
@@ -917,6 +1023,7 @@ export default {
           for (let i = 0; i < resp.data.length; i++) {
             this.listQuery.cityIds.push(resp.data[i]);
           }
+          this.listQuery.cityIds = this.distinct(this.listQuery.cityIds);
           this.handleFilter();
         });
     },
@@ -943,6 +1050,15 @@ export default {
       this.refreshOptions(id);
       this.saveSearchHistory();
       this.handleRouteList();
+    },
+    distinct(arr) {
+      let hash = [];
+      for (let i = 0; i < arr.length; i++) {
+        if(hash.indexOf(arr[i]) === -1){
+          hash.push(arr[i]);
+        }
+      }
+      return hash;
     },
     saveSearchHistory() {
       this.formatHistoryForm();
@@ -1001,49 +1117,28 @@ export default {
       if (this.listQuery.cityIds.indexOf(this.unlimitedMap["city"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.companyIndustryIds.indexOf(
-          this.unlimitedMap["industry"]
-        ) !== -1
-      ) {
+      if (this.listQuery.companyIndustryIds.indexOf(this.unlimitedMap["industry"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.salaryRangeIds.indexOf(this.unlimitedMap["salary"]) !==
-        -1
-      ) {
+      if (this.listQuery.salaryRangeIds.indexOf(this.unlimitedMap["salary"]) !==-1) {
         count++;
       }
-      if (
-        this.listQuery.degreeIds.indexOf(this.unlimitedMap["degree"]) !== -1
-      ) {
+      if (this.listQuery.degreeIds.indexOf(this.unlimitedMap["degree"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.experienceIds.indexOf(this.unlimitedMap["exp"]) !== -1
-      ) {
+      if (this.listQuery.experienceIds.indexOf(this.unlimitedMap["exp"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.companyScaleIds.indexOf(this.unlimitedMap["scale"]) !==
-        -1
-      ) {
+      if (this.listQuery.companyScaleIds.indexOf(this.unlimitedMap["scale"]) !==-1) {
         count++;
       }
-      if (
-        this.listQuery.companyDefineIds.indexOf(this.unlimitedMap["define"]) !==
-        -1
-      ) {
+      if (this.listQuery.companyDefineIds.indexOf(this.unlimitedMap["define"]) !==-1) {
         count++;
       }
-      if (
-        this.listQuery.jobTypes.indexOf(this.unlimitedMap["jobType"]) !== -1
-      ) {
+      if (this.listQuery.jobTypes.indexOf(this.unlimitedMap["jobType"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.lanRequiredIds.indexOf(this.unlimitedMap["lang"]) !== -1
-      ) {
+      if (this.listQuery.lanRequiredIds.indexOf(this.unlimitedMap["lang"]) !== -1) {
         count++;
       }
       return count;
@@ -1069,31 +1164,11 @@ export default {
       );
     },
     refreshOptions(id) {
-      this.placeholderCity = this.getNameByIdFromOptions(
-        this.cityOptions,
-        this.listQuery.cityIds,
-        "城市不限"
-      );
-      this.placeholderIndustry = this.getNameByIdFromOptions(
-        this.companyIndustryOptions,
-        this.listQuery.companyIndustryIds,
-        "行业不限"
-      );
-      this.placeholderSalary = this.getNameByIdFromOptions(
-        this.salaryRangeOptions,
-        this.listQuery.salaryRangeIds,
-        "月薪不限"
-      );
-      this.placeholderDegree = this.getNameByIdFromOptions(
-        this.degreeOptions,
-        this.listQuery.degreeIds,
-        "学历不限"
-      );
-      this.placeholderExp = this.getNameByIdFromOptions(
-        this.experienceOptions,
-        this.listQuery.experienceIds,
-        "工作经验不限"
-      );
+      this.placeholderCity = this.getNameByIdFromOptions(this.cityOptions, this.listQuery.cityIds, "城市不限");
+      this.placeholderIndustry = this.getNameByIdFromOptions( this.companyIndustryOptions, this.listQuery.companyIndustryIds, "行业不限");
+      this.placeholderSalary = this.getNameByIdFromOptions( this.salaryRangeOptions, this.listQuery.salaryRangeIds, "月薪不限");
+      this.placeholderDegree = this.getNameByIdFromOptions( this.degreeOptions, this.listQuery.degreeIds, "学历不限");
+      this.placeholderExp = this.getNameByIdFromOptions( this.experienceOptions, this.listQuery.experienceIds, "工作经验不限");
 
       if (id === undefined) return;
 
@@ -1101,14 +1176,7 @@ export default {
         this.listQuery.cityIds = [this.unlimitedMap["city"]];
         this.placeholderCity = "城市不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.cityIds,
-          "city",
-          id,
-          this.initCityIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.cityIds,"city",id,this.initCityIds)) {
         this.removeElByValue(this.listQuery.cityIds, this.unlimitedMap["city"]);
       }
 
@@ -1116,14 +1184,7 @@ export default {
         this.listQuery.companyIndustryIds = [this.unlimitedMap["industry"]];
         this.placeholderIndustry = "行业不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.companyIndustryIds,
-          "industry",
-          id,
-          this.initIndustryIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.companyIndustryIds,"industry",id,this.initIndustryIds)) {
         this.removeElByValue(
           this.listQuery.companyIndustryIds,
           this.unlimitedMap["industry"]
@@ -1134,14 +1195,7 @@ export default {
         this.listQuery.salaryRangeIds = [this.unlimitedMap["salary"]];
         this.placeholderSalary = "月薪不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.salaryRangeIds,
-          "salary",
-          id,
-          this.initSalaryIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.salaryRangeIds,"salary",id,this.initSalaryIds)) {
         this.removeElByValue(
           this.listQuery.salaryRangeIds,
           this.unlimitedMap["salary"]
@@ -1152,14 +1206,7 @@ export default {
         this.listQuery.degreeIds = [this.unlimitedMap["degree"]];
         this.placeholderDegree = "学历不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.degreeIds,
-          "degree",
-          id,
-          this.initDegreeIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.degreeIds,"degree",id,this.initDegreeIds)) {
         this.removeElByValue(
           this.listQuery.degreeIds,
           this.unlimitedMap["degree"]
@@ -1170,14 +1217,7 @@ export default {
         this.listQuery.experienceIds = [this.unlimitedMap["exp"]];
         this.placeholderExp = "工作经验不限";
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.experienceIds,
-          "exp",
-          id,
-          this.initExpIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.experienceIds,"exp",id,this.initExpIds)) {
         this.removeElByValue(
           this.listQuery.experienceIds,
           this.unlimitedMap["exp"]
@@ -1187,14 +1227,7 @@ export default {
       if (id === this.unlimitedMap["scale"]) {
         this.listQuery.companyScaleIds = [this.unlimitedMap["scale"]];
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.companyScaleIds,
-          "scale",
-          id,
-          this.initScaleIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.companyScaleIds,"scale",id,this.initScaleIds)) {
         this.removeElByValue(
           this.listQuery.companyScaleIds,
           this.unlimitedMap["scale"]
@@ -1204,14 +1237,7 @@ export default {
       if (id === this.unlimitedMap["define"]) {
         this.listQuery.companyDefineIds = [this.unlimitedMap["define"]];
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.companyDefineIds,
-          "define",
-          id,
-          this.initDefineIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.companyDefineIds,"define",id,this.initDefineIds)) {
         this.removeElByValue(
           this.listQuery.companyDefineIds,
           this.unlimitedMap["define"]
@@ -1221,14 +1247,7 @@ export default {
       if (id === this.unlimitedMap["jobType"]) {
         this.listQuery.jobTypes = [this.unlimitedMap["jobType"]];
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.jobTypes,
-          "jobType",
-          id,
-          this.initJobTypeIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.jobTypes,"jobType",id,this.initJobTypeIds)) {
         this.removeElByValue(
           this.listQuery.jobTypes,
           this.unlimitedMap["jobType"]
@@ -1238,14 +1257,7 @@ export default {
       if (id === this.unlimitedMap["lang"]) {
         this.listQuery.lanRequiredIds = [this.unlimitedMap["lang"]];
       }
-      if (
-        this.refreshChecked(
-          this.listQuery.lanRequiredIds,
-          "lang",
-          id,
-          this.initLanRequiredIds
-        )
-      ) {
+      if (this.refreshChecked(this.listQuery.lanRequiredIds,"lang",id,this.initLanRequiredIds)) {
         this.removeElByValue(
           this.listQuery.lanRequiredIds,
           this.unlimitedMap["lang"]
@@ -1254,11 +1266,11 @@ export default {
     },
     getNameByIdFromOptions(options, ids, origin) {
       let name = "";
-      if (origin === "城市" && this.inpCity.length >= 0) {
+      /*if (origin === "城市不限" && this.inpCity.length >= 0) {
         for (let i = 0; i < this.inpCity.length; i++) {
           name += this.inpCity[i] + ",";
         }
-      }
+      }*/
 
       for (let i = 0; i < options.length; i++) {
         for (let j = 0; j < ids.length; j++) {
@@ -1316,16 +1328,9 @@ export default {
         if (!response.data.list || response.data.list.length === 0) {
           this.showNoResult = true;
           this.total = 10;
-          getRecommendList({
-            objectType: 1, // 职位
-            page: 1,
-            limit: 10,
-            sort: "+position",
-          }).then((response) => {
-            this.pageResult.list = response.data.list.map(
-              (item) => item.object
-            );
-            this.total = response.data.total;
+          getCompanyJobList().then((response) => {
+            this.pageResult = response.data;
+            this.total = this.pageResult.total;
             this.$emit("complete");
           });
         } else {
@@ -1533,8 +1538,10 @@ export default {
 
     .sort-options {
       justify-content: flex-end;
-      margin-left: 5px;
-      margin-right: 5px;
+      margin-left: 100px;
+      margin-right: 20px;
+      margin-top: 2px;
+      min-width: 120px;
     }
 
     .inp-search {
@@ -1554,6 +1561,10 @@ export default {
           border: 1px solid #698ec7;
           background: #fbfbfb;
           color: #0d46f3;
+
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow:ellipsis;
         }
       }
       /deep/.el-button--text {

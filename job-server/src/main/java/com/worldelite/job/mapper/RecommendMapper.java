@@ -54,4 +54,6 @@ public interface RecommendMapper {
     int updateByPrimaryKey(Recommend record);
 
     List<Recommend> selectAndList(Recommend options);
+
+    List<Long> selectRecentJobCompanyId();
 }
