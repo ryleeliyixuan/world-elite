@@ -112,4 +112,18 @@ public class RecommendService {
         return pageResult;
     }
 
+    public PageResult<CompanyVo> getRecentJobCompany(PageForm pageForm){
+        AppUtils.setPage(pageForm);
+        Page<Long> companyIdList = (Page<Long>) recommendMapper.selectRecentJobCompanyId();
+        PageResult<CompanyVo> pageResult = new PageResult(companyIdList);
+        List<CompanyVo> companyVoList = new ArrayList<>();
+        for(Long id:companyIdList){
+            CompanyVo companyInfo = companyService.getCompanyInfo(id);
+            companyVoList.add(companyInfo);
+        }
+
+        pageResult.setList(companyVoList);
+        return pageResult;
+    }
+
 }
