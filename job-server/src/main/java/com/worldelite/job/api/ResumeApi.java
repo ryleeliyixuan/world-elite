@@ -522,4 +522,13 @@ public class ResumeApi extends BaseApi {
         resumeShareService.share(resumeShareForm);
         return ApiResult.ok();
     }
+
+    @ApiDoc
+    @PostMapping("parse-attachment")
+    @RequireLogin
+    public ApiResult parseAttachment(@RequestBody ParseAttachmentForm parseAttachmentForm){
+        ResumeService resumeService = ResumeServiceFactory.getDefaultService();
+        resumeService.parseAttachment(parseAttachmentForm);
+        return ApiResult.ok();
+    }
 }
