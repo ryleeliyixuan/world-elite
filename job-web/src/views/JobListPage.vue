@@ -373,7 +373,7 @@
               >
             </div>
 
-            <el-link
+            <!--<el-link
               style="margin-left: 60px"
               class="sort-options"
               target="_blank"
@@ -387,7 +387,21 @@
             >
             <el-link class="sort-options" target="_blank" @click="onOrderSalary"
               >薪资降序</el-link
-            >
+            >-->
+            <el-select
+                    size="mini"
+                    v-model="sortValue"
+                    @change="sortChange"
+                    class="sort-options"
+                    placeholder="推荐排序">
+              <el-option
+                      v-for="item in sortOptions"
+                      :key="item.sortValue"
+                      :label="item.label"
+                      :value="item.sortValue">
+              </el-option>
+            </el-select>
+
             <el-button class="empty" @click="emptyFilter" type="text" style="position: relative; bottom: 8px;"
               ><svg-icon
                 class="empty-icon"
@@ -448,7 +462,7 @@
     >-->
     <div class="app-container">
       <div v-if="showNoResult" style="text-align: center; line-height: 40px">
-        暂无搜索结果，显示推荐职位
+        暂无搜索结果，显示全部职位
       </div>
       <div
         class="section3-container"
@@ -552,6 +566,21 @@ export default {
   components: { Pagination },
   data() {
     return {
+      sortValue: '',
+      sortOptions: [
+        {
+          sortValue: "1",
+          label: "推荐排序"
+        },
+        {
+          sortValue: "2",
+          label: "最新发布",
+        },
+        {
+          sortValue: "3",
+          label: "薪资降序"
+        }
+      ],
       quickFilter: false,
       collapse: false,
       paneLoading: true,
@@ -626,7 +655,7 @@ export default {
         sort: undefined,
         salaryAsc: 0,
       },
-      orderPubTime: "+PUB_TIME",
+      orderPubTime: "-PUB_TIME",
       total: 0,
       pageResult: {},
       unlimitedMap: {},
@@ -700,7 +729,7 @@ export default {
           this.subscribeOptions = resp.data;
         }
       });
-      getCompanyJobList(this.listQuery).then((response) => {
+      getCompanyJobList().then((response) => {
         this.pageResult = response.data;
         this.total = this.pageResult.total;
         this.$emit("complete");
@@ -788,6 +817,27 @@ export default {
           clearInterval(timeTop);
         }
       }, 10);
+    },
+    sortChange() {
+      switch (this.sortValue) {
+        case "1":
+          // todo 推荐职位列表 ， 暂时获取全部职位
+          getCompanyJobList().then((response) => {
+            this.pageResult = response.data;
+            this.total = this.pageResult.total;
+            this.$emit("complete");
+          });
+          break;
+        case "2":
+          this.onOrderPubTime();
+          break;
+        case "3":
+          this.onOrderSalary();
+          break;
+        default:
+          // 兜底
+          break;
+      }
     },
     saveLastShowStatus(A, C, moreFilter) {
       this.lastA = A;
@@ -879,25 +929,47 @@ export default {
     },
     onOrderPubTime() {
       this.listQuery.sort = this.orderPubTime;
-      this.handleFilter();
+      searchJob(this.listQuery).then((response) => {
+        if (!response.data.list || response.data.list.length === 0) {
+          this.showNoResult = true;
+          this.total = 10;
+          getCompanyJobList().then((response) => {
+            this.pageResult = response.data;
+            this.total = this.pageResult.total;
+            this.$emit("complete");
+          });
+          /*getRecommendList({
+            objectType: 1, // 职位
+            page: 1,
+            limit: 10,
+            sort: "+position",
+          }).then((response) => {
+            this.pageResult.list = response.data.list.map(
+                    (item) => item.object
+            );
+            this.total = response.data.total;
+            this.$emit("complete");
+          });*/
+        } else {
+          this.pageResult = response.data;
+          this.total = this.pageResult.total;
+          this.$emit("complete");
+        }
+      });
     },
     onOrderSalary() {
       this.listQuery.salaryAsc = 0;
       this.listQuery.limit = 10;
+      this.listQuery.sort = undefined;
       this.$axios
         .post("/job/search-job-order-by-salary", this.listQuery)
         .then((resp) => {
           if (!resp.data.list || resp.data.list.length === 0) {
             this.showNoResult = true;
             this.total = 10;
-            getRecommendList({
-              objectType: 1, // 职位
-              page: 1,
-              limit: 10,
-              sort: "+position",
-            }).then((resp) => {
-              this.pageResult.list = resp.data.list.map((item) => item.object);
-              this.total = resp.data.total;
+            getCompanyJobList().then((response) => {
+              this.pageResult = response.data;
+              this.total = this.pageResult.total;
               this.$emit("complete");
             });
           } else {
@@ -940,7 +1012,9 @@ export default {
     },
     handleFilter(id) {
       this.listQuery.page = 1;
-      this.refreshOptions(id);
+      if (arguments.length === 1) {
+        this.refreshOptions(id);
+      }
       this.saveSearchHistory();
       this.handleRouteList();
     },
@@ -1316,16 +1390,9 @@ export default {
         if (!response.data.list || response.data.list.length === 0) {
           this.showNoResult = true;
           this.total = 10;
-          getRecommendList({
-            objectType: 1, // 职位
-            page: 1,
-            limit: 10,
-            sort: "+position",
-          }).then((response) => {
-            this.pageResult.list = response.data.list.map(
-              (item) => item.object
-            );
-            this.total = response.data.total;
+          getCompanyJobList().then((response) => {
+            this.pageResult = response.data;
+            this.total = this.pageResult.total;
             this.$emit("complete");
           });
         } else {
@@ -1533,8 +1600,10 @@ export default {
 
     .sort-options {
       justify-content: flex-end;
-      margin-left: 5px;
-      margin-right: 5px;
+      margin-left: 100px;
+      margin-right: 20px;
+      margin-top: 2px;
+      min-width: 120px;
     }
 
     .inp-search {
