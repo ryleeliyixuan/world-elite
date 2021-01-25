@@ -60,6 +60,9 @@ public class ActivityStatusManager implements CommandLineRunner {
         if (activity.getActivityFinishTime() != null && (diff = ChronoUnit.MILLIS.between(Instant.now(), activity.getActivityFinishTime().toInstant())) > 0) {
             put(new DelayActivityInfo(activity.getId(), diff));
         }
+
+        //延迟0ms放入队列中,用于刷新当前的活动状态
+        put(new DelayActivityInfo(activity.getId(), 0));
     }
 
     /**
