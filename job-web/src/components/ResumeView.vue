@@ -1,9 +1,9 @@
 <template>
-  <div class="resume-container" v-if="resume">
+  <div class="resume-container" v-if="resumeDetail">
     <div class="resume-box" style="display: flex">
       <div class="avatar-uploader">
-      <el-image v-if="resume.avatar && resume.avatar!=''"
-                :src="resume.avatar"
+      <el-image v-if="resumeDetail.avatar && resumeDetail.avatar!=''"
+                :src="resumeDetail.avatar"
                 class="avatar" />
       <i v-else>
         <span style="width: 100px;height: 100px;font-size: 14px;padding-left: 32px;line-height: 9;">暂无照片</span>
@@ -13,29 +13,31 @@
 <!--        基本信息-->
         <div class="resume-info" style="display: flex">
           <div class="info-other-row-l">
-            <el-row class="info-name" style="width: 300px">{{resume.name}}</el-row>
+            <el-row class="info-name" style="width: 300px">{{resumeDetail.name}}</el-row>
             <el-row class="info-other">性别：
-              <span v-if="resume.gender==1">男</span>
-              <span v-if="resume.gender==2">女</span>
+              <span v-if="resumeDetail.gender==1">男</span>
+              <span v-if="resumeDetail.gender==2">女</span>
             </el-row>
-            <el-row class="info-other">年龄：{{resume.age}} 岁</el-row>
-            <el-row class="info-other">邮箱：{{resume.email}}</el-row>
-            <el-row class="info-other">手机：{{resume.phone}}</el-row>
+            <el-row class="info-other">年龄：{{resumeDetail.age}} 岁</el-row>
+            <el-row class="info-other">邮箱：{{resumeDetail.email}}</el-row>
+            <el-row class="info-other">手机：{{resumeDetail.phone}}</el-row>
           </div>
           <div class="info-other-row-m">
             <el-row class="info-other">政治面貌：
-            <span v-if="resume.maritalStatus==0">党员</span>
-            <span v-if="resume.maritalStatus==1">团员</span>
-            <span v-if="resume.maritalStatus==2">群众</span>
+              <span v-if="resumeDetail.maritalStatus==0">中共党员（含预备党员）</span>
+              <span v-if="resumeDetail.maritalStatus==1">民主党派</span>
+              <span v-if="resumeDetail.maritalStatus==2">无党派人士</span>
+              <span v-if="resumeDetail.maritalStatus==3">团员</span>
+              <span v-if="resumeDetail.maritalStatus==4">群众</span>
             </el-row>
-            <el-row class="info-other">现居地址：{{resume.curPlace}}</el-row>
-            <el-row class="info-other">入职时间：{{resume.returnTime}}</el-row>
+            <el-row class="info-other">现居地址：{{resumeDetail.curPlace}}</el-row>
+            <el-row class="info-other">入职时间：{{resumeDetail.returnTime}}</el-row>
           </div>
         </div>
       </div>
     </div>
     <div
-      v-if="resume.resumeEduList && resume.resumeEduList.length != 0"
+      v-if="resumeDetail.resumeEduList && resumeDetail.resumeEduList.length != 0"
       class="resume-box"
     >
       <el-row>
@@ -45,7 +47,7 @@
           <span class="resume-red">*</span>
         </div>
       </el-row>
-          <div class="resume-edu" v-for="resumeEdu in resume.resumeEduList"
+          <div class="resume-edu" v-for="resumeEdu in resumeDetail.resumeEduList"
                :key="resumeEdu.id">
             <div style="display: flex;padding-top: 13px">
             <div class="edu-box-l" style="width: 350px;">
@@ -69,7 +71,7 @@
     <div
       class="resume-box mt-4"
       style="margin-top: 10px"
-      v-if="resume.resumeExpList && resume.resumeExpList.length != 0"
+      v-if="resumeDetail.resumeExpList && resumeDetail.resumeExpList.length != 0"
     >
       <el-row>
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -82,35 +84,35 @@
         <div class="resume-edu" style="display: inline-flex">
           <div class="edu-box-l1">
             <el-row class="edu-school">
-              {{resume.userExpectJob.expectPosition}}
+              {{resumeDetail.userExpectJob.expectPosition}}
             </el-row>
             <el-row class="info-other">预期薪资：
-              <span v-if="resume.userExpectJob.salaryId && resume.userExpectJob.salaryId!=''">
-                <span v-if="resume.userExpectJob.salaryId==1">5K-8K</span>
-                <span v-if="resume.userExpectJob.salaryId==2">8K-10K</span>
-                <span v-if="resume.userExpectJob.salaryId==3">10K-15K</span>
-                <span v-if="resume.userExpectJob.salaryId==4">15K-20K</span>
-                <span v-if="resume.userExpectJob.salaryId==5">20K-30K</span>
-                <span v-if="resume.userExpectJob.salaryId==6">30K-50K</span>
-                <span v-if="resume.userExpectJob.salaryId==7">50K以上</span>
-                <span v-if="resume.userExpectJob.salaryId==8">5K以下</span>
-                <span v-if="resume.userExpectJob.salaryId==9">面议</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId && resumeDetail.userExpectJob.salaryId!=''">
+                <span v-if="resumeDetail.userExpectJob.salaryId==1">5K-8K</span>
+                <span v-if="resumeDetail.userExpectJob.salaryId==2">8K-10K</span>
+                <span v-if="resumeDetail.userExpectJob.salaryId==3">10K-15K</span>
+                <span v-if="resumeDetail.userExpectJob.salaryId==4">15K-20K</span>
+                <span v-if="resumeDetail.userExpectJob.salaryId==5">20K-30K</span>
+                <span v-if="resumeDetail.userExpectJob.salaryId==6">30K-50K</span>
+                <span v-if="resumeDetail.userExpectJob.salaryId==7">50K以上</span>
+                <span v-if="resumeDetail.userExpectJob.salaryId==8">5K以下</span>
+                <span v-if="resumeDetail.userExpectJob.salaryId==9">面议</span>
                </span>
             </el-row>
             <el-row class="info-other">工作类型：
               <span class="expjob-data"
-              >{{resume.userExpectJob.expectWorkType}}
+              >{{resumeDetail.userExpectJob.expectWorkType}}
               </span >
             </el-row>
           </div>
           <div class="edu-box-m1">
             <el-row class="info-other">期望行业：
-              <span v-if="resume.userExpectJob.category&&resume.userExpectJob.category!=''"
-              > {{ resume.userExpectJob.category.name }} </span>
+              <span v-if="resumeDetail.userExpectJob.category&&resumeDetail.userExpectJob.category!=''"
+              > {{ resumeDetail.userExpectJob.category.name }} </span>
             </el-row>
             <el-row class="info-other">工作城市：
               <span class="resume"
-              >{{resume.userExpectJob.expectCity}}</span>
+              >{{resumeDetail.userExpectJob.expectCity}}</span>
             </el-row>
           </div>
         </div>
@@ -118,14 +120,14 @@
     </div>
     <div
       class="resume-box mt-4"
-      v-if="resume.resumePracticeList && resume.resumePracticeList.length != 0"
+      v-if="resumeDetail.resumePracticeList && resumeDetail.resumePracticeList.length != 0"
     >
       <div style="width: 615px">
         <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
         <span class="resume-base">工作/实习经历</span>
       </div>
 
-      <div v-for="resumeExp in resume.resumeExpList"
+      <div v-for="resumeExp in resumeDetail.resumeExpList"
            :key="resumeExp.id" style="display: grid;">
         <div style="display: inline-flex;margin-top: 20px">
           <div>
@@ -166,7 +168,7 @@
 
     <div
             class="mt-4 resume-box"
-            v-if="resume.resumePracticeList && resume.resumePracticeList.length != 0"
+            v-if="resumeDetail.resumePracticeList && resumeDetail.resumePracticeList.length != 0"
     >
       <el-row>
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -174,7 +176,7 @@
           <span class="resume-base">项目/其它经历</span>
         </div>
       </el-row>
-      <div class="resume-info" v-for="practice in resume.resumePracticeList"
+      <div class="resume-info" v-for="practice in resumeDetail.resumePracticeList"
            :key="practice.id" style="margin-bottom: 10px">
         <div class="resume-edu" style="width: 540px;padding-top: 10px;">
           <el-row style="width: 616px;height: 40px;padding-top: 10px;">
@@ -194,7 +196,7 @@
 
     <div
             class="mt-4 resume-box"
-            v-if="resume.resumeLanguageList && resume.resumeLanguageList.length != 0"
+            v-if="resumeDetail.resumeLanguageList && resumeDetail.resumeLanguageList.length != 0"
     >
       <el-row style="height: 30px">
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -222,7 +224,7 @@
 
     <div
             class="mt-4 resume-box"
-            v-if="resume.resumeSkillList && resume.resumeSkillList.length != 0"
+            v-if="resumeDetail.resumeSkillList && resumeDetail.resumeSkillList.length != 0"
     >
       <el-row style="height: 30px">
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -230,7 +232,7 @@
           <span class="resume-base">证书/奖项</span>
         </div>
       </el-row>
-      <el-row style="display: inline-flex" v-for="(awards,index) in resume.resumeCertificateList"
+      <el-row style="display: inline-flex" v-for="(awards,index) in resumeDetail.resumeCertificateList"
               :key="awards.id">
         <div class="resume-edu">
           <el-row style="width: 615px;display: inline-flex">
@@ -248,7 +250,7 @@
     </div>
     <div
             class="mt-4 resume-box"
-            v-if="resume.resumeSkillList && resume.resumeSkillList.length != 0"
+            v-if="resumeDetail.resumeSkillList && resumeDetail.resumeSkillList.length != 0"
     >
       <el-row>
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -260,7 +262,7 @@
         <div class="resume-languageinfo">
           <div class="resume-edu">
             <el-tag
-                    v-for="skill in resume.resumeSkillList"
+                    v-for="skill in resumeDetail.resumeSkillList"
                     :key="skill.id"
                     class="tag-icon"
             >{{ skill.name }}
@@ -278,7 +280,7 @@
       </el-row>
       <div class="resume-languageinfo" style="width: 550px">
         <div class="resume-introduction">
-          <span>{{resume.introduction}}</span>
+          <span>{{resumeDetail.introduction}}</span>
         </div>
       </div>
     </div>
@@ -297,31 +299,27 @@ library.add(faMobileAlt, faEnvelope);
 export default {
   name: "ResumeView",
   props: {
-    resumeId: {
-      type: String,
+    resumeDetail: {
+      type: Object,
     },
   },
   watch: {
-    resumeId: function () {
-      this.getResumeInfo();
+    resumeDetail:  {
+      handler (n, o) {
+        console.log('子组件中的resumeId值： ' + n.id)
+      },
+      deep: true // 深度监听父组件传过来对象变化
     },
   },
   data() {
     return {
-      resume: undefined,
+      resumeId: undefined,
     };
   },
   created() {
-    this.getResumeInfo();
+
   },
   methods: {
-    getResumeInfo() {
-      if (this.resumeId) {
-        getResumeDetail(this.resumeId).then(
-          (response) => (this.resume = response.data)
-        );
-      }
-    },
 
     linkName(link) {
       return linkName(link);
