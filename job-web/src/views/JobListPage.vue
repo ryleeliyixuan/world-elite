@@ -88,23 +88,34 @@
               class="quick"
               @mouseover.native="quickFilter = true"
               size="mini"
-              >快速筛选</el-button
-            >
+              >快速筛选</el-button>
             <el-button class="more" @click="showMoreFilter" size="mini"
-              >更多筛选</el-button
-            >
+              >更多筛选</el-button>
+            <el-select
+                    size="mini"
+                    style="margin-left: 20px; margin-right: 15px; max-width: 100px;"
+                    v-model="sortValue"
+                    @change="sortChange"
+                    class="sort-options"
+                    placeholder="推荐排序">
+              <el-option
+                      v-for="item in sortOptions"
+                      :key="item.sortValue"
+                      :label="item.label"
+                      :value="item.sortValue">
+              </el-option>
+            </el-select>
             <el-button class="empty" @click="emptyFilter" type="text"
-              ><svg-icon
-                class="empty-icon"
-                icon-class="joblistdelete"
-                style="
-                  height: 19px;
-                  width: 19px;
-                  margin-right: 6px;
-                  margin-bottom: 2px;
-                "
-              />清除选项</el-button
-            >
+            ><svg-icon
+                    class="empty-icon"
+                    icon-class="joblistdelete"
+                    style="
+                      height: 19px;
+                      width: 19px;
+                      margin-right: 6px;
+                      margin-bottom: 2px;
+                    "
+            />清除选项</el-button>
           </div>
         </div>
 
@@ -201,11 +212,34 @@
               class="quick"
               @mouseover.native="quickFilter = true"
               size="mini"
-              >快速筛选</el-button
-            >
+              >快速筛选</el-button>
             <el-button class="more" @click="closeMoreFilter" size="mini"
-              >收起</el-button
-            >
+              >收起</el-button>
+            <el-select
+                    size="mini"
+                    style="margin-left: 20px; margin-right: 15px; max-width: 100px;"
+                    v-model="sortValue"
+                    @change="sortChange"
+                    class="sort-options"
+                    placeholder="推荐排序">
+              <el-option
+                      v-for="item in sortOptions"
+                      :key="item.sortValue"
+                      :label="item.label"
+                      :value="item.sortValue">
+              </el-option>
+            </el-select>
+            <el-button class="empty" @click="emptyFilter" type="text"
+            ><svg-icon
+                    class="empty-icon"
+                    icon-class="joblistdelete"
+                    style="
+                      height: 19px;
+                      width: 19px;
+                      margin-right: 6px;
+                      margin-bottom: 2px;
+                    "
+            />清除选项</el-button>
           </div>
         </div>
 
@@ -1083,49 +1117,28 @@ export default {
       if (this.listQuery.cityIds.indexOf(this.unlimitedMap["city"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.companyIndustryIds.indexOf(
-          this.unlimitedMap["industry"]
-        ) !== -1
-      ) {
+      if (this.listQuery.companyIndustryIds.indexOf(this.unlimitedMap["industry"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.salaryRangeIds.indexOf(this.unlimitedMap["salary"]) !==
-        -1
-      ) {
+      if (this.listQuery.salaryRangeIds.indexOf(this.unlimitedMap["salary"]) !==-1) {
         count++;
       }
-      if (
-        this.listQuery.degreeIds.indexOf(this.unlimitedMap["degree"]) !== -1
-      ) {
+      if (this.listQuery.degreeIds.indexOf(this.unlimitedMap["degree"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.experienceIds.indexOf(this.unlimitedMap["exp"]) !== -1
-      ) {
+      if (this.listQuery.experienceIds.indexOf(this.unlimitedMap["exp"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.companyScaleIds.indexOf(this.unlimitedMap["scale"]) !==
-        -1
-      ) {
+      if (this.listQuery.companyScaleIds.indexOf(this.unlimitedMap["scale"]) !==-1) {
         count++;
       }
-      if (
-        this.listQuery.companyDefineIds.indexOf(this.unlimitedMap["define"]) !==
-        -1
-      ) {
+      if (this.listQuery.companyDefineIds.indexOf(this.unlimitedMap["define"]) !==-1) {
         count++;
       }
-      if (
-        this.listQuery.jobTypes.indexOf(this.unlimitedMap["jobType"]) !== -1
-      ) {
+      if (this.listQuery.jobTypes.indexOf(this.unlimitedMap["jobType"]) !== -1) {
         count++;
       }
-      if (
-        this.listQuery.lanRequiredIds.indexOf(this.unlimitedMap["lang"]) !== -1
-      ) {
+      if (this.listQuery.lanRequiredIds.indexOf(this.unlimitedMap["lang"]) !== -1) {
         count++;
       }
       return count;
@@ -1253,7 +1266,7 @@ export default {
     },
     getNameByIdFromOptions(options, ids, origin) {
       let name = "";
-      if (origin === "城市" && this.inpCity.length >= 0) {
+      if (origin === "城市不限" && this.inpCity.length >= 0) {
         for (let i = 0; i < this.inpCity.length; i++) {
           name += this.inpCity[i] + ",";
         }
@@ -1548,6 +1561,10 @@ export default {
           border: 1px solid #698ec7;
           background: #fbfbfb;
           color: #0d46f3;
+
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow:ellipsis;
         }
       }
       /deep/.el-button--text {
