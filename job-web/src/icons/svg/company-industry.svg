@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="19px" height="17px" viewBox="0 0 19 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>layers</title>
+    <desc>Created with Sketch.</desc>
+    <g id="导航栏+首页优化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页未登录" transform="translate(-565.000000, -1724.000000)" fill-rule="nonzero">
+            <g id="layers-2" transform="translate(565.000000, 1724.000000)">
+                <g id="layers">
+                    <polygon id="路径" fill="#40A9FF" points="9.5 7 18.5 12.0025786 9.5 17 0.5 11.9974214"></polygon>
+                    <polygon id="路径" fill="#91D5FF" points="9.5 4 18.5 9 9.5 14 0.5 9"></polygon>
+                    <polygon id="路径" fill="#40A9FF" points="9.5 0 18.5 5.00257865 9.5 10 0.5 4.99742135"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

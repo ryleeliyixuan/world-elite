@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="18px" viewBox="0 0 16 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>user</title>
+    <desc>Created with Sketch.</desc>
+    <g id="导航栏+首页优化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页未登录" transform="translate(-647.000000, -1723.000000)" fill-rule="nonzero">
+            <g id="user-2" transform="translate(647.000000, 1723.000000)">
+                <g id="user">
+                    <polygon id="路径" fill="#91D5FF" points="0 18 2.909 11.9988978 5.091 11.0008267 6.5455 8 9.4545 8 10.909 11.0008267 13.091 12.0011022 16 18"></polygon>
+                    <polygon id="路径" fill="#40A9FF" points="12 5.26315789 11.5 6.84210526 11 6.84210526 10.5 8.42105263 8.5 10 7.5 10 5.5 8.42105263 5 6.84210526 4.5 6.84210526 4 5.26315789 5 5.26315789 4.5 2.10526316 8 0 11.5 2.10526316 11 5.26315789"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
