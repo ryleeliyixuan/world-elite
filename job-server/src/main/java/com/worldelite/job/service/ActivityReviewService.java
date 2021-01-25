@@ -31,6 +31,7 @@ import java.util.Optional;
 public class ActivityReviewService extends BaseService {
     private final ActivityReviewMapper activityReviewMapper;
     private final ActivityMapper activityMapper;
+    private final ActivityStatusManager activityStatusManager;
 
     public PageResult<ActivityReviewVo> getActivityReviewList(ActivityReviewForm activityReviewForm, PageForm pageForm) {
         ActivityReview options = new ActivityReview();
@@ -132,9 +133,11 @@ public class ActivityReviewService extends BaseService {
 
         activity.setStatus(ActivityStatus.WILL.value);
         boolean b = activityMapper.updateByPrimaryKeySelective(activity) == 1;
-        if (b)
+        if (b) {
+            activityStatusManager.remove(activity.getId());
+            activityStatusManager.put(activity);
             SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
-
+        }
         return b;
     }
 
