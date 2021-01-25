@@ -108,7 +108,7 @@ public class CityService {
     public List<Integer> getCityId(String[] cityNames) {
         List<Integer> ids = new ArrayList<>();
         for (String cityName : cityNames) {
-            ids.addAll(cityMapper.selectIdByNameWithFuzzy("%" + cityName + "%"));
+            ids.addAll(cityMapper.selectIdByNameWithFuzzy("%" + cityName + "市%"));
         }
         return ids.stream().distinct().collect(Collectors.toList());
     }
