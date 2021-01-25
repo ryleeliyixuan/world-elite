@@ -25,6 +25,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -66,6 +67,18 @@ public class ActivityApi extends BaseApi {
         }
 
         return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 轮播图
+     *
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("carousel")
+    @ApiDoc
+    public ApiResult<List<ActivityVo>> getCarouselList(){
+        return ApiResult.ok(activityService.getCarouselList());
     }
 
     /**
