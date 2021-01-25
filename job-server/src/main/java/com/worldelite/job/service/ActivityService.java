@@ -3,6 +3,7 @@ package com.worldelite.job.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.entity.*;
@@ -197,7 +198,7 @@ public class ActivityService extends BaseService {
             if (activityForm.getStatus() != null && activityForm.getStatus() == ActivityStatus.DRAFT.value) {
                 activity.setStatus(ActivityStatus.DRAFT.value);
                 //关联报名表
-                if(StringUtils.isNotBlank(activityForm.getQuestionnaireType()) && activityForm.getQuestionnaireId() != null) {
+                if (StringUtils.isNotBlank(activityForm.getQuestionnaireType()) && activityForm.getQuestionnaireId() != null) {
                     QuestionnaireTemplateVo template = activityQuestionnaireService
                             .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
                     activity.setQuestionnaireId(template.getId());
@@ -396,5 +397,33 @@ public class ActivityService extends BaseService {
         options.setId(id);
         options.setSendNoticeConfirm(String.valueOf(Bool.FALSE));
         return activityMapper.updateByPrimaryKeySelective(options) == 1;
+    }
+
+    /**
+     * 轮播图逻辑: 1）最新发布的活动；2）最多关注的活动; 3)4) 权重最大的两个活动
+     *
+     * @return
+     */
+    public List<ActivityVo> getCarouselList() {
+        PageHelper.startPage(1, 1, "create_time desc");
+        final List<Activity> newPublish = activityMapper.selectAndList(null);
+
+        PageHelper.startPage(1, 1, "follower desc");
+        final List<Activity> mostFollower = activityMapper.selectAndList(null);
+
+        PageHelper.startPage(1, 2, "weight desc");
+        final List<Activity> maxWeight =activityMapper.selectAndList(null);
+
+        List<Activity> activityList = new ArrayList<>();
+        activityList.addAll(newPublish);
+        activityList.addAll(mostFollower);
+        activityList.addAll(maxWeight);
+
+        List<ActivityVo> activityVoList = new ArrayList<>(activityList.size());
+        for (Activity activity : activityList) {
+            activityVoList.add(toActivityVo(activity));
+        }
+
+        return activityVoList;
     }
 }
