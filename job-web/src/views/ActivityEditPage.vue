@@ -116,7 +116,8 @@
                                 start-placeholder="开始时间"
                                 end-placeholder="结束时间"
                                 size="small"
-                                :default-time="['09:00:00', '17:00:00']">
+                                :default-time="['09:00:00', '17:00:00']"
+                                :picker-options="pickerOption">
                 </el-date-picker>
             </div>
             <div class="line">
@@ -129,7 +130,8 @@
                                 start-placeholder="开始时间"
                                 end-placeholder="结束时间"
                                 size="small"
-                                :default-time="['09:00:00', '17:00:00']">
+                                :default-time="['09:00:00', '17:00:00']"
+                                :picker-options="pickerOption">
                 </el-date-picker>
             </div>
             <div class="line">
@@ -346,6 +348,11 @@
 
                 activityTime: [], // 活动起止时间，临时保存用户选择时间
                 registrationTime: [], // 报名起止时间，临时保存用户选择时间
+                pickerOption: {
+                    disabledDate(time) {
+                        return time.getTime() < Date.now();
+                    }
+                },
 
                 cityIdProps: { // 城市选择框属性
                     multiple: false,

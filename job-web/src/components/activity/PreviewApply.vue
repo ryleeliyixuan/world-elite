@@ -109,7 +109,7 @@
                 <el-option v-for="item in resumeList"
                            size="mini"
                            :key="item.id"
-                           :label="item.name"
+                           :label="item.title"
                            :value="item.id">
                 </el-option>
             </el-select>
