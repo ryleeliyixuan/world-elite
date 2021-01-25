@@ -53,5 +53,5 @@ public interface UserExpectJobMapper {
      */
     int updateByPrimaryKey(UserExpectJob record);
 
-    List<UserExpectJob> selectAndList(UserExpectJob options);
+    List<UserExpectJob>selectAndList(UserExpectJob record);
 }

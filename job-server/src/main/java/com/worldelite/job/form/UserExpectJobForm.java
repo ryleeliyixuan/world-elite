@@ -18,11 +18,11 @@ public class UserExpectJobForm {
 
     private Integer categoryId; //意向职位
 
-    public Byte getSalaryId() {
+    public Integer getSalaryId() {
         return salaryId;
     }
 
-    private Byte salaryId;
+    private Integer salaryId;
 
     public Long getResumeId() {
         return resumeId;

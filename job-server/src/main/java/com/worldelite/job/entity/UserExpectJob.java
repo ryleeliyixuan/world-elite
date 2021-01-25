@@ -73,7 +73,7 @@ public class UserExpectJob {
      *
      * @mbg.generated
      */
-    private Byte salaryId;
+    private Integer salaryId;
 
     /**
      *
@@ -254,7 +254,7 @@ public class UserExpectJob {
      *
      * @mbg.generated
      */
-    public Byte getSalaryId() {
+    public Integer getSalaryId() {
         return salaryId;
     }
 
@@ -266,7 +266,7 @@ public class UserExpectJob {
      *
      * @mbg.generated
      */
-    public void setSalaryId(Byte salaryId) {
+    public void setSalaryId(Integer salaryId) {
         this.salaryId = salaryId;
     }
 
