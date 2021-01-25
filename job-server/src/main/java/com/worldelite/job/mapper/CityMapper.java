@@ -57,4 +57,6 @@ public interface CityMapper {
     List<City> selectByType(Byte type);
 
     List<Integer> selectIdByNameWithFuzzy(@Param("name") String name);
+
+    List<City> selectAndList(City record);
 }
