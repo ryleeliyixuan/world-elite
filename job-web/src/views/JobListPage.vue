@@ -1266,11 +1266,11 @@ export default {
     },
     getNameByIdFromOptions(options, ids, origin) {
       let name = "";
-      if (origin === "城市不限" && this.inpCity.length >= 0) {
+      /*if (origin === "城市不限" && this.inpCity.length >= 0) {
         for (let i = 0; i < this.inpCity.length; i++) {
           name += this.inpCity[i] + ",";
         }
-      }
+      }*/
 
       for (let i = 0; i < options.length; i++) {
         for (let j = 0; j < ids.length; j++) {
