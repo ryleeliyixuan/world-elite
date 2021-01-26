@@ -235,7 +235,9 @@
                                             </el-form>
                                             <div class="resume-info">
                                                 <div class="info-other-row-l">
+                                                    <div style="height: 34px">
                                                     <el-row class="info-name" style="width: 300px" v-if="item.name && item.name!=''">{{item.name}}</el-row>
+                                                    </div>
                                                     <el-row class="info-other">性别：
                                                         <span v-if="item.gender==1">男</span>
                                                         <span v-if="item.gender==2">女</span>
@@ -1133,13 +1135,13 @@
                                         </el-row>
                                         <div class="resume-box-edit">
                                             <div style="padding-top: 20px;padding-left: 40px">
-                                                <div class="resume-languageinfo">
+                                                <div class="resume-languageinfo1">
                                                     <div class="resume-edu">
                                                         <span class="tag-title">已选择：</span>
                                                         <el-tag
                                                                 v-for="skill in listshowskill"
                                                                 :key="skill.id"
-                                                                style="height: 21px;line-height: 19px;border-radius: 5px;"
+                                                                style="height: 21px;border-radius: 5px;"
                                                         >{{ skill.name }}
                                                         </el-tag>
                                                     </div>
@@ -2002,7 +2004,14 @@
                 console.log(this.editableTabsValue)
                 console.log(this.resume[0].id)
                 this.handleEditPriority()
+                this.handleRouteList()
 
+            },
+            handleRouteList(id) {
+                this.$router.push({
+                    path: this.$route.path,
+                    query: {id: id},
+                });
             },
             handleTabsEdit(targetName, action) {
                 if (action === 'add') {
@@ -3244,45 +3253,29 @@
 
             },
             handleSaveResumeSkills() {
-                if (this.newResumeId&& this.newResumeId!=''){
-                    const selectSkillTags = {
-                        resumeId: this.newResumeId,
-                        tagList: this.skillTagListForm
-                            .filter((tag) => tag.select == true)
-                            .map((tag) => {
-                                return tag.name;
-                            }),
-                    };
-                    this.posting = true;
-                    saveResumeSkills(selectSkillTags)
-                        .then(() => {
-                            this.getResumeInfo();
-                            this.showSkillDialog = false;
-                        })
-                        .finally(() => {
-                            this.posting = false;
-                        });
+                let i;
+                if (this.newIndex && this.newIndex!='') {
+                    i=this.newIndex
+                }else{
+                    i=this.resume,length-1
                 }
-                else {
-                    const selectSkillTags = {
-                        resumeId: this.resume[this.resume.length-1].id,
-                        tagList: this.skillTagListForm
-                            .filter((tag) => tag.select == true)
-                            .map((tag) => {
-                                return tag.name;
-                            }),
-                    };
-                    this.posting = true;
-                    saveResumeSkills(selectSkillTags)
-                        .then(() => {
-                            this.getResumeInfo();
-                            this.showSkillDialog = false;
-                        })
-                        .finally(() => {
-                            this.posting = false;
-                        });
-                }
-
+                const selectSkillTags = {
+                    resumeId: this.resume[i].id,
+                    tagList: this.skillTagListForm
+                        .filter((tag) => tag.select == true)
+                        .map((tag) => {
+                            return tag.name;
+                        }),
+                };
+                this.posting = true;
+                saveResumeSkills(selectSkillTags)
+                    .then(() => {
+                        this.getResumeInfo();
+                        this.showSkillDialog = false;
+                    })
+                    .finally(() => {
+                        this.posting = false;
+                    });
 
             },
             searchSchoolName(keyword, cb) {
@@ -3400,28 +3393,22 @@
 
             },
             handleDelResume() {
+                let i;
+                if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                }else{
+                    i=this.resume.length-1
+                }
                 if(this.resume.length>1) {
-                    if (this.newResumeId && this.newResumeId != '') {
-                        this.$confirm("是否要删除该简历？", {
-                            confirmButtonText: "删除",
-                        }).then(() => {
-                            let id = this.newResumeId
-                            console.log(id)
-                            delResume(id).then(() => {
-                                this.getResumeInfo();
-                            });
+                    this.$confirm("是否要删除该简历？", {
+                        confirmButtonText: "删除",
+                    }).then(() => {
+                        let id = this.resume[i].id
+                        console.log(id)
+                        delResume(id).then(() => {
+                            this.getResumeInfo();
                         });
-                    } else {
-                        this.$confirm("是否要删除该简历？", {
-                            confirmButtonText: "删除",
-                        }).then(() => {
-                            let id = this.resume[this.resume.length - 1].id
-                            console.log(id)
-                            delResume(id).then(() => {
-                                this.getResumeInfo();
-                            });
-                        });
-                    }
+                    });
                 }else{
                     this.$confirm('简历至少存在一份！', '', {
                         confirmButtonText: '确定',
@@ -3435,11 +3422,8 @@
                             message: '已取消删除'
                         });
                     });
-
                 }
                 this.getResumeInfo();
-
-
             },
             onDelResumeAttachClick() {
                 this.$confirm("是否要删除附件简历？", {
@@ -3976,7 +3960,7 @@
                 }
 
                 .info-other-row-m {
-                    margin-top: 30px;
+                    margin-top: 45px;
                     padding-bottom: 4px;
                     .info-other {
                         height: 20px;
@@ -4005,24 +3989,10 @@
                         font-family: PingFangSC-Medium, PingFang SC;
                         font-weight: 500;
                         color: #333333;
+                        padding-top: 10px;
                     }
                 }
 
-                .info-other-row-c {
-                    display: inline-flex;
-
-                    .expjob-data {
-                        width: 300px;
-                        height: 20px;
-                        font-size: 14px;
-                        font-family: PingFangSC-Regular, PingFang SC;
-                        font-weight: 400;
-                        color: #333333;
-                        line-height: 20px;
-                    }
-
-
-                }
 
                 .info-other-row {
                     height: 32px;
@@ -4045,49 +4015,9 @@
                         font-family: PingFangSC-Medium, PingFang SC;
                         font-weight: 500;
                         color: #333333;
-                    }
-
-                    .info-other1 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 177px
-                    }
-
-                    .edu-other1 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 70px
-                    }
-
-                    .info-other2 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 159px
-                    }
-
-                    .info-other3 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 31px
-                    }
-
-                    .info-other4 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 140px
+                        padding-top: 10px;
                     }
                 }
-
                 .resume-info {
                     display: inline-flex;
                 }
@@ -4323,16 +4253,26 @@
                     border: 0px;
                 }
             }
-
-            .tag-title {
-                font-size: 12px;
-                font-family: PingFangSC-Medium, PingFang SC;
-                font-weight: 500;
-                vertical-align: text-top;
-
-
-
+            .resume-languageinfo1{
+                padding-left: 18px;
+                .tag-title {
+                    font-size: 12px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    vertical-align: text-top;
+                }
+                ::v-deep.el-tag--light {
+                    height: 21px;
+                    font-size: 12px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #FFFFFF;
+                    background: #4CC9F0;
+                    border-radius: 5px;
+                    line-height: 10px;
+                }
             }
+
 
             .tag-title-1 {
                 font-size: 12px;
@@ -4777,12 +4717,25 @@
             .resume-edu {
                 padding-top: 13px;
                 display: inline-flex;
+                ::v-deep.el-tag--light {
+                    height: 21px;
+                    font-size: 12px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #FFFFFF;
+                    background: #4CC9F0;
+                    border-radius: 5px;
+                    line-height: 10px;
+                    margin: 5px;
+                }
+
                 .info-other {
                     height: auto;
                     font-size: 14px;
                     font-family: PingFangSC-Medium, PingFang SC;
                     font-weight: 500;
                     color: #333333;
+                    padding-top: 10px;
                 }
 
 
@@ -4791,6 +4744,7 @@
                     font-family: PingFangSC-Regular, PingFang SC;
                     font-weight: 400;
                     color: #333333;
+                    padding-top: 10px;
                 }
                 .edu-box {
                     display: inline-flex;
@@ -4813,6 +4767,7 @@
                         font-family: PingFangSC-Medium, PingFang SC;
                         font-weight: 500;
                         color: #333333;
+                        padding-top: 10px;
                     }
                 }
 
@@ -4833,6 +4788,7 @@
                         font-family: PingFangSC-Medium, PingFang SC;
                         font-weight: 500;
                         color: #333333;
+                        padding-top: 10px;
                     }
                 }
 
@@ -4846,6 +4802,7 @@
                         font-family: PingFangSC-Medium, PingFang SC;
                         font-weight: 500;
                         color: #333333;
+                        padding-top: 10px;
                     }
 
                 }
@@ -4860,6 +4817,7 @@
                         font-family: PingFangSC-Medium, PingFang SC;
                         font-weight: 500;
                         color: #333333;
+                        padding-top: 10px;
                     }
                 }
 
@@ -4874,7 +4832,6 @@
         }
 
         ::v-deep .el-tag--dark {
-
             height: 21px;
             font-size: 12px;
             font-family: PingFangSC-Medium, PingFang SC;
