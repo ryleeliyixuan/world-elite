@@ -119,13 +119,13 @@
                                                 </div>
                                             </div>
                                             <div style="display:flex;height: 45px">
-                                                <div style="width: 310px">
-                                                        <el-form-item label="性别:" prop="gender" class="radio-gender">
-                                                            <el-radio-group v-model="resumeForm.gender">
-                                                                <el-radio :label="1">男</el-radio>
-                                                                <el-radio :label="2">女</el-radio>
-                                                            </el-radio-group>
-                                                        </el-form-item>
+                                                <div style="width: 310px;padding-left: 1px">
+                                                    <el-form-item label="性别：" prop="gender" class="m-input-text-width">
+                                                        <el-radio-group v-model="resumeForm.gender" class="radio-gender">
+                                                            <el-radio label="1" >男</el-radio>
+                                                            <el-radio label="2" >女</el-radio>
+                                                        </el-radio-group>
+                                                    </el-form-item>
                                                 </div>
                                                 <div style="padding-left: 23px;">
                                                         <el-form-item label="现居城市:" prop="curPlace"
@@ -205,7 +205,7 @@
                                                      class="svg-cls"
                                                      icon-class="edit"
                                                      style="width: 18px;height: 19px;"
-                                                     v-on:click="handleEditResumeBasic(index)"
+                                                     v-on:click="handleEditResumeBasic"
                                              ></svg-icon>
                                             </span>
                                         </el-row>
@@ -1681,7 +1681,7 @@
                     name: [{required: true, message: "请输入姓名", trigger: "blur"}],
                     email: [{required: true, message: "请输入新邮箱", trigger: "blur"}],
                     birth: [{required: true, message: "请选择生日", trigger: "change"}],
-                    gender: [{required: true, message: "请选择性别", trigger: "change"}],
+                    gender: [{required: true, message: "请选择性别", trigger: "blur"}],
                 },
                 resumeEduForm: {
                     workType: undefined,
@@ -2433,61 +2433,46 @@
                 }
 
             },
-            handleEditResumeBasic(index) {
+            handleEditResumeBasic() {
                 console.log("-----")
                 this.showBasicDialog = true;
-                if(this.newResumeId&&this.newResumeId!=''){
-                    this.resumeForm.id = this.newResumeId;
-                    this.resumeForm.name = this.resume[this.newIndex].name;
-                    this.resumeForm.avatar = this.resume[this.newIndex].avatar;
-                    this.resumeForm.birth = this.resume[this.newIndex].birth;
-                    this.resumeForm.gender = this.resume[this.newIndex].gender;
-                    this.resumeForm.email = this.resume[this.newIndex].email;
-                    this.resumeForm.returnTime = this.resume[this.newIndex].returnTime;
-                    this.resumeForm.graduateTime = this.resume[this.newIndex].graduateTime;
-                    this.resumeForm.curPlace = this.resume[this.newIndex].curPlace;
-                    this.resumeForm.phone = this.resume[this.newIndex].phone;
-                    this.resumeForm.priority = this.resume[this.newIndex].priority;
-                    if (this.resume[this.newIndex].maritalStatus==0){
-                        this.resumeForm.maritalStatus="中共党员（含预备党员）";
-                    }else if (this.resume[this.newIndex].maritalStatus==1){
-                        this.resumeForm.maritalStatus="民主党派";
-                    }else if (this.resume[this.newIndex].maritalStatus==2){
-                        this.resumeForm.maritalStatus="无党派人士";
-                    }else if (this.resume[this.newIndex].maritalStatus==3){
-                        this.resumeForm.maritalStatus="团员";
-                    }else if (this.resume[this.newIndex].maritalStatus==4){
-                        this.resumeForm.maritalStatus="群众";
+                let i;
+                if(this.newIndex&& this.newIndex){
+                    i=this.newIndex
+                }else{
+                    i=this.resume.length-1
+                }
+                    this.resumeForm.id = this.resume[i].id;
+                    this.resumeForm.name = this.resume[i].name;
+                    this.resumeForm.avatar = this.resume[i].avatar;
+                    this.resumeForm.birth = this.resume[i].birth;
+                    if (this.resume[i].gender==0){
+                        this.resumeForm.gender = undefined
+                    }else{
+                        this.resumeForm.gender = this.resume[i].gender;
                     }
 
-                    this.resumeForm.introduction = this.resume[this.newIndex].introduction;
-                }else{
-                    this.resumeForm.id = this.resume[this.resume.length-1].id;
-                    this.resumeForm.name = this.resume[this.resume.length-1].name;
-                    this.resumeForm.avatar = this.resume[this.resume.length-1].avatar;
-                    this.resumeForm.birth = this.resume[this.resume.length-1].birth;
-                    this.resumeForm.gender = this.resume[this.resume.length-1].gender;
-                    this.resumeForm.email = this.resume[this.resume.length-1].email;
-                    this.resumeForm.returnTime = this.resume[this.resume.length-1].returnTime;
-                    this.resumeForm.graduateTime = this.resume[this.resume.length-1].graduateTime;
-                    this.resumeForm.curPlace = this.resume[this.resume.length-1].curPlace;
-                    this.resumeForm.phone = this.resume[this.resume.length-1].phone;
-                    if (this.resume[this.resume.length-1].maritalStatus==0){
+                    this.resumeForm.email = this.resume[i].email;
+                    this.resumeForm.returnTime = this.resume[i].returnTime;
+                    this.resumeForm.graduateTime = this.resume[i].graduateTime;
+                    this.resumeForm.curPlace = this.resume[i].curPlace;
+                    this.resumeForm.phone = this.resume[i].phone;
+                    if (this.resume[i].maritalStatus==0){
                         this.resumeForm.maritalStatus="中共党员（含预备党员）";
-                    }else if (this.resume[this.resume.length-1].maritalStatus==1){
+                    }else if (this.resume[i].maritalStatus==1){
                         this.resumeForm.maritalStatus="民主党派";
-                    }else if (this.resume[this.resume.length-1].maritalStatus==2){
+                    }else if (this.resume[i].maritalStatus==2){
                         this.resumeForm.maritalStatus="无党派人士";
-                    }else if (this.resume[this.resume.length-1].maritalStatus==3){
+                    }else if (this.resume[i].maritalStatus==3){
                         this.resumeForm.maritalStatus="团员";
-                    }else if (this.resume[this.resume.length-1].maritalStatus==4){
+                    }else if (this.resume[i].maritalStatus==4){
                         this.resumeForm.maritalStatus="群众";
                     }
-                    this.resumeForm.introduction = this.resume[this.resume.length-1].introduction;
-                }
+                    this.resumeForm.introduction = this.resume[i].introduction;
+
 
                 this.$nextTick(() => {
-                    this.$refs["resumeForm"][index].clearValidate();
+                    this.$refs["resumeForm"][0].clearValidate();
                 });
             },
             handleEditResumeIntro() {
@@ -3023,7 +3008,7 @@
             },
             handleSaveResumeBasic(index) {
                 console.log(index)
-                console.log(this.$refs["resumeForm"][index].validate)
+                console.log(this.$refs["resumeForm"][index])
                 this.$refs["resumeForm"][index].validate((valid) => {
                     if (valid) {
                         this.posting = true;
@@ -4253,6 +4238,12 @@
             width: 640px;
             height: auto;
             background: #F6F9FC;
+            .tag-title {
+                font-size: 12px;
+                font-family: PingFangSC-Medium, PingFang SC;
+                font-weight: 500;
+                vertical-align: text-top;
+            }
 
             .intro-text {
                 width: 500px;
@@ -4648,7 +4639,11 @@
             }
 
             .radio-gender {
-                ::v-deep .el-radio-button__inner, .el-radio-group {
+                ::v-deep.el-radio-group {
+                    padding-top: 10px;
+                    font-size: 0;
+                }
+                ::v-deep .el-radio-button__inner .el-radio-group {
                     display: inline-block;
                     line-height: 1;
                     vertical-align: baseline;
@@ -4659,6 +4654,15 @@
                     cursor: pointer;
                     margin-right: 10px;
                 }
+                ::v-deep.el-form-item__error {
+                    color: #F56C6C;
+                    font-size: 12px;
+                    line-height: 0px;
+                    padding-top: 0px;
+                    position: absolute;
+                    left: -6px;
+                }
+
             }
         }
 
