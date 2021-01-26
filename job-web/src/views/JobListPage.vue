@@ -1041,9 +1041,16 @@ export default {
       // this.listQuery.specialIds = options.specialIds.indexOf(null) === -1 ? options.specialIds : [];
 
       this.listQuery.page = 1;
+      this.refreshInpCity(options);
       this.refreshOptions();
       this.saveSearchHistory();
       this.handleRouteList();
+    },
+    refreshInpCity(options) {
+      this.inpCity = [];
+      for (let i = 0; i < options.cityValues.length; i++) {
+        this.inpCity.push(options.cityValues[i]);
+      }
     },
     handleFilter(id) {
       this.listQuery.page = 1;
@@ -1264,13 +1271,31 @@ export default {
         );
       }
     },
+    getMatchingNames(options) {
+      // let matchNames = [];
+      let optionsName = [];
+      let inpName = [];
+      for (let i = 0; i < options.length; i++) {
+        optionsName.push(options[i].name);
+        inpName.push(options[i].name);
+      }
+      for (let i = 0; i < this.inpCity.length; i++) {
+        inpName.push(this.inpCity[i]);
+      }
+      inpName = this.distinct(inpName);
+
+      return inpName.concat(optionsName).filter(function (v, i, arr) {
+        return arr.indexOf(v) === arr.lastIndexOf(v);
+      });
+    },
     getNameByIdFromOptions(options, ids, origin) {
       let name = "";
-      /*if (origin === "城市不限" && this.inpCity.length >= 0) {
-        for (let i = 0; i < this.inpCity.length; i++) {
-          name += this.inpCity[i] + ",";
+      if (origin === "城市不限" && this.inpCity.length >= 0) {
+        let matchNames = this.getMatchingNames(options);
+        for (let i = 0; i < matchNames.length; i++) {
+          name += matchNames[i] + ",";
         }
-      }*/
+      }
 
       for (let i = 0; i < options.length; i++) {
         for (let j = 0; j < ids.length; j++) {
