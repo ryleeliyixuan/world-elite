@@ -92,7 +92,7 @@
             <el-upload class="upload"
                        action=""
                        v-loading.fullscreen.lock="fullscreenLoadingCount>0"
-                       :show-file-list="false"
+                       :show-file-list="true"
                        :on-success="handleEditorUploadSuccess"
                        :on-error="handleEditorUploadError"
                        :http-request="imageUpload"
@@ -514,6 +514,12 @@
                 display: flex;
                 align-items: center;
                 margin-top: 10px;
+                flex-direction: column;
+
+                ::v-deep .el-upload {
+                    display: flex;
+                    align-items: center;
+                }
 
                 .report-upload {
                     width: 20px;

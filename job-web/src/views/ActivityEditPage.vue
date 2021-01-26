@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <div class="title">{{this.$route.query.id?'活动编辑':'活动发布'}}<span @click="onPublished">查看我已发布的活动</span></div>
+        <div class="title">{{this.$route.query.id?'活动编辑':'活动发布'}}</div>
         <div class="content-container">
             <div class="line">
                 <div class="name">

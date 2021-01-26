@@ -688,25 +688,6 @@
                 this.$axios.get('/dict/list', {params: {type: 25, limit: 99}}).then(response => {
                     this.educationList = response.data.list;
                 })
-
-
-                // TODO Delete
-                // this.applyForm.questionnaireList.push({title: "这是一个填空题", mustAnswer: '1', edit: false, type: '1', optionsList: []});
-                // this.applyForm.questionnaireList.push({
-                //     title: "这是一个单选题",
-                //     mustAnswer: '1',
-                //     edit: false,
-                //     type: '2',
-                //     optionsList: [{options: "第一个选项"}, {options: "第二个选项"}, {options: "第三个选项"}, {options: "第四个选项"}]
-                // });
-                // this.applyForm.questionnaireList.push({
-                //     title: "这是一个多选题",
-                //     mustAnswer: '1',
-                //     edit: false,
-                //     type: '3',
-                //     optionsList: [{options: "第一个选项"}, {options: "第二个选项"}, {options: "第三个选项"}, {options: "第四个选项"}]
-                // });
-                // this.applyForm.questionnaireList.push({title: "这个题需要上传附件", mustAnswer: '1', edit: false, type: '4', optionsList: [], fileName:undefined});
             },
 
             // 获取导航栏标题
@@ -942,31 +923,42 @@
 
             // 添加模板
             addTemplate() {
-                return this.$axios.post('/questionnaire-template', this.applyForm);
+                return this.$axios.post('/questionnaire-template', this.getFormData());
             },
 
             // 更新模板
             updateTemplate() {
-                return this.$axios.patch(`/questionnaire-template/${this.templateId}`, this.applyForm);
+                return this.$axios.patch(`/questionnaire-template/${this.templateId}`, this.getFormData());
             },
 
             // 提交报名表
             onSubmitApplyTable() {
                 if (this.applyTableId) {
-                    this.$axios.patch(`/activity-questionnaire/${this.applyTableId}`, this.applyForm).then(response => {
+                    this.$axios.patch(`/activity-questionnaire/${this.applyTableId}`, this.getFormData()).then(response => {
                         console.log("更新报名表");
                         this.applyTableId = response.data.id;
                         this.$storage.setObject("报名表", {id: this.applyTableId, title: this.applyForm.title, type: '0'});
                         this.$router.go(-1);
                     })
                 } else {
-                    this.$axios.post('/activity-questionnaire', this.applyForm).then(response => {
+                    this.$axios.post('/activity-questionnaire', this.getFormData()).then(response => {
                         console.log("添加报名表");
                         this.applyTableId = response.data.id;
                         this.$storage.setObject("报名表", {id: this.applyTableId, title: this.applyForm.title, type: '0'});
                         this.$router.go(-1);
                     })
                 }
+            },
+
+            // 参数转换
+            getFormData() {
+                let form = {...this.applyForm};
+                form.questionnaireList = form.questionnaireList.map(item => {
+                    delete item.typeForSelect;
+                    return item;
+                })
+                console.log(form);
+                return form;
             }
         }
     }
