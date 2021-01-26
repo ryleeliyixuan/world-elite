@@ -195,124 +195,122 @@
           class="company-card"
           v-for="company in recommendCompanyList"
           :key="company.id"
+          @click="onCompanyDetail(company)"
         >
-          <el-link :href="`/company/${company.object.id}`" :underline="false">
-            <div class="company-section1">
-              <div class="company-name">{{ company.object.name }}</div>
-              <!-- <img class="company-logo" :src="company.object.logo" /> -->
-              <el-button
-                circle
-                class="flag"
-                :style="
-                  company.object.favoriteFlag === 1
-                    ? `background: #ff3d00`
-                    : `background: #FFFFFF;`
+          <div class="company-section1">
+            <div class="company-name">{{ company.object.name }}</div>
+            <!-- <img class="company-logo" :src="company.object.logo" /> -->
+            <el-button
+              circle
+              class="flag"
+              :style="
+                company.object.favoriteFlag === 1
+                  ? `background: #ff3d00`
+                  : `background: #FFFFFF;`
+              "
+              @click.native.prevent="
+                handleFavorite(
+                  company.object.id,
+                  company.object.favoriteFlag,
+                  company
+                )
+              "
+              ><svg-icon
+                :icon-class="
+                  company.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
                 "
-                @click.native.prevent="
-                  handleFavorite(
-                    company.object.id,
-                    company.object.favoriteFlag,
-                    company
-                  )
-                "
-                ><svg-icon
-                  :icon-class="
-                    company.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
-                  "
-                  style="height: 10px; width: 11px"
-              /></el-button>
+                style="height: 10px; width: 11px"
+            /></el-button>
+          </div>
+          <div class="company-section2">
+            <div class="text">
+              <svg-icon
+                icon-class="company-type"
+                style="height: 18px; width: 14px; margin-right: 2px"
+              />
+              {{ company.object.stage.name }} |
+              {{
+                company.object.property.name === "民营企业"
+                  ? "民营"
+                  : company.object.property.name
+              }}
             </div>
-            <div class="company-section2">
-              <div class="text">
-                <svg-icon
-                  icon-class="company-type"
-                  style="height: 18px; width: 14px; margin-right: 2px"
-                />
-                {{ company.object.stage.name }} |
-                {{
-                  company.object.property.name === "民营企业"
-                    ? "民营"
-                    : company.object.property.name
-                }}
-              </div>
-              <div class="text">
-                <svg-icon
-                  icon-class="company-industry"
-                  style="height: 18px; width: 14px; margin-right: 2px"
-                />
-                {{ company.object.industry.name }}
-              </div>
-              <div class="text">
-                <svg-icon
-                  icon-class="company-scale"
-                  style="height: 18px; width: 14px; margin-right: 2px"
-                />
-                {{ company.object.scale.name }}
-              </div>
+            <div class="text">
+              <svg-icon
+                icon-class="company-industry"
+                style="height: 18px; width: 14px; margin-right: 2px"
+              />
+              {{ company.object.industry.name }}
             </div>
-            <div class="company-section3">
-              {{ company.object.wikiSummary }}
+            <div class="text">
+              <svg-icon
+                icon-class="company-scale"
+                style="height: 18px; width: 14px; margin-right: 2px"
+              />
+              {{ company.object.scale.name }}
             </div>
-          </el-link>
+          </div>
+          <div class="company-section3">
+            {{ company.object.wikiSummary }}
+          </div>
         </div>
       </div>
       <div class="title">这些企业最近上新了职位</div>
       <div class="company-container">
-        <div class="company-card" v-for="item in recentJobList" :key="item.id">
-          <el-link :href="`/company/${item.id}`" :underline="false">
-            <div class="company-section1">
-              <div class="company-name">{{ item.name }}</div>
-              <!-- <img class="company-logo" :src="company.object.logo" /> -->
-              <el-button
-                circle
-                class="flag"
-                :style="
-                  item.favoriteFlag === 1
-                    ? `background: #ff3d00`
-                    : `background: #FFFFFF;`
-                "
-                @click.native.prevent="
-                  handleFavorite(item.id, item.favoriteFlag, item)
-                "
-                ><svg-icon
-                  :icon-class="
-                    item.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
-                  "
-                  style="height: 10px; width: 11px"
-              /></el-button>
+        <div
+          class="company-card"
+          v-for="item in recentJobList"
+          :key="item.id"
+          @click="onRecentCompanyDetail(item)"
+        >
+          <div class="company-section1">
+            <div class="company-name">{{ item.name }}</div>
+            <!-- <img class="company-logo" :src="company.object.logo" /> -->
+            <el-button
+              circle
+              class="flag"
+              :style="
+                item.favoriteFlag === 1
+                  ? `background: #ff3d00`
+                  : `background: #FFFFFF;`
+              "
+              @click.native.prevent="
+                handleFavorite(item.id, item.favoriteFlag, item)
+              "
+              ><svg-icon
+                :icon-class="item.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'"
+                style="height: 10px; width: 11px"
+            /></el-button>
+          </div>
+          <div class="company-section2">
+            <div class="text">
+              <svg-icon
+                icon-class="company-type"
+                style="height: 18px; width: 14px; margin-right: 2px"
+              />
+              {{ item.stage.name }} |
+              {{
+                item.property.name === "民营企业" ? "民营" : item.property.name
+              }}
             </div>
-            <div class="company-section2">
-              <div class="text">
-                <svg-icon
-                  icon-class="company-type"
-                  style="height: 18px; width: 14px; margin-right: 2px"
-                />
-                {{ item.stage.name }} |
-                {{
-                  item.property.name === "民营企业"
-                    ? "民营"
-                    : item.property.name
-                }}
-              </div>
-              <div class="text">
-                <svg-icon
-                  icon-class="company-industry"
-                  style="height: 18px; width: 14px; margin-right: 2px"
-                />
-                {{ item.industry.name }}
-              </div>
-              <div class="text">
-                <svg-icon
-                  icon-class="company-scale"
-                  style="height: 18px; width: 14px; margin-right: 2px"
-                />
-                {{ item.scale.name }}
-              </div>
+            <div class="text">
+              <svg-icon
+                icon-class="company-industry"
+                style="height: 18px; width: 14px; margin-right: 2px"
+              />
+              {{ item.industry.name }}
             </div>
-            <div class="company-section3">
-              {{ item.wikiSummary }}
+            <div class="text">
+              <svg-icon
+                icon-class="company-scale"
+                style="height: 18px; width: 14px; margin-right: 2px"
+              />
+              {{ item.scale.name }}
             </div>
-          </el-link>
+          </div>
+          <div class="company-section3">
+            {{ item.wikiSummary }}
+          </div>
         </div>
       </div>
       <div class="text-center" style="margin-top: 30px">
@@ -480,6 +478,12 @@ export default {
     onActivityDetail(activity) {
       this.$router.push(`/activity/${activity.id}`);
     },
+    onCompanyDetail(company) {
+      this.$router.push(`/company/${company.object.id}`);
+    },
+    onRecentCompanyDetail(company) {
+      this.$router.push(`/company/${company.id}`);
+    },
     goToTop() {
       let top = document.documentElement.scrollTop || document.body.scrollTop;
       // 实现滚动效果
@@ -604,6 +608,7 @@ export default {
         width: 340px;
         height: 145px;
         background: linear-gradient(135deg, #f9fbfd 0%, #ddecfd 100%);
+        cursor: pointer;
 
         /deep/.el-button {
           box-shadow: 0px 5px 13px 0px #c0cde3;
@@ -677,6 +682,10 @@ export default {
         }
       }
 
+      .company-card:hover {
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+      }
+
       .company-card + .company-card {
         margin-left: 35px;
       }
@@ -696,6 +705,10 @@ export default {
       margin-bottom: 40px;
       display: flex;
       cursor: pointer;
+
+      .activity-card:hover {
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.5);
+      }
 
       .brief {
         position: absolute;
