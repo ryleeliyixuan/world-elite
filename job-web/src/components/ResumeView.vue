@@ -204,7 +204,7 @@
           <span class="resume-base">语言能力</span>
         </div>
       </el-row>
-      <el-row style="display: inline-flex" v-for="(language,index) in resume.resumeLanguageList"
+      <el-row style="display: inline-flex" v-for="(language,index) in resumeDetail.resumeLanguageList"
               :key="language.id">
         <div class="resume-edu">
           <el-row style="width: 615px;display: inline-flex">
@@ -314,6 +314,7 @@ export default {
   data() {
     return {
       resumeId: undefined,
+      resume:undefined
     };
   },
   created() {
@@ -463,6 +464,17 @@ export default {
     .resume-edu {
       padding-top: 13px;
       display: block;
+      ::v-deep.el-tag--light {
+        height: 21px;
+        font-size: 12px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #FFFFFF;
+        background: #4CC9F0;
+        border-radius: 5px;
+        line-height: 10px;
+        margin: 5px;
+      }
       .edu-box-l {
         width: 346px;
       }
