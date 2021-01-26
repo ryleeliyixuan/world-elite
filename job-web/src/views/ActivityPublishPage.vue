@@ -25,7 +25,7 @@
                     <div class="activity-left-one-title">{{item.title}}</div>
                     <div class="activity-left-one-state" :style="{'background':statusBGColorList[item.status]}">{{getStatus(item)}}</div>
                 </div>
-                <div class="activity-left-two">{{item.organizerInfoVo.organizerName}} - <span class="activity-left-place">{{item.city.name}}</span> -
+                <div class="activity-left-two">{{item.organizerInfoVo && item.organizerInfoVo.organizerName}} - <span class="activity-left-place">{{item.city.name}}</span> -
                     {{item.address}}
                 </div>
                 <div class="activity-left-three">活动时间：<span class="activity-left-time">{{item.activityStartTime | timestampToDateHourMinute}} -- {{item.activityFinishTime | timestampToDateHourMinute}}</span>
@@ -41,7 +41,7 @@
                     <div :class="['activity-item-right-link-one', {'edit-disable':!isEditInfoEnable(item)}]" @click="onEdit(item)">
                         {{isShowEditInfo(item)?'编辑信息':'重新编辑'}}
                     </div>
-                    <div class="activity-item-right-link-one" v-if="!isShowRegistrationInformationManagement(item)"
+                    <div class="activity-item-right-link-one" v-if="isShowRegistrationInformationManagement(item)"
                          @click="onRegistrationInformationManagement(item)">报名信息管理
                     </div>
                 </div>

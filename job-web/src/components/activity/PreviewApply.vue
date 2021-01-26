@@ -411,7 +411,7 @@
             }
 
             .question1-container {
-                margin-top: 18px;
+                margin-top: 21px;
 
                 .question1-line1 {
                     display: flex;
@@ -422,6 +422,7 @@
                         font-size: 18px;
                         color: #666666;
                         line-height: 25px;
+                        font-weight: bold;
 
                         .must {
                             color: red;
@@ -431,7 +432,7 @@
                 }
 
                 .question1-line2 {
-                    margin-top: 18px;
+                    margin-top: 5px;
 
                     ::v-deep .el-input__inner {
                         font-size: 16px;
@@ -447,7 +448,7 @@
             }
 
             .question2-container {
-                margin-top: 18px;
+                margin-top: 21px;
 
                 .question2-line1 {
                     display: flex;
@@ -458,6 +459,7 @@
                         font-size: 18px;
                         color: #666666;
                         line-height: 25px;
+                        font-weight: bold;
 
                         .must {
                             color: red;
@@ -469,19 +471,20 @@
                 .question2-line2 {
                     display: flex;
                     flex-wrap: wrap;
-                    margin-top: 7px;
+                    margin-top: 5px;
                     width: calc(100% + 70px);
 
                     .option-container {
                         display: flex;
                         align-items: flex-start;
-                        margin: 7px 70px 7px 0;
+                        margin: 4px 70px 4px 0;
                         cursor: pointer;
 
                         .icon {
                             display: flex;
                             align-items: center;
                             height: 25px;
+                            flex-shrink: 0;
                         }
 
                         .options {
@@ -489,14 +492,14 @@
                             font-size: 18px;
                             font-weight: 500;
                             color: #666666;
-                            line-height: 25px;
+                            line-height: 22px;
                         }
                     }
                 }
             }
 
             .question3-container {
-                margin-top: 18px;
+                margin-top: 21px;
 
                 .question3-line1 {
                     display: flex;
@@ -507,6 +510,7 @@
                         font-size: 18px;
                         color: #666666;
                         line-height: 25px;
+                        font-weight: bold;
 
                         .must {
                             color: red;
@@ -518,19 +522,20 @@
                 .question3-line2 {
                     display: flex;
                     flex-wrap: wrap;
-                    margin-top: 7px;
+                    margin-top: 5px;
                     width: calc(100% + 70px);
 
                     .option-container {
                         display: flex;
                         align-items: flex-start;
-                        margin: 7px 70px 7px 0;
+                        margin: 4px 70px 4px 0;
                         cursor: pointer;
 
                         .icon {
                             display: flex;
                             align-items: center;
                             height: 25px;
+                            flex-shrink: 0;
                         }
 
                         .options {
@@ -538,14 +543,14 @@
                             font-size: 18px;
                             font-weight: 500;
                             color: #666666;
-                            line-height: 25px;
+                            line-height: 22px;
                         }
                     }
                 }
             }
 
             .question4-container {
-                margin-top: 18px;
+                margin-top: 21px;
 
                 .question4-line1 {
                     display: flex;
@@ -556,6 +561,7 @@
                         font-size: 18px;
                         color: #666666;
                         line-height: 25px;
+                        font-weight: bold;
 
                         .must {
                             color: red;
@@ -565,7 +571,7 @@
                 }
 
                 .question4-line2 {
-                    margin-top: 18px;
+                    margin-top: 5px;
                     width: 100%;
                     max-width: 720px;
                     height: 30px;
