@@ -19,7 +19,7 @@
   </select>
   
   <select id="selectIdByNameWithFuzzy" resultType="INTEGER">
-    select id from t_city where name like #{name}
+    SELECT * FROM t_city WHERE NAME REGEXP #{name} AND pinyin NOT REGEXP "xian$"
   </select>
 
 </mapper>

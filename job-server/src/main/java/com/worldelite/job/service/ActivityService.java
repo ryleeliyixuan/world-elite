@@ -69,6 +69,9 @@ public class ActivityService extends BaseService {
     @Autowired
     private OrganizerCreditService organizerCreditService;
 
+    @Autowired
+    private RealNameAuthService realNameAuthService;
+
     /**
      * 获取活动列表
      *
@@ -183,6 +186,11 @@ public class ActivityService extends BaseService {
         if (activity.getUserId() == null) {
             activity.setUserId(curUser().getId());
             activity.setUserType(String.valueOf(curUser().getType()));
+        }
+
+        final RealNameAuthVo realNameAuth = realNameAuthService.getRealNameAuth(activity.getUserId());
+        if(realNameAuth == null || realNameAuth.getStatus() != VerificationStatus.PASS.value){
+            throw new ServiceException(message("not.realname.auth"));
         }
 
         if (activity.getId() == null) {

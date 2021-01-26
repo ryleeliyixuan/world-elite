@@ -151,6 +151,10 @@ public class LuceneSearchService implements SearchService {
             queryBuilder.add(query, BooleanClause.Occur.MUST);
         }
         if (ArrayUtils.isNotEmpty(searchForm.getSalaryRangeIds()) && !useList(searchForm.getSalaryRangeIds(), 259)) {
+            if (useList(searchForm.getSalaryRangeIds(), 1004) || useList(searchForm.getSalaryRangeIds(), 1005)) {
+                Integer[] salaryIds = push(searchForm.getSalaryRangeIds(), 153);
+                searchForm.setSalaryRangeIds(salaryIds);
+            }
             BooleanQuery.Builder salaryRangeQueryBuilder = new BooleanQuery.Builder();
             for (Integer rangeId : searchForm.getSalaryRangeIds()) {
                 Query query = IntPoint.newExactQuery(JobIndexFields.AVER_SALARY_INDEX,rangeId);
@@ -184,6 +188,16 @@ public class LuceneSearchService implements SearchService {
 
     private static boolean useList(Integer[] arr, Integer targetValue) {
         return Arrays.asList(arr).contains(targetValue);
+    }
+
+    private Integer[] push(Integer[] arr, Integer target) {
+        if (arr == null || arr.length <= 0) {
+            return new Integer[]{};
+        }
+        Integer[] newArr = new Integer[arr.length + 1];
+        System.arraycopy(arr, 0, newArr, 0, arr.length);
+        newArr[newArr.length - 1] = target;
+        return newArr;
     }
 
     @Override
