@@ -9,6 +9,7 @@
         @select="handleSelect"
         class="menu-container"
       >
+        <el-menu-item class="nav-item" index="/">首页</el-menu-item>
         <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
         <el-menu-item class="nav-item" index="/wiki-card">百科</el-menu-item>
         <el-menu-item class="nav-item" index="/activity-list"
@@ -255,6 +256,8 @@ export default {
         this.activeIndex = "/activity-list";
       } else if (this.isMock()) {
         this.activeIndex = "/mock/interview";
+      } else if (this.isHomePage()){
+         this.activeIndex = "/";
       }
       this.keyword = this.$route.query.searchWord;
       this.getUnReadMessageCount();
@@ -390,6 +393,11 @@ export default {
     // 切换菜单时清空关键词
     handleSelect() {
       this.keyword = "";
+    },
+
+    // 当前路由是否激活homepage
+    isHomePage(){
+      return this.$route.path === "/";
     },
 
     // 当前路由是否激活职位菜单
