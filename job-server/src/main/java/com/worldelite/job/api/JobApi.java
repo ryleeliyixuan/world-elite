@@ -197,14 +197,14 @@ public class JobApi extends BaseApi {
     /**
      * 申请工作
      *
-     * @param id 职位ID
+     * @param jobId 职位ID
      * @return
      */
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("apply-job")
     @ApiDoc
-    public ApiResult applyJob(@RequestParam Long id) {
-        jobService.applyJob(id);
+    public ApiResult applyJob(@RequestParam Long jobId, @RequestParam Long resumeId) {
+        jobService.applyJob(jobId, resumeId);
         return ApiResult.ok();
     }
 
