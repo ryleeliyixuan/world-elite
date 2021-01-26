@@ -452,7 +452,7 @@ export default {
     submitResume() {
       this.applyLoading = true;
       let data = {
-        id: this.job.id,
+        jobId: this.job.id,
         resumeId: this.selectedId,
       };
       applyJob(data)

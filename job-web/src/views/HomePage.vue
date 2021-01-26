@@ -334,7 +334,12 @@
           :key="item.id"
           @click="onActivityDetail(item)"
         >
-          <el-image class="thumbnail" :src="item.poster"></el-image>
+          <el-image
+            style="width: 340px; height: 191px"
+            class="thumbnail"
+            :src="item.poster"
+            fit="fit"
+          ></el-image>
           <div class="brief">
             <div class="line1">
               <div class="name">{{ item.title }}</div>
@@ -730,86 +735,91 @@ export default {
 
     .activity-container {
       position: relative;
-      width: 340px;
-      height: 191px;
       margin-bottom: 40px;
       display: flex;
+      justify-content: space-between;
       cursor: pointer;
 
       .activity-card:hover {
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.5);
       }
 
-      .brief {
-        position: absolute;
-        width: 100%;
-        left: 0;
-        bottom: 0;
-        height: 50px;
-        background: rgba(0, 0, 0, 0.6);
-        display: flex;
-        flex-direction: column;
-        padding: 4px 5px 6px 7px;
+      .activity-card {
+        position: relative;
+        width: 340px;
+        height: 191px;
 
-        .line1 {
+        .brief {
+          position: absolute;
+          width: 100%;
+          left: 0;
+          bottom: 0;
+          height: 50px;
+          background: rgba(0, 0, 0, 0.6);
           display: flex;
-          align-items: center;
-          justify-content: space-between;
+          flex-direction: column;
+          padding: 4px 5px 6px 7px;
 
-          .name {
-            margin: 0;
-            color: #ffffff;
-            line-height: 25px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            font-size: 14px;
-            font-family: PingFangSC-Medium, PingFang SC;
-            font-weight: 500;
-            line-height: 20px;
+          .line1 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .name {
+              margin: 0;
+              color: #ffffff;
+              line-height: 25px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              font-size: 14px;
+              font-family: PingFangSC-Medium, PingFang SC;
+              font-weight: 500;
+              line-height: 20px;
+            }
+
+            .city {
+              background: #00c853;
+              height: 19px;
+              line-height: 22px;
+              padding: 0 5px;
+              border-radius: 4px;
+              font-size: 13px;
+              flex-shrink: 0;
+              margin-left: 7px;
+              color: #ffffff;
+              font-size: 14px;
+              font-family: PingFangSC-Medium, PingFang SC;
+              font-weight: 500;
+              line-height: 20px;
+            }
+
+            .online {
+              background: #ffab00;
+            }
           }
 
-          .city {
-            background: #00c853;
-            height: 19px;
-            line-height: 22px;
-            padding: 0 5px;
-            border-radius: 4px;
-            font-size: 13px;
-            flex-shrink: 0;
-            margin-left: 7px;
-            color: #ffffff;
-            font-size: 14px;
-            font-family: PingFangSC-Medium, PingFang SC;
-            font-weight: 500;
-            line-height: 20px;
-          }
+          .line2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-          .online {
-            background: #ffab00;
-          }
-        }
+            .time {
+              font-size: 12px;
+              font-family: PingFangSC-Regular, PingFang SC;
+              font-weight: 400;
+              color: #ffffff;
+              line-height: 17px;
+            }
 
-        .line2 {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-
-          .time {
-            font-size: 12px;
-            font-family: PingFangSC-Regular, PingFang SC;
-            font-weight: 400;
-            color: #ffffff;
-            line-height: 17px;
-          }
-
-          .count {
-            font-size: 12px;
-            font-family: PingFangSC-Regular, PingFang SC;
-            font-weight: 400;
-            color: #ffffff;
-            line-height: 17px;
-            margin: auto;
+            .count {
+              font-size: 12px;
+              font-family: PingFangSC-Regular, PingFang SC;
+              font-weight: 400;
+              color: #ffffff;
+              line-height: 17px;
+              margin: auto;
+            }
           }
         }
       }
@@ -916,7 +926,7 @@ export default {
   }
 }
 
-@media screen and (max-width: 825px) {
+@media screen and (max-width: 826px) {
   .app-container {
     .company-recommend-box {
       .company-container {
@@ -931,13 +941,15 @@ export default {
       }
     }
 
-    .activity-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      .activity-card + .activity-card {
-        margin-left: 0px !important;
-        margin-top: 12px;
+    .activity-box {
+      .activity-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        .activity-card + .activity-card {
+          margin-left: 0px !important;
+          margin-top: 12px;
+        }
       }
     }
   }
