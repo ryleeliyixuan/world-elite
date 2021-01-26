@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class RealNameAuthVo implements VoConvertable<RealNameAuthVo, RealNameAuth> {
     @JSONField(serializeUsing = ToStringSerializer.class)
-    private Long userId; //记录id
+    private Long userId; //用户id
     private String name; //姓名
     private String idNumber;//身份证号
     private String faceUrl;//身份证/学生证人像面
