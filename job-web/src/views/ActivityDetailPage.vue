@@ -114,7 +114,8 @@
                        :activityId="this.$route.params.id+''"
                        :apply="applyTable"
                        :resumeList="resumeList"
-                       :needResume="activity.needResume"></preview-apply>
+                       :needResume="activity.needResume"
+                       @apply="activity.registrationFlag = true;"></preview-apply>
     </div>
 </template>
 
@@ -217,7 +218,6 @@
                 if (!this.activity.registrationFlag) {
                     this.$axios.get("/resume/my-resume").then(response => {
                         this.resumeList = response.data;
-                        this.activity.registrationFlag = true;
                     })
                     this.previewDialogVisible = true;
                 }

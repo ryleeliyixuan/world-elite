@@ -421,7 +421,6 @@
         },
         created() {
             this.initData();
-            this.$emit("complete");
         },
         methods: {
             handleClose(done) {
