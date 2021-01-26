@@ -28,7 +28,7 @@
                                         <span style="padding-top: 6px;">简历名称：</span>
                                         <div style="padding-top: 6px;" v-if="showEditTitle==false">
                                             <span>{{item.title}}</span>
-                                            <svg-icon icon-class="edit" style="width: 18px;height: 19px;margin-left: 50px;margin-right:50px" @click="editTitle"></svg-icon>
+                                            <svg-icon class="svg-cls" icon-class="edit" style="width: 18px;height: 19px;margin-left: 50px;margin-right:50px" @click="editTitle"></svg-icon>
 
                                         </div>
                                         <div v-if="showEditTitle==true">
@@ -39,7 +39,7 @@
                                             </el-form>
                                         </div>
                                     </div>
-                                    <div class="resume-updateTime" style="margin-left: 230px;">更新时间：{{item.updateTime}}</div>
+                                    <div class="resume-updateTime" style="margin-left: 210px;">更新时间：{{item.updateTime}}</div>
                                     <div style="position: absolute;margin-left: 146px;">
                                         <div class="help-text" v-show="seen" @mouseleave="onMouseOut">
                                             HR在搜索简历时只会搜索到最符合搜索条件的那一版简历。
@@ -51,6 +51,7 @@
                                         <div style="display: flex">
                                             <div>
                                                 <svg-icon
+                                                        class="svg-cls"
                                                         icon-class="help-mark"
                                                         style="width: 13px;height: 31px;padding-top: 12px;padding-left: 3px"
                                                         @mouseenter="onMouseOver"
@@ -201,37 +202,24 @@
                                             </div>
                                             <span>
                                              <svg-icon
+                                                     class="svg-cls"
                                                      icon-class="edit"
                                                      style="width: 18px;height: 19px;"
-                                                     v-on:click="handleEditResumeBasic"
+                                                     v-on:click="handleEditResumeBasic(index)"
                                              ></svg-icon>
                                             </span>
                                         </el-row>
                                         <div class="resume-basicinfo row mt-3">
                                             <el-form class="avatorHolder" ref="resumeForm3" :model="resumeForm3">
-                                                <el-upload
-                                                        class="avatar-uploader"
-                                                        :action="uploadPicOptions.action"
-                                                        :data="uploadPicOptions.params"
-                                                        :accept="uploadPicOptions.acceptFileType"
-                                                        :show-file-list="false"
-                                                        :on-success="handleAvatarSuccess"
-                                                        :before-upload="beforeAvatarUpload"
-                                                >
-                                                    <img
-                                                            v-if="(item.avatar && item.avatar !== '')"
-                                                            :src="item.avatar"
-                                                            class="avatar"
-                                                    />
-                                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                                    <el-row style="margin-left: -5px;">
-                                                        <el-button class="img-button">上传照片</el-button>
-                                                    </el-row>
-                                                </el-upload>
+<!--                                                :on-change文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用-->
+<!--                                                :auto-upload是否在选取文件后立即进行上传-->
+                                                <upload-img :src="item.avatar" @upload="onUpload"/>
                                             </el-form>
                                             <div class="resume-info">
                                                 <div class="info-other-row-l">
+                                                    <div style="height: 34px">
                                                     <el-row class="info-name" style="width: 300px" v-if="item.name && item.name!=''">{{item.name}}</el-row>
+                                                    </div>
                                                     <el-row class="info-other">性别：
                                                         <span v-if="item.gender==1">男</span>
                                                         <span v-if="item.gender==2">女</span>
@@ -281,7 +269,7 @@
                                                     <div class="resume-edu" v-for="resumeEdu in item.resumeEduList"
                                                          :key="resumeEdu.id">
                                                         <div class="edu-box-l" style="width: 330px">
-                                                            <el-row class="edu-school ">{{resumeEdu.schoolName}}
+                                                            <el-row class="edu-school">{{resumeEdu.schoolName}}
                                                             </el-row>
                                                             <el-row class="info-other" v-if="resumeEdu.degree && resumeEdu.degree!=''">学历：{{resumeEdu.degree.name}}
                                                             </el-row>
@@ -1129,14 +1117,13 @@
                                         </el-row>
                                         <div class="resume-box-edit">
                                             <div style="padding-top: 20px;padding-left: 40px">
-                                                <div class="resume-languageinfo">
+                                                <div class="resume-languageinfo1">
                                                     <div class="resume-edu">
                                                         <span class="tag-title">已选择：</span>
                                                         <el-tag
                                                                 v-for="skill in listshowskill"
                                                                 :key="skill.id"
-                                                                class="tag-icon"
-                                                                style="height: 21px;line-height: 0px;border-radius: 5px;"
+                                                                style="height: 21px;border-radius: 5px;"
                                                         >{{ skill.name }}
                                                         </el-tag>
                                                     </div>
@@ -1160,6 +1147,7 @@
                                                                 placeholder="搜索标签"
                                                                 maxlength="6"
                                                                 class="m-input-text-width"
+                                                                @change="handleAddNewSkillTag"
                                                                 style="width: 200px;padding-left: 10px;">
                                                         </el-input>
                                                         <svg-icon
@@ -1247,7 +1235,20 @@
                         </b-media>
                         <b-col class="right-box">
                             <div class="resume-preview resume-right-box">
-                                <el-row style="padding: 10px">
+                                <el-row style="padding: 10px 10px 2px 4px;">
+<!--                                    <el-form ref="parseAttachmentForm" :model="parseAttachmentForm"-->
+<!--                                             label-width="80px">-->
+<!--                                        <el-upload-->
+<!--                                                class="mt-2 upload-attach-box"-->
+<!--                                                :limit="1"-->
+<!--                                                :action="uploadAttachmentOptions.action"-->
+<!--                                                :data="uploadAttachmentOptions.params"-->
+<!--                                                :accept="uploadAttachmentOptions.acceptFileType"-->
+<!--                                                :show-file-list="false"-->
+<!--                                                :on-success="handleUploadParseAttachment"-->
+<!--                                                :before-upload="beforeAttachmengUpload"-->
+<!--                                                :file-list="fileList"-->
+<!--                                        >-->
 <!--                                    <el-button-->
 <!--                                            class="left-btn"-->
 <!--                                    >-->
@@ -1256,10 +1257,13 @@
 <!--                                                style="width: 16px;height: 17px;margin-right: 2px"-->
 <!--                                        ></svg-icon>快速录入-->
 <!--                                    </el-button>-->
+<!--                                        </el-upload>-->
+<!--                                    </el-form>-->
                                     <el-button
                                             class="left-btn"
                                             @click="handlePreview"
                                     > <svg-icon
+                                            class="svg-cls"
                                             icon-class="preview"
                                             style="width: 16px;height: 17px;margin-right: 2px"
                                     ></svg-icon>预览简历
@@ -1268,6 +1272,7 @@
                                             @click="handleDelResume"
                                             class="left-btn"
                                     ><svg-icon
+                                            class="svg-cls"
                                             icon-class="resume-del"
                                             style="width: 16px;height: 17px;margin-right: 2px"
                                     ></svg-icon>简历删除
@@ -1290,6 +1295,7 @@
                                 <span class="right-add">附件：</span>
                                 <span>
                                     <svg-icon
+                                            class="svg-cls"
                                             icon-class="tips"
                                             style="width: 13px;height: 13px;"
                                     ></svg-icon>
@@ -1334,6 +1340,7 @@
                                     >
                                         <el-button class="upload-btn">
                                             <svg-icon
+                                                    class="svg-cls"
                                                     icon-class="upload"
                                                     style="width: 18px;height: 15px"></svg-icon>
                                             <span style="padding-left: 4px">上传附件简历</span></el-button>
@@ -1418,7 +1425,7 @@
                                             :file-list="fileList"
                                     >
                                         <el-button class="upload-btn">
-                                            <svg-icon
+                                            <svg-icon class="svg-cls"
                                                     icon-class="upload"
                                                     style="width: 18px;height: 15px"
                                             ></svg-icon>
@@ -1432,6 +1439,7 @@
                                 <span class="right-add">简历完成度：</span>
                                 <span class="right-num">{{item.resumeCompleteProgress}}%</span>
                                 <el-progress
+                                        class="pro-ress"
                                         :stroke-width="22"
                                         :percentage="item.resumeCompleteProgress"
                                         :status="item.resumeCompleteProgress == 100? 'success': 'warning'"
@@ -1446,9 +1454,9 @@
                 </el-tab-pane>
             </el-tabs>
             <el-dialog :visible.sync="showResumeDialog"
-                       width="70%"
+                       :width="customWidth"
             >
-                <ResumeView :resumeId="resumeId"></ResumeView>
+                <ResumeView :resumeDetail="this.resumeDetail"></ResumeView>
             </el-dialog>
             <el-dialog :visible.sync="photoEditDialog"
                        title="图片剪裁"
@@ -1494,6 +1502,8 @@
     import {getAllCountries, getCurrentCountry} from "@/api/country_api";
     import {
         getResumeInfo,
+        parseAttachment,
+        getResumeDetail,
         saveResumeBasic,
         saveResumeEdu,
         saveResumeOther,
@@ -1538,6 +1548,7 @@
     import {downloadFile} from "@/utils/common";
     import ResumeView from "@/components/ResumeView";
     import {addResume} from "../api/resume_api";
+    import UploadImg from '@/components/Cropper/uploadImg'
 
 
     library.add(
@@ -1555,6 +1566,7 @@
         name: "EditResumePage",
         data() {
             return {
+                customWidth:"800px",
                 salaryCheck:false,
                 schoolCheck:false,
                 resumeIndex:undefined,
@@ -1627,6 +1639,10 @@
                     resumeId:undefined,
                     introduction:undefined,
                     title:undefined,
+                },
+                parseAttachmentForm:{
+                    name:undefined,
+                    asAttachment:false
                 },
                 resumeForm2:{
                     id: undefined,
@@ -1820,6 +1836,7 @@
                 newResumeId: undefined,
                 newIndex: undefined,
                 resumeId: undefined,
+                resumeDetail:undefined,
                 countryOptions: [],
                 degreeOptions: [],
                 jobCategoryOptions: [],
@@ -1939,6 +1956,13 @@
                 cityOptions: [{id: 1, name: "国内"}, {id: 2, name: "国外"}],
             };
         },
+        mounted(){
+            window.onresize=()=>{
+                return(()=>{
+                    this.setDialogWidth();
+                })
+            };
+        },
         watch: {
             "expectJobForm.cityIds": function (newVal, oldVal) {
                 if (newVal.length > 3) {
@@ -1959,12 +1983,23 @@
         components: {
             EditResumeTitle,
             quillEditor,
-            ResumeView
+            ResumeView,
+            UploadImg
         },
         created() {
             this.initData();
         },
         methods: {
+
+            setDialogWidth() {
+                var val = document.body.clientWidth
+                const def = 450 // 默认宽度
+                if (val < def) {
+                    this.dialogWidth = '100%'
+                } else {
+                    this.dialogWidth = def + 'px'
+                }
+            },
             saveResumeId(tab, event) {
                 this.newResumeId = tab.name;
                 this.newIndex = tab.index;
@@ -2055,6 +2090,11 @@
                     }
                 });
             },
+            onUpload(url) {
+                console.log(url);
+                this.resumeForm3.avatar = url;
+                this.handleSaveResumeAvatar(false);
+            },
             handleAvatarSuccess() {
                 this.resumeForm3.avatar = this.uploadPicOptions.fileUrl;
                 this.resume.avatar = this.uploadPicOptions.fileUrl;
@@ -2080,6 +2120,12 @@
                             });
                     }
                 });
+            },
+            handleUploadParseAttachment() {
+                    this.parseAttachmentForm.name = this.uploadAttachmentOptions.fileUrl;
+                    console.log(this.parseAttachmentForm.name)
+                    this.handleSaveParseAttachment(false);
+                    this.fileList=[]
             },
             handleUploadAttachmengSuccess() {
                 this.resumeForm2.attachResume = this.uploadAttachmentOptions.fileUrl;
@@ -2387,7 +2433,7 @@
                 }
 
             },
-            handleEditResumeBasic() {
+            handleEditResumeBasic(index) {
                 console.log("-----")
                 this.showBasicDialog = true;
                 if(this.newResumeId&&this.newResumeId!=''){
@@ -2441,7 +2487,7 @@
                 }
 
                 this.$nextTick(() => {
-                    this.$refs["resumeForm"][0].clearValidate();
+                    this.$refs["resumeForm"][index].clearValidate();
                 });
             },
             handleEditResumeIntro() {
@@ -2765,6 +2811,22 @@
                 this.handleDeleteItemById(delResumeAwards, id);
                 console.log(id)
             },
+            handleSaveParseAttachment(){
+                this.$refs["parseAttachmentForm"][0].validate((valid) => {
+                    console.log(this.parseAttachmentForm)
+                    if (valid) {
+                        parseAttachment(this.parseAttachmentForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
+
+
+                    }
+                });
+            },
             handleSaveResumeAttachResume(){
                 this.$refs["resumeForm2"][0].validate((valid) => {
                     if (valid) {
@@ -2902,8 +2964,6 @@
                                         .finally(() => {
                                             this.posting = false;
                                         });
-
-
                                     this.$message({
                                         type: 'success',
                                         message: '修改成功!'
@@ -2915,8 +2975,7 @@
                                     });
                                 });
 
-                            }
-                            else {
+                            } else {
                                 this.resumeForm5.id = this.resume[i].id;
                                 saveResumeBasic(this.resumeForm5)
                                     .then(() => {
@@ -3218,45 +3277,29 @@
 
             },
             handleSaveResumeSkills() {
-                if (this.newResumeId&& this.newResumeId!=''){
-                    const selectSkillTags = {
-                        resumeId: this.newResumeId,
-                        tagList: this.skillTagListForm
-                            .filter((tag) => tag.select == true)
-                            .map((tag) => {
-                                return tag.name;
-                            }),
-                    };
-                    this.posting = true;
-                    saveResumeSkills(selectSkillTags)
-                        .then(() => {
-                            this.getResumeInfo();
-                            this.showSkillDialog = false;
-                        })
-                        .finally(() => {
-                            this.posting = false;
-                        });
+                let i;
+                if (this.newIndex && this.newIndex!='') {
+                    i=this.newIndex
+                }else{
+                    i=this.resume.length-1
                 }
-                else {
-                    const selectSkillTags = {
-                        resumeId: this.resume[this.resume.length-1].id,
-                        tagList: this.skillTagListForm
-                            .filter((tag) => tag.select == true)
-                            .map((tag) => {
-                                return tag.name;
-                            }),
-                    };
-                    this.posting = true;
-                    saveResumeSkills(selectSkillTags)
-                        .then(() => {
-                            this.getResumeInfo();
-                            this.showSkillDialog = false;
-                        })
-                        .finally(() => {
-                            this.posting = false;
-                        });
-                }
-
+                const selectSkillTags = {
+                    resumeId: this.resume[i].id,
+                    tagList: this.skillTagListForm
+                        .filter((tag) => tag.select == true)
+                        .map((tag) => {
+                            return tag.name;
+                        }),
+                };
+                this.posting = true;
+                saveResumeSkills(selectSkillTags)
+                    .then(() => {
+                        this.getResumeInfo();
+                        this.showSkillDialog = false;
+                    })
+                    .finally(() => {
+                        this.posting = false;
+                    });
 
             },
             searchSchoolName(keyword, cb) {
@@ -3312,6 +3355,8 @@
                         name: this.newSkillTag,
                         select: true,
                     });
+                    console.log(this.newSkillTag)
+                    this.listshowskill.push({name: this.newSkillTag,select:true})
                     this.newSkillTag = "";
                 }
             },
@@ -3329,11 +3374,15 @@
             handlePreview() {
                 if (this.newResumeId&& this.newResumeId!=''){
                     this.resumeId = this.newResumeId;
-                    this.getResumeInfo();
                 }else{
                     this.resumeId = this.resume[this.resume.length-1].id;
-                    this.getResumeInfo();
                 }
+                getResumeDetail(this.resumeId).then((response) =>{
+                        this.resumeDetail = response.data;
+                        console.log(this.resumeDetail)
+                }
+                );
+
                 this.showResumeDialog = true;
                 console.log(this.resumeId)
 
@@ -3370,28 +3419,22 @@
 
             },
             handleDelResume() {
+                let i;
+                if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                }else{
+                    i=this.resume.length-1
+                }
                 if(this.resume.length>1) {
-                    if (this.newResumeId && this.newResumeId != '') {
-                        this.$confirm("是否要删除该简历？", {
-                            confirmButtonText: "删除",
-                        }).then(() => {
-                            let id = this.newResumeId
-                            console.log(id)
-                            delResume(id).then(() => {
-                                this.getResumeInfo();
-                            });
+                    this.$confirm("是否要删除该简历？", {
+                        confirmButtonText: "删除",
+                    }).then(() => {
+                        let id = this.resume[i].id
+                        console.log(id)
+                        delResume(id).then(() => {
+                            this.getResumeInfo();
                         });
-                    } else {
-                        this.$confirm("是否要删除该简历？", {
-                            confirmButtonText: "删除",
-                        }).then(() => {
-                            let id = this.resume[this.resume.length - 1].id
-                            console.log(id)
-                            delResume(id).then(() => {
-                                this.getResumeInfo();
-                            });
-                        });
-                    }
+                    });
                 }else{
                     this.$confirm('简历至少存在一份！', '', {
                         confirmButtonText: '确定',
@@ -3405,11 +3448,8 @@
                             message: '已取消删除'
                         });
                     });
-
                 }
                 this.getResumeInfo();
-
-
             },
             onDelResumeAttachClick() {
                 this.$confirm("是否要删除附件简历？", {
@@ -3444,6 +3484,129 @@
         /*min-height: calc(100vh - 477px);*/
         /*background: rgba(213, 226, 240, 0.21);*/
         min-width: 375px;
+        ::v-deep    .el-tabs__nav-scroll {
+            width: fit-content;
+            height: 45px;
+            background: #FFFFFF;
+            border-radius: 25px;
+            border: 1px solid #CCCCCC;
+
+        }
+        ::v-deep    .el-tabs--card > .el-tabs__header {
+            width: fit-content;
+            height: 35px;
+            border-radius: 18px;
+            border-bottom: 0px;
+            /*margin-left: 56px;*/
+
+        }
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__nav {
+            border: 0px;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        ::v-deep.el-tabs__item .el-icon-close:before {
+            transform: scale(.9);
+            display: none;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item {
+            border-left: none;
+            width: 80px;
+            height: 35px;
+            background: #4895EF;
+            border-radius: 18px;
+            margin: 5px;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #FFFFFF;
+            line-height: 34px;
+            text-align: center;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable {
+            width: fit-content;
+            height: 35px;
+            background: #4895EF;
+            border-radius: 18px;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #FFFFFF;
+            line-height: 35px;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #FFFFFF;
+            margin: 4px 4px 3px 4px;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item.is-closable {
+            width: fit-content;
+            height: 35px;
+            margin: 3px 6px 3px 3px;
+            background: #FFFFFF;
+            border-radius: 18px;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable .el-icon-close, .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable:hover .el-icon-close {
+            width: 0px;
+        }
+        ::v-deep.el-tabs__new-tab {
+            float: right;
+            border: 1.5px solid #4B97F0;
+            height: 28px;
+            width: 28px;
+            line-height: 0px;
+            margin: 8px 0 10px 10px;
+            border-radius: 20px;
+            padding-top: 3px;
+            font-size: 20px;
+            color: #4B97F0;
+            cursor: pointer;
+            -webkit-transition: all .15s;
+            transition: all .15s;
+        }
+
+        ::v-deep.el-tabs--card > .el-tabs__header.el-tabs__new-tab {
+            float: right;
+            border: 1px solid #d3dce6;
+            height: 18px;
+            width: 18px;
+            line-height: 18px;
+            margin: 12px 0 9px 10px;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #d3dce6;
+            cursor: pointer;
+            transition: all .15s;
+        } ;
+       ::v-deep .el-dialog__headerbtn .el-dialog__close {
+            color: #4895EF;
+            border: 1px solid;
+            line-height: 16px;
+            border-radius: 50%;
+        }
+        ::v-deep.el-tag--light {
+            height: 21px;
+            font-size: 12px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #FFFFFF;
+            background: #4CC9F0;
+            border-radius: 5px;
+            line-height: 10px;
+            margin: 5px;
+            padding-top: 5px;
+        }
 
         .selectleave {
             ::v-deep.el-input--suffix .el-input__inner {
@@ -3509,6 +3672,12 @@
                     font-family: PingFangSC-Medium, PingFang SC;
                     font-weight: 500;
                     color: #333333;
+                    ::v-deep.svg-cls{
+                        width: 1em;
+                        vertical-align: -0.25em;
+                        fill: currentColor;
+                        overflow: hidden;
+                    }
                 }
                 .editTitle{
                     font-size: 12px;
@@ -3630,6 +3799,50 @@
 
                 .avatorHolder {
                     padding-left: 30px;
+                    .avatar-uploader .el-upload {
+                        cursor: pointer;
+                        position: relative;
+                        overflow: hidden;
+                        margin-bottom: 7px;
+                    }
+
+                    $avatarSize: 100px;
+
+                    .avatar-uploader .avatar-uploader-icon {
+                        border: 1px solid #3F5FF4;
+                        border-radius: 5px;
+                        font-size: 28px;
+                        color: #8c939d;
+                        width: $avatarSize;
+                        height: $avatarSize;
+                        line-height: $avatarSize;
+                        text-align: center;
+                    }
+
+                    .avatar-uploader .avatar {
+                        width: $avatarSize;
+                        height: $avatarSize;
+                        display: block;
+                    }
+
+                    .upload-attach-box .el-upload {
+                        display: block;
+
+                    }
+
+                    .upload-attach-box .el-upload button {
+                        height: 31px;
+                        margin-top: 17px;
+                        font-size: 18px;
+                        padding-top: 7px;
+                        width: 192px;
+                        background: #4895EF;
+                        border-radius: 50px;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #FFFFFF;
+                    }
                 }
 
                 .resume-red {
@@ -3676,8 +3889,14 @@
                     vertical-align: text-top;
                 }
                 .rowbasic{
+                    ::v-deep.svg-cls{
+                        width: 1em;
+                        vertical-align: -0.25em;
+                        fill: currentColor;
+                        overflow: hidden;
+                    }
                     .resume-updateTime {
-                        width: 184px;
+                        width: 204px;
                         height: 20px;
                         font-size: 14px;
                         font-family: PingFangSC-Medium, PingFang SC;
@@ -3740,15 +3959,7 @@
                     border-color: #EDF2FF;
                 }
 
-                .info-name {
-                    width: 97px;
-                    height: 29px;
-                    font-size: 21px;
-                    font-family: PingFangSC-Medium, PingFang SC;
-                    font-weight: 500;
-                    color: #333333;
-                    line-height: 29px;
-                }
+
 
                 .expinfo-other-row {
                     display: inline-flex;
@@ -3775,28 +3986,8 @@
                 }
 
                 .info-other-row-m {
-                    margin-top: 30px;
+                    margin-top: 45px;
                     padding-bottom: 4px;
-                }
-
-                .info-other-row-l {
-                    margin-left: 20px;
-                    width: 256px;
-                }
-
-                .info-other-row-c {
-                    display: inline-flex;
-
-                    .expjob-data {
-                        width: 300px;
-                        height: 20px;
-                        font-size: 14px;
-                        font-family: PingFangSC-Regular, PingFang SC;
-                        font-weight: 400;
-                        color: #333333;
-                        line-height: 20px;
-                    }
-
                     .info-other {
                         height: 20px;
                         font-size: 14px;
@@ -3805,6 +3996,29 @@
                         color: #333333;
                     }
                 }
+
+                .info-other-row-l {
+                    margin-left: 20px;
+                    width: 256px;
+                    .info-name {
+                        width: 97px;
+                        height: 29px;
+                        font-size: 21px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        line-height: 29px;
+                    }
+                    .info-other {
+                        height: 20px;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        padding-top: 10px;
+                    }
+                }
+
 
                 .info-other-row {
                     height: 32px;
@@ -3827,49 +4041,9 @@
                         font-family: PingFangSC-Medium, PingFang SC;
                         font-weight: 500;
                         color: #333333;
-                    }
-
-                    .info-other1 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 177px
-                    }
-
-                    .edu-other1 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 70px
-                    }
-
-                    .info-other2 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 159px
-                    }
-
-                    .info-other3 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 31px
-                    }
-
-                    .info-other4 {
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                        color: #333333;
-                        padding-left: 140px
+                        padding-top: 10px;
                     }
                 }
-
                 .resume-info {
                     display: inline-flex;
                 }
@@ -3891,6 +4065,12 @@
             padding: 41px 25px 0px 20px;
             /*<!--border: $border-style;-->*/
             /*margin-bottom: 15px;*/
+            ::v-deep.svg-cls{
+                width: 1em;
+                vertical-align: -0.25em;
+                fill: currentColor;
+                overflow: hidden;
+            }
             .left-btn {
                 height: 39px;
                 background: #FFFFFF;
@@ -3901,6 +4081,12 @@
                 font-weight: 500;
                 color: #4895EF;
                 line-height: 12px;
+                ::v-deep.svg-cls{
+                    width: 1em;
+                    vertical-align: -0.25em;
+                    fill: currentColor;
+                    overflow: hidden;
+                }
             }
         }
 
@@ -4005,6 +4191,14 @@
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #FFFFFF;
+                padding-top: 7px;
+                margin-left: 36px;
+                ::v-deep.svg-cls{
+                    width: 1em;
+                    vertical-align: -0.25em;
+                    fill: currentColor;
+                    overflow: hidden;
+                }
             }
             .input-others{
 
@@ -4022,6 +4216,12 @@
                 line-height: 25px;
                 margin-right: 10px;
             }
+            ::v-deep.svg-cls{
+                width: 1em;
+                vertical-align: -0.25em;
+                fill: currentColor;
+                overflow: hidden;
+            }
 
             .right-num {
                 height: 25px;
@@ -4031,6 +4231,21 @@
                 color: #4895EF;
                 line-height: 25px;
             }
+            .pro-ress{
+                ::v-deep.el-progress-bar__outer {
+                    height: 6px;
+                    border-radius: 100px;
+                    background-color: #EBEEF5;
+                    overflow: hidden;
+                    position: relative;
+                    vertical-align: middle;
+                }
+
+                ::v-deep.el-progress.is-warning .el-progress-bar__inner {
+                    background-color: #FDC500;
+                }
+            }
+
 
         }
 
@@ -4064,13 +4279,26 @@
                     border: 0px;
                 }
             }
-
-            .tag-title {
-                font-size: 12px;
-                font-family: PingFangSC-Medium, PingFang SC;
-                font-weight: 500;
-                vertical-align: text-top;
+            .resume-languageinfo1{
+                padding-left: 18px;
+                .tag-title {
+                    font-size: 12px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    vertical-align: text-top;
+                }
+                ::v-deep.el-tag--light {
+                    height: 21px;
+                    font-size: 12px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #FFFFFF;
+                    background: #4CC9F0;
+                    border-radius: 5px;
+                    line-height: 10px;
+                }
             }
+
 
             .tag-title-1 {
                 font-size: 12px;
@@ -4437,7 +4665,12 @@
         .resume-box {
             margin-bottom: 21px;
             width: 640px;
-
+            ::v-deep.svg-cls{
+                width: 1em;
+                vertical-align: -0.25em;
+                fill: currentColor;
+                overflow: hidden;
+            }
             .resume-box-text {
                 font-size: 16px;
                 font-family: PingFangSC-Medium, PingFang SC;
@@ -4510,11 +4743,34 @@
             .resume-edu {
                 padding-top: 13px;
                 display: inline-flex;
+                ::v-deep.el-tag--light {
+                    height: 21px;
+                    font-size: 12px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #FFFFFF;
+                    background: #4CC9F0;
+                    border-radius: 5px;
+                    line-height: 10px;
+                    margin: 5px;
+                }
+
+                .info-other {
+                    height: auto;
+                    font-size: 14px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #333333;
+                    padding-top: 10px;
+                }
+
+
                 .info-data{
                     font-size: 14px;
                     font-family: PingFangSC-Regular, PingFang SC;
                     font-weight: 400;
                     color: #333333;
+                    padding-top: 10px;
                 }
                 .edu-box {
                     display: inline-flex;
@@ -4522,16 +4778,59 @@
 
                 .edu-box-l {
                     width: 346px;
+                    .edu-school{
+
+                        font-size: 16px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        line-height: 22px;
+                        height: 22px;
+                    }
+                    .info-other {
+                        height: auto;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        padding-top: 10px;
+                    }
                 }
 
                 .edu-box-l1 {
                     width: 346px;
+
+                    .edu-school{
+                        font-size: 16px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        line-height: 22px;
+                        height: 22px;
+                    }
+                    .info-other {
+                        height: auto;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        padding-top: 10px;
+                    }
                 }
 
                 .edu-box-m {
                     margin-top: 24px;
                     width: 250px;
                     margin-right: 20px;
+                    .info-other {
+                        height: auto;
+                        font-size: 14px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #333333;
+                        padding-top: 10px;
+                    }
+
                 }
 
                 .edu-box-m1 {
@@ -4544,6 +4843,7 @@
                         font-family: PingFangSC-Medium, PingFang SC;
                         font-weight: 500;
                         color: #333333;
+                        padding-top: 10px;
                     }
                 }
 
@@ -4558,7 +4858,6 @@
         }
 
         ::v-deep .el-tag--dark {
-
             height: 21px;
             font-size: 12px;
             font-family: PingFangSC-Medium, PingFang SC;
@@ -4594,274 +4893,8 @@
 <style lang="scss">
     @import "bootstrap/scss/bootstrap.scss";
 
-    .svg-icon[data-v-c8a70580] {
-        width: 1em;
-        vertical-align: -0.25em;
-        fill: currentColor;
-        overflow: hidden;
-    }
 
-    .info-other {
-        height: 20px;
-        font-size: 14px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #333333;
-        margin-top: 4px;
-    }
 
-    .el-progress-bar__outer {
-        height: 6px;
-        border-radius: 100px;
-        background-color: #EBEEF5;
-        overflow: hidden;
-        position: relative;
-        vertical-align: middle;
-    }
 
-    .el-progress.is-warning .el-progress-bar__inner {
-        background-color: #FDC500;
-    }
 
-    .tag-icon {
-        margin-right: 7px;
-        padding: 10px;
-        display: inline-block;
-        background: #4CC9F0;
-        border-radius: 10px;
-        font-size: 12px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        line-height: 10px;
-    }
-
-    .ql-container .ql-editor {
-        min-height: 200px;
-        font-size: 15px;
-    }
-
-    .ql-editor p {
-        margin-bottom: 10px;
-    }
-
-    .ql-editor ol,
-    .ql-editor ul {
-        padding-left: 0.5em;
-        margin-bottom: 10px;
-    }
-
-    .ql-bubble {
-        border: 1px solid #dcdfe6;
-        border-radius: 4px;
-    }
-
-    .b-toaster {
-        z-index: 10000;
-    }
-
-    a.edit-text {
-        cursor: pointer;
-        font-size: 14px;
-        color: $info;
-    }
-
-    .ql-editor.ql-blank::before {
-        font-style: normal;
-        color: #c0c4cc;
-        font-size: 15px;
-    }
-    .el-dialog__headerbtn .el-dialog__close {
-        color: #4895EF;
-        border: 1px solid;
-        line-height: 16px;
-        border-radius: 50%;
-    }
-    .el-upload-dragger {
-        width: 408px;
-        height: 200px;
-        background: #FFFFFF;
-        border-radius: 20px;
-        border: 2px dashed  #4895EF;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .photoText{
-        font-size: 16px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #333333;
-    }
-    .photoText-size{
-        font-size: 14px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #999999;
-    }
-    .img-button{
-        width: 192px;
-        height: 31px;
-        background: #4895EF;
-        border-radius: 16px;
-        font-size: 14px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        line-height: 0px;
-    }
-
-    .avatar-uploader .el-upload {
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 7px;
-    }
-
-    .avatar-uploader .el-upload:hover {
-        border-color: $info;
-    }
-
-    $avatarSize: 100px;
-
-    .avatar-uploader .avatar-uploader-icon {
-        border: 1px solid #3F5FF4;
-        border-radius: 5px;
-        font-size: 28px;
-        color: #8c939d;
-        width: $avatarSize;
-        height: $avatarSize;
-        line-height: $avatarSize;
-        text-align: center;
-    }
-
-    .avatar-uploader .avatar {
-        width: $avatarSize;
-        height: $avatarSize;
-        display: block;
-    }
-
-    .upload-attach-box .el-upload {
-        display: block;
-
-    }
-
-    .upload-attach-box .el-upload button {
-        height: 31px;
-        margin-top: 17px;
-        font-size: 18px;
-        padding-top: 7px;
-        width: 192px;
-        background: #4895EF;
-        border-radius: 50px;
-        font-size: 14px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-    }
-
-    .el-tabs__nav-scroll {
-        width: fit-content;
-        height: 45px;
-        background: #FFFFFF;
-        border-radius: 25px;
-        border: 1px solid #CCCCCC;
-
-    }
-
-    .el-tabs--card > .el-tabs__header {
-        width: fit-content;
-        height: 35px;
-        border-radius: 18px;
-        border-bottom: 0px;
-        /*margin-left: 56px;*/
-
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__nav {
-        border: 0px;
-        border-bottom: none;
-        border-radius: 4px 4px 0 0;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__item {
-        border-left: none;
-        width: 80px;
-        height: 35px;
-        background: #4895EF;
-        border-radius: 18px;
-        margin: 5px;
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        line-height: 34px;
-        text-align: center;
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable {
-        width: fit-content;
-        height: 35px;
-        background: #4895EF;
-        border-radius: 18px;
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        line-height: 35px;
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #FFFFFF;
-        margin: 4px 4px 3px 4px;
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable {
-        width: fit-content;
-        height: 35px;
-        margin: 3px 6px 3px 3px;
-        background: #FFFFFF;
-        border-radius: 18px;
-        font-size: 18px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #333333;
-    }
-
-    .el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable .el-icon-close, .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable:hover .el-icon-close {
-        width: 0px;
-    }
-    .el-tabs__new-tab {
-        float: right;
-        border: 1.5px solid #4B97F0;
-        height: 28px;
-        width: 28px;
-        line-height: 0px;
-        margin: 8px 0 10px 10px;
-        border-radius: 20px;
-        padding-top: 3px;
-        font-size: 20px;
-        color: #4B97F0;
-        cursor: pointer;
-        -webkit-transition: all .15s;
-        transition: all .15s;
-    }
-
-    .el-tabs--card > .el-tabs__header.el-tabs__new-tab {
-        float: right;
-        border: 1px solid #d3dce6;
-        height: 18px;
-        width: 18px;
-        line-height: 18px;
-        margin: 12px 0 9px 10px;
-        border-radius: 50px;
-        text-align: center;
-        font-size: 12px;
-        color: #d3dce6;
-        cursor: pointer;
-        transition: all .15s;
-    }
 </style>

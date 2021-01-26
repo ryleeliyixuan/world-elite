@@ -20,11 +20,23 @@ public class SearchJobHistoryVo{
     private List<Integer> degreeIds;
     private List<Integer> salaryIds;
     private List<Integer> industryIds;
+    private List<Integer> expIds;
+    private List<Integer> scaleIds;
+    private List<Integer> defineIds;
+    private List<Integer> jobTypeIds;
+    private List<Integer> lanIds;
+    private List<Integer> specialIds;
 
     private List<String> cityValues;
     private List<String> degreeValues;
     private List<String> salaryValues;
     private List<String> industryValues;
+    private List<String> expValues;
+    private List<String> scaleValues;
+    private List<String> defineValues;
+    private List<String> jobTypeValues;
+    private List<String> lanValues;
+    private List<String> specialValues;
 
     private Byte filterCount;
 

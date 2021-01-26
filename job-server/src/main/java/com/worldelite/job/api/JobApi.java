@@ -257,7 +257,12 @@ public class JobApi extends BaseApi {
         PageResult pageResult;
 
         if (jobService.isEmptySearch(searchForm)) {
-            pageResult = jobService.getUserRecommendJobList(searchForm);
+//            pageResult = jobService.getUserRecommendJobList(searchForm);
+            JobListForm jobListForm = new JobListForm();
+            jobListForm.setStatus(JobStatus.PUBLISH.value);
+            jobListForm.setPage(searchForm.getPage());
+            jobListForm.setLimit(searchForm.getLimit());
+            pageResult = jobService.getJobList(jobListForm);
         } else {
             pageResult = searchService.searchJob(searchForm);
         }
@@ -289,7 +294,12 @@ public class JobApi extends BaseApi {
         PageResult pageResult;
 
         if (jobService.isEmptySearch(searchForm)) {
-            pageResult = jobService.getUserRecommendJobList(searchForm);
+//            pageResult = jobService.getUserRecommendJobList(searchForm);
+            JobListForm jobListForm = new JobListForm();
+            jobListForm.setStatus(JobStatus.PUBLISH.value);
+            jobListForm.setPage(searchForm.getPage());
+            jobListForm.setLimit(searchForm.getLimit());
+            pageResult = jobService.getJobList(jobListForm);
         } else {
             pageResult = searchService.searchJob(searchForm);
         }

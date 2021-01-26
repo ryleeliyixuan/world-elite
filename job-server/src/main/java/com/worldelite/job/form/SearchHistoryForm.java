@@ -18,6 +18,12 @@ public class SearchHistoryForm extends PageForm{
     private Integer[] salaryIds;
     private Integer[] degreeIds;
     private Integer[] industryIds;
+    private Integer[] expIds;
+    private Integer[] scaleIds;
+    private Integer[] defineIds;
+    private Integer[] jobTypeIds;
+    private Integer[] lanIds;
+    private Integer[] specialIds;
     private Byte filterCount;
 
 }

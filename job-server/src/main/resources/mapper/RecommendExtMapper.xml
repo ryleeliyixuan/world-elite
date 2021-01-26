@@ -15,4 +15,10 @@
       </if>
     </where>
   </select>
+
+  <select id="selectRecentJobCompanyId" resultType="java.lang.Long">
+    select distinct recent.company_id from (
+      select company_id,create_time from t_job group by company_id,create_time order by create_time desc
+    ) recent
+  </select>
 </mapper>

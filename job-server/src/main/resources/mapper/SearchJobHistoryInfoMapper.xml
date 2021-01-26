@@ -8,11 +8,18 @@
     <result column="salary_id" jdbcType="INTEGER" property="salaryId" />
     <result column="degree_id" jdbcType="INTEGER" property="degreeId" />
     <result column="industry_id" jdbcType="INTEGER" property="industryId" />
+    <result column="exp_id" jdbcType="INTEGER" property="expId" />
+    <result column="scale_id" jdbcType="INTEGER" property="scaleId" />
+    <result column="define_id" jdbcType="INTEGER" property="defineId" />
+    <result column="job_type_id" jdbcType="INTEGER" property="jobTypeId" />
+    <result column="lan_id" jdbcType="INTEGER" property="lanId" />
+    <result column="special_id" jdbcType="INTEGER" property="specialId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, history_id, city_id, salary_id, degree_id, industry_id, create_time, update_time
+    id, history_id, city_id, salary_id, degree_id, industry_id, exp_id, scale_id, define_id,
+    job_type_id, lan_id, special_id, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -26,10 +33,14 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.worldelite.job.entity.SearchJobHistoryInfo" useGeneratedKeys="true">
     insert into t_search_job_history_info (history_id, city_id, salary_id,
-      degree_id, industry_id, create_time,
+      degree_id, industry_id, exp_id,
+      scale_id, define_id, job_type_id,
+      lan_id, special_id, create_time,
       update_time)
     values (#{historyId,jdbcType=BIGINT}, #{cityId,jdbcType=INTEGER}, #{salaryId,jdbcType=INTEGER},
-      #{degreeId,jdbcType=INTEGER}, #{industryId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{degreeId,jdbcType=INTEGER}, #{industryId,jdbcType=INTEGER}, #{expId,jdbcType=INTEGER},
+      #{scaleId,jdbcType=INTEGER}, #{defineId,jdbcType=INTEGER}, #{jobTypeId,jdbcType=INTEGER},
+      #{lanId,jdbcType=INTEGER}, #{specialId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.worldelite.job.entity.SearchJobHistoryInfo" useGeneratedKeys="true">
@@ -49,6 +60,24 @@
       </if>
       <if test="industryId != null">
         industry_id,
+      </if>
+      <if test="expId != null">
+        exp_id,
+      </if>
+      <if test="scaleId != null">
+        scale_id,
+      </if>
+      <if test="defineId != null">
+        define_id,
+      </if>
+      <if test="jobTypeId != null">
+        job_type_id,
+      </if>
+      <if test="lanId != null">
+        lan_id,
+      </if>
+      <if test="specialId != null">
+        special_id,
       </if>
       <if test="createTime != null">
         create_time,
@@ -72,6 +101,24 @@
       </if>
       <if test="industryId != null">
         #{industryId,jdbcType=INTEGER},
+      </if>
+      <if test="expId != null">
+        #{expId,jdbcType=INTEGER},
+      </if>
+      <if test="scaleId != null">
+        #{scaleId,jdbcType=INTEGER},
+      </if>
+      <if test="defineId != null">
+        #{defineId,jdbcType=INTEGER},
+      </if>
+      <if test="jobTypeId != null">
+        #{jobTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="lanId != null">
+        #{lanId,jdbcType=INTEGER},
+      </if>
+      <if test="specialId != null">
+        #{specialId,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -99,6 +146,24 @@
       <if test="industryId != null">
         industry_id = #{industryId,jdbcType=INTEGER},
       </if>
+      <if test="expId != null">
+        exp_id = #{expId,jdbcType=INTEGER},
+      </if>
+      <if test="scaleId != null">
+        scale_id = #{scaleId,jdbcType=INTEGER},
+      </if>
+      <if test="defineId != null">
+        define_id = #{defineId,jdbcType=INTEGER},
+      </if>
+      <if test="jobTypeId != null">
+        job_type_id = #{jobTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="lanId != null">
+        lan_id = #{lanId,jdbcType=INTEGER},
+      </if>
+      <if test="specialId != null">
+        special_id = #{specialId,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -115,6 +180,12 @@
       salary_id = #{salaryId,jdbcType=INTEGER},
       degree_id = #{degreeId,jdbcType=INTEGER},
       industry_id = #{industryId,jdbcType=INTEGER},
+      exp_id = #{expId,jdbcType=INTEGER},
+      scale_id = #{scaleId,jdbcType=INTEGER},
+      define_id = #{defineId,jdbcType=INTEGER},
+      job_type_id = #{jobTypeId,jdbcType=INTEGER},
+      lan_id = #{lanId,jdbcType=INTEGER},
+      special_id = #{specialId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

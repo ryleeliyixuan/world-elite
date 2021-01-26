@@ -84,7 +84,7 @@
             </el-form-item>
 
             <el-form-item label="工作类型" prop="jobType">
-                <el-select v-model="jobForm.jobType" placeholder="校招" class="salary-option">
+                <el-select v-model="jobForm.recruitType" placeholder="校招" class="salary-option">
                     <el-option v-for="item in jobTypeOptions2"
                                :key="item.id"
                                :label="item.name"
@@ -92,7 +92,7 @@
                     </el-option>
                 </el-select>
 
-                <el-select v-model="jobForm.recruitType" placeholder="全职" class="salary-option" style="margin-left: 20px">
+                <el-select v-model="jobForm.jobType" placeholder="全职" class="salary-option" style="margin-left: 20px">
                     <el-option v-for="item in jobTypeOptions1"
                                :key="item.id"
                                :label="item.name"
@@ -557,8 +557,8 @@
                     if (valid) {
                         this.nowDate = getNowDate()
                         this.previewSalary = this.SalaryOptions.find(option => option.id === this.jobForm.salaryId).name;
-                        this.previewJobType = this.jobTypeOptions1.find(option => option.id === this.jobForm.recruitType).name;
-                        this.previewRecruitType = this.jobTypeOptions2.find(option => option.id === this.jobForm.jobType).name;
+                        this.previewJobType = this.jobTypeOptions1.find(option => option.id === this.jobForm.jobType).name;
+                        this.previewRecruitType = this.jobTypeOptions2.find(option => option.id === this.jobForm.recruitType).name;
                         this.previewMinDegree = this.degreeOptions.find(option => option.id === this.jobForm.minDegreeId).name;
                         this.dialogVisible2 = true;
                     }

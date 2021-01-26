@@ -233,6 +233,7 @@ public class JobService extends BaseService {
     }
 
     private Integer[] removeElByValue(Integer[] arrays, Integer value) {
+        if (arrays == null) return null;
         int index = -1;
         for (int i = 0; i < arrays.length; i++) {
             if (arrays[i].equals(value)) {
@@ -650,18 +651,22 @@ public class JobService extends BaseService {
             throw new ServiceException("请先完善简历：基本信息未填写", ApiCode.UNCOMPLETE_RESUME);
         }
 
-        if (StringUtils.isEmpty(resumeDetail.getAvatar())) {
+        if (CollectionUtils.isEmpty(resumeDetail.getResumeEduList())) {
+            throw new ServiceException("请先完善简历：教育经历未填写", ApiCode.UNCOMPLETE_RESUME);
+        }
+
+        if(resumeDetail.getUserExpectJobVo() == null){
+            throw new ServiceException("请先完善简历：求职意向未填写", ApiCode.UNCOMPLETE_RESUME);
+        }
+
+        //TODO 临时先注释掉, 需要做成完成度不够时前端有提示, 上面三个是必填的
+        /*if (StringUtils.isEmpty(resumeDetail.getAvatar())) {
             throw new ServiceException("请先完善简历：简历头像未上传", ApiCode.UNCOMPLETE_RESUME);
         }
 
         if (StringUtils.isEmpty(resumeBasic.getIntroduction())) {
             throw new ServiceException("请先完善简历：自我介绍未填写", ApiCode.UNCOMPLETE_RESUME);
         }
-
-        if (CollectionUtils.isEmpty(resumeDetail.getResumeEduList())) {
-            throw new ServiceException("请先完善简历：教育经历未填写", ApiCode.UNCOMPLETE_RESUME);
-        }
-
 
         if (CollectionUtils.isEmpty(resumeDetail.getResumeExpList())) {
             throw new ServiceException("请先完善简历：工作经验未填写", ApiCode.UNCOMPLETE_RESUME);
@@ -673,7 +678,7 @@ public class JobService extends BaseService {
 
         if (CollectionUtils.isEmpty(resumeDetail.getResumeSkillList())) {
             throw new ServiceException("请先完善简历：能力标签未填写", ApiCode.UNCOMPLETE_RESUME);
-        }
+        }*/
     }
 
     private static final Integer MONTH_NUMBER = 12;

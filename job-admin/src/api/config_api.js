@@ -15,3 +15,19 @@ export function getHomeConfig(configType){
         params: {configType: configType}
       })
 }
+
+export function saveWebHomeConfig(data){
+  return request({
+      url: '/config/save-web-home-config',
+      method: 'post',
+      data
+    })
+}
+
+export function getWebHomeConfig(configType){
+  return request({
+      url: '/config/get-web-home-config',
+      method: 'get',
+      params: {configType: configType}
+    })
+}

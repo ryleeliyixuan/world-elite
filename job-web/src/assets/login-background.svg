@@ -70,22 +70,21 @@
                     <text id="We-build-your-CAREER" font-family="Roboto-Black, Roboto" font-size="36" font-weight="700" fill="#333333">
                         <tspan x="29.1592473" y="67">We build your CAREER</tspan>
                     </text>
-                    <text id="模拟面试，与大厂面试官来一场逼真模拟，o" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
-                        <tspan x="44.1592473" y="558">模拟面试，与大厂面试官来一场逼真模拟，offer尽收割，更有机会在虚拟面试中获</tspan>
-                        <tspan x="44.1592473" y="578">得真实钦点。 </tspan>
+                    <text id="独家mock平台已蓄势待发，敬请期待…" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
+                        <tspan x="44.1592473" y="558">独家mock平台已蓄势待发，敬请期待…</tspan>
                     </text>
                     <text id="面前模拟，offer无忧" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" fill="#333333">
                         <tspan x="44.1592473" y="534">面前模拟，offer无忧</tspan>
                     </text>
-                    <text id="企业信息、薪资、工作环境、实际体验，入职" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
-                        <tspan x="44.1592473" y="429">企业信息、薪资、工作环境、实际体验，入职前你需要做的一切功课，百科已经为</tspan>
+                    <text id="企业信息、薪资、工作环境、实际体验，求职" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
+                        <tspan x="44.1592473" y="429">企业信息、薪资、工作环境、实际体验，求职前你需要做的一切功课，百科已经为</tspan>
                         <tspan x="44.1592473" y="449">你准备好。</tspan>
                     </text>
                     <text id="公司百科，应有尽有" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" fill="#333333">
                         <tspan x="44.1592473" y="408">公司百科，应有尽有</tspan>
                     </text>
                     <text id="国内外名企招聘、空中宣讲、大牛brain" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
-                        <tspan x="44.1592473" y="323">国内外名企招聘、空中宣讲、大牛brain storm，我们为你一网打尽。</tspan>
+                        <tspan x="44.1592473" y="323">国内外名企招聘、空中宣讲、大牛brainstorm，我们为你一网打尽。</tspan>
                     </text>
                     <text id="线上线下，一网打尽" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" fill="#333333">
                         <tspan x="44.1592473" y="299">线上线下，一网打尽</tspan>
@@ -109,8 +108,9 @@
                     <text id="海量内推，尽在掌握" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" fill="#333333">
                         <tspan x="44.1592473" y="183">海量内推，尽在掌握</tspan>
                     </text>
-                    <text id="HR面对面，信息全透明，实习岗位每日更新" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
-                        <tspan x="44.1592473" y="207">HR面对面，信息全透明，实习岗位每日更新，总有一个你喜欢。</tspan>
+                    <text id="HR面对面，信息全透明，实习、全职岗位每" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
+                        <tspan x="44.1592473" y="207">HR面对面，信息全透明，实习、全职岗位每日更新，总有一个你</tspan>
+                        <tspan x="44.1592473" y="227">喜欢。</tspan>
                     </text>
                 </g>
             </g>

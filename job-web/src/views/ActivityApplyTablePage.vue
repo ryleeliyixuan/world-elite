@@ -26,7 +26,7 @@
                 <el-input size="small" class="value"></el-input>
             </div>
             <div :class="['form-item',{'hidden':applyForm.genderFlag==='2'}]">
-                <div class="name"><span>*</span>性别</div>
+                <div class="name"><span>{{getMustStatus('genderFlag')}}</span>性别</div>
                 <div class="value">
                     <div class="value-item">
                         <svg-icon :icon-class="getValueIcon('genderFlag')"></svg-icon>
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div :class="['form-item',{'hidden':applyForm.phoneFlag==='2'}]">
-                <div class="name"><span>*</span>手机号</div>
+                <div class="name"><span>{{getMustStatus('phoneFlag')}}</span>手机号</div>
                 <el-input size="small" class="value" :disabled="applyForm.phoneFlag==='2'"></el-input>
                 <div class="value-item" @click="onHidden('phoneFlag')">
                     <svg-icon :icon-class="getStatusIcon('phoneFlag')" clickable></svg-icon>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div :class="['form-item',{'hidden':applyForm.emailFlag==='2'}]">
-                <div class="name"><span>*</span>邮箱</div>
+                <div class="name"><span>{{getMustStatus('emailFlag')}}</span>邮箱</div>
                 <el-input size="small" class="value" :disabled="applyForm.emailFlag==='2'"></el-input>
                 <div class="value-item" @click="onHidden('emailFlag')">
                     <svg-icon :icon-class="getStatusIcon('emailFlag')" clickable></svg-icon>
@@ -71,7 +71,7 @@
                 </div>
             </div>
             <div :class="['form-item',{'hidden':applyForm.schoolFlag==='2'}]">
-                <div class="name"><span>*</span>学校</div>
+                <div class="name"><span>{{getMustStatus('schoolFlag')}}</span>学校</div>
                 <el-input size="small" class="value" :disabled="applyForm.schoolFlag==='2'"></el-input>
                 <div class="value-item" @click="onHidden('schoolFlag')">
                     <svg-icon :icon-class="getStatusIcon('schoolFlag')" clickable></svg-icon>
@@ -83,7 +83,7 @@
                 </div>
             </div>
             <div :class="['form-item',{'hidden':applyForm.gradeFlag==='2'}]">
-                <div class="name"><span>*</span>年级</div>
+                <div class="name"><span>{{getMustStatus('gradeFlag')}}</span>年级</div>
                 <el-input size="small" class="value" :disabled="applyForm.gradeFlag==='2'"></el-input>
                 <div class="value-item" @click="onHidden('gradeFlag')">
                     <svg-icon :icon-class="getStatusIcon('gradeFlag')" clickable></svg-icon>
@@ -95,7 +95,7 @@
                 </div>
             </div>
             <div :class="['form-item',{'hidden':applyForm.professionFlag==='2'}]">
-                <div class="name"><span>*</span>专业</div>
+                <div class="name"><span>{{getMustStatus('professionFlag')}}</span>专业</div>
                 <el-input size="small" class="value" :disabled="applyForm.professionFlag==='2'"></el-input>
                 <div class="value-item" @click="onHidden('professionFlag')">
                     <svg-icon :icon-class="getStatusIcon('professionFlag')" clickable></svg-icon>
@@ -107,7 +107,7 @@
                 </div>
             </div>
             <div :class="['form-item',{'hidden':applyForm.educationFlag==='2'}]">
-                <div class="name"><span>*</span>学历</div>
+                <div class="name"><span>{{getMustStatus('educationFlag')}}</span>学历</div>
                 <div class="value">
                     <div class="value-item" v-for="education in educationList" :key="education.id">
                         <svg-icon :icon-class="getValueIcon('educationFlag')"></svg-icon>
@@ -130,7 +130,8 @@
                     添加新问题
                 </div>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="type.value">{{type.label}}</el-dropdown-item>
+                    <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="type.value">{{type.label}}
+                    </el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
             <div v-else class="question-container">
@@ -147,7 +148,8 @@
                                             <span>前插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -158,7 +160,8 @@
                                             <span>后插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -168,18 +171,19 @@
                             <div class="question1-edit-line2"></div>
                             <div class="question1-edit-line3"></div>
                             <div class="question1-edit-line4">
-                                <el-input class="title" v-model="question.title" maxlength="50" placeholder="请输入标题"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
                                         <span class="text">设为必答</span>
                                     </div>
-                                    <el-select v-model="question.type" placeholder="请选择" size="mini" style="margin-left: 26px; width: 160px;">
+                                    <el-select v-model="question.typeForSelect" placeholder="更改题型" size="mini" style="margin-left: 26px; width: 160px;"
+                                               @change="onQuestionTypeChange">
                                         <el-option v-for="item in questionTypeList"
                                                    size="mini"
                                                    :key="item.value"
                                                    :label="item.label"
-                                                   :value="item.value">
+                                                   :value="{question, value:item.value}">
                                         </el-option>
                                     </el-select>
                                 </div>
@@ -201,7 +205,8 @@
                                             <span>前插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -212,7 +217,8 @@
                                             <span>后插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -234,7 +240,8 @@
                                             <span>前插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -245,7 +252,8 @@
                                             <span>后插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -260,18 +268,19 @@
                             </div>
                             <div class="question2-edit-line3"></div>
                             <div class="question2-edit-line4">
-                                <el-input class="title" v-model="question.title" maxlength="50" placeholder="请输入标题"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
                                         <span class="text">设为必答</span>
                                     </div>
-                                    <el-select v-model="question.type" placeholder="请选择" size="mini" style="margin-left: 26px; width: 160px;">
+                                    <el-select v-model="question.typeForSelect" placeholder="更改题型" size="mini" style="margin-left: 26px; width: 160px;"
+                                               @change="onQuestionTypeChange">
                                         <el-option v-for="item in questionTypeList"
                                                    size="mini"
                                                    :key="item.value"
                                                    :label="item.label"
-                                                   :value="item.value">
+                                                   :value="{question, value:item.value}">
                                         </el-option>
                                     </el-select>
                                 </div>
@@ -303,7 +312,8 @@
                                             <span>前插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -314,7 +324,8 @@
                                             <span>后插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -341,7 +352,8 @@
                                             <span>前插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -352,7 +364,8 @@
                                             <span>后插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -367,18 +380,19 @@
                             </div>
                             <div class="question3-edit-line3"></div>
                             <div class="question3-edit-line4">
-                                <el-input class="title" v-model="question.title" maxlength="50" placeholder="请输入标题"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
                                         <span class="text">设为必答</span>
                                     </div>
-                                    <el-select v-model="question.type" placeholder="请选择" size="mini" style="margin-left: 26px; width: 160px;">
+                                    <el-select v-model="question.typeForSelect" placeholder="更改题型" size="mini" style="margin-left: 26px; width: 160px;"
+                                               @change="onQuestionTypeChange">
                                         <el-option v-for="item in questionTypeList"
                                                    size="mini"
                                                    :key="item.value"
                                                    :label="item.label"
-                                                   :value="item.value">
+                                                   :value="{question, value:item.value}">
                                         </el-option>
                                     </el-select>
                                 </div>
@@ -410,7 +424,8 @@
                                             <span>前插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -421,7 +436,8 @@
                                             <span>后插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -448,7 +464,8 @@
                                             <span>前插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -459,7 +476,8 @@
                                             <span>后插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -472,18 +490,19 @@
                             </div>
                             <div class="question4-edit-line3"></div>
                             <div class="question4-edit-line4">
-                                <el-input class="title" v-model="question.title" maxlength="50" placeholder="请输入标题"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
                                         <span class="text">设为必答</span>
                                     </div>
-                                    <el-select v-model="question.type" placeholder="请选择" size="mini" style="margin-left: 26px; width: 160px;">
+                                    <el-select v-model="question.typeForSelect" placeholder="更改题型" size="mini" style="margin-left: 26px; width: 160px;"
+                                               @change="onQuestionTypeChange">
                                         <el-option v-for="item in questionTypeList"
                                                    size="mini"
                                                    :key="item.value"
                                                    :label="item.label"
-                                                   :value="item.value">
+                                                   :value="{question, value:item.value}">
                                         </el-option>
                                     </el-select>
                                 </div>
@@ -505,7 +524,8 @@
                                             <span>前插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -516,7 +536,8 @@
                                             <span>后插新题</span>
                                         </div>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value" :command="{type:type.value,index}">
+                                            <el-dropdown-item class="question-type" v-for="type in questionTypeList" :key="type.value"
+                                                              :command="{type:type.value,index}">
                                                 {{type.label}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -537,7 +558,7 @@
             <div class="cancel" @click="onCancel">取消</div>
             <div class="preview" @click="onPreview">预览</div>
             <div class="save-template" @click="onSaveTemplate" v-if="this.type==='0'">存为模板</div>
-            <div class="submit" @click="onSubmitApplyTable" v-if="this.type==='0'">{{this.applyForm.id?"更新报名表":"添加报名表"}}</div>
+            <div class="submit" @click="onSubmitApplyTable" v-if="this.type==='0'">{{this.applyForm.id?"更新报名表":"保存"}}</div>
             <div class="submit" @click="onSaveTemplate" v-if="this.type==='1'">{{templateId?'更新模板':'添加模板'}}</div>
         </div>
 
@@ -667,25 +688,6 @@
                 this.$axios.get('/dict/list', {params: {type: 25, limit: 99}}).then(response => {
                     this.educationList = response.data.list;
                 })
-
-
-                // TODO Delete
-                // this.applyForm.questionnaireList.push({title: "这是一个填空题", mustAnswer: '1', edit: false, type: '1', optionsList: []});
-                // this.applyForm.questionnaireList.push({
-                //     title: "这是一个单选题",
-                //     mustAnswer: '1',
-                //     edit: false,
-                //     type: '2',
-                //     optionsList: [{options: "第一个选项"}, {options: "第二个选项"}, {options: "第三个选项"}, {options: "第四个选项"}]
-                // });
-                // this.applyForm.questionnaireList.push({
-                //     title: "这是一个多选题",
-                //     mustAnswer: '1',
-                //     edit: false,
-                //     type: '3',
-                //     optionsList: [{options: "第一个选项"}, {options: "第二个选项"}, {options: "第三个选项"}, {options: "第四个选项"}]
-                // });
-                // this.applyForm.questionnaireList.push({title: "这个题需要上传附件", mustAnswer: '1', edit: false, type: '4', optionsList: [], fileName:undefined});
             },
 
             // 获取导航栏标题
@@ -757,6 +759,11 @@
                 }
             },
 
+            // 获取必填状态
+            getMustStatus(key) {
+                return this.applyForm[key] === '1' ? '' : '*';
+            },
+
             // 获取单选按钮状态图标
             getValueIcon(key) {
                 return this.applyForm[key] === '2' ? 'apply-table-disabled' : 'apply-table-unselected';
@@ -784,19 +791,37 @@
                 }
             },
 
-            // 添加指定类型题目
-            onQuestionType(command) {
-                this.applyForm.questionnaireList.push({title: undefined, mustAnswer: '1', edit: true, type: command, optionsList: []});
-                switch (command) {
+            // 创建一个新题目
+            newQuestion(type) {
+                let question = {title: undefined, mustAnswer: '1', edit: true, type: type, typeForSelect: undefined, optionsList: []}
+                switch (type) {
                     case '1': // 填空题
                         break;
                     case '2': // 单选题
+                        question.optionsList.push({options: '选项1'});
+                        question.optionsList.push({options: '选项2'});
+                        question.optionsList.push({options: '选项3'});
                         break;
                     case '3': // 多选题
+                        question.optionsList.push({options: '选项1'});
+                        question.optionsList.push({options: '选项2'});
+                        question.optionsList.push({options: '选项3'});
                         break;
                     case '4': // 附件上传题
                         break;
                 }
+                return question;
+            },
+
+            // 修改类型
+            onQuestionTypeChange(object) {
+                let {question, value} = object;
+                question.type = value;
+            },
+
+            // 添加指定类型题目
+            onQuestionType(command) {
+                this.applyForm.questionnaireList.push(this.newQuestion(command));
             },
 
             // 编辑题目
@@ -806,7 +831,11 @@
 
             // 取消编辑题目
             onQuestionEditCancel(question) {
-                this.$set(question, 'edit', false);
+                if (question.title) {
+                    this.$set(question, 'edit', false);
+                } else {
+                    this.$message.warning("请输入标题");
+                }
             },
 
             // 删除题目
@@ -816,12 +845,12 @@
 
             // 前面添加新题
             onQuestionInsertBefore(item) {
-                this.applyForm.questionnaireList.splice(item.index, 0, {title: undefined, mustAnswer: '1', edit: true, type: item.type, optionsList: []})
+                this.applyForm.questionnaireList.splice(item.index, 0, this.newQuestion(item.type))
             },
 
             // 后面添加新题
             onQuestionInsertAfter(item) {
-                this.applyForm.questionnaireList.splice(item.index + 1, 0, {title: undefined, mustAnswer: '1', edit: true, type: item.type, optionsList: []})
+                this.applyForm.questionnaireList.splice(item.index + 1, 0, this.newQuestion(item.type))
             },
 
             // 添加问题选项
@@ -894,31 +923,42 @@
 
             // 添加模板
             addTemplate() {
-                return this.$axios.post('/questionnaire-template', this.applyForm);
+                return this.$axios.post('/questionnaire-template', this.getFormData());
             },
 
             // 更新模板
             updateTemplate() {
-                return this.$axios.patch(`/questionnaire-template/${this.templateId}`, this.applyForm);
+                return this.$axios.patch(`/questionnaire-template/${this.templateId}`, this.getFormData());
             },
 
             // 提交报名表
             onSubmitApplyTable() {
                 if (this.applyTableId) {
-                    this.$axios.patch(`/activity-questionnaire/${this.applyTableId}`, this.applyForm).then(response => {
+                    this.$axios.patch(`/activity-questionnaire/${this.applyTableId}`, this.getFormData()).then(response => {
                         console.log("更新报名表");
                         this.applyTableId = response.data.id;
                         this.$storage.setObject("报名表", {id: this.applyTableId, title: this.applyForm.title, type: '0'});
                         this.$router.go(-1);
                     })
                 } else {
-                    this.$axios.post('/activity-questionnaire', this.applyForm).then(response => {
+                    this.$axios.post('/activity-questionnaire', this.getFormData()).then(response => {
                         console.log("添加报名表");
                         this.applyTableId = response.data.id;
                         this.$storage.setObject("报名表", {id: this.applyTableId, title: this.applyForm.title, type: '0'});
                         this.$router.go(-1);
                     })
                 }
+            },
+
+            // 参数转换
+            getFormData() {
+                let form = {...this.applyForm};
+                form.questionnaireList = form.questionnaireList.map(item => {
+                    delete item.typeForSelect;
+                    return item;
+                })
+                console.log(form);
+                return form;
             }
         }
     }
@@ -1028,6 +1068,8 @@
                     span {
                         color: red;
                         margin-right: 5px;
+                        display: inline-block;
+                        width: 7px;
                     }
                 }
 
@@ -1125,7 +1167,6 @@
                     margin-top: 13px;
 
                     .question1-edit {
-                        width: 556px;
 
                         .question1-edit-line1 {
                             display: flex;
@@ -1189,7 +1230,7 @@
                         }
 
                         .question1-edit-line4 {
-                            width: 100%;
+                            width: 556px;
                             background: #F0F6FF;
                             border-radius: 15px;
                             padding: 25px 12px 16px;
@@ -1270,6 +1311,7 @@
                                 font-size: 18px;
                                 color: #666666;
                                 line-height: 25px;
+                                font-weight: bold;
 
                                 .must {
                                     color: red;
@@ -1324,7 +1366,6 @@
                     margin-top: 13px;
 
                     .question2-edit {
-                        width: 556px;
 
                         .question2-edit-line1 {
                             display: flex;
@@ -1381,6 +1422,7 @@
                                     display: flex;
                                     align-items: center;
                                     height: 22px;
+                                    flex-shrink: 0;
                                 }
 
                                 .options {
@@ -1403,7 +1445,7 @@
                         }
 
                         .question2-edit-line4 {
-                            width: 100%;
+                            width: 556px;
                             background: #F0F6FF;
                             border-radius: 15px;
                             padding: 25px 12px 16px;
@@ -1524,6 +1566,7 @@
                                 font-size: 18px;
                                 color: #666666;
                                 line-height: 25px;
+                                font-weight: bold;
 
                                 .must {
                                     color: red;
@@ -1574,6 +1617,7 @@
                                     display: flex;
                                     align-items: center;
                                     height: 25px;
+                                    flex-shrink: 0;
                                 }
 
                                 .options {
@@ -1592,7 +1636,6 @@
                     margin-top: 13px;
 
                     .question3-edit {
-                        width: 556px;
 
                         .question3-edit-line1 {
                             display: flex;
@@ -1649,6 +1692,7 @@
                                     display: flex;
                                     align-items: center;
                                     height: 22px;
+                                    flex-shrink: 0;
                                 }
 
                                 .options {
@@ -1671,7 +1715,7 @@
                         }
 
                         .question3-edit-line4 {
-                            width: 100%;
+                            width: 556px;
                             background: #F0F6FF;
                             border-radius: 15px;
                             padding: 25px 12px 16px;
@@ -1792,6 +1836,7 @@
                                 font-size: 18px;
                                 color: #666666;
                                 line-height: 25px;
+                                font-weight: bold;
 
                                 .must {
                                     color: red;
@@ -1842,6 +1887,7 @@
                                     display: flex;
                                     align-items: center;
                                     height: 25px;
+                                    flex-shrink: 0;
                                 }
 
                                 .options {
@@ -1860,7 +1906,6 @@
                     margin-top: 13px;
 
                     .question4-edit {
-                        width: 556px;
 
                         .question4-edit-line1 {
                             display: flex;
@@ -1947,7 +1992,7 @@
                         }
 
                         .question4-edit-line4 {
-                            width: 100%;
+                            width: 556px;
                             background: #F0F6FF;
                             border-radius: 15px;
                             padding: 25px 12px 16px;
@@ -2028,6 +2073,7 @@
                                 font-size: 18px;
                                 color: #666666;
                                 line-height: 25px;
+                                font-weight: bold;
 
                                 .must {
                                     color: red;

@@ -21,7 +21,7 @@
                 <div class="line3">
                     <div class="name">活动主办方：</div>
                     <div class="value">{{activity.organizerInfoVo.organizerName}}</div>
-                    <div class="name">活动链接：</div>
+                    <div class="name">{{/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/.test(activity.address)?'活动链接：':'活动地址：'}}</div>
                     <!--  <a class="value" style="text-decoration:underline; cursor: pointer;" href="http://www.myworldelite.com" target="_blank">{{activity.address}}</a>-->
                     <div class="value">{{activity.address}}</div>
                 </div>
@@ -31,7 +31,7 @@
                         {{activity.activityStartTime | timestampToDateHourMinute}}-{{activity.activityFinishTime | timestampToDateHourMinute}}
                     </div>
                     <div class="name">报名时间：</div>
-                    <div class="value" style="color: #FF6E40;">
+                    <div class="value" :style="{color:applyTimeColor}">
                         {{activity.registrationStartTime | timestampToDateHourMinute}}-{{activity.registrationFinishTime | timestampToDateHourMinute}}
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                     报名名额还剩<span>{{activity.numberLimit - activity.applicantQuantity}}</span>个
                 </div>
             </div>
-            <div class="report-button" @click="onReport">举报该活动</div>
+            <div class="report-button" @click="onReport" v-if="this.$route.params.id !== 'preview'">举报该活动</div>
         </div>
         <div class="activity-container" v-if="activity">
             <el-image class="image" :src="activity.poster" fit="contain"></el-image>
@@ -92,7 +92,7 @@
             <el-upload class="upload"
                        action=""
                        v-loading.fullscreen.lock="fullscreenLoadingCount>0"
-                       :show-file-list="false"
+                       :show-file-list="true"
                        :on-success="handleEditorUploadSuccess"
                        :on-error="handleEditorUploadError"
                        :http-request="imageUpload"
@@ -165,6 +165,17 @@
                 resumeList: [], // 简历列表
             };
         },
+        computed: {
+            applyTimeColor() {
+                if (this.activity.registrationStartTime > Date.now()) {
+                    return '#FFFFFF';
+                } else if (this.activity.registrationFinishTime < Date.now()) {
+                    return '#FF6E40';
+                } else {
+                    return '#C6FF00';
+                }
+            }
+        },
         created() {
             this.initData();
         },
@@ -206,6 +217,7 @@
                 if (!this.activity.registrationFlag) {
                     this.$axios.get("/resume/my-resume").then(response => {
                         this.resumeList = response.data;
+                        this.activity.registrationFlag = true;
                     })
                     this.previewDialogVisible = true;
                 }
@@ -508,6 +520,12 @@
                 display: flex;
                 align-items: center;
                 margin-top: 10px;
+                flex-direction: column;
+
+                ::v-deep .el-upload {
+                    display: flex;
+                    align-items: center;
+                }
 
                 .report-upload {
                     width: 20px;

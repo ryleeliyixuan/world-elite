@@ -2,10 +2,7 @@ package com.worldelite.job.service;
 
 import com.worldelite.job.entity.*;
 import com.worldelite.job.form.SearchHistoryForm;
-import com.worldelite.job.mapper.CityMapper;
-import com.worldelite.job.mapper.DictMapper;
-import com.worldelite.job.mapper.SearchJobHistoryInfoMapper;
-import com.worldelite.job.mapper.SearchJobHistoryMapper;
+import com.worldelite.job.mapper.*;
 import com.worldelite.job.vo.SearchJobHistoryVo;
 import lombok.AllArgsConstructor;
 //import org.omg.CORBA.INTERNAL;
@@ -28,6 +25,7 @@ public class SearchJobHistoryService extends BaseService{
     private SearchJobHistoryInfoMapper searchJobHistoryInfoMapper;
     private CityMapper cityMapper;
     private DictMapper dictMapper;
+    private SkillTagMapper skillTagMapper;
 
     public void saveSearchJobHistory(SearchHistoryForm searchHistoryForm) {
         if (curUser() == null) return;
@@ -58,6 +56,24 @@ public class SearchJobHistoryService extends BaseService{
 
             if (i < searchHistoryForm.getIndustryIds().length)
                 searchJobHistoryInfo.setIndustryId(searchHistoryForm.getIndustryIds()[i]);
+
+            if (i < searchHistoryForm.getExpIds().length)
+                searchJobHistoryInfo.setExpId(searchHistoryForm.getExpIds()[i]);
+
+            if (i < searchHistoryForm.getScaleIds().length)
+                searchJobHistoryInfo.setScaleId(searchHistoryForm.getScaleIds()[i]);
+
+            if (i < searchHistoryForm.getDefineIds().length)
+                searchJobHistoryInfo.setDefineId(searchHistoryForm.getDefineIds()[i]);
+
+            if (i < searchHistoryForm.getJobTypeIds().length)
+                searchJobHistoryInfo.setJobTypeId(searchHistoryForm.getJobTypeIds()[i]);
+
+            if (i < searchHistoryForm.getLanIds().length)
+                searchJobHistoryInfo.setLanId(searchHistoryForm.getLanIds()[i]);
+
+            if (i < searchHistoryForm.getSpecialIds().length)
+                searchJobHistoryInfo.setSpecialId(searchHistoryForm.getSpecialIds()[i]);
 
             searchJobHistoryInfoMapper.insert(searchJobHistoryInfo);
         }
@@ -93,11 +109,23 @@ public class SearchJobHistoryService extends BaseService{
             List<Integer> salaryIds = new ArrayList<>();
             List<Integer> degreeIds = new ArrayList<>();
             List<Integer> industryIds = new ArrayList<>();
+            List<Integer> expIds = new ArrayList<>();
+            List<Integer> scaleIds = new ArrayList<>();
+            List<Integer> defineIds = new ArrayList<>();
+            List<Integer> jobTypeIds = new ArrayList<>();
+            List<Integer> lanIds = new ArrayList<>();
+//            List<Integer> specialIds = new ArrayList<>();
 
             List<String> cityValues = new ArrayList<>();
             List<String> salaryValues = new ArrayList<>();
             List<String> degreeValues = new ArrayList<>();
             List<String> industryValues = new ArrayList<>();
+            List<String> expValues = new ArrayList<>();
+            List<String> scaleValues = new ArrayList<>();
+            List<String> defineValues = new ArrayList<>();
+            List<String> jobTypeValues = new ArrayList<>();
+            List<String> lanValues = new ArrayList<>();
+//            List<String> specialValues = new ArrayList<>();
             if (jobHistoryInfos != null && jobHistoryInfos.size() > 0) {
                 SearchJobHistoryVo vo = SearchJobHistoryVo.builder()
                         .keyWord(jobHistory.getKeyWord())
@@ -109,25 +137,55 @@ public class SearchJobHistoryService extends BaseService{
                     salaryIds.add(jobHistoryInfo.getSalaryId());
                     degreeIds.add(jobHistoryInfo.getDegreeId());
                     industryIds.add(jobHistoryInfo.getIndustryId());
+                    expIds.add(jobHistoryInfo.getExpId());
+                    scaleIds.add(jobHistoryInfo.getScaleId());
+                    defineIds.add(jobHistoryInfo.getDefineId());
+                    jobTypeIds.add(jobHistoryInfo.getJobTypeId());
+                    lanIds.add(jobHistoryInfo.getLanId());
+//                    specialIds.add(jobHistoryInfo.getSpecialId());
 
                     Dict dict = new Dict();
                     City city = new City();
+                    SkillTag skillTag = new SkillTag();
                     dict.setName("不限");
                     city.setName("不限");
+                    skillTag.setName("不限");
+
                     cityValues.add(Optional.ofNullable(cityMapper.selectByPrimaryKey(jobHistoryInfo.getCityId())).orElse(city).getName());
                     salaryValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getSalaryId())).orElse(dict).getName());
                     degreeValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getDegreeId())).orElse(dict).getName());
                     industryValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getIndustryId())).orElse(dict).getName());
+
+                    expValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getExpId())).orElse(dict).getName());
+                    scaleValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getScaleId())).orElse(dict).getName());
+                    defineValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getDefineId())).orElse(dict).getName());
+                    jobTypeValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getJobTypeId())).orElse(dict).getName());
+
+                    lanValues.add(Optional.ofNullable(skillTagMapper.selectByPrimaryKey(jobHistoryInfo.getLanId())).orElse(skillTag).getName());
+//                    specialValues.add(Optional.ofNullable(dictMapper.selectByPrimaryKey(jobHistoryInfo.getSpecialId())).orElse(dict).getName());
                 }
                 vo.setCityIds(cityIds.stream().distinct().collect(Collectors.toList()));
                 vo.setSalaryIds(salaryIds.stream().distinct().collect(Collectors.toList()));
                 vo.setDegreeIds(degreeIds.stream().distinct().collect(Collectors.toList()));
                 vo.setIndustryIds(industryIds.stream().distinct().collect(Collectors.toList()));
+                vo.setExpIds(expIds.stream().distinct().collect(Collectors.toList()));
+                vo.setScaleIds(scaleIds.stream().distinct().collect(Collectors.toList()));
+                vo.setDefineIds(defineIds.stream().distinct().collect(Collectors.toList()));
+                vo.setJobTypeIds(jobTypeIds.stream().distinct().collect(Collectors.toList()));
+                vo.setLanIds(lanIds.stream().distinct().collect(Collectors.toList()));
+//                vo.setSpecialIds(specialIds.stream().distinct().collect(Collectors.toList()));
 
                 vo.setCityValues(cityValues.stream().distinct().collect(Collectors.toList()));
                 vo.setSalaryValues(salaryValues.stream().distinct().collect(Collectors.toList()));
                 vo.setDegreeValues(degreeValues.stream().distinct().collect(Collectors.toList()));
                 vo.setIndustryValues(industryValues.stream().distinct().collect(Collectors.toList()));
+                vo.setExpValues(expValues.stream().distinct().collect(Collectors.toList()));
+                vo.setScaleValues(scaleValues.stream().distinct().collect(Collectors.toList()));
+                vo.setDefineValues(defineValues.stream().distinct().collect(Collectors.toList()));
+                vo.setJobTypeValues(jobTypeValues.stream().distinct().collect(Collectors.toList()));
+                vo.setLanValues(lanValues.stream().distinct().collect(Collectors.toList()));
+//                vo.setSpecialIds(specialValues.stream().distinct().collect(Collectors.toList()));
+
                 vos.add(vo);
                 count++;
             }
@@ -139,10 +197,18 @@ public class SearchJobHistoryService extends BaseService{
 
 
     private int getMaxIdsLength(SearchHistoryForm searchHistoryForm) {
-        List<Integer> lengthList = Arrays.asList(searchHistoryForm.getCityIds().length,
+        List<Integer> lengthList = Arrays.asList(
+                searchHistoryForm.getCityIds().length,
                 searchHistoryForm.getDegreeIds().length,
                 searchHistoryForm.getIndustryIds().length,
-                searchHistoryForm.getSalaryIds().length);
+                searchHistoryForm.getSalaryIds().length,
+                searchHistoryForm.getExpIds().length,
+                searchHistoryForm.getScaleIds().length,
+                searchHistoryForm.getDefineIds().length,
+                searchHistoryForm.getJobTypeIds().length,
+                searchHistoryForm.getLanIds().length
+//                searchHistoryForm.getSpecialIds().length
+        );
         Collections.sort(lengthList);
         return lengthList.get(lengthList.size() - 1);
     }
