@@ -7,7 +7,7 @@ import lombok.Data;
  **/
 @Data
 public class RealNameAuthForm extends PageForm {
-    private Long userId; //记录id
+    private Long userId; //用户id(留空为当前登录账户id)
     private String name; //姓名
     private String idNumber;//身份证号
     private String faceUrl;//身份证/学生证人像面
