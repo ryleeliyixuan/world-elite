@@ -1165,6 +1165,7 @@
                                                                 placeholder="搜索标签"
                                                                 maxlength="6"
                                                                 class="m-input-text-width"
+                                                                @change="handleAddNewSkillTag"
                                                                 style="width: 200px;padding-left: 10px;">
                                                         </el-input>
                                                         <svg-icon
@@ -1253,6 +1254,19 @@
                         <b-col class="right-box">
                             <div class="resume-preview resume-right-box">
                                 <el-row style="padding: 10px 10px 2px 4px;">
+<!--                                    <el-form ref="parseAttachmentForm" :model="parseAttachmentForm"-->
+<!--                                             label-width="80px">-->
+<!--                                        <el-upload-->
+<!--                                                class="mt-2 upload-attach-box"-->
+<!--                                                :limit="1"-->
+<!--                                                :action="uploadAttachmentOptions.action"-->
+<!--                                                :data="uploadAttachmentOptions.params"-->
+<!--                                                :accept="uploadAttachmentOptions.acceptFileType"-->
+<!--                                                :show-file-list="false"-->
+<!--                                                :on-success="handleUploadParseAttachment"-->
+<!--                                                :before-upload="beforeAttachmengUpload"-->
+<!--                                                :file-list="fileList"-->
+<!--                                        >-->
 <!--                                    <el-button-->
 <!--                                            class="left-btn"-->
 <!--                                    >-->
@@ -1261,6 +1275,8 @@
 <!--                                                style="width: 16px;height: 17px;margin-right: 2px"-->
 <!--                                        ></svg-icon>快速录入-->
 <!--                                    </el-button>-->
+<!--                                        </el-upload>-->
+<!--                                    </el-form>-->
                                     <el-button
                                             class="left-btn"
                                             @click="handlePreview"
@@ -1504,6 +1520,7 @@
     import {getAllCountries, getCurrentCountry} from "@/api/country_api";
     import {
         getResumeInfo,
+        parseAttachment,
         getResumeDetail,
         saveResumeBasic,
         saveResumeEdu,
@@ -1640,6 +1657,10 @@
                     resumeId:undefined,
                     introduction:undefined,
                     title:undefined,
+                },
+                parseAttachmentForm:{
+                    name:undefined,
+                    asAttachment:false
                 },
                 resumeForm2:{
                     id: undefined,
@@ -2111,6 +2132,12 @@
                             });
                     }
                 });
+            },
+            handleUploadParseAttachment() {
+                    this.parseAttachmentForm.name = this.uploadAttachmentOptions.fileUrl;
+                    console.log(this.parseAttachmentForm.name)
+                    this.handleSaveParseAttachment(false);
+                    this.fileList=[]
             },
             handleUploadAttachmengSuccess() {
                 this.resumeForm2.attachResume = this.uploadAttachmentOptions.fileUrl;
@@ -2795,6 +2822,22 @@
             handleDelResumeAwards(id) {
                 this.handleDeleteItemById(delResumeAwards, id);
                 console.log(id)
+            },
+            handleSaveParseAttachment(){
+                this.$refs["parseAttachmentForm"][0].validate((valid) => {
+                    console.log(this.parseAttachmentForm)
+                    if (valid) {
+                        parseAttachment(this.parseAttachmentForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
+
+
+                    }
+                });
             },
             handleSaveResumeAttachResume(){
                 this.$refs["resumeForm2"][0].validate((valid) => {
