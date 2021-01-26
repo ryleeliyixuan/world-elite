@@ -1412,7 +1412,7 @@
         this.$router.push(`/job/${id}`);
       },
     },
-    beforeDestroy() {
+    deactivated() {
       window.removeEventListener("scroll", this.checkScrollFilter);
     },
   };
