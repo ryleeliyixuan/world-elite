@@ -236,7 +236,7 @@ public class JobService extends BaseService {
         if (arrays == null) return null;
         int index = -1;
         for (int i = 0; i < arrays.length; i++) {
-            if (arrays[i].equals(value)) {
+            if (arrays[i]!= null && arrays[i].equals(value)) {
                 index = i;
             }
         }
