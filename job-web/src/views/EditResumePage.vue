@@ -213,25 +213,7 @@
                                             <el-form class="avatorHolder" ref="resumeForm3" :model="resumeForm3">
 <!--                                                :on-change文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用-->
 <!--                                                :auto-upload是否在选取文件后立即进行上传-->
-                                                <el-upload
-                                                        class="avatar-uploader"
-                                                        :action="uploadPicOptions.action"
-                                                        :data="uploadPicOptions.params"
-                                                        :accept="uploadPicOptions.acceptFileType"
-                                                        :show-file-list="false"
-                                                        :on-success="handleAvatarSuccess"
-                                                        :before-upload="beforeAvatarUpload"
-                                                >
-                                                    <img
-                                                            v-if="(item.avatar && item.avatar !== '')"
-                                                            :src="item.avatar"
-                                                            class="avatar"
-                                                    />
-                                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                                    <el-row style="margin-left: -5px;">
-                                                        <el-button class="img-button">上传照片</el-button>
-                                                    </el-row>
-                                                </el-upload>
+                                                <upload-img :src="item.avatar" @upload="onUpload"/>
                                             </el-form>
                                             <div class="resume-info">
                                                 <div class="info-other-row-l">
@@ -1566,7 +1548,7 @@
     import {downloadFile} from "@/utils/common";
     import ResumeView from "@/components/ResumeView";
     import {addResume} from "../api/resume_api";
-
+    import UploadImg from '@/components/Cropper/uploadImg'
 
 
     library.add(
@@ -2002,6 +1984,7 @@
             EditResumeTitle,
             quillEditor,
             ResumeView,
+            UploadImg
         },
         created() {
             this.initData();
@@ -2106,6 +2089,9 @@
                             });
                     }
                 });
+            },
+            onUpload(url) {
+                console.log(url);
             },
             handleAvatarSuccess() {
                 this.resumeForm3.avatar = this.uploadPicOptions.fileUrl;
