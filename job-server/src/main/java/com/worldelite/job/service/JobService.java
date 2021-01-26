@@ -240,7 +240,7 @@ public class JobService extends BaseService {
                 index = i;
             }
         }
-        if (index == -1) return arrays;
+        if (index == -1) return new Integer[]{};
         int length = arrays.length;
         if (index < length) {
             Integer[] arrays_result = new Integer[arrays.length - 1];

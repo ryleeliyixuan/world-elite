@@ -840,7 +840,7 @@
                     type: 163,
                     page: 1,
                     limit: 10,
-                    sort: "+id",
+                    sort: "+value",
                   },
                 })
                 .then((resp) => {
