@@ -605,6 +605,11 @@ export default {
         height: 145px;
         background: linear-gradient(135deg, #f9fbfd 0%, #ddecfd 100%);
 
+        /deep/.el-button {
+          box-shadow: 0px 5px 13px 0px #c0cde3;
+          border: 0px;
+        }
+
         .company-section1 {
           display: flex;
           justify-content: space-between;
