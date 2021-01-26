@@ -1547,7 +1547,6 @@
     import {downloadFile} from "@/utils/common";
     import ResumeView from "@/components/ResumeView";
     import {addResume} from "../api/resume_api";
-    import UploadImg from '@/components/UploadImg';
 
 
     library.add(
@@ -3594,8 +3593,9 @@
             color: #FFFFFF;
             background: #4CC9F0;
             border-radius: 5px;
-            line-height: 20px;
+            line-height: 10px;
             margin: 5px;
+            padding-top: 5px;
         }
 
         .selectleave {
