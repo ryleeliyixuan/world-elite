@@ -3250,7 +3250,7 @@
                 if (this.newIndex && this.newIndex!='') {
                     i=this.newIndex
                 }else{
-                    i=this.resume,length-1
+                    i=this.resume.length-1
                 }
                 const selectSkillTags = {
                     resumeId: this.resume[i].id,
@@ -3324,6 +3324,8 @@
                         name: this.newSkillTag,
                         select: true,
                     });
+                    console.log(this.newSkillTag)
+                    this.listshowskill.push({name: this.newSkillTag,select:true})
                     this.newSkillTag = "";
                 }
             },
