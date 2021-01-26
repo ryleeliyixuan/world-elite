@@ -2092,6 +2092,8 @@
             },
             onUpload(url) {
                 console.log(url);
+                this.resumeForm3.avatar = url;
+                this.handleSaveResumeAvatar(false);
             },
             handleAvatarSuccess() {
                 this.resumeForm3.avatar = this.uploadPicOptions.fileUrl;

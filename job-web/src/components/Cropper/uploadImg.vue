@@ -13,7 +13,14 @@
                    :on-change="onUploadChange"
                    :on-success="onUploadSuccess">
             <el-image v-if="resultImg" :src="resultImg" class="img"></el-image>
-            <el-image v-else class="add-icon" :src="require('@/assets/mock/img-upload.png')" fit="scale-down"></el-image>
+            <i v-else class="el-icon-plus avatar-uploader-icon"
+                        style="width: 100px;height: 100px;
+                                border-radius: 5px;
+                                border: 1px solid #3F5FF4;
+                                line-height: 100px;
+                                font-size: 20px;
+                                color: #3F5FF4;">
+            </i>
             <div slot="tip" class="tip">上传照片</div>
         </el-upload>
         <cropper v-if="cropperDialogVisible"
@@ -136,7 +143,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-
             .img {
                 width: 100px;
                 height: 100px;
