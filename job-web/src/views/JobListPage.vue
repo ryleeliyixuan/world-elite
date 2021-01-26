@@ -772,6 +772,7 @@ export default {
         let names = [];
         this.cityOptions = response.data.list;
         this.buildUnlimitedMap(this.cityOptions, "city");
+        this.listQuery.cityIds.push(this.unlimitedMap["city"]);
         for (let i = 1; i < this.cityOptions.length; i++) {
           names[i] = this.cityOptions[i].name;
         }
@@ -788,40 +789,47 @@ export default {
       listByType(5).then((response) => {
         this.companyScaleOptions = response.data.list;
         this.buildUnlimitedMap(this.companyScaleOptions, "scale");
+        this.listQuery.companyScaleIds.push(this.unlimitedMap["scale"]);
         this.buildInitIds(this.initScaleIds, this.companyScaleOptions);
       });
       listByType(6).then((response) => {
         this.companyIndustryOptions = response.data.list;
         this.buildUnlimitedMap(this.companyIndustryOptions, "industry");
+        this.listQuery.companyIndustryIds.push(this.unlimitedMap["industry"]);
         this.buildInitIds(this.initIndustryIds, this.companyIndustryOptions);
         this.refreshOptions();
       });
       listByType(8).then((response) => {
         this.jobTypeOptions = response.data.list;
         this.buildUnlimitedMap(this.jobTypeOptions, "jobType");
+        this.listQuery.jobTypes.push(this.unlimitedMap["jobType"]);
         this.buildInitIds(this.initJobTypeIds, this.jobTypeOptions);
       });
       listByType(9).then((response) => {
         this.salaryRangeOptions = response.data.list;
         this.buildUnlimitedMap(this.salaryRangeOptions, "salary");
+        this.listQuery.salaryRangeIds.push(this.unlimitedMap["salary"]);
         this.buildInitIds(this.initSalaryIds, this.salaryRangeOptions);
         this.refreshOptions();
       });
       listByType(25).then((response) => {
         this.degreeOptions = response.data.list;
         this.buildUnlimitedMap(this.degreeOptions, "degree");
+        this.listQuery.degreeIds.push(this.unlimitedMap["degree"]);
         this.buildInitIds(this.initDegreeIds, this.degreeOptions);
         this.refreshOptions();
       });
       listByType(13).then((response) => {
         this.experienceOptions = response.data.list;
         this.buildUnlimitedMap(this.experienceOptions, "exp");
+        this.listQuery.experienceIds.push(this.unlimitedMap["exp"]);
         this.buildInitIds(this.initExpIds, this.experienceOptions);
         this.refreshOptions();
       });
       listByType(7).then((response) => {
         this.companyDefineOptions = response.data.list;
         this.buildUnlimitedMap(this.companyDefineOptions, "define");
+        this.listQuery.companyDefineIds.push(this.unlimitedMap["define"]);
         this.buildInitIds(this.initDefineIds, this.companyDefineOptions);
       });
       this.$axios
@@ -838,6 +846,7 @@ export default {
         .then((resp) => {
           this.lanRequiredOptions = resp.data.list;
           this.buildUnlimitedMap(this.lanRequiredOptions, "lang");
+          this.listQuery.lanRequiredIds.push(this.unlimitedMap["lang"]);
           this.buildInitIds(this.initLanRequiredIds, this.lanRequiredOptions);
         });
       this.paneLoading = false;
