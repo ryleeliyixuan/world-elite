@@ -233,9 +233,10 @@ public class JobService extends BaseService {
     }
 
     private Integer[] removeElByValue(Integer[] arrays, Integer value) {
+        if (arrays == null) return null;
         int index = -1;
         for (int i = 0; i < arrays.length; i++) {
-            if (arrays[i].equals(value)) {
+            if (arrays[i]!= null && arrays[i].equals(value)) {
                 index = i;
             }
         }
@@ -462,7 +463,7 @@ public class JobService extends BaseService {
      *
      * @param jobId
      */
-    public void applyJob(Long jobId) {
+    public void applyJob(Long jobId, Long resumeId) {
 
         Job job = jobMapper.selectSimpleById(jobId);
         if (job == null) {
@@ -470,7 +471,7 @@ public class JobService extends BaseService {
         }
 
         ResumeService resumeService = ResumeServiceFactory.getDefaultService();
-        ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
+        ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
         if (resumeDetail == null) {
             throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
         }
@@ -486,7 +487,7 @@ public class JobService extends BaseService {
         newJobApply.setUserId(curUser().getId());
         newJobApply.setStatus(JobApplyStatus.APPLY.value);
         newJobApply.setType(JobApplyType.APPLICANT.value);
-        newJobApply.setResumeId(resumeDetail.getResumeId());
+        newJobApply.setResumeId(resumeId);
         jobApplyMapper.insertSelective(newJobApply);
 
         // 给职位创建者发消息

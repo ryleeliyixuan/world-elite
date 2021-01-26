@@ -47,11 +47,12 @@
       </div>
       <!-- 已登录 -->
       <div class="user-container" v-else>
-        <svg-icon @click="routeTo('/chat')" icon-class="chat2" class="chat" />
+        <svg-icon @click="routeTo('/chat')" icon-class="chat2" class="chat"  clickable/>
         <svg-icon
           @click="routeTo('/edit-resume')"
           icon-class="resume"
           class="chat"
+          clickable
         />
         <!-- 系统通知 -->
         <el-popover
@@ -111,6 +112,7 @@
             :size="35"
             icon="el-icon-user-solid"
             :src="avatar"
+            style="cursor: pointer"
           ></el-avatar>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>

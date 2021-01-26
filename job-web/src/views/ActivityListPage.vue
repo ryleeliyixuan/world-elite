@@ -50,7 +50,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="filter-item" v-if="listQuery.form===1">
+                <div class="filter-item" v-if="listQuery.form!==0">
                     <div class="filter-title">活动城市：</div>
                     <div class="filter">
                         <div :class="[{'selected':item.value===listQuery.cityIds},'select-item']" v-for="item in cityList" @click="onCity(item)" :key="item.id">
@@ -183,12 +183,12 @@
             // 初始化数据
             initData() {
                 // 活动时间
-                this.$axios.get("/dict/list", {params: {type: 22, limit: 99}}).then(data => {
+                this.$axios.get("/dict/list", {params: {type: 22, limit: 99, sort: '+id'}}).then(data => {
                     this.timeList = data.data.list;
                 })
 
                 // 活动城市
-                this.$axios.get("/dict/list", {params: {type: 23, limit: 99}}).then(data => {
+                this.$axios.get("/dict/list", {params: {type: 23, limit: 99, sort: '+id'}}).then(data => {
                     this.cityList = data.data.list;
                 })
             },
@@ -495,7 +495,11 @@
                     width: 377px;
                     height: 212px;
                     margin: 10px 5px;
-                    cursor: pointer;
+
+                    &:hover {
+                        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.5);
+                        cursor: pointer;
+                    }
 
                     .background-image {
                         width: 100%;

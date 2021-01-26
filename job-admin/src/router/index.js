@@ -314,6 +314,11 @@ export const constantRoutes = [
     meta: { title: '首页设置', icon: 'setting' },
     children: [
       {
+        path: 'pic',
+        meta: { title: '图片配置' },
+        component: () => import('@/views/config/ConfigPicPage')
+      },
+      {
         path: 'index',
         meta: { title: '文案配置' },
         component: () => import('@/views/config/ConfigIndexPage')

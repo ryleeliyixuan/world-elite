@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="line">
-                        <div class="name" style="width: auto;">组织名称</div>
+                        <div class="name" style="width: auto;">组织名称<span>*</span></div>
                         <el-input placeholder="请输入组织名称"
                                   v-model="activityForm.organizerInfoForm.organizerName"
                                   size="small"
@@ -54,7 +54,7 @@
                     </div>
                     <div v-if="activityForm.organizerType==='1'">
                         <div class="line">
-                            <div class="name" style="width: auto;">所属学校</div>
+                            <div class="name" style="width: auto;">所属学校<span>*</span></div>
                             <el-input placeholder="请输入组织名称"
                                       v-model="activityForm.organizerInfoForm.school"
                                       size="small"
@@ -63,7 +63,7 @@
                     </div>
                     <div v-if="activityForm.organizerType==='2'">
                         <div class="line">
-                            <div class="name" style="width: auto; align-self: flex-start">营业证明</div>
+                            <div class="name" style="width: auto; align-self: flex-start">营业证明<span>*</span></div>
                             <el-upload class="business-license-uploader"
                                        :action="businessLicenseUploadPicOptions.action"
                                        :data="businessLicenseUploadPicOptions.params"
@@ -98,7 +98,7 @@
                              v-model="activityForm.cityId">
                 </el-cascader>
                 <div class="name" style="margin-left: 10px;">
-                    详细地址/线上连接<span>*</span>
+                    详细地址/线上链接<span>*</span>
                 </div>
                 <el-input placeholder="请在此处填写详细地址/线上地址"
                           v-model="activityForm.address"
@@ -227,16 +227,16 @@
                                :disabled="!useTemplate || !!this.$route.query.id"
                                style="margin-right:15px;">
                         <el-option
-                            v-for="item in registrationTemplateList"
-                            :key="item.id"
-                            :label="item.templateName"
-                            :value="item.id">
+                                v-for="item in registrationTemplateList"
+                                :key="item.id"
+                                :label="item.templateName"
+                                :value="item.id">
                         </el-option>
                     </el-select>
                     <el-popover
-                        :disabled="!useTemplate"
-                        placement="top-start"
-                        trigger="click">
+                            :disabled="!useTemplate"
+                            placement="top-start"
+                            trigger="click">
                         <div class="template-settings-container">
                             <div class="line1">
                                 模板管理
@@ -324,7 +324,7 @@
                 templateCount: {},// 我的模板数量/总数
                 activityForm: { // 活动表单
                     title: undefined, // 活动名称
-                    address: undefined, // 详细地址/线上连接
+                    address: undefined, // 详细地址/线上链接
                     onlyOverseasStudent: '0', // 是否仅留学生能参加,0不限制,1仅海外
                     organizerType: undefined, // 举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
                     cityId: undefined, // 城市id
@@ -530,7 +530,7 @@
                     this.activityForm.organizerInfoForm = this.activityForm.organizerInfoVo;
 
                     // 加载报名表
-                    if(this.activityForm.questionnaireId) {
+                    if (this.activityForm.questionnaireId) {
                         this.$axios.get(`/activity-questionnaire/${this.activityForm.questionnaireId}`).then(response => {
                             this.applyTable = response.data;
                             this.applyTableTitle = response.data.title;
@@ -717,6 +717,11 @@
                     message = "请输入活动名称";
                 } else if (!this.activityForm.organizerType) {
                     message = "请选择主办方类型";
+                    // 举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
+                } else if (!this.activityForm.organizerInfoForm.organizerName && !this.activityForm.organizerInfoForm.school) {
+                    message = "请输入组织名称";
+                } else if (this.activityForm.organizerType === '2' && !this.activityForm.organizerInfoForm.businessLicenseUrl) {
+                    message = "请上传营业执照";
                 } else if (!this.activityForm.organizerInfoForm.organizerName) {
                     message = "请输入组织名称";
                 } else if (!this.activityForm.cityId) {

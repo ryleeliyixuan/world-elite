@@ -226,7 +226,7 @@
               <div class="text">
                 <svg-icon
                   icon-class="company-type"
-                  style="height: 18px; width: 14px"
+                  style="height: 18px; width: 14px; margin-right: 2px"
                 />
                 {{ company.object.stage.name }} |
                 {{
@@ -238,14 +238,14 @@
               <div class="text">
                 <svg-icon
                   icon-class="company-industry"
-                  style="height: 18px; width: 14px"
+                  style="height: 18px; width: 14px; margin-right: 2px"
                 />
                 {{ company.object.industry.name }}
               </div>
               <div class="text">
                 <svg-icon
                   icon-class="company-scale"
-                  style="height: 18px; width: 14px"
+                  style="height: 18px; width: 14px; margin-right: 2px"
                 />
                 {{ company.object.scale.name }}
               </div>
@@ -285,7 +285,7 @@
               <div class="text">
                 <svg-icon
                   icon-class="company-type"
-                  style="height: 18px; width: 14px"
+                  style="height: 18px; width: 14px; margin-right: 2px"
                 />
                 {{ item.stage.name }} |
                 {{
@@ -297,14 +297,14 @@
               <div class="text">
                 <svg-icon
                   icon-class="company-industry"
-                  style="height: 18px; width: 14px"
+                  style="height: 18px; width: 14px; margin-right: 2px"
                 />
                 {{ item.industry.name }}
               </div>
               <div class="text">
                 <svg-icon
                   icon-class="company-scale"
-                  style="height: 18px; width: 14px"
+                  style="height: 18px; width: 14px; margin-right: 2px"
                 />
                 {{ item.scale.name }}
               </div>
@@ -647,6 +647,7 @@ export default {
           display: flex;
           margin-bottom: 13px;
           justify-content: space-between;
+          align-items: center;
 
           .text {
             font-size: 14px;
@@ -654,6 +655,8 @@ export default {
             font-weight: 400;
             color: #546e7a;
             line-height: 20px;
+            display: flex;
+            align-items: center;
           }
         }
 
