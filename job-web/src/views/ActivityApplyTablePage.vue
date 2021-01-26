@@ -1167,7 +1167,6 @@
                     margin-top: 13px;
 
                     .question1-edit {
-                        width: 556px;
 
                         .question1-edit-line1 {
                             display: flex;
@@ -1231,7 +1230,7 @@
                         }
 
                         .question1-edit-line4 {
-                            width: 100%;
+                            width: 556px;
                             background: #F0F6FF;
                             border-radius: 15px;
                             padding: 25px 12px 16px;
@@ -1312,6 +1311,7 @@
                                 font-size: 18px;
                                 color: #666666;
                                 line-height: 25px;
+                                font-weight: bold;
 
                                 .must {
                                     color: red;
@@ -1366,7 +1366,6 @@
                     margin-top: 13px;
 
                     .question2-edit {
-                        width: 556px;
 
                         .question2-edit-line1 {
                             display: flex;
@@ -1446,7 +1445,7 @@
                         }
 
                         .question2-edit-line4 {
-                            width: 100%;
+                            width: 556px;
                             background: #F0F6FF;
                             border-radius: 15px;
                             padding: 25px 12px 16px;
@@ -1567,6 +1566,7 @@
                                 font-size: 18px;
                                 color: #666666;
                                 line-height: 25px;
+                                font-weight: bold;
 
                                 .must {
                                     color: red;
@@ -1617,6 +1617,7 @@
                                     display: flex;
                                     align-items: center;
                                     height: 25px;
+                                    flex-shrink: 0;
                                 }
 
                                 .options {
@@ -1635,7 +1636,6 @@
                     margin-top: 13px;
 
                     .question3-edit {
-                        width: 556px;
 
                         .question3-edit-line1 {
                             display: flex;
@@ -1692,6 +1692,7 @@
                                     display: flex;
                                     align-items: center;
                                     height: 22px;
+                                    flex-shrink: 0;
                                 }
 
                                 .options {
@@ -1714,7 +1715,7 @@
                         }
 
                         .question3-edit-line4 {
-                            width: 100%;
+                            width: 556px;
                             background: #F0F6FF;
                             border-radius: 15px;
                             padding: 25px 12px 16px;
@@ -1835,6 +1836,7 @@
                                 font-size: 18px;
                                 color: #666666;
                                 line-height: 25px;
+                                font-weight: bold;
 
                                 .must {
                                     color: red;
@@ -1885,6 +1887,7 @@
                                     display: flex;
                                     align-items: center;
                                     height: 25px;
+                                    flex-shrink: 0;
                                 }
 
                                 .options {
@@ -1903,7 +1906,6 @@
                     margin-top: 13px;
 
                     .question4-edit {
-                        width: 556px;
 
                         .question4-edit-line1 {
                             display: flex;
@@ -1990,7 +1992,7 @@
                         }
 
                         .question4-edit-line4 {
-                            width: 100%;
+                            width: 556px;
                             background: #F0F6FF;
                             border-radius: 15px;
                             padding: 25px 12px 16px;
@@ -2071,6 +2073,7 @@
                                 font-size: 18px;
                                 color: #666666;
                                 line-height: 25px;
+                                font-weight: bold;
 
                                 .must {
                                     color: red;
