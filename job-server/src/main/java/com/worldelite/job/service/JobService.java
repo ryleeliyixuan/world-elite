@@ -233,6 +233,7 @@ public class JobService extends BaseService {
     }
 
     private Integer[] removeElByValue(Integer[] arrays, Integer value) {
+        if (arrays == null) return null;
         int index = -1;
         for (int i = 0; i < arrays.length; i++) {
             if (arrays[i].equals(value)) {
