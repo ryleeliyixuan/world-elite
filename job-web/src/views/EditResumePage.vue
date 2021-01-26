@@ -2004,14 +2004,7 @@
                 console.log(this.editableTabsValue)
                 console.log(this.resume[0].id)
                 this.handleEditPriority()
-                this.handleRouteList()
 
-            },
-            handleRouteList(id) {
-                this.$router.push({
-                    path: this.$route.path,
-                    query: {id: id},
-                });
             },
             handleTabsEdit(targetName, action) {
                 if (action === 'add') {
