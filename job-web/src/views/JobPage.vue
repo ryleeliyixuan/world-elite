@@ -828,6 +828,7 @@ export default {
       display: flex;
       flex-direction: column;
       margin-left: 50px;
+      min-width: 259px;
 
       .session2-container-right-2 {
         margin-top: 60px;
