@@ -1549,6 +1549,7 @@
     import {addResume} from "../api/resume_api";
 
 
+
     library.add(
         faEdit,
         faFemale,
@@ -1978,7 +1979,6 @@
             EditResumeTitle,
             quillEditor,
             ResumeView,
-            UploadImg,
         },
         created() {
             this.initData();
