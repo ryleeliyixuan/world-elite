@@ -120,10 +120,10 @@
                                             </div>
                                             <div style="display:flex;height: 45px">
                                                 <div style="width: 310px;padding-left: 1px">
-                                                    <el-form-item label="性别：" prop="gender" class="m-input-text-width">
+                                                    <el-form-item label="性别:" prop="gender" class="m-input-text-width">
                                                         <el-radio-group v-model="resumeForm.gender" class="radio-gender">
-                                                            <el-radio label="1" >男</el-radio>
-                                                            <el-radio label="2" >女</el-radio>
+                                                            <el-radio :label="1" >男</el-radio>
+                                                            <el-radio :label="2" >女</el-radio>
                                                         </el-radio-group>
                                                     </el-form-item>
                                                 </div>
@@ -2451,8 +2451,8 @@
                         this.resumeForm.gender = undefined
                     }else{
                         this.resumeForm.gender = this.resume[i].gender;
+                        console.log(this.resume[i].gender)
                     }
-
                     this.resumeForm.email = this.resume[i].email;
                     this.resumeForm.returnTime = this.resume[i].returnTime;
                     this.resumeForm.graduateTime = this.resume[i].graduateTime;
