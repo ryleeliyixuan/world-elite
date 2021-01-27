@@ -66,12 +66,6 @@
                   type="password"
                 ></el-input>
               </div>
-              <el-alert
-                class="mt-2"
-                :title="$t('password_rule')"
-                type="warning"
-                v-if="showPasswordRuleTip"
-              ></el-alert>
               <!-- <div class="mt-4 mb-4">
                 <el-checkbox v-model="subscribeFlag"
                   >订阅职位邮件消息</el-checkbox
