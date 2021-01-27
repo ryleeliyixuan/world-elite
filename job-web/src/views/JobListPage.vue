@@ -1039,6 +1039,7 @@
         this.$axios
                 .post("/city/get-city-id-by-name", { cityNames: this.inpCity })
                 .then((resp) => {
+                  this.removeElByValue(this.listQuery.cityIds, this.unlimitedMap["city"]);
                   for (let i = 0; i < resp.data.length; i++) {
                     this.listQuery.cityIds.push(resp.data[i]);
                   }
@@ -1102,6 +1103,9 @@
       handleFilter(id) {
         this.listQuery.page = 1;
         this.refreshOptions(id);
+        if (id === this.unlimitedMap["city"]) {
+          this.inpCity = [];
+        }
         this.saveSearchHistory();
         this.handleRouteList();
       },
