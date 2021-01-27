@@ -133,7 +133,7 @@ public class ResumeCompanyService extends ResumeService{
 
     @Override
     @Transactional
-    public void parseAttachment(ParseAttachmentForm parseAttachmentForm) {
+    public ResumeVo parseAttachment(ParseAttachmentForm parseAttachmentForm) {
         //获取OSS路径
         String attachmentName = parseAttachmentForm.getName();
         String fileName = AppUtils.getOssKey(attachmentName);
@@ -175,6 +175,8 @@ public class ResumeCompanyService extends ResumeService{
         //生成索引
         resumeDetail = getResumeDetail(resumeId);
         indexService.saveResumeItem(resumeDetail,folder);
+
+        return toResumeVo(resumeDetail);
     }
 
     @Override

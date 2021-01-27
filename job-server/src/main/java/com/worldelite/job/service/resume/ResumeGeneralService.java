@@ -2,9 +2,12 @@ package com.worldelite.job.service.resume;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.worldelite.job.anatation.ResumeScore;
 import com.worldelite.job.constants.JobApplyStatus;
 import com.worldelite.job.constants.ResumeStatus;
 import com.worldelite.job.constants.ResumeType;
@@ -244,64 +247,119 @@ public class ResumeGeneralService extends ResumeService {
     }
 
     @Override
-    @Transactional
-    public void parseAttachment(ParseAttachmentForm parseAttachmentForm) {
+    public ResumeVo parseAttachment(ParseAttachmentForm parseAttachmentForm) {
         //获取OSS路径
         String attachmentName = parseAttachmentForm.getName();
         String fileName = AppUtils.getOssKey(attachmentName);
         String filePath = AppUtils.absOssUrl(fileName);
         JSONObject result = resumeSDK.parse(filePath);
-        //保存基本信息
-        ResumeForm resumeForm = resumeSDK.getResume(result);
+        ResumeVo resumeVo = new ResumeVo();
+
+        resumeVo.setName(result.getString("name")); //名字
+        resumeVo.setGender(resumeSDK.getGender(result.getString("gender"))); //性别
+//        resumeVo.setAge(1);
+        resumeVo.setBirth(resumeSDK.getDate(result.getString("birthday"))); //生日
+//        resumeVo.setMaxResumeEdu(new ResumeEduVo()); //学历
+//        resumeVo.setReturnTime(new Date()); //回国时间
+        resumeVo.setGraduateTime(resumeSDK.getDate(result.getString("grad_time"))); //毕业时间
+        resumeVo.setCurPlace(result.getString("living_address_norm")); //现居地址
+//        resumeVo.setPhoneCode(""); //号码区号
+//        resumeVo.setPhone(""); //电话号码
+        resumeVo.setEmail(result.getString("email")); //邮箱
+        resumeVo.setIntroduction(result.getString("cont_my_desc")); //个人介绍
+        resumeVo.setType(ResumeType.GENERAL.value); //简历类型
+        resumeVo.setStatus(ResumeStatus.PUBLISH.value); //简历状态
+
+//        resumeVo.setMaritalStatus((byte) 1); // 政治面貌
+//        resumeVo.setPriority((byte) 2);
+
+        //解析教育经历
+        JSONArray eduList = result.getJSONArray("education_objs");
+        if(eduList != null){
+            List<ResumeEduVo> resumeEduList = new ArrayList<>();
+            for(int i=0;i<eduList.size();i++){
+                ResumeEduVo resumeEdu = new ResumeEduVo();
+                JSONObject edu = eduList.getJSONObject(i);
+                resumeEdu.setStartTime(resumeSDK.getDate(edu.getString("start_date")));
+                resumeEdu.setFinishTime(resumeSDK.getDate(edu.getString("end_date")));
+                resumeEdu.setSchoolName(edu.getString("edu_college"));
+                resumeEdu.setMajorName(edu.getString("edu_major"));
+                //Todo 解析degree
+//                resumeEdu.setDegree(new);
+                try{
+                    resumeEdu.setGpa(Double.parseDouble(edu.getString("edu_gpa")));
+                }catch (Exception e){
+                    resumeEdu.setGpa(0.0);
+                }
+                resumeEduList.add(resumeEdu);
+            }
+            resumeVo.setResumeEduList(resumeEduList);
+        }
+
+        //解析工作经验
+        JSONArray experienceList = result.getJSONArray("job_exp_objs");
+        if(experienceList != null){
+            List<ResumeExpVo> resumeExpList = new ArrayList<>();
+            for(int i=0;i<experienceList.size();i++){
+                ResumeExpVo resumeExp = new ResumeExpVo();
+                JSONObject experience = experienceList.getJSONObject(i);
+                resumeExp.setStartTime(resumeSDK.getDate(experience.getString("start_date")));
+                resumeExp.setFinishTime(resumeSDK.getDate(experience.getString("end_date")));
+                resumeExp.setCompany(experience.getString("job_cpy"));
+                resumeExp.setDepart(experience.getString("job_dept"));
+                resumeExp.setPost(experience.getString("job_position"));
+                resumeExp.setDescription(experience.getString("job_content"));
+                resumeExpList.add(resumeExp);
+            }
+            resumeVo.setResumeExpList(resumeExpList);
+        }
+
+        //解析实践经验
+        JSONArray practiceList = result.getJSONArray("proj_exp_objs");
+        if(practiceList != null){
+            List<ResumePracticeVo> resumePracticeList = new ArrayList<>();
+            for(int i=0;i<practiceList.size();i++){
+                JSONObject practice = practiceList.getJSONObject(i);
+                ResumePracticeVo resumePractice = new ResumePracticeVo();
+                resumePractice.setStartTime(resumeSDK.getDate(practice.getString("start_date")));
+                resumePractice.setFinishTime(resumeSDK.getDate(practice.getString("end_date")));
+                resumePractice.setTitle(practice.getString("proj_name"));
+                resumePractice.setPost(practice.getString("proj_position"));
+                resumePractice.setDescription(practice.getString("proj_content"));
+                resumePracticeList.add(resumePractice);
+            }
+            resumeVo.setResumePracticeList(resumePracticeList);
+        }
+
+        //解析技能标签
+        JSONArray skillList = result.getJSONArray("skills_objs");
+        if(skillList != null){
+            List<ResumeSkillVo> resumeSkillList = new ArrayList<>();
+            for(int i=0;i<skillList.size();i++){
+                JSONObject skill = skillList.getJSONObject(i);
+                ResumeSkillVo resumeSkillVo = new ResumeSkillVo();
+                resumeSkillVo.setName(skill.getString("skills_name"));
+                resumeSkillList.add(resumeSkillVo);
+            }
+            resumeVo.setResumeSkillList(resumeSkillList);
+        }
+
+        //解析社交主页
+        String link = result.getString("blog");
+        if(StringUtils.isNotEmpty(link)) {
+            List<ResumeLinkVo> resumeLinkList = new ArrayList<>();
+            ResumeLinkVo resumeLinkVo = new ResumeLinkVo();
+            resumeLinkVo.setName("主页");
+            resumeLinkVo.setLink(link);
+            resumeLinkList.add(resumeLinkVo);
+            resumeVo.setResumeLinkList(resumeLinkList);
+        }
+
         //存为简历附件
         if(parseAttachmentForm != null && parseAttachmentForm.getAsAttachment()) {
-            resumeForm.setAttachResume(fileName);
+            resumeVo.setAttachResume(fileName); //附件简历
         }
-        resumeForm.setStatus(ResumeStatus.PUBLISH.value);
-        resumeForm.setType(ResumeType.GENERAL.value);
-        ResumeDetail resumeDetail = saveBasic(resumeForm);
-        Long resumeId = resumeDetail.getResumeId();
-        //保存教育信息
-        List<ResumeEduForm> resumeEduFormList = resumeSDK.getResumeEdu(result);
-        for(ResumeEduForm eduForm:resumeEduFormList){
-            eduForm.setResumeId(resumeId);
-            resumeEduService.saveResumeEdu(eduForm);
-        }
-        //保存工作经验
-        List<ResumeExpForm> resumeExpFormList = resumeSDK.getResumeExperience(result);
-        for(ResumeExpForm expForm:resumeExpFormList){
-            expForm.setResumeId(resumeId);
-            resumeExpService.saveResumeExp(expForm);
-        }
-        //保存实践经验
-        List<ResumePracticeForm> practiceFormList = resumeSDK.getResumePractice(result);
-        for(ResumePracticeForm practiceForm:practiceFormList){
-            practiceForm.setResumeId(resumeId);
-            resumePracticeService.saveResumePractice(practiceForm);
-        }
-        //能力标签
-        ResumeSkillForm resumeSkillForm = resumeSDK.getResumeSkill(result);
-        resumeSkillForm.setResumeId(resumeId);
-        resumeSkillService.saveResumeSkill(resumeSkillForm);
-//        //社交主页
-//        ResumeLinkForm resumeLinkForm = resumeSDK.getResumeLink(result);
-//        resumeLinkForm.setResumeId(resumeId);
-//        resumeLinkService.saveResumeLink(resumeLinkForm);
-        //language
-//        List<ResumeLanguageForm> languageFormList = resumeSDK.getResumeLanguage(result);
-//        for(ResumeLanguageForm LanguageForm:languageFormList){
-//            LanguageForm.setResumeId(resumeId);
-//            resumeLanguageService.saveResumeLanguage(LanguageForm);
-//        }
-        //certificate
-//        List<ResumeCertificateForm> certificateFormList = resumeSDK.getResumeCertificate(result);
-//        for(ResumeCertificateForm CertificateForm:certificateFormList){
-//            CertificateForm.setResumeId(resumeId);
-//            resumeCertificateService.saveResumeCertificate(CertificateForm);
-//        }
-        //生成索引
-        resumeDetail = getResumeDetail(resumeId);
-        indexService.saveResumeItem(resumeDetail,folder);
+        return resumeVo;
     }
 
     @Override
