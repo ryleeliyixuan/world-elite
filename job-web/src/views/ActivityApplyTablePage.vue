@@ -171,7 +171,7 @@
                             <div class="question1-edit-line2"></div>
                             <div class="question1-edit-line3"></div>
                             <div class="question1-edit-line4">
-                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
@@ -268,7 +268,7 @@
                             </div>
                             <div class="question2-edit-line3"></div>
                             <div class="question2-edit-line4">
-                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
@@ -286,7 +286,7 @@
                                 </div>
                                 <div class="option-container">
                                     <div class="item-container" v-for="(option, index) in question.optionsList" :key="index">
-                                        <el-input v-model="option.options" class="option-input" placeholder="请输入选项" maxlength="50" size="mini"></el-input>
+                                        <el-input v-model="option.options" class="option-input" placeholder="请输入选项" maxlength="50" show-word-limit size="mini"></el-input>
                                         <svg-icon icon-class="apply-table-delete" clickable @click="onQuestionOptionDelete(question, index)"></svg-icon>
                                     </div>
                                     <div class="option-add-button" @click="onQuestionOptionAdd(question)">
@@ -380,7 +380,7 @@
                             </div>
                             <div class="question3-edit-line3"></div>
                             <div class="question3-edit-line4">
-                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
@@ -398,7 +398,7 @@
                                 </div>
                                 <div class="option-container">
                                     <div class="item-container" v-for="(option, index) in question.optionsList" :key="index">
-                                        <el-input v-model="option.options" class="option-input" placeholder="请输入选项" maxlength="50" size="mini"></el-input>
+                                        <el-input v-model="option.options" class="option-input" placeholder="请输入选项" maxlength="50" show-word-limit size="mini"></el-input>
                                         <svg-icon icon-class="apply-table-delete" clickable @click="onQuestionOptionDelete(question, index)"></svg-icon>
                                     </div>
                                     <div class="option-add-button" @click="onQuestionOptionAdd(question)">
@@ -490,7 +490,7 @@
                             </div>
                             <div class="question4-edit-line3"></div>
                             <div class="question4-edit-line4">
-                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
@@ -793,7 +793,7 @@
 
             // 创建一个新题目
             newQuestion(type) {
-                let question = {title: undefined, mustAnswer: '1', edit: true, type: type, typeForSelect: undefined, optionsList: [{options: '选项1'},{options: '选项2'},{options: '选项3'}]}
+                let question = {title: undefined, mustAnswer: '1', edit: true, type: type, typeForSelect: undefined, optionsList: [{options: '选项1'}, {options: '选项2'}, {options: '选项3'}]}
                 switch (type) {
                     case '1': // 填空题
                         break;
