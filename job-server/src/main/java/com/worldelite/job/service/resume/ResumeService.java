@@ -77,7 +77,7 @@ public abstract class ResumeService extends BaseService{
      * 解析简历文件
      * @param parseAttachmentForm 简历解析表单
      */
-    public abstract void parseAttachment(ParseAttachmentForm parseAttachmentForm);
+    public abstract ResumeVo parseAttachment(ParseAttachmentForm parseAttachmentForm);
 
     public abstract void parseAttachment(String attachmentName);
 
