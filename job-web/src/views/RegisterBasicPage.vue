@@ -314,8 +314,68 @@ export default {
 @media screen and (max-width: 850px) {
   .app-container {
     padding: 20px 20px 0;
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+      }
+    }
+    
     .text-center {
       font-size: 18px;
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  /deep/.el-form-item {
+    flex-direction: column !important;
+  }
+
+  .app-container {
+    padding: 20px 20px 0;
+
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+
+        .form {
+          .avatar-uploader {
+            margin-right: 16px;
+          }
+          /deep/.el-input__inner {
+            width: 200px;
+            margin: auto;
+          }
+
+          /deep/.el-form-item__label {
+            margin: auto;
+          }
+          /deep/ .el-form-item__content {
+            justify-content: center;
+            align-items: center;
+          }
+        }
+
+        .section2-next{
+          width: 200px;
+        }
+      }
+    }
+
+    .text-center {
+      font-size: 18px;
+    }
+
+    .text-center1 {
+      font-size: 14px;
     }
   }
 }

@@ -94,4 +94,13 @@ export default {
     }
   }
 }
+
+@media screen and (max-width: 450px) {
+  .app-container {
+    .login-box {
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+  }
+}
 </style>

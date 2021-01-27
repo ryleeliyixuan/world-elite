@@ -54,7 +54,7 @@ public interface CityMapper {
      */
     int updateByPrimaryKey(City record);
 
-    List<City> selectByType(Byte type);
+    List<City> selectByParentId(Integer id);
 
     List<Integer> selectIdByNameWithFuzzy(@Param("name") String name);
 
