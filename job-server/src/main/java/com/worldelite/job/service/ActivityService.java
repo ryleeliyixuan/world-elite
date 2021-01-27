@@ -81,9 +81,10 @@ public class ActivityService extends BaseService {
     public PageResult<ActivityVo> getActivityList(ActivityListForm listForm) {
         ActivityOptions options = new ActivityOptions();
 
-        BeanUtil.copyProperties(listForm, options);
+        BeanUtil.copyProperties(listForm, options, "status");
 
         options.setCityIds(StringUtils.join(listForm.getCityIds(), ","));
+        options.setMStatus(StringUtils.join(listForm.getStatus(), ","));
 
         //海外留学生属于另一个字段,方便前端传递 合并到一起了
         if (StringUtils.isNotBlank(listForm.getPublisherType())) {
@@ -139,8 +140,7 @@ public class ActivityService extends BaseService {
         //根据不同状态构建查询SQL
         StringBuilder where = new StringBuilder();
         where.append("id in (select object_id from t_favorite where type = 3 and user_id = ").append(userId).append(")");
-        Byte status = pageForm.getStatus();
-        where.append(" and status = '").append(status).append("'");
+        where.append(" and status in (").append(StringUtils.join(pageForm.getStatus(), ",")).append(")");
 
         AppUtils.setPage(pageForm);
         Page<Activity> page = (Page<Activity>) activityMapper.selectSimpleByIdAndStatus(where.toString());

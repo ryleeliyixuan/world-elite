@@ -29,8 +29,8 @@
       <if test="cityIds != null and cityIds != ''">
         and city_id in (${cityIds})
       </if>
-      <if test="status != null">
-        and status = #{status,jdbcType=TINYINT}
+      <if test="mStatus != null and mStatus != ''">
+        and status in (${mStatus})
       </if>
       <if test="keyword != null and keyword != ''">
         and title like CONCAT('%', #{keyword},'%')
@@ -116,10 +116,11 @@
 
       <choose>
         <!--status=传来的值或者-1, 当为-1时获取[非]待审核或审核失败的数据-->
-        <when test="status != null and status != -1">
-            and t_activity.status = #{status,jdbcType=TINYINT}
+
+        <when test="mStatus != null and mStatus != -1">
+            and t_activity.status in (${mStatus})
         </when>
-        <when test="status != null and status == -1">
+        <when test="mStatus != null and mStatus == -1">
           and t_activity.status not in(0, 7)
         </when>
       </choose>
