@@ -36,12 +36,11 @@ public class CityService {
     /**
      * 获取所有城市数据树形数据
      *
-     * @param type 城市类型
      * @return 城市树
      */
-    public List<CityVo> getCityTree(Byte type) {
+    public List<CityVo> getCityTree(List<City> cityList) {
+        if (cityList == null || cityList.size() == 0) return null;
         //从数据库取出所有数据
-        List<City> cityList = cityMapper.selectByType(type);
         //将城市数据保存到Map以便生成树形结构时能直接取到父类
         Map<Integer, CityVo> cityMap = new HashMap<>();
         for (City city : cityList) {
@@ -68,23 +67,47 @@ public class CityService {
     }
 
     /**
-     * 从缓存获取城市树
+     * 从缓存获取全部城市树
      *
-     * @param type 城市类型
      * @return 城市树
      */
-    public List<CityVo> getCacheTree(Byte type) {
+    public List<CityVo> getCityList() {
         //从Redis中取缓存数据
-        final String cityTreeJson = stringRedisTemplate.opsForValue().get(RedisKeys.CITY_TREE + "_" + type);
+        final String cityTreeJson = stringRedisTemplate.opsForValue().get(RedisKeys.CITY_TREE);
         if (StringUtils.isNotEmpty(cityTreeJson)) {
             return JSON.parseArray(cityTreeJson, CityVo.class);
         }
+
+        final List<City> cities = cityMapper.selectAndList(new City());
+        List<CityVo> cityTree = getCityTree(cities);
         //没有缓存则新建缓存
-        List<CityVo> cityTree = getCityTree(type);
         if (CollectionUtils.isNotEmpty(cityTree)) {
-            stringRedisTemplate.opsForValue().set(RedisKeys.CITY_TREE + "_" + type, JSON.toJSONString(cityTree), 10, TimeUnit.MINUTES);
+            stringRedisTemplate.opsForValue().set(RedisKeys.CITY_TREE, JSON.toJSONString(cityTree), 10, TimeUnit.MINUTES);
         }
         return cityTree;
+    }
+
+    /**
+     * 用父级城市id获取下级城市, 如使用河南省id获取下属市的城市列表
+     *
+     * @param parentId 父级城市id
+     * @return 城市列表
+     */
+    public List<CityVo> getChildCityList(Integer parentId) {
+        //从Redis中取缓存数据
+        final String cityTreeJson = stringRedisTemplate.opsForValue().get(RedisKeys.CITY_TREE + "_" + parentId);
+        if (StringUtils.isNotEmpty(cityTreeJson)) {
+            return JSON.parseArray(cityTreeJson, CityVo.class);
+        }
+
+        //由于获取的只有一层, 不需要生成树
+        final List<City> cities = cityMapper.selectByParentId(parentId);
+        final List<CityVo> cityVoList = AppUtils.asVoList(cities, CityVo.class);
+        //没有缓存则新建缓存
+        if (CollectionUtils.isNotEmpty(cityVoList)) {
+            stringRedisTemplate.opsForValue().set(RedisKeys.CITY_TREE + "_" + parentId, JSON.toJSONString(cityVoList), 10, TimeUnit.MINUTES);
+        }
+        return cityVoList;
     }
 
     /**
@@ -137,4 +160,6 @@ public class CityService {
         List<City> list = cityMapper.selectAndListToCityLevel(name);
         return AppUtils.asVoList(list, CityVo.class);
     }
+
+
 }
