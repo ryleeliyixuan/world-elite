@@ -479,7 +479,11 @@
                                                     <div style="padding-left:30px">
                                                             <el-form-item label="意向城市:" prop="expectCity"
                                                                           class="m-input-text-width">
-                                                                <el-input v-model="expectJobForm.expectCity" placeholder="请输入意向城市"></el-input>
+                                                                <el-autocomplete
+                                                                        v-model="expectJobForm.expectCity"
+                                                                        :fetch-suggestions="searchCityName"
+                                                                        value-key="name"
+                                                                        placeholder="请输入意向城市"></el-autocomplete>
                                                             </el-form-item>
                                                     </div>
                                                 </div>
@@ -696,7 +700,7 @@
                                                     </el-form-item>
                                             </div>
                                             <div style="padding-top: 10px">
-                                                    <el-form-item label="工作内容:" prop="description"
+                                                    <el-form-item label="工作内容：" prop="description"
                                                                   class="m1-input-text-width">
                                                         <el-input v-model="resumeExpForm.description"
                                                                   type="textarea"
@@ -742,8 +746,8 @@
                                                      :key="practice.id">
                                                     <div class="resume-edu" style="width: 601px">
                                                         <el-row style="width: 601px">
-                                                            <span>{{practice.title}}</span>
-                                                            <span style="padding-left: 31px">{{practice.onWork == 1? '项目进行中': `${practice.startTime}到${practice.finishTime}`}}</span>
+                                                            <span class="resume-box-text">{{practice.title}}</span>
+                                                            <span class="resume-box-text" style="padding-left: 31px">{{practice.onWork == 1? '项目进行中': `${practice.startTime}到${practice.finishTime}`}}</span>
                                                         </el-row>
                                                         <div class="edu-box">
                                                             <el-row class="expinfo-other-row">
@@ -820,8 +824,8 @@
                                                             </el-form-item>
                                                     </div>
                                                 </div>
-                                                <div style="padding-left: 10px">
-                                                    <el-form-item label=" 项目介绍:" prop="description"
+                                                <div>
+                                                    <el-form-item label=" 项目介绍：" prop="description"
                                                                   class="m1-input-text-width">
                                                         <el-input v-model="resumePracticeForm.description"
                                                                   type="textarea"
@@ -1525,6 +1529,7 @@
     import {searchSchool} from "@/api/school_api";
     import {listByType} from "@/api/dict_api";
     import {serachByName} from "@/api/company_api";
+    import {getCityByName} from "@/api/city_api"
     import {getCategoryTree} from "@/api/category_api";
     import {saveUserExpectJob} from "@/api/user_api";
     import {getUploadPicToken, getUploadAttachmentToken} from "@/api/upload_api";
@@ -3232,6 +3237,8 @@
                     }
                 });
             },
+
+
             handleSaveExpectJob(index) {
                 this.$refs["expectJobForm"][index].validate((valid) => {
                     if (valid) {
@@ -3298,6 +3305,15 @@
                 serachByName(keyword).then((response) => {
                     cb(response.data.list);
                 });
+            },
+            searchCityName(keyword,cb) {
+                if (!keyword || keyword.length<1){
+                    return;
+                }
+                getCityByName(keyword).then((response) => {
+                    cb(response.data);
+                });
+
             },
             handleDeleteItemById(delById, id) {
                 this.$confirm("是否要删除该记录？", {
