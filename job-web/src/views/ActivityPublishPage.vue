@@ -25,7 +25,8 @@
                     <div class="activity-left-one-title">{{item.title}}</div>
                     <div class="activity-left-one-state" :style="{'background':statusBGColorList[item.status]}">{{getStatus(item)}}</div>
                 </div>
-                <div class="activity-left-two">{{item.organizerInfoVo && item.organizerInfoVo.organizerName}} - <span class="activity-left-place">{{item.city.name}}</span> -
+                <div class="activity-left-two">{{item.organizerInfoVo && item.organizerInfoVo.organizerName}} - <span class="activity-left-place">{{item.city.name}}</span>
+                    -
                     {{item.address}}
                 </div>
                 <div class="activity-left-three">活动时间：<span class="activity-left-time">{{item.activityStartTime | timestampToDateHourMinute}} -- {{item.activityFinishTime | timestampToDateHourMinute}}</span>
@@ -88,15 +89,18 @@
                 <div class="confirm" @click="onCancelActivityConfirm">确定</div>
             </div>
         </el-dialog>
+
+        <approve :visible.sync="showApproveDialog" :status="approveStatus" @close="getApprove"></approve>
     </div>
 </template>
 
 <script>
     import Pagination from "@/components/Pagination2";
+    import approve from "@/components/activity/ApproveDialog";
 
     export default {
         name: "ActivityPublishPage",
-        components: {Pagination},
+        components: {Pagination, approve},
         data() {
             return {
                 // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束;7审核未通过
@@ -104,7 +108,7 @@
                     {id: 4, name: '报名中'}, {id: 5, name: '进行中'}, {id: 6, name: '已结束'}, {id: 7, name: '审核未通过'}],
                 statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
                 menuList: [{id: undefined, name: '全部活动'}, {id: 3, name: '即将开始'}, {id: 4, name: '报名中'}, {id: 5, name: '进行中'},
-                    {id: 6, name: '已结束'}, {id: 7, name: '审核未通过'}],
+                    {id: 6, name: '已结束'}, {id: "0,7", name: '审核处理的活动'}],
                 orderList: [ // 活动排序列表
                     {name: '按发布时间顺序', sort: '+CREATE_TIME'},
                     {name: '按发布时间倒序', sort: '-CREATE_TIME'},
@@ -133,6 +137,8 @@
                 publishActivityDialogVisible: false,// 发布活动，加载草稿确认对话框
                 draftDeleting: false, // 草稿删除中
 
+                showApproveDialog: false, // 显示实名认证对话框
+                approveStatus: undefined, // 实名认证状态   审核状态.1:审核中,2:通过,3拒绝",
             };
         },
         watch: {
@@ -156,6 +162,16 @@
                 // 加载远程草稿
                 this.$axios.get("/activity/my/draft-activity-info").then(data => {
                     this.activityDraft = data.data;
+                })
+
+                // 查看我的实名认证状态
+                this.getApprove();
+            },
+
+            // 查看我的实名认证状态
+            getApprove() {
+                this.$axios.get(`/realnameauth/${this.$store.state.user.userId}`).then(response => {
+                    this.approveStatus = response.data && response.data.status;
                 })
             },
 
@@ -236,10 +252,28 @@
 
             // 点击发布活动
             onPublish() {
-                if (this.activityDraft) {
-                    this.publishActivityDialogVisible = true;
-                } else {
-                    this.onPublishWithDraft();
+                if (this.approveStatus === 1) { // 审核中
+                    console.log("审核中");
+                    this.showApproveDialog = true;
+                } else if (this.approveStatus === 3) { // 审核被拒绝
+                    console.log("审核被拒绝");
+                    this.showApproveDialog = true;
+                } else if (this.approveStatus === 2) { // 审核已通过，可以发布新活动
+                    if (this.activityDraft) {
+                        this.publishActivityDialogVisible = true;
+                    } else {
+                        this.onPublishWithDraft();
+                    }
+                } else { // 未提交审核信息
+                    this.$confirm('首次发布活动需要进行实名认证，点击“去认证”进入认证页', '提示', {
+                        confirmButtonText: '去认证',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.showApproveDialog = true;
+                    }).catch(() => {
+
+                    });
                 }
             },
 

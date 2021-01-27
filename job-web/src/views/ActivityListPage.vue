@@ -129,7 +129,7 @@
             </pagination>
         </div>
 
-        <approve :visible.sync="showApproveDialog" :status="approveStatus" @close="getApprove"></approve>
+        <approve :visible.sync="showApproveDialog" @close="getApprove"></approve>
     </div>
 </template>
 
@@ -211,7 +211,7 @@
             // 查看我的实名认证状态
             getApprove() {
                 this.$axios.get(`/realnameauth/${this.$store.state.user.userId}`).then(response => {
-                    this.approveStatus = response.data && response.data.status
+                    this.approveStatus = response.data && response.data.status;
                 })
             },
 
@@ -234,10 +234,8 @@
             // 发布新活动
             onNewActivity() {
                 if (this.approveStatus === 1) { // 审核中
-                    console.log("审核中");
-                    this.showApproveDialog = true;
+                    this.$alert("您的实名认证尚在审核中，我们会尽快处理")
                 } else if (this.approveStatus === 3) { // 审核被拒绝
-                    console.log("审核被拒绝");
                     this.showApproveDialog = true;
                 } else if (this.approveStatus === 2) { // 审核已通过，可以发布新活动
                     // 发布新活动前先清楚预览数据

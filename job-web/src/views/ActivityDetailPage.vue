@@ -366,7 +366,8 @@
                     }
 
                     .status {
-                        width: 87px;
+                        width: auto;
+                        padding: 0 13px;
                         height: 30px;
                         border-radius: 5px;
                         line-height: 30px;
