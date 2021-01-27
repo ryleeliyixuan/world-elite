@@ -2,18 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.CityMapper">
   <cache-ref namespace="com.worldelite.job.mapper.CityMapper"/>
-  <select id="selectByType" parameterType="java.lang.Byte" resultMap="BaseResultMap">
+  <select id="selectByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_city
-    where type = #{type}
+    where parent_id = #{id}
   </select>
   <select id="selectAndList" parameterType="com.worldelite.job.entity.City" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_city
     <where>
-      <if test="name">
+      <if test="name != null and name != ''">
         and name like concat('%',#{name},'%')
       </if>
     </where>
@@ -25,7 +25,7 @@
 
   <select id="selectAndListToCityLevel" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from t_city where parent_id in
-    (select id from t_city where parent_id = 0 and type = 1 and id not in('110000','310000','120000','500000'))
+    (select id from t_city where parent_id = 1 and id not in('110000','310000','120000','500000'))
     and name like concat('%',#{name},'%')
     union
     select <include refid="Base_Column_List" /> from t_city where id in('110000','310000','120000','500000')

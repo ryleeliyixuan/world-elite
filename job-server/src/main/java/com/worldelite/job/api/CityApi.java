@@ -25,15 +25,28 @@ public class CityApi extends BaseApi {
     /**
      * 获取所有城市数据
      *
-     * @param type 城市类型
-     * @return
+     * @return 所有城市树
      */
     @ApiDoc
     @GetMapping("list")
-    public ApiResult<List<CityVo>> list(@RequestParam Byte type) {
-        List<CityVo> cityVoList = cityService.getCacheTree(type);
+    public ApiResult<List<CityVo>> list() {
+        List<CityVo> cityVoList = cityService.getCityList();
         return ApiResult.ok(cityVoList);
     }
+
+    /**
+     * 用父级城市id获取下级城市, 如使用河南省id获取下属市的城市列表
+     *
+     * @param parentId 父级城市id
+     * @return 城市列表
+     */
+    @ApiDoc
+    @GetMapping("child-city")
+    public ApiResult<List<CityVo>> childCityList(@RequestParam Integer parentId) {
+        List<CityVo> cityVoList = cityService.getChildCityList(parentId);
+        return ApiResult.ok(cityVoList);
+    }
+
 
     @PostMapping("get-city-id-by-name")
     public ApiResult<List<Integer>> getCityIdByFuzzy(@RequestBody CityForm cityForm) {
