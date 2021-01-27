@@ -240,7 +240,7 @@ public class JobService extends BaseService {
                 index = i;
             }
         }
-        if (index == -1) return new Integer[]{};
+        if (index == -1) return contains(arrays) ? new Integer[]{} : arrays;
         int length = arrays.length;
         if (index < length) {
             Integer[] arrays_result = new Integer[arrays.length - 1];
@@ -251,6 +251,15 @@ public class JobService extends BaseService {
             return arrays_result;
         }
         return arrays;
+    }
+
+    private Boolean contains(Integer[] arr) {
+        for (Integer integer : arr) {
+            if (integer == null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Boolean isEmptySearch(JobSearchForm jobSearchForm) {
