@@ -370,7 +370,7 @@
                     label: "name",
                     children: "children"
                 },
-                cityOptions: [{id: 1, name: "国内", children: [{id: 0, name: "加载中"}]}, {id: 2, name: "国外"}], // 城市列表
+                cityOptions: [], // 城市列表
 
                 registrationTemplateList: [], // 报名模板列表
 
@@ -504,32 +504,12 @@
                 // 获取我的模板
                 this.getTemplate();
 
-                // 获取国内城市
+                // 获取全部城市
                 this.$axios.request({
                     url: "/city/list",
                     method: "get",
-                    params: {type: 1}
                 }).then(data => {
-                    this.cityOptions[0].children = data.data.map(second => {
-                        let children = second.children && second.children.map(third => {
-                            return {id: third.id, name: third.name, leaf: true}
-                        })
-                        return {id: second.id, name: second.name, children}
-                    });
-                })
-
-                // 获取国外城市
-                this.$axios.request({
-                    url: "/city/list",
-                    method: "get",
-                    params: {type: 2}
-                }).then(data => {
-                    this.cityOptions[1].children = data.data.map(second => {
-                        let children = second.children && second.children.map(third => {
-                            return {id: third.id, name: third.name, leaf: true}
-                        })
-                        return {id: second.id, name: second.name, children}
-                    });
+                    this.cityOptions = data.data
                 })
             },
 

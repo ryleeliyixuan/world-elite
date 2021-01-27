@@ -32,7 +32,7 @@
                 <div class="item" v-if="applyInfo.genderFlag!=='2'">
                     <span class="required">{{applyInfo.genderFlag==='0'?'*':''}}</span>
                     <span class="name">性别：</span>
-                    <span class="value">{{applyInfo.gender==='1'?'男':applyInfo.gender===2?'女':''}}</span>
+                    <span class="value">{{applyInfo.gender==='1'?'男':applyInfo.gender==='2'?'女':''}}</span>
                 </div>
                 <div class="item" v-if="applyInfo.phoneFlag!=='2'">
                     <span class="required">{{applyInfo.phoneFlag==='0'?'*':''}}</span>
@@ -646,6 +646,7 @@
                                     display: flex;
                                     align-items: center;
                                     height: 25px;
+                                    flex-shrink: 0;
                                 }
 
                                 .options {
@@ -694,6 +695,7 @@
                                     display: flex;
                                     align-items: center;
                                     height: 25px;
+                                    flex-shrink: 0;
                                 }
 
                                 .options {
