@@ -31,7 +31,7 @@
                                             <svg-icon class="svg-cls" icon-class="edit" style="width: 18px;height: 19px;margin-left: 50px;margin-right:50px" @click="editTitle"></svg-icon>
 
                                         </div>
-                                        <div v-if="showEditTitle==true">
+                                        <div v-if="showEditTitle==true" style="margin-top: -3px">
                                             <el-form ref="resumeTitleForm" :model="resumeTitleForm">
                                                 <el-form-item prop="title" class="editTitle">
                                                     <el-input v-model="resumeTitleForm.title" placeholder="请输入简历名称" @change="saveEditTitle"></el-input>
@@ -479,11 +479,9 @@
                                                     <div style="padding-left:30px">
                                                             <el-form-item label="意向城市:" prop="expectCity"
                                                                           class="m-input-text-width">
-                                                                <el-autocomplete
+                                                                <el-input
                                                                         v-model="expectJobForm.expectCity"
-                                                                        :fetch-suggestions="searchCityName"
-                                                                        value-key="name"
-                                                                        placeholder="请输入意向城市"></el-autocomplete>
+                                                                        placeholder="请输入意向城市"></el-input>
                                                             </el-form-item>
                                                     </div>
                                                 </div>
@@ -1529,7 +1527,7 @@
     import {searchSchool} from "@/api/school_api";
     import {listByType} from "@/api/dict_api";
     import {serachByName} from "@/api/company_api";
-    import {getCityByName} from "@/api/city_api"
+    // import {getCityByName} from "@/api/city_api"
     import {getCategoryTree} from "@/api/category_api";
     import {saveUserExpectJob} from "@/api/user_api";
     import {getUploadPicToken, getUploadAttachmentToken} from "@/api/upload_api";
@@ -3306,15 +3304,15 @@
                     cb(response.data.list);
                 });
             },
-            searchCityName(keyword,cb) {
-                if (!keyword || keyword.length<1){
-                    return;
-                }
-                getCityByName(keyword).then((response) => {
-                    cb(response.data);
-                });
-
-            },
+            // searchCityName(keyword,cb) {
+            //     if (!keyword || keyword.length<1){
+            //         return;
+            //     }
+            //     getCityByName(keyword).then((response) => {
+            //         cb(response.data);
+            //     });
+            //
+            // },
             handleDeleteItemById(delById, id) {
                 this.$confirm("是否要删除该记录？", {
                     confirmButtonText: "删除",
@@ -3728,7 +3726,7 @@
                     }
 
                     ::v-deep .el-input__inner {
-                        width: 173px;
+                        width: 130px;
                         height: 23px;
                         background: #FFFFFF;
                         border-radius: 12px;
