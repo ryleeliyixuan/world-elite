@@ -35,6 +35,11 @@ public interface JobIndexFields {
     String CITY_INDEX = "city";
 
     /**
+     * 父级城市
+     */
+    String CITY_PARENT_INDEX = "city_parent";
+
+    /**
      * 定位
      */
     String COMPANY_DEFINE_INDEX = "company_define";

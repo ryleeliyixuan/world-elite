@@ -187,6 +187,7 @@ public class LuceneIndexService implements IndexService {
         }
         if (jobVo.getCity() != null) {
             doc.add(new IntPoint(JobIndexFields.CITY_INDEX, jobVo.getCity().getId()));
+            doc.add(new IntPoint(JobIndexFields.CITY_PARENT_INDEX, jobVo.getCity().getParentId()));
             keyWordBuilder.append(jobVo.getCity().getName());
         }
         // lanRequiredIds TODO 创建索引，数据库中没有这方面的数据
