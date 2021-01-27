@@ -314,7 +314,7 @@ public class ActivitySearchService {
                 if (ActivitySort.FOLLOWER == ActivitySort.valueOf(form.getSortField().toUpperCase())) {
                     sortFieldList.add(new SortField(ActivityIndexFields.FOLLOWER, SortField.Type.INT, true));
                 }
-                if (ActivitySort.REGISTRATION_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())
+               /* if (ActivitySort.REGISTRATION_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())
                         && form.getStatus() != null
                         && form.getStatus() == ActivityStatus.SIGN_UP.value) {
                     sortFieldList.add(new SortField(ActivityIndexFields.REGISTRATION_START_TIME, SortField.Type.LONG, true));
@@ -323,7 +323,7 @@ public class ActivitySearchService {
                         && form.getStatus() != null
                         && (form.getStatus() == ActivityStatus.SIGN_UP.value || form.getStatus() == ActivityStatus.ACTIVE.value)) {
                     sortFieldList.add(new SortField(ActivityIndexFields.ACTIVITY_START_TIME, SortField.Type.LONG, true));
-                }
+                }*/
             }
 
             sortFieldList.add(new SortField(ActivityIndexFields.WEIGHT, SortField.Type.INT, true));
