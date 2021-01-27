@@ -355,7 +355,7 @@
                                                                 <el-option
                                                                         :label="dict.name"
                                                                         :value="dict.id"
-                                                                        v-for="dict in degreeOptions"
+                                                                        v-for="dict in degreeList"
                                                                         :key="dict.id"
                                                                 />
                                                             </el-select>
@@ -1839,6 +1839,7 @@
                 resumeDetail:undefined,
                 countryOptions: [],
                 degreeOptions: [],
+                degreeList:[],
                 jobCategoryOptions: [],
                 skillTagOptions: [],
                 categoryListOptions: [],
@@ -1990,7 +1991,6 @@
             this.initData();
         },
         methods: {
-
             setDialogWidth() {
                 var val = document.body.clientWidth
                 const def = 450 // 默认宽度
@@ -2008,7 +2008,6 @@
                 console.log(this.editableTabsValue)
                 console.log(this.resume[0].id)
                 this.handleEditPriority()
-
             },
             handleTabsEdit(targetName, action) {
                 if (action === 'add') {
@@ -2050,9 +2049,17 @@
                         this.resumeForm.phoneCode = data.phoneCode;
                     }
                 });
-                listByType(25).then(
-                    (response) => (this.degreeOptions = response.data.list)
-                );
+                listByType(25).then((response) => {
+                    this.degreeOptions = response.data.list
+                    console.log(this.degreeOptions)
+                    for (const item of this.degreeOptions){
+                        if (item.name!='不限'&&item.name!='专科及以下'
+                            &&item.name!='MBA'&&item.name!='EMBA'){
+                            this.degreeList.push(item)
+                        }
+                    }
+                    console.log(this.degreeList)
+                });
                 listByType(3).then(
                     (response) => (this.skillTagOptions = response.data.list)
                 );
@@ -2345,17 +2352,6 @@
             addResume() {
                 addResume().then(()=>{
                     this.getResumeInfo();
-                    // getResumeInfo().then((response) => {
-                    //     this.resume = response.data;
-                    //     this.$set(this.resume[this.resume.length-1],'title','新简历')
-                    //     this.newResumeForm.title="新简历"
-                    //     this.newResumeForm.id=this.resume[this.resume.length-1].id
-                    //     saveResumeBasic(this.newResumeForm).then(()=>{
-                    //             this.getResumeInfo()
-                    //         }
-                    //     )
-                    //     console.log(this.resume[this.resume.length-1])
-                    // })
                 })
             },
             setResumeFormValues() {
