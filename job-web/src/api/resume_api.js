@@ -6,6 +6,13 @@ export function getResumeInfo(){
         method: 'get',
       })
 }
+export function parseAttachment(data){
+    return request({
+        url: '/resume/parse-attachment',
+        method: 'post',
+        data
+    })
+}
 
 export function saveResumeBasic(data){
     return request({

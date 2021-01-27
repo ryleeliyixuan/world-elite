@@ -479,9 +479,11 @@
                                                     <div style="padding-left:30px">
                                                             <el-form-item label="意向城市:" prop="expectCity"
                                                                           class="m-input-text-width">
-                                                                <el-input
+                                                                <el-autocomplete
                                                                         v-model="expectJobForm.expectCity"
-                                                                        placeholder="请输入意向城市"></el-input>
+                                                                        :fetch-suggestions="searchCityName"
+                                                                        value-key="name"
+                                                                        placeholder="请输入意向城市"></el-autocomplete>
                                                             </el-form-item>
                                                     </div>
                                                 </div>
@@ -1527,7 +1529,7 @@
     import {searchSchool} from "@/api/school_api";
     import {listByType} from "@/api/dict_api";
     import {serachByName} from "@/api/company_api";
-    // import {getCityByName} from "@/api/city_api"
+    import {getCityByName} from "@/api/city_api"
     import {getCategoryTree} from "@/api/category_api";
     import {saveUserExpectJob} from "@/api/user_api";
     import {getUploadPicToken, getUploadAttachmentToken} from "@/api/upload_api";
@@ -3304,15 +3306,15 @@
                     cb(response.data.list);
                 });
             },
-            // searchCityName(keyword,cb) {
-            //     if (!keyword || keyword.length<1){
-            //         return;
-            //     }
-            //     getCityByName(keyword).then((response) => {
-            //         cb(response.data);
-            //     });
-            //
-            // },
+            searchCityName(keyword,cb) {
+                if (!keyword || keyword.length<1){
+                    return;
+                }
+                getCityByName(keyword).then((response) => {
+                    cb(response.data);
+                });
+
+            },
             handleDeleteItemById(delById, id) {
                 this.$confirm("是否要删除该记录？", {
                     confirmButtonText: "删除",
