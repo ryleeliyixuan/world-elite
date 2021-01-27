@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
         <div class="line1">
-            <div class="text" @click="$router.go(-1)" style="cursor: pointer;">活动发布</div>
+            <div class="text" @click="onCancel" style="cursor: pointer;">活动发布</div>
             <div class="text">></div>
             <div class="text">{{getNavTitle()}}</div>
         </div>
@@ -793,19 +793,13 @@
 
             // 创建一个新题目
             newQuestion(type) {
-                let question = {title: undefined, mustAnswer: '1', edit: true, type: type, typeForSelect: undefined, optionsList: []}
+                let question = {title: undefined, mustAnswer: '1', edit: true, type: type, typeForSelect: undefined, optionsList: [{options: '选项1'},{options: '选项2'},{options: '选项3'}]}
                 switch (type) {
                     case '1': // 填空题
                         break;
                     case '2': // 单选题
-                        question.optionsList.push({options: '选项1'});
-                        question.optionsList.push({options: '选项2'});
-                        question.optionsList.push({options: '选项3'});
                         break;
                     case '3': // 多选题
-                        question.optionsList.push({options: '选项1'});
-                        question.optionsList.push({options: '选项2'});
-                        question.optionsList.push({options: '选项3'});
                         break;
                     case '4': // 附件上传题
                         break;
@@ -1211,7 +1205,7 @@
                         }
 
                         .question1-edit-line2 {
-                            width: 100%;
+                            width: 556px;
                             max-width: 720px;
                             height: 30px;
                             background: #FFFFFF;
@@ -1410,7 +1404,7 @@
                         }
 
                         .question2-edit-line2 {
-                            width: 100%;
+                            width: 556px;
                             max-width: 720px;
                             margin-top: 13px;
 
@@ -1680,7 +1674,7 @@
                         }
 
                         .question3-edit-line2 {
-                            width: 100%;
+                            width: 556px;
                             max-width: 720px;
                             margin-top: 13px;
 
