@@ -203,8 +203,8 @@ public class JobApi extends BaseApi {
     @RequireLogin(allow = UserType.GENERAL)
     @PostMapping("apply-job")
     @ApiDoc
-    public ApiResult applyJob(@RequestParam Long jobId, @RequestParam Long resumeId) {
-        jobService.applyJob(jobId, resumeId);
+    public ApiResult applyJob(@RequestParam Long id, @RequestParam Long resumeId) {
+        jobService.applyJob(id, resumeId);
         return ApiResult.ok();
     }
 
