@@ -7,3 +7,11 @@ export function getCityIdByName(names){
         params: {cityNames: names}
     })
 }
+
+export function getCityByName(name){
+    return request({
+        url: '/city/get-city-by-name',
+        method: 'get',
+        params: {name: name}
+    })
+}
