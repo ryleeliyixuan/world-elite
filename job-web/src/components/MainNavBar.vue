@@ -467,7 +467,7 @@ export default {
     border-radius: 15px;
     border: 1px solid #4895ef;
 
-    height: 25px;
+    height: 30px;
     font-size: 18px;
     font-family: PingFangSC-Regular, PingFang SC;
     font-weight: 400;
@@ -482,7 +482,8 @@ export default {
 .login-button {
   /deep/.el-button {
     background: #4895ef;
-    height: 25px;
+
+    height: 30px;
     box-shadow: 0px 2px 4px 0px #a7c7f8;
     border-radius: 15px;
     display: flex;
