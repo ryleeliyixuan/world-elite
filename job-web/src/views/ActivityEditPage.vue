@@ -108,20 +108,6 @@
             </div>
             <div class="line">
                 <div class="name">
-                    活动时间<span>*</span>
-                </div>
-                <el-date-picker v-model="activityTime"
-                                type="datetimerange"
-                                align="right"
-                                start-placeholder="开始时间"
-                                end-placeholder="结束时间"
-                                size="small"
-                                :default-time="['09:00:00', '17:00:00']"
-                                :picker-options="pickerOption">
-                </el-date-picker>
-            </div>
-            <div class="line">
-                <div class="name">
                     报名时间<span>*</span>
                 </div>
                 <el-date-picker v-model="registrationTime"
@@ -131,7 +117,21 @@
                                 end-placeholder="结束时间"
                                 size="small"
                                 :default-time="['09:00:00', '17:00:00']"
-                                :picker-options="pickerOption">
+                                :picker-options="registrationTimeOption">
+                </el-date-picker>
+            </div>
+            <div class="line">
+                <div class="name">
+                    活动时间<span>*</span>
+                </div>
+                <el-date-picker v-model="activityTime"
+                                type="datetimerange"
+                                align="right"
+                                start-placeholder="开始时间"
+                                end-placeholder="结束时间"
+                                size="small"
+                                :default-time="['09:00:00', '17:00:00']"
+                                :picker-options="activityTimeOption">
                 </el-date-picker>
             </div>
             <div class="line">
@@ -346,9 +346,15 @@
                     questionnaireId: undefined, // 报名表或模板id
                 },
 
-                activityTime: [], // 活动起止时间，临时保存用户选择时间
                 registrationTime: [], // 报名起止时间，临时保存用户选择时间
-                pickerOption: {
+                registrationTimeOption: {
+                    disabledDate(time) {
+                        return time.getTime() < Date.now();
+                    }
+                },
+
+                activityTime: [], // 活动起止时间，临时保存用户选择时间
+                activityTimeOption: {
                     disabledDate(time) {
                         return time.getTime() < Date.now();
                     }
@@ -417,9 +423,19 @@
                 if (value && value.length === 2) {
                     this.activityForm.registrationStartTime = value[0].getTime();
                     this.activityForm.registrationFinishTime = value[1].getTime();
+                    this.activityTimeOption = {
+                        disabledDate: (time) => {
+                            return (time.getTime() < Date.now()) || (time.getTime() < value[1].getTime());
+                        }
+                    };
                 } else {
                     this.activityForm.registrationStartTime = undefined;
                     this.activityForm.registrationFinishTime = undefined;
+                    this.activityTimeOption = {
+                        disabledDate: (time) => {
+                            return time.getTime() < Date.now();
+                        }
+                    };
                 }
             },
             // 是否使用模板
@@ -427,6 +443,7 @@
                 this.activityForm.questionnaireType = value ? '1' : '0';
             }
         },
+
         created() {
             // 优先加载预览的内容，从列表页进入时会删除预览数据
             let activityForm = this.$storage.getObject('activityPreview');

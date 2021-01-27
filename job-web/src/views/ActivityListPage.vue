@@ -3,8 +3,8 @@
         <div class="section1-container">
             <div class="left-container">
                 <el-carousel :interval="5000" arrow="always">
-                    <el-carousel-item v-for="item in bannerList" :key="id" @click="onBannerItem(item)">
-                        <el-image style="width: 100%; height: 100%;" fit="cover" :src="item.poster"></el-image>
+                    <el-carousel-item v-for="(item, index) in bannerList" :key="index" @click.native="onBannerItem(item)">
+                        <el-image style="width: 100%; height: 100%; cursor: pointer" fit="cover" :src="item.poster"></el-image>
                     </el-carousel-item>
                 </el-carousel>
             </div>
@@ -217,6 +217,7 @@
 
             // 点击轮播图活动
             onBannerItem(activity) {
+                console.log(activity);
                 this.$router.push(`/activity/${activity.id}`);
             },
 
