@@ -14,7 +14,7 @@
               {{ job.name }}
               <span class="salary-text ml-4">
                 <!--{{ job.salary.name}} {{job.salaryMonths ? ` × ${job.salaryMonths}个月` : ""}}-->
-                {{ job.salary.name}}
+                {{ job.salary.name }}
               </span>
             </div>
             <div class="text3 mb-2">
@@ -203,7 +203,7 @@
           /></el-button>
         </div>
         <ResumeView
-          :resumeId="previewResumeId"
+          :resumeDetail="resumeDetail"
           class="resume-preview-content"
         ></ResumeView
       ></el-dialog>
@@ -297,7 +297,7 @@
           <template slot-scope="scope">
             <el-button
               type="primary"
-              @click="(previewDialog = true), (previewResumeId = scope.row.id)"
+              @click="handlePreview(scope.row.id), (previewDialog = true)"
               >预览</el-button
             >
             <el-button @click="handleEditResume(scope.row.id)">修改</el-button>
@@ -316,7 +316,7 @@
 import Vue from "vue";
 import VueAMap from "vue-amap";
 import ResumeView from "@/components/ResumeView";
-import { getResumeInfo } from "@/api/resume_api";
+import { getResumeInfo, getResumeDetail } from "@/api/resume_api";
 import { getJobInfo, applyJob } from "@/api/job_api";
 import { doFavorite } from "@/api/favorite_api";
 import { setPageTitle } from "@/utils/setting";
@@ -340,7 +340,8 @@ export default {
       selectedId: undefined,
       resume: undefined,
       previewDialog: false,
-      previewResumeId: undefined,
+      // previewResumeId: undefined,
+      resumeDetail: undefined,
       resumeListLoading: true,
       progressAlertDialog: false,
       checked: null,
@@ -478,6 +479,12 @@ export default {
         .finally(() => {
           this.resumeListLoading = false;
         });
+    },
+    handlePreview(id) {
+      getResumeDetail(id).then((response) => {
+        this.resumeDetail = response.data;
+        // console.log(this.resumeDetail);
+      });
     },
   },
 };
