@@ -814,6 +814,7 @@
         });
         listByType(25).then((response) => {
           this.degreeOptions = response.data.list;
+          this.degreeOptions = this.amendOptions(this.degreeOptions);
           this.buildUnlimitedMap(this.degreeOptions, "degree");
           this.listQuery.degreeIds.push(this.unlimitedMap["degree"]);
           this.buildInitIds(this.initDegreeIds, this.degreeOptions);
@@ -850,6 +851,15 @@
                   this.buildInitIds(this.initLanRequiredIds, this.lanRequiredOptions);
                 });
         this.paneLoading = false;
+      },
+      amendOptions(options) {
+        let validOptions = [];
+        for (let i = 0; i < options.length; i++) {
+          if (options[i].name !== "高中" && options[i].name !== "专科") {
+            validOptions.push(options[i]);
+          }
+        }
+        return validOptions;
       },
       goToTop() {
         let top = document.documentElement.scrollTop || document.body.scrollTop;
