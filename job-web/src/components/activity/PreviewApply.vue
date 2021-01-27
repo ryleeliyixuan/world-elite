@@ -342,7 +342,7 @@
         }
 
         ::v-deep .el-dialog__body {
-            padding: 0 90px 50px;
+            padding: 0 50px 50px;
         }
 
         .content {

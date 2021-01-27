@@ -646,7 +646,7 @@
                 templateTitleEditing: false, // 模板名称编辑中
 
                 educationList: [], // 学历列表
-                questionTypeList: [{label: '填空题', value: '1'}, {label: '单选题', value: '2'}, {label: '多选题', value: '3'}, {label: '上传附件', value: '4'}], // 题型列表
+                questionTypeList: [{label: '填空题', value: '1'}, {label: '单选题', value: '2'}, {label: '多选题', value: '3'}, {label: '附件上传', value: '4'}], // 题型列表
 
                 cancelDialogVisible: false, // 取消确认对话框
                 saveTemplateDialogVisible: false, // 保存模板对话框
