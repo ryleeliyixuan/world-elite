@@ -37,7 +37,7 @@
       </div>
     </div>
     <div
-      v-if="resumeDetail.resumeEduList && resumeDetail.resumeEduList.length != 0"
+      v-if="resumeDetail.resumeEduList && resumeDetail.resumeEduList!=''"
       class="resume-box"
     >
       <el-row>
@@ -49,21 +49,21 @@
       </el-row>
           <div class="resume-edu" v-for="resumeEdu in resumeDetail.resumeEduList"
                :key="resumeEdu.id">
-            <div style="display: flex;padding-top: 13px">
+            <div style="display: flex;padding-top: 13px;padding-left: 13px;">
             <div class="edu-box-l" style="width: 350px;">
-              <el-row class="edu-school ">{{resumeEdu.schoolName}}</el-row>
-              <el-row class="info-other">学历：{{resumeEdu.degree.name}}</el-row>
-              <el-row class="info-other">专业：{{resumeEdu.majorName}}</el-row>
+              <el-row class="edu-school" style="padding-top: 10px;">{{resumeEdu.schoolName}}</el-row>
+              <el-row class="info-other" style="padding-top: 10px;">学历：{{resumeEdu.degree.name}}</el-row>
+              <el-row class="info-other" style="padding-top: 10px;">专业：{{resumeEdu.majorName}}</el-row>
             </div>
             <div class="edu-box-m" style="padding-top: 22px">
-              <el-row class="info-other">在校时间：
+              <el-row class="info-other" style="padding-top: 10px;">在校时间：
                 <span style="font-size: 14px;
                              font-family: PingFangSC-Regular, PingFang SC;
                              font-weight: 400;">
                    {{resumeEdu.startTime == resumeEdu.finishTime? '在读': `${resumeEdu.startTime}到${resumeEdu.finishTime}`}}
                 </span>
               </el-row>
-              <el-row class="info-other">GPA：{{resumeEdu.gpa}}</el-row>
+              <el-row class="info-other" style="padding-top: 10px;">GPA：{{resumeEdu.gpa}}</el-row>
             </div>
             </div>
           </div>
@@ -71,7 +71,7 @@
     <div
       class="resume-box mt-4"
       style="margin-top: 10px"
-      v-if="resumeDetail.resumeExpList && resumeDetail.resumeExpList.length != 0"
+      v-if="resumeDetail.userExpectJob && resumeDetail.userExpectJob!=''"
     >
       <el-row>
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -80,13 +80,13 @@
           <span class="resume-red">*</span>
         </div>
       </el-row>
-      <div class="resume-eduinfo">
-        <div class="resume-edu" style="display: inline-flex">
+      <div class="resume-eduinfo" style="padding-left: 13px;">
+        <div class="resume-edu" style="display: inline-flex;">
           <div class="edu-box-l1">
-            <el-row class="edu-school">
+            <el-row class="edu-school" style="padding-top: 10px;">
               {{resumeDetail.userExpectJob.expectPosition}}
             </el-row>
-            <el-row class="info-other">预期薪资：
+            <el-row class="info-other" style="padding-top: 10px;">预期薪资：
               <span v-if="resumeDetail.userExpectJob.salaryId && resumeDetail.userExpectJob.salaryId!=''">
                 <span v-if="resumeDetail.userExpectJob.salaryId==1">5K-8K</span>
                 <span v-if="resumeDetail.userExpectJob.salaryId==2">8K-10K</span>
@@ -99,18 +99,18 @@
                 <span v-if="resumeDetail.userExpectJob.salaryId==9">面议</span>
                </span>
             </el-row>
-            <el-row class="info-other">工作类型：
+            <el-row class="info-other" style="padding-top: 10px;">工作类型：
               <span class="expjob-data"
               >{{resumeDetail.userExpectJob.expectWorkType}}
               </span >
             </el-row>
           </div>
           <div class="edu-box-m1">
-            <el-row class="info-other">期望行业：
+            <el-row class="info-other" style="padding-top: 10px;">期望行业：
               <span v-if="resumeDetail.userExpectJob.category&&resumeDetail.userExpectJob.category!=''"
               > {{ resumeDetail.userExpectJob.category.name }} </span>
             </el-row>
-            <el-row class="info-other">工作城市：
+            <el-row class="info-other" style="padding-top: 10px;">工作城市：
               <span class="resume"
               >{{resumeDetail.userExpectJob.expectCity}}</span>
             </el-row>
@@ -120,7 +120,7 @@
     </div>
     <div
       class="resume-box mt-4"
-      v-if="resumeDetail.resumePracticeList && resumeDetail.resumePracticeList.length != 0"
+      v-if="resumeDetail.resumeExpList && resumeDetail.resumeExpList!= ''"
     >
       <div style="width: 615px">
         <img src="../assets/point.png" style="padding-right: 9px;padding-bottom: 7px">
@@ -128,7 +128,7 @@
       </div>
 
       <div v-for="resumeExp in resumeDetail.resumeExpList"
-           :key="resumeExp.id" style="display: grid;">
+           :key="resumeExp.id" style="display: grid;padding-left: 13px;">
         <div style="display: inline-flex;margin-top: 20px">
           <div>
             <span class="resume-box-text"> {{resumeExp.company}}</span>
@@ -165,10 +165,9 @@
         </div>
       </div>
     </div>
-
     <div
             class="mt-4 resume-box"
-            v-if="resumeDetail.resumePracticeList && resumeDetail.resumePracticeList.length != 0"
+            v-if="resumeDetail.resumePracticeList && resumeDetail.resumePracticeList!=''"
     >
       <el-row>
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -192,11 +191,9 @@
         </div>
       </div>
     </div>
-
-
     <div
             class="mt-4 resume-box"
-            v-if="resumeDetail.resumeLanguageList && resumeDetail.resumeLanguageList.length != 0"
+            v-if="resumeDetail.resumeLanguageList && resumeDetail.resumeLanguageList != ''"
     >
       <el-row style="height: 30px">
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -204,10 +201,10 @@
           <span class="resume-base">语言能力</span>
         </div>
       </el-row>
-      <el-row style="display: inline-flex" v-for="(language,index) in resumeDetail.resumeLanguageList"
+      <el-row style="display: inline-flex;" v-for="(language,index) in resumeDetail.resumeLanguageList"
               :key="language.id">
         <div class="resume-edu">
-          <el-row style="width: 615px;display: inline-flex">
+          <el-row style="width: 615px;display: inline-flex;padding-left: 13px;">
             <div style="width: 386px">
               <span class="info-other">语种{{index+1}}: </span>
                 <span class="info-other">{{language.title}}</span>
@@ -220,11 +217,9 @@
         </div>
       </el-row>
     </div>
-
-
     <div
             class="mt-4 resume-box"
-            v-if="resumeDetail.resumeSkillList && resumeDetail.resumeSkillList.length != 0"
+            v-if="resumeDetail.resumeCertificateList && resumeDetail.resumeCertificateList!= ''"
     >
       <el-row style="height: 30px">
         <div style="width: 540px; display: inline-block;margin-right: 75px">
@@ -235,7 +230,7 @@
       <el-row style="display: inline-flex" v-for="(awards,index) in resumeDetail.resumeCertificateList"
               :key="awards.id">
         <div class="resume-edu">
-          <el-row style="width: 615px;display: inline-flex">
+          <el-row style="width: 615px;display: inline-flex;padding-left: 13px;">
             <div style="width: 386px">
               <span class="info-other">证书/奖项名称：</span>
               <span class="info-other">{{awards.title}}</span>
@@ -250,7 +245,7 @@
     </div>
     <div
             class="mt-4 resume-box"
-            v-if="resumeDetail.resumeSkillList && resumeDetail.resumeSkillList.length != 0"
+            v-if="resumeDetail.resumeSkillList && resumeDetail.resumeSkillList!= ''"
     >
       <el-row>
         <div style="width: 540px; display: inline-block;margin-right: 75px">
