@@ -282,6 +282,17 @@ export default {
 @media screen and (max-width: 850px) {
   .app-container {
     padding: 20px 20px 0;
+
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+      }
+    }
+    
     .text-center {
       font-size: 18px;
     }
@@ -292,6 +303,34 @@ export default {
       .item-container {
         margin-top: 20px;
       }
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  /deep/.el-form-item {
+    flex-direction: column !important;
+  }
+
+  .app-container {
+    padding: 20px 20px 0;
+
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+      }
+    }
+
+    .text-center {
+      font-size: 18px;
+    }
+
+    .text-center1 {
+      font-size: 14px;
     }
   }
 }

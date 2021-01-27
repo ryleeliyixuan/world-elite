@@ -336,4 +336,76 @@ export default {
     }
   }
 }
+
+@media screen and (max-width: 850px) {
+  .app-container {
+    padding: 20px 20px 0;
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+      }
+    }
+
+    .text-center {
+      font-size: 18px;
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  /deep/.el-form-item {
+    flex-direction: column !important;
+  }
+
+  .app-container {
+    padding: 20px 20px 0;
+
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+
+        .section2-form {
+          /deep/.el-input {
+            width: auto;
+          }
+          /deep/.el-input__inner {
+            width: 200px;
+          }
+
+          .el-input-group__append {
+            .el-button {
+              width: 75px;
+              font-size: 12px;
+            }
+
+            .el-image {
+              width: 80px !important;
+            }
+          }
+        }
+
+        /deep/ .el-input-group__append,
+        .el-input-group__prepend {
+          padding: 0 12px;
+        }
+      }
+    }
+
+    .text-center {
+      font-size: 18px;
+    }
+
+    .text-center1 {
+      font-size: 14px;
+    }
+  }
+}
 </style>

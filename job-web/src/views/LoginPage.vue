@@ -2,7 +2,10 @@
   <div class="app-container">
     <div class="login-box">
       <div class="section1">
-        <div class="section1-header bold"></div>
+        <el-image
+          :src="require('../assets/login-background.svg')"
+          fit="scale-down"
+        ></el-image>
       </div>
       <div class="section2">
         <div class="bold section2-header">Hello, <br />Welcome Back!</div>
@@ -10,7 +13,7 @@
           登录{{ $t("app_name") }}，及时掌握职场最新动态。
         </div>
         <div class="section2-down">
-          <div class="form-container">
+          <div class="text-center form-container">
             <form @submit="onSubmit">
               <div class="input">
                 <div class="input-sub">EMAIL ADDRESS</div>
@@ -165,13 +168,12 @@ export default {
     }
 
     .section1 {
-      background: url("../assets/login-background.svg") repeat;
+      width: 100%;
+      height: 100%;
+      // background: url("../assets/login-background.svg");
+      // background-size: contain no-repeat;
       flex: 1;
-      .section1-header {
-        margin-left: 20px;
-        margin-top: 84px;
-        margin-bottom: 26px;
-      }
+      display: flex;
     }
 
     .section2 {
@@ -220,7 +222,7 @@ export default {
             margin-bottom: 27px;
           }
 
-           /deep/ .el-input__inner {
+          /deep/ .el-input__inner {
             width: 339px;
             // height: 39px;
             background: #ffffff;
@@ -299,6 +301,17 @@ export default {
 @media screen and (max-width: 850px) {
   .app-container {
     padding: 20px 20px 0;
+
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+      }
+    }
+
     .text-center {
       font-size: 18px;
     }
@@ -306,8 +319,49 @@ export default {
     .text-center1 {
       font-size: 14px;
     }
-    .form-container {
-      width: 300px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .app-container {
+    padding: 20px 20px 0;
+
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+
+        .section2-down {
+          .form-container {
+            /deep/.el-input__inner {
+              width: 200px;
+              margin: auto;
+            }
+
+            .input {
+              .input-sub {
+                left: 100px;
+              }
+            }
+
+            .login-button {
+              width: 200px;
+              margin: auto;
+            }
+          }
+        }
+      }
+    }
+
+    .text-center {
+      font-size: 18px;
+    }
+
+    .text-center1 {
+      font-size: 14px;
     }
   }
 }

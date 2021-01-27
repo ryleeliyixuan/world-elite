@@ -10,7 +10,7 @@
           加入World Elite，及时掌握职场最新动态。
         </div>
         <div class="section2-down">
-          <div class="form-container">
+          <div class="form-container text-center">
             <form @submit="onSubmit" @reset="onReset" class="register-form">
               <div class="input">
                 <div class="input-sub">EMAIL ADDRESS</div>
@@ -88,7 +88,7 @@
                 v-on:click="onSubmit"
                 >{{ $t("agree_to_regist") }}
               </el-button>
-              <p class="text-left m-2">
+              <p class="login-hint text-left m-2">
                 {{ $t("ask_regist_before") }}
                 <b-link to="/login">{{ $t("login") }}</b-link>
               </p>
@@ -380,6 +380,16 @@ export default {
 @media screen and (max-width: 850px) {
   .app-container {
     padding: 20px 20px 0;
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+      }
+    }
+
     .text-center {
       font-size: 18px;
     }
@@ -390,6 +400,71 @@ export default {
       .item-container {
         margin-top: 20px;
       }
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .app-container {
+    padding: 20px 20px 0;
+
+    .login-box {
+      .section1 {
+        display: none;
+      }
+
+      .section2 {
+        border-radius: 24px;
+
+        .section2-down {
+          .form-container {
+            /deep/.el-input__inner {
+              width: 200px;
+              margin: auto;
+            }
+
+            /deep/.el-input-group__append {
+              .el-button {
+                width: 75px;
+                font-size: 12px;
+              }
+            }
+
+            /deep/.el-input-group__append,
+            .el-input-group__prepend {
+              padding: 0 2px;
+            }
+
+            .short {
+              padding-left: 50px;
+              padding-right: 50px;
+            }
+
+            .input {
+              .input-sub {
+                left: 100px;
+              }
+            }
+
+            .register-button {
+              width: 200px;
+              margin: auto;
+            }
+
+            .login-hint {
+              text-align: center !important;
+            }
+          }
+        }
+      }
+    }
+
+    .text-center {
+      font-size: 18px;
+    }
+
+    .text-center1 {
+      font-size: 14px;
     }
   }
 }
