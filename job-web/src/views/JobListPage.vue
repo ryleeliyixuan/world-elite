@@ -841,7 +841,7 @@
                     type: 163,
                     page: 1,
                     limit: 10,
-                    sort: "+value",
+                    sort: "-value",
                   },
                 })
                 .then((resp) => {
@@ -1071,7 +1071,7 @@
         let optionsCityValues = [];
         let cityValues = options.cityValues;
         for (let i = 0; i < cityValues.length; i++) {
-          historyCityValues.push(cityValues[i].endsWith("市") ? cityValues[i].substr(0, cityValues.length - 1) : cityValues[i]);
+          historyCityValues.push(cityValues[i].endsWith("市") ? cityValues[i].substr(0, cityValues[i].length - 1) : cityValues[i]);
         }
         for (let i = 0; i < this.cityOptions.length; i++) {
           optionsCityValues.push(this.cityOptions[i].name);
