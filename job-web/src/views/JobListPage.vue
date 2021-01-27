@@ -814,6 +814,7 @@
         });
         listByType(25).then((response) => {
           this.degreeOptions = response.data.list;
+          this.degreeOptions = this.amendOptions(this.degreeOptions);
           this.buildUnlimitedMap(this.degreeOptions, "degree");
           this.listQuery.degreeIds.push(this.unlimitedMap["degree"]);
           this.buildInitIds(this.initDegreeIds, this.degreeOptions);
@@ -840,7 +841,7 @@
                     type: 163,
                     page: 1,
                     limit: 10,
-                    sort: "+id",
+                    sort: "-value",
                   },
                 })
                 .then((resp) => {
@@ -850,6 +851,15 @@
                   this.buildInitIds(this.initLanRequiredIds, this.lanRequiredOptions);
                 });
         this.paneLoading = false;
+      },
+      amendOptions(options) {
+        let validOptions = [];
+        for (let i = 0; i < options.length; i++) {
+          if (options[i].name !== "高中" && options[i].name !== "专科") {
+            validOptions.push(options[i]);
+          }
+        }
+        return validOptions;
       },
       goToTop() {
         let top = document.documentElement.scrollTop || document.body.scrollTop;
@@ -1061,7 +1071,7 @@
         let optionsCityValues = [];
         let cityValues = options.cityValues;
         for (let i = 0; i < cityValues.length; i++) {
-          historyCityValues.push(cityValues[i].endsWith("市") ? cityValues[i].substr(0, cityValues.length - 1) : cityValues[i]);
+          historyCityValues.push(cityValues[i].endsWith("市") ? cityValues[i].substr(0, cityValues[i].length - 1) : cityValues[i]);
         }
         for (let i = 0; i < this.cityOptions.length; i++) {
           optionsCityValues.push(this.cityOptions[i].name);

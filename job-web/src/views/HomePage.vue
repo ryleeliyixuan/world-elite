@@ -189,7 +189,7 @@
     <div class="company-recommend-box">
       <div class="header text-center">企业百科</div>
       <div class="subheader text-center">CORPORATE INFO</div>
-      <div class="title">大家都在看的企业</div>
+      <div class="title"><span>大家都在看的企业</span></div>
       <div class="company-container">
         <div
           class="company-card"
@@ -209,12 +209,10 @@
                     : `background: #FFFFFF;`
                 "
                 @click.native.prevent="
-                  handleFavorite(
-                    company.object.id,
-                    company.object.favoriteFlag,
-                    company
-                  )
+                  handleFavorite(company.object.id, company.object.favoriteFlag)
                 "
+                @mouseenter.native.prevent="MouseInFav(company)"
+                @mouseleave.native.prevent="MouseOutFav(company)"
                 ><svg-icon
                   :icon-class="
                     company.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
@@ -256,7 +254,7 @@
           </el-link>
         </div>
       </div>
-      <div class="title">这些企业最近上新了职位</div>
+      <div class="title"><span>这些企业最近上新了职位</span></div>
       <div class="company-container">
         <div class="company-card" v-for="item in recentJobList" :key="item.id">
           <el-link :href="`/company/${item.id}`" :underline="false">
@@ -272,8 +270,10 @@
                     : `background: #FFFFFF;`
                 "
                 @click.native.prevent="
-                  handleFavorite(item.id, item.favoriteFlag, item)
+                  handleFavorite(item.id, item.favoriteFlag)
                 "
+                @mouseenter.native.prevent="MouseInRecentFav(item)"
+                @mouseleave.native.prevent="MouseOutRecentFav(item)"
                 ><svg-icon
                   :icon-class="
                     item.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
@@ -326,7 +326,7 @@
     <div class="activity-box">
       <div class="header text-center">职场活动</div>
       <div class="subheader text-center">WORKPLACE EVENTS</div>
-      <div class="title">热门招聘活动</div>
+      <div class="title"><span>热门招聘活动</span></div>
       <div class="activity-container">
         <div
           class="activity-card"
@@ -334,7 +334,12 @@
           :key="item.id"
           @click="onActivityDetail(item)"
         >
-          <el-image class="thumbnail" :src="item.poster"></el-image>
+          <el-image
+            style="width: 340px; height: 191px"
+            class="thumbnail"
+            :src="item.poster"
+            fit="fit"
+          ></el-image>
           <div class="brief">
             <div class="line1">
               <div class="name">{{ item.title }}</div>
@@ -459,9 +464,30 @@ export default {
     select: function (banner) {
       window.open(banner.url);
     },
-    handleFavorite(id, favorite, item) {
+    //mouse in fav
+    MouseInFav(company) {
+      company.object.favoriteFlag === 1
+        ? (company.object.favoriteFlag = 0)
+        : (company.object.favoriteFlag = 1);
+      console.log("-----", company.object.favoriteFlag);
+    },
+    MouseOutFav() {
+      this.initData();
+    },
+    MouseInRecentFav(company) {
+      // console.log("-----");
+      company.favoriteFlag === 1
+        ? (company.favoriteFlag = 0)
+        : (company.favoriteFlag = 1);
+    },
+    MouseOutRecentFav(company) {
+      // console.log("******");
+      this.initData();
+    },
+    //mouse out fav
+    handleFavorite(id, favorite) {
       let data = {
-        favorite: !favorite,
+        favorite: Boolean(favorite),
         objectId: id,
         type: 2,
       };
@@ -479,6 +505,12 @@ export default {
     // 点击活动，查看活动详情
     onActivityDetail(activity) {
       this.$router.push(`/activity/${activity.id}`);
+    },
+    onCompanyDetail(company) {
+      this.$router.push(`/company/${company.object.id}`);
+    },
+    onRecentCompanyDetail(company) {
+      this.$router.push(`/company/${company.id}`);
     },
     goToTop() {
       let top = document.documentElement.scrollTop || document.body.scrollTop;
@@ -538,9 +570,12 @@ export default {
     font-weight: 600;
     color: #333333;
     line-height: 25px;
-    background: linear-gradient(90deg, #4895ef 0%, #2c5fb8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+
+    span {
+      background: linear-gradient(90deg, #4895ef 0%, #2c5fb8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   }
 
   .more {
@@ -604,6 +639,7 @@ export default {
         width: 340px;
         height: 145px;
         background: linear-gradient(135deg, #f9fbfd 0%, #ddecfd 100%);
+        cursor: pointer;
 
         /deep/.el-button {
           box-shadow: 0px 5px 13px 0px #c0cde3;
@@ -641,6 +677,10 @@ export default {
               display: flex;
             }
           }
+
+          /deep/.el-button:hover {
+            background: #ff3d00;
+          }
         }
 
         .company-section2 {
@@ -677,6 +717,10 @@ export default {
         }
       }
 
+      .company-card:hover {
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+      }
+
       .company-card + .company-card {
         margin-left: 35px;
       }
@@ -691,82 +735,91 @@ export default {
 
     .activity-container {
       position: relative;
-      width: 340px;
-      height: 191px;
       margin-bottom: 40px;
       display: flex;
+      justify-content: space-between;
       cursor: pointer;
 
-      .brief {
-        position: absolute;
-        width: 100%;
-        left: 0;
-        bottom: 0;
-        height: 50px;
-        background: rgba(0, 0, 0, 0.6);
-        display: flex;
-        flex-direction: column;
-        padding: 4px 5px 6px 7px;
+      .activity-card:hover {
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.5);
+      }
 
-        .line1 {
+      .activity-card {
+        position: relative;
+        width: 340px;
+        height: 191px;
+
+        .brief {
+          position: absolute;
+          width: 100%;
+          left: 0;
+          bottom: 0;
+          height: 50px;
+          background: rgba(0, 0, 0, 0.6);
           display: flex;
-          align-items: center;
-          justify-content: space-between;
+          flex-direction: column;
+          padding: 4px 5px 6px 7px;
 
-          .name {
-            margin: 0;
-            color: #ffffff;
-            line-height: 25px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            font-size: 14px;
-            font-family: PingFangSC-Medium, PingFang SC;
-            font-weight: 500;
-            line-height: 20px;
+          .line1 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .name {
+              margin: 0;
+              color: #ffffff;
+              line-height: 25px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              font-size: 14px;
+              font-family: PingFangSC-Medium, PingFang SC;
+              font-weight: 500;
+              line-height: 20px;
+            }
+
+            .city {
+              background: #00c853;
+              height: 19px;
+              line-height: 22px;
+              padding: 0 5px;
+              border-radius: 4px;
+              font-size: 13px;
+              flex-shrink: 0;
+              margin-left: 7px;
+              color: #ffffff;
+              font-size: 14px;
+              font-family: PingFangSC-Medium, PingFang SC;
+              font-weight: 500;
+              line-height: 20px;
+            }
+
+            .online {
+              background: #ffab00;
+            }
           }
 
-          .city {
-            background: #00c853;
-            height: 19px;
-            line-height: 22px;
-            padding: 0 5px;
-            border-radius: 4px;
-            font-size: 13px;
-            flex-shrink: 0;
-            margin-left: 7px;
-            color: #ffffff;
-            font-size: 14px;
-            font-family: PingFangSC-Medium, PingFang SC;
-            font-weight: 500;
-            line-height: 20px;
-          }
+          .line2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-          .online {
-            background: #ffab00;
-          }
-        }
+            .time {
+              font-size: 12px;
+              font-family: PingFangSC-Regular, PingFang SC;
+              font-weight: 400;
+              color: #ffffff;
+              line-height: 17px;
+            }
 
-        .line2 {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-
-          .time {
-            font-size: 12px;
-            font-family: PingFangSC-Regular, PingFang SC;
-            font-weight: 400;
-            color: #ffffff;
-            line-height: 17px;
-          }
-
-          .count {
-            font-size: 12px;
-            font-family: PingFangSC-Regular, PingFang SC;
-            font-weight: 400;
-            color: #ffffff;
-            line-height: 17px;
-            margin: auto;
+            .count {
+              font-size: 12px;
+              font-family: PingFangSC-Regular, PingFang SC;
+              font-weight: 400;
+              color: #ffffff;
+              line-height: 17px;
+              margin: auto;
+            }
           }
         }
       }
@@ -873,7 +926,7 @@ export default {
   }
 }
 
-@media screen and (max-width: 825px) {
+@media screen and (max-width: 826px) {
   .app-container {
     .company-recommend-box {
       .company-container {
@@ -888,13 +941,15 @@ export default {
       }
     }
 
-    .activity-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      .activity-card + .activity-card {
-        margin-left: 0px !important;
-        margin-top: 12px;
+    .activity-box {
+      .activity-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        .activity-card + .activity-card {
+          margin-left: 0px !important;
+          margin-top: 12px;
+        }
       }
     }
   }

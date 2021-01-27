@@ -526,9 +526,9 @@ public class ResumeApi extends BaseApi {
     @ApiDoc
     @PostMapping("parse-attachment")
     @RequireLogin
-    public ApiResult parseAttachment(@RequestBody ParseAttachmentForm parseAttachmentForm){
+    public ApiResult<ResumeVo> parseAttachment(@RequestBody ParseAttachmentForm parseAttachmentForm){
         ResumeService resumeService = ResumeServiceFactory.getDefaultService();
-        resumeService.parseAttachment(parseAttachmentForm);
-        return ApiResult.ok();
+        ResumeVo resumeVo = resumeService.parseAttachment(parseAttachmentForm);
+        return ApiResult.ok(resumeVo);
     }
 }

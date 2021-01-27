@@ -104,7 +104,10 @@ public class LuceneSearchService implements SearchService {
             queryBuilder.add(query, BooleanClause.Occur.MUST);
         }
         if (ArrayUtils.isNotEmpty(searchForm.getCityIds()) && !useList(searchForm.getCityIds(), 255)) {
-            queryBuilder.add(addMultiShouldQuery(searchForm.getCityIds(), JobIndexFields.CITY_INDEX), BooleanClause.Occur.MUST);
+            BooleanQuery.Builder cityQueryBuilder = new BooleanQuery.Builder();
+            cityQueryBuilder.add(addMultiShouldQuery(searchForm.getCityIds(), JobIndexFields.CITY_INDEX), BooleanClause.Occur.SHOULD);
+            cityQueryBuilder.add(addMultiShouldQuery(searchForm.getCityIds(), JobIndexFields.CITY_PARENT_INDEX), BooleanClause.Occur.SHOULD);
+            queryBuilder.add(cityQueryBuilder.build(), BooleanClause.Occur.MUST);
         }
 
         if (ArrayUtils.isNotEmpty(searchForm.getCompanyDefineIds())) {

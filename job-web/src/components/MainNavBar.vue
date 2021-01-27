@@ -1,7 +1,9 @@
 <template>
   <div class="nav-container">
     <div class="nav-left-container">
-      <router-link class="logo-image" to="/"></router-link>
+      <div class="logo-container">
+        <router-link class="logo-image" to="/"></router-link>
+      </div>
       <el-menu
         :router="true"
         mode="horizontal"
@@ -9,6 +11,7 @@
         @select="handleSelect"
         class="menu-container"
       >
+        <el-menu-item class="nav-item" index="/">首页</el-menu-item>
         <el-menu-item class="nav-item" index="/job-list">职位</el-menu-item>
         <el-menu-item class="nav-item" index="/wiki-card">百科</el-menu-item>
         <el-menu-item class="nav-item" index="/activity-list"
@@ -30,30 +33,36 @@
         @select="handleSearch"
         :trigger-on-focus="false"
       >
-        <i
-          slot="suffix"
-          class="el-input__icon el-icon-search"
-          @click="handleSearch"
-        />
+        <el-button slot="append" icon="el-icon-search" circle></el-button>
       </el-autocomplete>
       <!-- 未登录 -->
       <div class="user-container" v-if="!token">
-        <el-link :underline="false" class="join" @click="routeTo('register')">
-          <b>立即加入</b>
-        </el-link>
-        <el-button type="primary" @click="routeTo('/login')" size="small"
-          >登录</el-button
-        >
+        <div class="register-button">
+          <el-button type="primary" @click="routeTo('/register')" size="small"
+            >注册</el-button
+          >
+        </div>
+        <div class="login-button">
+          <el-button type="primary" @click="routeTo('/login')" size="small"
+            >登录</el-button
+          >
+        </div>
       </div>
       <!-- 已登录 -->
       <div class="user-container" v-else>
-        <svg-icon @click="routeTo('/chat')" icon-class="chat2" class="chat"  clickable/>
         <svg-icon
           @click="routeTo('/edit-resume')"
-          icon-class="resume"
+          icon-class="home-resume"
           class="chat"
           clickable
         />
+        <svg-icon
+          @click="routeTo('/chat')"
+          icon-class="home-message"
+          class="chat"
+          clickable
+        />
+
         <!-- 系统通知 -->
         <el-popover
           placement="bottom-end"
@@ -100,9 +109,18 @@
             @click="routeTo('messages')"
           >
             <el-badge v-if="messageList.length !== 0" is-dot>
-              <i class="el-icon-message-solid"></i>
+              <svg-icon
+                icon-class="home-notification"
+                style="width: 25px; height: 28px; margin-bottom: 5px"
+                clickable
+              />
             </el-badge>
-            <i v-else class="el-icon-message-solid"></i>
+            <svg-icon
+              v-else
+              icon-class="home-notification"
+              style="width: 25px; height: 28px; margin-bottom: 5px"
+              clickable
+            />
           </el-link>
         </el-popover>
 
@@ -255,6 +273,8 @@ export default {
         this.activeIndex = "/activity-list";
       } else if (this.isMock()) {
         this.activeIndex = "/mock/interview";
+      } else if (this.isHomePage()) {
+        this.activeIndex = "/";
       }
       this.keyword = this.$route.query.searchWord;
       this.getUnReadMessageCount();
@@ -392,6 +412,11 @@ export default {
       this.keyword = "";
     },
 
+    // 当前路由是否激活homepage
+    isHomePage() {
+      return this.$route.path === "/";
+    },
+
     // 当前路由是否激活职位菜单
     isJob() {
       return this.$route.path === "/job-list";
@@ -428,11 +453,108 @@ export default {
 };
 </script>
 <style>
-  .el-link--inner {
-    white-space: nowrap;
-  }
+.el-link--inner {
+  white-space: nowrap;
+}
 </style>
 <style scoped lang="scss">
+.register-button {
+  margin-left: 41px;
+  margin-right: 25px;
+
+  /deep/.el-button {
+    background: #ffffff;
+    border-radius: 15px;
+    border: 1px solid #4895ef;
+
+    height: 25px;
+    font-size: 18px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #4895ef;
+    line-height: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.login-button {
+  /deep/.el-button {
+    background: #4895ef;
+    height: 25px;
+    box-shadow: 0px 2px 4px 0px #a7c7f8;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #ffffff;
+    line-height: 25px;
+  }
+}
+/deep/.el-icon-search {
+  color: #4895ef;
+}
+/deep/.el-button.is-circle {
+  width: 25px;
+  height: 25px;
+  background: #ffffff;
+  box-shadow: 0px 2px 4px 0px #afc1ef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/deep/.el-input-group--append .el-input__inner,
+.el-input-group__prepend {
+  border-radius: 15px;
+}
+
+/deep/.el-input-group__append,
+.el-input-group__prepend {
+  border: 0px;
+  background-color: transparent;
+  position: absolute;
+  top: 40%;
+  right: 0;
+  padding: 0 10px;
+}
+/deep/.el-menu--horizontal > .el-menu-item.is-active {
+  border-bottom: 3px solid #4895ef;
+  font-size: 18px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #4895ef;
+  line-height: 25px;
+  display: flex;
+  align-items: center;
+}
+
+/deep/.el-menu--horizontal > .el-menu-item {
+  font-size: 18px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #333333;
+  line-height: 25px;
+  display: flex;
+  align-items: center;
+  height: 80px;
+}
+
+/deep/.el-menu.el-menu--horizontal {
+  border-bottom: 0px;
+}
+
+/deep/.el-input__inner {
+  height: 30px;
+  background: rgba(72, 149, 239, 0.11);
+  border-radius: 15px;
+  border: 0px;
+}
 .message-text {
   text-align: center;
   padding: 16px 10px 6px;
@@ -447,19 +569,24 @@ export default {
 
   .nav-left-container {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     flex: 1;
 
     .logo {
       font-size: 30px;
     }
 
-    .logo-image {
-      display: block;
-      width: 289px;
-      min-width: 289px;
-      height: 78px;
-      background: url("../assets/logo.png");
+    .logo-container {
+      .logo-image {
+        display: block;
+        width: 293px;
+        min-width: 293px;
+        height: 80px;
+        background: url("../assets/logo.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position-y: center;
+      }
     }
 
     .menu-container {
@@ -483,6 +610,7 @@ export default {
     .input-search {
       flex: 1;
       min-width: 140px;
+      max-width: 263px;
       margin-right: 10px;
     }
 

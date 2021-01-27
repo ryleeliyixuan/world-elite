@@ -17,19 +17,20 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/city/")
-public class CityApi extends BaseApi{
+public class CityApi extends BaseApi {
 
     @Autowired
     private CityService cityService;
 
     /**
      * 获取所有城市数据
+     *
      * @param type 城市类型
      * @return
      */
     @ApiDoc
     @GetMapping("list")
-    public ApiResult<List<CityVo>> list(@RequestParam Byte type){
+    public ApiResult<List<CityVo>> list(@RequestParam Byte type) {
         List<CityVo> cityVoList = cityService.getCacheTree(type);
         return ApiResult.ok(cityVoList);
     }
@@ -41,8 +42,20 @@ public class CityApi extends BaseApi{
     }
 
     @GetMapping("get-city-by-name")
-    public ApiResult<List<CityVo>> list(@RequestParam String name){
+    public ApiResult<List<CityVo>> list(@RequestParam String name) {
         List<CityVo> cityVoList = cityService.getCitiesByName(name);
+        return ApiResult.ok(cityVoList);
+    }
+
+    /**
+     * 根据城市名获取城市,到市一级
+     *
+     * @param name
+     * @return
+     */
+    @GetMapping("get-to-city-level-by-name")
+    public ApiResult<List<CityVo>> listToCityLevel(@RequestParam String name) {
+        List<CityVo> cityVoList = cityService.getToCityLevelByName(name);
         return ApiResult.ok(cityVoList);
     }
 

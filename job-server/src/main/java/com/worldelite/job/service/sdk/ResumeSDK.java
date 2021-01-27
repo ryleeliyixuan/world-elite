@@ -227,7 +227,7 @@ public class ResumeSDK extends BaseService {
      * @return
      * @throws IOException
      */
-    private String getBase64String(String url) throws IOException {
+    public String getBase64String(String url) throws IOException {
         // 读取简历内容
         BufferedInputStream inputStream = new BufferedInputStream(FileDownloadUtil.syncDownload(new URL(url)));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -246,7 +246,7 @@ public class ResumeSDK extends BaseService {
      * @param date
      * @return
      */
-    private Date getDate(String date){
+    public Date getDate(String date){
         if(date==null) return null;
         try {
             if(date.matches("\\d+\\.\\d+\\.\\d+")){
@@ -269,7 +269,7 @@ public class ResumeSDK extends BaseService {
      * @param gender
      * @return
      */
-    private Byte getGender(String gender){
+    public Byte getGender(String gender){
         if("男".equals(gender) || "male".equals(gender)){
             return Gender.MALE.value;
         }

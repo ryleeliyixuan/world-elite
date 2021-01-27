@@ -272,6 +272,7 @@
                     this.$axios.post('/registration', this.applyForm).then(() => {
                         this.$message.success("报名成功");
                         this.$set(this, 'dialogVisible', false);
+                        this.$emit("apply");
                     })
                 }
             },
@@ -289,7 +290,7 @@
                                 break;
                             case '2':
                             case '3':
-                                result = question.optionsList.filter(q => q.checked===true).length === 0;
+                                result = question.optionsList.filter(q => q.checked === true).length === 0;
                                 break;
                             case '4':
                                 result = !question.fileUrl;
@@ -341,7 +342,7 @@
         }
 
         ::v-deep .el-dialog__body {
-            padding: 0 90px 50px;
+            padding: 0 50px 50px;
         }
 
         .content {

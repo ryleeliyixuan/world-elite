@@ -3,8 +3,8 @@
         <div class="section1-container">
             <div class="left-container">
                 <el-carousel :interval="5000" arrow="always">
-                    <el-carousel-item v-for="item in 4" :key="item">
-                        <el-image style="width: 100%; height: 100%;" fit="cover" :src="img"></el-image>
+                    <el-carousel-item v-for="(item, index) in bannerList" :key="index" @click.native="onBannerItem(item)">
+                        <el-image style="width: 100%; height: 100%; cursor: pointer" fit="cover" :src="item.poster"></el-image>
                     </el-carousel-item>
                 </el-carousel>
             </div>
@@ -128,15 +128,18 @@
                         @pagination="getList">
             </pagination>
         </div>
+
+        <approve :visible.sync="showApproveDialog" :status="approveStatus" @close="getApprove"></approve>
     </div>
 </template>
 
 <script>
     import Pagination from "@/components/Pagination2";
+    import approve from "@/components/activity/ApproveDialog";
 
     export default {
         name: "ActivityListPage",
-        components: {Pagination},
+        components: {Pagination, approve},
         data() {
             return {
                 img: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=238583692,2460632321&fm=26&gp=0.jpg',
@@ -162,8 +165,12 @@
                     limit: 12
                 },
 
+                bannerList: [], // 轮播图列表
                 dataList: [], // 活动列表
                 total: 0, // 活动总数
+
+                showApproveDialog: false, // 显示实名认证对话框
+                approveStatus: undefined, // 实名认证状态   审核状态.1:审核中,2:通过,3拒绝",
             };
         },
         watch: {
@@ -191,6 +198,27 @@
                 this.$axios.get("/dict/list", {params: {type: 23, limit: 99, sort: '+id'}}).then(data => {
                     this.cityList = data.data.list;
                 })
+
+                // 活动城市
+                this.$axios.get("/activity/carousel").then(data => {
+                    this.bannerList = data.data;
+                })
+
+                // 查看我的实名认证状态
+                this.getApprove();
+            },
+
+            // 查看我的实名认证状态
+            getApprove() {
+                this.$axios.get(`/realnameauth/${this.$store.state.user.userId}`).then(response => {
+                    this.approveStatus = response.data && response.data.status
+                })
+            },
+
+            // 点击轮播图活动
+            onBannerItem(activity) {
+                console.log(activity);
+                this.$router.push(`/activity/${activity.id}`);
             },
 
             // 我报名的活动
@@ -205,9 +233,27 @@
 
             // 发布新活动
             onNewActivity() {
-                // 发布新活动前先清楚预览数据
-                this.$storage.removeObject('activityPreview');
-                this.$router.push('/activity/edit');
+                if (this.approveStatus === 1) { // 审核中
+                    console.log("审核中");
+                    this.showApproveDialog = true;
+                } else if (this.approveStatus === 3) { // 审核被拒绝
+                    console.log("审核被拒绝");
+                    this.showApproveDialog = true;
+                } else if (this.approveStatus === 2) { // 审核已通过，可以发布新活动
+                    // 发布新活动前先清楚预览数据
+                    this.$storage.removeObject('activityPreview');
+                    this.$router.push('/activity/edit');
+                } else { // 未提交审核信息
+                    this.$confirm('首次发布活动需要进行实名认证，点击“去认证”进入认证页', '提示', {
+                        confirmButtonText: '去认证',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.showApproveDialog = true;
+                    }).catch(() => {
+
+                    });
+                }
             },
 
             // 活动形式

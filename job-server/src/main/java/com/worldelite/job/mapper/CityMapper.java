@@ -59,4 +59,6 @@ public interface CityMapper {
     List<Integer> selectIdByNameWithFuzzy(@Param("name") String name);
 
     List<City> selectAndList(City record);
+
+    List<City> selectAndListToCityLevel(@Param("name") String name);
 }

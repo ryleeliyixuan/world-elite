@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
         <div class="line1">
-            <div class="text" @click="$router.go(-1)" style="cursor: pointer;">活动发布</div>
+            <div class="text" @click="onCancel" style="cursor: pointer;">活动发布</div>
             <div class="text">></div>
             <div class="text">{{getNavTitle()}}</div>
         </div>
@@ -171,7 +171,7 @@
                             <div class="question1-edit-line2"></div>
                             <div class="question1-edit-line3"></div>
                             <div class="question1-edit-line4">
-                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
@@ -268,7 +268,7 @@
                             </div>
                             <div class="question2-edit-line3"></div>
                             <div class="question2-edit-line4">
-                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
@@ -286,7 +286,7 @@
                                 </div>
                                 <div class="option-container">
                                     <div class="item-container" v-for="(option, index) in question.optionsList" :key="index">
-                                        <el-input v-model="option.options" class="option-input" placeholder="请输入选项" maxlength="50" size="mini"></el-input>
+                                        <el-input v-model="option.options" class="option-input" placeholder="请输入选项" maxlength="50" show-word-limit size="mini"></el-input>
                                         <svg-icon icon-class="apply-table-delete" clickable @click="onQuestionOptionDelete(question, index)"></svg-icon>
                                     </div>
                                     <div class="option-add-button" @click="onQuestionOptionAdd(question)">
@@ -380,7 +380,7 @@
                             </div>
                             <div class="question3-edit-line3"></div>
                             <div class="question3-edit-line4">
-                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
@@ -398,7 +398,7 @@
                                 </div>
                                 <div class="option-container">
                                     <div class="item-container" v-for="(option, index) in question.optionsList" :key="index">
-                                        <el-input v-model="option.options" class="option-input" placeholder="请输入选项" maxlength="50" size="mini"></el-input>
+                                        <el-input v-model="option.options" class="option-input" placeholder="请输入选项" maxlength="50" show-word-limit size="mini"></el-input>
                                         <svg-icon icon-class="apply-table-delete" clickable @click="onQuestionOptionDelete(question, index)"></svg-icon>
                                     </div>
                                     <div class="option-add-button" @click="onQuestionOptionAdd(question)">
@@ -490,7 +490,7 @@
                             </div>
                             <div class="question4-edit-line3"></div>
                             <div class="question4-edit-line4">
-                                <el-input class="title" v-model.trim="question.title" maxlength="50" placeholder="请输入标题（必填）"></el-input>
+                                <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
                                     <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
                                         <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
@@ -646,7 +646,7 @@
                 templateTitleEditing: false, // 模板名称编辑中
 
                 educationList: [], // 学历列表
-                questionTypeList: [{label: '填空题', value: '1'}, {label: '单选题', value: '2'}, {label: '多选题', value: '3'}, {label: '上传附件', value: '4'}], // 题型列表
+                questionTypeList: [{label: '填空题', value: '1'}, {label: '单选题', value: '2'}, {label: '多选题', value: '3'}, {label: '附件上传', value: '4'}], // 题型列表
 
                 cancelDialogVisible: false, // 取消确认对话框
                 saveTemplateDialogVisible: false, // 保存模板对话框
@@ -793,19 +793,13 @@
 
             // 创建一个新题目
             newQuestion(type) {
-                let question = {title: undefined, mustAnswer: '1', edit: true, type: type, typeForSelect: undefined, optionsList: []}
+                let question = {title: undefined, mustAnswer: '1', edit: true, type: type, typeForSelect: undefined, optionsList: [{options: '选项1'}, {options: '选项2'}, {options: '选项3'}]}
                 switch (type) {
                     case '1': // 填空题
                         break;
                     case '2': // 单选题
-                        question.optionsList.push({options: '选项1'});
-                        question.optionsList.push({options: '选项2'});
-                        question.optionsList.push({options: '选项3'});
                         break;
                     case '3': // 多选题
-                        question.optionsList.push({options: '选项1'});
-                        question.optionsList.push({options: '选项2'});
-                        question.optionsList.push({options: '选项3'});
                         break;
                     case '4': // 附件上传题
                         break;
@@ -1211,7 +1205,7 @@
                         }
 
                         .question1-edit-line2 {
-                            width: 100%;
+                            width: 556px;
                             max-width: 720px;
                             height: 30px;
                             background: #FFFFFF;
@@ -1410,7 +1404,7 @@
                         }
 
                         .question2-edit-line2 {
-                            width: 100%;
+                            width: 556px;
                             max-width: 720px;
                             margin-top: 13px;
 
@@ -1680,7 +1674,7 @@
                         }
 
                         .question3-edit-line2 {
-                            width: 100%;
+                            width: 556px;
                             max-width: 720px;
                             margin-top: 13px;
 
