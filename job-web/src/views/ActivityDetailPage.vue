@@ -115,7 +115,7 @@
                        :apply="applyTable"
                        :resumeList="resumeList"
                        :needResume="activity.needResume"
-                       @apply="activity.registrationFlag = true;"></preview-apply>
+                       @apply="activity.registrationFlag = true"></preview-apply>
     </div>
 </template>
 
