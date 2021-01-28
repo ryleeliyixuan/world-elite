@@ -12,24 +12,24 @@ CREATE TABLE `t_config_module` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='首页配置模块表';
 
 -- 初始数据
-INSERT INTO db_worldelite_activity.t_config_module
+INSERT INTO t_config_module
 (id, name, `type`, config_type, value, `position`, create_time, update_time)
 VALUES(1, '用户端设置', 1, 8, 1, 1, '2021-01-27 20:59:43.0', '2021-01-27 21:05:05.0');
-INSERT INTO db_worldelite_activity.t_config_module
+INSERT INTO t_config_module
 (id, name, `type`, config_type, value, `position`, create_time, update_time)
 VALUES(2, '企业端设置', 1, 9, 1, 2, '2021-01-27 20:59:56.0', '2021-01-28 14:04:28.0');
-INSERT INTO db_worldelite_activity.t_config_module
+INSERT INTO t_config_module
 (id, name, `type`, config_type, value, `position`, create_time, update_time)
 VALUES(3, '轮播图设置', 2, 10, 1, 1, '2021-01-27 21:03:02.0', '2021-01-28 14:04:29.0');
-INSERT INTO db_worldelite_activity.t_config_module
+INSERT INTO t_config_module
 (id, name, `type`, config_type, value, `position`, create_time, update_time)
 VALUES(4, '推荐板块设置', 2, 11, 1, 2, '2021-01-27 21:03:02.0', '2021-01-28 14:04:29.0');
-INSERT INTO db_worldelite_activity.t_config_module
+INSERT INTO t_config_module
 (id, name, `type`, config_type, value, `position`, create_time, update_time)
 VALUES(5, '推荐职位设置', 2, 12, 1, 3, '2021-01-27 21:03:03.0', '2021-01-28 14:04:29.0');
-INSERT INTO db_worldelite_activity.t_config_module
+INSERT INTO t_config_module
 (id, name, `type`, config_type, value, `position`, create_time, update_time)
 VALUES(6, '推荐百科设置', 2, 13, 1, 4, '2021-01-27 21:03:03.0', '2021-01-28 14:04:29.0');
-INSERT INTO db_worldelite_activity.t_config_module
+INSERT INTO t_config_module
 (id, name, `type`, config_type, value, `position`, create_time, update_time)
 VALUES(7, '推荐mock设置', 2, 14, 1, 5, '2021-01-27 21:03:03.0', '2021-01-28 14:04:29.0');
