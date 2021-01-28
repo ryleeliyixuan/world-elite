@@ -12,18 +12,6 @@ export function listByType(type){
         } 
       })
 }
-export function listByTypeSalary(type){
-    return request({
-        url: '/dict/list',
-        method: 'get',
-        params: {
-            type: type,
-            page: 1,
-            limit: 10,
-            sort: 'id'
-        }
-    })
-}
 
 
 export function listByTypeAll(type){
