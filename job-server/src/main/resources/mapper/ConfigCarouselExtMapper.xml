@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.worldelite.job.mapper.ConfigCarouselMapper">
+  <select id="selectAndList" parameterType="com.worldelite.job.entity.ConfigCarousel" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_config_carousel
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectMaxPosition" parameterType="com.worldelite.job.entity.ConfigCarousel" resultType="java.lang.Integer">
+    select
+    max(`position`)
+    from t_config_carousel
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectPrePosition" parameterType="com.worldelite.job.entity.ConfigCarousel" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_config_carousel
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="position != null">
+        and `position` &lt; #{position}
+      </if>
+    </where>
+    order by `position` desc limit 1
+  </select>
+
+  <select id="selectNextPosition" parameterType="com.worldelite.job.entity.ConfigCarousel" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_config_carousel
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="position != null">
+        and `position` &gt; #{position}
+      </if>
+    </where>
+    order by `position` asc limit 1
+  </select>
+</mapper>
