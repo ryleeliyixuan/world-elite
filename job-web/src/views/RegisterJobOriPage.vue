@@ -95,7 +95,7 @@ export default {
         expectCity: "",
         expectWorkType: "",
         industry: "",
-        salaryId: undefined,
+        salaryId: "",
       },
       subscribeForm: {
         email: "",
@@ -130,12 +130,17 @@ export default {
       listByType(6).then(
         (response) => (this.industryOptions = response.data.list)
       );
-      listByType(9).then(
-        (response) => (this.salaryOptions = response.data.list)
-      );
-      // getMyInfo().then((response) => {
-      //   this.subscribeForm.email = response.data.email;
-      // });
+
+      //获取salaryOptions
+      this.$axios
+        .request({
+          url: "/dict/list",
+          method: "get",
+          params: { type: 26, sort: "+id" },
+        })
+        .then((response) => {
+          this.salaryOptions = response.data.list
+        });
       this.getResumeInfo();
     },
     getResumeInfo() {
@@ -158,14 +163,6 @@ export default {
       saveUserExpectJob(this.form).then(() => {
         this.$router.push({ path: "/regist-success" });
       });
-      // if (this.subscribeFlag) {
-      //   this.subscribeForm.subscribeFlag = 1;
-      // } else {
-      //   this.subscribeForm.subscribeFlag = 2;
-      // }
-      // this.$store.dispatch("user/REGISTER", this.subscribeForm).then(() => {
-      //   this.$router.replace({ path: "/regist-success" });
-      // });
     },
     onPrevPage() {
       this.$router.push({ path: "/register-basic" });
@@ -292,7 +289,7 @@ export default {
         border-radius: 24px;
       }
     }
-    
+
     .text-center {
       font-size: 18px;
     }
