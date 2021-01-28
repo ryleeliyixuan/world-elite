@@ -35,7 +35,7 @@ public class FavoriteApi extends BaseApi{
      * @param favoriteForm
      * @return
      */
-    @RequireLogin(allow = UserType.GENERAL)
+    @RequireLogin
     @PostMapping("favorite")
     @ApiDoc
     public ApiResult favorite(@RequestBody FavoriteForm favoriteForm){

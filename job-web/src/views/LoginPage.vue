@@ -131,6 +131,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+/deep/ .el-button{
+  border: 0px;
+}
+
 .app-container {
   max-width: 1200px;
 
