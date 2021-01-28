@@ -1,6 +1,6 @@
 <template>
     <el-dialog class="dialog" :visible.sync="dialogVisible" width="1000px" title="提交认证信息" :before-close="onClose">
-        <el-form ref="formData" :model="formData" :rules="rules" v-if="dialogStatus===1 && status!==1">
+        <el-form ref="formData" :model="formData" :rules="rules" v-if="dialogStatus===1">
             <el-form-item label="您的姓名：" prop="name">
                 <el-input style="width: 360px" v-model="formData.name" placeholder="请输入您的真实姓名"></el-input>
             </el-form-item>
@@ -83,18 +83,23 @@
             </el-form-item>
         </el-form>
 
-        <div class="button-container" v-if="dialogStatus===1 && status!==1">
+        <div class="button-container" v-if="dialogStatus===1">
             <div class="button1" @click="onOther">其他认证方式</div>
             <div class="button2" @click="onConfirm">提交认证信息</div>
         </div>
-        <div class="dialog-success" v-if="dialogStatus===2 && status!==1">
-            认证资料提交成功
+
+        <div class="dialog-success" v-if="dialogStatus===2">
+            <el-image :src="require('@/assets/activity/success-approve.png')" class="image"/>
+            <div class="text1">认证资料提交成功</div>
+            <div class="text2">我们将尽快完成资料审核，请在“个人中心-编辑个人信息”处查看认证审核情况</div>
+            <div class="confirm" @click="onClose">确认</div>
         </div>
-        <div class="dialog-success" v-else-if="dialogStatus===3 && status!==1">
-            请联系人工客服： xiaokefu@we.com
-        </div>
-        <div class="audit" v-else-if="status===1">
-            您的实人认证尚在审核中，我们会尽快处理
+
+        <div class="dialog-success" v-else-if="dialogStatus===3">
+            <el-image :src="require('@/assets/activity/other-approve.png')" class="image"/>
+            <div class="text1">请联系人工客服： xiaokefu@we.com</div>
+            <div class="text2">我们将尽快完成资料审核</div>
+            <div class="confirm" @click="onClose">确认</div>
         </div>
     </el-dialog>
 </template>
@@ -109,9 +114,6 @@
             visible: {
                 type: Boolean
             },
-            status: {  // 实名认证状态   审核状态.1:审核中,2:通过,3拒绝",
-                type: Number
-            }
         },
 
         computed: {
@@ -173,10 +175,10 @@
 
         methods: {
             // 关闭
-            onClose(done) {
+            onClose() {
                 this.$emit("close")
                 this.dialogStatus = 1;
-                done();
+                this.$set(this, "dialogVisible", false);
             },
 
             // 其他认证
@@ -194,7 +196,6 @@
                             }
                         )
                     } else {
-                        console.log('error submit!!');
                         return false;
                     }
                 })
@@ -432,6 +433,40 @@
                     color: #0d46f3;
                     border: 1px solid #0d46f3;
                 }
+            }
+        }
+
+        .dialog-success {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 80px;
+
+            .text1 {
+                font-size: 21px;
+                color: #333333;
+                line-height: 29px;
+                margin-top: 34px;
+            }
+
+            .text2 {
+                font-size: 18px;
+                color: #999999;
+                line-height: 25px;
+                margin-top: 34px;
+            }
+
+            .confirm {
+                width: 237px;
+                height: 35px;
+                background: #4895EF;
+                border-radius: 18px;
+                margin-top: 81px;
+                font-size: 16px;
+                color: #FFFFFF;
+                line-height: 35px;
+                text-align: center;
+                cursor: pointer;
             }
         }
     }

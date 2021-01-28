@@ -907,10 +907,10 @@
                         this.templateId = response.data.id;
                         this.saveTemplateDialogVisible = false;
                         this.updateTemplateDialogVisible = false;
-                        // this.saveTemplateSuccessDialogVisible = true; // TODO 确认要这个对话框  还是要下面的返回
+                        this.saveTemplateSuccessDialogVisible = true;
 
-                        this.$storage.setObject("报名表", {id: this.templateId, type: '1'});
-                        this.$router.go(-1);
+                        // this.$storage.setObject("报名表", {id: this.templateId, type: '1'});
+                        // this.$router.go(-1);
                     })
                 }
             },
