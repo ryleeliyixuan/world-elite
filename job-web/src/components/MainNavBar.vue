@@ -529,7 +529,7 @@ export default {
   font-size: 18px;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
-  color: #4895ef;
+  color: #4895ef !important;
   line-height: 25px;
   display: flex;
   align-items: center;

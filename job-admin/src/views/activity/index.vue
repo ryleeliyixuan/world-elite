@@ -486,8 +486,8 @@
                 this.$prompt("请填写审核不通过理由", "提示", {
                     confirmButtonText: "确定并通知主办方",
                     cancelButtonText: "取消"
-                }).then(({reason}) => {
-                    activityReviewFailure(activityId, reason).then(response  => {
+                }).then(({value}) => {
+                    activityReviewFailure(activityId, value).then(response  => {
                         if(response.code === 0){
                             this.getList();
                             this.$message.success("活动审核不通过成功");

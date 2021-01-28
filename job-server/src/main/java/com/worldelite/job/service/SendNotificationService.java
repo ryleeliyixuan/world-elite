@@ -1,14 +1,19 @@
 package com.worldelite.job.service;
 
 import com.worldelite.job.constants.FavoriteType;
+import com.worldelite.job.constants.RegistrationStatus;
+import com.worldelite.job.constants.VerificationStatus;
 import com.worldelite.job.context.MessageResource;
 import com.worldelite.job.entity.*;
+import com.worldelite.job.event.ActivityRegistrationEvent;
+import com.worldelite.job.event.ActivityReviewEvent;
 import com.worldelite.job.event.ActivityTakeOffEvent;
 import com.worldelite.job.form.EmailForm;
 import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.ActivityTakeOffMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.mapper.RegistrationMapper;
+import com.worldelite.job.vo.ActivityReviewVo;
 import com.worldelite.job.vo.UserApplicantVo;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +36,7 @@ public class SendNotificationService {
     private final RegistrationMapper registrationMapper;
     private final ActivityMapper activityMapper;
     private final ActivityTakeOffMapper activityTakeOffMapper;
+    private final ActivityReviewService activityReviewService;
     private final MessageService messageService;
     private final MessageResource messageSource;
     private final UserApplicantService userApplicantService;
@@ -75,10 +81,59 @@ public class SendNotificationService {
 
         String toRegistrationMsg = messageSource.getMessage("activity.registration.takeoff.notify", activity.getTitle(), activityTakeOff.getReason());
         registrations.forEach(registration -> {
-            if(registration.getRegistrationUserId() == null) return;
+            if (registration.getRegistrationUserId() == null) return;
 
             sendMsg(registration.getRegistrationUserId(), toRegistrationMsg, String.format("/activity/%s", activity.getId()), 1);
         });
+    }
+
+    /**
+     * 发送活动报名审核通过/失败消息给报名者
+     */
+    @Async
+    @EventListener
+    public void sendActivityRegistrationReviewMsg(ActivityRegistrationEvent registrationEvent) {
+        if (registrationEvent == null || registrationEvent.getRegistrationId() == null) return;
+
+        final Registration registration = registrationMapper.selectByPrimaryKey(registrationEvent.getRegistrationId());
+        if (registration == null) return;
+        if (registration.getRegistrationUserId() == null) return;
+
+        final Activity activity = activityMapper.selectByPrimaryKey(registration.getActivityId());
+        if (activity == null) return;
+
+        String toRegistrationMsg = null;
+
+        if (registrationEvent.getStatus() == RegistrationStatus.PASS.value)
+            toRegistrationMsg = messageSource.getMessage("activity.registration.pass.notify", activity.getTitle());
+        if (registrationEvent.getStatus() == RegistrationStatus.INAPPROPRIATE.value)
+            toRegistrationMsg = messageSource.getMessage("activity.registration.inappropriate.notify", activity.getTitle());
+
+        sendMsg(registration.getRegistrationUserId(), toRegistrationMsg, String.format("/activity/%s", activity.getId()), 1);
+    }
+
+    /**
+     * 发送活动审核通过/失败消息通知给活动发布者
+     */
+    @Async
+    @EventListener
+    public void sendActivityReviewMsg(ActivityReviewEvent reviewEvent) {
+        if (reviewEvent == null || reviewEvent.getActivityId() == null) return;
+
+        final Activity activity = activityMapper.selectByPrimaryKey(reviewEvent.getActivityId());
+        if (activity == null) return;
+
+        String toPublisherMsg = null;
+
+        if (reviewEvent.getStatus() == VerificationStatus.PASS.value)
+            toPublisherMsg = messageSource.getMessage("activity.review.pass.notify", activity.getTitle());
+        if (reviewEvent.getStatus() == VerificationStatus.REJECT.value) {
+            final ActivityReviewVo activityReviews = activityReviewService.getActivityReviewNewestByActivityId(reviewEvent.getActivityId());
+            toPublisherMsg = messageSource.getMessage("activity.review.reject.notify", activity.getTitle(), activityReviews.getReason());
+        }
+
+        //通知活动发布者
+        sendMsg(activity.getUserId(), toPublisherMsg, String.format("/activity/%s", activity.getId()), 1);
     }
 
     private void sendMsg(Long userId, String msg, String url, int type) {

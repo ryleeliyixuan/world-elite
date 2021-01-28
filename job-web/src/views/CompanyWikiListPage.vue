@@ -62,6 +62,8 @@
         },
         methods: {
             getList() {
+                console.log("-----", this.$route);
+                this.listQuery.industryId = this.$route.query.industryId;
                 this.listQuery.keyword = this.$route.query.searchWord;
                 this.$storage.setData(this.$options.name, this.listQuery);
                 this.$axios.get("/company/list-wiki-by-industry", {params: this.listQuery}).then(response => {

@@ -1,5 +1,16 @@
 <template>
     <div class="upload-img">
+            <el-image v-if="resultImg" :src="resultImg" class="img">
+            </el-image>
+            <i v-else class="el-icon-plus avatar-uploader-icon"
+                        style="width: 100px;height: 100px;
+                                border-radius: 5px;
+                                border: 1px solid #3F5FF4;
+                                line-height: 100px;
+                                font-size: 23px;
+                                color: #3F5FF4;
+                                padding-left: 38px;">
+            </i>
         <el-upload class="upload"
                    ref="fileUpload"
                    :auto-upload="false"
@@ -12,17 +23,9 @@
                    :http-request="httpRequest"
                    :on-change="onUploadChange"
                    :on-success="onUploadSuccess">
-            <el-image v-if="resultImg" :src="resultImg" class="img"></el-image>
-            <i v-else class="el-icon-plus avatar-uploader-icon"
-                        style="width: 100px;height: 100px;
-                                border-radius: 5px;
-                                border: 1px solid #3F5FF4;
-                                line-height: 100px;
-                                font-size: 20px;
-                                color: #3F5FF4;">
-            </i>
-            <div slot="tip" class="tip">上传照片</div>
+            <el-button slot="trigger" class="tip">上传照片</el-button>
         </el-upload>
+
         <cropper v-if="cropperDialogVisible"
                  :visible.sync="cropperDialogVisible"
                  :cropper-img="cropperImage"
@@ -139,31 +142,24 @@
 
 <style lang="scss" scoped>
     .upload-img {
-        .upload {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             .img {
                 width: 100px;
                 height: 100px;
             }
-
             .add-icon {
                 width: 100px;
                 height: 100px;
             }
-
-            .tip {
-                width: 65px;
-                height: 17px;
-                margin-top: 7px;
-                background: #EDF2FF;
-                border-radius: 9px;
-                font-size: 10px;
-                color: #3F5FF4;
-                line-height: 17px;
-                text-align: center;
-            }
+        .tip {
+            height: 17px;
+            background: #EDF2FF;
+            border-radius: 30px;
+            font-size: 10px;
+            color: #3F5FF4;
+            line-height: 2px;
+            text-align: center;
+            border-color: #FFFFFF;
+            margin-left: 5px;
         }
     }
 </style>

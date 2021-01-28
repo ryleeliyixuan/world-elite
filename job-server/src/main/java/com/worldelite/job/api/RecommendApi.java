@@ -65,10 +65,39 @@ public class RecommendApi {
         return ApiResult.ok(pageResult);
     }
 
+    /**
+     * 获取新上职位企业列表
+     * @param pageForm
+     * @return
+     */
     @GetMapping("recent-job-company")
     @ApiDoc
     public ApiResult<PageResult<CompanyVo>> getRecentJobCompany(PageForm pageForm){
         PageResult<CompanyVo> pageResult = recommendService.getRecentJobCompany(pageForm);
         return ApiResult.ok(pageResult);
+    }
+
+    /**
+     * 上升
+     * @param id 推荐ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("move-up")
+    public ApiResult moveUp(@RequestParam Integer id){
+        recommendService.moveUp(id);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 下降
+     * @param id 推荐ID
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("move-down")
+    public ApiResult moveDown(@RequestParam Integer id){
+        recommendService.moveDown(id);
+        return ApiResult.ok();
     }
 }
