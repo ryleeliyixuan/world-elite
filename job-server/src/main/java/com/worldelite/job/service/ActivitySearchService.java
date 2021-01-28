@@ -27,10 +27,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -278,8 +275,11 @@ public class ActivitySearchService {
                 builder.add(query.build(), BooleanClause.Occur.MUST);
             }
 
-            if (form.getStatus() != null)
-                builder.add(new TermQuery(new Term(ActivityIndexFields.STATUS, String.valueOf(form.getStatus()))), BooleanClause.Occur.MUST);
+            if (form.getStatus() != null && form.getStatus().length > 0){
+                for (String status : form.getStatus()) {
+                    builder.add(new TermQuery(new Term(ActivityIndexFields.STATUS, status)), BooleanClause.Occur.MUST);
+                }
+            }
 
             if (form.getTimeId() != null) {
                 final Dict dict = dictService.getDict(form.getTimeId());
@@ -314,16 +314,22 @@ public class ActivitySearchService {
                 if (ActivitySort.FOLLOWER == ActivitySort.valueOf(form.getSortField().toUpperCase())) {
                     sortFieldList.add(new SortField(ActivityIndexFields.FOLLOWER, SortField.Type.INT, true));
                 }
-               /* if (ActivitySort.REGISTRATION_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())
-                        && form.getStatus() != null
-                        && form.getStatus() == ActivityStatus.SIGN_UP.value) {
+
+                List<String> statusArray = null;
+                if (form.getStatus() != null && form.getStatus().length > 0) {
+                    statusArray = Arrays.asList(form.getStatus());
+                }
+
+                if (ActivitySort.REGISTRATION_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())
+                        && statusArray != null
+                        && statusArray.contains(String.valueOf(ActivityStatus.SIGN_UP.value))) {
                     sortFieldList.add(new SortField(ActivityIndexFields.REGISTRATION_START_TIME, SortField.Type.LONG, true));
                 }
                 if (ActivitySort.ACTIVITY_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())
-                        && form.getStatus() != null
-                        && (form.getStatus() == ActivityStatus.SIGN_UP.value || form.getStatus() == ActivityStatus.ACTIVE.value)) {
+                        && statusArray != null
+                        && (statusArray.contains(String.valueOf(ActivityStatus.SIGN_UP.value)) || statusArray.contains(String.valueOf(ActivityStatus.ACTIVE.value)))) {
                     sortFieldList.add(new SortField(ActivityIndexFields.ACTIVITY_START_TIME, SortField.Type.LONG, true));
-                }*/
+                }
             }
 
             sortFieldList.add(new SortField(ActivityIndexFields.WEIGHT, SortField.Type.INT, true));

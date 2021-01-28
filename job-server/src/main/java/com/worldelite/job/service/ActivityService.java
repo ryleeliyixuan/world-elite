@@ -189,7 +189,7 @@ public class ActivityService extends BaseService {
         }
 
         final RealNameAuthVo realNameAuth = realNameAuthService.getRealNameAuth(activity.getUserId());
-        if(realNameAuth == null || realNameAuth.getStatus() != VerificationStatus.PASS.value){
+        if (realNameAuth == null || realNameAuth.getStatus() != VerificationStatus.PASS.value) {
             throw new ServiceException(message("not.realname.auth"));
         }
 
@@ -371,14 +371,18 @@ public class ActivityService extends BaseService {
      * 减去一个关注
      */
     public boolean minusFollower(Integer activityId) {
-        return activityMapper.minusFollower(activityId) == 1;
+        final boolean b = activityMapper.minusFollower(activityId) == 1;
+        SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activityId));
+        return b;
     }
 
     /**
      * 增加一个关注
      */
     public boolean increaseFollower(Integer activityId) {
-        return activityMapper.increaseFollower(activityId) == 1;
+        final boolean b = activityMapper.increaseFollower(activityId) == 1;
+        SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activityId));
+        return b;
     }
 
     /**
@@ -413,14 +417,17 @@ public class ActivityService extends BaseService {
      * @return
      */
     public List<ActivityVo> getCarouselList() {
+        ActivityOptions options = new ActivityOptions();
+        options.setDelFlag(Bool.FALSE);
+        options.setMStatus("3,4,5");
         PageHelper.startPage(1, 1, "create_time desc");
-        final List<Activity> newPublish = activityMapper.selectAndList(null);
+        final List<Activity> newPublish = activityMapper.selectAndList(options);
 
         PageHelper.startPage(1, 1, "follower desc");
-        final List<Activity> mostFollower = activityMapper.selectAndList(null);
+        final List<Activity> mostFollower = activityMapper.selectAndList(options);
 
         PageHelper.startPage(1, 2, "weight desc");
-        final List<Activity> maxWeight =activityMapper.selectAndList(null);
+        final List<Activity> maxWeight = activityMapper.selectAndList(options);
 
         List<Activity> activityList = new ArrayList<>();
         activityList.addAll(newPublish);
