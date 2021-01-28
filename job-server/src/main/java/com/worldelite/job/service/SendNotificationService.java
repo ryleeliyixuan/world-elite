@@ -1,8 +1,10 @@
 package com.worldelite.job.service;
 
 import com.worldelite.job.constants.FavoriteType;
+import com.worldelite.job.constants.RegistrationStatus;
 import com.worldelite.job.context.MessageResource;
 import com.worldelite.job.entity.*;
+import com.worldelite.job.event.ActivityRegistrationEvent;
 import com.worldelite.job.event.ActivityTakeOffEvent;
 import com.worldelite.job.form.EmailForm;
 import com.worldelite.job.mapper.ActivityMapper;
@@ -75,10 +77,35 @@ public class SendNotificationService {
 
         String toRegistrationMsg = messageSource.getMessage("activity.registration.takeoff.notify", activity.getTitle(), activityTakeOff.getReason());
         registrations.forEach(registration -> {
-            if(registration.getRegistrationUserId() == null) return;
+            if (registration.getRegistrationUserId() == null) return;
 
             sendMsg(registration.getRegistrationUserId(), toRegistrationMsg, String.format("/activity/%s", activity.getId()), 1);
         });
+    }
+
+    /**
+     * 发送活动报名审核通过/失败消息
+     */
+    @Async
+    @EventListener
+    public void sendActivityRegistrationReviewMsg(ActivityRegistrationEvent registrationEvent) {
+        if (registrationEvent == null || registrationEvent.getRegistrationId() == null) return;
+
+        final Registration registration = registrationMapper.selectByPrimaryKey(registrationEvent.getRegistrationId());
+        if (registration == null) return;
+        if (registration.getRegistrationUserId() == null) return;
+
+        final Activity activity = activityMapper.selectByPrimaryKey(registration.getActivityId());
+        if (activity == null) return;
+
+        String toRegistrationMsg = null;
+
+        if (registrationEvent.getStatus() == RegistrationStatus.PASS.value)
+            toRegistrationMsg = messageSource.getMessage("activity.registration.pass.notify", activity.getTitle());
+        if (registrationEvent.getStatus() == RegistrationStatus.INAPPROPRIATE.value)
+            toRegistrationMsg = messageSource.getMessage("activity.registration.inappropriate.notify", activity.getTitle());
+
+        sendMsg(registration.getRegistrationUserId(), toRegistrationMsg, String.format("/activity/%s", activity.getId()), 1);
     }
 
     private void sendMsg(Long userId, String msg, String url, int type) {
