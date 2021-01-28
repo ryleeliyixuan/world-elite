@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="405px" height="202px" viewBox="0 0 405 202" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>编组 32</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#C5E7FF" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="405" height="202"></rect>
+        <linearGradient x1="0%" y1="44.1358604%" x2="100%" y2="55.8641396%" id="linearGradient-4">
+            <stop stop-color="#2C5FB8" offset="0%"></stop>
+            <stop stop-color="#4895EF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="导航栏+首页优化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页未登录" transform="translate(-1156.000000, -333.000000)">
+            <g id="编组-32" transform="translate(1156.000000, 333.000000)">
+                <g id="编组-29">
+                    <mask id="mask-3" fill="white">
+                        <use xlink:href="#path-2"></use>
+                    </mask>
+                    <use id="蒙版" fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+                    <g mask="url(#mask-3)">
+                        <g transform="translate(262.500000, -7.000000)">
+                            <g id="图层_7" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(0.000000, 6.000000)" opacity="0.39">
+                                <path d="M5.41538462,0.06 C5.41538462,0.06 4.35769231,7.46 0.148076923,8.76 C0.148076923,8.76 4.84423077,11.74 5.5,17.88 C5.5,17.88 7.10769231,8.98 10.8519231,8.76 C10.8307692,8.74 6.93846154,8.36 5.41538462,0.06 Z" id="路径" fill="#FFFF48" fill-rule="nonzero"></path>
+                            </g>
+                            <polygon id="路径" stroke="#000000" stroke-width="2" fill="#A4EAFF" fill-rule="nonzero" points="83 8 83 148 116.896341 148 117 8"></polygon>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFC2D5" fill-rule="nonzero" x="13" y="121" width="38" height="79"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFC2D5" fill-rule="nonzero" x="92" y="148" width="25" height="25"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFC2D5" fill-rule="nonzero" x="117" y="148" width="25" height="60"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#5ED1B3" fill-rule="nonzero" x="117" y="58" width="25" height="90"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#A4EAFF" fill-rule="nonzero" x="92" y="174" width="25" height="25"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FF4936" fill-rule="nonzero" x="92" y="200" width="25" height="25"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#13409B" fill-rule="nonzero" x="118" y="208" width="19" height="17"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FF4936" fill-rule="nonzero" x="13" y="200" width="38" height="25"></rect>
+                            <rect id="矩形" stroke="none" fill="#3AABDD" fill-rule="nonzero" x="51" y="191" width="41" height="34"></rect>
+                            <path d="M83,148 L117,148" id="路径" stroke="#000000" stroke-width="2" fill="#A4EAFF" fill-rule="nonzero"></path>
+                            <path d="M114,8 L114,148" id="路径" stroke="#000000" stroke-width="2" fill="none"></path>
+                            <path d="M110,8 L110,148" id="路径" stroke="#000000" stroke-width="2" fill="none"></path>
+                            <path d="M107,8 L107,148" id="路径" stroke="#000000" stroke-width="2" fill="none"></path>
+                            <rect id="矩形" stroke="none" fill="none" x="83" y="11" width="8" height="137"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FF4936" fill-rule="nonzero" x="51" y="142" width="41" height="24"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="51" y="166" width="41" height="26"></rect>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(16.000000, 128.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="0.0209302326" y="0.176" width="4.08139535" height="10.802"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="7.03255814" y="0.176" width="4.08139535" height="10.802"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="13.7511628" y="0.176" width="4.08139535" height="10.802"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(120.000000, 64.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.123076923" y="0.06" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.08717949" y="0.06" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(120.000000, 78.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#A4EAFF" fill-rule="nonzero" x="0.123076923" y="0.16" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#A4EAFF" fill-rule="nonzero" x="5.08717949" y="0.16" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(120.000000, 92.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.123076923" y="0.06" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.08717949" y="0.06" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(120.000000, 107.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.123076923" y="0.18" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.08717949" y="0.18" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(120.000000, 121.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#A4EAFF" fill-rule="nonzero" x="0.123076923" y="0.08" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#A4EAFF" fill-rule="nonzero" x="5.08717949" y="0.08" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(120.000000, 135.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.123076923" y="0.18" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.08717949" y="0.18" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(16.000000, 142.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="0.0209302326" y="0.2016" width="4.08139535" height="10.9984"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="7.03255814" y="0.2016" width="4.08139535" height="10.9984"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="13.7511628" y="0.2016" width="4.08139535" height="10.9984"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(16.000000, 158.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#13409B" fill-rule="nonzero" x="0.0209302326" y="0" width="4.08139535" height="10.802"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#13409B" fill-rule="nonzero" x="7.03255814" y="0" width="4.08139535" height="10.802"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#13409B" fill-rule="nonzero" x="13.7511628" y="0" width="4.08139535" height="10.802"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(16.000000, 172.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="0.0209302326" y="0" width="4.08139535" height="10.802"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="7.03255814" y="0" width="4.08139535" height="10.802"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="13.7511628" y="0" width="4.08139535" height="10.802"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(16.000000, 188.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#13409B" fill-rule="nonzero" x="0.0209302326" y="0.022" width="4.08139535" height="10.802"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#13409B" fill-rule="nonzero" x="7.03255814" y="0.022" width="4.08139535" height="10.802"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#13409B" fill-rule="nonzero" x="13.7511628" y="0.022" width="4.08139535" height="10.802"></rect>
+                            </g>
+                            <path d="M139,208 L122,208 L122,161.580247 C122,156.847737 125.957447,153 130.87234,153 L130.87234,153 C135.361702,153 139,156.518519 139,160.860082 L139,208 L139,208 Z" id="路径" stroke="#000000" stroke-width="2" fill="#000000" fill-rule="nonzero"></path>
+                            <path d="M138,208 L123,208 L123,163.790651 C123,159.490212 126.504868,156 130.823366,156 L130.823366,156 C134.787204,156 138,159.199361 138,163.146624 L138,208 Z" id="路径" stroke="#FFFFFF" stroke-width="2" fill="none"></path>
+                            <path d="M137,208 L124,208 L124,165.855882 C124,162.067647 127.03605,159 130.785266,159 L130.785266,159 C134.22884,159 137,161.820588 137,165.279412 L137,208 Z" id="路径" stroke="#FFFFFF" stroke-width="2" fill="none"></path>
+                            <rect id="矩形" stroke="none" fill="#2460A8" fill-rule="nonzero" x="37" y="121" width="2" height="79"></rect>
+                            <rect id="矩形" stroke="none" fill="#2460A8" fill-rule="nonzero" x="41" y="121" width="2" height="79"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="43" y="121" width="2" height="79"></rect>
+                            <rect id="矩形" stroke="none" fill="#2460A8" fill-rule="nonzero" x="45" y="121" width="2" height="79"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="47" y="121" width="2" height="79"></rect>
+                            <rect id="矩形" stroke="none" fill="#2460A8" fill-rule="nonzero" x="49" y="121" width="2" height="79"></rect>
+                            <path d="M18.1026117,211.504065 C18.1026117,211.504065 15.9411326,200 31.4589215,200 C46.9767103,200 43.7141003,211.504065 43.7141003,211.504065 C43.7141003,211.504065 43.4286219,217.378049 35.0070098,218.699187 C34.1097921,218.841463 33.4572701,219.593496 33.4572701,220.487805 L33.4572701,224.715447 L28.3594419,225 C28.3594419,225 28.0331809,222.337398 28.2370941,218.882114 C28.4410072,215.426829 39.0444897,215.020325 38.8405766,208.719512 C38.6366635,202.418699 33.0698351,203.231707 31.4589215,203.231707 C29.8480078,203.231707 23.5470922,202.073171 22.9353528,211.504065 L18.1026117,211.504065 L18.1026117,211.504065 Z" id="路径" stroke="#000000" stroke-width="2" fill="#C68136" fill-rule="nonzero"></path>
+                            <path d="M64.3596426,148.539668 C64.3596426,148.539668 71.469099,145.075414 79.4125093,148.539668 L85,154.074276 L78.4743112,165 L64.3596426,165 L57,154.01278 L64.3596426,148.539668 Z" id="路径" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero"></path>
+                            <path d="M52.705468,141 C52.705468,141 49.4180502,153.105527 57.0361979,153.92624 C64.6543456,154.746954 63.985051,148.447977 63.985051,148.447977 C63.985051,148.447977 57.5480115,149.55594 54.9298884,141 L52.705468,141 Z" id="路径" stroke="#000000" stroke-width="2" fill="#3AABDD" fill-rule="nonzero"></path>
+                            <path d="M90.294532,141 C90.294532,141 93.5819498,153.105527 85.9638021,153.92624 C78.3456544,154.746954 79.014949,148.447977 79.014949,148.447977 C79.014949,148.447977 85.4519885,149.55594 88.0701116,141 L90.294532,141 Z" id="路径" stroke="#000000" stroke-width="2" fill="#3AABDD" fill-rule="nonzero"></path>
+                            <path d="M72.1547888,147.004859 C72.1547888,147.004859 70.160845,157.630799 80.4859207,161 L84,154.455976 L78.709139,148.624667 C78.709139,148.624667 74.5830571,146.896872 72.1547888,147.004859 Z" id="路径" stroke="#000000" stroke-width="2" fill="#000000" fill-rule="nonzero"></path>
+                            <circle id="椭圆形" stroke="#000000" stroke-width="2" fill="#000000" fill-rule="nonzero" cx="66" cy="157" r="1"></circle>
+                            <circle id="椭圆形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" cx="75" cy="157" r="1"></circle>
+                            <path d="M65.1367625,166 C65.1367625,166 63.7146663,162 70.041964,162 C76.183771,162 74.8853353,166 74.8853353,166 L65.1367625,166 Z" id="路径" stroke="#000000" stroke-width="2" fill="#000000" fill-rule="nonzero"></path>
+                            <circle id="椭圆形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" cx="69" cy="164" r="1"></circle>
+                            <circle id="椭圆形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" cx="73" cy="164" r="1"></circle>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(85.000000, 13.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.18" y="0" width="2.82" height="8.97954545"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.02" y="0" width="2.82" height="8.97954545"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(85.000000, 27.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="0.18" y="0.1" width="2.82" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="5.02" y="0.1" width="2.82" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(85.000000, 42.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.18" y="0" width="2.82" height="8.97954545"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.02" y="0" width="2.82" height="8.97954545"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(85.000000, 56.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.18" y="0.12" width="2.82" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.02" y="0.12" width="2.82" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(85.000000, 70.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="0.18" y="0.0204545455" width="2.82" height="8.97954545"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="5.02" y="0.0204545455" width="2.82" height="8.97954545"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(85.000000, 85.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.18" y="0.12" width="2.82" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.02" y="0.12" width="2.82" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(85.000000, 97.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.18" y="0.16" width="2.82" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.02" y="0.16" width="2.82" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(96.000000, 112.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.18" y="0" width="2.82" height="8.97954545"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.04" y="0" width="2.82" height="8.97954545"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(85.000000, 112.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="0.18" y="0" width="2.82" height="8.97954545"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="5.02" y="0" width="2.82" height="8.97954545"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(96.000000, 13.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.143589744" y="0" width="2.89230769" height="8.97954545"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.10769231" y="0" width="2.89230769" height="8.97954545"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(96.000000, 27.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="0.143589744" y="0.1" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="5.10769231" y="0.1" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(96.000000, 42.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.143589744" y="0" width="2.89230769" height="8.97954545"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.10769231" y="0" width="2.89230769" height="8.97954545"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(96.000000, 56.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.143589744" y="0.12" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.10769231" y="0.12" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(96.000000, 97.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="0.143589744" y="0.16" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="5.10769231" y="0.16" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(85.000000, 127.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.18" y="0.1" width="2.82" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.02" y="0.1" width="2.82" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(96.000000, 127.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="0.143589744" y="0.1" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#2460A8" fill-rule="nonzero" x="5.10769231" y="0.1" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(96.000000, 70.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#A4EAFF" fill-rule="nonzero" x="0.143589744" y="0.0204545455" width="2.89230769" height="8.97954545"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#A4EAFF" fill-rule="nonzero" x="5.10769231" y="0.0204545455" width="2.89230769" height="8.97954545"></rect>
+                            </g>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(96.000000, 85.000000)">
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="0.143589744" y="0.12" width="2.89230769" height="8.78"></rect>
+                                <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" x="5.10769231" y="0.12" width="2.89230769" height="8.78"></rect>
+                            </g>
+                            <polygon id="路径" stroke="none" fill="#FFC022" fill-rule="nonzero" points="51 166 92 192 51 192"></polygon>
+                            <polygon id="路径" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" points="71.573177 225 51 200.221402 58.8403876 191 84.2432432 191 92 200.221402"></polygon>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(51.000000, 191.000000)">
+                                <polygon id="SVGID_7_" fill="#FFD7D7" fill-rule="nonzero" points="20.3969849 33.9165644 0.12361809 9.19877301 7.84974874 0 32.8824121 0 40.5261307 9.19877301"></polygon>
+                                <g fill-rule="nonzero" id="路径" stroke="#000000" stroke-width="2">
+                                    <g>
+                                        <polygon fill="#FFFFFF" points="14.1336683 9.19877301 7.84974874 0 0.12361809 9.19877301"></polygon>
+                                        <polygon fill="#FFFFFF" points="26.8457286 9.19877301 33.1296482 0 40.8557789 9.19877301"></polygon>
+                                        <polygon fill="#FFC2D5" points="26.9075377 9.19877301 20.3969849 0 13.9070352 9.19877301"></polygon>
+                                    </g>
+                                    <polygon fill="#FFFFFF" points="14.1336683 9.19877301 20.3969849 33.9165644 26.9075377 9.19877301"></polygon>
+                                </g>
+                                <polygon id="SVGID_1_" stroke="#000000" points="20.3969849 33.9165644 0.12361809 9.19877301 7.84974874 0 32.8824121 0 40.5261307 9.19877301"></polygon>
+                            </g>
+                            <circle id="椭圆形" stroke="#000000" stroke-width="2" fill="#FFCF48" fill-rule="nonzero" cx="104.5" cy="186.5" r="12.5"></circle>
+                            <path d="M101,190 C101,190 105.385882,194.5 109,190" id="路径" stroke="#000000" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <circle id="椭圆形" stroke="#000000" stroke-width="2" fill="#FF9797" fill-rule="nonzero" cx="95.5" cy="186.5" r="3.5"></circle>
+                            <circle id="椭圆形" stroke="#000000" stroke-width="2" fill="#FF9797" fill-rule="nonzero" cx="112.5" cy="186.5" r="3.5"></circle>
+                            <path d="M92.0370542,148.244136 L116.755864,172.962946 C116.837242,173.044325 117,172.98329 117,172.861222 L117,148.142413 C117,148.061034 116.938966,148 116.857587,148 L92.1387777,148 C92.0167095,148 91.9556754,148.142413 92.0370542,148.244136 Z" id="路径" stroke="#000000" stroke-width="2" fill="#FFD366" fill-rule="nonzero"></path>
+                            <path d="M113.746124,200 L104.51158,209.984728 C103.763411,210.787623 103.848916,212.022848 104.68259,212.743395 L104.68259,212.743395 L107.033979,214.596231 L107.033979,214.596231 C107.846277,215.213843 109.000595,215.110908 109.684635,214.369773 L118,205.270289 L117.914495,200 L113.746124,200 L113.746124,200 Z" id="路径" stroke="#000000" stroke-width="2" fill="#52BFA0" fill-rule="nonzero"></path>
+                            <path d="M112.050296,212.513813 L117,206.405022 L116.710059,205 L110,212.49345 L110,212.49345 C110.517751,213.165417 111.532544,213.165417 112.050296,212.513813 Z" id="路径" stroke="#000000" stroke-width="2" fill="#5ED1B3" fill-rule="nonzero"></path>
+                            <path d="M118.061469,208.328642 L136.655271,224.945625 C136.784545,225.068866 137,224.966165 137,224.801844 L137,208.184861 C137,208.082161 136.913818,208 136.80609,208 L118.212287,208 C118.018378,208 117.932195,208.205402 118.061469,208.328642 Z" id="路径" stroke="#000000" stroke-width="2" fill="#5ED1B3" fill-rule="nonzero"></path>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" stroke-linecap="round" stroke-linejoin="round" x="131" y="58" width="2" height="90"></rect>
+                            <rect id="矩形" stroke="#000000" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" stroke-linecap="round" stroke-linejoin="round" x="132" y="58" width="2" height="90"></rect>
+                            <path d="M13.0270445,31.1025641 C13.0270445,31.1025641 12.5460204,34.3846154 15.6413057,35 L33,23.8410256 C33,23.8410256 29.8628866,24.025641 28.3989003,19 L13.0270445,31.1025641 Z" id="路径" stroke="#000000" stroke-width="1" fill="#FF4936" fill-rule="nonzero"></path>
+                            <ellipse id="椭圆形" stroke="#000000" stroke-width="0.999897" fill="#C14B42" fill-rule="nonzero" transform="translate(31.632274, 20.639863) rotate(-37.303080) translate(-31.632274, -20.639863) " cx="31.6322741" cy="20.639863" rx="2" ry="4"></ellipse>
+                            <path d="M16,28.7053942 C16,28.7053942 16.0705882,32.439834 19.1529412,33 L20,32.5020747 C20,32.5020747 17.1529412,31.4647303 16.9882353,28 L16,28.7053942 Z" id="路径" stroke="none" fill="#FFCF48" fill-rule="nonzero"></path>
+                            <path d="M18.0074443,26.6818182 C18.0074443,26.6818182 17.7003246,30.2424242 21.0313918,31 L22,30.4886364 C22,30.4886364 18.7634311,29.4469697 19.0705508,26 L18.0074443,26.6818182 Z" id="路径" stroke="none" fill="#FFCF48" fill-rule="nonzero"></path>
+                            <path d="M24.0043479,21.5319149 C24.0043479,21.5319149 23.7521951,24.9539007 27.0883706,26 L28,25.4503546 C28,25.4503546 25.0711482,24.9893617 24.7220136,21 L24.0043479,21.5319149 Z" id="路径" stroke="#000000" stroke-width="2" fill="#FFCF48" fill-rule="nonzero"></path>
+                            <path d="M27,20.4744526 C27,20.4744526 27.2766798,24.4160584 30.8537549,25 L32,24.3065693 C32,24.3065693 28.7391304,23.8868613 27.6521739,20 L27,20.4744526 Z" id="路径" stroke="none" fill="#FFCF48" fill-rule="nonzero"></path>
+                            <path d="M21,30.921391 C21,30.921391 21.5533981,35.5606403 26.0625674,42.0345018 C30.5717368,48.5083632 35.4908306,53 35.4908306,53 L40,46.8213635 C40,46.8213635 32.4778857,38.5339773 31.1251348,36.1300027 C29.7518878,33.7471156 28.5221143,31.0690035 28.8090615,26.0080043 C29.0755124,20.9470051 26.3495146,23.2033673 27.1693635,26.0080043 L21,30.921391 Z" id="路径" stroke="#000000" stroke-width="1" fill="#FFD4D4" fill-rule="nonzero"></path>
+                            <path d="M24,41.1077698 C24,41.1077698 29.497916,39.5235771 31.9523428,36.0691569 C32.5806761,35.1890498 26.7882288,43 26.7882288,43 L24,41.1077698 Z" id="路径" stroke="none" fill="#000000" fill-rule="nonzero"></path>
+                            <path d="M73.6965511,48 C74.2649739,48.1841633 88.4755442,49.6779325 92.03345,53.2998111 C95.5913557,56.9216897 101.675585,67.910101 100.938741,72.5755718 C100.938741,72.5755718 100.644003,73.4350006 99.4439992,73.2917625 C99.4439992,73.2917625 99.0861034,74.3762798 97.9071523,74.1102661 C97.9071523,74.1102661 97.9703104,75.3380216 96.3703055,75.0720079 C96.3703055,75.0720079 95.6966192,76.8522533 94.4755628,75.4812597 C93.4650333,74.3558172 92.7071363,70.9794897 92.3702931,69.1378565 C92.03345,67.2962233 89.465021,62.5898274 87.865016,61.0960582 C86.2650111,59.6022891 81.1281531,56.4510501 75.1070818,56.4510501 C69.0649578,56.4305875 73.6965511,48 73.6965511,48 Z" id="路径" stroke="#000000" stroke-width="1" fill="#FFD4D4" fill-rule="nonzero"></path>
+                            <path d="M24.3857669,42.4794181 C24.0141691,42.6031573 23.8696588,43.0774911 24.138035,43.3662161 C26.1611785,45.6141458 32.9325159,53.0178779 35.2446798,55.2245612 C37.9903746,57.8437088 39.1051679,70.7538376 37.4536222,73.3729851 C35.8020765,75.9921326 43.9978721,74.6928705 48.4364011,74.5691312 C52.8749302,74.445392 67.3053107,70.7744608 68.8329905,66.649819 C69.5348974,64.7524838 67.9039961,63.8038161 65.1170127,61.6796256 C63.4861113,60.4422331 62.1029418,57.5549838 61.4836122,56.7919251 C61.1739473,56.4207073 61.4216792,55.8845039 61.8964986,55.8845039 C67.2227335,55.8845039 82.3137323,56.4413305 87.2064364,62.4633076 C87.4128796,62.7107861 87.7638331,62.7520325 88.011565,62.5251772 C89.4360231,61.2052918 93.6887533,56.7506787 92.9042691,50.9349338 C92.8629805,50.6462088 92.5946043,50.4193535 92.2849395,50.4606 C91.5210996,50.563716 89.6424663,50.4812232 85.0800713,49.0994682 C77.9990692,46.9546544 64.9931468,45.139812 62.7222714,45.3872906 C60.4926847,45.6347691 53.824569,45.6553923 46.3306804,51.1205426 C46.1242371,51.2649051 45.855861,51.2649051 45.6700621,51.0999194 C43.9772277,49.7181644 36.1117413,43.1187376 32.1273873,37.241123 C31.9002998,36.8905285 31.3841918,36.9317749 31.1983929,37.3029926 C30.496486,38.6641244 28.7210743,41.0976631 24.3857669,42.4794181 Z" id="路径" stroke="#000000" stroke-width="1" fill="#FFD740" fill-rule="nonzero"></path>
+                            <path d="M24.3857669,42.4794181 C24.0141691,42.6031573 23.8696588,43.0774911 24.138035,43.3662161 C26.1611785,45.6141458 32.9325159,53.0178779 35.2446798,55.2245612 C37.9903746,57.8437088 39.1051679,70.7538376 37.4536222,73.3729851 C35.8020765,75.9921326 43.9978721,74.6928705 48.4364011,74.5691312 C52.8749302,74.445392 67.3053107,70.7744608 68.8329905,66.649819 C69.5348974,64.7524838 67.9039961,63.8038161 65.1170127,61.6796256 C63.4861113,60.4422331 62.1029418,57.5549838 61.4836122,56.7919251 C61.1739473,56.4207073 61.4216792,55.8845039 61.8964986,55.8845039 C67.2227335,55.8845039 82.3137323,56.4413305 87.2064364,62.4633076 C87.4128796,62.7107861 87.7638331,62.7520325 88.011565,62.5251772 C89.4360231,61.2052918 93.6887533,56.7506787 92.9042691,50.9349338 C92.8629805,50.6462088 92.5946043,50.4193535 92.2849395,50.4606 C91.5210996,50.563716 89.6424663,50.4812232 85.0800713,49.0994682 C77.9990692,46.9546544 64.9931468,45.139812 62.7222714,45.3872906 C60.4926847,45.6347691 53.824569,45.6553923 46.3306804,51.1205426 C46.1242371,51.2649051 45.855861,51.2649051 45.6700621,51.0999194 C43.9772277,49.7181644 36.1117413,43.1187376 32.1273873,37.241123 C31.9002998,36.8905285 31.3841918,36.9317749 31.1983929,37.3029926 C30.496486,38.6641244 28.7210743,41.0976631 24.3857669,42.4794181 Z" id="路径" stroke="#000000" stroke-width="1" fill="none"></path>
+                            <path d="M47.7626426,52 C47.7626426,52 46.0556778,49.2460937 43,49.2851562 C43,49.2851562 45.634205,49.1875 46.8986234,47 L49.9964484,48.4648438 C50.017522,48.4648437 50.017522,50.9453125 47.7626426,52 Z" id="路径" stroke="#000000" stroke-width="2" fill="#FFD4D4" fill-rule="nonzero"></path>
+                            <path d="M45,49.9887575 C45,49.9887575 46.0993843,50.1209147 46.8029903,49.4790083 C47.5065963,48.837102 46.0993843,49.0258979 46.0993843,49.0258979 L45,49.9887575 Z" id="路径" stroke="none" fill="#000000" fill-rule="nonzero"></path>
+                            <path d="M43.6728034,41.6058406 C43.6728034,41.6058406 42.8581388,42.8319385 41.8350717,43.0362882 C40.8309502,43.2406378 41.8350717,44.323691 41.8350717,44.323691 C41.8350717,44.323691 39.5615891,48.2676393 42.5171165,49.636782 C45.4915895,51.0059247 47.4429955,48.0632897 47.4429955,48.0632897 C47.4429955,48.0632897 50.4174685,44.7936952 48.1439859,42.6888938 C45.889449,40.5840923 44.4685224,40.7271371 43.6728034,41.6058406 Z" id="路径" stroke="#000000" stroke-width="2" fill="#FFD4D4" fill-rule="nonzero"></path>
+                            <path d="M43.4745635,42.3267033 C43.4745635,42.3267033 44.1872528,42.3473798 44.9628264,42.6368519 C45.9480144,43.0090302 46.9960869,43.8154165 46.5558964,45.5729252 C45.7803229,48.6744112 47.0170483,49.5014741 47.0170483,49.5014741 C47.0170483,49.5014741 48.0231978,51.1349233 51.020685,48.488322 C54.0181721,45.8417207 55.1500903,45.3661595 60.180838,43.6500039 C65.2115856,41.9338484 65.9871592,40.1349865 71.5000202,35.854936 C77.0128811,31.5748854 79.6121007,30.0034658 82.8820867,28.6801652 C86.1730341,27.3775411 81.5615154,26.1989764 77.28538,27.7083662 C73.0302059,29.2177561 74.5603916,27.5636302 71.35329,27.088069 C68.1461884,26.6125079 68.0623426,28.2666337 64.7085109,28.8042246 C61.3546791,29.3418155 57.7283485,30.6030864 55.0662445,34.738401 C52.4041406,38.8737156 48.0022364,38.4601841 47.2685857,38.7289796 C46.5558964,39.0184516 41.441303,41.1688152 43.4745635,42.3267033 Z" id="路径" stroke="#000000" stroke-width="1" fill="#3AABDD" fill-rule="nonzero"></path>
+                            <path d="M47.9201535,54.9245851 C47.9201535,55.0096459 47.8203453,55.0309112 47.780422,54.9458503 C47.4011509,53.8825897 46.2433761,50.6502774 46.0237981,50.0973819 C45.7842585,49.5444864 47.4211126,51.5008859 47.8802302,52.0750467 C47.9600767,52.1601075 48,52.2876988 48,52.4152901 L47.9201535,54.9245851 Z" id="路径" stroke="#000000" stroke-width="1" fill="#F25949" fill-rule="nonzero"></path>
+                            <path d="M62.9793374,107 C62.9793374,107 69.4268987,108.43603 69.9590783,110.195672 C70.5117264,111.955314 65.4150828,129.470833 57.80082,134.203664 C50.1865573,138.916269 60.4207814,121.25917 61.2395193,119.236592 C62.0582573,117.214015 60.768745,116.222952 60.768745,116.222952 L62.9793374,107 Z" id="路径" stroke="#000000" stroke-width="1" fill="#C68136" fill-rule="nonzero"></path>
+                            <path d="M94,76.7252887 C94,76.7252887 99.238062,72.3927249 101.019003,73.0723428 C102.799944,73.7519606 113.904636,89.2557428 112.940832,98.536774 C111.977029,107.817805 104.015175,88.0239354 102.883753,86.0487961 C101.752332,84.0736567 100.139009,84.4984179 100.139009,84.4984179 L94,76.7252887 Z" id="路径" stroke="#000000" stroke-width="1" fill="#C68136" fill-rule="nonzero"></path>
+                            <path d="M51,89.7185339 C51,89.7185339 56.2865854,100.607767 57.6756098,101.84051 C59.0853659,103.073254 89.3536585,97.0739027 102,86.821587 C102,86.821587 99.9060976,84.6437404 95.7804878,79.486764 C91.654878,74.3092419 91.4268293,72.8299498 88.5243902,74.9050678 C85.6219512,76.9801858 77.2670732,82.1166165 66.8390244,84.9930177 L64.6829268,80.9455103 C64.6829268,80.9455103 54.9390244,79.0347581 51,89.7185339 Z" id="路径" stroke="#000000" stroke-width="1" fill="#4EAF91" fill-rule="nonzero"></path>
+                            <path d="M50.5709545,93 C50.5709545,93 61.8983635,86.0370675 64.7095453,80.4106731 C67.520727,74.7842787 49,87.804747 49,87.804747 L50.5709545,93 Z" id="路径" stroke="#000000" stroke-width="1" fill="#000000" fill-rule="nonzero"></path>
+                            <path d="M39.6967602,75.3774248 C39.6967602,75.3774248 22.9495385,85.2727195 24.0521506,92.1850251 C25.1547627,99.0973308 53.9475017,114.958603 57.42177,117.633007 C60.8544304,120.266267 61.9986505,108.087443 63.6837747,101.566011 C63.7253827,101.38086 63.6421667,101.175137 63.4549306,101.092848 C61.5201584,100.249382 51.3470014,95.7851843 45.4386648,92.1850251 C45.4386648,92.1850251 61.4161384,86.6304938 65.5353308,79.8210499 C69.6545233,73.0116059 67.366083,69 67.366083,69 C67.366083,69 60.5007623,74.533959 39.6967602,75.3774248 Z" id="路径" stroke="#000000" stroke-width="1" fill="#5ED1B3" fill-rule="nonzero"></path>
+                            <g id="编组" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(19.000000, 21.000000)">
+                                <path d="M0.13125,4.07272727 C0.13125,4.07272727 1.6625,7.19090909 2.5375,6.74545455 C3.4125,6.32121212 2.31875,4.36969697 1.334375,3.60606061 C0.35,2.84242424 0.13125,4.07272727 0.13125,4.07272727 Z" id="路径" stroke="#000000" fill="#FFD4D4" fill-rule="nonzero"></path>
+                                <path d="M1.334375,3.07575758 C1.334375,3.07575758 2.975,6.38484848 3.915625,5.91818182 C4.85625,5.45151515 3.675,3.39393939 2.625,2.58787879 C1.575,1.78181818 1.334375,3.07575758 1.334375,3.07575758 Z" id="路径" stroke="#000000" fill="#FFD4D4" fill-rule="nonzero"></path>
+                                <path d="M2.515625,2.07878788 C2.515625,2.07878788 4.24375,5.49393939 5.228125,5.02727273 C6.2125,4.56060606 4.9875,2.41818182 3.871875,1.59090909 C2.75625,0.721212121 2.515625,2.07878788 2.515625,2.07878788 Z" id="路径" stroke="#000000" fill="#FFD4D4" fill-rule="nonzero"></path>
+                                <path d="M3.7625,0.912121212 C3.7625,0.912121212 5.55625,4.51818182 6.584375,4.03030303 C7.6125,3.54242424 6.321875,1.27272727 5.184375,0.381818182 C4.025,-0.509090909 3.7625,0.912121212 3.7625,0.912121212 Z" id="路径" stroke="#000000" fill="#FFD4D4" fill-rule="nonzero"></path>
+                            </g>
+                            <path d="M43.1376172,42.9201203 L43.0760184,42.8664879 C42.9528209,42.7771006 42.9836202,42.6698359 43.1376172,42.598326 L44.400392,42.0441248 C44.554389,41.9726149 44.7391853,41.9904924 44.8623828,42.0798797 L44.9239816,42.1335121 C45.0471791,42.2228994 45.0163798,42.3301641 44.8623828,42.401674 L43.599608,42.9558752 C43.445611,43.0273851 43.2608147,43.0095076 43.1376172,42.9201203 Z" id="路径" stroke="none" fill="#000000" fill-rule="nonzero"></path>
+                            <path d="M67.8609893,69.6491945 C67.8609893,69.6491945 51.4285538,76.9377559 39.1682733,74.5017911 C26.9079929,72.0658263 70.7705186,62.3992993 67.8609893,69.6491945 Z" id="路径" stroke="none" fill="#000000" fill-rule="nonzero"></path>
+                            <path d="M60.5,117 C60.5,117 65.0462727,111.40567 65.4645298,108.577539 C65.8827869,105.749409 62.4639898,107.586662 62.4639898,107.586662 L60.5,117 Z" id="路径" stroke="none" fill="#000000" fill-rule="nonzero"></path>
+                            <path d="M96,75 C96,75 95.71875,74.107438 95,73" id="路径" stroke="#000000" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M98,74 C98,74 97.7826087,72.8080808 97,72" id="路径" stroke="#000000" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M99,74 C99,74 98.952381,73.1707317 98,72" id="路径" stroke="#000000" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <polygon id="路径" stroke="#000000" stroke-width="2" fill="#FFD4D4" fill-rule="nonzero" points="91.6666667 71 91 73 92 72.4791667"></polygon>
+                            <path d="M93.1735537,54 C93.1735537,54 93.0702479,57.4801061 89,62 C89,62 92.6363636,61.4907162 94,55.1458886 L93.1735537,54 Z" id="路径" stroke="none" fill="#000000" fill-rule="nonzero"></path>
+                            <path d="M27,26 L21.44,33 C21.44,33 21.06,32.44 21,31.04 L27,26 Z" id="路径" stroke="none" fill="#000000" fill-rule="nonzero"></path>
+                            <g id="BAG" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(86.000000, 67.000000)">
+                                <path d="M0.205128205,15.5093333 L7.22051282,31.3386667 C7.42564103,31.808 7.95897436,31.9786667 8.38974359,31.7226667 L30.8307692,17.8986667 C31.2,17.664 31.3435897,17.1733333 31.1384615,16.768 L24.0615385,2.688 C23.8564103,2.26133333 23.3641026,2.112 22.9538462,2.32533333 L0.574358974,14.4 C0.184615385,14.6133333 0.0205128205,15.104 0.205128205,15.5093333 Z" id="路径" stroke="#000000" fill="#13409B" fill-rule="nonzero"></path>
+                                <path d="M1.76410256,15.424 L23.1589744,3.94666667" id="路径" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M8.16410256,29.9306667 L29.5794872,17.0453333" id="路径" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M8.32820513,13.76 C8.32820513,13.76 8.47179487,14.3786667 10.5230769,13.7813333 C12.574359,13.1626667 21.1282051,8.68266667 21.8666667,7.552 C22.625641,6.42133333 20.4307692,3.712 20.4307692,3.712 L19.4051282,4.26666667 L5.6,11.392 L8.32820513,13.76 Z" id="路径" fill="#000000" fill-rule="nonzero"></path>
+                                <path d="M17.9076923,0.256 C17.4564103,-0.469333333 14.9948718,1.17333333 14.9948718,1.17333333 L14.9948718,1.17333333 L14.7076923,1.38666667 C14.7076923,1.38666667 16.5538462,5.44 15.8974359,5.99466667 C14.8307692,6.93333333 9.86666667,9.10933333 9.86666667,9.10933333 C7.28205128,9.51466667 7.54871795,5.61066667 7.40512821,4.88533333 C6.52307692,5.29066667 4.53333333,6.18666667 4.32820513,6.50666667 C3.97948718,7.04 5.96923077,14.0373333 8.32820513,13.7173333 C10.6871795,13.3973333 20.5333333,8.55466667 20.4307692,6.95466667 C20.3282051,5.35466667 18.8717949,1.856 17.9076923,0.256 Z" id="路径" stroke="#000000" fill="#FF4936" fill-rule="nonzero"></path>
+                                <polygon id="路径" fill="#000000" fill-rule="nonzero" points="22.9538462 2.32533333 30.3794872 18.1973333 31.8153846 17.5573333 23.9794872 0.234666667"></polygon>
+                            </g>
+                            <path d="M28.0163602,15.0816327 C28.0163602,15.0816327 27.7006545,14.2653061 29.8429431,13.3469388 C31.9852317,12.4285714 31.5342236,11 31.5342236,11 L33,11.6122449 C33,11.6122449 32.2107358,14.0612245 30.8577114,14.2653061 C29.504687,14.4693878 29.391935,16 29.391935,16 L28.0163602,15.0816327 Z" id="路径" stroke="none" fill="#F93535" fill-rule="nonzero"></path>
+                            <path d="M33,20.3544124 C33,20.3544124 35.2740113,19.5147029 36.1638418,21.0891581 C37.0536723,22.6636134 40,21.7189402 40,21.7189402 L40,20.1234923 C40,20.1234923 37.5282486,21.8868821 36.5,20.1234923 C35.4717514,18.3601024 33,19.1998119 33,19.1998119 L33,20.3544124 L33,20.3544124 Z" id="路径" stroke="none" fill="#FFFFFF" fill-rule="nonzero"></path>
+                            <path d="M40.1513252,8 C40.1513252,8 39.4707668,6.09090909 40.9961562,5.36363636 C42.5215456,4.63636364 42.7562209,3 42.7562209,3 L44,3.36363636 C44,3.36363636 43.8122598,4.72727273 42.7562209,5.50909091 C41.7001821,6.29090909 41.5359094,8 41.5359094,8 L40.1513252,8 Z" id="路径" stroke="none" fill="#F93535" fill-rule="nonzero"></path>
+                            <path d="M37,24.3688205 C37,24.3688205 38.4778325,24.8553647 38.8719212,26.4771785 C39.2660099,28.0989923 39.2660099,28.8197985 40.1527094,29 L41,28.2791939 C41,28.2791939 40.1527094,28.8197985 39.955665,27.1078839 C39.7586207,25.3959693 38.773399,23.7020748 37.8866995,24.0444577 L37,24.3688205 Z" id="路径" stroke="none" fill="#F93535" fill-rule="nonzero"></path>
+                            <path d="M39.0940971,33.8043478 C39.0940971,33.8043478 39.6386408,34.3913043 39.0940971,35.8695652 C38.5495535,37.3478261 40.5462136,38 40.5462136,38 L41,36.673913 C41,36.673913 39.9109127,37.4565217 40.0016699,35.7173913 C40.0924272,33.9782609 40.0016699,33 40.0016699,33 L39.0940971,33.8043478 Z" id="路径" stroke="none" fill="#FFFFFF" fill-rule="nonzero"></path>
+                            <path d="M46.8701369,19 C46.8701369,19 46.955825,14.2631579 53.9608252,14.2631579 C60.9658255,14.2631579 64.5004587,14.4736842 66,11.6947368 L66,9 C66,9 62.4653668,12.6842105 57.3240822,12.4736842 C52.1827976,12.2631579 42.4357789,15.3157895 44.2138065,19 L46.8701369,19 Z" id="路径" stroke="none" fill="#3AABDD" fill-rule="nonzero"></path>
+                            <path d="M50.0206767,26.8185379 C50.0206767,26.8185379 53.0601504,26.6588232 54.1353383,30.2723686 C55.2105263,33.885914 60.2763158,32.8677327 60.2763158,32.8677327 L61,31.2506212 C61,31.2506212 56.7199248,32.7878753 55.5,30.0527608 C54.2800752,27.297682 50,26 50,26 L50,26.8185379 L50.0206767,26.8185379 Z" id="路径" stroke="none" fill="#52BFA0" fill-rule="nonzero"></path>
+                            <path d="M25,11 C25,11 17.7387926,1.99002129 20.7171921,0.264229351 C23.7173316,-1.48397547 22.6085844,5.82262418 25,11 Z" id="路径" stroke="none" fill="#3AABDD" fill-rule="nonzero"></path>
+                        </g>
+                    </g>
+                </g>
+                <g id="编组-28" transform="translate(23.000000, 29.000000)">
+                    <text id="WORKPLACE-EVENTS" font-family="Roboto-Regular, Roboto" font-size="18" font-weight="normal" fill="#4895EF">
+                        <tspan x="0" y="67">WORKPLACE EVENTS</tspan>
+                    </text>
+                    <text id="国内外名企招聘、空中宣讲、大牛brain" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#666666">
+                        <tspan x="0" y="108">国内外名企招聘、空中宣</tspan>
+                        <tspan x="0" y="128">讲、大牛brainstorm，我</tspan>
+                        <tspan x="0" y="148">们为你一网打尽。</tspan>
+                    </text>
+                    <text id="职场活动" fill="url(#linearGradient-4)" font-family="PingFangSC-Medium, PingFang SC" font-size="36" font-weight="400">
+                        <tspan x="0" y="38">职场活动</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

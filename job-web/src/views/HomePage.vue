@@ -102,23 +102,19 @@
         </el-carousel>
       </div>
       <div>
-        <div class="left-company-wiki" v-for="companyWiki in companywikis" :key="companyWiki.img">
-          <el-image
+        <div class="left-company-wiki">
+          <svg-icon
+                  icon-class="company-wiki"
                   class="company-wiki-img"
-                  :src="companyWiki.img"
-                  :alt="companyWiki.alt"
-                  v-on:click="select(companyWiki)"
-                  fit="cover"
-          ></el-image>
+                  @click="moreJob"
+          ></svg-icon>
         </div>
-        <div class="left-activity" v-for="activity in activitys" :key="activity.img">
-          <el-image
+        <div class="left-activity">
+          <svg-icon
+                  icon-class="activity"
                   class="activity-img"
-                  :src="activity.img"
-                  :alt="activity.alt"
-                  v-on:click="select(activity)"
-                  fit="cover"
-          ></el-image>
+                  @click="moreActivity"
+          ></svg-icon>
         </div>
       </div>
     </div>
@@ -152,11 +148,9 @@
               <el-button
                       circle
                       class="flag"
-                      :style="
-                  recommendJob.object.favoriteFlag === 1
-                    ? `background: #ff3d00`
-                    : `background: #FFFFFF;`
-                "
+                      :style="recommendJob.object.favoriteFlag === 1
+                              ? `background: #ff3d00`
+                              : `background: #FFFFFF;`"
                       @click.native.prevent="
                   handleFavorite(recommendJob.object.id, recommendJob.object.favoriteFlag)
                 "
@@ -522,19 +516,9 @@ export default {
       recommendPracticeList:[],
       recommendFullTimeList:[],
       recentJobList: [],
+      activitylist:[],
       filteredActivityList: [],
-      activitylist: [],
       homeConfig: {},
-      companywikis:[{
-                  img: require("../assets/banner/company-wiki.jpeg"),
-                  alt: "企业百科",
-                  url: "http://www.myworldelite.com/wiki-card",
-                }],
-      activitys:[{
-        img: require("../assets/banner/acticity.jpeg"),
-        alt: "活动",
-        url: "http://www.myworldelite.com/activity-list",
-      }],
       banners: [
         {
           img: require("../assets/banner/wetalk.jpeg"),
@@ -545,12 +529,12 @@ export default {
           img: require("../assets/banner/world-elite.jpeg"),
           alt: "world-elite",
           url:
-            "http://www.myworldelite.com/register",
+            "http://test.myworldelite.com/register",
         },
         {
           img: require("../assets/banner/career.jpeg"),
           alt: "we内推",
-          url: "http://www.myworldelite.com/job-list",
+          url: "http://test.myworldelite.com/job-list",
         },
       ],
     };
