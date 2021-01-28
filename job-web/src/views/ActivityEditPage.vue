@@ -364,7 +364,7 @@
                     multiple: false,
                     lazy: false,
                     emitPath: false,
-                    checkStrictly: true,
+                    checkStrictly: false,
                     expandTrigger: "hover",
                     value: "id",
                     label: "name",
@@ -509,7 +509,24 @@
                     url: "/city/list",
                     method: "get",
                 }).then(data => {
-                    this.cityOptions = data.data
+                    let municipality = ["北京市", "上海市", "天津市", "重庆市"];
+                    this.cityOptions = data.data.map(first => {
+                        if (first.children) {
+                            first.children = first.children.map(second => {
+                                console.log(second.name, second);
+                                if (municipality.includes(second.name)) {
+                                    delete second.children;
+                                } else if (second.children) {
+                                    second.children = second.children.map(third => {
+                                        delete third.children;
+                                        return third;
+                                    })
+                                }
+                                return second;
+                            })
+                        }
+                        return first;
+                    })
                 })
             },
 
