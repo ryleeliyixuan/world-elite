@@ -82,7 +82,7 @@ const constantRoutes = [
     },
     {
         path: '/my-activities',
-        component: () => import('@/views/MyActivityListPage'),
+        component: () => import('@/views/ActivityMyListPage'),
         meta: { title: '寰球菁英-我的活动' }
     },
     {
