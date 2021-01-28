@@ -57,5 +57,5 @@ public interface QuestionnaireTemplateMapper {
 
     Integer selectCountByUserId(Long userId);
 
-    List<QuestionnaireTemplate> selectByTemplateName(String templateName);
+    List<QuestionnaireTemplate> selectByTemplateName(QuestionnaireTemplate questionnaireTemplate);
 }

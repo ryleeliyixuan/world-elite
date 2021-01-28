@@ -209,7 +209,7 @@ public class QuestionnaireTemplateService extends BaseService{
         QuestionnaireTemplate options = new QuestionnaireTemplate();
         options.setUserId(userId);
         options.setTemplateName(templateName);
-        List<QuestionnaireTemplate> templateList = questionnaireTemplateMapper.selectAndList(options);
+        List<QuestionnaireTemplate> templateList = questionnaireTemplateMapper.selectByTemplateName(options);
         if(CollectionUtils.isNotEmpty(templateList)){
             for(int i=1;i<=templateList.size();i++){
                 if(!containsTemplateName(templateList,templateName+"（"+i+"）")){
