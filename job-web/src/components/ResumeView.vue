@@ -87,17 +87,16 @@
               {{resumeDetail.userExpectJob.expectPosition}}
             </el-row>
             <el-row class="info-other" style="padding-top: 10px;">预期薪资：
-              <span v-if="resumeDetail.userExpectJob.salaryId && resumeDetail.userExpectJob.salaryId!=''">
-                <span v-if="resumeDetail.userExpectJob.salaryId==1">5K-8K</span>
-                <span v-if="resumeDetail.userExpectJob.salaryId==2">8K-10K</span>
-                <span v-if="resumeDetail.userExpectJob.salaryId==3">10K-15K</span>
-                <span v-if="resumeDetail.userExpectJob.salaryId==4">15K-20K</span>
-                <span v-if="resumeDetail.userExpectJob.salaryId==5">20K-30K</span>
-                <span v-if="resumeDetail.userExpectJob.salaryId==6">30K-50K</span>
-                <span v-if="resumeDetail.userExpectJob.salaryId==7">50K以上</span>
-                <span v-if="resumeDetail.userExpectJob.salaryId==8">5K以下</span>
-                <span v-if="resumeDetail.userExpectJob.salaryId==9">面议</span>
-               </span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1028">2K以下</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1029">2K-5K</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1031">5K-8K</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1032">8K-10K</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1033">10K-15K</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1034">15K-20K</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1035">20K-30K</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1036">30K-50K</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1037">50K以上</span>
+              <span v-if="resumeDetail.userExpectJob.salaryId==1038">面议</span>
             </el-row>
             <el-row class="info-other" style="padding-top: 10px;">工作类型：
               <span class="expjob-data"

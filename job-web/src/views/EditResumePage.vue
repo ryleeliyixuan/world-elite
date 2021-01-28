@@ -28,13 +28,19 @@
                                         <span style="padding-top: 6px;">简历名称：</span>
                                         <div style="padding-top: 6px;" v-if="showEditTitle==false">
                                             <span>{{item.title}}</span>
-                                            <svg-icon class="svg-cls" icon-class="edit" style="width: 18px;height: 19px;margin-left: 50px;margin-right:50px" @click="editTitle"></svg-icon>
+                                            <svg-icon class="svg-cls" icon-class="edit" style="width: 18px;height: 19px;margin-left: 5px;margin-right:50px" @click="editTitle"></svg-icon>
 
                                         </div>
                                         <div v-if="showEditTitle==true" style="margin-top: -3px">
                                             <el-form ref="resumeTitleForm" :model="resumeTitleForm">
                                                 <el-form-item prop="title" class="editTitle">
-                                                    <el-input v-model="resumeTitleForm.title" placeholder="请输入简历名称" @change="saveEditTitle"></el-input>
+                                                    <el-input v-model="resumeTitleForm.title"
+                                                              type="text"
+                                                              placeholder="请输入简历名称"
+                                                              @change="saveEditTitle"
+                                                              maxlength="8"
+                                                              show-word-limit
+                                                    ></el-input>
                                                 </el-form-item>
                                             </el-form>
                                         </div>
@@ -423,18 +429,20 @@
                                                         </el-row>
                                                         <el-row class="info-other">预期薪资：
                                                             <span v-if="item.userExpectJob.salaryId && item.userExpectJob.salaryId!=''">
-                                                                <span v-if="item.userExpectJob.salaryId==1">5K-8K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==2">8K-10K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==3">10K-15K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==4">15K-20K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==5">20K-30K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==6">30K-50K</span>
-                                                                <span v-if="item.userExpectJob.salaryId==7">50K以上</span>
-                                                                <span v-if="item.userExpectJob.salaryId==8">5K以下</span>
-                                                                <span v-if="item.userExpectJob.salaryId==9">面议</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1028">2K以下</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1029">2K-5K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1031">5K-8K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1032">8K-10K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1033">10K-15K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1034">15K-20K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1035">20K-30K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1036">30K-50K</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1037">50K以上</span>
+                                                                <span v-if="item.userExpectJob.salaryId==1038">面议</span>
                                                             </span>
                                                         </el-row>
-                                                        <el-row class="info-other">工作类型：{{item.userExpectJob.expectWorkType}}
+                                                        <el-row class="info-other">工作类型：
+                                                            <span>{{item.userExpectJob.expectWorkType}}</span>
                                                         </el-row>
                                                     </div>
                                                     <div class="edu-box-m1">
@@ -1093,6 +1101,7 @@
                                             <div class="resume-languageinfo">
                                                 <div class="resume-edu">
                                                     <el-tag
+                                                            style="cursor: pointer"
                                                             v-for="skill in item.resumeSkillList"
                                                             :key="skill.id"
                                                             class="tag-icon"
@@ -1108,7 +1117,7 @@
                                                 <img src="../assets/point.png"
                                                      style="padding-right: 9px;padding-bottom: 7px">
                                                 <span class="resume-base">能力标签</span>
-                                                <span class="jobcount">4/6</span>
+                                                <span class="jobcount">{{listshowskill.length}}/6</span>
                                                 <span class="mark-row">
                                     <img src="../assets/resume_qmark.png"
                                          class="mark-icon"
@@ -1127,7 +1136,7 @@
                                                         <el-tag
                                                                 v-for="skill in listshowskill"
                                                                 :key="skill.id"
-                                                                style="height: 21px;border-radius: 5px;"
+                                                                style="height: 21px;border-radius: 5px;cursor:pointer"
                                                         >{{ skill.name }}
                                                         </el-tag>
                                                     </div>
@@ -1138,6 +1147,7 @@
                                                 </div>
                                                 <div style="margin-top: 14px;margin-left: 65px">
                                                     <el-tag
+                                                            style="cursor: pointer"
                                                             class="skill-tag"
                                                             v-for="tag in skillTagListForm"
                                                             :key="tag.name"
@@ -1148,7 +1158,7 @@
                                                     <el-row :gutter="10">
                                                         <el-input
                                                                 v-model="newSkillTag"
-                                                                placeholder="搜索标签"
+                                                                placeholder="新增标签"
                                                                 maxlength="6"
                                                                 class="m-input-text-width"
                                                                 @change="handleAddNewSkillTag"
@@ -1443,7 +1453,6 @@
                                 <span class="right-add">简历完成度：</span>
                                 <span class="right-num">{{item.resumeCompleteProgress}}%</span>
                                 <el-progress
-                                        class="pro-ress"
                                         :stroke-width="22"
                                         :percentage="item.resumeCompleteProgress"
                                         :status="item.resumeCompleteProgress == 100? 'success': 'warning'"
@@ -1527,7 +1536,7 @@
         delResume
     } from "@/api/resume_api";
     import {searchSchool} from "@/api/school_api";
-    import {listByType} from "@/api/dict_api";
+    import {listByType,listByTypeSalary} from "@/api/dict_api";
     import {serachByName} from "@/api/company_api";
     import {getCityByName} from "@/api/city_api"
     import {getCategoryTree} from "@/api/category_api";
@@ -1838,6 +1847,7 @@
                     acceptFileType: ".pdf,.doc,docx",
                 },
                 resume: {},
+                newFlag:false,
                 newResumeId: undefined,
                 newIndex: undefined,
                 resumeId: undefined,
@@ -1847,6 +1857,7 @@
                 degreeList:[],
                 jobCategoryOptions: [],
                 skillTagOptions: [],
+                salaryOptions:[],
                 categoryListOptions: [],
                 // categoryList
                 industryNameOptions: [],
@@ -1913,17 +1924,6 @@
                 skillTagListForm: [],
                 listskill:[],
                 listshowskill:[],
-                salaryOptions: [
-                    {id:1,value:1,name:"5K-8K"},
-                    {id:2,value:2,name:"8K-10K"},
-                    {id:3,value:3,name:"10K-15K"},
-                    {id:4,value:4,name:"15K-20K"},
-                    {id:5,value:5,name:"20K-30K"},
-                    {id:6,value:6,name:"30K-50K"},
-                    {id:7,value:7,name:"50K以上"},
-                    {id:8,value:8,name:"5K以下"},
-                ],//薪资范围
-
                 oldDatePickerOptions: {
                     disabledDate(time) {
                         return time.getTime() >= Date.now() - 8.64e7;
@@ -2075,13 +2075,14 @@
                 listByType(6).then(
                     response => (this.companyIndustryOptions = response.data.list)
                 );
+                listByTypeSalary(26).then(response =>{
+                    for(const item of  response.data.list){
+                        if ( item.name!="面议" && item.name!="5K以下"){
+                            this.salaryOptions.push(item)
+                        }
+                    }
 
-
-
-                // listByType(9).then(response => (this.salaryOptions = response.data.list));
-            },
-            openUploadPhoto(){
-                this.photoDialog = true;
+                });
             },
             beforeAvatarUpload(file) {
                 return new Promise((resolve, reject) => {
@@ -2141,87 +2142,66 @@
             },
             handleUploadAttachmengSuccess() {
                 this.resumeForm2.attachResume = this.uploadAttachmentOptions.fileUrl;
-                this.resume.attachResume = this.uploadAttachmentOptions.fileUrl;
-                console.log(this.resume.attachResume)
                 this.handleSaveResumeAttachResume(false);
             },
             handleUploadAttachOthersSuccess(){
                 let nowAttachOthers=[];
                 let otherAttach;
                 let i=0;
+                let n=0;
                 this.resumeAttachForm1.link=this.uploadAttachmentOptions.fileUrl;
-                if (this.newIndex&&this.newIndex!=''){
-                    console.log("+++")
-                    if (this.resume[this.newIndex].resumeMergeAttachList && this.resume[this.newIndex].resumeMergeAttachList.length>0){
-                        for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
-                            otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i]
-                            console.log(otherAttach)
-                            nowAttachOthers.push(otherAttach)
-
-                        }
-                        console.log(nowAttachOthers)
-                        let result = nowAttachOthers.map(((value, index) => {
-                            return {link: value.resumeAttach, name: value.name}
-                        }))
-
-                        console.log(result)
-                        console.log("=====")
-                        result.push(this.resumeAttachForm1)
-                        console.log(result)
-                        this.resumeAttachForm.attachOthers=result
-                        this.handleSaveAttachOthersResume(false);
-                    }
-                    else {
-                        console.log("0000")
-                        this.resumeAttachForm.attachOthers.push(this.resumeAttachForm1)
-                        this.handleSaveAttachOthersResume(false);
-                    }
-                }else {
-                    console.log("------")
-                    if (this.resume[this.resume.length-1].resumeMergeAttachList && this.resume[this.resume.length-1].resumeMergeAttachList.length>0){
-                        for (i;i<  this.resume[this.resume.length-1].resumeMergeAttachList.length;i++) {
-                            otherAttach=this.resume[this.resume.length-1].resumeMergeAttachList[i]
-                            console.log(otherAttach)
-                            nowAttachOthers.push(otherAttach)
-
-                        }
-                        console.log(nowAttachOthers)
-                        let result = nowAttachOthers.map(((value, index) => {
-                            return {link: value.resumeAttach, name: value.name}
-                        }))
-
-                        console.log(result)
-                        console.log("=====")
-                        result.push(this.resumeAttachForm1)
-                        console.log(result)
-                        this.resumeAttachForm.attachOthers=result
-                        this.handleSaveAttachOthersResume(false);
-                    }
-                    else {
-                        console.log("0000")
-                        this.resumeAttachForm.attachOthers.push(this.resumeAttachForm1)
-                        this.handleSaveAttachOthersResume(false);
-                    }
+                if (this.newFlag==true){
+                    n=this.resume.length-1
                 }
+                else if (this.newIndex&& this.newIndex!=''){
+                    n=this.newIndex
+                }  else {
+                    n=0
+                }
+                    console.log("------")
+                    if (this.resume[n].resumeMergeAttachList && this.resume[n].resumeMergeAttachList.length>0){
+                        for (i;i<  this.resume[n].resumeMergeAttachList.length;i++) {
+                            otherAttach=this.resume[n].resumeMergeAttachList[i]
+                            console.log(otherAttach)
+                            nowAttachOthers.push(otherAttach)
+
+                        }
+                        console.log(nowAttachOthers)
+                        let result = nowAttachOthers.map(((value, index) => {
+                            return {link: value.resumeAttach, name: value.name}
+                        }))
+
+                        console.log(result)
+                        console.log("=====")
+                        result.push(this.resumeAttachForm1)
+                        console.log(result)
+                        this.resumeAttachForm.attachOthers=result
+                        this.handleSaveAttachOthersResume(false);
+                    }
+                    else {
+                        console.log("0000")
+                        this.resumeAttachForm.attachOthers.push(this.resumeAttachForm1)
+                        this.handleSaveAttachOthersResume(false);
+                    }
                 this.fileList=[]
             },
             handleEditAttachOthers(index){
                 this.showEditAttachOther=true;
                 this.editIndex=index;
                 console.log(index)
-                if (this.newResumeId&&this.newResumeId!=''){
-                    this.resumeAttachForm1.name=this.resume[this.newIndex].resumeMergeAttachList[index].name;
-                    this.resumeAttachForm1.link=this.resume[this.newIndex].resumeMergeAttachList[index].resumeAttach;
-                    console.log(this.resumeAttachForm1)
-                    console.log(this.resume[this.newIndex].resumeMergeAttachList[index])
-                    console.log(this.resume[this.newIndex].resumeMergeAttachList[index].name)
-                }else {
-                    this.resumeAttachForm1.name=this.resume[this.resume.length-1].resumeMergeAttachList[index].name;
-                    this.resumeAttachForm1.link=this.resume[this.resume.length-1].resumeMergeAttachList[index].resumeAttach;
-                    console.log(this.resumeAttachForm1)
-                    console.log(this.resume[this.resume.length-1].resumeMergeAttachList[index])
-                    console.log(this.resume[this.resume.length-1].resumeMergeAttachList[index].name)
+                let i;
+                if (this.newFlag==true){
+                    i=this.resume.length-1
+                } else if (this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                } else{
+                    i=0
                 }
+                this.resumeAttachForm1.name=this.resume[i].resumeMergeAttachList[index].name;
+                this.resumeAttachForm1.link=this.resume[i].resumeMergeAttachList[index].resumeAttach;
+                console.log(this.resumeAttachForm1)
+                console.log(this.resume[i].resumeMergeAttachList[index])
+                console.log(this.resume[i].resumeMergeAttachList[index].name)
             },
             HandleEditSaveAttachOthers(){
                 console.log(this.resumeAttachForm1)
@@ -2230,35 +2210,28 @@
                 let otherAttach;
                 let nowAttachOthers=[];
                 let i=0;
-                if (this.newIndex&&this.newIndex!=''){
-                    console.log("1111")
-                    for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
-                        otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i]
-                        nowAttachOthers.push(otherAttach)
-                    }
-                    let result = nowAttachOthers.map(((value, index) => {
-                        return {link: value.resumeAttach, name: value.name}
-                    }))
-                    this.$set(result,index,this.resumeAttachForm1)
-                    console.log(result)
-                    this.resumeAttachForm.attachOthers=result
-                    this.handleSaveAttachOthersResume(false);
-                    this.showEditAttachOther=false
-                }else {
-                    console.log("2222")
-                    for (i;i<  this.resume[this.resume.length-1].resumeMergeAttachList.length;i++) {
-                        otherAttach=this.resume[this.resume.length-1].resumeMergeAttachList[i]
-                        nowAttachOthers.push(otherAttach)
-                    }
-                    let result = nowAttachOthers.map(((value, index) => {
-                        return {link: value.resumeAttach, name: value.name}
-                    }))
-                    this.$set(result,index,this.resumeAttachForm1)
-                    console.log(result)
-                    this.resumeAttachForm.attachOthers=result
-                    this.handleSaveAttachOthersResume(false);
-                    this.showEditAttachOther=false
+                let n;
+                if (this.newFlag==true){
+                    n=this.resume.length-1
                 }
+               else  if (this.newIndex && this.newIndex!=''){
+                    n=this.newIndex
+                } else{
+                    n=0
+                }
+                console.log("2222")
+                for (i;i<  this.resume[n].resumeMergeAttachList.length;i++) {
+                    otherAttach=this.resume[n].resumeMergeAttachList[i]
+                    nowAttachOthers.push(otherAttach)
+                }
+                let result = nowAttachOthers.map(((value, index) => {
+                    return {link: value.resumeAttach, name: value.name}
+                }))
+                this.$set(result,index,this.resumeAttachForm1)
+                console.log(result)
+                this.resumeAttachForm.attachOthers=result
+                this.handleSaveAttachOthersResume(false);
+                this.showEditAttachOther=false
             },
             handleDelAttachOthers(index){
                 // this.list.splice(index, 1);
@@ -2267,52 +2240,35 @@
                 let otherAttach;
                 let nowAttachOthers=[];
                 let i=0;
-                if (this.newIndex&&this.newIndex!=''){
-                    if (this.resume[this.newIndex].resumeMergeAttachList.length<=1){
-                        console.log("1111")
-                        this.resumeAttachForm.attachOthers=nowAttachOthers
-                        this.handleSaveAttachOthersResume(false);
-                        this.showEditAttachOther=false
-                    }else{
-                        console.log("2222")
-                        for (i;i<  this.resume[this.newIndex].resumeMergeAttachList.length;i++) {
-                            otherAttach=this.resume[this.newIndex].resumeMergeAttachList[i]
-                            nowAttachOthers.push(otherAttach)
-                        }
-                        console.log(nowAttachOthers)
-                        let result = nowAttachOthers.map(((value, index) => {
-                            return {link: value.resumeAttach, name: value.name}
-                        }))
-                        this.$delete(result,index)
-                        // nowAttachOthers.splice(index,1,this.resumeAttachForm1)
-                        console.log(result)
-                        this.resumeAttachForm.attachOthers=result
-                        this.handleSaveAttachOthersResume(false);
-                        this.showEditAttachOther=false
-                    }
-                }else {
-                    console.log("3333")
-                    if (this.resume[this.resume.length-1].resumeMergeAttachList.length<=1){
-                        this.resumeAttachForm.attachOthers=nowAttachOthers
-                        this.handleSaveAttachOthersResume(false);
-                        this.showEditAttachOther=false
-                    }else{
-                        console.log("444")
-                        for (i;i<  this.resume[this.resume.length-1].resumeMergeAttachList.length;i++) {
-                            otherAttach=this.resume[this.resume.length-1].resumeMergeAttachList[i]
-                            nowAttachOthers.push(otherAttach)
-                        }
-                        let result = nowAttachOthers.map(((value, index) => {
-                            return {link: value.resumeAttach, name: value.name}
-                        }))
-                        this.$delete(result,index)
-                        console.log(result)
-                        this.resumeAttachForm.attachOthers=result
-                        this.handleSaveAttachOthersResume(false);
-                        this.showEditAttachOther=false
-                    }
+                let n=0;
+                if (this.newFlag==true){
+                    n=this.resume.length-1
                 }
-
+               else  if (this.newIndex&& this.newIndex!=''){
+                    n=this.newIndex
+                } else{
+                    n=0
+                }
+                console.log("3333")
+                if (this.resume[n].resumeMergeAttachList.length<=1){
+                    this.resumeAttachForm.attachOthers=nowAttachOthers
+                    this.handleSaveAttachOthersResume(false);
+                    this.showEditAttachOther=false
+                }else{
+                    console.log("444")
+                    for (i;i<  this.resume[n].resumeMergeAttachList.length;i++) {
+                        otherAttach=this.resume[n].resumeMergeAttachList[i]
+                        nowAttachOthers.push(otherAttach)
+                    }
+                    let result = nowAttachOthers.map(((value, index) => {
+                        return {link: value.resumeAttach, name: value.name}
+                    }))
+                    this.$delete(result,index)
+                    console.log(result)
+                    this.resumeAttachForm.attachOthers=result
+                    this.handleSaveAttachOthersResume(false);
+                    this.showEditAttachOther=false
+                }
             },
             getResumeInfo() {
                 getResumeInfo().then((response) => {
@@ -2340,14 +2296,21 @@
                             this.editableTabsValue=this.resume[newTabIndex].id
                             this.resumeIndex=this.newIndex
 
-                        }else{
+                        }else if (this.newFlag==true){
                             this.editableTabsValue=this.resume[this.resume.length-1].id
                             this.resumeIndex=this.resume.length-1
+
+                        } else{
+                            this.editableTabsValue=this.resume[0].id
+                            this.resumeIndex=0
                         }
 
-
-                    }else{
+                    }else if (this.newFlag==true){
                         this.editableTabsValue=this.resume[this.resume.length-1].id
+                        this.resumeIndex=this.resume.length-1
+
+                    } else{
+                        this.editableTabsValue=this.resume[0].id
                         this.resumeIndex=this.resume.length-1
                         }
 
@@ -2356,8 +2319,75 @@
             },
             addResume() {
                 addResume().then(()=>{
-                    this.getResumeInfo();
+                    this.newFlag=true;
+                    getResumeInfo().then((response) => {
+                        this.resume = response.data;
+                        this.nullResumeId=this.resume[this.resume.length-1].id
+                        this.getResume=true
+                        let newTabIndex;
+                        let i=this.resume.length;
+                        for (i;i>0;i--){
+                            if (this.resume[i-1].title && this.resume[i-1].title!=''){
+                            }else{
+                                this.newResumeForm.title='简历'+i
+                                this.newResumeForm.id=this.resume[i-1].id
+                                this.newResumeForm.priority=5
+                                saveResumeBasic(this.newResumeForm).then(()=>{
+                                        this.getResumeInfoAdd()
+                                    }
+                                )
+
+                            }
+                        }
+                        if (this.newIndex&&this.newIndex!=''){
+                            newTabIndex=this.newIndex;
+                            if (this.resume[newTabIndex]&& this.resume[newTabIndex]!='' ){
+                                this.editableTabsValue=this.resume[newTabIndex].id
+                                this.resumeIndex=this.newIndex
+
+                            }else{
+                                this.editableTabsValue=this.resume[this.resume.length-1].id
+                                this.resumeIndex=this.resume.length-1
+                            }
+
+                        }else{
+                            this.editableTabsValue=this.resume[this.resume.length-1].id
+                            this.resumeIndex=this.resume.length-1
+                        }
+
+                    });
                 })
+            },
+            getResumeInfoAdd(){
+                getResumeInfo().then((response) => {
+                    this.resume = response.data;
+                    this.nullResumeId=this.resume[this.resume.length-1].id
+                    this.getResume=true
+                    let newTabIndex;
+                    let i=this.resume.length;
+                    if(this.newFlag==true){
+                        this.editableTabsValue=this.resume[this.resume.length-1].id
+                        this.resumeIndex=this.resume.length-1
+                    } else if (this.newIndex&&this.newIndex!=''){
+                        newTabIndex=this.newIndex;
+                        if(this.newFlag==true){
+                            this.editableTabsValue=this.resume[this.resume.length-1].id
+                            this.resumeIndex=this.resume.length-1
+                        }else if (this.resume[newTabIndex]&& this.resume[newTabIndex]!='' ){
+                            this.editableTabsValue=this.resume[newTabIndex].id
+                            this.resumeIndex=this.newIndex
+
+                        }else{
+                            this.editableTabsValue=this.resume[0].id
+                            this.resumeIndex=0
+                        }
+
+                    }else{
+                        this.editableTabsValue=this.resume[this.resume.length-1].id
+                        this.resumeIndex=this.resume.length-1
+                    }
+
+                });
             },
             setResumeFormValues() {
                 this.resumeForm.id = this.newResumeId;
@@ -2385,35 +2415,32 @@
             saveEditTitle(){
                 this.$refs["resumeTitleForm"][0].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeTitleForm.id=this.newResumeId
-                            // this.resumeForm1.resumeId = this.newResumeId;
-                            saveResumeBasic(this.resumeTitleForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showEditTitle = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else{
-                            this.resumeTitleForm.id = this.resume[this.resume.length-1].id;
-                            saveResumeBasic(this.resumeTitleForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showEditTitle = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+                        let i;
+                        if (this.newFlag==true){
+                            i=this.resume.length-1
                         }
+                        else if (this.newIndex && this.newIndex!=''){
+                            i=this.newIndex
+                        } else{
+                            i=0
+                        }
+                        this.resumeTitleForm.id = this.resume[i].id;
+                        saveResumeBasic(this.resumeTitleForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                                this.showEditTitle = false;
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
                     }
                 });
             },
             requiredEdit(){
                 let index;
-                if(this.newIndex&& this.newIndex!=''){
+                if(this.newFlag==true){
+                    index=this.resume.length-1
+                }else if(this.newIndex&& this.newIndex!=''){
                     index=this.newIndex
                 }else {
                     index=this.resume.length-1
@@ -2438,96 +2465,96 @@
                 console.log("-----")
                 this.showBasicDialog = true;
                 let i;
-                if(this.newIndex&& this.newIndex){
+                if (this.newFlag==true){
+                    i=this.resume.length-1
+                } else if(this.newIndex&& this.newIndex){
                     i=this.newIndex
                 }else{
-                    i=this.resume.length-1
+                    i=0
                 }
-                    this.resumeForm.id = this.resume[i].id;
-                    this.resumeForm.name = this.resume[i].name;
-                    this.resumeForm.avatar = this.resume[i].avatar;
-                    this.resumeForm.birth = this.resume[i].birth;
-                    if (this.resume[i].gender==0){
-                        this.resumeForm.gender = undefined
-                    }else{
-                        this.resumeForm.gender = this.resume[i].gender;
-                        console.log(this.resume[i].gender)
-                    }
-                    this.resumeForm.email = this.resume[i].email;
-                    this.resumeForm.returnTime = this.resume[i].returnTime;
-                    this.resumeForm.graduateTime = this.resume[i].graduateTime;
-                    this.resumeForm.curPlace = this.resume[i].curPlace;
-                    this.resumeForm.phone = this.resume[i].phone;
-                    if (this.resume[i].maritalStatus==0){
-                        this.resumeForm.maritalStatus="中共党员（含预备党员）";
-                    }else if (this.resume[i].maritalStatus==1){
-                        this.resumeForm.maritalStatus="民主党派";
-                    }else if (this.resume[i].maritalStatus==2){
-                        this.resumeForm.maritalStatus="无党派人士";
-                    }else if (this.resume[i].maritalStatus==3){
-                        this.resumeForm.maritalStatus="团员";
-                    }else if (this.resume[i].maritalStatus==4){
-                        this.resumeForm.maritalStatus="群众";
-                    }
-                    this.resumeForm.introduction = this.resume[i].introduction;
-
-
+                this.resumeForm.id = this.resume[i].id;
+                this.resumeForm.name = this.resume[i].name;
+                this.resumeForm.avatar = this.resume[i].avatar;
+                this.resumeForm.birth = this.resume[i].birth;
+                if (this.resume[i].gender==0){
+                    this.resumeForm.gender = undefined
+                }else{
+                    this.resumeForm.gender = this.resume[i].gender;
+                    console.log(this.resume[i].gender)
+                }
+                this.resumeForm.email = this.resume[i].email;
+                this.resumeForm.returnTime = this.resume[i].returnTime;
+                this.resumeForm.graduateTime = this.resume[i].graduateTime;
+                this.resumeForm.curPlace = this.resume[i].curPlace;
+                this.resumeForm.phone = this.resume[i].phone;
+                if (this.resume[i].maritalStatus==0){
+                    this.resumeForm.maritalStatus="中共党员（含预备党员）";
+                }else if (this.resume[i].maritalStatus==1){
+                    this.resumeForm.maritalStatus="民主党派";
+                }else if (this.resume[i].maritalStatus==2){
+                    this.resumeForm.maritalStatus="无党派人士";
+                }else if (this.resume[i].maritalStatus==3){
+                    this.resumeForm.maritalStatus="团员";
+                }else if (this.resume[i].maritalStatus==4){
+                    this.resumeForm.maritalStatus="群众";
+                }
+                this.resumeForm.introduction = this.resume[i].introduction;
                 this.$nextTick(() => {
                     this.$refs["resumeForm"][0].clearValidate();
                 });
             },
             handleEditResumeIntro() {
                 this.showIntroDialog = true;
-                if (this.newResumeId&&this.newResumeId!=''){
-                    this.resumeForm1.resumeId=this.newResumeId;
-                    this.resumeForm1.introduction=this.resume[this.newIndex].introduction;
-                }else{
-                    this.resumeForm1.resumeId=this.resume[this.resume.length-1].id;
-                    this.resumeForm1.introduction=this.resume[this.resume.length-1].introduction;
-
+                let i;
+                if (this.newFlag==true){
+                    i=this.resume.length-1
                 }
+                else if (this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                } else{
+                    i=0
+                }
+                this.resumeForm1.resumeId=this.resume[i].id;
+                this.resumeForm1.introduction=this.resume[i].introduction;
                 // this.setResumeFormValues();
                 this.$nextTick(() => {
                     this.$refs["resumeForm1"][0].clearValidate();
                 });
             },
+
             handleSaveResumeAvatar(){
                 this.$refs["resumeForm3"][0].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeForm3.id=this.newResumeId
-                            // this.resumeForm1.resumeId = this.newResumeId;
-                            saveResumeBasic(this.resumeForm3)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else{
-                            this.resumeForm3.id = this.resume[this.resume.length-1].id;
-                            saveResumeBasic(this.resumeForm3)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+                        let i;
+                        if (this.newFlag==true){
+                            i=this.resume.length-1
+                        } else  if (this.newIndex && this.newIndex!=''){
+                            i=this.newIndex
+                        } else{
+                            i=0
                         }
+                        this.resumeForm3.id = this.resume[i].id;
+                        saveResumeBasic(this.resumeForm3)
+                            .then(() => {
+                                this.getResumeInfo();
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
                     }
                 });
             },
             handleEditResumeEdu(type, resumeEdu) {
                 this.showEduDialog = true;
                 let i;
-                if (this.newIndex && this.newIndex!=''){
-                   i = this.newIndex;
-                }else {
+                if (this.newFlag==true){
                     i=this.resume.length-1
+                } else if (this.newIndex && this.newIndex!=''){
+                    i = this.newIndex;
+                } else {
+                    i=0
                 }
                 this.resumeEduForm.resumeId = this.resume[i].id;
-
                 if (type === "update") {
                     this.resumeEduForm.id = resumeEdu.id;
                     this.resumeEduForm.schoolName = resumeEdu.schoolName;
@@ -2571,29 +2598,24 @@
             handleEditResumeLanguage(type, resumeLanguage) {
                 this.showLanguageDialog = true;
                 // console.log(resumeLanguage.description)
-                if(this.newResumeId&&this.newResumeId!=''){
-                    this.resumeLanguageForm.resumeId = this.newResumeId;
-                    if (type === "update") {
-                        this.resumeLanguageForm.id = resumeLanguage.id;
-                        this.resumeLanguageForm.title = resumeLanguage.title;
-                        this.resumeLanguageForm.description = resumeLanguage.description;
-                    } else {
-                        this.resumeLanguageForm.id = undefined;
-                        this.resumeLanguageForm.title = undefined;
-                        this.resumeLanguageForm.description = undefined;
-                    }
-                }else {
-                    this.resumeLanguageForm.resumeId = this.resume[this.resume.length-1].id;
-                    if (type === "update") {
-                        this.resumeLanguageForm.id = resumeLanguage.id;
-                        this.resumeLanguageForm.title = resumeLanguage.title;
-                        this.resumeLanguageForm.description = resumeLanguage.description;
-                    } else {
-                        this.resumeLanguageForm.id = undefined;
-                        this.resumeLanguageForm.title = undefined;
-                        this.resumeLanguageForm.description = undefined;
-                    }
-
+                let i;
+                if (this.newFlag==true){
+                    i=this.resume.length-1
+                }
+                else if (this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                } else {
+                    i=0
+                }
+                this.resumeLanguageForm.resumeId = this.resume[i].id;
+                if (type === "update") {
+                    this.resumeLanguageForm.id = resumeLanguage.id;
+                    this.resumeLanguageForm.title = resumeLanguage.title;
+                    this.resumeLanguageForm.description = resumeLanguage.description;
+                } else {
+                    this.resumeLanguageForm.id = undefined;
+                    this.resumeLanguageForm.title = undefined;
+                    this.resumeLanguageForm.description = undefined;
                 }
                 this.$nextTick(() => {
                     this.$refs["resumeLanguageForm"][0].clearValidate();
@@ -2601,30 +2623,25 @@
             },
             handleEditResumeAwards(type, resumeAwards) {
                 this.showAwardsDialog = true;
-                if (this.newResumeId&&this.newResumeId!=''){
-                    this.resumeAwardsForm.resumeId = this.newResumeId
-                    if (type === "update") {
-                        this.resumeAwardsForm.id = resumeAwards.id;
-                        this.resumeAwardsForm.title = resumeAwards.title;
-                        this.resumeAwardsForm.time = resumeAwards.time;
-                    } else {
-                        this.resumeAwardsForm.id = undefined;
-                        this.resumeAwardsForm.title = undefined;
-                        this.resumeAwardsForm.time = undefined;
-                    }
-                }else {
-                    this.resumeAwardsForm.resumeId = this.resume[this.resume.length-1].id;
-                    if (type === "update") {
-                        this.resumeAwardsForm.id = resumeAwards.id;
-                        this.resumeAwardsForm.title = resumeAwards.title;
-                        this.resumeAwardsForm.time = resumeAwards.time;
-                    } else {
-                        this.resumeAwardsForm.id = undefined;
-                        this.resumeAwardsForm.title = undefined;
-                        this.resumeAwardsForm.time = undefined;
-                    }
+                let i;
+                if (this.newFlag==true){
+                    i=this.resume.length-1
                 }
-
+                else if (this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                } else{
+                    i=0
+                }
+                this.resumeAwardsForm.resumeId = this.resume[i].id;
+                if (type === "update") {
+                    this.resumeAwardsForm.id = resumeAwards.id;
+                    this.resumeAwardsForm.title = resumeAwards.title;
+                    this.resumeAwardsForm.time = resumeAwards.time;
+                } else {
+                    this.resumeAwardsForm.id = undefined;
+                    this.resumeAwardsForm.title = undefined;
+                    this.resumeAwardsForm.time = undefined;
+                }
                 this.$nextTick(() => {
                     this.$refs["resumeAwardsForm"][0].clearValidate();
                 });
@@ -2668,58 +2685,39 @@
             },
             handleEditResumePractice(type, resumePractice) {
                 this.showPracticeDialog = true;
-                if (this.newResumeId&&this.newResumeId!=''){
-                    this.resumePracticeForm.resumeId = this.newResumeId;
-                    if (type === "update") {
-                        this.resumePracticeForm.id = resumePractice.id;
-                        this.resumePracticeForm.startTime = resumePractice.startTime;
-                        this.resumePracticeForm.finishTime = resumePractice.finishTime;
-                        this.resumePracticeForm.title = resumePractice.title;
-                        this.resumePracticeForm.description = resumePractice.description;
-                        this.resumePracticeForm.post = resumePractice.post;
-                        this.resumePracticeForm.onWork = resumePractice.onWork;
-                        if (resumePractice.startTime && resumePractice.finishTime) {
-                            this.resumePracticeForm.workingDates = [
-                                this.resumePracticeForm.startTime,
-                                this.resumePracticeForm.finishTime,
-                            ];
-                        }
-                    } else {
-                        this.resumePracticeForm.id = undefined;
-                        this.resumePracticeForm.workingDates = undefined;
-                        this.resumePracticeForm.startTime = undefined;
-                        this.resumePracticeForm.finishTime = undefined;
-                        this.resumePracticeForm.title = undefined;
-                        this.resumePracticeForm.description = undefined;
-                        this.resumePracticeForm.post = undefined;
-                        this.resumePracticeForm.onWork = undefined;
+                let i;
+                if (this.newFlag==true){
+                    i=this.resume.length-1
+                }
+                else if (this.newIndex &&this.newIndex!=''){
+                    i=this.newIndex
+                } else{
+                    i=0
+                }
+                this.resumePracticeForm.resumeId = this.resume[i].id;
+                if (type === "update") {
+                    this.resumePracticeForm.id = resumePractice.id;
+                    this.resumePracticeForm.startTime = resumePractice.startTime;
+                    this.resumePracticeForm.finishTime = resumePractice.finishTime;
+                    this.resumePracticeForm.title = resumePractice.title;
+                    this.resumePracticeForm.description = resumePractice.description;
+                    this.resumePracticeForm.post = resumePractice.post;
+                    this.resumePracticeForm.onWork = resumePractice.onWork;
+                    if (resumePractice.startTime && resumePractice.finishTime) {
+                        this.resumePracticeForm.workingDates = [
+                            this.resumePracticeForm.startTime,
+                            this.resumePracticeForm.finishTime,
+                        ];
                     }
-                }else {
-                    this.resumePracticeForm.resumeId = this.resume[this.resume.length-1].id;
-                    if (type === "update") {
-                        this.resumePracticeForm.id = resumePractice.id;
-                        this.resumePracticeForm.startTime = resumePractice.startTime;
-                        this.resumePracticeForm.finishTime = resumePractice.finishTime;
-                        this.resumePracticeForm.title = resumePractice.title;
-                        this.resumePracticeForm.description = resumePractice.description;
-                        this.resumePracticeForm.post = resumePractice.post;
-                        this.resumePracticeForm.onWork = resumePractice.onWork;
-                        if (resumePractice.startTime && resumePractice.finishTime) {
-                            this.resumePracticeForm.workingDates = [
-                                this.resumePracticeForm.startTime,
-                                this.resumePracticeForm.finishTime,
-                            ];
-                        }
-                    } else {
-                        this.resumePracticeForm.id = undefined;
-                        this.resumePracticeForm.workingDates = undefined;
-                        this.resumePracticeForm.startTime = undefined;
-                        this.resumePracticeForm.finishTime = undefined;
-                        this.resumePracticeForm.title = undefined;
-                        this.resumePracticeForm.description = undefined;
-                        this.resumePracticeForm.post = undefined;
-                        this.resumePracticeForm.onWork = undefined;
-                    }
+                } else {
+                    this.resumePracticeForm.id = undefined;
+                    this.resumePracticeForm.workingDates = undefined;
+                    this.resumePracticeForm.startTime = undefined;
+                    this.resumePracticeForm.finishTime = undefined;
+                    this.resumePracticeForm.title = undefined;
+                    this.resumePracticeForm.description = undefined;
+                    this.resumePracticeForm.post = undefined;
+                    this.resumePracticeForm.onWork = undefined;
                 }
                 this.$nextTick(() => {
                     this.$refs["resumePracticeForm"][0].clearValidate();
@@ -2728,14 +2726,35 @@
             handleEditExpectJob() {
                 this.showExpectJobDialog = true;
                 let i;
-                if(this.newIndex && this.newIndex!=''){
-                    i=this.newIndex
-                }else{
+                if (this.newFlag==true){
                     i=this.resume.length-1
                 }
-                if (this.resume[i].userExpectJob.salaryId==9){
+                else if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                } else{
+                    i=0
+                }
+                if (this.resume[i].userExpectJob.salaryId==1038){
                     this.salaryCheck==true;
                     this.expectJobForm.salaryId="  "
+                }else if (this.resume[i].userExpectJob.salaryId==1028){
+                    this.expectJobForm.salaryId="2K以下"
+                }else if (this.resume[i].userExpectJob.salaryId==1029){
+                    this.expectJobForm.salaryId="2K-5K"
+                }else if (this.resume[i].userExpectJob.salaryId==1031){
+                    this.expectJobForm.salaryId="5K-8K"
+                }else if (this.resume[i].userExpectJob.salaryId==1032){
+                    this.expectJobForm.salaryId="8K-10K"
+                }else if (this.resume[i].userExpectJob.salaryId==1033){
+                    this.expectJobForm.salaryId="10K-15K"
+                }else if (this.resume[i].userExpectJob.salaryId==1034){
+                    this.expectJobForm.salaryId="15K-20K"
+                }else if (this.resume[i].userExpectJob.salaryId==1035){
+                    this.expectJobForm.salaryId="20K-30K"
+                }else if (this.resume[i].userExpectJob.salaryId==1036){
+                    this.expectJobForm.salaryId="30K-50K"
+                }else if (this.resume[i].userExpectJob.salaryId==1037){
+                    this.expectJobForm.salaryId="50K以上"
                 }
                 this.expectJobForm.resumeId=this.resume[i].id;
                 this.expectJobForm.expectWorkType=this.resume[i].userExpectJob.expectWorkType;
@@ -2751,10 +2770,13 @@
                 this.showSkillDialog = true;
                 this.skillTagListForm.length = 0;
                 let i;
-                if(this.newIndex && this.newIndex!=''){
-                    i=this.newIndex
-                }else{
+                if (this.newFlag==true){
                     i=this.resume.length-1
+                }
+                else if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                } else{
+                    i=0
                 }
                 if (
                     this.resume[i].resumeSkillList &&
@@ -2816,60 +2838,49 @@
             handleSaveResumeAttachResume(){
                 this.$refs["resumeForm2"][0].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeForm2.id=this.newResumeId
-                            this.resumeForm2.resumeId=this.newResumeId
-                            saveResumeBasic(this.resumeForm2)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else{
-                            this.resumeForm2.id=this.resume[this.resume.length-1].id
-                            this.resumeForm2.resumeId=this.resume[this.resume.length-1].id
-                            saveResumeBasic(this.resumeForm2)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+                        let i;
+                        if (this.newFlag==true){
+                            i=this.resume.length-1
                         }
-
+                        else if (this.newIndex &&this.newIndex!=''){
+                            i=this.newIndex
+                        } else{
+                            i=0
+                        }
+                        this.resumeForm2.id=this.resume[i].id
+                        this.resumeForm2.resumeId=this.resume[i].id
+                        saveResumeBasic(this.resumeForm2)
+                            .then(() => {
+                                this.getResumeInfo();
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
                     }
                 });
             },
             handleSaveAttachOthersResume(){
                 this.$refs["resumeAttachForm"][0].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
-                        console.log(this.resumeAttachForm.attachOthers)
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeAttachForm.id=this.newResumeId
-                            this.resumeAttachForm.resumeId=this.newResumeId
-                            saveResumeBasic(this.resumeAttachForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-
-                        }else{
-                            this.resumeAttachForm.id=this.resume[this.resume.length-1].id
-                            this.resumeAttachForm.resumeId=this.resume[this.resume.length-1].id
-                            saveResumeBasic(this.resumeAttachForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-
+                        let i;
+                        if (this.newFlag==true){
+                            i=this.resume.length-1
                         }
+                        else if (this.newIndex && this.newIndex!=''){
+                            i=this.newIndex
+                        } else{
+                            i=0
+                        }
+                        console.log(this.resumeAttachForm.attachOthers)
+                        this.resumeAttachForm.id=this.resume[i].id
+                        this.resumeAttachForm.resumeId=this.resume[i].id
+                        saveResumeBasic(this.resumeAttachForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
 
                     }
                 });
@@ -2879,36 +2890,25 @@
 
             },
             handleEditPriority(){
-                if (this.newResumeId&&this.newResumeId!=''){
-                    this.resumeForm5.resumeId=this.newResumeId;
-                    if(this.resume[this.newIndex].priority==0){
-                        this.resumeForm5.priority="第一";
-                    }else if (this.resume[this.newIndex].priority==1){
-                        this.resumeForm5.priority="第二";
-                    }
-                    else if (this.resume[this.newIndex].priority==2){
-                        this.resumeForm5.priority="第三";
-                    }
-                    else if (this.resume[this.newIndex].priority==3){
-                        this.resumeForm5.priority="第四";
-                    }else if (this.resume[this.newIndex].priority==5){
-                        this.resumeForm5.priority=" ";
-                    }
-
-                }else{
-                    this.resumeForm5.resumeId=this.resume[this.resume.length-1].id;
-                    if(this.resume[this.resume.length-1].priority==0){
-                        this.resumeForm5.priority="第一";
-                    }else if (this.resume[this.resume.length-1].priority==1){
-                        this.resumeForm5.priority="第二";
-                    }
-                    else if (this.resume[this.resume.length-1].priority==2){
-                        this.resumeForm5.priority="第三";
-                    }
-                    else if (this.resume[this.resume.length-1].priority==3){
-                        this.resumeForm5.priority="第四";
-                    }
-
+                let i;
+                if (this.newFlag==true){
+                    i=this.resume.length-1
+                } else if (this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                } else{
+                    i=0
+                }
+                this.resumeForm5.resumeId=this.resume[i].id;
+                if(this.resume[i].priority==0){
+                    this.resumeForm5.priority="第一";
+                }else if (this.resume[i].priority==1){
+                    this.resumeForm5.priority="第二";
+                }
+                else if (this.resume[i].priority==2){
+                    this.resumeForm5.priority="第三";
+                }
+                else if (this.resume[i].priority==3){
+                    this.resumeForm5.priority="第四";
                 }
                 // this.setResumeFormValues();
                 this.$nextTick(() => {
@@ -2917,10 +2917,13 @@
             },
             handleSavePriority(){
                 let i;
-                if(this.newIndex && this.newIndex!=''){
-                    i=this.newIndex
-                }else{
+                if (this.newFlag==true){
                     i=this.resume.length-1
+                }
+                 else if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                } else{
+                    i=0
                 }
                 this.$refs["resumeForm5"][0].validate((valid) => {
                     if (valid) {
@@ -2981,30 +2984,25 @@
             handleSaveResumeIntro(){
                 this.$refs["resumeForm1"][0].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeForm1.id=this.newResumeId
-                            // this.resumeForm1.resumeId = this.newResumeId;
-                            saveResumeBasic(this.resumeForm1)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showIntroDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else{
-                            this.resumeForm1.id = this.resume[this.resume.length-1].id;
-                            saveResumeBasic(this.resumeForm1)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showIntroDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+                        let i;
+                        if (this.newFlag==true){
+                            i=this.resume.length-1
                         }
-                    }
+                        else if (this.newIndex && this.newIndex!=''){
+                            i=this.newIndex
+                        } else{
+                            i=0
+                        }
+                        this.resumeForm1.id = this.resume[i].id;
+                        saveResumeBasic(this.resumeForm1)
+                            .then(() => {
+                                this.getResumeInfo();
+                                this.showIntroDialog = false;
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
+                        }
                 });
             },
             handleSaveResumeBasic(index) {
@@ -3012,7 +3010,15 @@
                 console.log(this.$refs["resumeForm"][index])
                 this.$refs["resumeForm"][index].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
+                        let i;
+                        if(this.newFlag==true){
+                            i=this.resume.length-1
+                        }
+                        else if (this.newIndex && this.newIndex!=''){
+                            i=this.newIndex
+                        } else {
+                            i=0
+                        }
                         if (this.resumeForm.maritalStatus=="中共党员（含预备党员）"){
                             this.resumeForm.maritalStatus=0 ;
                         }else if (this.resumeForm.maritalStatus=="民主党派"){
@@ -3024,31 +3030,18 @@
                         }else if (this.resumeForm.maritalStatus=="群众"){
                             this.resumeForm.maritalStatus=4;
                         }
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeForm.resumeId = this.newResumeId;
-                            saveResumeBasic(this.resumeForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.handleEditResumeBasic()
-                                    this.showBasicDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else{
-                            this.resumeForm.resumeId = this.resume[this.resume.length-1].id;
-                            saveResumeBasic(this.resumeForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showBasicDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+                        this.resumeForm.resumeId = this.resume[i].id;
+                        saveResumeBasic(this.resumeForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                                this.showBasicDialog = false;
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
                         }
-                    }
-                });
 
+                });
             },
             postSaveResumeBasic() {
                 this.posting = true;
@@ -3066,10 +3059,13 @@
             },
             handleSaveResumeEdu(index) {
                 let i;
-                if (this.newIndex && this.newIndex!=''){
-                    i=this.newIndex;
-                }else{
+                if (this.newFlag==true){
                     i=this.resume.length-1
+                }
+                else if (this.newIndex && this.newIndex!=''){
+                    i=this.newIndex;
+                } else{
+                    i=0
                 }
                 if(this.schoolCheck==true){
                     this.resumeEduForm.workingDates=[
@@ -3097,160 +3093,145 @@
             handleSaveResumeExp(index) {
                 this.$refs["resumeExpForm"][index].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
                         this.resumeExpForm.depart = "xxx";
-                        if(this.newResumeId&&this.newResumeId!=''){
-                            this.resumeExpForm.resumeId = this.newResumeId;
-                            if (
-                                this.resumeExpForm.workingDates &&
-                                this.resumeExpForm.workingDates.length == 2
-                            ) {
-                                this.resumeExpForm.startTime = this.resumeExpForm.workingDates[0];
-                                this.resumeExpForm.finishTime = this.resumeExpForm.workingDates[1];
-                            }
-                            saveResumeExp(this.resumeExpForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showExpDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else{
-                            this.resumeExpForm.resumeId = this.resume[this.resume.length-1].id;
-                            if (
-                                this.resumeExpForm.workingDates &&
-                                this.resumeExpForm.workingDates.length == 2
-                            ) {
-                                this.resumeExpForm.startTime = this.resumeExpForm.workingDates[0];
-                                this.resumeExpForm.finishTime = this.resumeExpForm.workingDates[1];
-                            }
-                            saveResumeExp(this.resumeExpForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showExpDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+                        let i;
+                        if (this.newFlag==true){
+                            i=this.resume.length-1
                         }
-
+                        else if (this.newIndex &&this.newIndex!=''){
+                            i=this.newIndex
+                        } else{
+                            i=0
+                        }
+                        this.resumeExpForm.resumeId = this.resume[i].id;
+                        if (
+                            this.resumeExpForm.workingDates &&
+                            this.resumeExpForm.workingDates.length == 2
+                        ) {
+                            this.resumeExpForm.startTime = this.resumeExpForm.workingDates[0];
+                            this.resumeExpForm.finishTime = this.resumeExpForm.workingDates[1];
+                        }
+                        saveResumeExp(this.resumeExpForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                                this.showExpDialog = false;
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
                     }
                 });
             },
             handleSaveResumePractice(index) {
                 this.$refs["resumePracticeForm"][index].validate((valid) => {
                     if (valid) {
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumePracticeForm.resumeId = this.newResumeId;
-                            if (
-                                this.resumePracticeForm.workingDates &&
-                                this.resumePracticeForm.workingDates.length == 2
-                            ) {
-                                this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
-                                this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
-                            }
-                            saveResumePractice(this.resumePracticeForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showPracticeDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else{
-                            this.resumePracticeForm.resumeId = this.resume[this.resume.length-1].id;
-                            if (
-                                this.resumePracticeForm.workingDates &&
-                                this.resumePracticeForm.workingDates.length == 2
-                            ) {
-                                this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
-                                this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
-                            }
-                            saveResumePractice(this.resumePracticeForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showPracticeDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+                        let i;
+                        if (this.newFlag==true){
+                            i=this.resume.length-1
                         }
-
+                        else if (this.newIndex && this.newIndex){
+                            i=this.newIndex
+                        } else{
+                            i=0
+                        }
+                        this.resumePracticeForm.resumeId = this.resume[i].id;
+                        if (
+                            this.resumePracticeForm.workingDates &&
+                            this.resumePracticeForm.workingDates.length == 2
+                        ) {
+                            this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
+                            this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
+                        }
+                        saveResumePractice(this.resumePracticeForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                                this.showPracticeDialog = false;
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
                     }
                 });
             },
             handleSaveResumeLanguage(index) {
                 this.$refs["resumeLanguageForm"][index].validate((valid) => {
                     if (valid) {
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeLanguageForm.resumeId=this.newResumeId
-                            saveResumeLanguage(this.resumeLanguageForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showLanguageDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else{
-                            this.resumeLanguageForm.resumeId=this.resume[this.resume.length-1].id
-                            saveResumeLanguage(this.resumeLanguageForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showLanguageDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+                        let i;
+                        if (this.newFlag==true){
+                            i=this.resume.length-1
                         }
-
-                    }
-                });
-            },
+                        else if (this.newIndex && this.newIndex!=''){
+                            i=this.newIndex
+                        } else{
+                            i=0
+                        }
+                        this.resumeLanguageForm.resumeId=this.resume[this.resume.length-1].id
+                        saveResumeLanguage(this.resumeLanguageForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                                this.showLanguageDialog = false;
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
+                        }
+                    });
+                },
             handleSaveResumeAwards(index) {
                 this.$refs["resumeAwardsForm"][index].validate((valid) => {
                     if (valid) {
-                        this.posting = true;
-                        if (this.newResumeId&&this.newResumeId!=''){
-                            this.resumeAwardsForm.resumeId=this.newResumeId;
-                            saveResumeAwards(this.resumeAwardsForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showAwardsDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
-                        }else {
-                            this.resumeAwardsForm.resumeId=this.resume[this.resume.length-1].id;
-                            saveResumeAwards(this.resumeAwardsForm)
-                                .then(() => {
-                                    this.getResumeInfo();
-                                    this.showAwardsDialog = false;
-                                })
-                                .finally(() => {
-                                    this.posting = false;
-                                });
+                        let i;
+                        if (this.newFlag==true){
+                            i=this.resume.length-1
                         }
-
-                    }
-                });
-            },
-
-
+                        else if (this.newIndex && this.newIndex!=''){
+                            i=this.newIndex
+                        } else {
+                            i=0
+                        }
+                        this.resumeAwardsForm.resumeId=this.resume[i].id;
+                        saveResumeAwards(this.resumeAwardsForm)
+                            .then(() => {
+                                this.getResumeInfo();
+                                this.showAwardsDialog = false;
+                            })
+                            .finally(() => {
+                                this.posting = false;
+                            });
+                        }
+                    });
+                },
             handleSaveExpectJob(index) {
                 this.$refs["expectJobForm"][index].validate((valid) => {
                     if (valid) {
                         if(this.newResumeId&&this.newResumeId!=''){
                             this.expectJobForm.resumeId=this.newResumeId
-                        }else {
+                        } else if (this.newFlag==true){
                             this.expectJobForm.resumeId=this.resume[this.resume.length-1].id
+                        }else {
+                            this.expectJobForm.resumeId=this.resume[0].id
                         }
                         if (this.salaryCheck==true){
-                            this.expectJobForm.salaryId=9
+                            this.expectJobForm.salaryId=1038
+                        }else if (this.expectJobForm.salaryId=="2K以下"){
+                            this.expectJobForm.salaryId=1028
+                        }else if (this.expectJobForm.salaryId=="2K-5K"){
+                            this.expectJobForm.salaryId=1029
+                        }else if (this.expectJobForm.salaryId=="5K-8K"){
+                            this.expectJobForm.salaryId=1031
+                        }else if (this.expectJobForm.salaryId=="8K-10K"){
+                            this.expectJobForm.salaryId=1032
+                        }else if (this.expectJobForm.salaryId=="10K-15K"){
+                            this.expectJobForm.salaryId=1033
+                        }else if (this.expectJobForm.salaryId=="15K-20K"){
+                            this.expectJobForm.salaryId=1034
+                        }else if (this.expectJobForm.salaryId=="20K-30K"){
+                            this.expectJobForm.salaryId=1035
+                        }else if (this.expectJobForm.salaryId=="30K-50K"){
+                            this.expectJobForm.salaryId=1036
+                        }else if (this.expectJobForm.salaryId=="50K以上"){
+                            this.expectJobForm.salaryId=1037
                         }
-
                         saveUserExpectJob(this.expectJobForm)
                             .then(() => {
                                 this.getResumeInfo();
@@ -3266,10 +3247,13 @@
             },
             handleSaveResumeSkills() {
                 let i;
-                if (this.newIndex && this.newIndex!='') {
-                    i=this.newIndex
-                }else{
+                if (this.newFlag==true){
                     i=this.resume.length-1
+                }
+                else if (this.newIndex && this.newIndex!='') {
+                    i=this.newIndex
+                } else{
+                    i=0
                 }
                 const selectSkillTags = {
                     resumeId: this.resume[i].id,
@@ -3279,7 +3263,6 @@
                             return tag.name;
                         }),
                 };
-                this.posting = true;
                 saveResumeSkills(selectSkillTags)
                     .then(() => {
                         this.getResumeInfo();
@@ -3361,8 +3344,8 @@
                 const selectTagList = this.skillTagListForm.filter(
                     (tag) => tag.select == true
                 );
-                if (selectTagList.length > 4) {
-                    Toast.error("标签数量不能超过5个");
+                if (selectTagList.length > 5) {
+                    Toast.error("标签数量不能超过6个");
                     return false;
                 } else {
                     return true;
@@ -3371,8 +3354,10 @@
             handlePreview() {
                 if (this.newResumeId&& this.newResumeId!=''){
                     this.resumeId = this.newResumeId;
-                }else{
+                }else if (this.newFlag==true){
                     this.resumeId = this.resume[this.resume.length-1].id;
+                } else{
+                    this.resumeId = this.resume[0].id;
                 }
                 getResumeDetail(this.resumeId).then((response) =>{
                         this.resumeDetail = response.data;
@@ -3417,10 +3402,13 @@
             },
             handleDelResume() {
                 let i;
-                if(this.newIndex && this.newIndex!=''){
-                    i=this.newIndex
-                }else{
+                if (this.newFlag==true){
                     i=this.resume.length-1
+                }
+                else if(this.newIndex && this.newIndex!=''){
+                    i=this.newIndex
+                } else{
+                    i=0
                 }
                 if(this.resume.length>1) {
                     this.$confirm("是否要删除该简历？", {
@@ -3481,7 +3469,7 @@
         /*min-height: calc(100vh - 477px);*/
         /*background: rgba(213, 226, 240, 0.21);*/
         min-width: 375px;
-        ::v-deep    .el-tabs__nav-scroll {
+        ::v-deep.el-tabs__nav-scroll {
             width: fit-content;
             height: 45px;
             background: #FFFFFF;
@@ -3489,7 +3477,7 @@
             border: 1px solid #CCCCCC;
 
         }
-        ::v-deep    .el-tabs--card > .el-tabs__header {
+        ::v-deep.el-tabs--card > .el-tabs__header {
             width: fit-content;
             height: 35px;
             border-radius: 18px;
@@ -3508,7 +3496,17 @@
             transform: scale(.9);
             display: none;
         }
-
+        ::v-deep.el-tabs--card>.el-tabs__header .el-tabs__item .el-icon-close {
+            position: relative;
+            font-size: 12px;
+            width: 0;
+            height: 14px;
+            vertical-align: middle;
+            line-height: 15px;
+            overflow: hidden;
+            top: -1px;
+            right: -2px;
+        }
         ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item {
             border-left: none;
             width: 80px;
@@ -3523,7 +3521,6 @@
             line-height: 34px;
             text-align: center;
         }
-
         ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable {
             width: fit-content;
             height: 35px;
@@ -3540,7 +3537,6 @@
             color: #FFFFFF;
             margin: 4px 4px 3px 4px;
         }
-
         ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item.is-closable {
             width: fit-content;
             height: 35px;
@@ -3552,7 +3548,6 @@
             font-weight: 500;
             color: #333333;
         }
-
         ::v-deep.el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable .el-icon-close, .el-tabs--card > .el-tabs__header .el-tabs__item.is-closable:hover .el-icon-close {
             width: 0px;
         }
@@ -3571,7 +3566,6 @@
             -webkit-transition: all .15s;
             transition: all .15s;
         }
-
         ::v-deep.el-tabs--card > .el-tabs__header.el-tabs__new-tab {
             float: right;
             border: 1px solid #d3dce6;
@@ -3599,12 +3593,12 @@
             font-weight: 500;
             color: #FFFFFF;
             background: #4CC9F0;
+            border-color: #4CC9F0;
             border-radius: 5px;
             line-height: 10px;
             margin: 5px;
             padding-top: 5px;
         }
-
         .selectleave {
             ::v-deep.el-input--suffix .el-input__inner {
                 padding-right: 30px;
@@ -3629,7 +3623,6 @@
                 color: #4895EF;
             }
         }
-
         .resume-wrapper {
             margin-top: 100px;
             width: 760px;
@@ -3724,11 +3717,11 @@
                         position: relative;
                         font-size: 14px;
                         display: inline-block;
-                        width: 173px
+                        width: 140px
                     }
 
                     ::v-deep .el-input__inner {
-                        width: 130px;
+                        width: 140px;
                         height: 23px;
                         background: #FFFFFF;
                         border-radius: 12px;
@@ -3737,6 +3730,7 @@
                         font-family: PingFangSC-Regular, PingFang SC;
                         font-weight: 400;
                         color: #999999;
+                        padding-left: 4px;
                     }
 
                     ::v-deep .el-form-item__label {
@@ -4046,7 +4040,6 @@
                 }
             }
         }
-
         .right-box {
             margin-top: 100px;
             height: fit-content;
@@ -4056,7 +4049,6 @@
             box-shadow: 0px 18px 14px 3px rgba(205, 213, 224, 0.3);
 
         }
-
         .resume-right-box {
             background: #fff;
             padding: 41px 25px 0px 20px;
@@ -4086,7 +4078,6 @@
                 }
             }
         }
-
         .resume-right-box1 {
             background: #fff;
             padding: 10px 10px 0px 20px;
@@ -4097,6 +4088,25 @@
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #333333;
+                ::v-deep .el-input {
+                    position: relative;
+                    font-size: 14px;
+                    display: inline-block;
+                    width: 135px;
+                    ::v-deep .el-input__inner {
+                        width: 130px;
+                        height: 23px;
+                        background: #FFFFFF;
+                        border-radius: 12px;
+                        border: 1px solid #CCDBF5;
+                        font-size: 11px;
+                        font-family: PingFangSC-Regular, PingFang SC;
+                        font-weight: 400;
+                        color: #999999;
+                        padding-left: 4px;
+                    }
+                }
+
                 ::v-deep.el-form-item__error{
                     color: #F56C6C;
                     font-size: 12px;
@@ -4134,25 +4144,6 @@
                     transition: all .3s;
                     line-height: unset;
                     color: #4895EF;
-                }
-
-                ::v-deep .el-input {
-                    position: relative;
-                    font-size: 14px;
-                    display: inline-block;
-                    width: 173px
-                }
-
-                ::v-deep .el-input__inner {
-                    width: 173px;
-                    height: 23px;
-                    background: #FFFFFF;
-                    border-radius: 12px;
-                    border: 1px solid #CCDBF5;
-                    font-size: 11px;
-                    font-family: PingFangSC-Regular, PingFang SC;
-                    font-weight: 400;
-                    color: #999999;
                 }
 
                 ::v-deep .el-form-item__label {
@@ -4228,7 +4219,6 @@
                 color: #4895EF;
                 line-height: 25px;
             }
-            .pro-ress{
                 ::v-deep.el-progress-bar__outer {
                     height: 6px;
                     border-radius: 100px;
@@ -4237,15 +4227,21 @@
                     position: relative;
                     vertical-align: middle;
                 }
-
-                ::v-deep.el-progress.is-warning .el-progress-bar__inner {
+                /deep/.el-progress-bar {
+                    padding-right: 20px;
+                    width: 100%;
+                    margin-right: -55px;
+                    -webkit-box-sizing: border-box;
+                    box-sizing: border-box;
+                }
+                /deep/.el-progress.is-warning .el-progress-bar__inner{
                     background-color: #FDC500;
                 }
-            }
-
-
+                /deep/.el-progress__text i {
+                    vertical-align: middle;
+                    display: none;
+                }
         }
-
         .resume-box-edit {
             width: 640px;
             height: auto;
@@ -4297,6 +4293,7 @@
                     font-weight: 500;
                     color: #FFFFFF;
                     background: #4CC9F0;
+                    border-color: #4CC9F0;
                     border-radius: 5px;
                     line-height: 10px;
                 }
@@ -4677,7 +4674,6 @@
 
             }
         }
-
         .resume-box {
             margin-bottom: 21px;
             width: 640px;
@@ -4715,7 +4711,7 @@
                 /*overflow:auto;*/
                 display:inline-block;
                 word-wrap: break-word;
-                width: 478px;
+                width: 516px;
                 font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
@@ -4723,7 +4719,6 @@
                 line-height: 20px;
             }
         }
-
         .resume-languageinfo {
             padding-left: 18px;
             display: inline-flex;
@@ -4739,7 +4734,6 @@
                 line-height: 20px;
             }
         }
-
         .resume-eduinfo {
             display: inline-flex;
 
@@ -4766,9 +4760,11 @@
                     font-weight: 500;
                     color: #FFFFFF;
                     background: #4CC9F0;
+                    border-color: #4CC9F0;
                     border-radius: 5px;
                     line-height: 10px;
                     margin: 5px;
+                    cursor: pointer;
                 }
 
                 .info-other {
@@ -4868,11 +4864,9 @@
                 }
             }
         }
-
         .el-input .el-select {
             width: 120px;
         }
-
         ::v-deep .el-tag--dark {
             height: 21px;
             font-size: 12px;
@@ -4880,11 +4874,11 @@
             font-weight: 500;
             color: #FFFFFF;
             background: #4CC9F0;
+            border-color: #4CC9F0;
             border-radius: 5px;
             line-height: 20px;
             margin: 5px;
         }
-
         ::v-deep.el-tag--plain {
             height: 21px;
             background: #FFFFFF;
@@ -4898,7 +4892,6 @@
             margin: 5px;
 
         }
-
         .btn-preview {
             width: 100%;
             font-size: 18px;
