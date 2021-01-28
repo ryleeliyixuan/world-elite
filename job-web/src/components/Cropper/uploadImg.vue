@@ -1,16 +1,16 @@
 <template>
     <div class="upload-img">
-            <el-image v-if="resultImg" :src="resultImg" class="img">
-            </el-image>
-            <i v-else class="el-icon-plus avatar-uploader-icon"
-                        style="width: 100px;height: 100px;
+        <el-image v-if="resultImg" :src="resultImg" class="img">
+        </el-image>
+        <i v-else class="el-icon-plus avatar-uploader-icon"
+           style="width: 100px;height: 100px;
                                 border-radius: 5px;
                                 border: 1px solid #3F5FF4;
                                 line-height: 100px;
                                 font-size: 23px;
                                 color: #3F5FF4;
                                 padding-left: 38px;">
-            </i>
+        </i>
         <el-upload class="upload"
                    ref="fileUpload"
                    :auto-upload="false"
@@ -142,14 +142,14 @@
 
 <style lang="scss" scoped>
     .upload-img {
-            .img {
-                width: 100px;
-                height: 100px;
-            }
-            .add-icon {
-                width: 100px;
-                height: 100px;
-            }
+        .img {
+            width: 100px;
+            height: 100px;
+        }
+        .add-icon {
+            width: 100px;
+            height: 100px;
+        }
         .tip {
             height: 17px;
             background: #EDF2FF;

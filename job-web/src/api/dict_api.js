@@ -9,8 +9,20 @@ export function listByType(type){
             page: 1,
             limit: 10,
             sort: '-value'
-        } 
-      })
+        }
+    })
+}
+export function listByTypeSalary(type){
+    return request({
+        url: '/dict/list',
+        method: 'get',
+        params: {
+            type: type,
+            page: 1,
+            limit: 10,
+            sort: 'id'
+        }
+    })
 }
 
 
