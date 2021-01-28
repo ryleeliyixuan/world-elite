@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.ObjectType;
 import com.worldelite.job.entity.Recommend;
 import com.worldelite.job.exception.ServiceException;
+import com.worldelite.job.feign.MockService;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.form.RecommendForm;
 import com.worldelite.job.form.RecommendListForm;
@@ -33,6 +34,9 @@ public class RecommendService {
 
     @Autowired
     private CompanyService companyService;
+
+    @Autowired
+    private MockService mockService;
 
     /**
      * 保存推荐
@@ -65,6 +69,14 @@ public class RecommendService {
             recommend.setUpdateTime(new Date());
             recommendMapper.updateByPrimaryKeySelective(recommend);
         }else{
+            //给定排序默认值
+            if(recommend.getPosition() == null){
+                Integer position = recommendMapper.selectMaxPosition(recommend);
+                if(position == null){
+                    position = 0;
+                }
+                recommend.setPosition(position+1);
+            }
             recommendMapper.insertSelective(recommend);
         }
     }
@@ -105,6 +117,13 @@ public class RecommendService {
                 if(companyInfo == null) continue;
                 
                 recommendVo.setObject(companyInfo);
+            }else if(listForm.getObjectType() == ObjectType.MOCK.value){
+                ApiResult<InterviewerInfoVo> interviewerInfoVo = mockService.getInterviewerInfo(
+                        String.valueOf(recommend.getObjectId()));
+                if(interviewerInfoVo == null || interviewerInfoVo.getData() == null){
+                    continue;
+                }
+                recommendVo.setObject(interviewerInfoVo.getData());
             }
             recommendVoList.add(recommendVo);
         }
@@ -126,4 +145,52 @@ public class RecommendService {
         return pageResult;
     }
 
+    /**
+     * 上升
+     * @param id
+     */
+    public void moveUp(Integer id){
+        Recommend recommend1 = recommendMapper.selectByPrimaryKey(id);
+        if(recommend1 == null){
+            throw new ServiceException(ApiCode.INVALID_PARAM);
+        }
+        Recommend options = new Recommend();
+        options.setPosition(recommend1.getPosition());
+        options.setObjectType(recommend1.getObjectType());
+        Recommend recommend2 = recommendMapper.selectPrePosition(options);
+        if(recommend2 != null){
+            swapPosition(recommend1,recommend2);
+        }
+    }
+
+    /**
+     * 下降
+     * @param id
+     */
+    public void moveDown(Integer id){
+        Recommend recommend1 = recommendMapper.selectByPrimaryKey(id);
+        if(recommend1 == null){
+            throw new ServiceException(ApiCode.INVALID_PARAM);
+        }
+        Recommend options = new Recommend();
+        options.setPosition(recommend1.getPosition());
+        options.setObjectType(recommend1.getObjectType());
+        Recommend recommend2 = recommendMapper.selectNextPosition(options);
+        if(recommend2 != null){
+            swapPosition(recommend1,recommend2);
+        }
+    }
+
+    /**
+     * 交换两个推荐信息位置
+     * @param recommend1
+     * @param recommend2
+     */
+    private void swapPosition(Recommend recommend1,Recommend recommend2){
+        Integer tempPosition = recommend1.getPosition();
+        recommend1.setPosition(recommend2.getPosition());
+        recommend2.setPosition(tempPosition);
+        recommendMapper.updateByPrimaryKeySelective(recommend1);
+        recommendMapper.updateByPrimaryKeySelective(recommend2);
+    }
 }
