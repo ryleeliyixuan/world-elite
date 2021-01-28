@@ -12,7 +12,7 @@
                 <div class="button-container" @click="onMyActivity">
                     <el-image class="image" :src="require('@/assets/activity/1.png')" fit="scale-down"></el-image>
                     <div class="text-container">
-                        <div class="text-major">我报名的活动</div>
+                        <div class="text-major">报名和关注的活动</div>
                         <div class="text-minor">点击查看更多</div>
                     </div>
                 </div>
@@ -53,9 +53,20 @@
                 <div class="filter-item" v-if="listQuery.form!==0">
                     <div class="filter-title">活动城市：</div>
                     <div class="filter">
-                        <div :class="[{'selected':item.value===listQuery.cityIds},'select-item']" v-for="item in cityList" @click="onCity(item)" :key="item.id">
+                        <div :class="[{'selected':item.selected},'select-item']" v-for="item in cityList" @click="onCity(item)" :key="item.id">
                             {{item.name}}
                         </div>
+                        <el-autocomplete class="search-city"
+                                         v-model="searchCityWord"
+                                         :fetch-suggestions="searchCity"
+                                         placeholder="输入国内外城市名，支持多个"
+                                         value-key="name"
+                                         :trigger-on-focus="false"
+                                         @select="citySelect">
+                            <div slot="suffix" class="search-button">
+                                搜索
+                            </div>
+                        </el-autocomplete>
                     </div>
                 </div>
                 <div class="filter-item">
@@ -136,6 +147,7 @@
 <script>
     import Pagination from "@/components/Pagination2";
     import approve from "@/components/activity/ApproveDialog";
+    import {getCityByName} from "@/api/city_api";
 
     export default {
         name: "ActivityListPage",
@@ -147,6 +159,7 @@
 
                 formList: [{id: 0, name: '线上'}, {id: 1, name: '线下'}], // 活动形式列表
                 cityList: [], // 活动城市列表
+                searchCityWord: undefined, // 搜索城市关键字
                 statusList: [{id: 3, name: '即将开始'}, {id: 4, name: '报名中'},
                     {id: 5, name: '进行中'}, {id: 6, name: '已结束'}], // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束
                 timeList: [], // 活动时间列表
@@ -155,7 +168,7 @@
                 listQuery: {
                     keyword: undefined, // 搜索关键字
                     form: undefined, // 活动形式
-                    cityIds: undefined, // 城市ID 线上国内=999992; 线上国外=999993
+                    cityIds: undefined, // 城市ID
                     status: undefined, // 活动状态
                     timeId: undefined, // 活动时间
                     sort: "desc", // 降序
@@ -196,7 +209,14 @@
 
                 // 活动城市
                 this.$axios.get("/dict/list", {params: {type: 23, limit: 99, sort: '+id'}}).then(data => {
-                    this.cityList = data.data.list;
+                    if (this.listQuery.cityIds) {
+                        let cityIds = this.listQuery.cityIds.split(",");
+                        this.cityList = data.data.list.map(item => {
+                            item.selected = cityIds.includes(item.value)
+                        })
+                    } else {
+                        this.cityList = data.data.list;
+                    }
                 })
 
                 // 活动城市
@@ -221,7 +241,7 @@
                 this.$router.push(`/activity/${activity.id}`);
             },
 
-            // 我报名的活动
+            // 报名和关注的活动
             onMyActivity() {
                 this.$router.push('/my-activities');
             },
@@ -261,18 +281,38 @@
                 } else {
                     this.listQuery.form = item.id;
                 }
-                this.listQuery.cityIds = undefined;
+                this.cityList.forEach(item => {
+                    item.selected = false;
+                })
                 this.handleFilter();
             },
 
             // 活动城市
             onCity(item) {
-                if (this.listQuery.cityIds === item.value) {
-                    this.listQuery.cityIds = undefined;
-                } else {
-                    this.listQuery.cityIds = item.value;
-                }
+                this.$set(item, "selected", !item.selected);
                 this.handleFilter();
+            },
+
+            // 搜索城市
+            searchCity(keyword, cb) {
+                if (!keyword || keyword.length < 1) {
+                    return;
+                }
+                getCityByName(keyword).then((response) => {
+                    console.log(response.data);
+                    cb(response.data);
+                });
+            },
+
+            // 搜索城市选择
+            citySelect(city) {
+                if (this.cityList.findIndex(item => item.id === city.id) < 0) {
+                    this.cityList.push({name: city.name, id: city.id, selected: true, value: city.id})
+                    this.searchCityWord = undefined;
+                    this.handleFilter();
+                } else {
+                    this.$message.warning("重复添加");
+                }
             },
 
             // 活动状态
@@ -335,6 +375,7 @@
             // 加载数据
             getList() {
                 this.listQuery.keyword = this.$route.query.searchWord;
+                this.listQuery.cityIds = this.cityList.filter(item => item.selected).map(item => item.value).join(",");
                 this.$storage.setData(this.$options.name, this.listQuery);
                 this.loading = true;
                 this.$axios.get("/activity/list", {params: this.listQuery}).then(response => {
@@ -418,7 +459,7 @@
             .filter-container {
                 width: 100%;
                 margin-top: 31px;
-                padding: 22px 39px;
+                padding: 22px 23px 22px 39px;;
 
                 .filter-name {
                     margin-bottom: 20px;
@@ -468,7 +509,8 @@
 
                         .select-item {
                             margin-top: 4px;
-                            width: 86px;
+                            min-width: 86px;
+                            padding: 0 10px;
                             height: 25px;
                             background: #F5F5F5;
                             border-radius: 17px;
@@ -485,6 +527,34 @@
                             border: 1px solid #698EC7;
                             background: #F4F5F8;
                             color: #698EC7;
+                        }
+
+                        .search-city {
+                            margin-top: 4px;
+                            margin-right: 16px;
+
+                            ::v-deep .el-input__inner {
+                                width: 290px;
+                                height: 29px;
+                                background: #FFFFFF;
+                                border-radius: 18px;
+                                border: 1px solid #CFD8DC;
+                                display: flex;
+                                align-items: center;
+                            }
+
+                            .search-button {
+                                width: 82px;
+                                height: 24px;
+                                background: #4895EF;
+                                box-shadow: 0 3px 3px 0 #A7C7F8;
+                                border-radius: 18px;
+                                font-size: 14px;
+                                color: #FFFFFF;
+                                line-height: 24px;
+                                text-align: center;
+                                margin-top: 2px;
+                            }
                         }
                     }
                 }
