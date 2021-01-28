@@ -598,6 +598,14 @@ public class JobService extends BaseService {
         if (includeCompany) {
             jobVo.setCompanyUser(companyService.getCompanyUser(job.getCreatorId()));
         }
+        Byte favorite = 0;
+        if(curUser() != null){
+            Boolean isFavorite = favoriteService.checkUserFavorite(curUser().getId(),FavoriteType.JOB);
+            if(isFavorite){
+                favorite = 1;
+            }
+        }
+        jobVo.setFavoriteFlag(favorite);
         return jobVo;
     }
 
