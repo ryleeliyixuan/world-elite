@@ -22,10 +22,10 @@
     select count(*) from t_questionnaire_template where user_id = #{userId}
   </select>
 
-  <select id="selectByTemplateName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByTemplateName" parameterType="com.worldelite.job.entity.QuestionnaireTemplate" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_questionnaire_template
-    where template_name = #{templateName} or template_name like concat(#{templateName},'（%）')
+    where template_name = #{templateName} or template_name like concat(#{templateName},'（%）') and user_id = #{userId}
   </select>
 </mapper>
