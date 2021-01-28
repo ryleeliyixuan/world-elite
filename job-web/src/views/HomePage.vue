@@ -86,59 +86,101 @@
       </el-tooltip>
     </div>
     <!-- 导航栏 ends -->
-    <div class="section1-container">
-      <el-carousel :interval="2500" arrow="always">
-        <el-carousel-item v-for="banner in banners" :key="banner.img">
+    <!-- 轮播图 starts -->
+    <div style="display: flex">
+      <div class="section1-container">
+        <el-carousel :interval="2500" arrow="always">
+          <el-carousel-item v-for="banner in banners" :key="banner.img">
+            <el-image
+                    class="section1-image"
+                    :src="banner.img"
+                    :alt="banner.alt"
+                    v-on:click="select(banner)"
+                    fit="cover"
+            ></el-image>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+      <div>
+        <div class="left-company-wiki" v-for="companyWiki in companywikis" :key="companyWiki.img">
           <el-image
-            class="section1-image"
-            :src="banner.img"
-            :alt="banner.alt"
-            v-on:click="select(banner)"
-            fit="cover"
+                  class="company-wiki-img"
+                  :src="companyWiki.img"
+                  :alt="companyWiki.alt"
+                  v-on:click="select(companyWiki)"
+                  fit="cover"
           ></el-image>
-        </el-carousel-item>
-      </el-carousel>
+        </div>
+        <div class="left-activity" v-for="activity in activitys" :key="activity.img">
+          <el-image
+                  class="activity-img"
+                  :src="activity.img"
+                  :alt="activity.alt"
+                  v-on:click="select(activity)"
+                  fit="cover"
+          ></el-image>
+        </div>
+      </div>
     </div>
+    <!-- 轮播图 ends -->
+    <!-- 关于我们 starts -->
+    <div class="about-us">
+      <svg-icon
+              icon-class="about-us"
+              style="height: 334px;width: 1239px"
+      ></svg-icon>
+    </div>
+    <!-- 关于我们 ends -->
+    <!-- 职位精选 starts -->
     <div class="job-recommend-box">
-      <h3 class="main-title">职位精选</h3>
+      <h3 class="header text-center">职位精选</h3>
+      <div class="subheader text-center">HOT JOBS</div>
+      <div class="title"><span>“WE内推”全职岗位推荐</span></div>
       <div class="recommend-job-container">
         <div
-          class="job-item-container"
-          v-for="recommendJob in recommendJobList"
+          class="job-card"
+          v-for="recommendJob in recommendPracticeList"
           :key="recommendJob.id"
         >
-          <el-card
-            shadow="hover"
-            class="link-pointer job-card"
-            v-if="recommendJob.object"
-          >
-            <div class="company-card-inner">
-              <el-link
-                :href="`/job/${recommendJob.object.id}`"
-                :underline="false"
-              >
-                <h6 style="display: flex; align-items: center">
-                  <span class="job-name">{{ recommendJob.object.name }}</span>
-                  <span class="job-salary">{{
-                    recommendJob.object.salary.name
-                  }}</span>
-                </h6>
-                <div class="text-gray text-small">
-                  {{
-                    `${
-                      recommendJob.object.city
-                        ? recommendJob.object.city.name
-                        : ""
-                    } /
-                                    ${
-                                      recommendJob.object.minDegree
-                                        ? recommendJob.object.minDegree.name
-                                        : ""
-                                    }`
-                  }}
+            <el-link
+              :href="`/job/${recommendJob.object.id}`"
+              :underline="false"
+            >
+            <div class="job-section1">
+              <span class="job-name">{{ recommendJob.object.name }}</span>
+              <span class="job-salary">{{recommendJob.object.salary.name}}</span>
+              <el-button
+                      circle
+                      class="flag"
+                      :style="
+                  recommendJob.object.favoriteFlag === 1
+                    ? `background: #ff3d00`
+                    : `background: #FFFFFF;`
+                "
+                      @click.native.prevent="
+                  handleFavorite(recommendJob.object.id, recommendJob.object.favoriteFlag)
+                "
+                      @mouseenter.native.prevent="MouseInFav(recommendJob)"
+                      @mouseleave.native.prevent="MouseOutFav(recommendJob)"
+              ><svg-icon
+                      :icon-class="
+                    recommendJob.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
+                  "
+                      style="height: 10px; width: 11px"
+              /></el-button>
+            </div>
+                <div class="job-city">
+                  <span class="job-city-text">
+                    {{recommendJob.object.city ? recommendJob.object.city.name : ""}}
+                  </span>
+                  <span class="job-minDegree">
+                    {{recommendJob.object.minDegree ? recommendJob.object.minDegree.name : ""}}
+                  </span>
+                  <span>
+                    {{recommendJob.object.experience ? recommendJob.object.experience.name:""}}
+                  </span>
                 </div>
               </el-link>
-
               <el-divider></el-divider>
               <el-link
                 :href="`/company/${recommendJob.object.companyUser.company.id}`"
@@ -149,42 +191,120 @@
                 "
               >
                 <div class="job-company-container">
-                  <el-image
-                    class="company-logo"
-                    :src="recommendJob.object.companyUser.company.logo"
-                  ></el-image>
                   <div class="company-info">
                     <div class="company-name">
                       {{ recommendJob.object.companyUser.company.name }}
                     </div>
+                    <div style="display: flex">
                     <div class="text-gray text-small company-tag">
-                      {{
-                        recommendJob.object.companyUser.company.industry
-                          ? recommendJob.object.companyUser.company.industry
-                              .name
-                          : ""
-                      }}
-                      /
-                      {{
-                        recommendJob.object.companyUser.company.stage
-                          ? recommendJob.object.companyUser.company.stage.name
-                          : ""
-                      }}
-                      /
-                      {{
-                        recommendJob.object.companyUser.company.scale
-                          ? recommendJob.object.companyUser.company.scale.name
-                          : ""
-                      }}
+                      {{recommendJob.object.companyUser.company.property
+                        ? recommendJob.object.companyUser.company.property.name : "" }}
+                      |
+                      {{recommendJob.object.companyUser.company.industry
+                        ? recommendJob.object.companyUser.company.industry.name : "" }}
+                      |
+                      {{recommendJob.object.companyUser.company.scale
+                        ? recommendJob.object.companyUser.company.scale.name : "" }}
+                    </div>
+<!--                      <div>-->
+<!--                        <el-image-->
+<!--                                class="company-logo"-->
+<!--                                :src="recommendJob.object.companyUser.company.logo"-->
+<!--                        ></el-image>-->
+<!--                      </div>-->
                     </div>
                   </div>
+
                 </div>
               </el-link>
-            </div>
-          </el-card>
         </div>
       </div>
+      <div class="title"><span>“WE内推”每日实习岗位推荐</span></div>
+      <div class="recommend-job-container">
+        <div
+                class="job-card"
+                v-for="recommendJob in recommendFullTimeList"
+                :key="recommendJob.id"
+        >
+          <el-link
+                  :href="`/job/${recommendJob.object.id}`"
+                  :underline="false"
+          >
+            <div class="job-section1">
+              <span class="job-name">{{ recommendJob.object.name }}</span>
+              <span class="job-salary">{{recommendJob.object.salary.name}}</span>
+              <el-button
+                      circle
+                      class="flag"
+                      :style="
+                  recommendJob.object.favoriteFlag === 1
+                    ? `background: #ff3d00`
+                    : `background: #FFFFFF;`
+                "
+                      @click.native.prevent="
+                  handleFavorite(recommendJob.object.id, recommendJob.object.favoriteFlag)
+                "
+                      @mouseenter.native.prevent="MouseInFav(recommendJob)"
+                      @mouseleave.native.prevent="MouseOutFav(recommendJob)"
+              ><svg-icon
+                      :icon-class="
+                    recommendJob.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
+                  "
+                      style="height: 10px; width: 11px"
+              /></el-button>
+            </div>
+            <div class="job-city">
+                  <span class="job-city-text">
+                    {{recommendJob.object.city ? recommendJob.object.city.name : ""}}
+                  </span>
+              <span class="job-minDegree">
+                    {{recommendJob.object.minDegree ? recommendJob.object.minDegree.name : ""}}
+                  </span>
+              <span>
+                    {{recommendJob.object.experience ? recommendJob.object.experience.name:""}}
+                  </span>
+            </div>
+          </el-link>
+          <el-divider></el-divider>
+          <el-link
+                  :href="`/company/${recommendJob.object.companyUser.company.id}`"
+                  :underline="false"
+                  v-if="
+                  recommendJob.object.companyUser &&
+                  recommendJob.object.companyUser.company
+                "
+          >
+            <div class="job-company-container">
+              <!--                  <el-image-->
+              <!--                    class="company-logo"-->
+              <!--                    :src="recommendJob.object.companyUser.company.logo"-->
+              <!--                  ></el-image>-->
+              <div class="company-info">
+                <div class="company-name">
+                  {{ recommendJob.object.companyUser.company.name }}
+                </div>
+                <div class="text-gray text-small company-tag">
+                  {{recommendJob.object.companyUser.company.property
+                  ? recommendJob.object.companyUser.company.property.name : "" }}
+                  |
+                  {{recommendJob.object.companyUser.company.industry
+                  ? recommendJob.object.companyUser.company.industry.name : "" }}
+                  |
+                  {{recommendJob.object.companyUser.company.scale
+                  ? recommendJob.object.companyUser.company.scale.name : "" }}
+                </div>
+              </div>
+            </div>
+          </el-link>
+        </div>
+      </div>
+      <div class="text-center" style="margin-top: 30px">
+        <el-link class="more" type="info" @click="moreJob"
+        >查看更多内推职位</el-link
+        >
+      </div>
     </div>
+    <!-- 职位精选 ends -->
     <!-- 企业百科 starts -->
     <div class="company-recommend-box">
       <div class="header text-center">企业百科</div>
@@ -399,31 +519,38 @@ export default {
     return {
       recommendCompanyList: [],
       recommendJobList: [],
+      recommendPracticeList:[],
+      recommendFullTimeList:[],
       recentJobList: [],
       filteredActivityList: [],
       activitylist: [],
       homeConfig: {},
+      companywikis:[{
+                  img: require("../assets/banner/company-wiki.jpeg"),
+                  alt: "企业百科",
+                  url: "http://www.myworldelite.com/wiki-card",
+                }],
+      activitys:[{
+        img: require("../assets/banner/acticity.jpeg"),
+        alt: "活动",
+        url: "http://www.myworldelite.com/activity-list",
+      }],
       banners: [
         {
-          img: require("../assets/banner/xiaomi1.jpg"),
-          alt: "小米未来星项目招聘",
-          url: "http://www.myworldelite.com/mi",
+          img: require("../assets/banner/wetalk.jpeg"),
+          alt: "wetalk",
+          url: "",
         },
         {
-          img: require("../assets/banner/vip1.jpg"),
-          alt: "唯品会2021校园招聘",
+          img: require("../assets/banner/world-elite.jpeg"),
+          alt: "world-elite",
           url:
-            "https://recruitment.corp.vipshop.com/wt/VIPS/web/index?brandCode=186838262#/",
+            "http://www.myworldelite.com/register",
         },
         {
-          img: require("../assets/banner/qunar1.jpg"),
-          alt: "去哪儿2021校园招聘",
-          url: "https://app.mokahr.com/campus_apply/qunar/4207#/",
-        },
-        {
-          img: require("../assets/banner/kuaishou1.jpg"),
-          alt: "快手2021校园招聘",
-          url: "https://campus.kuaishou.cn/recruit/campus/e/#/campus/index/",
+          img: require("../assets/banner/career.jpeg"),
+          alt: "we内推",
+          url: "http://www.myworldelite.com/job-list",
         },
       ],
     };
@@ -446,6 +573,14 @@ export default {
         sort: "+position",
       }).then((response) => {
         this.recommendJobList = response.data.list;
+        for (const item of this.recommendJobList){
+          console.log(item.object.jobType.name)
+          if (item.object.jobType.name=="实习"){
+            this.recommendPracticeList.push(item)//实习岗位
+          }else if (item.object.jobType.name=='全职'){
+            this.recommendFullTimeList.push(item)//全职岗位
+          }
+        }
       });
       this.$axios
         .get("/activity/list", { params: { sortField: "follower" } })
@@ -470,6 +605,12 @@ export default {
         ? (company.object.favoriteFlag = 0)
         : (company.object.favoriteFlag = 1);
       console.log("-----", company.object.favoriteFlag);
+    },
+    MouseInFav(recommendJob) {
+      recommendJob.object.favoriteFlag === 1
+              ? (recommendJob.object.favoriteFlag = 0)
+              : (recommendJob.object.favoriteFlag = 1);
+      console.log("==", recommendJob.object.favoriteFlag);
     },
     MouseOutFav() {
       this.initData();
@@ -498,6 +639,9 @@ export default {
     },
     moreCompanyWiki() {
       this.$router.push("/wiki-card");
+    },
+    moreJob() {
+      this.$router.push("/job-list");
     },
     moreActivity() {
       this.$router.push("/activity-list");
@@ -590,16 +734,53 @@ export default {
   .section1-container {
     max-width: 1200px;
     max-height: 600px;
-    height: 50vw;
+    height: 424px;
     width: calc(100vw - 20px);
     margin: 0 auto 30px;
+    .section1-image{
+      width: 779px;
+      height: 424px;
+      /*.el-image {*/
+      /*  position: relative;*/
+      /*  display: inline-block;*/
+      /*  overflow: hidden;*/
+      /*  width: 779px;*/
+      /*  height: 424px;*/
+      /*}*/
+    }
+    /deep/.el-carousel__indicators--horizontal {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
     .el-carousel {
       height: 100%;
+      width: 774px;
 
       /deep/ .el-carousel__container {
         height: 100%;
       }
+
+    }
+  }
+  .left-company-wiki{
+    width: 405px;
+    height: 202px;
+    background: #FFFFFF;
+    .company-wiki-img{
+      width: 405px;
+      height: 202px;
+    }
+  }
+  .left-activity{
+    width: 405px;
+    height: 202px;
+    margin-top: 20px;
+    background: #FFFFFF;
+    .activity-img{
+      width: 405px;
+      height: 202px;
     }
   }
 
@@ -624,16 +805,20 @@ export default {
       cursor: pointer;
     }
   }
+  .about-us{
+    width: 1239px;
+    height: 334px;
+    margin-left: -19px;
+    margin-top: -20px;
+  }
 
   .company-recommend-box {
     padding: 25px 55px 47px 55px;
     background: #ffffff;
     box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
     margin-bottom: 31px;
-
     .company-container {
       display: flex;
-
       .company-card {
         padding: 12px 13px 23px 16px;
         width: 340px;
@@ -827,6 +1012,18 @@ export default {
   }
 
   .job-recommend-box {
+    padding: 25px 55px 47px 55px;
+    background: #ffffff;
+    box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
+    margin-bottom: 31px;
+    .more {
+      font-size: 14px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #999999;
+      line-height: 20px;
+      text-decoration: underline;
+    }
     .main-title {
       margin-bottom: 40px;
       color: #333;
@@ -834,68 +1031,121 @@ export default {
     }
 
     .recommend-job-container {
-      max-width: 1140px;
-      margin: 0 auto;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-
-      .job-item-container {
-        padding: 10px;
-
         .job-card {
-          border: none;
-          text-align: center;
+          padding: 12px 13px 23px 16px;
+          width: fit-content;
+          height: 165px;
+          background: linear-gradient(135deg, #f9fbfd 0%, #ddecfd 100%);
+          cursor: pointer;
+          margin-right: 35px;
+          .job-section1{
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            .job-name {
+              font-size: 18px;
+              font-family: PingFangSC-Semibold, PingFang SC;
+              font-weight: 600;
+              color: #333333;
+            }
+            .job-salary {
+              font-size: 16px;
+              font-family: PingFangSC-Semibold, PingFang SC;
+              font-weight: 600;
+              color: #FF5A59;
+              margin-left: 55px;
+              margin-top: 4px;
+              margin-right: 13px;
+            }
+            /deep/.el-button {
+              margin-top: 4px;
+              height: 21px;
+              width: 21px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+
+              span {
+                display: flex;
+              }
+            }
+          }
+          .job-city{
+            font-size: 16px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #546E7A;
+            line-height: 3px;
+            .job-city-text{
+              padding-right: 20px;
+            }
+            .job-minDegree{
+              padding-right: 30px;
+            }
+          }
 
           .company-card-inner {
             width: 317px;
-            .job-name {
-              display: inline-block;
-              max-width: 240px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
+
 
             .job-salary {
               color: #dc3545;
               margin-left: 4px;
             }
 
-            .job-company-container {
-              display: flex;
-              align-items: center;
 
-              .company-logo {
-                width: 50px;
-                height: 50px;
+          }
+          .job-company-container {
+            display: flex;
+            align-items: center;
+            margin-top: -10px;
+
+            .company-logo{
+              width: 108px;
+              height: 36px;
+              margin-top: -9px;
+              margin-left: 10px;
+
+            }
+
+            .company-info {
+              margin-left: 5px;
+              display: block;
+              flex-direction: column;
+              align-items: center;
+              flex: 1;
+
+              .company-name {
+                margin-bottom: 4px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: 14px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #546E7A;
+                line-height: 20px;
+                height: 20px;
               }
 
-              .company-info {
-                margin-left: 5px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                flex: 1;
-
-                .company-name {
-                  margin-bottom: 4px;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                }
-
-                .company-tag {
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                }
+              .company-tag {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                height: 17px;
+                font-size: 12px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #999999;
+                line-height: 17px;
               }
             }
           }
+
         }
       }
-    }
+
   }
 }
 
