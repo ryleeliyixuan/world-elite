@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.RecommendMapper">
-<cache-ref namespace="com.worldelite.job.mapper.RecommendMapper"/>
+<!--<cache-ref namespace="com.worldelite.job.mapper.RecommendMapper"/>-->
   <select id="selectAndList" parameterType="com.worldelite.job.entity.Recommend" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -14,11 +14,65 @@
         and object_type = #{objectType,jdbcType=TINYINT}
       </if>
     </where>
+    order by `position` asc
   </select>
 
   <select id="selectRecentJobCompanyId" resultType="java.lang.Long">
     select distinct recent.company_id from (
       select company_id,create_time from t_job group by company_id,create_time order by create_time desc
     ) recent
+  </select>
+
+  <!--  获取指定条件下最大的序号-->
+  <select id="selectMaxPosition" parameterType="com.worldelite.job.entity.Recommend" resultType="java.lang.Integer">
+    select
+    max(`position`)
+    from t_recommend
+    <where>
+      <if test="objectId != null">
+        and object_id = #{objectId,jdbcType=BIGINT}
+      </if>
+      <if test="objectType != null">
+        and object_type = #{objectType,jdbcType=TINYINT}
+      </if>
+    </where>
+  </select>
+
+  <!--  获取指定条件下上一个序号对应的推荐对象-->
+  <select id="selectPrePosition" parameterType="com.worldelite.job.entity.Recommend" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_recommend
+    <where>
+      <if test="objectId != null">
+        and object_id = #{objectId,jdbcType=BIGINT}
+      </if>
+      <if test="objectType != null">
+        and object_type = #{objectType,jdbcType=TINYINT}
+      </if>
+      <if test="position != null">
+        and `position` &lt; #{position}
+      </if>
+    </where>
+    order by `position` desc limit 1
+  </select>
+
+  <!--  获取指定条件下下一个序号对应的推荐对象-->
+  <select id="selectNextPosition" parameterType="com.worldelite.job.entity.Recommend" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_recommend
+    <where>
+      <if test="objectId != null">
+        and object_id = #{objectId,jdbcType=BIGINT}
+      </if>
+      <if test="objectType != null">
+        and object_type = #{objectType,jdbcType=TINYINT}
+      </if>
+      <if test="position != null">
+        and `position` &gt; #{position}
+      </if>
+    </where>
+    order by `position` asc limit 1
   </select>
 </mapper>

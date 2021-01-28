@@ -56,4 +56,10 @@ public interface RecommendMapper {
     List<Recommend> selectAndList(Recommend options);
 
     List<Long> selectRecentJobCompanyId();
+
+    Integer selectMaxPosition(Recommend options);
+
+    Recommend selectPrePosition(Recommend options);
+
+    Recommend selectNextPosition(Recommend options);
 }

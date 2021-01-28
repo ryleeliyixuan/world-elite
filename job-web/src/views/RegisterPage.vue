@@ -21,6 +21,7 @@
                   class="item-input"
                   required
                   :placeholder="$t('login_email')"
+                  auto-complete="new-password"
                 ></el-input>
               </div>
               <div class="input short">
@@ -28,6 +29,7 @@
                 <el-input
                   size="medium"
                   v-model="form.validCode"
+                  auto-complete="new-password"
                   required
                   :placeholder="$t('email_valid_code')"
                   ><el-button
@@ -53,6 +55,7 @@
                   v-model="form.password"
                   type="password"
                   @input="showPasswordRuleTip = true"
+                  auto-complete="new-password"
                   required
                   :placeholder="$t('login_password')"
                 ></el-input>
@@ -64,6 +67,7 @@
                   v-model="form.newPassword"
                   placeholder="确认密码"
                   type="password"
+                  auto-complete="new-password"
                 ></el-input>
               </div>
               <!-- <div class="mt-4 mb-4">
@@ -170,6 +174,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+/deep/ .el-button{
+  border: 0px;
+}
+
+
 .app-container {
   max-width: 1200px;
   .bold {

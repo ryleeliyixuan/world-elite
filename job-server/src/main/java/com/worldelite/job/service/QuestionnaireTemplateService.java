@@ -206,7 +206,10 @@ public class QuestionnaireTemplateService extends BaseService{
      * @param templateName
      */
     private String getRepeatTemplateName(Long userId,String templateName){
-        List<QuestionnaireTemplate> templateList = questionnaireTemplateMapper.selectByTemplateName(templateName);
+        QuestionnaireTemplate options = new QuestionnaireTemplate();
+        options.setUserId(userId);
+        options.setTemplateName(templateName);
+        List<QuestionnaireTemplate> templateList = questionnaireTemplateMapper.selectAndList(options);
         if(CollectionUtils.isNotEmpty(templateList)){
             for(int i=1;i<=templateList.size();i++){
                 if(!containsTemplateName(templateList,templateName+"（"+i+"）")){
