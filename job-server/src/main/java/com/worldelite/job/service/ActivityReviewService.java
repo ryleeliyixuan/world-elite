@@ -8,6 +8,7 @@ import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityReview;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
+import com.worldelite.job.event.ActivityReviewEvent;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.ActivityReviewForm;
 import com.worldelite.job.form.PageForm;
@@ -60,6 +61,7 @@ public class ActivityReviewService extends BaseService {
 
     /**
      * 获取活动的最新的审核记录
+     *
      * @param activityId
      * @return
      */
@@ -137,6 +139,7 @@ public class ActivityReviewService extends BaseService {
             activityStatusManager.remove(activity.getId());
             activityStatusManager.put(activity);
             SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
+            SpringContextHolder.publishEvent(new ActivityReviewEvent(this, activity.getId(), VerificationStatus.PASS.value));
         }
         return b;
     }
@@ -181,7 +184,11 @@ public class ActivityReviewService extends BaseService {
         }
 
         activity.setStatus(ActivityStatus.REVIEW_FAILURE.value);
-        return activityMapper.updateByPrimaryKeySelective(activity) == 1;
+        final boolean b = activityMapper.updateByPrimaryKeySelective(activity) == 1;
+        if (b)
+            SpringContextHolder.publishEvent(new ActivityReviewEvent(this, activity.getId(), VerificationStatus.REJECT.value));
+
+        return b;
     }
 
 }
