@@ -119,7 +119,7 @@
                     <div class="brief">
                         <div class="line1">
                             <div class="title">{{item.title}}</div>
-                            <div v-if="item.city" :class="['city',{'online':item.city.id===999992 || item.city.id ===999993}]">{{item.city.name}}</div>
+                            <div v-if="item.city" :class="['city',{'online':item.city.id===3}]">{{item.city.name}}</div>
                         </div>
                         <div class="line2">
                             <div class="time">{{item.activityStartTime | timestampToDateHourMinute}}-{{item.activityFinishTime | timestampToHoursMinutes}}</div>

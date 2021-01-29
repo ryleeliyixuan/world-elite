@@ -23,7 +23,7 @@
                 </div>
                 <div class="activity-left-three">发布时间：<span class="activity-left-time">{{item.createTime | timestampToDateHourMinute}}</span></div>
             </div>
-            <div class="activity-item-right" v-if="activeMenuId===1">
+            <div class="activity-item-right" v-if="activeMenuId===1" @click="onCancelCollect(item)">
                 取消活动
             </div>
         </div>
@@ -99,6 +99,13 @@
                 this.$router.push(`/activity/${activity.id}`);
             },
 
+            // 取消关注
+            onCancelCollect(item) {
+                this.$axios.post("/favorite/favorite", {objectId: item.id, type: 3, favorite: false}).then(() => {
+                    this.getList();
+                })
+            },
+
             // 获取活动状态
             getStatus(activity) {
                 let description = "";
@@ -111,7 +118,7 @@
 
             // 加载数据
             getList() {
-                let url = this.activeMenuId === 1 ? "/favorite/my-favorite-list" : "/favorite/my-favorite-activities";
+                let url = this.activeMenuId === 1 ? "/favorite/my-favorite-activities" : "/registration/my-registration-activities";
                 this.loading = this.$loading({
                     lock: true,
                     text: 'Loading',
@@ -262,6 +269,7 @@
                 color: #FFFFFF;
                 line-height: 28px;
                 text-align: center;
+                cursor: pointer;
             }
         }
 
