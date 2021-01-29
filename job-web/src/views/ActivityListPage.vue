@@ -122,7 +122,7 @@
                             <div v-if="item.city" :class="['city',{'online':item.city.id===3}]">{{item.city.name}}</div>
                         </div>
                         <div class="line2">
-                            <div class="time">{{item.activityStartTime | timestampToDateHourMinute}}-{{item.activityFinishTime | timestampToHoursMinutes}}</div>
+                            <div class="time">{{getTime(item)}}</div>
                             <div class="count">{{item.follower}}人正在关注</div>
                         </div>
                     </div>
@@ -148,6 +148,7 @@
     import Pagination from "@/components/Pagination2";
     import approve from "@/components/activity/ApproveDialog";
     import {getCityByName} from "@/api/city_api";
+    import {timestampToDate} from "@/filters/filters"
 
     export default {
         name: "ActivityListPage",
@@ -384,6 +385,13 @@
                     this.total = response.data.total;
                 });
             },
+
+            // 处理时间
+            getTime(item) {
+                let start = timestampToDate(item.activityStartTime);
+                let finish = timestampToDate(item.activityFinishTime);
+                return start === finish ? start : start + " - " + finish;
+            }
         }
     };
 </script>
