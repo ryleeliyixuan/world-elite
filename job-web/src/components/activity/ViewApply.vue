@@ -10,10 +10,10 @@
                 <svg-icon :icon-class="index===total?'right-icon-disabled':'right-icon'" class="right-icon" clickable @click="onRight"/>
                 <div class="button button1-1" v-if="activity.auditType==='0' && applyInfo.status === 1" @click.stop="onResolve1">通过报名</div>
                 <div class="button button1-2" v-if="activity.auditType==='0' && applyInfo.status === 1" @click.stop="onReject1">不合适</div>
-                <div class="button button2-1" v-if="activity.auditType==='0' && applyInfo.status === 2" @click.stop="">已通过</div>
-                <div class="button button2-2" v-if="activity.auditType==='0' && applyInfo.status === 2" @click.stop="onReject2">不合适</div>
-                <div class="button button3-1" v-if="activity.auditType==='0' && applyInfo.status === 3" @click.stop="onResolve3">重新通过</div>
-                <div class="button button3-2" v-if="activity.auditType==='0' && applyInfo.status === 3" @click.stop="">不合适</div>
+                <div class="button button2-1" style="cursor: default;" v-if="activity.auditType==='0' && applyInfo.status === 2" @click.stop="">已通过</div>
+<!--                <div class="button button2-2" v-if="activity.auditType==='0' && applyInfo.status === 2" @click.stop="onReject2">不合适</div>-->
+<!--                <div class="button button3-1" v-if="activity.auditType==='0' && applyInfo.status === 3" @click.stop="onResolve3">重新通过</div>-->
+                <div class="button button3-2" style="cursor: default;" v-if="activity.auditType==='0' && applyInfo.status === 3" @click.stop="">不合适</div>
             </div>
             <div class="title-right">
                 <svg-icon icon-class="preview-icon" class="preview-icon" clickable v-if="activity.needResume === '1'" @click="onViewResume"/>

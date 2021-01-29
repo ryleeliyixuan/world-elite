@@ -105,10 +105,10 @@
                         <div class="button-container" style="margin-top: 13px;" v-if="activity.auditType==='0'">
                             <div class="button button1-1" v-if="item.status === 1" @click.stop="onResolve1(item)">通过报名</div>
                             <div class="button button1-2" v-if="item.status === 1" @click.stop="onReject1(item)">不合适</div>
-                            <div class="button button2-1" v-if="item.status === 2" @click.stop="">已通过</div>
-                            <div class="button button2-2" v-if="item.status === 2" @click.stop="onReject2(item)">不合适</div>
-                            <div class="button button3-1" v-if="item.status === 3" @click.stop="onResolve3(item)">重新通过</div>
-                            <div class="button button3-2" v-if="item.status === 3" @click.stop="">不合适</div>
+                            <div class="button button2-1" style="cursor: default;" v-if="item.status === 2" @click.stop="">已通过</div>
+<!--                            <div class="button button2-2" v-if="item.status === 2" @click.stop="onReject2(item)">不合适</div>-->
+<!--                            <div class="button button3-1" v-if="item.status === 3" @click.stop="onResolve3(item)">重新通过</div>-->
+                            <div class="button button3-2" style="cursor: default;" v-if="item.status === 3" @click.stop="">不合适</div>
                         </div>
                     </div>
                 </div>
@@ -355,7 +355,7 @@
             getStatus() {
                 let description = "";
                 if (this.activity.status === 5) {
-                    let number = Math.floor((activity.activityFinishTime - new Date().getTime()) / 1000 / 60 / 60 / 24);
+                    let number = Math.floor((this.activity.activityFinishTime - new Date().getTime()) / 1000 / 60 / 60 / 24);
                     description = number === 0 ? " 即将结束" : (" " + number + "天后结束");
                 }
                 return this.statusList.find(item => this.activity.status === item.id).name + description;
