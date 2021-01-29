@@ -243,7 +243,7 @@
             onViewApply(item, index, total) {
                 let data = {};
                 data.number = (this.listQuery.page - 1) * this.listQuery.limit + (index + 1);
-                data.query = this.listQuery;
+                data.query = {...this.listQuery};
                 this.selectItem = data;
                 this.viewDialogVisible = true;
             },

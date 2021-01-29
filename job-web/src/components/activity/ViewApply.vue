@@ -62,7 +62,7 @@
                 <div class="question-container" v-for="(question, index) in applyInfo.questionnaireList" :key="index">
                     <div v-if="question.type==='1'" class="question1-container">
                         <div class="question1-line1">
-                            <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                            <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                         </div>
                         <div class="question1-line2">
                             <div class="answer">{{question.answer}}</div>
@@ -70,7 +70,7 @@
                     </div>
                     <div v-else-if="question.type==='2'" class="question2-container">
                         <div class="question2-line1">
-                            <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                            <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                         </div>
                         <div class="question2-line2">
                             <div v-for="(option, index) in question.questionnaireOptions" class="option-container" :key="index">
@@ -81,7 +81,7 @@
                     </div>
                     <div v-else-if="question.type==='3'" class="question3-container">
                         <div class="question3-line1">
-                            <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                            <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                         </div>
                         <div class="question3-line2">
                             <div v-for="(option, index) in question.questionnaireOptions" class="option-container" :key="index">
@@ -92,7 +92,7 @@
                     </div>
                     <div v-else-if="question.type==='4'" class="question4-container">
                         <div class="question4-line1">
-                            <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                            <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                         </div>
                         <div class="question4-line2">
                             <el-image v-if="isPicture(question.annexUrl)" class="image" :src="question.annexUrl" fit="contain"

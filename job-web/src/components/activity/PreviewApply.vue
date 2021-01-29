@@ -55,7 +55,7 @@
             <div v-for="(question, index) in apply.questionnaireList">
                 <div v-if="question.type==='1'" class="question1-container">
                     <div class="question1-line1">
-                        <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                        <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                     </div>
                     <div class="question1-line2">
                         <el-input v-model="question.answer" size="small"></el-input>
@@ -63,7 +63,7 @@
                 </div>
                 <div v-else-if="question.type==='2'" class="question2-container">
                     <div class="question2-line1">
-                        <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                        <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                     </div>
                     <div class="question2-line2">
                         <div v-for="(option, index) in question.optionsList" class="option-container" @click="onRadioClick(question.optionsList, index)">
@@ -74,7 +74,7 @@
                 </div>
                 <div v-else-if="question.type==='3'" class="question3-container">
                     <div class="question3-line1">
-                        <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                        <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                     </div>
                     <div class="question3-line2">
                         <div v-for="(option, index) in question.optionsList" class="option-container" @click="onCheckBoxClick(question.optionsList, index)">
@@ -85,7 +85,7 @@
                 </div>
                 <div v-else-if="question.type==='4'" class="question4-container">
                     <div class="question4-line1">
-                        <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                        <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                     </div>
                     <div class="question4-line2">
                         <el-upload class="upload-button"
