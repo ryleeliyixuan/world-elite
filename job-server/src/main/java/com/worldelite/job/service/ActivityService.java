@@ -18,6 +18,8 @@ import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.ActivityTakeOffMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.mapper.RegistrationMapper;
+import com.worldelite.job.service.activity.ActivityNotifyManager;
+import com.worldelite.job.service.activity.ActivityStatusManager;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -50,6 +52,9 @@ public class ActivityService extends BaseService {
 
     @Autowired
     private ActivityStatusManager activityStatusManager;
+
+    @Autowired
+    private ActivityNotifyManager activityNotifyManager;
 
     @Autowired
     private ActivityReviewService activityReviewService;
@@ -257,6 +262,8 @@ public class ActivityService extends BaseService {
                 }
 
                 activityStatusManager.put(activity);
+                activityNotifyManager.put(activity, ActivityNotifyManager.BusinessType.ACTIVITY_START.value);
+                activityNotifyManager.put(activity, ActivityNotifyManager.BusinessType.ACTIVITY_REGISTRATION_START.value);
             }
         } else {
             activity.setUpdateTime(new Date());
@@ -283,6 +290,10 @@ public class ActivityService extends BaseService {
 
             activityStatusManager.remove(activity.getId());
             activityStatusManager.put(activity);
+
+            activityNotifyManager.remove(activity.getId());
+            activityNotifyManager.put(activity, ActivityNotifyManager.BusinessType.ACTIVITY_START.value);
+            activityNotifyManager.put(activity, ActivityNotifyManager.BusinessType.ACTIVITY_REGISTRATION_START.value);
         }
 
         SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
@@ -311,7 +322,9 @@ public class ActivityService extends BaseService {
 
             activity.setStatus(ActivityStatus.OFFLINE.value);
             activityMapper.updateByPrimaryKeySelective(activity);
+
             activityStatusManager.remove(activity.getId());
+            activityNotifyManager.remove(activity.getId());
 
             ActivityTakeOff activityTakeOff = new ActivityTakeOff();
             activityTakeOff.setActivityId(activity.getId());
@@ -337,6 +350,7 @@ public class ActivityService extends BaseService {
             if (activity.getUserId().equals(curUser().getId()) || curUser().getType() == UserType.ADMIN.value) {
                 activityMapper.deleteByPrimaryKey(id);
                 activityStatusManager.remove(activity.getId());
+                activityNotifyManager.remove(activity.getId());
 
                 SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
             } else {

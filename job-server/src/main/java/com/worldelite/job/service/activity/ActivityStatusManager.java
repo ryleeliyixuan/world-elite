@@ -1,4 +1,4 @@
-package com.worldelite.job.service;
+package com.worldelite.job.service.activity;
 
 import com.worldelite.job.constants.ActivityStatus;
 import com.worldelite.job.constants.Bool;
@@ -15,9 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Executors;
 
 /**
@@ -28,17 +26,10 @@ import java.util.concurrent.Executors;
 @Slf4j
 @Component
 @AllArgsConstructor
-public class ActivityStatusManager implements CommandLineRunner {
-    private final DelayQueue<DelayActivityInfo> delayQueue = new DelayQueue<>();
+public class ActivityStatusManager extends AbstractActivityManager implements CommandLineRunner {
     private final ActivityMapper activityMapper;
 
-    /**
-     * 加入到延时队列中
-     */
-    public void put(DelayActivityInfo delayActivityInfo) {
-        delayQueue.put(delayActivityInfo);
-    }
-
+    @Override
     public void put(Activity activity) {
         //仅对有效的活动创建索引
         if (activity.getStatus() == ActivityStatus.REVIEWING.value
@@ -65,18 +56,9 @@ public class ActivityStatusManager implements CommandLineRunner {
         put(new DelayActivityInfo(activity.getId(), 0));
     }
 
-    /**
-     * 取消延时任务
-     */
-    public boolean remove(DelayActivityInfo delayActivityInfo) {
-        return delayQueue.remove(delayActivityInfo);
-    }
-
-    /**
-     * 取消延时任务
-     */
-    public boolean remove(Integer activityId) {
-        return delayQueue.removeIf(delayActivityInfo -> delayActivityInfo.getActivityId().equals(activityId));
+    @Override
+    public void put(Activity activity, Integer type) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -89,7 +71,7 @@ public class ActivityStatusManager implements CommandLineRunner {
      */
     private void executeThread() {
 
-        loadActivityInfoOnce();
+        activityLoader();
 
         while (true) {
             try {
@@ -118,7 +100,7 @@ public class ActivityStatusManager implements CommandLineRunner {
         }
     }
 
-    private void loadActivityInfoOnce() {
+    private void activityLoader() {
         ActivityOptions options = new ActivityOptions();
         options.setDelFlag(Bool.FALSE);
         final List<Activity> activities = activityMapper.selectAndList(options);
@@ -145,23 +127,5 @@ public class ActivityStatusManager implements CommandLineRunner {
 
             put(activity);
         });
-    }
-
-    public ActivityStatus getActivityStatus(Activity activity) {
-        Date date = new Date();
-        ActivityStatus status;
-        if (date.compareTo(activity.getRegistrationStartTime()) < 0) {
-            status = ActivityStatus.WILL;
-        } else if (date.compareTo(activity.getRegistrationStartTime()) >= 0 && date.compareTo(activity.getRegistrationFinishTime()) <= 0) {
-            status = ActivityStatus.SIGN_UP;
-        } else if (date.compareTo(activity.getRegistrationFinishTime()) > 0 && date.compareTo(activity.getActivityStartTime()) < 0) {
-            status = ActivityStatus.WILL;
-        } else if (date.compareTo(activity.getActivityStartTime()) >= 0 && date.compareTo(activity.getActivityFinishTime()) <= 0) {
-            status = ActivityStatus.ACTIVE;
-        } else {
-            status = ActivityStatus.END;
-        }
-
-        return status;
     }
 }

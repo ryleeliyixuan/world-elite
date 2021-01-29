@@ -55,44 +55,10 @@ public class ActivitySearchService {
     @Resource(name = "activitySearcherManager")
     private SearcherManager searcherManager;
 
-
-    /**
-     * 刷新职位名索引
-     */
-    @SneakyThrows
-    public void createOrRefreshActivityTitleIndex() {
-        List<Document> docs = new ArrayList<>();
-        ActivityOptions options = new ActivityOptions();
-        List<Activity> activities = activityMapper.selectAndList(options);
-        activities.forEach(activity -> {
-            //仅对有效的活动创建索引
-            if (activity.getStatus() == ActivityStatus.REVIEWING.value
-                    || activity.getStatus() == ActivityStatus.REVIEW_FAILURE.value
-                    || activity.getStatus() == ActivityStatus.DRAFT.value
-                    || activity.getStatus() == ActivityStatus.OFFLINE.value
-                    || activity.getDelFlag() == Bool.TRUE) return;
-
-            Document doc = new Document();
-            doc.add(new TextField(ActivityIndexFields.ACTIVITY_TITLE, activity.getTitle(), Field.Store.YES));
-            docs.add(doc);
-        });
-
-        try {
-            indexWriter.deleteDocuments(new Term(ActivityIndexFields.ACTIVITY_TITLE));
-            indexWriter.commit();
-
-            indexWriter.addDocuments(docs);
-            indexWriter.commit();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
-
     @SneakyThrows
     public PageResult<String> searchActivityTitle(SearchNameForm searchNameForm) {
         return searchActivityTitle(searchNameForm.getKeyWords(), searchNameForm.getPage(), searchNameForm.getSize());
     }
-
 
     @SneakyThrows
     public PageResult<String> searchActivityTitle(String keyWords, int page, int size) {
@@ -103,14 +69,14 @@ public class ActivitySearchService {
             indexSearcher = searcherManager.acquire();
 
             BooleanQuery.Builder builder = new BooleanQuery.Builder();
-            builder.add(new QueryParser(ActivityIndexFields.ACTIVITY_TITLE, analyzer).parse(keyWords), BooleanClause.Occur.MUST);
+            builder.add(new QueryParser(ActivityIndexFields.TITLE, analyzer).parse(keyWords), BooleanClause.Occur.MUST);
 
             ScoreDoc lastScoreDoc = getLastScoreDoc(builder.build(), indexSearcher, page, size);
             final TopDocs topDocs = indexSearcher.searchAfter(lastScoreDoc, builder.build(), size);
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 final Document doc = indexSearcher.doc(scoreDoc.doc);
 
-                arrayList.add(doc.get(ActivityIndexFields.ACTIVITY_TITLE));
+                arrayList.add(doc.get(ActivityIndexFields.TITLE));
             }
 
             PageResult<String> pageResult = new PageResult<>();
@@ -275,7 +241,7 @@ public class ActivitySearchService {
                 builder.add(query.build(), BooleanClause.Occur.MUST);
             }
 
-            if (form.getStatus() != null && form.getStatus().length > 0){
+            if (form.getStatus() != null && form.getStatus().length > 0) {
                 for (String status : form.getStatus()) {
                     builder.add(new TermQuery(new Term(ActivityIndexFields.STATUS, status)), BooleanClause.Occur.MUST);
                 }

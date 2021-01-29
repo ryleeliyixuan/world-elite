@@ -59,7 +59,7 @@ public class FavoriteApi extends BaseApi{
     }
 
     /**
-     * 当前用户参与活动列表
+     * 当前用户关注的活动列表
      *
      * @param pageForm
      * @return

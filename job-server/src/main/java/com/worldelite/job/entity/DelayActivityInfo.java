@@ -1,13 +1,25 @@
 package com.worldelite.job.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 @Data
+@AllArgsConstructor
 public class DelayActivityInfo implements Delayed {
+    /**
+     * 活动id
+     */
     private Integer activityId;
+    /**
+     * 业务类型
+     */
+    private Integer type;
+    /**
+     * 过期时间(毫秒)
+     */
     private long expire;
 
     public DelayActivityInfo(Integer activityId, long expire) {

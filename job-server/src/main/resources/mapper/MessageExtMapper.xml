@@ -13,6 +13,12 @@
       <if test="toUser != null">
         and to_user = #{toUser,jdbcType=BIGINT}
       </if>
+      <if test="content != null">
+        and content = #{content,jdbcType=VARCHAR}
+      </if>
+      <if test="url != null">
+        and url = #{url,jdbcType=VARCHAR}
+      </if>
       <if test="readFlag != null">
         and read_flag = #{readFlag,jdbcType=TINYINT}
       </if>

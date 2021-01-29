@@ -7,7 +7,6 @@ import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.entity.Favorite;
 import com.worldelite.job.entity.Message;
 import com.worldelite.job.form.MessageListForm;
-import com.worldelite.job.form.PageForm;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.mapper.MessageMapper;
 import com.worldelite.job.util.AppUtils;
@@ -28,7 +27,7 @@ import java.util.List;
  * @author yeguozhong yedaxia.github.com
  */
 @Service
-public class MessageService extends BaseService{
+public class MessageService extends BaseService {
 
     @Autowired
     private MessageMapper messageMapper;
@@ -38,9 +37,10 @@ public class MessageService extends BaseService{
 
     /**
      * 发送站内消息
+     *
      * @param message
      */
-    public void sendMessage(Message message){
+    public void sendMessage(Message message) {
         messageMapper.insertSelective(message);
     }
 
@@ -50,8 +50,8 @@ public class MessageService extends BaseService{
      * @param listForm
      * @return
      */
-    public PageResult<MessageVo> getUserMessageList(MessageListForm listForm){
-        if(StringUtils.isEmpty(listForm.getSort())){
+    public PageResult<MessageVo> getUserMessageList(MessageListForm listForm) {
+        if (StringUtils.isEmpty(listForm.getSort())) {
             listForm.setSort("id desc");
         }
         AppUtils.setPage(listForm);
@@ -69,7 +69,7 @@ public class MessageService extends BaseService{
      *
      * @return
      */
-    public Integer getUserUnreadCount(){
+    public Integer getUserUnreadCount() {
         Message options = new Message();
         options.setToUser(curUser().getId());
         options.setReadFlag(Bool.FALSE);
@@ -81,9 +81,9 @@ public class MessageService extends BaseService{
      *
      * @param id
      */
-    public void markMessageRead(Integer id){
+    public void markMessageRead(Integer id) {
         Message message = messageMapper.selectByPrimaryKey(id);
-        if(message == null){
+        if (message == null) {
             return;
         }
         message.setReadFlag(Bool.TRUE);
@@ -94,13 +94,13 @@ public class MessageService extends BaseService{
     /**
      * 标识所有消息已读
      */
-    public void markAllRead(){
+    public void markAllRead() {
         messageMapper.setUserMessageRead(curUser().getId());
     }
 
-    public void deleteMessage(Integer id){
+    public void deleteMessage(Integer id) {
         Message message = messageMapper.selectByPrimaryKey(id);
-        if(message.getToUser().equals(curUser().getId())){
+        if (message.getToUser().equals(curUser().getId())) {
             messageMapper.deleteByPrimaryKey(id);
         }
     }
@@ -108,14 +108,14 @@ public class MessageService extends BaseService{
     /**
      * 删除所有消息
      */
-    public void deleteAllMessage(){
+    public void deleteAllMessage() {
         messageMapper.deleteUserMessages(curUser().getId());
     }
 
     /**
      * 给订阅了企业的用户发送工作消息
      */
-    public void sendJobSubscribeMessage(JobVo jobVo){
+    public void sendJobSubscribeMessage(JobVo jobVo) {
         int page = 1;
         int pageSize = 20;
         List<Favorite> favoriteList;
@@ -123,10 +123,10 @@ public class MessageService extends BaseService{
         Favorite options = new Favorite();
         options.setType(FavoriteType.COMPANY.value);
         options.setObjectId(NumberUtils.toLong(companyVo.getId()));
-        do{
+        do {
             PageHelper.startPage(page, pageSize, false);
             favoriteList = favoriteMapper.selectAndList(options);
-            for(Favorite favorite: favoriteList){
+            for (Favorite favorite : favoriteList) {
                 Message message = new Message();
                 message.setFromUser(Long.valueOf(jobVo.getCreatorId()));
                 message.setToUser(favorite.getUserId());
@@ -135,6 +135,15 @@ public class MessageService extends BaseService{
                 messageMapper.insertSelective(message);
             }
             page++;
-        }while(CollectionUtils.isNotEmpty(favoriteList));
+        } while (CollectionUtils.isNotEmpty(favoriteList));
+    }
+
+    /**
+     * 检查通知是否已发送过,防止重复发送
+     *
+     * @return true, 数据库已经有了 重复发送
+     */
+    public boolean checkNotifyIsSent(Message message) {
+        return messageMapper.selectAndList(message).size() > 0;
     }
 }
