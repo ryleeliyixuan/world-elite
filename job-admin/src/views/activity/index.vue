@@ -471,8 +471,6 @@
                         }
                         else
                             this.$message.error("下架活动失败");
-
-
                     });
                 });
             },
@@ -485,8 +483,6 @@
                     inputPattern: /^([1-9]?\d|100)$/,
                 inputErrorMessage: '权重只能是0-100的纯数字'
                 }).then(({value}) => {
-                    console.log(value);
-
                     activityWeightSetup(activityId, value).then(response  => {
                         if(response.code === 0){
                             this.getList();
