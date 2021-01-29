@@ -190,6 +190,16 @@
 
                     <span v-if="reviewStatus == -1" style="padding-left: 10px;">
                          <el-button
+                                 type="primary"
+                                 size="mini"
+                                 icon="el-icon-sort"
+                                 @click="handleActivityWeightSetUp(row.id, row.weight)"
+                                 :disabled="row.status === 2"
+                         >权重设置</el-button>
+                    </span>
+
+                    <span v-if="reviewStatus == -1" style="padding-left: 10px;">
+                         <el-button
                                  type="danger"
                                  size="mini"
                                  icon="el-icon-delete"
@@ -230,7 +240,7 @@
     import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
     import {
         activityReviewFailure,
-        activityReviewPass,
+        activityReviewPass, activityWeightSetup,
         getActivityList,
         getActivityReviewInfo,
         takeoffActivity
@@ -463,6 +473,27 @@
                             this.$message.error("下架活动失败");
 
 
+                    });
+                });
+            },
+
+            handleActivityWeightSetUp(activityId, weight){
+
+                this.$prompt("请设置活动权重,越大排名越前 -- 当前权重:"+weight, "权重设置", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    inputPattern: /^([1-9]?\d|100)$/,
+                inputErrorMessage: '权重只能是0-100的纯数字'
+                }).then(({value}) => {
+                    console.log(value);
+
+                    activityWeightSetup(activityId, value).then(response  => {
+                        if(response.code === 0){
+                            this.getList();
+                            this.$message.success("活动权重设置成功");
+                        }
+                        else
+                            this.$message.error("活动权重设置失败");
                     });
                 });
             },

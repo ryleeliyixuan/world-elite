@@ -102,3 +102,11 @@ export function updateReport(data) {
         data
     })
 }
+
+export function activityWeightSetup(id, weight) {
+    return request({
+        url: '/activity/weight',
+        method: 'patch',
+        params: {id: id, weight: weight}
+    })
+}
