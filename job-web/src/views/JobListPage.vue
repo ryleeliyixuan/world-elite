@@ -1012,7 +1012,7 @@
       },
       onOrderSalary() {
         this.listQuery.salaryAsc = 0;
-        this.listQuery.limit = 10;
+        // this.listQuery.limit = 10;
         this.listQuery.sort = undefined;
         this.$axios
                 .post("/job/search-job-order-by-salary", this.listQuery)
