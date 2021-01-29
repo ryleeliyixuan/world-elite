@@ -185,6 +185,20 @@ public class ActivityApi extends BaseApi {
     }
 
     /**
+     * 活动权重设置
+     *
+     * @param id     活动id
+     * @param weight 权重值
+     * @return
+     */
+    @RequireLogin(allow = UserType.ADMIN)
+    @PatchMapping("weight")
+    public ApiResult weightSetup(@RequestParam Integer id, Integer weight) {
+        final boolean b = activityService.weightSetup(id, weight);
+        return b ? ApiResult.ok() : ApiResult.fail("");
+    }
+
+    /**
      * Nuo Xu
      *
      * @param searchNameForm
