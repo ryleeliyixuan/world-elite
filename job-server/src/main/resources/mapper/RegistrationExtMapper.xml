@@ -12,6 +12,9 @@
       <if test="activityId != null">
         and activity_id = #{activityId}
       </if>
+      <if test="registrationUserId != null">
+        and registration_user_id = #{registrationUserId}
+      </if>
       <if test="keywords != null and keywords != ''">
         and (name like concat('%',#{keywords},'%'))
       </if>

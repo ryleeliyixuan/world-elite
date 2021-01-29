@@ -141,7 +141,18 @@ public class ActivityService extends BaseService {
         StringBuilder where = new StringBuilder();
         where.append("id in (select object_id from t_favorite where type = 3 and user_id = ").append(userId).append(")");
         where.append(" and status in (").append(StringUtils.join(pageForm.getStatus(), ",")).append(")");
+        return getSimpleActivity(userId,pageForm,where.toString());
+    }
 
+    public PageResult<ActivityVo> getRegistrationSimpleActivity(Long userId,ActivityListForm pageForm){
+        //根据不同状态构建查询SQL
+        StringBuilder where = new StringBuilder();
+        where.append("id in (select activity_id from t_registration where del_flag = 0 and registration_user_id = ").append(userId).append(")");
+        where.append(" and status in (").append(StringUtils.join(pageForm.getStatus(), ",")).append(")");
+        return getSimpleActivity(userId,pageForm,where.toString());
+    }
+
+    private PageResult<ActivityVo> getSimpleActivity(Long userId,ActivityListForm pageForm,String where){
         AppUtils.setPage(pageForm);
         Page<Activity> page = (Page<Activity>) activityMapper.selectSimpleByIdAndStatus(where.toString());
         PageResult<ActivityVo> pageResult = new PageResult<>(page);

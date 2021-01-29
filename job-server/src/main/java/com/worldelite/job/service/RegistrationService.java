@@ -2,15 +2,16 @@ package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
+import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.constants.RegistrationStatus;
 import com.worldelite.job.context.SpringContextHolder;
+import com.worldelite.job.entity.Favorite;
 import com.worldelite.job.entity.Registration;
 import com.worldelite.job.entity.RegistrationOptions;
 import com.worldelite.job.event.ActivityRegistrationEvent;
 import com.worldelite.job.exception.ServiceException;
-import com.worldelite.job.form.QuestionnaireAnswerForm;
-import com.worldelite.job.form.RegistrationForm;
-import com.worldelite.job.form.RegistrationListForm;
+import com.worldelite.job.form.*;
+import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.mapper.RegistrationMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
@@ -47,6 +48,9 @@ public class RegistrationService extends BaseService {
 
     @Autowired
     private DictService dictService;
+
+    @Autowired
+    private FavoriteMapper favoriteMapper;
 
     @Transactional
     public void addRegistration(RegistrationForm registrationForm) {
@@ -231,5 +235,45 @@ public class RegistrationService extends BaseService {
         }
 
         SpringContextHolder.publishEvent(new ActivityRegistrationEvent(this, id, RegistrationStatus.INAPPROPRIATE.value));
+    }
+
+    /**
+     * 获取我报名的活动
+     * @param pageForm
+     * @return
+     */
+    public PageResult<ActivityVo> getMyRegistrationActivityByStatus(ActivityListForm pageForm){
+        return activityService.getRegistrationSimpleActivity(curUser().getId(),pageForm);
+    }
+
+    /**
+     * 获取用户报名的活动列表
+     *
+     * @param pageForm
+     * @return
+     */
+    public PageResult<ActivityVo> getMyRegistrationActivity(PageForm pageForm) {
+        RegistrationOptions options = new RegistrationOptions();
+        options.setRegistrationUserId(curUser().getId());
+        AppUtils.setPage(pageForm);
+        Page<Registration> page = (Page<Registration>) registrationMapper.selectAndList(options);
+        PageResult<ActivityVo> pageResult = new PageResult<>(page);
+        List<ActivityVo> activityVoList = new ArrayList<>();
+        for (Registration registration : page) {
+            ActivityVo activityVo = activityService.getActivityInfo(registration.getActivityId());
+            if(activityVo != null) {
+                Favorite favoriteOptions = new Favorite();
+                favoriteOptions.setType(FavoriteType.ACTIVITY.value);
+                favoriteOptions.setUserId(curUser().getId());
+                favoriteOptions.setObjectId(activityVo.getId().longValue());
+                List<Favorite> favoriteList = favoriteMapper.selectAndList(favoriteOptions);
+                if (org.apache.commons.collections.CollectionUtils.isNotEmpty(favoriteList)) {
+                    activityVo.setAttentionTime(favoriteList.get(0).getCreateTime().getTime());
+                }
+                activityVoList.add(activityVo);
+            }
+        }
+        pageResult.setList(activityVoList);
+        return pageResult;
     }
 }
