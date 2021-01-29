@@ -352,7 +352,7 @@ export default {
       } else {
         delete query.searchWord;
       }
-      if (this.isJob()) {
+      if (this.isJob() || this.isHomePage()) {
         if (this.$route.path === "/job-list") {
           this.$router.replace({ path: "/job-list", query });
         } else {
