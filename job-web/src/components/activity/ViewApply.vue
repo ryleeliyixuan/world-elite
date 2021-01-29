@@ -399,7 +399,7 @@
                     case "2":
                     case "3":
                         question.questionnaireOptions.forEach(option => {
-                            option.checked = question.answerOptions.findIndex(answer => answer.id === option.id) >= 0;
+                            option.checked = question.mustAnswer === '1' ? question.answerOptions.findIndex(answer => answer.id === option.id) >= 0 : false;
                         })
                         break;
                     case "4":
