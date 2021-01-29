@@ -18,6 +18,7 @@ import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.service.strategy.SalaryMaxStrategy;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.ArrayUtils;
@@ -35,6 +36,7 @@ import java.util.*;
 /**
  * @author yeguozhong yedaxia.github.com
  */
+@Slf4j
 @Service
 public class JobService extends BaseService {
 
@@ -600,7 +602,8 @@ public class JobService extends BaseService {
         }
         Byte favorite = 0;
         if(curUser() != null){
-            Boolean isFavorite = favoriteService.checkUserFavorite(curUser().getId(),FavoriteType.JOB);
+            Boolean isFavorite = favoriteService.checkUserFavorite(job.getId(),FavoriteType.JOB);
+            log.debug("收藏：{}",isFavorite);
             if(isFavorite){
                 favorite = 1;
             }
