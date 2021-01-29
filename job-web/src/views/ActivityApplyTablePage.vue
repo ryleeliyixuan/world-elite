@@ -173,8 +173,8 @@
                             <div class="question1-edit-line4">
                                 <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
-                                    <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
-                                        <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
+                                    <div class="must-answer" @click="question.mustAnswer = question.mustAnswer==='0'?'1':'0'">
+                                        <svg-icon :icon-class="question.mustAnswer==='1'?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
                                         <span class="text">设为必答</span>
                                     </div>
                                     <el-select v-model="question.typeForSelect" placeholder="更改题型" size="mini" style="margin-left: 26px; width: 160px;"
@@ -195,7 +195,7 @@
                         </div>
                         <div v-else class="question1-done">
                             <div class="question1-done-line1">
-                                <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                                <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                                 <div class="operate-container">
                                     <div class="edit" @click="onQuestionEdit(question)">编辑</div>
                                     <div class="delete" @click="onQuestionDelete(index)">删除此题</div>
@@ -270,8 +270,8 @@
                             <div class="question2-edit-line4">
                                 <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
-                                    <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
-                                        <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
+                                    <div class="must-answer" @click="question.mustAnswer = question.mustAnswer==='0'?'1':'0'">
+                                        <svg-icon :icon-class="question.mustAnswer==='1'?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
                                         <span class="text">设为必答</span>
                                     </div>
                                     <el-select v-model="question.typeForSelect" placeholder="更改题型" size="mini" style="margin-left: 26px; width: 160px;"
@@ -302,7 +302,7 @@
                         </div>
                         <div v-else class="question2-done">
                             <div class="question2-done-line1">
-                                <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                                <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                                 <div class="operate-container">
                                     <div class="edit" @click="onQuestionEdit(question)">编辑</div>
                                     <div class="delete" @click="onQuestionDelete(index)">删除此题</div>
@@ -382,8 +382,8 @@
                             <div class="question3-edit-line4">
                                 <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
-                                    <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
-                                        <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
+                                    <div class="must-answer" @click="question.mustAnswer = question.mustAnswer==='0'?'1':'0'">
+                                        <svg-icon :icon-class="question.mustAnswer==='1'?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
                                         <span class="text">设为必答</span>
                                     </div>
                                     <el-select v-model="question.typeForSelect" placeholder="更改题型" size="mini" style="margin-left: 26px; width: 160px;"
@@ -414,7 +414,7 @@
                         </div>
                         <div v-else class="question3-done">
                             <div class="question3-done-line1">
-                                <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                                <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                                 <div class="operate-container">
                                     <div class="edit" @click="onQuestionEdit(question)">编辑</div>
                                     <div class="delete" @click="onQuestionDelete(index)">删除此题</div>
@@ -492,8 +492,8 @@
                             <div class="question4-edit-line4">
                                 <el-input class="title" v-model.trim="question.title" maxlength="50" show-word-limit placeholder="请输入标题（必填）"></el-input>
                                 <div class="type-container">
-                                    <div class="must-answer" @click="question.mustAnswer = !question.mustAnswer">
-                                        <svg-icon :icon-class="question.mustAnswer?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
+                                    <div class="must-answer" @click="question.mustAnswer = question.mustAnswer==='0'?'1':'0'">
+                                        <svg-icon :icon-class="question.mustAnswer==='1'?'apply-table-selected' : 'apply-table-unselected'"></svg-icon>
                                         <span class="text">设为必答</span>
                                     </div>
                                     <el-select v-model="question.typeForSelect" placeholder="更改题型" size="mini" style="margin-left: 26px; width: 160px;"
@@ -514,7 +514,7 @@
                         </div>
                         <div v-else class="question4-done">
                             <div class="question4-done-line1">
-                                <div class="title"><span class="must" v-if="question.mustAnswer">*</span>{{question.title}}</div>
+                                <div class="title"><span class="must" v-if="question.mustAnswer==='1'">*</span>{{question.title}}</div>
                                 <div class="operate-container">
                                     <div class="edit" @click="onQuestionEdit(question)">编辑</div>
                                     <div class="delete" @click="onQuestionDelete(index)">删除此题</div>
