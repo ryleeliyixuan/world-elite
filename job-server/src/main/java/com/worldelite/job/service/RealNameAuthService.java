@@ -84,7 +84,7 @@ public class RealNameAuthService extends BaseService {
 
         RealNameAuth realNameAuth = new RealNameAuth();
         realNameAuth.setUserId(userId);
-        realNameAuth.setStatus(VerificationStatus.PASS.value);
+        realNameAuth.setStatus(VerificationStatus.REJECT.value);
         realNameAuth.setReason(reason);
         return realNameAuthMapper.updateByPrimaryKeySelective(realNameAuth) == 1;
     }

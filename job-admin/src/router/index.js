@@ -139,6 +139,11 @@ export const constantRoutes = [
       meta: { title: '管理员' }
     },
     {
+        path: 'realname',
+        component: () => import('@/views/user/RealNameAuth'),
+        meta: { title: '实名认证' }
+    },
+    {
       path: 'modify-pwd',
       component: () => import('@/views/user/ModifyPwdPage'),
       hidden: true,

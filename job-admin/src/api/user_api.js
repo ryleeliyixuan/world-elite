@@ -93,3 +93,28 @@ export function deleteAdmin(userId){
     params: {userId: userId}
   })
 }
+
+export function getUserRealNameAuthList(data) {
+  return request({
+    url: '/realnameauth',
+    method: 'get',
+    params: data
+  })
+}
+
+export function realNameAuthFailure(userId, reason){
+  return request({
+    url: '/realnameauth/failure',
+    method: 'patch',
+    params:  {userId: userId, reason: reason}
+  })
+}
+
+export function realNameAuthPass(userId){
+  return request({
+    url: '/realnameauth/pass',
+    method: 'patch',
+    params: {userId: userId}
+  })
+}
+

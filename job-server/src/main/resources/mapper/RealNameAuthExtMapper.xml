@@ -6,31 +6,31 @@
         <include refid="Base_Column_List"/>
         from t_real_name_auth
         <where>
-            <if test="userId != null">
+            <if test="userId != null and userId !=''">
                 user_id = #{userId,jdbcType=VARCHAR}
             </if>
-            <if test="name != null">
-                and name = #{name,jdbcType=VARCHAR}
+            <if test="name != null and name !=''">
+                and name like CONCAT('%',#{name},'%')
             </if>
-            <if test="idNumber != null">
+            <if test="idNumber != null and idNumber !=''">
                 and id_number = #{idNumber,jdbcType=VARCHAR}
             </if>
-            <if test="faceUrl != null">
+            <if test="faceUrl != null and faceUrl !=''">
                 and face_url = #{faceUrl,jdbcType=VARCHAR}
             </if>
-            <if test="emblemUrl != null">
+            <if test="emblemUrl != null and emblemUrl !=''">
                 and emblem_url = #{emblemUrl,jdbcType=VARCHAR}
             </if>
-            <if test="holdUrl != null">
+            <if test="holdUrl != null and holdUrl !=''">
                 and hold_url = #{holdUrl,jdbcType=VARCHAR}
             </if>
-            <if test="status != null">
+            <if test="status != null and status !=''">
                 and status = #{status,jdbcType=TINYINT}
             </if>
-            <if test="reason != null">
-                and reason = #{reason,jdbcType=VARCHAR}
+            <if test="reason != null and reason !=''">
+                and reason like CONCAT('%',#{reason},'%')
             </if>
-            <if test="businessType != null">
+            <if test="businessType != null and businessType !=''">
                 and business_type = #{businessType,jdbcType=TINYINT}
             </if>
         </where>
