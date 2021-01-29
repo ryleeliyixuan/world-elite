@@ -254,7 +254,7 @@ export default {
   },
   watch: {
     activeIndex() {
-      if (this.isJob()) {
+      if (this.isJob() || this.isHomePage()) {
         this.searchPlaceHolder = "搜索职位";
       } else if (this.isWiki()) {
         this.searchPlaceHolder = "搜索百科";
@@ -288,7 +288,7 @@ export default {
     // 获取提示词
     querySearch(queryString, cb) {
       if (queryString) {
-        if (this.isJob()) {
+        if (this.isJob() || this.isHomePage()) {
           this.$axios
             .get("/job/search-job-name", {
               params: {
