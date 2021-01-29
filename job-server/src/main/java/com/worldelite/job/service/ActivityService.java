@@ -277,14 +277,13 @@ public class ActivityService extends BaseService {
 
             if (activityForm.getStatus() != null) {
                 activity.setStatus(activityForm.getStatus());
+                //活动编辑时不能修改报名表信息
+                activity.setQuestionnaireId(null);
             } else {
                 //原本草稿状态,更新时不带状态,设为待审核
                 if (activity.getStatus() == ActivityStatus.DRAFT.value)
                     activity.setStatus(ActivityStatus.REVIEWING.value);
             }
-
-            //活动编辑时不能修改报名表信息
-            activity.setQuestionnaireId(null);
 
             activityMapper.updateByPrimaryKeySelective(activity);
 
