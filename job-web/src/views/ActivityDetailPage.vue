@@ -74,10 +74,10 @@
                    width="445px">
             <el-select v-model="reportForm.optionId" placeholder="请选择举报类型" class="option" size="small">
                 <el-option
-                        v-for="item in reportOptionList"
-                        :key="item.value"
-                        :label="item.name"
-                        :value="item.value">
+                    v-for="item in reportOptionList"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value">
                 </el-option>
             </el-select>
 
@@ -178,7 +178,7 @@
                 showAlertDialog: false,
                 alertDialogContent: "递交报名表成功！<br/>（请耐心等待报名结果，结果将会以站内消息和邮件通知）",
                 alertDialogTitle: undefined,
-                alertIcon:"forgetpwd-success",
+                alertIcon: "forgetpwd-success",
             };
         },
         computed: {
@@ -230,10 +230,12 @@
 
             // 点击报名按钮
             onApply() {
-                if (this.activity.auditType === '1') {
-                    this.showConfirmDialog = true;
-                } else if (!this.activity.registrationFlag) {
-                    this.showApplyDialog();
+                if (!this.activity.registrationFlag) {
+                    if (this.activity.auditType === '1') {
+                        this.showConfirmDialog = true;
+                    } else {
+                        this.showApplyDialog();
+                    }
                 }
             },
 

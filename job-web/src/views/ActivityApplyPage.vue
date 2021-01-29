@@ -126,7 +126,7 @@
                     <svg-icon icon-class="download-icon" class="download-icon" clickable @click="onLoadResume"/>
                     <svg-icon icon-class="close-icon" class="close-icon" @click="resumeDialogVisible = false;"/>
                 </div>
-                <ResumeView :resumeId="resumeId"></ResumeView>
+                <ResumeView :resumeDetail="resumeDetail"></ResumeView>
 
                 <el-dialog class="resume-cancel-dialog"
                            title="是否同时下载报名表？"
@@ -151,6 +151,7 @@
     import ViewApply from "@/components/activity/ViewApply";
     import ResumeView from "@/components/ResumeView";
     import {downloadFile} from "@/utils/common";
+    import {getResumeDetail} from "@/api/resume_api";
 
     export default {
         name: "ActivityApplyPage",
@@ -191,7 +192,8 @@
 
                 selectItem: undefined, // 选中的数据
 
-                resumeId: undefined, // 要查看的简历id
+                resumeId: undefined, // 要查看的简历信息Id
+                resumeDetail: undefined, // 要查看的简历信息
                 applyTableId: undefined, // 要查看的报名表id
 
                 resumeDialogVisible: false, // 简历对话框
@@ -251,8 +253,12 @@
             // 查看简历
             onViewResume(item) {
                 this.resumeId = item.resumeId;
-                this.applyTableId = item.id;
-                this.resumeDialogVisible = true;
+                getResumeDetail(item.resumeId).then((response) => {
+                        this.resumeDetail = response.data;
+                        this.applyTableId = item.id;
+                        this.resumeDialogVisible = true;
+                    }
+                );
             },
 
             // 点击下载简历
@@ -349,7 +355,7 @@
             getStatus() {
                 let description = "";
                 if (this.activity.status === 5) {
-                    let number = Math.floor((activity.activityFinishTime- new Date().getTime()) / 1000 / 60 / 60 / 24);
+                    let number = Math.floor((activity.activityFinishTime - new Date().getTime()) / 1000 / 60 / 60 / 24);
                     description = number === 0 ? " 即将结束" : (" " + number + "天后结束");
                 }
                 return this.statusList.find(item => this.activity.status === item.id).name + description;
