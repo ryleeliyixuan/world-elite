@@ -116,6 +116,7 @@
                                 start-placeholder="开始时间"
                                 end-placeholder="结束时间"
                                 size="small"
+                                format="yyyy-MM-dd HH:mm"
                                 :default-time="['09:00:00', '17:00:00']"
                                 :picker-options="registrationTimeOption">
                 </el-date-picker>
@@ -130,6 +131,7 @@
                                 start-placeholder="开始时间"
                                 end-placeholder="结束时间"
                                 size="small"
+                                format="yyyy-MM-dd HH:mm"
                                 :default-time="['09:00:00', '17:00:00']"
                                 :picker-options="activityTimeOption">
                 </el-date-picker>
@@ -707,7 +709,7 @@
             onSubmit() {
                 if (this.checkForm()) {
                     this.activityForm.status = undefined; // 删除草稿状态
-                    this.activityForm.form = this.activityForm.cityId === 999993 || this.activityForm.cityId === 999992 ? 0 : 1; // 线上=0，线下=1
+                    this.activityForm.form = this.activityForm.cityId === 3 ? 0 : 1; // 线上=0，线下=1
                     this.publishing = true;
                     this.activityForm.id = this.$route.query.id;
                     this.$axios.post("/activity/save", this.activityForm).then(data => {
