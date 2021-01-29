@@ -270,7 +270,6 @@
                         return answer;
                     })
                     this.$axios.post('/registration', this.applyForm).then(() => {
-                        this.$message.success("报名成功");
                         this.$set(this, 'dialogVisible', false);
                         this.$emit("apply");
                     })
