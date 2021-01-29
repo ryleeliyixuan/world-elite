@@ -106,8 +106,8 @@
                             <div class="button button1-1" v-if="item.status === 1" @click.stop="onResolve1(item)">通过报名</div>
                             <div class="button button1-2" v-if="item.status === 1" @click.stop="onReject1(item)">不合适</div>
                             <div class="button button2-1" style="cursor: default;" v-if="item.status === 2" @click.stop="">已通过</div>
-<!--                            <div class="button button2-2" v-if="item.status === 2" @click.stop="onReject2(item)">不合适</div>-->
-<!--                            <div class="button button3-1" v-if="item.status === 3" @click.stop="onResolve3(item)">重新通过</div>-->
+                            <!--                            <div class="button button2-2" v-if="item.status === 2" @click.stop="onReject2(item)">不合适</div>-->
+                            <!--                            <div class="button button3-1" v-if="item.status === 3" @click.stop="onResolve3(item)">重新通过</div>-->
                             <div class="button button3-2" style="cursor: default;" v-if="item.status === 3" @click.stop="">不合适</div>
                         </div>
                     </div>
@@ -120,6 +120,8 @@
             </div>
             <export-apply v-if="exportDialogVisible" :visible.sync="exportDialogVisible" :activity="activity" :applyTable="applyTable"></export-apply>
             <view-apply v-if="viewDialogVisible" :visible.sync="viewDialogVisible" :activity="activity" :data="selectItem"></view-apply>
+            <notice-dialog v-if="noticeDialogVisible" :visible.sync="noticeDialogVisible" :activityId="activity.id"
+                           @confirm="applyPass(selectItem.id)"></notice-dialog>
 
             <el-dialog :visible.sync="resumeDialogVisible" width="750px" :show-close="false" class="load-resume-dialog">
                 <div slot="title" class="dialog-title">
@@ -152,10 +154,11 @@
     import ResumeView from "@/components/ResumeView";
     import {downloadFile} from "@/utils/common";
     import {getResumeDetail} from "@/api/resume_api";
+    import NoticeDialog from "@/components/activity/NoticeDialog";
 
     export default {
         name: "ActivityApplyPage",
-        components: {Pagination, ExportApply, ViewApply, ResumeView},
+        components: {NoticeDialog, Pagination, ExportApply, ViewApply, ResumeView},
         data() {
             return {
                 activity: undefined, // 当前管理的活动
@@ -189,6 +192,7 @@
 
                 exportDialogVisible: false, // 导出对话框
                 viewDialogVisible: false, // 查看报名表对话框
+                noticeDialogVisible: false, // 通知消息对话框
 
                 selectItem: undefined, // 选中的数据
 
@@ -317,11 +321,22 @@
 
             // 点击通过报名（待处理中）
             onResolve1(item) {
-                this.$axios.patch(`/registration/pass/${item.id}`).then(() => {
-                    this.getList();
-                    this.applyStatusList[1].total++;
-                    this.applyStatusList[3].total--;
-                })
+                if (this.activity.sendNoticeConfirm) {
+                    this.selectItem = item;
+                    this.noticeDialogVisible = true;
+                } else {
+                    this.applyPass(item.id);
+                }
+            },
+
+            // 通过报名
+            applyPass(id) {
+                console.log(id);
+                // this.$axios.patch(`/registration/pass/${id}`).then(() => {
+                //     this.getList();
+                //     this.applyStatusList[1].total++;
+                //     this.applyStatusList[3].total--;
+                // })
             },
 
             // 点击不合适（待处理中）
@@ -333,23 +348,23 @@
                 })
             },
 
-            // 点击通过报名（不合适中）
-            onResolve3(item) {
-                this.$axios.patch(`/registration/pass/${item.id}`).then(() => {
-                    this.getList();
-                    this.applyStatusList[1].total++;
-                    this.applyStatusList[2].total--;
-                })
-            },
-
-            // 点击不合适（已通过中）
-            onReject2(item) {
-                this.$axios.patch(`/registration/inappropriate/${item.id}`).then(() => {
-                    this.getList();
-                    this.applyStatusList[1].total--;
-                    this.applyStatusList[2].total++;
-                })
-            },
+            // // 点击通过报名（不合适中）
+            // onResolve3(item) {
+            //     this.$axios.patch(`/registration/pass/${item.id}`).then(() => {
+            //         this.getList();
+            //         this.applyStatusList[1].total++;
+            //         this.applyStatusList[2].total--;
+            //     })
+            // },
+            //
+            // // 点击不合适（已通过中）
+            // onReject2(item) {
+            //     this.$axios.patch(`/registration/inappropriate/${item.id}`).then(() => {
+            //         this.getList();
+            //         this.applyStatusList[1].total--;
+            //         this.applyStatusList[2].total++;
+            //     })
+            // },
 
             // 获取活动状态
             getStatus() {
@@ -461,7 +476,7 @@
 
         .apply-info-container {
             width: 100%;
-            height: 128px;
+            min-height: 128px;
             background: #E9F5FF;
             border-radius: 8px;
             display: flex;
