@@ -37,7 +37,7 @@
                         <svg-icon :icon-class="query.registrationPdfFlag?'checked':'unchecked'"></svg-icon>
                         <div>同时下载该板块所有用户报名表</div>
                     </div>
-                    <div class="checkbox" @click="onCheckBox('resumePdfFlag')" v-if="applyTable.needResume==='1'">
+                    <div class="checkbox" @click="onCheckBox('resumePdfFlag')" v-if="activity.needResume==='1'">
                         <svg-icon :icon-class="query.resumePdfFlag?'checked':'unchecked'"></svg-icon>
                         <div>同时下载该板块所有用户简历</div>
                     </div>
