@@ -77,7 +77,7 @@ public class ActivityApi extends BaseApi {
      */
     @GetMapping("carousel")
     @ApiDoc
-    public ApiResult<List<ActivityVo>> getCarouselList(){
+    public ApiResult<List<ActivityVo>> getCarouselList() {
         return ApiResult.ok(activityService.getCarouselList());
     }
 
@@ -183,20 +183,6 @@ public class ActivityApi extends BaseApi {
         activityService.deleteActivity(id);
         return ApiResult.ok();
     }
-
-    /**
-     * Nuo Xu
-     * create or refresh activity index
-     *
-     * @return
-     */
-    @RequireLogin(allow = UserType.ADMIN)
-    @GetMapping("create-or-refresh-activity-title-index")
-    public ApiResult createOrRefreshActivityTitleIndex() {
-        activitySearchService.createOrRefreshActivityTitleIndex();
-        return ApiResult.ok();
-    }
-
 
     /**
      * Nuo Xu

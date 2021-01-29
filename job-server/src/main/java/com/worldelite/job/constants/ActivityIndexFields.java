@@ -4,8 +4,6 @@ package com.worldelite.job.constants;
  * Nuo Xu
  */
 public interface ActivityIndexFields {
-    String ACTIVITY_TITLE = "ACTIVITY_TITLE";
-
     String ACTIVITY_ID = "ACTIVITY_ID";
     String FORM = "FORM";
     String CITY_ID = "CITY_ID";

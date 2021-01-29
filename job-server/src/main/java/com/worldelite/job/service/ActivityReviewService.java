@@ -14,11 +14,14 @@ import com.worldelite.job.form.ActivityReviewForm;
 import com.worldelite.job.form.PageForm;
 import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.ActivityReviewMapper;
+import com.worldelite.job.service.activity.ActivityNotifyManager;
+import com.worldelite.job.service.activity.ActivityStatusManager;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ActivityReviewVo;
 import com.worldelite.job.vo.PageResult;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,7 @@ public class ActivityReviewService extends BaseService {
     private final ActivityReviewMapper activityReviewMapper;
     private final ActivityMapper activityMapper;
     private final ActivityStatusManager activityStatusManager;
+    private final ActivityNotifyManager activityNotifyManager;
 
     public PageResult<ActivityReviewVo> getActivityReviewList(ActivityReviewForm activityReviewForm, PageForm pageForm) {
         ActivityReview options = new ActivityReview();
@@ -138,6 +142,11 @@ public class ActivityReviewService extends BaseService {
         if (b) {
             activityStatusManager.remove(activity.getId());
             activityStatusManager.put(activity);
+
+            activityNotifyManager.remove(activity.getId());
+            activityNotifyManager.put(activity, ActivityNotifyManager.BusinessType.ACTIVITY_START.value);
+            activityNotifyManager.put(activity, ActivityNotifyManager.BusinessType.ACTIVITY_REGISTRATION_START.value);
+
             SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
             SpringContextHolder.publishEvent(new ActivityReviewEvent(this, activity.getId(), VerificationStatus.PASS.value));
         }
