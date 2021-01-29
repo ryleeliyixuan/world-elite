@@ -349,8 +349,8 @@
             getStatus() {
                 let description = "";
                 if (this.activity.status === 5) {
-                    let number = new Date(this.activity.activityFinishTime).getDate() - new Date().getDate()
-                    description = number === 0 ? " 即将结束" : " " + number + "天后结束";
+                    let number = Math.floor((activity.activityFinishTime- new Date().getTime()) / 1000 / 60 / 60 / 24);
+                    description = number === 0 ? " 即将结束" : (" " + number + "天后结束");
                 }
                 return this.statusList.find(item => this.activity.status === item.id).name + description;
             },

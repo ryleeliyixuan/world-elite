@@ -24,7 +24,7 @@
                 <div class="activity-left-three">发布时间：<span class="activity-left-time">{{item.createTime | timestampToDateHourMinute}}</span></div>
             </div>
             <div class="activity-item-right" v-if="activeMenuId===1" @click="onCancelCollect(item)">
-                取消活动
+                取消关注
             </div>
         </div>
 
@@ -110,8 +110,8 @@
             getStatus(activity) {
                 let description = "";
                 if (activity.status === 5) {
-                    let number = new Date(activity.activityFinishTime).getDate() - new Date().getDate()
-                    description = number === 0 ? " 即将结束" : " " + number + "天后结束";
+                    let number = Math.floor((activity.activityFinishTime- new Date().getTime()) / 1000 / 60 / 60 / 24);
+                    description = number === 0 ? " 即将结束" : (" " + number + "天后结束");
                 }
                 return this.statusList.find(item => activity.status === item.id).name + description;
             },
