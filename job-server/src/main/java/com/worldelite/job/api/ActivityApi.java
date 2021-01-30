@@ -163,6 +163,7 @@ public class ActivityApi extends BaseApi {
      * @param id
      * @return
      */
+    @ApiDoc
     @RequireLogin
     @PatchMapping("closeSendNotification")
     public ApiResult closeSendNotification(@RequestParam Integer id) {
