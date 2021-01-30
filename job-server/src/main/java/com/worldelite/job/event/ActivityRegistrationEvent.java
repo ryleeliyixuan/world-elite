@@ -26,14 +26,22 @@ public class ActivityRegistrationEvent extends ApplicationEvent {
     private Byte status;
 
     /**
+     * 通知消息
+     */
+    @Getter
+    @Setter
+    private String notifyMsg;
+
+    /**
      * Create a new {@code ApplicationEvent}.
      *
      * @param source the object on which the event initially occurred or with
      *               which the event is associated (never {@code null})
      */
-    public ActivityRegistrationEvent(Object source, Integer registrationId, Byte status) {
+    public ActivityRegistrationEvent(Object source, Integer registrationId, Byte status, String notifyMsg) {
         super(source);
         this.registrationId = registrationId;
         this.status = status;
+        this.notifyMsg = notifyMsg;
     }
 }

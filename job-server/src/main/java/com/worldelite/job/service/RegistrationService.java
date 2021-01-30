@@ -101,7 +101,7 @@ public class RegistrationService extends BaseService {
 
         //无需审核的活动直接发送报名成功通知
         if (registration.getStatus() == RegistrationStatus.DIRECT.value)
-            SpringContextHolder.publishEvent(new ActivityRegistrationEvent(this, registration.getId(), RegistrationStatus.PASS.value));
+            SpringContextHolder.publishEvent(new ActivityRegistrationEvent(this, registration.getId(), RegistrationStatus.PASS.value, null));
     }
 
     /**
@@ -210,21 +210,23 @@ public class RegistrationService extends BaseService {
      * 通过活动报名
      *
      * @param id
+     * @param notifyMsg
      */
-    public void setRegistrationPass(Integer id) {
+    public void setRegistrationPass(Integer id, String notifyMsg) {
         Registration registration = registrationMapper.selectByPrimaryKey(id);
         registration.setStatus(RegistrationStatus.PASS.value);
         registrationMapper.updateByPrimaryKeySelective(registration);
 
-        SpringContextHolder.publishEvent(new ActivityRegistrationEvent(this, id, RegistrationStatus.PASS.value));
+        SpringContextHolder.publishEvent(new ActivityRegistrationEvent(this, id, RegistrationStatus.PASS.value, notifyMsg));
     }
 
     /**
      * 活动报名不合适
      *
      * @param id
+     * @param notifyMsg
      */
-    public void setRegistrationInappropriate(Integer id) {
+    public void setRegistrationInappropriate(Integer id, String notifyMsg) {
         Registration registration = registrationMapper.selectByPrimaryKey(id);
         registration.setStatus(RegistrationStatus.INAPPROPRIATE.value);
         registrationMapper.updateByPrimaryKeySelective(registration);
@@ -234,7 +236,7 @@ public class RegistrationService extends BaseService {
             throw new ServiceException(message("activity.release.quota.failed"));
         }
 
-        SpringContextHolder.publishEvent(new ActivityRegistrationEvent(this, id, RegistrationStatus.INAPPROPRIATE.value));
+        SpringContextHolder.publishEvent(new ActivityRegistrationEvent(this, id, RegistrationStatus.INAPPROPRIATE.value, notifyMsg));
     }
 
     /**
