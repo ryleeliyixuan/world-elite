@@ -121,7 +121,7 @@
             <export-apply v-if="exportDialogVisible" :visible.sync="exportDialogVisible" :activity="activity" :applyTable="applyTable"></export-apply>
             <view-apply v-if="viewDialogVisible" :visible.sync="viewDialogVisible" :activity="activity" :data="selectItem"></view-apply>
             <notice-dialog v-if="noticeDialogVisible" :visible.sync="noticeDialogVisible" :activityId="activity.id"
-                           @confirm="applyPass(selectItem.id)"></notice-dialog>
+                           @confirm="applyPass"></notice-dialog>
 
             <el-dialog :visible.sync="resumeDialogVisible" width="750px" :show-close="false" class="load-resume-dialog">
                 <div slot="title" class="dialog-title">
@@ -321,18 +321,18 @@
 
             // 点击通过报名（待处理中）
             onResolve1(item) {
+                this.selectItem = item;
                 if (this.activity.sendNoticeConfirm) {
-                    this.selectItem = item;
                     this.noticeDialogVisible = true;
                 } else {
-                    this.applyPass(item.id);
+                    this.applyPass();
                 }
             },
 
             // 通过报名
-            applyPass(id) {
-                console.log(id);
-                // this.$axios.patch(`/registration/pass/${id}`).then(() => {
+            applyPass(message) {
+                console.log(this.selectItem.id,message);
+                // this.$axios.patch('/registration/pass', {id: this.selectItem.id, notifyMsg: message}).then(() => {
                 //     this.getList();
                 //     this.applyStatusList[1].total++;
                 //     this.applyStatusList[3].total--;
@@ -341,7 +341,7 @@
 
             // 点击不合适（待处理中）
             onReject1(item) {
-                this.$axios.patch(`/registration/inappropriate/${item.id}`).then(() => {
+                this.$axios.patch('/registration/inappropriate', {id: item.id}).then(() => {
                     this.getList();
                     this.applyStatusList[2].total++;
                     this.applyStatusList[3].total--;

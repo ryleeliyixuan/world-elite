@@ -73,7 +73,7 @@
                     // TODO  提交不在提示通知消息
                     console.log("提交不在提示通知消息");
                 }
-                this.$emit("confirm")
+                this.$emit("confirm",this.message)
             }
         }
     }

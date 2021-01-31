@@ -231,7 +231,7 @@
             // 点击报名按钮
             onApply() {
                 if (!this.activity.registrationFlag) {
-                    if (this.activity.auditType === '1') {
+                    if (this.activity.auditType === '0') {
                         this.showConfirmDialog = true;
                     } else {
                         this.showApplyDialog();
@@ -250,6 +250,7 @@
             // 报名成功
             onApplySuccess() {
                 this.activity.registrationFlag = true;
+                // TODO 当auditType==='1'时不需要审核，可能不需要显示成功对话框
                 this.showAlertDialog = true;
             },
 
