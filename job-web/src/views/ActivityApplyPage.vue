@@ -119,7 +119,7 @@
                 </pagination>
             </div>
             <export-apply v-if="exportDialogVisible" :visible.sync="exportDialogVisible" :activity="activity" :applyTable="applyTable"></export-apply>
-            <view-apply v-if="viewDialogVisible" :visible.sync="viewDialogVisible" :activity="activity" :data="selectItem"></view-apply>
+            <view-apply v-if="viewDialogVisible" :visible.sync="viewDialogVisible" :activity.sync="activity" :data="selectItem"></view-apply>
             <notice-dialog v-if="noticeDialogVisible" :visible.sync="noticeDialogVisible" :activityId="activity.id"
                            @confirm="applyPass"></notice-dialog>
 
@@ -322,7 +322,7 @@
             // 点击通过报名（待处理中）
             onResolve1(item) {
                 this.selectItem = item;
-                if (this.activity.sendNoticeConfirm) {
+                if (this.activity.sendNoticeConfirm === '1') {
                     this.noticeDialogVisible = true;
                 } else {
                     this.applyPass();
@@ -330,12 +330,15 @@
             },
 
             // 通过报名
-            applyPass(message) {
+            applyPass(param) {
                 this.$axios.request({
                     method: "patch",
                     url: "/registration/pass",
-                    params: {id: this.selectItem.id, notifyMsg: message}
+                    params: {id: this.selectItem.id, notifyMsg: param && param.message}
                 }).then(() => {
+                    if (param && param.notNotice) {
+                        this.activity.sendNoticeConfirm = '0';
+                    }
                     this.noticeDialogVisible = false;
                     this.getList();
                     this.applyStatusList[1].total++;
@@ -350,7 +353,7 @@
 
                 // TODO 不通过时没有确认弹窗
                 // this.selectItem = item;
-                // if (this.activity.sendNoticeConfirm) {
+                // if (this.activity.sendNoticeConfirm==='1') {
                 //     this.noticeDialogVisible = true;
                 // } else {
                 //     this.applyReject();
@@ -358,11 +361,11 @@
             },
 
             // 拒绝报名
-            applyReject(message) {
+            applyReject(param) {
                 this.$axios.request({
                     method: "patch",
                     url: "/registration/inappropriate",
-                    params: {id: this.selectItem.id, notifyMsg: message}
+                    params: {id: this.selectItem.id, notifyMsg: param && param.message}
                 }).then(() => {
                     this.noticeDialogVisible = false;
                     this.getList();
@@ -519,8 +522,8 @@
                     color: #333333;
 
                     .apply-info-one-state {
-                        width: 64px;
                         height: 22px;
+                        padding: 0 5px;
                         border-radius: 3px;
                         text-align: center;
                         line-height: 22px;
