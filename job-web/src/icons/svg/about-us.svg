@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="1239px" height="334px" viewBox="0 0 1239 334" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="1239px" height="335px" viewBox="0 0 1239 335" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
     <title>编组 11</title>
     <desc>Created with Sketch.</desc>
@@ -69,7 +69,7 @@
         </linearGradient>
     </defs>
     <g id="导航栏+首页优化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="首页登陆了" transform="translate(-341.000000, -536.000000)">
+        <g id="首页未登录" transform="translate(-341.000000, -536.000000)">
             <g id="编组-12" transform="translate(341.000000, 536.000000)">
                 <g id="编组-11" transform="translate(19.000000, 15.000000)">
                     <g id="编组-23备份">
@@ -162,19 +162,19 @@
                     </g>
                     <g id="编组-26" transform="translate(27.000000, 47.000000)">
                         <rect id="矩形" fill-opacity="0.75" fill="#FFFFFF" x="0" y="0" width="1148" height="202"></rect>
-                        <g id="编组-25" transform="translate(479.000000, 3.000000)" font-family="PingFangSC-Semibold, PingFang SC" font-weight="500">
-                            <text id="ABOUT-US" opacity="0.7" font-size="36" fill="#FFFFFF">
-                                <tspan x="0" y="38">ABOUT US</tspan>
+                        <g id="编组-25" transform="translate(531.000000, 16.000000)" font-family="PingFangSC-Semibold, PingFang SC" font-weight="500">
+                            <text id="ABOUT-US" opacity="0.7" font-size="12" fill="#A9E8F1">
+                                <tspan x="11" y="38">ABOUT US</tspan>
                             </text>
                             <text id="关于我们" font-size="21" fill="#4895EF">
-                                <tspan x="52" y="47">关于我们</tspan>
+                                <tspan x="0" y="22">关于我们</tspan>
                             </text>
                         </g>
-                        <text id="我们是World-Elite，一个由留学" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400">
-                            <tspan x="38.528" y="95" fill="#333333">我们是World Elite，一个由留学生创办并专为留学生服务的职业信息与成长型社交平台。我们致力于协助海归人才和国内名企大厂直接对接，通过大数据精</tspan>
-                            <tspan x="336" y="117" fill="#333333">准匹配求职者与企业方需求海量资源免费内推，助你登上更高的起点！</tspan>
-                            <tspan x="288" y="139" fill="#333333">名企百科应有尽有，和你一起云考察企业；活动宣讲热点讨论，让你走在招聘最前线</tspan>
-                            <tspan x="414.635" y="161" font-size="21" fill="#4895EF">World Elite，WE build your career</tspan>
+                        <text id="我们是World-Elite，一个由留学" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" line-spacing="27">
+                            <tspan x="38.528" y="86" fill="#333333">我们是World Elite，一个由留学生创办并专为留学生服务的职业信息与成长型社交平台。我们致力于协助海归人才和国内名企大厂直接对接，通过大数据精</tspan>
+                            <tspan x="336" y="113" fill="#333333">准匹配求职者与企业方需求海量资源免费内推，助你登上更高的起点！</tspan>
+                            <tspan x="288" y="140" fill="#333333">名企百科应有尽有，和你一起云考察企业；活动宣讲热点讨论，让你走在招聘最前线</tspan>
+                            <tspan x="413.123" y="167" font-size="21" fill="#4895EF">World Elite，WE build your career</tspan>
                         </text>
                     </g>
                 </g>
