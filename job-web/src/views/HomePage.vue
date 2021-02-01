@@ -135,7 +135,8 @@
       <div class="recommend-job-container">
         <div
                 class="job-card"
-                v-for="recommendJob in recommendPracticeList"
+                v-for="(recommendJob,index) in recommendJobList"
+                v-if="index<3"
                 :key="recommendJob.id"
         >
           <el-link
@@ -152,10 +153,10 @@
                               ? `background: #ff3d00`
                               : `background: #FFFFFF;`"
                       @click.native.prevent="
-                  handleFavorite(recommendJob.object.id, recommendJob.object.favoriteFlag)
+                  handleJobFavorite(index, recommendJob.object.favoriteFlag)
                 "
-                      @mouseenter.native.prevent="MouseInFav(recommendJob)"
-                      @mouseleave.native.prevent="MouseOutFav(recommendJob)"
+                      @mouseenter.native.prevent="MouseInJobFav(recommendJob)"
+                      @mouseleave.native.prevent="MouseOutJobFav(recommendJob)"
               ><svg-icon
                       :icon-class="
                     recommendJob.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
@@ -217,7 +218,8 @@
       <div class="recommend-job-container">
         <div
                 class="job-card"
-                v-for="recommendJob in recommendFullTimeList"
+                v-for="(recommendJob,index) in recommendJobList"
+                v-if="index>=3"
                 :key="recommendJob.id"
         >
           <el-link
@@ -236,10 +238,10 @@
                     : `background: #FFFFFF;`
                 "
                       @click.native.prevent="
-                  handleFavorite(recommendJob.object.id, recommendJob.object.favoriteFlag)
+                  handleJobFavorite(index, recommendJob.object.favoriteFlag)
                 "
-                      @mouseenter.native.prevent="MouseInFav(recommendJob)"
-                      @mouseleave.native.prevent="MouseOutFav(recommendJob)"
+                      @mouseenter.native.prevent="MouseInJobFav(recommendJob)"
+                      @mouseleave.native.prevent="MouseOutJobFav(recommendJob)"
               ><svg-icon
                       :icon-class="
                     recommendJob.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
@@ -513,8 +515,6 @@
       return {
         recommendCompanyList: [],
         recommendJobList: [],
-        recommendPracticeList:[],
-        recommendFullTimeList:[],
         recentJobList: [],
         activitylist:[],
         filteredActivityList: [],
@@ -556,14 +556,6 @@
           sort: "+position",
         }).then((response) => {
           this.recommendJobList = response.data.list;
-          for (const item of this.recommendJobList){
-            console.log(item.object.jobType.name)
-            if (item.object.jobType.name=="实习"){
-              this.recommendPracticeList.push(item)//实习岗位
-            }else if (item.object.jobType.name=='全职'){
-              this.recommendFullTimeList.push(item)//全职岗位
-            }
-          }
         });
         this.$axios
                 .get("/activity/list", { params: { sortField: "follower" } })
@@ -589,12 +581,7 @@
                 : (company.object.favoriteFlag = 1);
         console.log("-----", company.object.favoriteFlag);
       },
-      MouseInFav(recommendJob) {
-        recommendJob.object.favoriteFlag === 1
-                ? (recommendJob.object.favoriteFlag = 0)
-                : (recommendJob.object.favoriteFlag = 1);
-        console.log("==", recommendJob.object.favoriteFlag);
-      },
+      //mouse out fav
       MouseOutFav() {
         this.initData();
       },
@@ -608,7 +595,35 @@
         // console.log("******");
         this.initData();
       },
+      //mouse in fav
+      MouseInJobFav(recommendJob){
+        recommendJob.favoriteFlag===1
+                ?(recommendJob.favoriteFlag=0):(recommendJob.favoriteFlag=1);
+      },
       //mouse out fav
+      MouseOutJobFav(){
+        this.initData();
+      },
+      //mouse out fav
+      handleJobFavorite(index, favorite) {
+        console.log(this.recommendJobList[index].object.favoriteFlag)
+        if (this.recommendJobList[index].object.favoriteFlag==1){
+          favorite=0
+        }else {
+          favorite=1
+        }
+        console.log(favorite)
+        let id=this.recommendJobList[index].object.id
+        let data = {
+          favorite: Boolean(favorite),
+          objectId: id,
+          type: 1,
+        };
+        doFavorite(data).then(() => {
+          this.initData();
+          this.$message("操作成功");
+        });
+      },
       handleFavorite(id, favorite) {
         let data = {
           favorite: Boolean(favorite),
@@ -1026,6 +1041,11 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 18px;
+            ::v-deep.el-button.is-circle {
+              border-radius: 50%;
+              padding: 12px;
+              border: none;
+            }
             .job-name {
               font-size: 18px;
               font-family: PingFangSC-Semibold, PingFang SC;
