@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="13px" height="13px" viewBox="0 0 13 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>刷新</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="360" y="158" width="1200" height="1029"></rect>
+        <filter x="-2.5%" y="-2.6%" width="105.1%" height="105.9%" filterUnits="objectBoundingBox" id="filter-2">
+            <feMorphology radius="1.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="0" dy="4" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="8" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.750231809   0 0 0 0 0.780961076   0 0 0 0 0.842419611  0 0 0 0.309222028 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="简历投递" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="简历投递职位详情页申请岗位" transform="translate(-1211.000000, -410.000000)">
+            <rect id="矩形" fill="#F6F9FC" x="0" y="0" width="1920" height="2201"></rect>
+            <g id="编组-8" transform="translate(0.000000, 10.000000)">
+                <g id="矩形">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+            </g>
+            <rect id="矩形" fill-opacity="0.1" fill="#000000" x="0" y="0" width="1920" height="1603"></rect>
+            <rect id="矩形" fill="#FFFFFF" x="623" y="308" width="675" height="415" rx="28"></rect>
+            <g id="刷新-2" transform="translate(1209.000000, 409.000000)" fill-rule="nonzero">
+                <g id="刷新">
+                    <rect id="矩形" fill="#000000" opacity="0" x="0" y="0" width="16" height="16"></rect>
+                    <path d="M5.00105728,4.47558955 C5.83153422,3.64503267 6.97813283,3.13062944 8.24255555,3.13062944 C9.64253436,3.13062944 10.9376083,3.76821316 11.7956026,4.81911664 L10.2081509,6.40666428 L14.1393575,6.40666428 L14.1393575,2.47537769 L12.7278985,3.88726842 C11.6247744,2.59699123 9.99634248,1.82020591 8.24257153,1.82020591 C6.61669787,1.82020591 5.14241744,2.48150155 4.0744855,3.54943348 C3.3019213,4.32217356 2.74653784,5.30336431 2.49637147,6.40666428 L3.84424161,6.40666428 C4.06332506,5.66176133 4.46484483,5.01162613 5.00105728,4.47558955 L5.00105728,4.47558955 Z M11.4839739,10.9585061 C10.6534809,11.789063 9.50688233,12.3035622 8.24255555,12.3035622 C6.84256075,12.3035622 5.54742284,11.6658985 4.68939659,10.614979 L6.27694423,9.02752734 L2.34565764,9.02752734 L2.34565764,12.958734 L3.75711667,11.547275 C4.86027273,12.8372004 6.48868867,13.6140017 8.24253956,13.6140017 C9.86841322,13.6140017 11.3425817,12.9529619 12.4105137,11.8850939 C13.1817668,11.1132652 13.7365586,10.1276295 13.9873965,9.02752734 L12.635769,9.02752734 C12.4150066,9.76557094 12.0153736,10.4271704 11.4839739,10.9585061 L11.4839739,10.9585061 Z" id="形状" fill="#4895EF"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
