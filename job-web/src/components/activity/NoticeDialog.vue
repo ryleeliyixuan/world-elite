@@ -2,6 +2,7 @@
     <el-dialog class="dialog"
                :visible.sync="dialogVisible"
                center
+               append-to-body
                width="445px">
         <div slot="title" style="display: flex; align-items: center; justify-content: center;">
             <span style="font-size: 18px;color: #333333;line-height: 25px;font-weight: bold;">发送通知消息</span>
@@ -69,14 +70,14 @@
             onConfirm() {
                 if (this.notNotice) {
                     this.$axios.request({
-                        method:"patch",
-                        params:{id: this.activityId},
-                        url:"/activity/closeSendNotification"
+                        method: "patch",
+                        params: {id: this.activityId},
+                        url: "/activity/closeSendNotification"
                     }).then(() => {
-                        this.$emit("confirm", this.message)
+                        this.$emit("confirm", {message: this.message, notNotice: this.notNotice})
                     })
                 } else {
-                    this.$emit("confirm", this.message)
+                    this.$emit("confirm", {message: this.message, notNotice: this.notNotice})
                 }
             }
         }

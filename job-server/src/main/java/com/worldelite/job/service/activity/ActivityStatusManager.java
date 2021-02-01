@@ -91,7 +91,7 @@ public class ActivityStatusManager extends AbstractActivityManager implements Co
                     activityMapper.updateByPrimaryKeySelective(ac);
                     SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
 
-                    log.info("活动状态更新为{}", activityStatus.value);
+                    log.warn("活动ID:{}, 活动状态更新为{}", activityInfo.getActivityId(), activityStatus.value);
                 }
             } catch (InterruptedException e) {
                 log.error(e.getMessage(), e);
@@ -112,18 +112,6 @@ public class ActivityStatusManager extends AbstractActivityManager implements Co
                     || activity.getStatus() == ActivityStatus.DRAFT.value
                     || activity.getStatus() == ActivityStatus.OFFLINE.value
                     || activity.getDelFlag() == Bool.TRUE) return;
-
-            final ActivityStatus activityStatus = getActivityStatus(activity);
-            //如果数据库中活动状态与算出来的不一样就要更新
-            if (activityStatus.value != activity.getStatus()) {
-                Activity ac = new Activity();
-                ac.setId(activity.getId());
-                ac.setStatus(activityStatus.value);
-                activityMapper.updateByPrimaryKeySelective(ac);
-                SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
-            }
-
-            if (activityStatus == ActivityStatus.END) return;
 
             put(activity);
         });
