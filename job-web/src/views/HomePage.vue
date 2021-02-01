@@ -131,8 +131,13 @@
     <div class="job-recommend-box">
       <h3 class="header text-center">职位精选</h3>
       <div class="subheader text-center">HOT JOBS</div>
-      <div class="title"><span>“WE内推”全职岗位推荐</span></div>
-      <div class="recommend-job-container">
+      <div class="title" v-if="recommendJobList && recommendJobList.length > 0">
+        <span>“WE内推”全职岗位推荐</span>
+      </div>
+      <div
+        class="recommend-job-container"
+        v-if="recommendJobList && recommendJobList.length > 0"
+      >
         <div
           class="job-card"
           v-for="recommendJob in recommendJobList.slice(0, 3)"
@@ -153,7 +158,10 @@
                     : `background: #FFFFFF;`
                 "
                 @click.native.prevent="
-                  handleJobFavorite(recommendJob.object.id, recommendJob.object.favoriteFlag)
+                  handleJobFavorite(
+                    recommendJob.object.id,
+                    recommendJob.object.favoriteFlag
+                  )
                 "
                 @mouseenter.native.prevent="MouseInJobFav(recommendJob)"
                 @mouseleave.native.prevent="MouseOutJobFav(recommendJob)"
@@ -228,11 +236,16 @@
           </el-link>
         </div>
       </div>
-      <div class="title"><span>“WE内推”每日实习岗位推荐</span></div>
-      <div class="recommend-job-container">
+      <div class="title" v-if="recommendJobList && recommendJobList.length > 3">
+        <span>“WE内推”每日实习岗位推荐</span>
+      </div>
+      <div
+        class="recommend-job-container"
+        v-if="recommendJobList && recommendJobList.length > 3"
+      >
         <div
           class="job-card"
-          v-for="(recommendJob, index) in recommendJobList.slice(3,6)"
+          v-for="recommendJob in recommendJobList.slice(3, 6)"
           :key="recommendJob.id"
         >
           <el-link :href="`/job/${recommendJob.object.id}`" :underline="false">
@@ -250,7 +263,10 @@
                     : `background: #FFFFFF;`
                 "
                 @click.native.prevent="
-                  handleJobFavorite(recommendJob.object.id, recommendJob.object.favoriteFlag)
+                  handleJobFavorite(
+                    recommendJob.object.id,
+                    recommendJob.object.favoriteFlag
+                  )
                 "
                 @mouseenter.native.prevent="MouseInJobFav(recommendJob)"
                 @mouseleave.native.prevent="MouseOutJobFav(recommendJob)"
@@ -334,8 +350,16 @@
     <div class="company-recommend-box">
       <div class="header text-center">企业百科</div>
       <div class="subheader text-center">CORPORATE INFO</div>
-      <div class="title"><span>大家都在看的企业</span></div>
-      <div class="company-container">
+      <div
+        class="title"
+        v-if="recommendCompanyList && recommendCompanyList.length > 0"
+      >
+        <span>大家都在看的企业</span>
+      </div>
+      <div
+        class="company-container"
+        v-if="recommendCompanyList && recommendCompanyList.length > 0"
+      >
         <div
           class="company-card"
           v-for="company in recommendCompanyList"
@@ -399,8 +423,13 @@
           </el-link>
         </div>
       </div>
-      <div class="title"><span>这些企业最近上新了职位</span></div>
-      <div class="company-container">
+      <div class="title" v-if="recentJobList && recentJobList.length > 0">
+        <span>这些企业最近上新了职位</span>
+      </div>
+      <div
+        class="company-container"
+        v-if="recentJobList && recentJobList.length > 0"
+      >
         <div class="company-card" v-for="item in recentJobList" :key="item.id">
           <el-link :href="`/company/${item.id}`" :underline="false">
             <div class="company-section1">
@@ -468,7 +497,7 @@
     </div>
     <!-- 企业百科 ends -->
     <!-- 职场活动 starts -->
-    <div class="activity-box">
+    <div class="activity-box" v-if="activitylist && activitylist.length > 0">
       <div class="header text-center">职场活动</div>
       <div class="subheader text-center">WORKPLACE EVENTS</div>
       <div class="title"><span>热门招聘活动</span></div>
@@ -1043,9 +1072,14 @@ export default {
 
     .recommend-job-container {
       display: flex;
+      
+      .job-card:hover {
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+      }
+
       .job-card {
         padding: 12px 13px 23px 16px;
-        width: fit-content;
+        width: 340px;
         height: 165px;
         background: linear-gradient(135deg, #f9fbfd 0%, #ddecfd 100%);
         cursor: pointer;
@@ -1060,6 +1094,11 @@ export default {
             border: none;
           }
           .job-name {
+            width: 160px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
             font-size: 18px;
             font-family: PingFangSC-Semibold, PingFang SC;
             font-weight: 600;
