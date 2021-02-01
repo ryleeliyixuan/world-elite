@@ -152,6 +152,7 @@
                 recruitCountResult: {all: 0, school: 0, community: 0, urgency: 0, hot: 0, inner: 0},
                 cityOptions: [],
                 cityIdProps: {
+                    multiple: true,
                     lazy: true,
                     lazyLoad: (node, resolve) => {
                         if (node.level >= 1) {
