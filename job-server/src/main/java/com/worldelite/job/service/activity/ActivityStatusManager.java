@@ -91,7 +91,7 @@ public class ActivityStatusManager extends AbstractActivityManager implements Co
                     activityMapper.updateByPrimaryKeySelective(ac);
                     SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
 
-                    log.info("活动状态更新为{}", activityStatus.value);
+                    log.warn("活动状态更新为{}", activityStatus.value);
                 }
             } catch (InterruptedException e) {
                 log.error(e.getMessage(), e);
