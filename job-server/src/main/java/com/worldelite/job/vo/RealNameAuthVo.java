@@ -20,6 +20,7 @@ public class RealNameAuthVo implements VoConvertable<RealNameAuthVo, RealNameAut
     private String holdUrl;//手持身份证/学生证正面照
     private Byte status;//审核状态.1:审核中,2:通过,3拒绝
     private Byte businessType;//实名认证业务类型.1:活动
+    private String reason; //审核失败原因
 
     @Override
     public RealNameAuthVo asVo(RealNameAuth realNameAuth) {

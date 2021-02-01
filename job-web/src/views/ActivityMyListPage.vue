@@ -23,8 +23,8 @@
                 </div>
                 <div class="activity-left-three">发布时间：<span class="activity-left-time">{{item.createTime | timestampToDateHourMinute}}</span></div>
             </div>
-            <div class="activity-item-right" v-if="activeMenuId===1">
-                取消活动
+            <div class="activity-item-right" v-if="activeMenuId===1" @click="onCancelCollect(item)">
+                取消关注
             </div>
         </div>
 
@@ -99,19 +99,26 @@
                 this.$router.push(`/activity/${activity.id}`);
             },
 
+            // 取消关注
+            onCancelCollect(item) {
+                this.$axios.post("/favorite/favorite", {objectId: item.id, type: 3, favorite: false}).then(() => {
+                    this.getList();
+                })
+            },
+
             // 获取活动状态
             getStatus(activity) {
                 let description = "";
                 if (activity.status === 5) {
-                    let number = new Date(activity.activityFinishTime).getDate() - new Date().getDate()
-                    description = number === 0 ? " 即将结束" : " " + number + "天后结束";
+                    let number = Math.floor((activity.activityFinishTime- new Date().getTime()) / 1000 / 60 / 60 / 24);
+                    description = number === 0 ? " 即将结束" : (" " + number + "天后结束");
                 }
                 return this.statusList.find(item => activity.status === item.id).name + description;
             },
 
             // 加载数据
             getList() {
-                let url = this.activeMenuId === 1 ? "/favorite/my-favorite-list" : "/favorite/my-favorite-activities";
+                let url = this.activeMenuId === 1 ? "/favorite/my-favorite-activities" : "/registration/my-registration-activities";
                 this.loading = this.$loading({
                     lock: true,
                     text: 'Loading',
@@ -262,6 +269,7 @@
                 color: #FFFFFF;
                 line-height: 28px;
                 text-align: center;
+                cursor: pointer;
             }
         }
 

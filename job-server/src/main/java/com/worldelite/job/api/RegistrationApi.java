@@ -66,9 +66,9 @@ public class RegistrationApi {
      * @return
      */
     @ApiDoc
-    @PatchMapping("pass/{id}")
-    public ApiResult setRegistrationPass(@PathVariable Integer id){
-        registrationService.setRegistrationPass(id);
+    @PatchMapping("pass")
+    public ApiResult setRegistrationPass(@RequestParam Integer id, String notifyMsg){
+        registrationService.setRegistrationPass(id, notifyMsg);
         return ApiResult.ok();
     }
 
@@ -78,9 +78,9 @@ public class RegistrationApi {
      * @return
      */
     @ApiDoc
-    @PatchMapping("inappropriate/{id}")
-    public ApiResult setRegistrationInappropriate(@PathVariable Integer id){
-        registrationService.setRegistrationInappropriate(id);
+    @PatchMapping("inappropriate")
+    public ApiResult setRegistrationInappropriate(@RequestParam Integer id, String notifyMsg){
+        registrationService.setRegistrationInappropriate(id, notifyMsg);
         return ApiResult.ok();
     }
 

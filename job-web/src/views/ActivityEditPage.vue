@@ -116,6 +116,7 @@
                                 start-placeholder="开始时间"
                                 end-placeholder="结束时间"
                                 size="small"
+                                format="yyyy-MM-dd HH:mm"
                                 :default-time="['09:00:00', '17:00:00']"
                                 :picker-options="registrationTimeOption">
                 </el-date-picker>
@@ -130,6 +131,7 @@
                                 start-placeholder="开始时间"
                                 end-placeholder="结束时间"
                                 size="small"
+                                format="yyyy-MM-dd HH:mm"
                                 :default-time="['09:00:00', '17:00:00']"
                                 :picker-options="activityTimeOption">
                 </el-date-picker>
@@ -227,16 +229,16 @@
                                :disabled="!useTemplate || !!this.$route.query.id"
                                style="margin-right:15px;">
                         <el-option
-                                v-for="item in registrationTemplateList"
-                                :key="item.id"
-                                :label="item.templateName"
-                                :value="item.id">
+                            v-for="item in registrationTemplateList"
+                            :key="item.id"
+                            :label="item.templateName"
+                            :value="item.id">
                         </el-option>
                     </el-select>
                     <el-popover
-                            :disabled="!useTemplate"
-                            placement="top-start"
-                            trigger="click">
+                        :disabled="!useTemplate"
+                        placement="top-start"
+                        trigger="click">
                         <div class="template-settings-container">
                             <div class="line1">
                                 模板管理
@@ -513,7 +515,6 @@
                     this.cityOptions = data.data.map(first => {
                         if (first.children) {
                             first.children = first.children.map(second => {
-                                console.log(second.name, second);
                                 if (municipality.includes(second.name)) {
                                     delete second.children;
                                 } else if (second.children) {
@@ -707,9 +708,11 @@
             onSubmit() {
                 if (this.checkForm()) {
                     this.activityForm.status = undefined; // 删除草稿状态
-                    this.activityForm.form = this.activityForm.cityId === 999993 || this.activityForm.cityId === 999992 ? 0 : 1; // 线上=0，线下=1
+                    this.activityForm.form = this.activityForm.cityId === 3 ? 0 : 1; // 线上=0，线下=1
                     this.publishing = true;
-                    this.activityForm.id = this.$route.query.id;
+                    if (this.$route.query.id) {
+                        this.activityForm.id = this.$route.query.id;
+                    }
                     this.$axios.post("/activity/save", this.activityForm).then(data => {
                         this.publishing = false;
                         this.$storage.removeObject('activityPreview');

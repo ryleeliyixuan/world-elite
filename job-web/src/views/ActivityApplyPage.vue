@@ -105,10 +105,10 @@
                         <div class="button-container" style="margin-top: 13px;" v-if="activity.auditType==='0'">
                             <div class="button button1-1" v-if="item.status === 1" @click.stop="onResolve1(item)">通过报名</div>
                             <div class="button button1-2" v-if="item.status === 1" @click.stop="onReject1(item)">不合适</div>
-                            <div class="button button2-1" v-if="item.status === 2" @click.stop="">已通过</div>
-                            <div class="button button2-2" v-if="item.status === 2" @click.stop="onReject2(item)">不合适</div>
-                            <div class="button button3-1" v-if="item.status === 3" @click.stop="onResolve3(item)">重新通过</div>
-                            <div class="button button3-2" v-if="item.status === 3" @click.stop="">不合适</div>
+                            <div class="button button2-1" style="cursor: default;" v-if="item.status === 2" @click.stop="">已通过</div>
+                            <!--                            <div class="button button2-2" v-if="item.status === 2" @click.stop="onReject2(item)">不合适</div>-->
+                            <!--                            <div class="button button3-1" v-if="item.status === 3" @click.stop="onResolve3(item)">重新通过</div>-->
+                            <div class="button button3-2" style="cursor: default;" v-if="item.status === 3" @click.stop="">不合适</div>
                         </div>
                     </div>
                 </div>
@@ -120,13 +120,15 @@
             </div>
             <export-apply v-if="exportDialogVisible" :visible.sync="exportDialogVisible" :activity="activity" :applyTable="applyTable"></export-apply>
             <view-apply v-if="viewDialogVisible" :visible.sync="viewDialogVisible" :activity="activity" :data="selectItem"></view-apply>
+            <notice-dialog v-if="noticeDialogVisible" :visible.sync="noticeDialogVisible" :activityId="activity.id"
+                           @confirm="applyPass"></notice-dialog>
 
             <el-dialog :visible.sync="resumeDialogVisible" width="750px" :show-close="false" class="load-resume-dialog">
                 <div slot="title" class="dialog-title">
                     <svg-icon icon-class="download-icon" class="download-icon" clickable @click="onLoadResume"/>
                     <svg-icon icon-class="close-icon" class="close-icon" @click="resumeDialogVisible = false;"/>
                 </div>
-                <ResumeView :resumeId="resumeId"></ResumeView>
+                <ResumeView :resumeDetail="resumeDetail"></ResumeView>
 
                 <el-dialog class="resume-cancel-dialog"
                            title="是否同时下载报名表？"
@@ -151,10 +153,12 @@
     import ViewApply from "@/components/activity/ViewApply";
     import ResumeView from "@/components/ResumeView";
     import {downloadFile} from "@/utils/common";
+    import {getResumeDetail} from "@/api/resume_api";
+    import NoticeDialog from "@/components/activity/NoticeDialog";
 
     export default {
         name: "ActivityApplyPage",
-        components: {Pagination, ExportApply, ViewApply, ResumeView},
+        components: {NoticeDialog, Pagination, ExportApply, ViewApply, ResumeView},
         data() {
             return {
                 activity: undefined, // 当前管理的活动
@@ -188,10 +192,12 @@
 
                 exportDialogVisible: false, // 导出对话框
                 viewDialogVisible: false, // 查看报名表对话框
+                noticeDialogVisible: false, // 通知消息对话框
 
                 selectItem: undefined, // 选中的数据
 
-                resumeId: undefined, // 要查看的简历id
+                resumeId: undefined, // 要查看的简历信息Id
+                resumeDetail: undefined, // 要查看的简历信息
                 applyTableId: undefined, // 要查看的报名表id
 
                 resumeDialogVisible: false, // 简历对话框
@@ -251,8 +257,12 @@
             // 查看简历
             onViewResume(item) {
                 this.resumeId = item.resumeId;
-                this.applyTableId = item.id;
-                this.resumeDialogVisible = true;
+                getResumeDetail(item.resumeId).then((response) => {
+                        this.resumeDetail = response.data;
+                        this.applyTableId = item.id;
+                        this.resumeDialogVisible = true;
+                    }
+                );
             },
 
             // 点击下载简历
@@ -311,46 +321,57 @@
 
             // 点击通过报名（待处理中）
             onResolve1(item) {
-                this.$axios.patch(`/registration/pass/${item.id}`).then(() => {
-                    this.getList();
-                    this.applyStatusList[1].total++;
-                    this.applyStatusList[3].total--;
-                })
+                this.selectItem = item;
+                if (this.activity.sendNoticeConfirm) {
+                    this.noticeDialogVisible = true;
+                } else {
+                    this.applyPass();
+                }
+            },
+
+            // 通过报名
+            applyPass(message) {
+                console.log(this.selectItem.id,message);
+                // this.$axios.patch('/registration/pass', {id: this.selectItem.id, notifyMsg: message}).then(() => {
+                //     this.getList();
+                //     this.applyStatusList[1].total++;
+                //     this.applyStatusList[3].total--;
+                // })
             },
 
             // 点击不合适（待处理中）
             onReject1(item) {
-                this.$axios.patch(`/registration/inappropriate/${item.id}`).then(() => {
+                this.$axios.patch('/registration/inappropriate', {id: item.id}).then(() => {
                     this.getList();
                     this.applyStatusList[2].total++;
                     this.applyStatusList[3].total--;
                 })
             },
 
-            // 点击通过报名（不合适中）
-            onResolve3(item) {
-                this.$axios.patch(`/registration/pass/${item.id}`).then(() => {
-                    this.getList();
-                    this.applyStatusList[1].total++;
-                    this.applyStatusList[2].total--;
-                })
-            },
-
-            // 点击不合适（已通过中）
-            onReject2(item) {
-                this.$axios.patch(`/registration/inappropriate/${item.id}`).then(() => {
-                    this.getList();
-                    this.applyStatusList[1].total--;
-                    this.applyStatusList[2].total++;
-                })
-            },
+            // // 点击通过报名（不合适中）
+            // onResolve3(item) {
+            //     this.$axios.patch(`/registration/pass/${item.id}`).then(() => {
+            //         this.getList();
+            //         this.applyStatusList[1].total++;
+            //         this.applyStatusList[2].total--;
+            //     })
+            // },
+            //
+            // // 点击不合适（已通过中）
+            // onReject2(item) {
+            //     this.$axios.patch(`/registration/inappropriate/${item.id}`).then(() => {
+            //         this.getList();
+            //         this.applyStatusList[1].total--;
+            //         this.applyStatusList[2].total++;
+            //     })
+            // },
 
             // 获取活动状态
             getStatus() {
                 let description = "";
                 if (this.activity.status === 5) {
-                    let number = new Date(this.activity.activityFinishTime).getDate() - new Date().getDate()
-                    description = number === 0 ? " 即将结束" : " " + number + "天后结束";
+                    let number = Math.floor((this.activity.activityFinishTime - new Date().getTime()) / 1000 / 60 / 60 / 24);
+                    description = number === 0 ? " 即将结束" : (" " + number + "天后结束");
                 }
                 return this.statusList.find(item => this.activity.status === item.id).name + description;
             },
@@ -455,7 +476,7 @@
 
         .apply-info-container {
             width: 100%;
-            height: 128px;
+            min-height: 128px;
             background: #E9F5FF;
             border-radius: 8px;
             display: flex;

@@ -7,7 +7,7 @@ package com.worldelite.job.constants;
  **/
 public enum ActivityForm {
     ONLINE(0), //线上
-    OFFLINE(2); //线下
+    OFFLINE(1); //线下
 
     public final byte value;
 

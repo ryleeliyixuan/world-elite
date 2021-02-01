@@ -119,10 +119,11 @@
                     <div class="brief">
                         <div class="line1">
                             <div class="title">{{item.title}}</div>
-                            <div v-if="item.city" :class="['city',{'online':item.city.id===999992 || item.city.id ===999993}]">{{item.city.name}}</div>
+                            <div v-if="item.city" :class="['city',{'online':item.city.id===3}]">{{item.city.name}}</div>
+                            <div class="status" :style="{'background':statusBGColorList[item.status]}">{{getStatus(item)}}</div>
                         </div>
                         <div class="line2">
-                            <div class="time">{{item.activityStartTime | timestampToDateHourMinute}}-{{item.activityFinishTime | timestampToHoursMinutes}}</div>
+                            <div class="time">{{getTime(item)}}</div>
                             <div class="count">{{item.follower}}人正在关注</div>
                         </div>
                     </div>
@@ -148,6 +149,7 @@
     import Pagination from "@/components/Pagination2";
     import approve from "@/components/activity/ApproveDialog";
     import {getCityByName} from "@/api/city_api";
+    import {timestampToDate} from "@/filters/filters"
 
     export default {
         name: "ActivityListPage",
@@ -160,8 +162,11 @@
                 formList: [{id: 0, name: '线上'}, {id: 1, name: '线下'}], // 活动形式列表
                 cityList: [], // 活动城市列表
                 searchCityWord: undefined, // 搜索城市关键字
-                statusList: [{id: 3, name: '即将开始'}, {id: 4, name: '报名中'},
-                    {id: 5, name: '进行中'}, {id: 6, name: '已结束'}], // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束
+                // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束;7审核未通过
+                statusList: [{id: 0, name: '审核中'}, {id: 1, name: '草稿'}, {id: 2, name: '已停止'}, {id: 3, name: '即将开始'},
+                    {id: 4, name: '报名中'}, {id: 5, name: '进行中'}, {id: 6, name: '已结束'}, {id: 7, name: '审核未通过'}],
+                statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
+
                 timeList: [], // 活动时间列表
                 orderList: [{id: "PUBLISH_TIME", name: '最新发布'}, {id: "FOLLOWER", name: '最多关注'},
                     {id: "REGISTRATION_TIME", name: '最近报名'}, {id: "ACTIVITY_TIME", name: '最近开始'}], // 活动排序列表
@@ -237,7 +242,6 @@
 
             // 点击轮播图活动
             onBannerItem(activity) {
-                console.log(activity);
                 this.$router.push(`/activity/${activity.id}`);
             },
 
@@ -299,7 +303,6 @@
                     return;
                 }
                 getCityByName(keyword).then((response) => {
-                    console.log(response.data);
                     cb(response.data);
                 });
             },
@@ -384,6 +387,18 @@
                     this.total = response.data.total;
                 });
             },
+
+            // 获取活动状态
+            getStatus(activity) {
+                return this.statusList.find(item => activity.status === item.id).name;
+            },
+
+            // 处理时间
+            getTime(item) {
+                let start = timestampToDate(item.activityStartTime);
+                let finish = timestampToDate(item.activityFinishTime);
+                return start === finish ? start : start + " - " + finish;
+            }
         }
     };
 </script>
@@ -666,6 +681,17 @@
 
                             .online {
                                 background: #ffab00;
+                            }
+
+                            .status {
+                                height: 19px;
+                                line-height: 22px;
+                                padding: 0 5px;
+                                border-radius: 4px;
+                                font-size: 13px;
+                                flex-shrink: 0;
+                                margin-left: 7px;
+                                color: #ffffff;
                             }
                         }
 

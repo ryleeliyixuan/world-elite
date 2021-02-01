@@ -146,18 +146,18 @@ public class ActivityService extends BaseService {
         StringBuilder where = new StringBuilder();
         where.append("id in (select object_id from t_favorite where type = 3 and user_id = ").append(userId).append(")");
         where.append(" and status in (").append(StringUtils.join(pageForm.getStatus(), ",")).append(")");
-        return getSimpleActivity(userId,pageForm,where.toString());
+        return getSimpleActivity(userId, pageForm, where.toString());
     }
 
-    public PageResult<ActivityVo> getRegistrationSimpleActivity(Long userId,ActivityListForm pageForm){
+    public PageResult<ActivityVo> getRegistrationSimpleActivity(Long userId, ActivityListForm pageForm) {
         //根据不同状态构建查询SQL
         StringBuilder where = new StringBuilder();
         where.append("id in (select activity_id from t_registration where del_flag = 0 and registration_user_id = ").append(userId).append(")");
         where.append(" and status in (").append(StringUtils.join(pageForm.getStatus(), ",")).append(")");
-        return getSimpleActivity(userId,pageForm,where.toString());
+        return getSimpleActivity(userId, pageForm, where.toString());
     }
 
-    private PageResult<ActivityVo> getSimpleActivity(Long userId,ActivityListForm pageForm,String where){
+    private PageResult<ActivityVo> getSimpleActivity(Long userId, ActivityListForm pageForm, String where) {
         AppUtils.setPage(pageForm);
         Page<Activity> page = (Page<Activity>) activityMapper.selectSimpleByIdAndStatus(where.toString());
         PageResult<ActivityVo> pageResult = new PageResult<>(page);
@@ -277,14 +277,13 @@ public class ActivityService extends BaseService {
 
             if (activityForm.getStatus() != null) {
                 activity.setStatus(activityForm.getStatus());
+                //活动编辑时不能修改报名表信息
+                activity.setQuestionnaireId(null);
             } else {
                 //原本草稿状态,更新时不带状态,设为待审核
                 if (activity.getStatus() == ActivityStatus.DRAFT.value)
                     activity.setStatus(ActivityStatus.REVIEWING.value);
             }
-
-            //活动编辑时不能修改报名表信息
-            activity.setQuestionnaireId(null);
 
             activityMapper.updateByPrimaryKeySelective(activity);
 
@@ -465,5 +464,23 @@ public class ActivityService extends BaseService {
         }
 
         return activityVoList;
+    }
+
+    /**
+     * 权重设置
+     *
+     * @param id
+     * @param weight
+     * @return
+     */
+    public boolean weightSetup(Integer id, Integer weight) {
+        ActivityOptions options = new ActivityOptions();
+        options.setId(id);
+        options.setWeight(weight);
+        final boolean b = activityMapper.updateByPrimaryKeySelective(options) == 1;
+        if (b)
+            SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, id));
+
+        return b;
     }
 }

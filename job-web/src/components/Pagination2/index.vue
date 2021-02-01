@@ -1,5 +1,5 @@
 <template>
-    <el-pagination
+    <el-pagination v-if="total>0"
         size="medium" class="pagination"
         layout="prev, pager, next, jumper"
         :total="total"

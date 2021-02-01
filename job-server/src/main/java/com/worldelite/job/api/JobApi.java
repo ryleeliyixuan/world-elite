@@ -292,7 +292,7 @@ public class JobApi extends BaseApi {
         }
 
         PageResult pageResult;
-
+        searchForm.setLimit(Integer.MAX_VALUE);
         if (jobService.isEmptySearch(searchForm)) {
 //            pageResult = jobService.getUserRecommendJobList(searchForm);
             JobListForm jobListForm = new JobListForm();

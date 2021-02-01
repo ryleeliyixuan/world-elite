@@ -38,3 +38,10 @@ export function verifyInterviewer(data) {
   })
 }
 
+
+export function getRealNameAuthInfo(userId) {
+  return request({
+    url: '/realnameauth/' + userId,
+    method: 'get'
+  })
+}

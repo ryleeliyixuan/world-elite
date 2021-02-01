@@ -115,7 +115,10 @@
                        :apply="applyTable"
                        :resumeList="resumeList"
                        :needResume="activity.needResume"
-                       @apply="activity.registrationFlag = true"></preview-apply>
+                       @apply="onApplySuccess"></preview-apply>
+
+        <confirm :visible.sync="showConfirmDialog" :content="confirmDialogContent" :title="confirmDialogTitle" @confirm="showApplyDialog"></confirm>
+        <alert :visible.sync="showAlertDialog" :content="alertDialogContent" :title="alertDialogTitle" :icon="alertIcon" iconStyle="width:250px;"></alert>
     </div>
 </template>
 
@@ -125,12 +128,14 @@
     import "vue-social-share/dist/client.css";
     import {getUploadPicToken} from "@/api/upload_api";
     import previewApply from "@/components/activity/PreviewApply";
+    import confirm from "@/components/Dialog/Confirm"
+    import alert from "@/components/Dialog/Alert"
 
     Vue.use(Share);
 
     export default {
         name: "ActivityDetailPage",
-        components: {previewApply},
+        components: {previewApply, confirm, alert},
         data() {
             return {
                 activity: undefined,
@@ -164,6 +169,16 @@
                 previewDialogVisible: false, // 报名表预览对话框
                 applyTable: undefined, // 报名表
                 resumeList: [], // 简历列表
+
+                // 确认对话框
+                showConfirmDialog: false,
+                confirmDialogContent: "此活动报名后需等待主办方审核筛选，是否报名此活动？<br/>（通过筛选后会向您发送系统及邮件通知）",
+                confirmDialogTitle: undefined,
+
+                showAlertDialog: false,
+                alertDialogContent: "递交报名表成功！<br/>（请耐心等待报名结果，结果将会以站内消息和邮件通知）",
+                alertDialogTitle: undefined,
+                alertIcon: "forgetpwd-success",
             };
         },
         computed: {
@@ -216,11 +231,27 @@
             // 点击报名按钮
             onApply() {
                 if (!this.activity.registrationFlag) {
-                    this.$axios.get("/resume/my-resume").then(response => {
-                        this.resumeList = response.data;
-                    })
-                    this.previewDialogVisible = true;
+                    if (this.activity.auditType === '0') {
+                        this.showConfirmDialog = true;
+                    } else {
+                        this.showApplyDialog();
+                    }
                 }
+            },
+
+            // 显示报名表
+            showApplyDialog() {
+                this.$axios.get("/resume/my-resume").then(response => {
+                    this.resumeList = response.data;
+                })
+                this.previewDialogVisible = true;
+            },
+
+            // 报名成功
+            onApplySuccess() {
+                this.activity.registrationFlag = true;
+                // TODO 当auditType==='1'时不需要审核，可能不需要显示成功对话框
+                this.showAlertDialog = true;
             },
 
             // 点击举报活动按钮

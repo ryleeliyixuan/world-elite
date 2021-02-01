@@ -1,6 +1,7 @@
 package com.worldelite.job.service;
 
 import com.worldelite.job.constants.FavoriteType;
+import com.worldelite.job.constants.MessageType;
 import com.worldelite.job.constants.RegistrationStatus;
 import com.worldelite.job.constants.VerificationStatus;
 import com.worldelite.job.context.MessageResource;
@@ -9,10 +10,7 @@ import com.worldelite.job.event.ActivityRegistrationEvent;
 import com.worldelite.job.event.ActivityReviewEvent;
 import com.worldelite.job.event.ActivityTakeOffEvent;
 import com.worldelite.job.form.EmailForm;
-import com.worldelite.job.mapper.ActivityMapper;
-import com.worldelite.job.mapper.ActivityTakeOffMapper;
-import com.worldelite.job.mapper.FavoriteMapper;
-import com.worldelite.job.mapper.RegistrationMapper;
+import com.worldelite.job.mapper.*;
 import com.worldelite.job.vo.ActivityReviewVo;
 import com.worldelite.job.vo.UserApplicantVo;
 import lombok.AllArgsConstructor;
@@ -41,6 +39,8 @@ public class SendNotificationService {
     private final MessageResource messageSource;
     private final UserApplicantService userApplicantService;
     private final IEmailService emailService;
+
+    private final NotificationMessageMapper notificationMessageMapper;
 
     /**
      * 发送活动下架通知消息
@@ -104,12 +104,46 @@ public class SendNotificationService {
 
         String toRegistrationMsg = null;
 
-        if (registrationEvent.getStatus() == RegistrationStatus.PASS.value)
-            toRegistrationMsg = messageSource.getMessage("activity.registration.pass.notify", activity.getTitle());
-        if (registrationEvent.getStatus() == RegistrationStatus.INAPPROPRIATE.value)
-            toRegistrationMsg = messageSource.getMessage("activity.registration.inappropriate.notify", activity.getTitle());
+        NotificationMessage notificationMessage = notificationMessageMapper.selectByUserIdAndType(activity.getUserId().toString(),
+                String.valueOf(MessageType.ACTIVITY_REGISTRATION_APPROVED.value), String.valueOf(activity.getId()));
+        //更新消息通知表
+        if (StringUtils.isNotBlank(registrationEvent.getNotifyMsg())) {
+            //发送通知确认提示,0不再提示,1需要提示
+            //需要提示的情况下每次更新最后发送的消息
+            if ("1".equals(activity.getSendNoticeConfirm())) {
+                if (notificationMessage == null) {
+                    notificationMessage = new NotificationMessage();
+                    notificationMessage.setUserId(activity.getUserId());
+                    notificationMessage.setObjectId(String.valueOf(activity.getId()));
+                    notificationMessage.setType(MessageType.ACTIVITY_REGISTRATION_APPROVED.value);
+                    notificationMessage.setMsgContent(registrationEvent.getNotifyMsg());
 
-        sendMsg(registration.getRegistrationUserId(), toRegistrationMsg, String.format("/activity/%s", activity.getId()), 1);
+                    notificationMessageMapper.insertSelective(notificationMessage);
+                } else {
+                    notificationMessage.setMsgContent(registrationEvent.getNotifyMsg());
+                    notificationMessage.setUpdateTime(null);
+                    notificationMessageMapper.updateByPrimaryKeySelective(notificationMessage);
+                }
+
+                toRegistrationMsg = registrationEvent.getNotifyMsg();
+            } else {
+                if (notificationMessage != null) {
+                    toRegistrationMsg = notificationMessage.getMsgContent();
+                }
+            }
+        } else {
+            if (notificationMessage != null) {
+                toRegistrationMsg = notificationMessage.getMsgContent();
+            } else {
+                if (registrationEvent.getStatus() == RegistrationStatus.PASS.value)
+                    toRegistrationMsg = messageSource.getMessage("activity.registration.pass.notify", activity.getTitle());
+                if (registrationEvent.getStatus() == RegistrationStatus.INAPPROPRIATE.value)
+                    toRegistrationMsg = messageSource.getMessage("activity.registration.inappropriate.notify", activity.getTitle());
+            }
+        }
+
+        System.out.println(toRegistrationMsg);
+        //sendMsg(registration.getRegistrationUserId(), toRegistrationMsg, String.format("/activity/%s", activity.getId()), 1);
     }
 
     /**

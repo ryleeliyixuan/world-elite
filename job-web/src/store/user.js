@@ -41,6 +41,7 @@ const actions = {
                 commit('SET_NAME', data.name)
                 commit('SET_AVATAR', data.avatar)
                 commit('SET_USERID', data.userId)
+                sessionStorage.clear();
                 setUserId(data.userId, loginForm.rememberFlag)
                 setToken(data.token, loginForm.rememberFlag)
                 storage.setUserInfo(data);
