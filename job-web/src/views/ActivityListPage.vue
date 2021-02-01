@@ -56,17 +56,25 @@
                         <div :class="[{'selected':item.selected},'select-item']" v-for="item in cityList" @click="onCity(item)" :key="item.id">
                             {{item.name}}
                         </div>
-                        <el-autocomplete class="search-city"
-                                         v-model="searchCityWord"
-                                         :fetch-suggestions="searchCity"
-                                         placeholder="输入国内外城市名，支持多个"
-                                         value-key="name"
-                                         :trigger-on-focus="false"
-                                         @select="citySelect">
-                            <div slot="suffix" class="search-button">
+                        <el-select class="search-city"
+                                   v-model="searchCityIds"
+                                   multiple
+                                   filterable
+                                   remote
+                                   placeholder="输入国内外城市名，支持多个"
+                                   :remote-method="searchCity"
+                                   :loading="loading"
+                        @change="handleFilter">
+                            <el-option
+                                v-for="item in cityOptions"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                            <div slot="prefix" class="search-button">
                                 搜索
                             </div>
-                        </el-autocomplete>
+                        </el-select>
                     </div>
                 </div>
                 <div class="filter-item">
@@ -148,7 +156,6 @@
 <script>
     import Pagination from "@/components/Pagination2";
     import approve from "@/components/activity/ApproveDialog";
-    import {getCityByName} from "@/api/city_api";
     import {timestampToDate} from "@/filters/filters"
 
     export default {
@@ -161,10 +168,11 @@
 
                 formList: [{id: 0, name: '线上'}, {id: 1, name: '线下'}], // 活动形式列表
                 cityList: [], // 活动城市列表
-                searchCityWord: undefined, // 搜索城市关键字
-                // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束;7审核未通过
+                cityOptions: [], // 可选的城市列表
+                searchCityIds: undefined, // 搜索城市关键字
                 statusList: [{id: 3, name: '即将开始'}, {id: 4, name: '报名中'}, {id: 5, name: '进行中'}, {id: 6, name: '已结束'}],
-                statusBGColorList: ['#FFC400', '#66BB6A', '#FF6E40', '#FF5252'],
+                // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束;7审核未通过
+                statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
 
                 timeList: [], // 活动时间列表
                 orderList: [{id: "PUBLISH_TIME", name: '最新发布'}, {id: "FOLLOWER", name: '最多关注'},
@@ -297,24 +305,13 @@
             },
 
             // 搜索城市
-            searchCity(keyword, cb) {
+            searchCity(keyword) {
                 if (!keyword || keyword.length < 1) {
                     return;
                 }
-                getCityByName(keyword).then((response) => {
-                    cb(response.data);
+                this.$axios.get("/city/get-to-city-level-by-name", {params: {name: keyword}}).then((response) => {
+                    this.cityOptions = response.data
                 });
-            },
-
-            // 搜索城市选择
-            citySelect(city) {
-                if (this.cityList.findIndex(item => item.id === city.id) < 0) {
-                    this.cityList.push({name: city.name, id: city.id, selected: true, value: city.id})
-                    this.searchCityWord = undefined;
-                    this.handleFilter();
-                } else {
-                    this.$message.warning("重复添加");
-                }
             },
 
             // 活动状态
@@ -377,7 +374,7 @@
             // 加载数据
             getList() {
                 this.listQuery.keyword = this.$route.query.searchWord;
-                this.listQuery.cityIds = this.cityList.filter(item => item.selected).map(item => item.value).join(",");
+                this.listQuery.cityIds = this.searchCityIds.join(",");
                 this.$storage.setData(this.$options.name, this.listQuery);
                 this.loading = true;
                 this.$axios.get("/activity/list", {params: this.listQuery}).then(response => {
@@ -503,7 +500,6 @@
                 .filter-item {
                     width: 100%;
                     display: flex;
-                    align-items: center;
                     margin-top: 9px;
 
                     .filter-title {
@@ -511,7 +507,7 @@
                         min-width: 80px;
                         font-size: 16px;
                         color: #333333;
-                        margin: 4px 20px 0 5px;
+                        margin: 5px 20px 0 5px;
                         text-align: right;
                         font-weight: 600;
                     }
@@ -549,6 +545,7 @@
 
                             ::v-deep .el-input__inner {
                                 width: 290px;
+                                padding: 0 0 0 13px;
                                 height: 29px;
                                 background: #FFFFFF;
                                 border-radius: 18px;
@@ -557,17 +554,21 @@
                                 align-items: center;
                             }
 
-                            .search-button {
-                                width: 82px;
-                                height: 24px;
-                                background: #4895EF;
-                                box-shadow: 0 3px 3px 0 #A7C7F8;
-                                border-radius: 18px;
-                                font-size: 14px;
-                                color: #FFFFFF;
-                                line-height: 24px;
-                                text-align: center;
-                                margin-top: 2px;
+                            ::v-deep .el-input__prefix {
+                                right: 5px;
+
+                                .search-button {
+                                    width: 82px;
+                                    height: 24px;
+                                    background: #4895EF;
+                                    box-shadow: 0 3px 3px 0 #A7C7F8;
+                                    border-radius: 18px;
+                                    font-size: 14px;
+                                    color: #FFFFFF;
+                                    line-height: 24px;
+                                    text-align: center;
+                                    margin-top: 2px;
+                                }
                             }
                         }
                     }

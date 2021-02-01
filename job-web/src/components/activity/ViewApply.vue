@@ -11,8 +11,8 @@
                 <div class="button button1-1" v-if="activity.auditType==='0' && applyInfo.status === 1" @click.stop="onResolve1">通过报名</div>
                 <div class="button button1-2" v-if="activity.auditType==='0' && applyInfo.status === 1" @click.stop="onReject1">不合适</div>
                 <div class="button button2-1" style="cursor: default;" v-if="activity.auditType==='0' && applyInfo.status === 2" @click.stop="">已通过</div>
-<!--                <div class="button button2-2" v-if="activity.auditType==='0' && applyInfo.status === 2" @click.stop="onReject2">不合适</div>-->
-<!--                <div class="button button3-1" v-if="activity.auditType==='0' && applyInfo.status === 3" @click.stop="onResolve3">重新通过</div>-->
+                <!--                <div class="button button2-2" v-if="activity.auditType==='0' && applyInfo.status === 2" @click.stop="onReject2">不合适</div>-->
+                <!--                <div class="button button3-1" v-if="activity.auditType==='0' && applyInfo.status === 3" @click.stop="onResolve3">重新通过</div>-->
                 <div class="button button3-2" style="cursor: default;" v-if="activity.auditType==='0' && applyInfo.status === 3" @click.stop="">不合适</div>
             </div>
             <div class="title-right">
@@ -139,6 +139,8 @@
                 </div>
             </el-dialog>
         </el-dialog>
+        <notice-dialog v-if="noticeDialogVisible" :visible.sync="noticeDialogVisible" :activityId="activity.id"
+                       @confirm="applyPass"></notice-dialog>
     </el-dialog>
 </template>
 
@@ -146,10 +148,11 @@
 
     import {downloadFile} from "@/utils/common";
     import ResumeView from "@/components/ResumeView";
+    import NoticeDialog from "@/components/activity/NoticeDialog";
 
     export default {
         name: "ViewApply",
-        components: {ResumeView},
+        components: {ResumeView,NoticeDialog},
         props: {
             visible: {
                 type: Boolean
@@ -193,6 +196,8 @@
                 andLoadingApplyTableNoTips: false, // 下载简历时，是否不要提示用户下载报名表
                 onlyResume: false, // 不显示下载简历提示对话框时，是否仅下载简历
                 loadResumeDialogVisible: false, // 是否显示下载简历对话框
+
+                noticeDialogVisible: false, // 通知消息对话框
             }
         },
         mounted() {
@@ -269,14 +274,49 @@
 
             // 点击通过报名（待处理中）
             onResolve1() {
-                this.$axios.patch(`/registration/pass/${this.applyInfo.id}`).then(() => {
+                if (this.activity.sendNoticeConfirm === '1') {
+                    this.noticeDialogVisible = true;
+                } else {
+                    this.applyPass();
+                }
+            },
+
+            // 通过报名
+            applyPass(param) {
+                this.$axios.request({
+                    method: "patch",
+                    url: "/registration/pass",
+                    params: {id: this.applyInfo.id, notifyMsg: param && param.message}
+                }).then(() => {
+                    if (param && param.notNotice) {
+                        this.$emit('update:activity', {...this.activity, sendNoticeConfirm: '0'})
+                    }
+                    this.noticeDialogVisible = false;
                     this.applyInfo.status = 2;
                 })
             },
 
             // 点击不合适（待处理中）
             onReject1() {
-                this.$axios.patch(`/registration/inappropriate/${this.applyInfo.id}`).then(() => {
+                this.applyReject();
+
+                // TODO 不通过时没有确认弹窗
+                // this.selectItem = item;
+                // if (this.activity.sendNoticeConfirm==='1') {
+                //     this.noticeDialogVisible = true;
+                // } else {
+                //     this.applyReject();
+                // }
+            },
+
+            // 拒绝报名
+            applyReject(param) {
+                this.$axios.request({
+                    method: "patch",
+                    url: "/registration/inappropriate",
+                    params: {id: this.applyInfo.id, notifyMsg: param && param.message}
+                }).then(() => {
+                    this.noticeDialogVisible = false;
                     this.applyInfo.status = 3;
                 })
             },
@@ -588,9 +628,9 @@
                             justify-content: space-between;
 
                             .title {
-                                font-size: 16px;
+                                font-size: 18px;
                                 color: #666666;
-                                line-height: 22px;
+                                line-height: 25px;
 
                                 .must {
                                     color: red;

@@ -8,7 +8,7 @@
             <div class="publish-button" @click="onPublish">查看我发布的活动</div>
         </div>
         <div class="line"></div>
-        <div class="activity-item" v-for="item in dataList" :key="item.id">
+        <div class="activity-item" v-for="item in dataList" :key="item.id" @click="onItem(item)">
             <div class="activity-item-left">
                 <div class="activity-left-one">
                     <div class="activity-left-one-title">{{item.title}}</div>
@@ -212,6 +212,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+
+            &:hover {
+                box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
+                cursor: pointer;
+            }
 
             .activity-item-left {
 
