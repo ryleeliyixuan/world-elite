@@ -231,7 +231,7 @@
             // 点击报名按钮
             onApply() {
                 if (!this.activity.registrationFlag) {
-                    if (this.activity.auditType === '0') {
+                    if (this.activity.auditType === '0' && this.activity.sendNoticeConfirm==='1') {
                         this.showConfirmDialog = true;
                     } else {
                         this.showApplyDialog();

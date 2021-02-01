@@ -67,13 +67,17 @@
 
             // 确认
             onConfirm() {
-                // TODO 提交通知消息
-                console.log(this.message);
                 if (this.notNotice) {
-                    // TODO  提交不在提示通知消息
-                    console.log("提交不在提示通知消息");
+                    this.$axios.request({
+                        method:"patch",
+                        params:{id: this.activityId},
+                        url:"/activity/closeSendNotification"
+                    }).then(() => {
+                        this.$emit("confirm", this.message)
+                    })
+                } else {
+                    this.$emit("confirm", this.message)
                 }
-                this.$emit("confirm",this.message)
             }
         }
     }

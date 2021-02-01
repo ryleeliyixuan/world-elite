@@ -163,9 +163,8 @@
                 cityList: [], // 活动城市列表
                 searchCityWord: undefined, // 搜索城市关键字
                 // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束;7审核未通过
-                statusList: [{id: 0, name: '审核中'}, {id: 1, name: '草稿'}, {id: 2, name: '已停止'}, {id: 3, name: '即将开始'},
-                    {id: 4, name: '报名中'}, {id: 5, name: '进行中'}, {id: 6, name: '已结束'}, {id: 7, name: '审核未通过'}],
-                statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
+                statusList: [{id: 3, name: '即将开始'}, {id: 4, name: '报名中'}, {id: 5, name: '进行中'}, {id: 6, name: '已结束'}],
+                statusBGColorList: ['#FFC400', '#66BB6A', '#FF6E40', '#FF5252'],
 
                 timeList: [], // 活动时间列表
                 orderList: [{id: "PUBLISH_TIME", name: '最新发布'}, {id: "FOLLOWER", name: '最多关注'},
