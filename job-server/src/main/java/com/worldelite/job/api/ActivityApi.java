@@ -60,7 +60,7 @@ public class ActivityApi extends BaseApi {
     @ApiDoc
     public ApiResult<PageResult<ActivityVo>> getActivityList(@Valid ActivityListForm listForm) throws IOException {
         PageResult<ActivityVo> pageResult;
-        if (listForm.getUserId() == null) {
+        if (listForm.getUserId() == null && listForm.getCompanyId() == null) {
             pageResult = activitySearchService.searchActivityList(listForm);
         } else {
             pageResult = activityService.getActivityList(listForm);

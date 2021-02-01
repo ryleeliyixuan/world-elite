@@ -17,8 +17,8 @@
     <include refid="Blob_Column_List" />
     from t_activity
     <where>
-      <if test="userId != null">
-        and user_id = #{userId,jdbcType=BIGINT}
+      <if test="mUserId != null and mUserId != ''">
+        and user_id in (${mUserId})
       </if>
       <if test="userType != null">
         and user_type = #{userType,jdbcType=CHAR}
@@ -79,8 +79,8 @@
       <if test="id != null">
         t_activity.id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="userId != null">
-        and t_activity.user_id = #{userId,jdbcType=BIGINT}
+      <if test="mUserId != null and mUserId != ''">
+        and t_activity.user_id in (${mUserId})
       </if>
       <if test="userType != null">
         and t_activity.user_type = #{userType,jdbcType=CHAR}
