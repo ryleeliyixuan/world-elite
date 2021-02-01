@@ -152,16 +152,33 @@
                 recruitCountResult: {all: 0, school: 0, community: 0, urgency: 0, hot: 0, inner: 0},
                 cityOptions: [],
                 cityIdProps: {
-                    multiple: true,
-                    lazy: false,
+                    lazy: true,
+                    lazyLoad: (node, resolve) => {
+                        if (node.level >= 1) {
+                            this.$axios.request({
+                                url: "/city/child-city",
+                                method: "get",
+                                params: {parentId: node.value}
+                            }).then(data => {
+                                console.log(data.data);
+                                let nodes = data.data.map(second => {
+                                    let children = second.children && second.children.map(third => {
+                                        return {id: third.id, name: third.name, leaf: true}
+                                    })
+                                    return {id: second.id, name: second.name, children}
+                                });
+                                resolve(nodes);
+                            })
+                        } else {
+                            resolve();
+                        }
+                    },
                     expandTrigger: "hover",
                     value: "id",
                     label: "name",
                     emitPath: false,
                     children: "children"
                 },
-                cityOptions: [{id: 1, name: "国内", children:[{id: 0, name: "加载中"}]},
-                    {id: 2, name: "国外"}],
                 salaryRangeOptions: [],
                 companyScaleOptions: [],
                 companyIndustryOptions: [],
@@ -188,31 +205,16 @@
             initData() {
                 console.log(this.$route.params.id);
                 this.listQuery.companyId = this.$route.params.id;
-                //城市分级选择
+
+                //城市分级选择,获取第一级
                 this.$axios.request({
-                    url: "/city/list",
+                    url: "/city/child-city",
                     method: "get",
-                    params: {type: 1}
+                    params: {parentId: 0}
                 }).then(data => {
-                    this.cityOptions[0].children = data.data.map(second => {
-                        let children = second.children && second.children.map(third => {
-                            return {id: third.id, name: third.name, leaf: true}
-                        })
-                        return {id: second.id, name: second.name, children}
-                    });
+                    this.cityOptions = data.data;
                 })
-                this.$axios.request({
-                    url: "/city/list",
-                    method: "get",
-                    params: {type: 2}
-                }).then(data => {
-                    this.cityOptions[1].children = data.data.map(second => {
-                        let children = second.children && second.children.map(third => {
-                            return {id: third.id, name: third.name, leaf: true}
-                        })
-                        return {id: second.id, name: second.name, children}
-                    });
-                })
+
                 //薪资下拉
                 listByType(9).then(
                     response => (this.salaryRangeOptions = response.data.list)

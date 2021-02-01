@@ -446,15 +446,15 @@
                     1: "男",
                     2: "女",
                 },
-                cityOptions: [{id: 1, name: "国内"}, {id: 2, name: "国外"}],
+                cityOptions: [],
                 cityIdProps: {
                     lazy: true,
                     lazyLoad: (node, resolve) => {
-                        if (node.level === 1) {
+                        if (node.level >= 1) {
                             this.$axios.request({
-                                url: "/city/list",
+                                url: "/city/child-city",
                                 method: "get",
-                                params: {type: node.value}
+                                params: {parentId: node.value}
                             }).then(data => {
                                 console.log(data.data);
                                 let nodes = data.data.map(second => {
@@ -678,7 +678,6 @@
                 listByType(1).then(
                     (response) => (this.degreeOptions = response.data.list)
                 );
-                // listByType(2).then((response) => (this.cityOptions = response.data.list));
                 listByType(9).then(
                     (response) => (this.salaryRangeOptions = response.data.list)
                 );
@@ -699,6 +698,15 @@
                 } else {
                     this.getAttachList();
                 }
+
+                //城市分级选择,获取第一级
+                this.$axios.request({
+                    url: "/city/child-city",
+                    method: "get",
+                    params: {parentId: 0}
+                }).then(data => {
+                    this.cityOptions = data.data;
+                })
 
                 this.listGroup();
             },
