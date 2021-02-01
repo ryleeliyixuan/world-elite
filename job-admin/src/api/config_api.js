@@ -8,26 +8,59 @@ export function saveHomeConfig(data){
       })
 }
 
-export function getHomeConfig(configType){
-    return request({
-        url: '/config/get-home-config',
-        method: 'get',
-        params: {configType: configType}
-      })
+export function getHomeConfig() {
+  return request({
+    url: '/config/get-recommend-config?configType=11',
+    method: 'get',
+    params: {configType: 11}
+  })
 }
 
 export function saveWebHomeConfig(data){
   return request({
-      url: '/config/save-web-home-config',
+      url: '/config/save-recommend-config',
       method: 'post',
       data
     })
 }
 
-export function getWebHomeConfig(configType){
+export function getCarouselList(){
   return request({
-      url: '/config/get-web-home-config',
-      method: 'get',
-      params: {configType: configType}
-    })
+    url: '/config/list-carousel',
+    method: 'get',
+    params:{sort:'position'}
+
+  })
 }
+
+export function deleteCarousel(id){
+  return request({
+    url: '/config/delete-carousel',
+    method: 'post',
+    params: {id:id},
+  })
+}
+
+export function moveUpCarousel(id){
+  return request({
+    url: '/config/move-up-carousel',
+    method: 'post',
+    params: {id:id},
+
+  })
+}
+export function moveDownCarousel(id){
+  return request({
+    url: '/config/move-down-carousel',
+    method: 'post',
+    params: {id:id}
+  })
+}
+export function addCarousel(data){
+  return request({
+    url: '/config/add-carousel',
+    method: 'post',
+    data
+  })
+}
+
