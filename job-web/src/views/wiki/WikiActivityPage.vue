@@ -97,7 +97,7 @@ export default {
         cityIds: [],
         keyword: undefined,
         companyId: undefined,
-        status: "2",
+        status: "3,4,5,6",
         sort: "-id",
         page: 1,
         limit: 10,
