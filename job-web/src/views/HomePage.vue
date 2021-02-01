@@ -90,31 +90,23 @@
     <div style="display: flex">
       <div class="section1-container">
         <el-carousel :interval="2500" arrow="always">
-          <el-carousel-item v-for="banner in banners" :key="banner.img">
+          <el-carousel-item v-for="item in carouselList" :key="item.id">
             <el-image
               class="section1-image"
-              :src="banner.img"
-              :alt="banner.alt"
-              v-on:click="select(banner)"
+              :src="item.url"
+              :alt="item.name"
+              v-on:click="select(item)"
               fit="cover"
             ></el-image>
           </el-carousel-item>
         </el-carousel>
       </div>
       <div>
-        <div class="left-company-wiki">
-          <svg-icon
-            icon-class="company-wiki"
-            class="company-wiki-img"
-            @click="moreJob"
-          ></svg-icon>
+        <div class="left-company-wiki" @click="moreJob">
+          <el-image class="company-wiki-img" :src="recommendConfig.topPicUrl"></el-image>
         </div>
-        <div class="left-activity">
-          <svg-icon
-            icon-class="activity"
-            class="activity-img"
-            @click="moreActivity"
-          ></svg-icon>
+        <div class="left-activity" @click="moreActivity">
+          <el-image class="activity-img" :src="recommendConfig.bottomPicUrl"></el-image>
         </div>
       </div>
     </div>
@@ -123,7 +115,7 @@
     <div class="about-us">
       <svg-icon
         icon-class="about-us"
-        style="height: 334px; width: 1239px"
+        style="height: 334px; width: 100%"
       ></svg-icon>
     </div>
     <!-- 关于我们 ends -->
@@ -552,7 +544,10 @@
 
 <script>
 import { getRecommendList } from "@/api/recommend_api";
-import { getHomeConfig } from "@/api/config_api";
+import {
+  getCarouselList,
+  getRcmdConfig,
+} from "@/api/config_api";
 import { doFavorite } from "@/api/favorite_api";
 import { mapGetters } from "vuex";
 
@@ -577,26 +572,23 @@ export default {
       activitylist: [],
       filteredActivityList: [],
       homeConfig: {},
-      banners: [
-        {
-          img: require("../assets/banner/wetalk.jpeg"),
-          alt: "wetalk",
-        },
-        {
-          img: require("../assets/banner/world-elite.jpeg"),
-          alt: "world-elite",
-          url: "http://test.myworldelite.com/register",
-        },
-        {
-          img: require("../assets/banner/career.jpeg"),
-          alt: "we内推",
-          url: "http://test.myworldelite.com/job-list",
-        },
-      ],
+      carouselList: [],
+      recommendConfig: {},
     };
   },
   methods: {
     initData() {
+      //获取轮播图接口
+      getCarouselList().then((response) => {
+        this.carouselList = response.data.list;
+        this.$emit("complete");
+      });
+      //获取推荐板块接口
+      getRcmdConfig().then((response) => {
+        this.recommendConfig = response.data;
+        this.$emit("complete");
+      });
+      
       getRecommendList({
         objectType: 2, // 公司
         page: 1,
@@ -624,9 +616,6 @@ export default {
         .then((response) => {
           this.recentJobList = response.data.list;
         });
-      getHomeConfig(8).then((response) => {
-        this.homeConfig = response.data;
-      });
     },
     select: function (banner) {
       window.open(banner.url);
@@ -805,6 +794,7 @@ export default {
     }
   }
   .left-company-wiki {
+    cursor: pointer;
     width: 405px;
     height: 202px;
     background: #ffffff;
@@ -814,6 +804,7 @@ export default {
     }
   }
   .left-activity {
+    cursor: pointer;
     width: 405px;
     height: 202px;
     margin-top: 20px;
@@ -846,10 +837,8 @@ export default {
     }
   }
   .about-us {
-    width: 1239px;
-    height: 334px;
-    margin-left: -19px;
-    margin-top: -20px;
+    width: 100%;
+    height: auto;
   }
 
   .company-recommend-box {
@@ -1072,7 +1061,7 @@ export default {
 
     .recommend-job-container {
       display: flex;
-      
+
       .job-card:hover {
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
       }
@@ -1200,6 +1189,24 @@ export default {
 
 @media screen and (max-width: 1140px) {
   .app-container {
+
+     .job-recommend-box{
+      .recommend-job-container{
+         display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .job-card{
+        margin-right: 0px !important;
+      }
+
+      .job-card:last-of-type {
+        margin-left: 0px !important;
+        margin-top: 12px;
+      }
+    }
+
     .company-recommend-box {
       .company-container {
         display: flex;
@@ -1269,6 +1276,10 @@ export default {
 
 @media screen and (max-width: 420px) {
   .app-container {
+
+    .job-recommend-box{
+      padding: 15px;
+    }
     .company-recommend-box {
       padding: 15px;
 

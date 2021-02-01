@@ -22,3 +22,20 @@ export function getUserProtocol(){
     method: 'get'
   })
 }
+
+export function getCarouselList(){
+  return request({
+    url: '/config/list-carousel',
+    method: 'get',
+    params:{sort:'position'}
+
+  })
+}
+
+export function getRcmdConfig() {
+  return request({
+    url: '/config/get-recommend-config?configType=11',
+    method: 'get',
+    params: {configType: 11}
+  })
+}
