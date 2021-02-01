@@ -14,10 +14,7 @@ import com.worldelite.job.form.ActivityForm;
 import com.worldelite.job.form.ActivityListAdminForm;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.ActivityReviewForm;
-import com.worldelite.job.mapper.ActivityMapper;
-import com.worldelite.job.mapper.ActivityTakeOffMapper;
-import com.worldelite.job.mapper.FavoriteMapper;
-import com.worldelite.job.mapper.RegistrationMapper;
+import com.worldelite.job.mapper.*;
 import com.worldelite.job.service.activity.ActivityNotifyManager;
 import com.worldelite.job.service.activity.ActivityStatusManager;
 import com.worldelite.job.util.AppUtils;
@@ -31,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -77,6 +75,9 @@ public class ActivityService extends BaseService {
     @Autowired
     private RealNameAuthService realNameAuthService;
 
+    @Autowired
+    private CompanyUserMapper companyUserMapper;
+
     /**
      * 获取活动列表
      *
@@ -86,7 +87,7 @@ public class ActivityService extends BaseService {
     public PageResult<ActivityVo> getActivityList(ActivityListForm listForm) {
         ActivityOptions options = new ActivityOptions();
 
-        BeanUtil.copyProperties(listForm, options, "status");
+        BeanUtil.copyProperties(listForm, options, "status", "userId");
 
         options.setCityIds(StringUtils.join(listForm.getCityIds(), ","));
         options.setMStatus(StringUtils.join(listForm.getStatus(), ","));
@@ -99,6 +100,22 @@ public class ActivityService extends BaseService {
                 options.setOnlyOverseasStudent(String.valueOf(Bool.TRUE));
             }
         }
+
+        if (listForm.getUserId() != null) {
+            options.setMUserId(listForm.getUserId().toString());
+        }
+        //公司id不为空 用户id为空表示查询该公司发布的全部活动
+        else if (listForm.getCompanyId() != null) {
+            CompanyUser cu = new CompanyUser();
+            cu.setCompanyId(listForm.getCompanyId());
+            List<CompanyUser> companyUserList = companyUserMapper.selectAndList(cu);
+            if (companyUserList.size() > 0) {
+                final List<Long> collect = companyUserList.stream().map(CompanyUser::getUserId).collect(Collectors.toList());
+                options.setMUserId(StringUtils.join(collect, ","));
+                options.setUserType(String.valueOf(PublisherType.COMPANY.value));
+            }
+        }
+
         AppUtils.setPage(listForm);
         Page<Activity> activityPage;
 
