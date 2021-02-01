@@ -270,9 +270,6 @@ public class ActivitySearchService {
             List<SortField> sortFieldList = new ArrayList<>();
             //排序
             if (StringUtils.isNotBlank(form.getSortField())) {
-                //状态=报名中,允许最近报名,最近开始排序
-                //状态=进行中,允许最近开始排序
-                //状态=已结束,不允许最近报名,最近开始排序
 
                 if (ActivitySort.PUBLISH_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())) {
                     sortFieldList.add(new SortField(ActivityIndexFields.ACTIVITY_PUBLISH_TIME, SortField.Type.LONG, true));
@@ -280,21 +277,16 @@ public class ActivitySearchService {
                 if (ActivitySort.FOLLOWER == ActivitySort.valueOf(form.getSortField().toUpperCase())) {
                     sortFieldList.add(new SortField(ActivityIndexFields.FOLLOWER, SortField.Type.INT, true));
                 }
-
-                List<String> statusArray = null;
-                if (form.getStatus() != null && form.getStatus().length > 0) {
-                    statusArray = Arrays.asList(form.getStatus());
+                //活动报名结束时间大于当前时间，按活动开始报名时间排序
+                if (ActivitySort.REGISTRATION_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())) {
+                    sortFieldList.add(new SortField(ActivityIndexFields.REGISTRATION_START_TIME, SortField.Type.LONG, false));
+                    builder.add(LongPoint.newRangeQuery(ActivityIndexFields.REGISTRATION_FINISH_TIME, System.currentTimeMillis(), Long.MAX_VALUE), BooleanClause.Occur.MUST);
                 }
 
-                if (ActivitySort.REGISTRATION_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())
-                        && statusArray != null
-                        && statusArray.contains(String.valueOf(ActivityStatus.SIGN_UP.value))) {
-                    sortFieldList.add(new SortField(ActivityIndexFields.REGISTRATION_START_TIME, SortField.Type.LONG, true));
-                }
-                if (ActivitySort.ACTIVITY_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())
-                        && statusArray != null
-                        && (statusArray.contains(String.valueOf(ActivityStatus.SIGN_UP.value)) || statusArray.contains(String.valueOf(ActivityStatus.ACTIVE.value)))) {
-                    sortFieldList.add(new SortField(ActivityIndexFields.ACTIVITY_START_TIME, SortField.Type.LONG, true));
+                //活动结束时间大于当前时间，按活动开始时间排序
+                if (ActivitySort.ACTIVITY_TIME == ActivitySort.valueOf(form.getSortField().toUpperCase())) {
+                    sortFieldList.add(new SortField(ActivityIndexFields.ACTIVITY_START_TIME, SortField.Type.LONG, false));
+                    builder.add(LongPoint.newRangeQuery(ActivityIndexFields.ACTIVITY_FINISH_TIME, System.currentTimeMillis(), Long.MAX_VALUE), BooleanClause.Occur.MUST);
                 }
             }
 
