@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="29px" viewBox="0 0 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>关闭</title>
+    <desc>Created with Sketch.</desc>
+    <g id="活动版块" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="报名信息管理页（查看报名表default）" transform="translate(-1227.000000, -296.000000)" fill="#000000" fill-rule="nonzero">
+            <g id="编组-46" transform="translate(651.000000, 280.000000)">
+                <g id="编组-45" transform="translate(13.000000, 16.000000)">
+                    <g id="shanchu-2" transform="translate(563.000000, 0.000000)">
+                        <g id="shanchu">
+                            <rect id="矩形" opacity="0" x="0" y="0" width="29" height="29"></rect>
+                            <path d="M14.5,29 C6.525,29 0,22.475 0,14.5 C0,6.525 6.525,0 14.5,0 C22.475,0 29,6.525 29,14.5 C29,22.475 22.475,29 14.5,29 Z M14.5,1.45 C7.43125,1.45 1.45,7.43125 1.45,14.5 C1.45,21.56875 7.25,27.55 14.5,27.55 C21.75,27.55 27.55,21.75 27.55,14.5 C27.55,7.25 21.56875,1.45 14.5,1.45 Z M19.9375,18.85 L15.5875,14.5 L19.9375,10.15 L18.85,9.0625 L14.5,13.4125 L10.15,9.0625 L9.0625,10.15 L13.4125,14.5 L9.0625,18.85 L10.15,19.9375 L14.5,15.5875 L18.85,19.9375 L19.9375,18.85 Z" id="形状"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

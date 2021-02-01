@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>单选 选中</title>
+    <desc>Created with Sketch.</desc>
+    <g id="活动版块" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="活动发布页（选中+校园组织）" transform="translate(-561.000000, -264.000000)" fill-rule="nonzero">
+            <g id="编组-12" transform="translate(390.000000, 214.000000)">
+                <g id="单选-选中-2" transform="translate(171.000000, 50.000000)">
+                    <g id="单选-选中">
+                        <rect id="矩形" fill="#000000" opacity="0" x="0" y="0" width="16" height="16"></rect>
+                        <path d="M8,16 C3.581722,16 0,12.418278 0,8 C0,3.581722 3.581722,0 8,0 C12.418278,0 16,3.581722 16,8 C16,12.418278 12.418278,16 8,16 Z M8,15 C11.8659932,15 15,11.8659932 15,8 C15,4.13400675 11.8659932,1 8,1 C4.13400675,1 1,4.13400675 1,8 C1,11.8659932 4.13400675,15 8,15 Z M8,13 C10.7614237,13 13,10.7614237 13,8 C13,5.23857625 10.7614237,3 8,3 C5.23857625,3 3,5.23857625 3,8 C3,10.7614237 5.23857625,13 8,13 Z" id="形状" fill="#4895EF"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

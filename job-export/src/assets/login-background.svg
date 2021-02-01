@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="601px" height="655px" viewBox="0 0 601 655" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>编组 9</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="7.90443447%" y1="0%" x2="71.7504251%" y2="40.6928978%" id="linearGradient-1">
+            <stop stop-color="#FFFEFC" offset="0%"></stop>
+            <stop stop-color="#FFFAEE" offset="100%"></stop>
+        </linearGradient>
+        <path d="M24.1592473,0 L601.159247,0 L601.159247,0 L601.159247,655 L24.1592473,655 C10.9044133,655 0.159247325,644.254834 0.159247325,631 L0.159247325,24 C0.159247325,10.745166 10.9044133,2.4348735e-15 24.1592473,0 Z" id="path-2"></path>
+        <linearGradient x1="41.9281768%" y1="41.9783804%" x2="50%" y2="63.1681614%" id="linearGradient-4">
+            <stop stop-color="#B4F1FB" offset="0%"></stop>
+            <stop stop-color="#EFF2F7" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="53.1481645%" x2="95.8784294%" y2="50%" id="linearGradient-5">
+            <stop stop-color="#DAE8F9" offset="0%"></stop>
+            <stop stop-color="#BEE8F0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="72.0004108%" y1="44.3454497%" x2="17.3916208%" y2="53.3436259%" id="linearGradient-6">
+            <stop stop-color="#D1D2DF" offset="0%"></stop>
+            <stop stop-color="#7DB6EA" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="16.5151177%" y1="37.6942589%" x2="93.0106698%" y2="47.9918946%" id="linearGradient-7">
+            <stop stop-color="#ABE9FF" offset="0%"></stop>
+            <stop stop-color="#DBECFD" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="12.3085319%" y1="52.5766766%" x2="89.1061404%" y2="47.7951138%" id="linearGradient-8">
+            <stop stop-color="#DAD5E1" offset="0%"></stop>
+            <stop stop-color="#A6C4DE" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="92.2068204%" y1="43.4971062%" x2="0%" y2="60.3709324%" id="linearGradient-9">
+            <stop stop-color="#A1BBDB" offset="0%"></stop>
+            <stop stop-color="#BED8ED" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="6.72017734%" y1="51.074654%" x2="95.1440813%" y2="54.745592%" id="linearGradient-10">
+            <stop stop-color="#D1FFFD" offset="0%"></stop>
+            <stop stop-color="#78CBE1" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="注册流程优化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="登录页面备份" transform="translate(-360.000000, -125.000000)">
+            <g id="编组-10" transform="translate(359.840753, 125.000000)">
+                <g id="编组-9">
+                    <g id="编组-8">
+                        <g id="编组-7">
+                            <mask id="mask-3" fill="white">
+                                <use xlink:href="#path-2"></use>
+                            </mask>
+                            <use id="蒙版" fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+                            <circle id="椭圆形备份-3" fill-opacity="0.62" fill="#FDF0C1" mask="url(#mask-3)" transform="translate(416.159247, 264.000000) rotate(-360.000000) translate(-416.159247, -264.000000) " cx="416.159247" cy="264" r="116"></circle>
+                            <circle id="椭圆形备份-4" fill-opacity="0.51" fill="#FFF3C9" mask="url(#mask-3)" transform="translate(414.159247, 257.000000) rotate(-360.000000) translate(-414.159247, -257.000000) " cx="414.159247" cy="257" r="138"></circle>
+                            <circle id="椭圆形备份" fill-opacity="0.58" fill="#FFEA88" mask="url(#mask-3)" transform="translate(414.159247, 271.000000) rotate(-360.000000) translate(-414.159247, -271.000000) " cx="414.159247" cy="271" r="70"></circle>
+                            <circle id="椭圆形备份-2" fill-opacity="0.58" fill="#FFEA88" mask="url(#mask-3)" transform="translate(414.159247, 271.000000) rotate(-360.000000) translate(-414.159247, -271.000000) " cx="414.159247" cy="271" r="93"></circle>
+                            <circle id="椭圆形" fill="#FFF3AD" mask="url(#mask-3)" cx="414.159247" cy="271" r="39"></circle>
+                            <polygon id="路径-11" fill="url(#linearGradient-4)" mask="url(#mask-3)" points="0.159247325 228 72.1833161 198.233766 106.930067 218.5 145.766707 148 196.731054 218.5 275.700942 210 317.399686 218 354.981423 280 396.159247 257 429.910231 298 504.140237 223 543.159247 187.211023 570.268536 109.939484 612.667766 60.7006026 612.667766 366.993118 -105 429"></polygon>
+                            <path d="M601.771687,298 C258.637459,382.027572 86.1131791,444.966001 84.1988478,486.815285 C82.2845165,528.664569 222.138139,562.059474 503.759715,587 L656.929362,566.647887 L601.771687,298 Z" id="路径-7" fill="url(#linearGradient-5)" mask="url(#mask-3)"></path>
+                            <path d="M-27.1969058,348 C215.012789,362.546087 335.196189,369.81913 333.353293,369.81913 C332.193266,369.81913 309.765314,377.2414 281.474381,386.378214 C242.348056,399.014416 191.871314,415.816024 169.704592,428.762206 C131.509857,451.069337 232.910089,523.025574 139.827797,497.653495 C77.7729361,480.738776 17.2167527,465.14552 -41.8407527,450.873726 L-27.1969058,348 Z" id="路径-10" fill="url(#linearGradient-6)" mask="url(#mask-3)"></path>
+                            <path d="M-38.9052369,449 C258.471086,487.314078 409.492581,539.980744 414.159247,607 C418.825914,674.019256 253.123784,703.043753 -82.9471431,694.073491 L-38.9052369,449 Z" id="路径-6" fill="url(#linearGradient-7)" mask="url(#mask-3)"></path>
+                            <path d="M300.659247,385 C431.953018,320 591.271956,285.722437 634.261734,290.168408 C661.595873,292.995285 578.367479,357.866928 479.625863,398.650102 C423.071567,422.008679 353.405918,427.417673 316.851263,434.21787 C216.473593,452.890949 169.365477,450 300.659247,385 Z" id="路径-9" fill="url(#linearGradient-8)" mask="url(#mask-3)"></path>
+                            <path d="M601.159247,327.5 C423.675331,407.035125 349.341998,460.201792 378.159247,487 C406.976497,513.798208 465.986402,517.464875 555.188963,498 L636.159247,329 L601.159247,327.5 Z" id="路径-8" fill="url(#linearGradient-9)" mask="url(#mask-3)"></path>
+                            <path d="M-15.2691912,567 C121.654623,572.608002 216.130769,572.608002 268.159247,567 C456.594034,546.68915 572.402544,424.079911 601.159247,370.55001 C641.825914,294.850003 653.492581,407.176295 636.159247,707.528884 L-65.8407527,707.528884 L-15.2691912,567 Z" id="路径-5" fill="url(#linearGradient-10)" mask="url(#mask-3)"></path>
+                            <polygon id="三角形" fill="#7C93A8" mask="url(#mask-3)" points="65.6592473 310 80.1592473 372 51.1592473 372"></polygon>
+                            <polygon id="三角形备份" fill="#7C93A8" mask="url(#mask-3)" points="89.1592473 322 98.1592473 360 80.1592473 360"></polygon>
+                            <polygon id="三角形备份-2" fill="#7C93A8" mask="url(#mask-3)" points="523.159247 275 532.159247 313 514.159247 313"></polygon>
+                            <polygon id="三角形备份-3" fill="#7C93A8" mask="url(#mask-3)" points="537.159247 270 546.159247 308 528.159247 308"></polygon>
+                        </g>
+                    </g>
+                    <rect id="矩形" fill-opacity="0.6" fill="#FFFFFF" x="28.1592473" y="106" width="545" height="507"></rect>
+                    <text id="We-build-your-CAREER" font-family="Roboto-Black, Roboto" font-size="36" font-weight="700" fill="#333333">
+                        <tspan x="29.1592473" y="67">We build your CAREER</tspan>
+                    </text>
+                    <text id="独家mock平台已蓄势待发，敬请期待…" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
+                        <tspan x="44.1592473" y="558">独家mock平台已蓄势待发，敬请期待…</tspan>
+                    </text>
+                    <text id="面前模拟，offer无忧" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" fill="#333333">
+                        <tspan x="44.1592473" y="534">面前模拟，offer无忧</tspan>
+                    </text>
+                    <text id="企业信息、薪资、工作环境、实际体验，求职" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
+                        <tspan x="44.1592473" y="429">企业信息、薪资、工作环境、实际体验，求职前你需要做的一切功课，百科已经为</tspan>
+                        <tspan x="44.1592473" y="449">你准备好。</tspan>
+                    </text>
+                    <text id="公司百科，应有尽有" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" fill="#333333">
+                        <tspan x="44.1592473" y="408">公司百科，应有尽有</tspan>
+                    </text>
+                    <text id="国内外名企招聘、空中宣讲、大牛brain" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
+                        <tspan x="44.1592473" y="323">国内外名企招聘、空中宣讲、大牛brainstorm，我们为你一网打尽。</tspan>
+                    </text>
+                    <text id="线上线下，一网打尽" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" fill="#333333">
+                        <tspan x="44.1592473" y="299">线上线下，一网打尽</tspan>
+                    </text>
+                    <rect id="矩形" fill="#FFD666" x="39.1592473" y="152" width="53" height="8"></rect>
+                    <rect id="矩形备份-11" fill="#FFD666" x="39.1592473" y="268" width="53" height="8"></rect>
+                    <rect id="矩形备份-12" fill="#FFD666" x="39.1592473" y="377" width="53" height="8"></rect>
+                    <rect id="矩形备份-13" fill="#FFD666" x="39.1592473" y="503" width="94" height="8"></rect>
+                    <text id="职位" font-family="PingFangSC-Medium, PingFang SC" font-size="21" font-weight="400" fill="#333333">
+                        <tspan x="44.1592473" y="155">职位</tspan>
+                    </text>
+                    <text id="活动" font-family="PingFangSC-Medium, PingFang SC" font-size="21" font-weight="400" fill="#333333">
+                        <tspan x="44.1592473" y="271">活动</tspan>
+                    </text>
+                    <text id="百科" font-family="PingFangSC-Medium, PingFang SC" font-size="21" font-weight="400" fill="#333333">
+                        <tspan x="44.1592473" y="380">百科</tspan>
+                    </text>
+                    <text id="模拟面试" font-family="PingFangSC-Medium, PingFang SC" font-size="21" font-weight="400" fill="#333333">
+                        <tspan x="44.1592473" y="506">模拟面试</tspan>
+                    </text>
+                    <text id="海量内推，尽在掌握" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" fill="#333333">
+                        <tspan x="44.1592473" y="183">海量内推，尽在掌握</tspan>
+                    </text>
+                    <text id="HR面对面，信息全透明，实习、全职岗位每" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" fill="#333333">
+                        <tspan x="44.1592473" y="207">HR面对面，信息全透明，实习、全职岗位每日更新，总有一个你</tspan>
+                        <tspan x="44.1592473" y="227">喜欢。</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
