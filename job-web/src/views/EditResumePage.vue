@@ -1918,7 +1918,6 @@
                     {id:2, value: '兼职', name: '兼职'},
                     {id:3, value: '实习', name: '实习'}
                 ],
-                categoryListOptions: [],
                 newSkillTag: "",
                 skillTagListForm: [],
                 listskill:[],
@@ -1928,37 +1927,6 @@
                         return time.getTime() >= Date.now() - 8.64e7;
                     },
                 },
-                cityIdProps: {
-                    checkStrictly: true,
-                    multiple: true,
-                    lazy: true,
-                    lazyLoad: (node, resolve) => {
-                        if (node.level === 1) {
-                            this.$axios.request({
-                                url: "/city/list",
-                                method: "get",
-                                params: {type: node.value}
-                            }).then(data => {
-                                console.log(data.data);
-                                let nodes = data.data.map(second => {
-                                    let children = second.children && second.children.map(third => {
-                                        return {id: third.id, name: third.name, leaf: true}
-                                    })
-                                    return {id: second.id, name: second.name, children}
-                                });
-                                resolve(nodes);
-                            })
-                        } else {
-                            resolve();
-                        }
-                    },
-                    expandTrigger: "hover",
-                    value: "id",
-                    label: "name",
-                    emitPath: false,
-                    children: "children"
-                },
-                cityOptions: [{id: 1, name: "国内"}, {id: 2, name: "国外"}],
             };
         },
         mounted(){

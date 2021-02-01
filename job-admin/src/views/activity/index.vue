@@ -19,7 +19,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-cascader placeholder="请选择工作城市"
-                                 :show-all-levels="true"
+                                 :show-all-levels="false"
                                  :options="cityOptions"
                                  :props="cityIdProps"
                                  filterable
@@ -274,34 +274,16 @@
                 activityStatus: undefined,
                 activityDateRange: undefined,
                 cityIdProps: {
-                    lazy: true,
-                    lazyLoad: (node, resolve) => {
-                        if (node.level === 1) {
-                            this.$axios.request({
-                                url: "/city/list",
-                                method: "get",
-                                params: {type: node.value}
-                            }).then(data => {
-                                console.log(data.data);
-                                let nodes = data.data.map(second => {
-                                    let children = second.children && second.children.map(third => {
-                                        return {id: third.id, name: third.name, leaf: true}
-                                    })
-                                    return {id: second.id, name: second.name, children}
-                                });
-                                resolve(nodes);
-                            })
-                        } else {
-                            resolve();
-                        }
-                    },
+                    multiple: false,
+                    lazy: false,
+                    emitPath: false,
+                    checkStrictly: false,
                     expandTrigger: "hover",
                     value: "id",
                     label: "name",
-                    emitPath: false,
                     children: "children"
                 },
-                cityOptions: [{id: 1, name: "国内"}, {id: 2, name: "国外"}],
+                cityOptions: [],
                 status: [{id: 3, name: "即将开始"}, {id: 4, name: "报名中"}, {id: 5, name: "进行中"},
                     {id: 6, name: "已结束"}, {id: 2, name: "已下架"}],
                 organizerType: [{id: 4, name: "企业"}, {id: 1, name: "学生组织"}, {id: 2, name: "社会组织"}, {id: 3, name: "个人"}],
@@ -334,6 +316,30 @@
         methods: {
             initData() {
                 this.getList();
+
+                // 获取全部城市
+                this.$axios.request({
+                    url: "/city/list",
+                    method: "get",
+                }).then(data => {
+                    let municipality = ["北京市", "上海市", "天津市", "重庆市"];
+                    this.cityOptions = data.data.map(first => {
+                        if (first.children) {
+                            first.children = first.children.map(second => {
+                                if (municipality.includes(second.name)) {
+                                    delete second.children;
+                                } else if (second.children) {
+                                    second.children = second.children.map(third => {
+                                        delete third.children;
+                                        return third;
+                                    })
+                                }
+                                return second;
+                            })
+                        }
+                        return first;
+                    })
+                })
             },
             getList() {
                 this.listLoading = true;
