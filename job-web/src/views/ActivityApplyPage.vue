@@ -331,17 +331,40 @@
 
             // 通过报名
             applyPass(message) {
-                console.log(this.selectItem.id,message);
-                // this.$axios.patch('/registration/pass', {id: this.selectItem.id, notifyMsg: message}).then(() => {
-                //     this.getList();
-                //     this.applyStatusList[1].total++;
-                //     this.applyStatusList[3].total--;
-                // })
+                this.$axios.request({
+                    method: "patch",
+                    url: "/registration/pass",
+                    params: {id: this.selectItem.id, notifyMsg: message}
+                }).then(() => {
+                    this.noticeDialogVisible = false;
+                    this.getList();
+                    this.applyStatusList[1].total++;
+                    this.applyStatusList[3].total--;
+                })
             },
 
             // 点击不合适（待处理中）
             onReject1(item) {
-                this.$axios.patch('/registration/inappropriate', {id: item.id}).then(() => {
+                this.selectItem = item;
+                this.applyReject();
+
+                // TODO 不通过时没有确认弹窗
+                // this.selectItem = item;
+                // if (this.activity.sendNoticeConfirm) {
+                //     this.noticeDialogVisible = true;
+                // } else {
+                //     this.applyReject();
+                // }
+            },
+
+            // 拒绝报名
+            applyReject(message) {
+                this.$axios.request({
+                    method: "patch",
+                    url: "/registration/inappropriate",
+                    params: {id: this.selectItem.id, notifyMsg: message}
+                }).then(() => {
+                    this.noticeDialogVisible = false;
                     this.getList();
                     this.applyStatusList[2].total++;
                     this.applyStatusList[3].total--;
