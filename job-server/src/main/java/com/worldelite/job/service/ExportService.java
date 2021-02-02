@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
+import com.worldelite.job.constants.Gender;
 import com.worldelite.job.context.config.DomainConfig;
 import com.worldelite.job.entity.Download;
 import com.worldelite.job.entity.Resume;
@@ -155,7 +156,6 @@ public class ExportService extends BaseService {
         if (excelFile.exists()) {
             return excelFileName;
         }
-
         PageResult<RegistrationVo> pageResult;
         List<RegistrationExcel> excelData = new ArrayList<>();
 
@@ -186,55 +186,112 @@ public class ExportService extends BaseService {
 
         long exportRecordCount = 0;
 
+        //动态表头
+        List<List<String>> head = new ArrayList<>();
+
+        //动态数据
+        List<List<String>> data = new ArrayList<>();
+
+        //生成表头
+        List<String> colName = new ArrayList<>();
+        colName.add("姓名");
+        head.add(colName);
+        if("1".equals(registrationExportForm.getGenderFlag())){
+            List<String> col = new ArrayList<>();
+            col.add("性别");
+            head.add(col);
+        }
+        if("1".equals(registrationExportForm.getPhoneFlag())){
+            List<String> col = new ArrayList<>();
+            col.add("手机号");
+            head.add(col);
+        }
+        if("1".equals(registrationExportForm.getEmailFlag())){
+            List<String> col = new ArrayList<>();
+            col.add("邮箱");
+            head.add(col);
+        }
+        if("1".equals(registrationExportForm.getSchoolFlag())){
+            List<String> col = new ArrayList<>();
+            col.add("学校");
+            head.add(col);
+        }
+        if("1".equals(registrationExportForm.getProfessionFlag())){
+            List<String> col = new ArrayList<>();
+            col.add("专业");
+            head.add(col);
+        }
+        if("1".equals(registrationExportForm.getGradeFlag())){
+            List<String> col = new ArrayList<>();
+            col.add("年级");
+            head.add(col);
+        }
+        if("1".equals(registrationExportForm.getEducationFlag())){
+            List<String> col = new ArrayList<>();
+            col.add("学历");
+            head.add(col);
+        }
+
+        //生成数据
         do {
             pageResult = registrationService.getRegistrationList(registrationExportForm);
             for (RegistrationVo registrationVo : pageResult.getList()) {
-                if("0".equals(registrationExportForm.getNameFlag())){
-                    registrationVo.setName("");
+                List<String> row = new ArrayList<>();
+                row.add(registrationVo.getName());
+                if("1".equals(registrationExportForm.getGenderFlag())){
+                    String gender = registrationVo.getGender();
+                    if("1".equals(gender)){
+                        row.add("男");
+                    }else if("2".equals(gender)){
+                        row.add("女");
+                    }else{
+                        row.add("未知");
+                    }
                 }
-                if("0".equals(registrationExportForm.getGenderFlag())){
-                    registrationVo.setGender("");
+                if("1".equals(registrationExportForm.getPhoneFlag())){
+                    row.add(registrationVo.getPhone());
                 }
-                if("0".equals(registrationExportForm.getPhoneFlag())){
-                    registrationVo.setPhone("");
+                if("1".equals(registrationExportForm.getEmailFlag())){
+                    row.add(registrationVo.getEmail());
                 }
-                if("0".equals(registrationExportForm.getEmailFlag())){
-                    registrationVo.setEmail("");
+                if("1".equals(registrationExportForm.getSchoolFlag())){
+                    row.add(registrationVo.getSchool());
                 }
-                if("0".equals(registrationExportForm.getSchoolFlag())){
-                    registrationVo.setSchool("");
+                if("1".equals(registrationExportForm.getProfessionFlag())){
+                    row.add(registrationVo.getProfession());
                 }
-                if("0".equals(registrationExportForm.getProfessionFlag())){
-                    registrationVo.setProfession("");
+                if("1".equals(registrationExportForm.getGradeFlag())){
+                    row.add(registrationVo.getGrade());
                 }
-                if("0".equals(registrationExportForm.getGradeFlag())){
-                    registrationVo.setGrade("");
+                if("1".equals(registrationExportForm.getEducationFlag())){
+                    if(registrationVo.getEducation() != null) {
+                        row.add(registrationVo.getEducation().getName());
+                    }else{
+                        row.add("未知");
+                    }
                 }
-                if("0".equals(registrationExportForm.getEducationFlag())){
-                    registrationVo.setEducation(null);
-                }
-                if(!"0".equals(registrationExportForm.getResumePdfFlag())){
+                if("1".equals(registrationExportForm.getResumePdfFlag())){
                     if(registrationVo.getResumeId() != null){
                         resumePdfList.add(exportResumeToPdf(registrationVo.getResumeId()));
                     }
                 }
-                if(!"0".equals(registrationExportForm.getRegistrationPdfFlag())){
+                if("1".equals(registrationExportForm.getRegistrationPdfFlag())){
                     registrationPdfList.add(exportRegistrationToPdf(registrationVo.getId()));
                 }
-                excelData.add(toRegistrationExcel(registrationVo));
+                data.add(row);
                 exportRecordCount++;
             }
             registrationExportForm.setPage(registrationExportForm.getPage() + 1);
         } while (pageResult.getHasMore() && exportRecordCount < excelMaxCount);
 
-        EasyExcel.write(fileService.getFile(excelFileName), RegistrationExcel.class).sheet().doWrite(excelData);
+        EasyExcel.write(fileService.getFile(excelFileName)).head(head).sheet().doWrite(data);
 
         RegistrationExportVo registrationExportVo = new RegistrationExportVo();
         registrationExportVo.setRegistrationExcel(excelFileName);
-        if(!"0".equals(registrationExportForm.getRegistrationPdfFlag())){
+        if("1".equals(registrationExportForm.getRegistrationPdfFlag())){
             registrationExportVo.setRegistrationPdf(toZipFile(registrationPdfList));
         }
-        if(!"0".equals(registrationExportForm.getResumePdfFlag())){
+        if("1".equals(registrationExportForm.getResumePdfFlag())){
             registrationExportVo.setResumePdf(toZipFile(resumePdfList));
         }
         return registrationExportVo;
@@ -243,7 +300,6 @@ public class ExportService extends BaseService {
     private RegistrationExcel toRegistrationExcel(RegistrationVo registrationVo) {
         RegistrationExcel registrationExcel = new RegistrationExcel();
         BeanUtil.copyProperties(registrationVo,registrationExcel);
-        registrationExcel.setNumber("");
         registrationExcel.setEducation("");
         registrationExcel.setStatus("");
         return registrationExcel;

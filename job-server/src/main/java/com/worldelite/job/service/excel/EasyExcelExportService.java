@@ -215,7 +215,6 @@ public class EasyExcelExportService implements IExportExcelService {
     private RegistrationExcel toRegistrationExcel(RegistrationVo registrationVo) {
         RegistrationExcel registrationExcel = new RegistrationExcel();
         BeanUtil.copyProperties(registrationVo,registrationExcel);
-        registrationExcel.setNumber("");
         registrationExcel.setEducation("");
         registrationExcel.setStatus("");
         return registrationExcel;
