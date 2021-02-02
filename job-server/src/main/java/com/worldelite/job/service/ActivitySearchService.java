@@ -27,7 +27,10 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -185,7 +188,9 @@ public class ActivitySearchService {
 
         doc.add(new StringField(ActivityIndexFields.FORM, String.valueOf(activity.getForm()), Field.Store.YES));
         doc.add(new StringField(ActivityIndexFields.CITY_ID, String.valueOf(activity.getCityId()), Field.Store.YES));
-        doc.add(new StringField(ActivityIndexFields.STATUS, String.valueOf(activity.getStatus()), Field.Store.YES));
+
+        doc.add(new IntPoint(ActivityIndexFields.STATUS, activity.getStatus()));
+        doc.add(new NumericDocValuesField(ActivityIndexFields.STATUS, activity.getStatus()));
 
         doc.add(new LongPoint(ActivityIndexFields.REGISTRATION_START_TIME, activity.getRegistrationStartTime().getTime()));
         doc.add(new NumericDocValuesField(ActivityIndexFields.REGISTRATION_START_TIME, activity.getRegistrationStartTime().getTime()));
@@ -243,7 +248,12 @@ public class ActivitySearchService {
 
             if (form.getStatus() != null && form.getStatus().length > 0) {
                 for (String status : form.getStatus()) {
-                    builder.add(new TermQuery(new Term(ActivityIndexFields.STATUS, status)), BooleanClause.Occur.MUST);
+                    try {
+                        final int i = Integer.parseInt(status);
+                        builder.add(IntPoint.newExactQuery(ActivityIndexFields.STATUS, i), BooleanClause.Occur.MUST);
+                    } catch (NumberFormatException e) {
+                        log.error(e.getMessage(), e);
+                    }
                 }
             }
 
@@ -291,6 +301,7 @@ public class ActivitySearchService {
             }
 
             sortFieldList.add(new SortField(ActivityIndexFields.WEIGHT, SortField.Type.INT, true));
+            sortFieldList.add(new SortField(ActivityIndexFields.STATUS, SortField.Type.INT, false));
 
             sort.setSort(sortFieldList.toArray(new SortField[0]));
 
