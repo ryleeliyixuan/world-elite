@@ -142,8 +142,7 @@ public class SendNotificationService {
             }
         }
 
-        System.out.println(toRegistrationMsg);
-        //sendMsg(registration.getRegistrationUserId(), toRegistrationMsg, String.format("/activity/%s", activity.getId()), 1);
+        sendMsg(registration.getRegistrationUserId(), toRegistrationMsg, String.format("/activity/%s", activity.getId()), 1);
     }
 
     /**
