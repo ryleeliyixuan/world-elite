@@ -113,7 +113,7 @@ public class ActivityService extends BaseService {
                 final List<Long> collect = companyUserList.stream().map(CompanyUser::getUserId).collect(Collectors.toList());
                 options.setMUserId(StringUtils.join(collect, ","));
                 options.setUserType(String.valueOf(PublisherType.COMPANY.value));
-            }else{
+            } else {
                 return new PageResult<>().emptyResult();
             }
         }
@@ -302,6 +302,21 @@ public class ActivityService extends BaseService {
                 //原本草稿状态,更新时不带状态,设为待审核
                 if (activity.getStatus() == ActivityStatus.DRAFT.value)
                     activity.setStatus(ActivityStatus.REVIEWING.value);
+
+                //原本审核失败状态,更新时不带状态,设为待审核
+                if (activity.getStatus() == ActivityStatus.REVIEW_FAILURE.value) {
+                    activity.setStatus(ActivityStatus.REVIEWING.value);
+
+                    //最新审核记录为空 添加新的
+                    final ActivityReviewVo reviewVo = activityReviewService.getActivityReviewNewestByActivityId(activity.getId());
+                    if (reviewVo == null || !StringUtils.equals(String.valueOf(VerificationStatus.REVIEWING.value), reviewVo.getStatus())) {
+                        ActivityReviewForm activityReviewForm = new ActivityReviewForm();
+                        activityReviewForm.setActivityId(activity.getId());
+                        activityReviewForm.setUserId(activity.getUserId());
+                        activityReviewForm.setStatus(String.valueOf(VerificationStatus.REVIEWING.value));
+                        activityReviewService.addActivityReview(activityReviewForm);
+                    }
+                }
             }
 
             activityMapper.updateByPrimaryKeySelective(activity);
