@@ -43,6 +43,20 @@ public class FavoriteApi extends BaseApi{
         return ApiResult.ok(result);
     }
 
+    /**
+     * 批量收藏或者取消收藏
+     *
+     * @param favoritesForm
+     * @return
+     */
+    @RequireLogin
+    @PostMapping("favorites")
+    @ApiDoc
+    public ApiResult favorites(@RequestBody FavoritesForm favoritesForm){
+        favoriteService.favorites(favoritesForm);
+        return ApiResult.ok();
+    }
+
 
     /**
      * 获取当前用户收藏列表

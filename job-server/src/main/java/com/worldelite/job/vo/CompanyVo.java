@@ -54,6 +54,7 @@ public class CompanyVo implements VoConvertable<CompanyVo, Company>{
     private Byte favoriteFlag = Bool.FALSE; //收藏标志
     @JSONField(format = "yyyy-MM-dd")
     private Date favoriteTime; //收藏时间
+    private Integer favoriteNumber; //收藏人数
 
     @Override
     public CompanyVo asVo(Company company) {
