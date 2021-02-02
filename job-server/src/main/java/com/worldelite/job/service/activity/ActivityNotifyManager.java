@@ -26,6 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Executors;
 
 /**
@@ -36,7 +37,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 @Component
 @AllArgsConstructor
-public class ActivityNotifyManager extends AbstractActivityManager implements CommandLineRunner {
+public class ActivityNotifyManager implements CommandLineRunner {
     private final ActivityMapper activityMapper;
     private final RegistrationMapper registrationMapper;
     private final FavoriteMapper favoriteMapper;
@@ -45,7 +46,7 @@ public class ActivityNotifyManager extends AbstractActivityManager implements Co
     private final UserApplicantService userApplicantService;
     private final IEmailService emailService;
     private final CityService cityService;
-
+    private final DelayQueue<DelayActivityInfo> delayQueue = new DelayQueue<>();
 
     public enum BusinessType {
         /**
@@ -64,7 +65,27 @@ public class ActivityNotifyManager extends AbstractActivityManager implements Co
         }
     }
 
-    @Override
+    /**
+     * 加入到延时队列中
+     */
+    public void put(DelayActivityInfo delayActivityInfo) {
+        delayQueue.put(delayActivityInfo);
+    }
+
+    /**
+     * 取消延时任务
+     */
+    public boolean remove(DelayActivityInfo delayActivityInfo) {
+        return delayQueue.remove(delayActivityInfo);
+    }
+
+    /**
+     * 取消延时任务
+     */
+    public boolean remove(Integer activityId) {
+        return delayQueue.removeIf(delayActivityInfo -> delayActivityInfo.getActivityId().equals(activityId));
+    }
+
     public void put(Activity activity, Integer type) {
         //仅对有效的活动创建索引
         if (activity.getStatus() == ActivityStatus.REVIEWING.value
