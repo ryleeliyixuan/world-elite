@@ -64,12 +64,12 @@
                                    placeholder="输入国内外城市名，支持多个"
                                    :remote-method="searchCity"
                                    :loading="loading"
-                        @change="handleFilter">
+                                   @change="handleFilter">
                             <el-option
-                                v-for="item in cityOptions"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
+                                    v-for="item in cityOptions"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
                             </el-option>
                             <div slot="prefix" class="search-button">
                                 搜索
@@ -143,7 +143,7 @@
             </div>
 
             <pagination :total="total"
-                        :limit="10"
+                        :limit="listQuery.limit"
                         :page.sync="listQuery.page"
                         @pagination="getList">
             </pagination>
@@ -362,6 +362,8 @@
                 this.listQuery.status = undefined;
                 this.listQuery.timeId = undefined;
                 this.listQuery.sortField = undefined;
+                this.cityList.forEach(item => item.selected = false);
+                this.searchCityIds = [];
                 this.handleFilter();
             },
 
@@ -374,7 +376,12 @@
             // 加载数据
             getList() {
                 this.listQuery.keyword = this.$route.query.searchWord;
-                this.listQuery.cityIds = this.searchCityIds.join(",");
+                this.cityList.forEach(city => {
+                    if (this.searchCityIds.includes(parseInt(city.value))) {
+                        city.selected = true;
+                    }
+                })
+                this.listQuery.cityIds = this.cityList.filter(city => city.selected).map(city => city.value).concat(this.searchCityIds).join(",");
                 this.$storage.setData(this.$options.name, this.listQuery);
                 this.loading = true;
                 this.$axios.get("/activity/list", {params: this.listQuery}).then(response => {
@@ -556,6 +563,7 @@
 
                             ::v-deep .el-input__prefix {
                                 right: 5px;
+                                left: auto;
 
                                 .search-button {
                                     width: 82px;

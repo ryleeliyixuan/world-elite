@@ -103,8 +103,8 @@
                             <div class="button-text" @click.stop="onViewResume(item)" v-if="activity.needResume==='1'">查看简历</div>
                         </div>
                         <div class="button-container" style="margin-top: 13px;" v-if="activity.auditType==='0'">
-                            <div class="button button1-1" v-if="item.status === 1" @click.stop="onResolve1(item)">通过报名</div>
-                            <div class="button button1-2" v-if="item.status === 1" @click.stop="onReject1(item)">不合适</div>
+                            <div class="button button1-1" v-if="item.status === 1" :style="{cursor:activity.status!==5&&activity.status!==6?'pointer':'not-allowed'}" @click.stop="onResolve1(item)">通过报名</div>
+                            <div class="button button1-2" v-if="item.status === 1" :style="{cursor:activity.status!==5&&activity.status!==6?'pointer':'not-allowed'}" @click.stop="onReject1(item)">不合适</div>
                             <div class="button button2-1" style="cursor: default;" v-if="item.status === 2" @click.stop="">已通过</div>
                             <!--                            <div class="button button2-2" v-if="item.status === 2" @click.stop="onReject2(item)">不合适</div>-->
                             <!--                            <div class="button button3-1" v-if="item.status === 3" @click.stop="onResolve3(item)">重新通过</div>-->
@@ -321,11 +321,13 @@
 
             // 点击通过报名（待处理中）
             onResolve1(item) {
-                this.selectItem = item;
-                if (this.activity.sendNoticeConfirm === '1') {
-                    this.noticeDialogVisible = true;
-                } else {
-                    this.applyPass();
+                if (this.activity.status !== 5 && this.activity.status !== 6) {
+                    this.selectItem = item;
+                    if (this.activity.sendNoticeConfirm === '1') {
+                        this.noticeDialogVisible = true;
+                    } else {
+                        this.applyPass();
+                    }
                 }
             },
 
@@ -348,8 +350,10 @@
 
             // 点击不合适（待处理中）
             onReject1(item) {
-                this.selectItem = item;
-                this.applyReject();
+                if (this.activity.status !== 5 && this.activity.status !== 6) {
+                    this.selectItem = item;
+                    this.applyReject();
+                }
 
                 // TODO 不通过时没有确认弹窗
                 // this.selectItem = item;
