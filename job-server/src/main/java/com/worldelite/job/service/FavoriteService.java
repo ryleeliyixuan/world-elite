@@ -3,10 +3,7 @@ package com.worldelite.job.service;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.FavoriteType;
 import com.worldelite.job.entity.Favorite;
-import com.worldelite.job.form.ActivityListForm;
-import com.worldelite.job.form.FavoriteForm;
-import com.worldelite.job.form.FavoriteListForm;
-import com.worldelite.job.form.PageForm;
+import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.ActivityVo;
@@ -70,6 +67,17 @@ public class FavoriteService extends BaseService {
             }
         }
         return !favoriteForm.getFavorite();
+    }
+
+    public void favorites(FavoritesForm favoritesForm) {
+        List<Long> ids = favoritesForm.getObjectIdList();
+        for(Long id:ids){
+            FavoriteForm favoriteForm = new FavoriteForm();
+            favoriteForm.setFavorite(favoritesForm.getFavorite());
+            favoriteForm.setType(favoritesForm.getType());
+            favoriteForm.setObjectId(id);
+            favorite(favoriteForm);
+        }
     }
 
     /**

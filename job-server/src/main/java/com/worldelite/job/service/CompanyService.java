@@ -304,6 +304,7 @@ public class CompanyService extends BaseService{
             Boolean favorite = favoriteService.checkUserFavorite(company.getId(), FavoriteType.COMPANY);
             companyVo.setFavoriteFlag(favorite? Bool.TRUE: Bool.FALSE);
         }
+        companyVo.setFavoriteNumber(favoriteService.getWikiFavoriteCount(company.getId()));
         return companyVo;
     }
 }
