@@ -103,8 +103,12 @@
                             <div class="button-text" @click.stop="onViewResume(item)" v-if="activity.needResume==='1'">查看简历</div>
                         </div>
                         <div class="button-container" style="margin-top: 13px;" v-if="activity.auditType==='0'">
-                            <div class="button button1-1" v-if="item.status === 1" :style="{cursor:activity.status!==6?'pointer':'not-allowed'}" @click.stop="onResolve1(item)">通过报名</div>
-                            <div class="button button1-2" v-if="item.status === 1" :style="{cursor:activity.status!==6?'pointer':'not-allowed'}" @click.stop="onReject1(item)">不合适</div>
+                            <div class="button button1-1" v-if="item.status === 1" :style="{cursor:activity.status!==6?'pointer':'not-allowed'}"
+                                 @click.stop="onResolve1(item)">通过报名
+                            </div>
+                            <div class="button button1-2" v-if="item.status === 1" :style="{cursor:activity.status!==6?'pointer':'not-allowed'}"
+                                 @click.stop="onReject1(item)">不合适
+                            </div>
                             <div class="button button2-1" style="cursor: default;" v-if="item.status === 2" @click.stop="">已通过</div>
                             <!--                            <div class="button button2-2" v-if="item.status === 2" @click.stop="onReject2(item)">不合适</div>-->
                             <!--                            <div class="button button3-1" v-if="item.status === 3" @click.stop="onResolve3(item)">重新通过</div>-->
@@ -225,8 +229,8 @@
                 })
 
                 // 加载报名信息列表
-                let query = {...this.listQuery};
                 this.applyStatusList.forEach(item => {
+                    let query = {...this.listQuery};
                     query.status = item.id;
                     this.$axios.post("/registration/list", query).then(response => {
                         item.dataList = response.data.list;
