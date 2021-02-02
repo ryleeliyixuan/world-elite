@@ -8,8 +8,6 @@ import lombok.Data;
  */
 @Data
 public class RegistrationExcel {
-    @ExcelProperty("编号")
-    private String number;
     @ExcelProperty("姓名")
     private String name;
     @ExcelProperty("性别")
