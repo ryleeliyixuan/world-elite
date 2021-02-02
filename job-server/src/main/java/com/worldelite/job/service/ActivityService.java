@@ -113,6 +113,8 @@ public class ActivityService extends BaseService {
                 final List<Long> collect = companyUserList.stream().map(CompanyUser::getUserId).collect(Collectors.toList());
                 options.setMUserId(StringUtils.join(collect, ","));
                 options.setUserType(String.valueOf(PublisherType.COMPANY.value));
+            }else{
+                return new PageResult<>().emptyResult();
             }
         }
 
