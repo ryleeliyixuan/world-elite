@@ -102,7 +102,7 @@
         </el-carousel>
       </div>
       <div>
-        <div class="left-company-wiki" @click="moreJob">
+        <div class="left-company-wiki" @click="moreWiki">
           <svg-icon
             icon-class="company-wiki"
             class="company-wiki-img"
@@ -607,6 +607,8 @@ export default {
         this.recommendCompanyList = response.data.list;
         this.$emit("complete");
       });
+
+      //推荐职位
       getRecommendList({
         objectType: 1, // 职位
         page: 1,
@@ -626,8 +628,8 @@ export default {
           this.recentJobList = response.data.list;
         });
     },
-    select: function (banner) {
-      window.open(banner.url);
+    select: function (item) {
+      window.open(item.target);
     },
     //mouse in fav
     MouseInFav(company) {
@@ -688,6 +690,9 @@ export default {
     },
     moreJob() {
       this.$router.push("/job-list");
+    },
+    moreWiki(){
+      this.$router.push("/wiki-card");
     },
     moreActivity() {
       this.$router.push("/activity-list");
@@ -784,6 +789,7 @@ export default {
     width: calc(100vw - 20px);
     margin: 0 auto 30px;
     .section1-image {
+      cursor: pointer;
       width: 779px;
       height: 424px;
     }
