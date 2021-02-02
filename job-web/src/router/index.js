@@ -23,19 +23,23 @@ const constantRoutes = [
     {
         path: '/register-basic',
         component: () => import('@/views/RegisterBasicPage'),
-        meta: { title: '寰球菁英-注册' }
+        meta: { title: '寰球菁英-基本信息' }
     },
     {
         path: '/register-job-orientation',
         component: () => import('@/views/RegisterJobOriPage'),
-        meta: { title: '寰球菁英-注册' }
+        meta: { title: '寰球菁英-求职意向' }
     },
     {
         path: '/register-success',
         component: () => import('@/views/RegisterSuccessPage'),
         meta: { title: '寰球菁英-注册成功' }
     },
-
+    {
+        path: '/register-recommendation',
+        component: () => import('@/views/RegisterRcmdPage'),
+        meta: { title: '寰球菁英-精选推荐' }
+    },
     {
         path: '/edit-resume',
         component: () => import('@/views/EditResumePage'),

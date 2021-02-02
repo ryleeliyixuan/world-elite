@@ -161,7 +161,7 @@ export default {
     },
     onSubmitForm() {
       saveUserExpectJob(this.form).then(() => {
-        this.$router.push({ path: "/regist-success" });
+        this.$router.push({ path: "/register-recommendation" });
       });
     },
     onPrevPage() {
