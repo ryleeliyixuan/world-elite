@@ -103,10 +103,21 @@
       </div>
       <div>
         <div class="left-company-wiki" @click="moreJob">
-          <el-image class="company-wiki-img" :src="recommendConfig.topPicUrl"></el-image>
+          <svg-icon
+            icon-class="company-wiki"
+            class="company-wiki-img"
+          ></svg-icon>
+          <!-- <el-image
+            class="company-wiki-img"
+            :src="recommendConfig.topPicUrl"
+          ></el-image> -->
         </div>
         <div class="left-activity" @click="moreActivity">
-          <el-image class="activity-img" :src="recommendConfig.bottomPicUrl"></el-image>
+          <svg-icon icon-class="activity" class="activity-img"></svg-icon>
+          <!-- <el-image
+            class="activity-img"
+            :src="recommendConfig.bottomPicUrl"
+          ></el-image> -->
         </div>
       </div>
     </div>
@@ -115,6 +126,7 @@
     <div class="about-us">
       <svg-icon
         icon-class="about-us"
+        class="about-us-img"
         style="height: 334px; width: 100%"
       ></svg-icon>
     </div>
@@ -544,10 +556,7 @@
 
 <script>
 import { getRecommendList } from "@/api/recommend_api";
-import {
-  getCarouselList,
-  getRcmdConfig,
-} from "@/api/config_api";
+import { getCarouselList, getRcmdConfig } from "@/api/config_api";
 import { doFavorite } from "@/api/favorite_api";
 import { mapGetters } from "vuex";
 
@@ -588,7 +597,7 @@ export default {
         this.recommendConfig = response.data;
         this.$emit("complete");
       });
-      
+
       getRecommendList({
         objectType: 2, // 公司
         page: 1,
@@ -837,8 +846,13 @@ export default {
     }
   }
   .about-us {
-    width: 100%;
+    width: auto;
     height: auto;
+    margin-top: -20px;
+    margin-bottom: 10px;
+    // .about-us-img {
+    //   box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
+    // }
   }
 
   .company-recommend-box {
@@ -1189,15 +1203,14 @@ export default {
 
 @media screen and (max-width: 1140px) {
   .app-container {
-
-     .job-recommend-box{
-      .recommend-job-container{
-         display: flex;
+    .job-recommend-box {
+      .recommend-job-container {
+        display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
       }
 
-      .job-card{
+      .job-card {
         margin-right: 0px !important;
       }
 
@@ -1276,8 +1289,7 @@ export default {
 
 @media screen and (max-width: 420px) {
   .app-container {
-
-    .job-recommend-box{
+    .job-recommend-box {
       padding: 15px;
     }
     .company-recommend-box {
