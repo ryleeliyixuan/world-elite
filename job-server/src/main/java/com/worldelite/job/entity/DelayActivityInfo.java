@@ -33,12 +33,13 @@ public class DelayActivityInfo implements Delayed {
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(this.expire - System.currentTimeMillis(), unit);
+        return unit.convert(this.expire - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
 
     @Override
     public int compareTo(Delayed o) {
-        long delta = getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS);
-        return (int) delta;
+        long delta = this.getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS);
+        if (delta == 0) return 0;
+        return delta < 0 ? -1 : 1;
     }
 }
