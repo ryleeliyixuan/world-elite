@@ -415,9 +415,19 @@
                 if (value && value.length === 2) {
                     this.activityForm.activityStartTime = value[0].getTime();
                     this.activityForm.activityFinishTime = value[1].getTime();
+                    this.registrationTimeOption = {
+                        disabledDate: (time) => {
+                            return (time.getTime() < Date.now()) || (time.getTime() > value[0].getTime());
+                        }
+                    };
                 } else {
                     this.activityForm.activityStartTime = undefined;
                     this.activityForm.activityFinishTime = undefined;
+                    this.registrationTimeOption = {
+                        disabledDate: (time) => {
+                            return time.getTime() < Date.now();
+                        }
+                    };
                 }
             },
             // 报名时间
