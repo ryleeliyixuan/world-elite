@@ -8,6 +8,7 @@ import com.worldelite.job.event.ActivityInfoRefreshEvent;
 import com.worldelite.job.form.ActivityListForm;
 import com.worldelite.job.form.SearchNameForm;
 import com.worldelite.job.mapper.ActivityMapper;
+import com.worldelite.job.service.search.ActivityStatusComparatorSource;
 import com.worldelite.job.vo.ActivityVo;
 import com.worldelite.job.vo.PageResult;
 import lombok.SneakyThrows;
@@ -301,7 +302,7 @@ public class ActivitySearchService {
             }
 
             sortFieldList.add(new SortField(ActivityIndexFields.WEIGHT, SortField.Type.INT, true));
-            sortFieldList.add(new SortField(ActivityIndexFields.STATUS, SortField.Type.INT, false));
+            sortFieldList.add(new SortField(ActivityIndexFields.STATUS, new ActivityStatusComparatorSource(), false));
 
             sort.setSort(sortFieldList.toArray(new SortField[0]));
 
