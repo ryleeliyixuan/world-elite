@@ -366,6 +366,7 @@ public class ActivityService extends BaseService {
 
             //发送通知, 告知所有活动报名者活动下架
             SpringContextHolder.publishEvent(new ActivityTakeOffEvent(this, activity.getId()));
+            SpringContextHolder.publishEvent(new ActivityInfoRefreshEvent(this, activity.getId()));
         } else {
             throw new ServiceException(message("activity.not.exist"));
         }
