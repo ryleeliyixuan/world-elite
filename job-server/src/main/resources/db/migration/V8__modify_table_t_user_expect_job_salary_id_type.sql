@@ -1,0 +1,2 @@
+ALTER TABLE `db_worldelite`.`t_user_expect_job`
+    MODIFY COLUMN `salary_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '期望薪资id, 多个之间逗号分隔' AFTER `category_id`;
