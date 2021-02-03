@@ -54,9 +54,9 @@
                         <share :config="shareConfig"></share>
                     </el-popover>
 
-                    <div :class="activity.registrationFlag?'apply-button2':'apply-button'" @click="onApply">{{activity.registrationFlag?'已报名':'报名'}}</div>
+                    <div :class="(activity.registrationFlag || activity.numberLimit === activity.applicantQuantity)?'apply-button2':'apply-button'" @click="onApply">{{activity.registrationFlag?'已报名':'报名'}}</div>
                 </div>
-                <div class="line2" v-if="activity.numberLimit && activity.numberLimit!==-1">
+                <div class="line2" v-if="activity.numberLimit>=0">
                     报名名额还剩<span>{{activity.numberLimit - activity.applicantQuantity}}</span>个
                 </div>
             </div>
@@ -230,11 +230,15 @@
 
             // 点击报名按钮
             onApply() {
-                if (!this.activity.registrationFlag) {
-                    if (this.activity.auditType === '0' && this.activity.sendNoticeConfirm==='1') {
-                        this.showConfirmDialog = true;
-                    } else {
-                        this.showApplyDialog();
+                if(this.activity.numberLimit > this.activity.applicantQuantity) {
+                    if (this.activity.registrationStartTime < Date.now()) {
+                        this.$message.warning("还未到报名时间")
+                    } else if (!this.activity.registrationFlag) {
+                        if (this.activity.auditType === '0' && this.activity.sendNoticeConfirm === '1') {
+                            this.showConfirmDialog = true;
+                        } else {
+                            this.showApplyDialog();
+                        }
                     }
                 }
             },

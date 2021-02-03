@@ -891,7 +891,8 @@
             // 将已存在的模板保存为新模板
             onSaveNewTemplate() {
                 this.templateId = undefined;
-                this.onSaveTemplateConfirm();
+                this.updateTemplateDialogVisible = false;
+                this.saveTemplateDialogVisible = true;
             },
 
             // 存为模板确认按钮
