@@ -195,7 +195,7 @@ public class ActivityReviewService extends BaseService {
         activity.setStatus(ActivityStatus.REVIEW_FAILURE.value);
         final boolean b = activityMapper.updateByPrimaryKeySelective(activity) == 1;
         if (b)
-            SpringContextHolder.publishEvent(new ActivityReviewEvent(this, activity.getId(), VerificationStatus.REJECT.value));
+            SpringContextHolder.publishEvent(new ActivityReviewEvent(this, activity.getId(), VerificationStatus.REJECT.value, reason));
 
         return b;
     }
