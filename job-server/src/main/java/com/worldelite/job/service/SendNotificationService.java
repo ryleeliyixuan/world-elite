@@ -14,6 +14,7 @@ import com.worldelite.job.mapper.*;
 import com.worldelite.job.vo.ActivityReviewVo;
 import com.worldelite.job.vo.UserApplicantVo;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -26,6 +27,7 @@ import java.util.List;
  *
  * @author Xiang Chao
  **/
+@Slf4j
 @Service
 @AllArgsConstructor
 public class SendNotificationService {
@@ -161,8 +163,7 @@ public class SendNotificationService {
         if (reviewEvent.getStatus() == VerificationStatus.PASS.value)
             toPublisherMsg = messageSource.getMessage("activity.review.pass.notify", activity.getTitle());
         if (reviewEvent.getStatus() == VerificationStatus.REJECT.value) {
-            final ActivityReviewVo activityReviews = activityReviewService.getActivityReviewNewestByActivityId(reviewEvent.getActivityId());
-            toPublisherMsg = messageSource.getMessage("activity.review.reject.notify", activity.getTitle(), activityReviews.getReason());
+            toPublisherMsg = messageSource.getMessage("activity.review.reject.notify", activity.getTitle(), reviewEvent.getReason());
         }
 
         //通知活动发布者
@@ -175,6 +176,12 @@ public class SendNotificationService {
         message.setContent(msg);
         message.setUrl(url);
         message.setMsgType((byte) type);
+
+        if (messageService.checkNotifyIsSent(message)) {
+            log.warn("检测到活动通知消息重复发送,已取消. {}", message);
+            return;
+        }
+
         messageService.sendMessage(message);
 
         //邮件通知

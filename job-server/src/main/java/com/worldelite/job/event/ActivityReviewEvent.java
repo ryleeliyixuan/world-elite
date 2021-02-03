@@ -26,6 +26,13 @@ public class ActivityReviewEvent extends ApplicationEvent {
     private Byte status;
 
     /**
+     * 审核失败原因. 当状态为失败时使用
+     */
+    @Getter
+    @Setter
+    private String reason;
+
+    /**
      * Create a new {@code ApplicationEvent}.
      *
      * @param source the object on which the event initially occurred or with
@@ -35,5 +42,12 @@ public class ActivityReviewEvent extends ApplicationEvent {
         super(source);
         this.activityId = activityId;
         this.status = status;
+    }
+
+    public ActivityReviewEvent(Object source, Integer activityId, Byte status, String reason) {
+        super(source);
+        this.activityId = activityId;
+        this.status = status;
+        this.reason = reason;
     }
 }
