@@ -393,7 +393,8 @@
 
             // 获取活动状态
             getStatus(activity) {
-                return this.statusList.find(item => activity.status === item.id).name;
+                let status = this.statusList.find(item => activity.status === item.id)
+                return status && status.name;
             },
 
             // 处理时间

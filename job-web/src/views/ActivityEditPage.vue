@@ -417,7 +417,7 @@
                     this.activityForm.activityFinishTime = value[1].getTime();
                     this.registrationTimeOption = {
                         disabledDate: (time) => {
-                            return (time.getTime() < Date.now()) || (time.getTime() > value[0].getTime());
+                            return (time.getTime() < Date.now()) || (time.getTime() > value[1].getTime());
                         }
                     };
                 } else {
@@ -437,7 +437,7 @@
                     this.activityForm.registrationFinishTime = value[1].getTime();
                     this.activityTimeOption = {
                         disabledDate: (time) => {
-                            return (time.getTime() < Date.now()) || (time.getTime() < value[1].getTime());
+                            return (time.getTime() < value[0].getTime()) || (time.getTime() < value[1].getTime());
                         }
                     };
                 } else {

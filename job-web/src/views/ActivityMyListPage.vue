@@ -231,7 +231,7 @@
                     }
 
                     .activity-left-one-state {
-                        width: 81px;
+                        padding: 0 5px;
                         height: 22px;
                         background: #FFC400;
                         border-radius: 3px;

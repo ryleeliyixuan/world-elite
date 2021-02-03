@@ -124,7 +124,7 @@
                 <svg-icon icon-class="download-icon" class="download-icon" clickable @click="onLoadResume"/>
                 <svg-icon icon-class="close-icon" class="close-icon" @click="resumeDialogVisible = false;"/>
             </div>
-            <ResumeView :resumeId="resumeId"></ResumeView>
+            <ResumeView :resumeDetail="resumeDetail"></ResumeView>
 
             <el-dialog class="resume-cancel-dialog"
                        title="是否同时下载报名表？"
@@ -149,10 +149,11 @@
     import {downloadFile} from "@/utils/common";
     import ResumeView from "@/components/ResumeView";
     import NoticeDialog from "@/components/activity/NoticeDialog";
+    import {getResumeDetail} from "@/api/resume_api";
 
     export default {
         name: "ViewApply",
-        components: {ResumeView,NoticeDialog},
+        components: {ResumeView, NoticeDialog},
         props: {
             visible: {
                 type: Boolean
@@ -192,6 +193,7 @@
                 loadApplyTableDialogVisible: false, // 是否显示下载报名表对话框
 
                 resumeId: undefined, // 要查看的简历id
+                resumeDetail: undefined, // 要查看的简历信息
                 resumeDialogVisible: false, // 简历对话框
                 andLoadingApplyTableNoTips: false, // 下载简历时，是否不要提示用户下载报名表
                 onlyResume: false, // 不显示下载简历提示对话框时，是否仅下载简历
@@ -338,7 +340,12 @@
             // 查看简历
             onViewResume() {
                 this.resumeId = this.applyInfo.resumeId;
-                this.resumeDialogVisible = true;
+                getResumeDetail(this.applyInfo.resumeId).then((response) => {
+                        this.resumeDetail = response.data;
+                        this.applyTableId = this.applyInfo.id;
+                        this.resumeDialogVisible = true;
+                    }
+                );
             },
 
             // 点击下载简历
@@ -780,6 +787,10 @@
 
                             .link {
                                 font-size: 18px;
+
+                                ::v-deep .el-link--inner {
+                                    white-space: normal;
+                                }
                             }
                         }
                     }
