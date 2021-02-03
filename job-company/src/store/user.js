@@ -1,5 +1,5 @@
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { register, login, logout, getMyInfo } from '@/api/user_api'
+import {getToken, getUserId, removeToken, setToken, setUserId} from '@/utils/auth'
+import {getMyInfo, login, logout, register} from '@/api/user_api'
 import Toast from '@/utils/toast'
 import {storage} from "@/utils/storage";
 
@@ -7,7 +7,8 @@ const state = {
     token: getToken(),
     name: storage.getUsername(),
     avatar: storage.getAvatar(),
-    status: undefined
+    status: undefined,
+    userId: getUserId()
 }
 
 const mutations = {
@@ -22,16 +23,19 @@ const mutations = {
     },
     SET_STATUS: (state, status) => {
         state.status = status;
+    },
+    SET_USERID: (state, userId) => {
+        state.userId = userId;
     }
 }
 
 const actions = {
-    LOGIN: ({ commit }, loginForm) => {
+    LOGIN: ({commit}, loginForm) => {
         return new Promise((resolve, reject) => {
             login(loginForm).then(response => {
-                const { data } = response
+                const {data} = response
 
-                if(data.type != 2){
+                if (data.type != 2) {
                     Toast.error('该账号不允许登录企业端');
                     return;
                 }
@@ -40,7 +44,9 @@ const actions = {
                 commit('SET_NAME', data.name)
                 commit('SET_AVATAR', data.avatar)
                 commit('SET_STATUS', data.status)
-
+                commit('SET_USERID', data.userId)
+                sessionStorage.clear();
+                setUserId(data.userId, loginForm.rememberFlag)
                 setToken(data.token, loginForm.rememberFlag)
                 storage.setUserInfo(data);
                 storage.setLoginInfo(loginForm);
@@ -50,16 +56,17 @@ const actions = {
             })
         })
     },
-    REGISTER: ({ commit }, registerForm) => {
+    REGISTER: ({commit}, registerForm) => {
         return new Promise((resolve, reject) => {
             register(registerForm).then(response => {
-                const { data } = response
+                const {data} = response
 
                 commit('SET_TOKEN', data.token)
                 commit('SET_NAME', data.name)
                 commit('SET_AVATAR', data.avatar)
                 commit('SET_STATUS', data.status)
-
+                commit('SET_USERID', data.userId)
+                setUserId(data.userId)
                 setToken(data.token)
                 resolve()
             }).catch(error => {
@@ -67,10 +74,10 @@ const actions = {
             })
         })
     },
-    MYINFO: ({ commit }) => {
+    MYINFO: ({commit}) => {
         return new Promise((resolve, reject) => {
             getMyInfo().then(response => {
-                const { data } = response
+                const {data} = response
                 commit('SET_NAME', data.name)
                 commit('SET_AVATAR', data.avatar)
                 commit('SET_STATUS', data.status)
@@ -80,15 +87,19 @@ const actions = {
             })
         })
     },
-    LOGOUT: ({ commit }) => {
+    LOGOUT: ({commit}) => {
         return new Promise((resolve, reject) => {
             logout().then(() => {
 
                 commit('SET_TOKEN', undefined)
                 commit('SET_NAME', undefined)
                 commit('SET_AVATAR', undefined)
-
-                removeToken()
+                commit('SET_USERID', undefined)
+                let hasToken = getToken();
+                while (hasToken) {
+                    removeToken()
+                    hasToken = getToken();
+                }
                 storage.removeUserInfo();
                 resolve()
             }).catch(error => {

@@ -15,6 +15,11 @@ import '@/permission'
 import '@/icons' // icon
 import Loading from "@/components/Loading";
 
+import * as filters from './filters/filters'
+Object.keys(filters).forEach(key => {
+    Vue.filter(key, filters[key])
+})
+
 import storage from "@/utils/storage"
 
 // 数据存储
