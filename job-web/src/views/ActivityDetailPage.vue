@@ -14,7 +14,7 @@
                 </div>
                 <div class="line3">
                     <div class="name">活动形式：</div>
-                    <div class="value" :style="{color:activity.form===0?'#FFAB40':'#64FFDA'}">{{activity.form===0?'线上':'线下'}}</div>
+                    <div class="value" :style="{color:activity.form===0?'#FFAB40':'#64FFDA'}">{{activity.form===0?'线上':(activity.city&&activity.city.name)}}</div>
                     <div class="name">活动状态：</div>
                     <div class="value status" :style="{background:statusBGColorList[activity.status]}">{{statusList[activity.status]}}</div>
                 </div>
