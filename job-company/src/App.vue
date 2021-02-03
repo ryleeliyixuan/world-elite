@@ -135,8 +135,8 @@
 
         .chat {
             position: absolute;
-            top: 26px;
-            right: 266px;
+            top: 20px;
+            right: 176px;
             width: 60px;
             height: 60px;
             padding: 10px;

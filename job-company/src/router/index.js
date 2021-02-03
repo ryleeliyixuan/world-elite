@@ -106,8 +106,32 @@ const constantRoutes = [
         path: '/chat',
         component: () => import('@/views/ChatBoxPage'),
         meta: {title: '寰球菁英-沟通'}
+    },
+    {
+        path: '/activity/edit',
+        component: () => import('@/views/ActivityEditPage'),
+        meta: { title: '寰球菁英-活动发布' }
+    },
+    {
+        path: '/activity/publish',
+        component: () => import('@/views/ActivityPublishPage'),
+        meta: { title: '寰球菁英-发布活动管理' }
+    },
+    {
+        path: '/activity/apply',
+        component: () => import('@/views/ActivityApplyPage'),
+        meta: { title: '寰球菁英-发布报名管理' }
+    },
+    {
+        path: '/activity/apply/table',
+        component: () => import('@/views/ActivityApplyTablePage'),
+        meta: { title: '寰球菁英-活动报名表' }
+    },
+    {
+        path: '/activity/:id',
+        component: () => import('@/views/ActivityDetailPage'),
+        meta: { title: '寰球菁英-活动详情' }
     }
-
 ]
 
 const createRouter = () => new Router({
