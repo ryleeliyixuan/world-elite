@@ -175,13 +175,21 @@ public class ActivitySearchService {
         indexWriter.commit();
     }
 
+    @SneakyThrows
     private void buildActivityIndex(Activity activity) {
         //仅对有效的活动创建索引
         if (activity.getStatus() == ActivityStatus.REVIEWING.value
                 || activity.getStatus() == ActivityStatus.REVIEW_FAILURE.value
                 || activity.getStatus() == ActivityStatus.DRAFT.value
                 || activity.getStatus() == ActivityStatus.OFFLINE.value
-                || activity.getDelFlag() == Bool.TRUE) return;
+                || activity.getDelFlag() == Bool.TRUE){
+
+            //对无效的活动尝试删除索引
+            indexWriter.deleteDocuments(new Term(ActivityIndexFields.ACTIVITY_ID, String.valueOf(activity.getId())));
+            indexWriter.commit();
+
+            return;
+        }
 
         Document doc = new Document();
 
