@@ -182,7 +182,7 @@
                     action: "",
                     params: {},
                     fileUrl: "",
-                    acceptFileType: ".jpg,.jpeg,.png,.JPG,.JPEG,.PNG",
+                    acceptFileType: ".*",
                     fileName: undefined
                 },
                 educationList: [],
