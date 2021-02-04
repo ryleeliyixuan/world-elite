@@ -736,6 +736,7 @@
         padding: 24px 30px 50px;
         background: #FFFFFF;
         box-shadow: 0 4px 16px 3px rgba(191, 199, 215, 0.31);
+        margin: 17px auto;
 
         .option-container {
             display: flex;
