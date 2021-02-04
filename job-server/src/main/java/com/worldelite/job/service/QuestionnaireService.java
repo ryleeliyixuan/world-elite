@@ -43,9 +43,10 @@ public class QuestionnaireService extends BaseService{
         }
     }
 
-    public List<QuestionnaireVo> getQuestionnaireList(Integer templateId){
+    public List<QuestionnaireVo> getQuestionnaireList(Integer templateId,Byte template){
         Questionnaire options = new Questionnaire();
         options.setRegistrationTemplateId(templateId);
+        options.setTemplate(template);
         List<Questionnaire> questionnaireList = questionnaireMapper.selectAndList(options);
         //基本信息
         List<QuestionnaireVo> questionnaireVoList = AppUtils.asVoList(questionnaireList,QuestionnaireVo.class);

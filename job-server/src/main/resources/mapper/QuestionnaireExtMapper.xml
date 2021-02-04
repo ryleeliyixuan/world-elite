@@ -12,6 +12,9 @@
       <if test="registrationTemplateId != null">
         and registration_template_id = #{registrationTemplateId}
       </if>
+      <if test="template != null">
+        and template = #{template}
+      </if>
     </where>
   </select>
 

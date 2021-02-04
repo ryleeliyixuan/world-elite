@@ -69,6 +69,7 @@ public class QuestionnaireTemplateService extends BaseService{
         if(questionnaireForms != null){
             for(int i=0;i<questionnaireForms.length;i++){
                 QuestionnaireForm questionnaireForm = questionnaireForms[i];
+                questionnaireForm.setTemplate((byte) 1);
                 questionnaireForm.setRegistrationTemplateId(template.getId());
                 questionnaireService.addQuestionnaire(questionnaireForm);
             }
@@ -107,6 +108,7 @@ public class QuestionnaireTemplateService extends BaseService{
         if(questionnaireForms != null){
             for(int i=0;i<questionnaireForms.length;i++){
                 QuestionnaireForm questionnaireForm = questionnaireForms[i];
+                questionnaireForm.setTemplate((byte) 1);
                 questionnaireForm.setRegistrationTemplateId(template.getId());
                 questionnaireService.addQuestionnaire(questionnaireForm);
             }
@@ -183,7 +185,7 @@ public class QuestionnaireTemplateService extends BaseService{
         //获取基本信息
         QuestionnaireTemplateVo template = new QuestionnaireTemplateVo().asVo(questionnaireTemplate);
         //获取问卷列表
-        List<QuestionnaireVo> questionnaireVoList = questionnaireService.getQuestionnaireList(template.getId());
+        List<QuestionnaireVo> questionnaireVoList = questionnaireService.getQuestionnaireList(template.getId(), (byte) 1);
         template.setQuestionnaireList(questionnaireVoList);
         return template;
     }

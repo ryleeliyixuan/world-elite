@@ -55,6 +55,7 @@ public class ActivityQuestionnaireService extends BaseService{
         if(questionnaireForms != null){
             for(int i=0;i<questionnaireForms.length;i++){
                 QuestionnaireForm questionnaireForm = questionnaireForms[i];
+                questionnaireForm.setTemplate((byte) 0);
                 questionnaireForm.setRegistrationTemplateId(questionnaire.getId());
                 questionnaireService.addQuestionnaire(questionnaireForm);
             }
@@ -85,6 +86,7 @@ public class ActivityQuestionnaireService extends BaseService{
         if (questionnaireForms != null) {
             for (int i = 0; i < questionnaireForms.length; i++) {
                 QuestionnaireForm questionnaireForm = questionnaireForms[i];
+                questionnaireForm.setTemplate((byte) 0);
                 questionnaireForm.setRegistrationTemplateId(activityQuestionnaire.getId());
                 questionnaireService.addQuestionnaire(questionnaireForm);
             }
@@ -115,7 +117,7 @@ public class ActivityQuestionnaireService extends BaseService{
         QuestionnaireTemplateVo template = new QuestionnaireTemplateVo();
         BeanUtil.copyProperties(activityQuestionnaire,template);
         //获取问卷列表
-        List<QuestionnaireVo> questionnaireVoList = questionnaireService.getQuestionnaireList(template.getId());
+        List<QuestionnaireVo> questionnaireVoList = questionnaireService.getQuestionnaireList(template.getId(), (byte) 0);
         template.setQuestionnaireList(questionnaireVoList);
         return template;
     }
