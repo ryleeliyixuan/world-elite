@@ -2,7 +2,7 @@
     <div id="app" @click="showConversation=false;">
         <div class="fake-container">
             <MainNavBar/>
-            <svg-icon @click.stop="handlerChat" icon-class="chat3" class="chat"/>
+<!--            <svg-icon @click.stop="handlerChat" icon-class="chat3" class="chat"/>-->
             <el-scrollbar class="friend-container" wrap-style="overflow: hidden auto; padding-right: 40px;" v-if="showConversation">
                 <div :class="['friend-item',{'friend-item-selected':item.selected}]" v-for="item in conversationList"
                      @click.stop="onConversationClick(item)">
