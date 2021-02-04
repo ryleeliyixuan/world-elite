@@ -13,7 +13,7 @@
                     <div class="tag">{{organizerTypeList[activity.organizerType]}}</div>
                 </div>
                 <div class="line3">
-                    <div class="name">活动形式：</div>
+                    <div class="name">{{activity.form===0?'活动形式':'活动城市'}}：</div>
                     <div class="value" :style="{color:activity.form===0?'#FFAB40':'#64FFDA'}">{{activity.form===0?'线上':(activity.city&&activity.city.name)}}
                     </div>
                     <div class="name">活动状态：</div>
@@ -66,7 +66,6 @@
             <div class="report-button" @click="onReport" v-if="this.$route.params.id !== 'preview'">举报该活动</div>
         </div>
         <div class="activity-container" v-if="activity">
-            <el-image class="image" :src="activity.poster" fit="contain"></el-image>
             <div v-html="activity.description"></div>
         </div>
         <el-dialog class="report-dialog"

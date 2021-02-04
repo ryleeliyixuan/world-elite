@@ -122,8 +122,8 @@
             <div class="activity-container">
                 <div class="activity-item" v-for="item in dataList" :key="item.id" @click="onItem(item)">
                     <el-image class="background-image" :src="item.poster" fit="cover"></el-image>
-                    <el-image class="subscript" :src="require('@/assets/activity/geren.png')" v-if="item.userType==='1'"></el-image>
-                    <el-image class="subscript" :src="require('@/assets/activity/qiye.png')" v-if="item.userType==='2'"></el-image>
+                    <svg-icon class="subscript" icon-class="geren" v-if="item.userType==='1'"></svg-icon>
+                    <svg-icon class="subscript" icon-class="qiye" v-if="item.userType==='2'"></svg-icon>
                     <div class="brief">
                         <div class="line1">
                             <div class="title">{{item.title}}</div>
@@ -163,7 +163,6 @@
         components: {Pagination, approve},
         data() {
             return {
-                img: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=238583692,2460632321&fm=26&gp=0.jpg',
                 loading: true,
 
                 formList: [{id: 0, name: '线上'}, {id: 1, name: '线下'}], // 活动形式列表
@@ -647,7 +646,7 @@
                     .subscript {
                         position: absolute;
                         top: 0;
-                        left: 0;
+                        left: -1px;
                         width: 66px;
                         height: 62px;
                     }
