@@ -230,8 +230,8 @@
 
             // 点击报名按钮
             onApply() {
-                if(this.activity.numberLimit > this.activity.applicantQuantity) {
-                    if (this.activity.registrationStartTime < Date.now()) {
+                if (this.activity.numberLimit === -1 || this.activity.numberLimit > this.activity.applicantQuantity) {
+                    if (this.activity.registrationStartTime > Date.now()) {
                         this.$message.warning("还未到报名时间")
                     } else if (!this.activity.registrationFlag) {
                         if (this.activity.auditType === '0' && this.activity.sendNoticeConfirm === '1') {

@@ -14,7 +14,8 @@
                 </div>
                 <div class="line3">
                     <div class="name">活动形式：</div>
-                    <div class="value" :style="{color:activity.form===0?'#FFAB40':'#64FFDA'}">{{activity.form===0?'线上':(activity.city&&activity.city.name)}}</div>
+                    <div class="value" :style="{color:activity.form===0?'#FFAB40':'#64FFDA'}">{{activity.form===0?'线上':(activity.city&&activity.city.name)}}
+                    </div>
                     <div class="name">活动状态：</div>
                     <div class="value status" :style="{background:statusBGColorList[activity.status]}">{{statusList[activity.status]}}</div>
                 </div>
@@ -54,7 +55,9 @@
                         <share :config="shareConfig"></share>
                     </el-popover>
 
-                    <div :class="(activity.registrationFlag || activity.numberLimit === activity.applicantQuantity)?'apply-button2':'apply-button'" @click="onApply">{{activity.registrationFlag?'已报名':'报名'}}</div>
+                    <div :class="(activity.registrationFlag || activity.numberLimit === activity.applicantQuantity)?'apply-button2':'apply-button'"
+                         @click="onApply">{{activity.registrationFlag?'已报名':'报名'}}
+                    </div>
                 </div>
                 <div class="line2" v-if="activity.numberLimit>=0">
                     报名名额还剩<span>{{activity.numberLimit - activity.applicantQuantity}}</span>个
@@ -230,8 +233,8 @@
 
             // 点击报名按钮
             onApply() {
-                if(this.activity.numberLimit > this.activity.applicantQuantity) {
-                    if (this.activity.registrationStartTime < Date.now()) {
+                if (this.activity.numberLimit === -1 || this.activity.numberLimit > this.activity.applicantQuantity) {
+                    if (this.activity.registrationStartTime > Date.now()) {
                         this.$message.warning("还未到报名时间")
                     } else if (!this.activity.registrationFlag) {
                         if (this.activity.auditType === '0' && this.activity.sendNoticeConfirm === '1') {
