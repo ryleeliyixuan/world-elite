@@ -87,16 +87,15 @@ public class ExportService extends BaseService {
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
         //UserApplicant loginUser = userMapper.selectByPrimaryKey(curUser().getId());
-        final String resumeTplUrl = String.format("%s/resume/%s",
-                exportHost, resumeId);
+        final String resumeTplUrl = String.format("%s/resume/%s?_token=%s",
+                domainConfig.getLocalHost(), resumeId, curUser().getToken());
         File resumePdfFile = null;
         try {
             resumePdfFile = fileService.getFile(UUID.randomUUID().toString() + ".pdf");
-            final String exportCommand = String.format("wkhtmltopdf --cookie web_user_token %s %s %s",
-                    curUser().getToken(),resumeTplUrl, resumePdfFile.getAbsolutePath());
+            final String exportCommand = String.format("wkhtmltopdf %s %s", resumeTplUrl, resumePdfFile.getAbsolutePath());
             Process process = Runtime.getRuntime().exec(exportCommand);
             log.info("export resume: " + exportCommand);
-            if(process.waitFor(100, TimeUnit.SECONDS)){
+            if(process.waitFor(20, TimeUnit.SECONDS)){
                 return resumePdfFile.getName();
             }else{
                 throw new ServiceException(message("export.resume.fail: exceed timeout"));
