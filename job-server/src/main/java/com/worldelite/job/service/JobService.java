@@ -82,6 +82,11 @@ public class JobService extends BaseService {
     @Resource(name = "luceneIndexCmdFanoutExchange")
     private FanoutExchange exchange;
 
+    @Autowired
+    private JobAdditionService jobAdditionService;
+
+    @Autowired
+    private JobAddressService jobAddressService;
 
     /**
      * 获取职位信息: 适用列表
@@ -133,7 +138,6 @@ public class JobService extends BaseService {
 
         job.setName(jobForm.getName());
         job.setCategoryId(jobForm.getCategoryId());
-        job.setAddress(jobForm.getAddress());
         job.setCityId(jobForm.getCityId());
 
         if(jobForm.getDepart() != null){
@@ -175,6 +179,12 @@ public class JobService extends BaseService {
             job.setUpdateTime(new Date());
             jobMapper.updateByPrimaryKeyWithBLOBs(job);
         }
+
+        //其他要求处理
+        jobAdditionService.add(job.getId(),jobForm.getAdditionIds());
+
+        //地址信息处理
+        jobAddressService.add(job.getId(),jobForm.getAddress(),jobForm.getLatitude(),jobForm.getLongitude());
 
         //增加索引
         Document document = indexService.saveJobItem(job.getId());
@@ -597,6 +607,13 @@ public class JobService extends BaseService {
         jobVo.setRecruitType(dictService.getById(job.getRecruitType()));
         jobVo.setSalary(dictService.getById(job.getSalaryId()));
         jobVo.setExperience(dictService.getById(job.getExperienceId()));
+        jobVo.setAdditions(jobAdditionService.getByJobId(job.getId()));
+        JobAddress jobAddress = jobAddressService.getByJobId(job.getId());
+        if(jobAddress != null){
+            jobVo.setAddress(jobAddress.getAddress());
+            jobVo.setLatitude(jobAddress.getLatitude());
+            jobVo.setLongitude(jobAddress.getLongitude());
+        }
         if (includeCompany) {
             jobVo.setCompanyUser(companyService.getCompanyUser(job.getCreatorId()));
         }

@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -23,8 +24,6 @@ public class JobForm {
     @NotNull(message = "{edit.job.salary.not.null}")
     private Integer salaryId; //薪资范围ID
     private Integer salaryMonths; //发放月数
-    @NotNull(message = "{edit.job.address.not.null}")
-    private String address; //工作地址
     @NotNull(message = "{edit.job.type.not.null}")
     private Integer jobType; //职位类型
     @NotNull(message = "{edit.job.type.not.null}")
@@ -39,6 +38,10 @@ public class JobForm {
     private String[] industryTags; //行业领域
     @NotNull(message = "{edit.job.skilltags.not.null}")
     private String[] skillTags; //技能标签
+    private List<Integer> additionIds; //其他要求ID列表
+    private String address; //地址
+    private Double latitude; //纬度
+    private Double longitude; //经度
 
     public String getName() {
         return FormUtils.removeAllHtmlTag(name);

@@ -3,10 +3,8 @@ package com.worldelite.job.mapper;
 import com.worldelite.job.dto.JobRecruitDto;
 import com.worldelite.job.entity.Job;
 import com.worldelite.job.entity.JobOptions;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface JobMapper {
     /**

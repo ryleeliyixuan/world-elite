@@ -6,6 +6,7 @@ import lombok.Data;
 import me.zhyd.oauth.utils.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -49,6 +50,11 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private String[] industryTags; //行业领域
     private String[] skillTags; //技能标签
 
+    private Double latitude; //维度
+    private Double longitude; //经度
+
+    private List<DictVo> additions; //其他条件
+
     @Override
     public JobVo asVo(Job job) {
         setId(String.valueOf(job.getId()));
@@ -59,7 +65,6 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setStatus(job.getStatus());
         setDescription(job.getDescription());
         setTime(job.getPubTime());
-        setAddress(job.getAddress());
         if(StringUtils.isNotEmpty(job.getIndustryTags())) {
             setIndustryTags(job.getIndustryTags().split(","));
         }else{
