@@ -8,6 +8,15 @@ export function doFavorite(data){
     })
 }
 
+
+export function doAllFavorite(data){
+    return request({
+        url: '/favorite/favorites',
+        method: 'post',
+        data
+    })
+}
+
 export function getFavoriteList(data){
     return request({
         url: '/favorite/my-favorite-list',

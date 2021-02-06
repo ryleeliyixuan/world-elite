@@ -110,7 +110,7 @@
 
 <script>
 import { getRecommendList } from "@/api/recommend_api";
-import { doFavorite } from "@/api/favorite_api";
+import { doAllFavorite } from "@/api/favorite_api";
 
 export default {
   name: "RegisterRcmdPage",
@@ -147,7 +147,7 @@ export default {
         this.$emit("complete");
       });
     },
-    //收藏
+    //收藏某一个职位或公司
     handleFavorite(id, favorite, type) {
       let data = {
         favorite: Boolean(favorite),
@@ -170,8 +170,25 @@ export default {
     MouseOutFav() {
       this.initData();
     },
-    //收藏全部
-    favAll() {},
+    //收藏该页面全部 1.职位 2.公司
+    favAll() {
+      // let jobIds = [];
+      // for (let item in this.recommendJobList) {
+      //   jobIds.add(item.object.id);
+      // }
+      // let compIds = [];
+      // for (let item in this.recommendCompanyList) {
+      //   compIds.add(item.object.id);
+      // }
+      // doAllFavorite({
+      //   favorite: true,
+      //   objectId: jobIds,
+      //   type: 1,
+      // }).then(() => {
+      //   this.initData();
+      //   this.$message("操作成功");
+      // });
+    },
     //下一步
     goPrev() {
       this.$router.push("/register-job-orientation");
