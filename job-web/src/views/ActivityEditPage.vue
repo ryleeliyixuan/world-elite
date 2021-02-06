@@ -351,14 +351,18 @@
                 registrationTime: [], // 报名起止时间，临时保存用户选择时间
                 registrationTimeOption: {
                     disabledDate(time) {
-                        return time.getTime() < Date.now();
+                        let zero = new Date();
+                        zero.setHours(0, 0, 0, 0);
+                        return time.getTime() < zero.getTime();
                     }
                 },
 
                 activityTime: [], // 活动起止时间，临时保存用户选择时间
                 activityTimeOption: {
                     disabledDate(time) {
-                        return time.getTime() < Date.now();
+                        let zero = new Date();
+                        zero.setHours(0, 0, 0, 0);
+                        return time.getTime() < zero.getTime();
                     }
                 },
 
@@ -425,7 +429,9 @@
                     this.activityForm.activityFinishTime = undefined;
                     this.registrationTimeOption = {
                         disabledDate: (time) => {
-                            return time.getTime() < Date.now();
+                            let zero = new Date();
+                            zero.setHours(0, 0, 0, 0);
+                            return time.getTime() < zero.getTime();
                         }
                     };
                 }
@@ -445,7 +451,9 @@
                     this.activityForm.registrationFinishTime = undefined;
                     this.activityTimeOption = {
                         disabledDate: (time) => {
-                            return time.getTime() < Date.now();
+                            let zero = new Date();
+                            zero.setHours(0, 0, 0, 0);
+                            return time.getTime() < zero.getTime();
                         }
                     };
                 }
