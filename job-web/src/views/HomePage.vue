@@ -133,7 +133,7 @@
     <!-- 关于我们 ends -->
     <!-- 职位精选 starts -->
     <div class="job-recommend-box">
-      <h3 class="header text-center">职位精选</h3>
+      <div class="header text-center">职位精选</div>
       <div class="subheader text-center">HOT JOBS</div>
       <div class="title" v-if="recommendJobList && recommendJobList.length > 0">
         <span>“WE内推”全职岗位推荐</span>
@@ -787,7 +787,7 @@ export default {
     max-height: 600px;
     height: 424px;
     width: calc(100vw - 20px);
-    margin: 0 auto 30px;
+    margin: 0 auto 21px;
     .section1-image {
       cursor: pointer;
       width: 779px;
@@ -855,7 +855,7 @@ export default {
     width: auto;
     height: auto;
     margin-top: -20px;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
     // .about-us-img {
     //   box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
     // }
@@ -865,7 +865,7 @@ export default {
     padding: 25px 55px 47px 55px;
     background: #ffffff;
     box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
-    margin-bottom: 31px;
+    margin-bottom: 21px;
     .company-container {
       display: flex;
       .company-card {
@@ -1064,7 +1064,7 @@ export default {
     padding: 25px 55px 47px 55px;
     background: #ffffff;
     box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
-    margin-bottom: 31px;
+    margin-bottom: 21px;
     .more {
       font-size: 14px;
       font-family: PingFangSC-Regular, PingFang SC;
