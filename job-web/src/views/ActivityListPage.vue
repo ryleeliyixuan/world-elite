@@ -66,10 +66,10 @@
                                    :loading="loading"
                                    @change="handleFilter">
                             <el-option
-                                    v-for="item in cityOptions"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
+                                v-for="item in cityOptions"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
                             </el-option>
                             <div slot="prefix" class="search-button">
                                 搜索
@@ -200,6 +200,16 @@
         watch: {
             $route() {
                 this.handleFilter();
+            },
+            searchCityIds(newValue, oldValue) {
+                this.cityList.forEach(city => {
+                    if (oldValue.includes(parseInt(city.value))) {
+                        city.selected = false;
+                    }
+                    if (newValue.includes(parseInt(city.value))) {
+                        city.selected = true;
+                    }
+                })
             }
         },
         mounted() {
@@ -299,6 +309,12 @@
 
             // 活动城市
             onCity(item) {
+                if (item.selected) {
+                    let index = this.searchCityIds.findIndex(id => `${id}` === item.value)
+                    if (index >= 0) {
+                        this.searchCityIds.splice(index, 1);
+                    }
+                }
                 this.$set(item, "selected", !item.selected);
                 this.handleFilter();
             },
