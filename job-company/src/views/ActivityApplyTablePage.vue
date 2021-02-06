@@ -603,7 +603,7 @@
                    width="445px">
             <div class="remain" style="text-align: center">剩余可设模板数：{{templateCount.maxCount - templateCount.count}}</div>
             <div class="button-container">
-                <div class="confirm" style="margin-left: 0;" @click="saveTemplateSuccessDialogVisible = false">关闭</div>
+                <div class="confirm" style="margin-left: 0;" @click="onSaveTemplateSuccess()">关闭</div>
             </div>
         </el-dialog>
 
@@ -909,11 +909,15 @@
                         this.saveTemplateDialogVisible = false;
                         this.updateTemplateDialogVisible = false;
                         this.saveTemplateSuccessDialogVisible = true;
-
-                        // this.$storage.setObject("报名表", {id: this.templateId, type: '1'});
-                        // this.$router.go(-1);
                     })
                 }
+            },
+
+            // 保存模板成功后关闭
+            onSaveTemplateSuccess() {
+                this.saveTemplateSuccessDialogVisible = false;
+                this.$storage.setObject("报名表", {id: this.templateId, type: '1'});
+                this.$router.go(-1);
             },
 
             // 添加模板
