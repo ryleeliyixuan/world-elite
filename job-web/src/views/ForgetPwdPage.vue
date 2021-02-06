@@ -19,11 +19,12 @@
             <el-input
               v-model="form.email"
               placeholder="请输入登录邮箱"
+              auto-complete="new-password"
             ></el-input>
           </el-form-item>
           <el-form-item class="short" label="" prop="validCode">
             <span class="star">*</span>
-            <el-input v-model="form.validCode" placeholder="邮箱验证码">
+            <el-input v-model="form.validCode" placeholder="邮箱验证码" auto-complete="new-password">
               <el-button
                 slot="append"
                 type="primary"
@@ -41,6 +42,7 @@
               show-password
               placeholder="新密码字母+数字不少于8位"
               type="password"
+              auto-complete="new-password"
             ></el-input>
           </el-form-item>
           <el-form-item label="" prop="repeatPassword">
@@ -50,11 +52,12 @@
               v-model="form.repeatPassword"
               placeholder="确认密码"
               type="password"
+              auto-complete="new-password"
             ></el-input>
           </el-form-item>
           <el-form-item class="short" label="" prop="imgValidCode">
             <span class="star">*</span>
-            <el-input v-model="form.imgValidCode" placeholder="图片验证码">
+            <el-input v-model="form.imgValidCode" placeholder="图片验证码" auto-complete="new-password">
               <el-image
                 slot="append"
                 style="width: 100px; height: 100%"

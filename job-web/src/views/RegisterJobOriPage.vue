@@ -139,7 +139,7 @@ export default {
           params: { type: 26, sort: "+id" },
         })
         .then((response) => {
-          this.salaryOptions = response.data.list
+          this.salaryOptions = response.data.list;
         });
       this.getResumeInfo();
     },
@@ -160,6 +160,10 @@ export default {
       });
     },
     onSubmitForm() {
+      if (this.form.salaryId && this.form.salaryId.length > 0) {
+        let temp = this.form.salaryId.toString();
+        this.form.salaryId = temp;
+      }
       saveUserExpectJob(this.form).then(() => {
         this.$router.push({ path: "/register-recommendation" });
       });
@@ -172,7 +176,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/deep/ .el-button{
+/deep/ .el-button {
   border: 0px;
 }
 
