@@ -253,10 +253,8 @@
             // 点击发布活动
             onPublish() {
                 if (this.approveStatus === 1) { // 审核中
-                    console.log("审核中");
-                    this.showApproveDialog = true;
+                    this.$alert("您的实名认证尚在审核中，我们会尽快处理")
                 } else if (this.approveStatus === 3) { // 审核被拒绝
-                    console.log("审核被拒绝");
                     this.showApproveDialog = true;
                 } else if (this.approveStatus === 2) { // 审核已通过，可以发布新活动
                     if (this.activityDraft) {
