@@ -1,15 +1,18 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.worldelite.job.anatation.SysLog;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.context.RedisKeys;
 import com.worldelite.job.entity.Auth;
+import com.worldelite.job.entity.Avatar;
 import com.worldelite.job.entity.LoginLog;
 import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.AuthMapper;
+import com.worldelite.job.mapper.AvatarMapper;
 import com.worldelite.job.mapper.LoginLogMapper;
 import com.worldelite.job.mapper.UserApplicantMapper;
 import com.worldelite.job.service.sdk.AliEmailService;
@@ -63,6 +66,9 @@ public class UserApplicantService extends BaseService {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private AvatarMapper avatarMapper;
 
     @Value("${token.expired.seconds}")
     private Long TOKEN_EXPIRED_SECONDS;
@@ -523,7 +529,23 @@ public class UserApplicantService extends BaseService {
         user.setStatus(UserStatus.NORMAL.value);
         user.setType(UserType.GENERAL.value);
         user.setGender(registerForm.getGender());
-        user.setName(registerForm.getName());
+
+        //设置默认用户名
+        if(StringUtils.isNotBlank(registerForm.getName()))
+            user.setName(registerForm.getName());
+        else{
+            user.setName("用户" + user.getId() % 100000);
+        }
+
+        //设置默认头像
+        Avatar options = new Avatar();
+        options.setDelFlag(Bool.FALSE);
+        final List<Avatar> avatars = avatarMapper.selectAndList(options);
+        if(avatars.size() > 0){
+            final Avatar avatar = avatars.get(RandomUtil.randomInt(avatars.size() - 1));
+            user.setAvatar(avatar.getAvatarUrl());
+        }
+
         user.setSubscribeFlag(registerForm.getSubscribeFlag());
         setUserPassword(user, registerForm.getPassword());
         userApplicantMapper.insertSelective(user);
