@@ -69,7 +69,7 @@ public class WebConfigurer implements WebMvcConfigurer {
         properties.setProperty("kaptcha.textproducer.font.color","blue");
         properties.setProperty("kaptcha.textproducer.char.space","4");
         properties.setProperty("kaptcha.image.width","150");
-        properties.setProperty("kaptcha.image.height","40");
+        properties.setProperty("kaptcha.image.height","50");
         properties.setProperty("kaptcha.textproducer.font.size","40");
         properties.setProperty("kaptcha.session.key","code");
         properties.setProperty("kaptcha.textproducer.char.length","5");

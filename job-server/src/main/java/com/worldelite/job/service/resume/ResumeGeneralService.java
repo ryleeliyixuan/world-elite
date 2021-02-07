@@ -149,7 +149,8 @@ public class ResumeGeneralService extends ResumeService {
         Resume resume = new Resume();
         resume.setId(AppUtils.nextId());
         resume.setUserId(userApplicant.getId());
-        resume.setName(userApplicant.getName());
+        //产品要求, 新创建的简历不使用账户名
+        //resume.setName(userApplicant.getName());
         //用户简历类型和状态默认设定好，且不能改变
         resume.setType(ResumeType.GENERAL.value);
         resume.setStatus(ResumeStatus.PUBLISH.value);
