@@ -10,11 +10,9 @@ import com.worldelite.job.form.EmailForm;
 import com.worldelite.job.mapper.ActivityMapper;
 import com.worldelite.job.mapper.FavoriteMapper;
 import com.worldelite.job.mapper.RegistrationMapper;
-import com.worldelite.job.service.CityService;
-import com.worldelite.job.service.IEmailService;
-import com.worldelite.job.service.MessageService;
-import com.worldelite.job.service.UserApplicantService;
+import com.worldelite.job.service.*;
 import com.worldelite.job.vo.UserApplicantVo;
+import com.worldelite.job.vo.UserCorporateVo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +42,7 @@ public class ActivityNotifyManager implements CommandLineRunner {
     private final MessageService messageService;
     private final MessageResource messageSource;
     private final UserApplicantService userApplicantService;
+    private final UserCorporateService userCorporateService;
     private final IEmailService emailService;
     private final CityService cityService;
     private final DelayQueue<DelayActivityInfo> delayQueue = new DelayQueue<>();
@@ -257,16 +256,23 @@ public class ActivityNotifyManager implements CommandLineRunner {
         messageService.sendMessage(message);
 
         //邮件通知
-        UserApplicantVo user = userApplicantService.getUserInfo(userId);
-        if (user != null) {
-            String email = user.getEmail();
-            if (StringUtils.isNotEmpty(email)) {
-                EmailForm emailForm = new EmailForm();
-                emailForm.setAddress(email);
-                emailForm.setSubject(msg);
-                emailForm.setEmailBody(msg);
-                emailService.sendEmail(emailForm);
-            }
+        String email;
+        UserApplicantVo applicantVo = userApplicantService.getUserInfo(userId);
+        if (applicantVo != null) {
+            email = applicantVo.getEmail();
+        }else{
+            final UserCorporateVo corporateVo = userCorporateService.getUserInfo(userId);
+            email = corporateVo != null ? corporateVo.getEmail() : null;
+        }
+
+        if (StringUtils.isNotEmpty(email)) {
+            EmailForm emailForm = new EmailForm();
+            emailForm.setAddress(email);
+            emailForm.setSubject(msg);
+            emailForm.setEmailBody(msg);
+            emailService.sendEmail(emailForm);
+        }else{
+            log.error("无法获取到用户的邮箱,邮件未发送");
         }
     }
 }
