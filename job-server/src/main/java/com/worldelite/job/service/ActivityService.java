@@ -241,7 +241,7 @@ public class ActivityService extends BaseService {
             if (activityForm.getStatus() != null && activityForm.getStatus() == ActivityStatus.DRAFT.value) {
                 activity.setStatus(ActivityStatus.DRAFT.value);
                 //关联报名表
-                if(activityForm.getNeedRegistration() == Bool.TRUE) {
+                if(activityForm.getNeedRegistration() != null && activityForm.getNeedRegistration() == Bool.TRUE) {
                     if (StringUtils.isNotBlank(activityForm.getQuestionnaireType()) && activityForm.getQuestionnaireId() != null) {
                         QuestionnaireTemplateVo template = activityQuestionnaireService
                                 .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
@@ -252,7 +252,7 @@ public class ActivityService extends BaseService {
                 activityMapper.insertSelective(activity);
             } else {
                 //关联报名表
-                if(activityForm.getNeedRegistration() == Bool.TRUE) {
+                if(activityForm.getNeedRegistration() != null && activityForm.getNeedRegistration() == Bool.TRUE) {
                     QuestionnaireTemplateVo template = activityQuestionnaireService
                             .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
                     activity.setQuestionnaireId(template.getId());
@@ -420,7 +420,7 @@ public class ActivityService extends BaseService {
             }
         }
 
-        if(activity.getNeedRegistration() == Bool.TRUE) {
+        if(activity.getNeedRegistration() != null && activity.getNeedRegistration() == Bool.TRUE) {
             //如果关联了报名表，则返回报名表名
             Integer questionnaireId = activity.getQuestionnaireId();
             if (questionnaireId != null) {

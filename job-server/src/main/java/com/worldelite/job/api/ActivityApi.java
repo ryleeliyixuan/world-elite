@@ -2,6 +2,7 @@ package com.worldelite.job.api;
 
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.ActivityStatus;
+import com.worldelite.job.constants.Bool;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.event.ActivityInfoRefreshEvent;
@@ -131,12 +132,17 @@ public class ActivityApi extends BaseApi {
     @PostMapping("save")
     @ApiDoc
     public ApiResult saveActivity(@RequestBody ActivityForm activityForm) {
-        if (activityForm.getStatus() == null || activityForm.getStatus() != ActivityStatus.DRAFT.value) {
-            final Set<ConstraintViolation<ActivityForm>> validateSet = validator.validate(activityForm);
-            if (validateSet.size() > 0) {
-                ConstraintViolation<ActivityForm> model = validateSet.iterator().next();
-                throw new CheckException(model.getPropertyPath() + model.getMessage());
+        Set<ConstraintViolation<ActivityForm>> validateSet = null;
+        if (activityForm.getNeedRegistration() != null && activityForm.getNeedRegistration() == Bool.FALSE) {
+            validateSet = validator.validate(activityForm, ActivityForm.NoRegistrationField.class);
+        } else {
+            if (activityForm.getStatus() == null || activityForm.getStatus() != ActivityStatus.DRAFT.value) {
+                validateSet = validator.validate(activityForm, ActivityForm.AllField.class);
             }
+        }
+        if (validateSet != null && validateSet.size() > 0) {
+            ConstraintViolation<ActivityForm> model = validateSet.iterator().next();
+            throw new CheckException(model.getPropertyPath() + model.getMessage());
         }
 
         activityService.saveActivity(activityForm);
