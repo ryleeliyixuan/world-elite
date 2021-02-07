@@ -27,7 +27,6 @@
                     </el-tooltip>
                     主办方<span>*</span>
                 </div>
-                <!--  TODO 修改主办方字段 -->
                 <el-input placeholder="请输入主办方名称（最多20字）"
                           v-model="activityForm.organizerInfoForm.organizerName"
                           size="small"
@@ -57,6 +56,29 @@
                 </el-input>
             </div>
             <div class="line">
+                <div class="name" style="align-self: flex-start;">
+                    报名需求<span>*</span>
+                </div>
+                <div class="value-container">
+                    <div class="value-line-container">
+                        <div class="option-container" @click="onNeedRegistration('1')">
+                            <svg-icon v-if="this.$route.query.id && activityForm.needRegistration==='1'" icon-class="selected-disabled" style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else-if="this.$route.query.id && activityForm.needRegistration==='0'" icon-class="unselect-disabled." style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else-if="activityForm.needRegistration!=='1'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                            <div class="option-text">需要报名</div>
+                        </div>
+                        <div class="option-container" @click="onNeedRegistration('0')" style="margin-left: 21px">
+                            <svg-icon v-if="this.$route.query.id && activityForm.needRegistration==='1'" icon-class="selected-disabled" style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else-if="this.$route.query.id && activityForm.needRegistration==='0'" icon-class="unselect-disabled." style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else-if="activityForm.needRegistration!=='0'" icon-class="unselected" style="margin-right: 3px;"></svg-icon>
+                            <svg-icon v-else icon-class="selected" style="margin-right: 3px;"></svg-icon>
+                            <div class="option-text">无需报名</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line" v-if="activityForm.needRegistration==='1'">
                 <div class="name">
                     报名时间<span>*</span>
                 </div>
@@ -71,22 +93,7 @@
                                 :picker-options="registrationTimeOption">
                 </el-date-picker>
             </div>
-            <div class="line">
-                <div class="name">
-                    活动时间<span>*</span>
-                </div>
-                <el-date-picker v-model="activityTime"
-                                type="datetimerange"
-                                align="right"
-                                start-placeholder="开始时间"
-                                end-placeholder="结束时间"
-                                size="small"
-                                format="yyyy-MM-dd HH:mm"
-                                :default-time="['09:00:00', '17:00:00']"
-                                :picker-options="activityTimeOption">
-                </el-date-picker>
-            </div>
-            <div class="line">
+            <div class="line" v-if="activityForm.needRegistration==='1'">
                 <div class="name" style="align-self: flex-start;">
                     <el-tooltip class="item" effect="dark" placement="top">
                         <div slot="content">若报名无需审核，学生报名即可参加；若需<br/>要审核，可在活动报名管理信息页进行审核<br/>操作。</div>
@@ -133,6 +140,21 @@
                 </div>
             </div>
             <div class="line">
+                <div class="name">
+                    活动时间<span>*</span>
+                </div>
+                <el-date-picker v-model="activityTime"
+                                type="datetimerange"
+                                align="right"
+                                start-placeholder="开始时间"
+                                end-placeholder="结束时间"
+                                size="small"
+                                format="yyyy-MM-dd HH:mm"
+                                :default-time="['09:00:00', '17:00:00']"
+                                :picker-options="activityTimeOption">
+                </el-date-picker>
+            </div>
+            <div class="line">
                 <div class="name" style="align-self: flex-start; margin-top: 5px;">
                     活动介绍<span>*</span>
                 </div>
@@ -142,7 +164,7 @@
                          placeholder="请在此处输入活动简介及相关信息">
                 </tinymce>
             </div>
-            <div class="line">
+            <div class="line" v-if="activityForm.needRegistration==='1'">
                 <div class="name">
                     活动报名表<span>*</span>
                 </div>
@@ -270,6 +292,7 @@
                     registrationStartTime: undefined, // 报名开始时间
                     registrationFinishTime: undefined, // 报名结束时间
                     auditType: '1', // 报名审核类型(是否需要审核),0需要,1不需要
+                    needRegistration: '1', // 是否需要报名,0不需要,1需要
                     numberLimit: -1, // 无需审核时的人数限制，无限制为-1
                     needResume: '1', // 是否需要报名者简历信息, 0不需要,1需要
                     description: undefined, // 活动详情
@@ -523,6 +546,16 @@
                 this.activityForm.auditType = type;
             },
 
+            // 是否需要报名
+            onNeedRegistration(type) {
+                if (!this.$route.query.id) {
+                    this.activityForm.needRegistration = type;
+                }
+                if (type==='0'){
+                    this.activityForm.auditType = '1';
+                }
+            },
+
             // 人数限制
             onNumberLimit(number) {
                 this.activityForm.numberLimit = number;
@@ -686,29 +719,29 @@
                 if (!this.activityForm.title) {
                     message = "请输入活动名称";
                 }
-                // else if (!this.activityForm.organizerType) { // TODO 修改主办方验证
-                //     message = "请选择主办方类型";
-                //     // 举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
-                // } else if (!this.activityForm.organizerInfoForm.organizerName && !this.activityForm.organizerInfoForm.school) {
-                //     message = "请输入组织名称";
-                // } else if (this.activityForm.organizerType === '2' && !this.activityForm.organizerInfoForm.businessLicenseUrl) {
-                //     message = "请上传营业执照";
-                // } else if (!this.activityForm.organizerInfoForm.organizerName) { // TODO 修改主办方验证 END
-                //     message = "请输入组织名称";
+                    // else if (!this.activityForm.organizerType) { // TODO 修改主办方验证
+                    //     message = "请选择主办方类型";
+                    //     // 举办方类型; 1:校园组织;2:社会组织;3:个人;4:企业
+                    // } else if (!this.activityForm.organizerInfoForm.organizerName && !this.activityForm.organizerInfoForm.school) {
+                    //     message = "请输入组织名称";
+                    // } else if (this.activityForm.organizerType === '2' && !this.activityForm.organizerInfoForm.businessLicenseUrl) {
+                    //     message = "请上传营业执照";
+                    // } else if (!this.activityForm.organizerInfoForm.organizerName) { // TODO 修改主办方验证 END
+                    //     message = "请输入组织名称";
                 // }
                 else if (!this.activityForm.cityId) {
                     message = "请选择活动城市";
                 } else if (!this.activityForm.activityStartTime || !this.activityForm.activityFinishTime) {
                     message = "请选择活动时间";
-                } else if (!this.activityForm.registrationStartTime || !this.activityForm.registrationFinishTime) {
+                } else if (this.activityForm.needRegistration==='1'&&(!this.activityForm.registrationStartTime || !this.activityForm.registrationFinishTime)) {
                     message = "请选择报名时间";
-                } else if (this.activityForm.auditType === '1' && !this.activityForm.numberLimit) {
+                } else if (this.activityForm.needRegistration==='1'&&this.activityForm.auditType === '0' && !this.activityForm.numberLimit) {
                     message = "请输入限制报名人数";
                 } else if (!this.activityForm.description) {
                     message = "请输入活动介绍";
                 } else if (!this.activityForm.poster) {
                     message = "请上传活动海报";
-                } else if (!this.activityForm.questionnaireId) {
+                } else if (this.activityForm.needRegistration==='1'&&!this.activityForm.questionnaireId) {
                     message = "请添加报名表或选择报名表模板";
                 }
                 message && this.$message.warning(message);
