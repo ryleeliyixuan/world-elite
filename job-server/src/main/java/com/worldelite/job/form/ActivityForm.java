@@ -37,6 +37,7 @@ public class ActivityForm {
     private Long registrationStartTime; //报名开始时间
     @NotNull
     private Long registrationFinishTime; //报名结束时间
+    private Integer needRegistration;////是否需要报名,0不需要,1需要(默认值)
     @NotNull
     private String needResume; //是否需要报名者简历信息, 0不需要,1需要
     @NotNull

@@ -70,7 +70,7 @@
 <select id="selectAndListForAdmin" resultMap="BaseResultMap">
     select
     t_activity.id, t_activity.user_id, t_activity.form, t_activity.city_id, t_activity.user_type, t_activity.title, t_activity.poster, t_activity.organizer_id, t_activity.organizer_type, t_activity.
-    activity_start_time, t_activity.activity_finish_time, t_activity.registration_start_time, t_activity.registration_finish_time, t_activity.
+    activity_start_time, t_activity.activity_finish_time, t_activity.registration_start_time, t_activity.registration_finish_time, t_activity.need_registration, t_activity.
     need_resume, t_activity.only_overseas_student, t_activity.audit_type, t_activity.number_limit, t_activity.address, t_activity.status, t_activity.questionnaire_id, t_activity.
     follower, t_activity.applicant_quantity, t_activity.weight, t_activity.send_notice_confirm, t_activity.del_flag, t_activity.create_time, t_activity.
     update_time, t_activity.description

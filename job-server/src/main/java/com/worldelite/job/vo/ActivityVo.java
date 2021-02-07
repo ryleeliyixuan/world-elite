@@ -26,6 +26,7 @@ public class ActivityVo implements VoConvertable<ActivityVo, Activity> {
     private Long activityFinishTime; //活动结束时间
     private Long registrationStartTime; //报名开始时间
     private Long registrationFinishTime; //报名结束时间
+    private Integer needRegistration;////是否需要报名,0不需要,1需要(默认值)
     private String needResume; //参与活动是否需要上传简历
     private String onlyOverseasStudent;//仅留学生能参加
     private String auditType;//报名审核类型(是否需要审核) 0需要;1不需要

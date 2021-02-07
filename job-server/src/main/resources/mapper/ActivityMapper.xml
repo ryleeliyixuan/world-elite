@@ -20,6 +20,7 @@
     <result column="activity_finish_time" jdbcType="TIMESTAMP" property="activityFinishTime" />
     <result column="registration_start_time" jdbcType="TIMESTAMP" property="registrationStartTime" />
     <result column="registration_finish_time" jdbcType="TIMESTAMP" property="registrationFinishTime" />
+    <result column="need_registration" jdbcType="TINYINT" property="needRegistration" />
     <result column="need_resume" jdbcType="CHAR" property="needResume" />
     <result column="only_overseas_student" jdbcType="CHAR" property="onlyOverseasStudent" />
     <result column="audit_type" jdbcType="CHAR" property="auditType" />
@@ -49,9 +50,9 @@
     -->
     id, user_id, form, city_id, user_type, title, poster, organizer_id, organizer_type, 
     activity_start_time, activity_finish_time, registration_start_time, registration_finish_time, 
-    need_resume, only_overseas_student, audit_type, number_limit, address, status, questionnaire_id, 
-    follower, applicant_quantity, weight, send_notice_confirm, del_flag, create_time, 
-    update_time
+    need_registration, need_resume, only_overseas_student, audit_type, number_limit, 
+    address, status, questionnaire_id, follower, applicant_quantity, weight, send_notice_confirm, 
+    del_flag, create_time, update_time
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -92,22 +93,24 @@
       user_type, title, poster, 
       organizer_id, organizer_type, activity_start_time, 
       activity_finish_time, registration_start_time, 
-      registration_finish_time, need_resume, only_overseas_student, 
-      audit_type, number_limit, address, 
-      status, questionnaire_id, follower, 
-      applicant_quantity, weight, send_notice_confirm, 
-      del_flag, create_time, update_time, 
-      description)
+      registration_finish_time, need_registration, 
+      need_resume, only_overseas_student, audit_type, 
+      number_limit, address, status, 
+      questionnaire_id, follower, applicant_quantity, 
+      weight, send_notice_confirm, del_flag, 
+      create_time, update_time, description
+      )
     values (#{userId,jdbcType=BIGINT}, #{form,jdbcType=TINYINT}, #{cityId,jdbcType=INTEGER}, 
       #{userType,jdbcType=CHAR}, #{title,jdbcType=VARCHAR}, #{poster,jdbcType=VARCHAR}, 
       #{organizerId,jdbcType=INTEGER}, #{organizerType,jdbcType=CHAR}, #{activityStartTime,jdbcType=TIMESTAMP}, 
       #{activityFinishTime,jdbcType=TIMESTAMP}, #{registrationStartTime,jdbcType=TIMESTAMP}, 
-      #{registrationFinishTime,jdbcType=TIMESTAMP}, #{needResume,jdbcType=CHAR}, #{onlyOverseasStudent,jdbcType=CHAR}, 
-      #{auditType,jdbcType=CHAR}, #{numberLimit,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{questionnaireId,jdbcType=INTEGER}, #{follower,jdbcType=INTEGER}, 
-      #{applicantQuantity,jdbcType=INTEGER}, #{weight,jdbcType=INTEGER}, #{sendNoticeConfirm,jdbcType=CHAR}, 
-      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{description,jdbcType=LONGVARCHAR})
+      #{registrationFinishTime,jdbcType=TIMESTAMP}, #{needRegistration,jdbcType=TINYINT}, 
+      #{needResume,jdbcType=CHAR}, #{onlyOverseasStudent,jdbcType=CHAR}, #{auditType,jdbcType=CHAR}, 
+      #{numberLimit,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{questionnaireId,jdbcType=INTEGER}, #{follower,jdbcType=INTEGER}, #{applicantQuantity,jdbcType=INTEGER}, 
+      #{weight,jdbcType=INTEGER}, #{sendNoticeConfirm,jdbcType=CHAR}, #{delFlag,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.worldelite.job.entity.Activity">
     <!--
@@ -154,6 +157,9 @@
       </if>
       <if test="registrationFinishTime != null">
         registration_finish_time,
+      </if>
+      <if test="needRegistration != null">
+        need_registration,
       </if>
       <if test="needResume != null">
         need_resume,
@@ -237,6 +243,9 @@
       </if>
       <if test="registrationFinishTime != null">
         #{registrationFinishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="needRegistration != null">
+        #{needRegistration,jdbcType=TINYINT},
       </if>
       <if test="needResume != null">
         #{needResume,jdbcType=CHAR},
@@ -328,6 +337,9 @@
       <if test="registrationFinishTime != null">
         registration_finish_time = #{registrationFinishTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="needRegistration != null">
+        need_registration = #{needRegistration,jdbcType=TINYINT},
+      </if>
       <if test="needResume != null">
         need_resume = #{needResume,jdbcType=CHAR},
       </if>
@@ -394,6 +406,7 @@
       activity_finish_time = #{activityFinishTime,jdbcType=TIMESTAMP},
       registration_start_time = #{registrationStartTime,jdbcType=TIMESTAMP},
       registration_finish_time = #{registrationFinishTime,jdbcType=TIMESTAMP},
+      need_registration = #{needRegistration,jdbcType=TINYINT},
       need_resume = #{needResume,jdbcType=CHAR},
       only_overseas_student = #{onlyOverseasStudent,jdbcType=CHAR},
       audit_type = #{auditType,jdbcType=CHAR},
@@ -429,6 +442,7 @@
       activity_finish_time = #{activityFinishTime,jdbcType=TIMESTAMP},
       registration_start_time = #{registrationStartTime,jdbcType=TIMESTAMP},
       registration_finish_time = #{registrationFinishTime,jdbcType=TIMESTAMP},
+      need_registration = #{needRegistration,jdbcType=TINYINT},
       need_resume = #{needResume,jdbcType=CHAR},
       only_overseas_student = #{onlyOverseasStudent,jdbcType=CHAR},
       audit_type = #{auditType,jdbcType=CHAR},

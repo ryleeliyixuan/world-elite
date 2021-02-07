@@ -241,18 +241,22 @@ public class ActivityService extends BaseService {
             if (activityForm.getStatus() != null && activityForm.getStatus() == ActivityStatus.DRAFT.value) {
                 activity.setStatus(ActivityStatus.DRAFT.value);
                 //关联报名表
-                if (StringUtils.isNotBlank(activityForm.getQuestionnaireType()) && activityForm.getQuestionnaireId() != null) {
-                    QuestionnaireTemplateVo template = activityQuestionnaireService
-                            .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
-                    activity.setQuestionnaireId(template.getId());
+                if(activityForm.getNeedRegistration() == Bool.TRUE) {
+                    if (StringUtils.isNotBlank(activityForm.getQuestionnaireType()) && activityForm.getQuestionnaireId() != null) {
+                        QuestionnaireTemplateVo template = activityQuestionnaireService
+                                .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
+                        activity.setQuestionnaireId(template.getId());
+                    }
                 }
 
                 activityMapper.insertSelective(activity);
             } else {
                 //关联报名表
-                QuestionnaireTemplateVo template = activityQuestionnaireService
-                        .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
-                activity.setQuestionnaireId(template.getId());
+                if(activityForm.getNeedRegistration() == Bool.TRUE) {
+                    QuestionnaireTemplateVo template = activityQuestionnaireService
+                            .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
+                    activity.setQuestionnaireId(template.getId());
+                }
 
                 final OrganizerCreditVo organizerCredit = organizerCreditService.getOrganizerCredit(activity.getUserId());
                 if (organizerCredit != null && organizerCredit.getCredit() == OrganizerCreditGrade.LEVEL1.value) {
@@ -416,11 +420,13 @@ public class ActivityService extends BaseService {
             }
         }
 
-        //如果关联了报名表，则返回报名表名
-        Integer questionnaireId = activity.getQuestionnaireId();
-        if (questionnaireId != null) {
-            QuestionnaireTemplateVo template = activityQuestionnaireService.getSimpleActivityQuestionnaire(questionnaireId);
-            activityVo.setQuestionnaireName(template.getTitle());
+        if(activity.getNeedRegistration() == Bool.TRUE) {
+            //如果关联了报名表，则返回报名表名
+            Integer questionnaireId = activity.getQuestionnaireId();
+            if (questionnaireId != null) {
+                QuestionnaireTemplateVo template = activityQuestionnaireService.getSimpleActivityQuestionnaire(questionnaireId);
+                activityVo.setQuestionnaireName(template.getTitle());
+            }
         }
 
         return activityVo;
