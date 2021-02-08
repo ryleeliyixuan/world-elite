@@ -55,11 +55,11 @@
                         <share :config="shareConfig"></share>
                     </el-popover>
 
-                    <div  v-if="activity.needRegistration==='1'" :class="(activity.registrationFlag || activity.numberLimit === activity.applicantQuantity)?'apply-button2':'apply-button'"
+                    <div  v-if="activity.needRegistration===1" :class="(activity.registrationFlag || activity.numberLimit === activity.applicantQuantity)?'apply-button2':'apply-button'"
                          @click="onApply">{{activity.registrationFlag?'已报名':'报名'}}
                     </div>
                 </div>
-                <div class="line2"  v-if="activity.needRegistration==='1'&&(activity.numberLimit>=0)" >
+                <div class="line2"  v-if="activity.needRegistration===1&&(activity.numberLimit>=0)" >
                     报名名额还剩<span>{{activity.numberLimit - activity.applicantQuantity}}</span>个
                 </div>
             </div>

@@ -31,7 +31,7 @@
                 </div>
                 <div class="activity-left-three">活动时间：<span class="activity-left-time">{{item.activityStartTime | timestampToDateHourMinute}} -- {{item.activityFinishTime | timestampToDateHourMinute}}</span>
                 </div>
-                <div class="activity-left-three">报名时间：<span class="activity-left-time">{{item.registrationStartTime | timestampToDateHourMinute}} -- {{item.registrationFinishTime | timestampToDateHourMinute}}</span>
+                <div class="activity-left-three" v-if="item.needRegistration===1">报名时间：<span class="activity-left-time">{{item.registrationStartTime | timestampToDateHourMinute}} -- {{item.registrationFinishTime | timestampToDateHourMinute}}</span>
                 </div>
                 <div class="activity-left-three">发布时间：<span class="activity-left-time">{{item.createTime | timestampToDateHourMinute}}</span></div>
             </div>
@@ -42,7 +42,7 @@
                     <div :class="['activity-item-right-link-one', {'edit-disable':!isEditInfoEnable(item)}]" @click="onEdit(item)">
                         {{isShowEditInfo(item)?'编辑信息':'重新编辑'}}
                     </div>
-                    <div class="activity-item-right-link-one" v-if="isShowRegistrationInformationManagement(item)"
+                    <div class="activity-item-right-link-one" v-if="isShowRegistrationInformationManagement(item) && item.needRegistration===1"
                          @click="onRegistrationInformationManagement(item)">报名信息管理
                     </div>
                 </div>
