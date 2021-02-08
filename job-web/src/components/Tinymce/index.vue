@@ -1,9 +1,9 @@
 <template>
     <div :class="['tinymce-container',{fullscreen:fullscreen}]" :style="{width:containerWidth}">
         <editor id="tinymce" v-model="content" :init="initTinymce"></editor>
-<!--        <div class="editor-custom-btn-container">-->
-<!--            <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK"/>-->
-<!--        </div>-->
+        <div class="editor-custom-btn-container">
+            <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK"/>
+        </div>
     </div>
 </template>
 <script>
@@ -218,17 +218,22 @@
             },
             fileHandler(callback, value, meta) {
                 // Provide file and text for the link dialog
-                if (meta.filetype === 'file') {
-                    callback('mypage.html', {text: 'My text'})
-                }
-                // Provide image and alt text for the image dialog
-                // if (meta.filetype === 'image') {
-                //   callback('myimage.jpg', { alt: 'My alt text' })
-                // }
-                // Provide alternative source and posted for the media dialog
-                // if (meta.filetype === 'media') {
-                //   callback('movie.mp4', { source2: 'alt.ogg', poster: 'image.jpg' })
-                // }
+                console.log(meta);
+                let _this = this;
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.onchange = function() {
+                    const file = this.files[0];
+                    getUploadPicToken(file.name).then(response => {
+                        const {data} = response
+                        _this.$axios.upload(data.host, file, data).then(() => {
+                            callback(data.host + '/' + data.key);
+                            console.log(_this.content);
+                        })
+                    })
+                };
+
+                input.click();
             },
 
             setup(editor) { // 初始化前执行
@@ -266,7 +271,8 @@
                 tinymce.editors['tinymce'].getContent()
             },
             imageSuccessCBK(file) {
-                tinymce.editors['tinymce'].insertContent(`<img style="max-width: 500px;max-height: 500px" src="${file.url}" >`)
+                console.log(file);
+                tinymce.editors['tinymce'].insertContent(`<img src="${file.url}" >`)
             }
         }
     }
