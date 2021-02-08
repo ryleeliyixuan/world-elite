@@ -62,11 +62,13 @@ public class ActivityStatusManager implements CommandLineRunner {
                 || activity.getDelFlag() == Bool.TRUE) return;
 
         long diff;
-        if (activity.getRegistrationStartTime() != null && (diff = ChronoUnit.MILLIS.between(Instant.now(), activity.getRegistrationStartTime().toInstant())) > 0) {
-            put(new DelayActivityInfo(activity.getId(), diff));
-        }
-        if (activity.getRegistrationFinishTime() != null && (diff = ChronoUnit.MILLIS.between(Instant.now(), activity.getRegistrationFinishTime().toInstant())) > 0) {
-            put(new DelayActivityInfo(activity.getId(), diff));
+        if (activity.getNeedRegistration() != null && activity.getNeedRegistration() == Bool.TRUE) {
+            if (activity.getRegistrationStartTime() != null && (diff = ChronoUnit.MILLIS.between(Instant.now(), activity.getRegistrationStartTime().toInstant())) > 0) {
+                put(new DelayActivityInfo(activity.getId(), diff));
+            }
+            if (activity.getRegistrationFinishTime() != null && (diff = ChronoUnit.MILLIS.between(Instant.now(), activity.getRegistrationFinishTime().toInstant())) > 0) {
+                put(new DelayActivityInfo(activity.getId(), diff));
+            }
         }
         if (activity.getActivityStartTime() != null && (diff = ChronoUnit.MILLIS.between(Instant.now(), activity.getActivityStartTime().toInstant())) > 0) {
             put(new DelayActivityInfo(activity.getId(), diff));
@@ -138,13 +140,16 @@ public class ActivityStatusManager implements CommandLineRunner {
     public ActivityStatus getActivityStatus(Activity activity) {
         Date date = new Date();
         ActivityStatus status;
-        if (date.compareTo(activity.getRegistrationStartTime()) < 0) {
+        if (activity.getRegistrationStartTime() != null && date.compareTo(activity.getRegistrationStartTime()) < 0) {
             status = ActivityStatus.WILL;
-        } else if (date.compareTo(activity.getRegistrationStartTime()) >= 0 && date.compareTo(activity.getRegistrationFinishTime()) <= 0) {
+        } else if (activity.getRegistrationStartTime() != null && activity.getRegistrationFinishTime() != null &&
+                date.compareTo(activity.getRegistrationStartTime()) >= 0 && date.compareTo(activity.getRegistrationFinishTime()) <= 0) {
             status = ActivityStatus.SIGN_UP;
-        } else if (date.compareTo(activity.getRegistrationFinishTime()) > 0 && date.compareTo(activity.getActivityStartTime()) < 0) {
+        } else if (activity.getRegistrationFinishTime() != null && activity.getActivityStartTime() != null &&
+                date.compareTo(activity.getRegistrationFinishTime()) > 0 && date.compareTo(activity.getActivityStartTime()) < 0) {
             status = ActivityStatus.WILL;
-        } else if (date.compareTo(activity.getActivityStartTime()) >= 0 && date.compareTo(activity.getActivityFinishTime()) <= 0) {
+        } else if (activity.getActivityStartTime() != null && activity.getActivityFinishTime() != null &&
+                date.compareTo(activity.getActivityStartTime()) >= 0 && date.compareTo(activity.getActivityFinishTime()) <= 0) {
             status = ActivityStatus.ACTIVE;
         } else {
             status = ActivityStatus.END;

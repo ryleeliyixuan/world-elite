@@ -105,10 +105,12 @@ public class ActivityNotifyManager implements CommandLineRunner {
             if (diff > 0)
                 put(new DelayActivityInfo(activity.getId(), type, diff));
         }
-        if (type == BusinessType.ACTIVITY_REGISTRATION_START.value) {
-            diff = ChronoUnit.MILLIS.between(Instant.now(), activity.getRegistrationStartTime().toInstant());
-            if (diff > 0)
-                put(new DelayActivityInfo(activity.getId(), type, diff));
+        if (activity.getNeedRegistration() != null && activity.getNeedRegistration() == Bool.TRUE) {
+            if (type == BusinessType.ACTIVITY_REGISTRATION_START.value) {
+                diff = ChronoUnit.MILLIS.between(Instant.now(), activity.getRegistrationStartTime().toInstant());
+                if (diff > 0)
+                    put(new DelayActivityInfo(activity.getId(), type, diff));
+            }
         }
     }
 
@@ -213,7 +215,9 @@ public class ActivityNotifyManager implements CommandLineRunner {
      * @return true满足条件发送通知, false不满足条件没发送,需要加入延迟队列
      */
     private boolean activityStartNotifyFollower(Activity activity) {
-        if (activity == null || activity.getRegistrationStartTime() == null) return false;
+        if (activity == null) return false;
+        if (activity.getNeedRegistration() != null && activity.getNeedRegistration() == Bool.FALSE) return false;
+        if (activity.getRegistrationStartTime() == null) return false;
 
         Calendar calendarStart = new Calendar.Builder().setInstant(activity.getRegistrationStartTime().getTime()).build();
         Calendar calendarFinish = new Calendar.Builder().setInstant(activity.getRegistrationFinishTime().getTime()).build();
@@ -260,7 +264,7 @@ public class ActivityNotifyManager implements CommandLineRunner {
         UserApplicantVo applicantVo = userApplicantService.getUserInfo(userId);
         if (applicantVo != null) {
             email = applicantVo.getEmail();
-        }else{
+        } else {
             final UserCorporateVo corporateVo = userCorporateService.getUserInfo(userId);
             email = corporateVo != null ? corporateVo.getEmail() : null;
         }
@@ -271,7 +275,7 @@ public class ActivityNotifyManager implements CommandLineRunner {
             emailForm.setSubject(msg);
             emailForm.setEmailBody(msg);
             emailService.sendEmail(emailForm);
-        }else{
+        } else {
             log.error("无法获取到用户的邮箱,邮件未发送");
         }
     }

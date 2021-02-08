@@ -201,11 +201,12 @@ public class ActivitySearchService {
         doc.add(new IntPoint(ActivityIndexFields.STATUS, activity.getStatus()));
         doc.add(new NumericDocValuesField(ActivityIndexFields.STATUS, activity.getStatus()));
 
-        doc.add(new LongPoint(ActivityIndexFields.REGISTRATION_START_TIME, activity.getRegistrationStartTime().getTime()));
-        doc.add(new NumericDocValuesField(ActivityIndexFields.REGISTRATION_START_TIME, activity.getRegistrationStartTime().getTime()));
-        doc.add(new LongPoint(ActivityIndexFields.REGISTRATION_FINISH_TIME, activity.getRegistrationFinishTime().getTime()));
-        doc.add(new NumericDocValuesField(ActivityIndexFields.REGISTRATION_FINISH_TIME, activity.getRegistrationFinishTime().getTime()));
-
+        if(activity.getNeedRegistration() != null && activity.getNeedRegistration() == Bool.TRUE) {
+            doc.add(new LongPoint(ActivityIndexFields.REGISTRATION_START_TIME, activity.getRegistrationStartTime().getTime()));
+            doc.add(new NumericDocValuesField(ActivityIndexFields.REGISTRATION_START_TIME, activity.getRegistrationStartTime().getTime()));
+            doc.add(new LongPoint(ActivityIndexFields.REGISTRATION_FINISH_TIME, activity.getRegistrationFinishTime().getTime()));
+            doc.add(new NumericDocValuesField(ActivityIndexFields.REGISTRATION_FINISH_TIME, activity.getRegistrationFinishTime().getTime()));
+        }
         doc.add(new LongPoint(ActivityIndexFields.ACTIVITY_START_TIME, activity.getActivityStartTime().getTime()));
         doc.add(new NumericDocValuesField(ActivityIndexFields.ACTIVITY_START_TIME, activity.getActivityStartTime().getTime()));
         doc.add(new LongPoint(ActivityIndexFields.ACTIVITY_FINISH_TIME, activity.getActivityFinishTime().getTime()));

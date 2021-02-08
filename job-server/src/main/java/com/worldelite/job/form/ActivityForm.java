@@ -37,10 +37,10 @@ public class ActivityForm {
 
     private String userType; //用户类型,个人账户:1/企业账户:2/管理账户:100. 留空为当前用户类型
 
-    @NotNull(groups = {AllField.class})
+    @NotNull(groups = {AllField.class, NoRegistrationField.class})
     private Long activityStartTime; //活动开始时间
 
-    @NotNull(groups = {AllField.class})
+    @NotNull(groups = {AllField.class, NoRegistrationField.class})
     private Long activityFinishTime; //活动结束时间
 
     @NotNull(groups = {AllField.class})
