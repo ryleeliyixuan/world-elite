@@ -16,32 +16,34 @@
     import plugins from './plugins'
     import toolbar from './toolbar'
 
-    import 'tinymce/plugins/anchor'// 插入瞄点
-    import 'tinymce/plugins/advlist'// 高级列表插件
-    import 'tinymce/plugins/autolink'// 自动链接
-    import 'tinymce/plugins/autoresize'// 自动适应大小
+    import 'tinymce/plugins/anchor' // 插入瞄点
+    import 'tinymce/plugins/advlist' // 高级列表插件
+    import 'tinymce/plugins/autolink' // 自动链接
+    import 'tinymce/plugins/autoresize' // 自动适应大小
     // import 'tinymce/plugins/autosave'// 自动保存
-    import 'tinymce/plugins/charmap'// 插入特殊字符
-    import 'tinymce/plugins/code'// 插入html源码
-    import 'tinymce/plugins/emoticons'// 插入unicode字符表情
+    import 'tinymce/plugins/charmap' // 插入特殊字符
+    import 'tinymce/plugins/code' // 插入html源码
+    import 'tinymce/plugins/emoticons' // 插入unicode字符表情
     import emojis from 'tinymce/plugins/emoticons/js/emojis' // emoji字符文件
-    import 'tinymce/plugins/fullscreen'// 全屏
-    import 'tinymce/plugins/help'// 帮助
-    import 'tinymce/plugins/hr'// 水平分割线
-    // import 'tinymce/plugins/image'// 插入上传图片插件
-    import 'tinymce/plugins/insertdatetime'// 插入日期时间
-    import 'tinymce/plugins/link'// 插入超链接
-    import 'tinymce/plugins/lists'// 列表插件
+    import 'tinymce/plugins/fullscreen' // 全屏
+    import 'tinymce/plugins/help' // 帮助
+    import 'tinymce/plugins/hr' // 水平分割线
+    import 'tinymce/plugins/image' // 插入上传图片插件
+    import 'tinymce/plugins/insertdatetime' // 插入日期时间
+    import 'tinymce/plugins/link' // 插入超链接
+    import 'tinymce/plugins/lists' // 列表插件
     // import 'tinymce/plugins/media'// 插入视频插件
-    import 'tinymce/plugins/pagebreak'// 插入分页符
-    import 'tinymce/plugins/preview'// 预览
-    import 'tinymce/plugins/print'// 打印
-    import 'tinymce/plugins/quickbars'// 快捷操作
+    import 'tinymce/plugins/pagebreak' // 插入分页符
+    import 'tinymce/plugins/preview' // 预览
+    import 'tinymce/plugins/print' // 打印
+    import 'tinymce/plugins/quickbars' // 快捷操作
     // import 'tinymce/plugins/save'// 保存
-    import 'tinymce/plugins/searchreplace'// 查找和替换
-    import 'tinymce/plugins/table'// 插入表格插件
-    import 'tinymce/plugins/toc'// 目录生成
-    import 'tinymce/plugins/wordcount'// 字数统计插件
+    import 'tinymce/plugins/searchreplace' // 查找和替换
+    import 'tinymce/plugins/table' // 插入表格插件
+    import 'tinymce/plugins/toc' // 目录生成
+    import 'tinymce/plugins/wordcount'
+    import {getUploadPicToken} from "@/api/upload_api";
+    // 字数统计插件
     // import bdmap from  './tinymce/bdmap/plugin.js'// 百度地图
 
     export default {
@@ -206,22 +208,32 @@
             // });
 
             imageHandler(blobInfo, successCallback, failCallback) {
-                console.log(blobInfo)
                 let file = blobInfo.blob()//转化为易于理解的file对象
+                getUploadPicToken(file.name).then(response => {
+                    const {data} = response
+                    this.$axios.upload(data.host, file, data).then(() => {
+                        successCallback(data.host + '/' + data.key);
+                    })
+                })
             },
             fileHandler(callback, value, meta) {
                 // Provide file and text for the link dialog
-                if (meta.filetype === 'file') {
-                    callback('mypage.html', {text: 'My text'})
-                }
-                // Provide image and alt text for the image dialog
-                // if (meta.filetype === 'image') {
-                //   callback('myimage.jpg', { alt: 'My alt text' })
-                // }
-                // Provide alternative source and posted for the media dialog
-                // if (meta.filetype === 'media') {
-                //   callback('movie.mp4', { source2: 'alt.ogg', poster: 'image.jpg' })
-                // }
+                console.log(meta);
+                let _this = this;
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.onchange = function() {
+                    const file = this.files[0];
+                    getUploadPicToken(file.name).then(response => {
+                        const {data} = response
+                        _this.$axios.upload(data.host, file, data).then(() => {
+                            callback(data.host + '/' + data.key);
+                            console.log(_this.content);
+                        })
+                    })
+                };
+
+                input.click();
             },
 
             setup(editor) { // 初始化前执行
@@ -259,7 +271,8 @@
                 tinymce.editors['tinymce'].getContent()
             },
             imageSuccessCBK(file) {
-                tinymce.editors['tinymce'].insertContent(`<img style="max-width: 500px;max-height: 500px" src="${file.url}" >`)
+                console.log(file);
+                tinymce.editors['tinymce'].insertContent(`<img src="${file.url}" >`)
             }
         }
     }
