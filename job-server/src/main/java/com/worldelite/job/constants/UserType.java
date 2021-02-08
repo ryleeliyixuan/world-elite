@@ -4,7 +4,9 @@ package com.worldelite.job.constants;
  * @author yeguozhong yedaxia.github.com
  */
 public enum UserType {
-    GENERAL(1),COMPANY(2), ADMIN(100);
+    GENERAL(1),
+    COMPANY(2),
+    ADMIN(100);
     public final byte value;
 
     UserType(int value) {

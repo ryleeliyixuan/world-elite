@@ -71,6 +71,19 @@ public class JobApi extends BaseApi {
         return ApiResult.ok();
     }
 
+    /**
+     * OP保存职位
+     * @param jobForm
+     * @return
+     */
+    @ApiDoc
+    @PostMapping("op-save")
+    @RequireLogin(allow = UserType.COMPANY)
+    public ApiResult saveOpJob(@RequestBody JobForm jobForm){
+        jobService.saveOpJob(jobForm);
+        return ApiResult.ok();
+    }
+
 
     /**
      * 获取公司已发布职位列表

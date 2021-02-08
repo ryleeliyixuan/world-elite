@@ -18,11 +18,11 @@ public class JobVo implements VoConvertable<JobVo, Job>{
     private DictVo jobType; //职位类型
     private DictVo recruitType; //招聘类型
     private String name; //职位名称
-    private CompanyUserVo companyUser; //企业用户
+    private CompanyUserVo companyUser; //所属企业用户
+    private CompanyVo company; //所属企业
     private JobCategoryVo category; //职位类型
     private String depart; //部门
     private DictVo minDegree; // 学历要求
-    private DictVo salary; //薪资范围ID
     private Integer salaryMonths; //发放月数
     private CityVo city; //工作城市
     private Byte status; //职位状态
@@ -55,6 +55,11 @@ public class JobVo implements VoConvertable<JobVo, Job>{
 
     private List<DictVo> additions; //其他条件
 
+    private DictVo language; //语言要求
+
+    private Integer minSalary; //最低薪资
+    private Integer maxSalary; //最高薪资
+
     @Override
     public JobVo asVo(Job job) {
         setId(String.valueOf(job.getId()));
@@ -64,6 +69,8 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setSalaryMonths(job.getSalaryMonths());
         setStatus(job.getStatus());
         setDescription(job.getDescription());
+        setMinSalary(job.getMinSalary());
+        setMaxSalary(job.getMaxSalary());
         setTime(job.getPubTime());
         if(StringUtils.isNotEmpty(job.getIndustryTags())) {
             setIndustryTags(job.getIndustryTags().split(","));

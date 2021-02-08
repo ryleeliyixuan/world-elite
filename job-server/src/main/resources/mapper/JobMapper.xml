@@ -31,6 +31,7 @@
     <result column="skill_tags" jdbcType="VARCHAR" property="skillTags" />
     <result column="salary_id" jdbcType="INTEGER" property="salaryId" />
     <result column="recruit_type" jdbcType="INTEGER" property="recruitType" />
+    <result column="language_id" jdbcType="INTEGER" property="languageId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.worldelite.job.entity.Job">
     <!--
@@ -46,7 +47,8 @@
     -->
     id, company_id, creator_id, job_type, name, category_id, depart, min_degree_id, min_salary, 
     max_salary, salary_months, city_id, address_id, status, pub_time, create_time, update_time, 
-    del_flag, remark, experience_id, industry_tags, skill_tags, salary_id, recruit_type
+    del_flag, remark, experience_id, industry_tags, skill_tags, salary_id, recruit_type, 
+    language_id
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -90,8 +92,8 @@
       status, pub_time, create_time, 
       update_time, del_flag, remark, 
       experience_id, industry_tags, skill_tags, 
-      salary_id, recruit_type, description
-      )
+      salary_id, recruit_type, language_id, 
+      description)
     values (#{companyId,jdbcType=BIGINT}, #{creatorId,jdbcType=BIGINT}, #{jobType,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR}, #{categoryId,jdbcType=INTEGER}, #{depart,jdbcType=VARCHAR}, 
       #{minDegreeId,jdbcType=INTEGER}, #{minSalary,jdbcType=INTEGER}, #{maxSalary,jdbcType=INTEGER}, 
@@ -99,8 +101,8 @@
       #{status,jdbcType=TINYINT}, #{pubTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, 
       #{experienceId,jdbcType=INTEGER}, #{industryTags,jdbcType=VARCHAR}, #{skillTags,jdbcType=VARCHAR}, 
-      #{salaryId,jdbcType=INTEGER}, #{recruitType,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR}
-      )
+      #{salaryId,jdbcType=INTEGER}, #{recruitType,jdbcType=INTEGER}, #{languageId,jdbcType=INTEGER}, 
+      #{description,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.worldelite.job.entity.Job">
     <!--
@@ -181,6 +183,9 @@
       <if test="recruitType != null">
         recruit_type,
       </if>
+      <if test="languageId != null">
+        language_id,
+      </if>
       <if test="description != null">
         description,
       </if>
@@ -254,6 +259,9 @@
       </if>
       <if test="recruitType != null">
         #{recruitType,jdbcType=INTEGER},
+      </if>
+      <if test="languageId != null">
+        #{languageId,jdbcType=INTEGER},
       </if>
       <if test="description != null">
         #{description,jdbcType=LONGVARCHAR},
@@ -336,6 +344,9 @@
       <if test="recruitType != null">
         recruit_type = #{recruitType,jdbcType=INTEGER},
       </if>
+      <if test="languageId != null">
+        language_id = #{languageId,jdbcType=INTEGER},
+      </if>
       <if test="description != null">
         description = #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -371,6 +382,7 @@
       skill_tags = #{skillTags,jdbcType=VARCHAR},
       salary_id = #{salaryId,jdbcType=INTEGER},
       recruit_type = #{recruitType,jdbcType=INTEGER},
+      language_id = #{languageId,jdbcType=INTEGER},
       description = #{description,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -402,7 +414,8 @@
       industry_tags = #{industryTags,jdbcType=VARCHAR},
       skill_tags = #{skillTags,jdbcType=VARCHAR},
       salary_id = #{salaryId,jdbcType=INTEGER},
-      recruit_type = #{recruitType,jdbcType=INTEGER}
+      recruit_type = #{recruitType,jdbcType=INTEGER},
+      language_id = #{languageId,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

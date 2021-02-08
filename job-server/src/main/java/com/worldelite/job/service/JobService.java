@@ -88,6 +88,9 @@ public class JobService extends BaseService {
     @Autowired
     private JobAddressService jobAddressService;
 
+    @Autowired
+    private OpUserService opUserService;
+
     /**
      * 获取职位信息: 适用列表
      *
@@ -112,13 +115,40 @@ public class JobService extends BaseService {
     }
 
     /**
-     * 保存职位
-     *
+     * 一般企业用户保存职位
      * @param jobForm
-     * @return
      */
     @Transactional
     public void saveJob(JobForm jobForm) {
+        Long companyId = 0L;
+        CompanyUserVo companyUserVo = companyService.getCompanyUser(curUser().getId());
+        if (companyUserVo != null) {
+            companyId = Long.valueOf(companyUserVo.getCompany().getId());
+        }
+        saveJob(jobForm, companyId);
+    }
+
+    /**
+     * OP用户保存职位
+     * @param jobForm
+     */
+    @Transactional
+    public void saveOpJob(JobForm jobForm) {
+        if(!opUserService.isOp()){
+            throw new ServiceException(ApiCode.PERMISSION_DENIED);
+        }
+        if(jobForm.getCompanyId() == null){
+            throw new ServiceException(ApiCode.INVALID_PARAM);
+        }
+        saveJob(jobForm, jobForm.getCompanyId());
+    }
+
+    /**
+     * 保存职位
+     * @param jobForm
+     * @param companyId
+     */
+    private void saveJob(JobForm jobForm,Long companyId) {
 
         Job job = null;
 
@@ -131,10 +161,7 @@ public class JobService extends BaseService {
             job = new Job();
         }
 
-        CompanyUserVo companyUserVo = companyService.getCompanyUser(curUser().getId());
-        if (companyUserVo != null) {
-            job.setCompanyId(Long.valueOf(companyUserVo.getCompany().getId()));
-        }
+        job.setCompanyId(companyId);
 
         job.setName(jobForm.getName());
         job.setCategoryId(jobForm.getCategoryId());
@@ -148,17 +175,11 @@ public class JobService extends BaseService {
         job.setJobType(jobForm.getJobType());
         job.setRecruitType(jobForm.getRecruitType());
         job.setMinDegreeId(jobForm.getMinDegreeId());
-        job.setSalaryId(jobForm.getSalaryId());
-        DictVo salary = dictService.getById(jobForm.getSalaryId());
-        String salaryStr = salary.getValue()==null?"":salary.getValue();
-        String[] salarys = salaryStr.split("-");
-        if(salarys.length==2){
-            job.setMinSalary(Integer.valueOf(salarys[0]));
-            job.setMaxSalary(Integer.valueOf(salarys[1]));
-        }else{
-            job.setMinSalary(0);
-            job.setMaxSalary(0);
-        }
+        job.setMinSalary(jobForm.getMinSalary());
+        job.setMaxSalary(jobForm.getMaxSalary());
+        //防止需求再次变更，待稳定后再删除salaryId字段
+        job.setSalaryId(0);
+        job.setLanguageId(jobForm.getLanguageId());
         job.setSalaryMonths(jobForm.getSalaryMonths());
         job.setExperienceId(jobForm.getExperienceId());
         job.setSkillTags(jobForm.getSkillTags());
@@ -605,9 +626,9 @@ public class JobService extends BaseService {
         jobVo.setCity(cityService.getCityVo(job.getCityId()));
         jobVo.setJobType(dictService.getById(job.getJobType()));
         jobVo.setRecruitType(dictService.getById(job.getRecruitType()));
-        jobVo.setSalary(dictService.getById(job.getSalaryId()));
         jobVo.setExperience(dictService.getById(job.getExperienceId()));
         jobVo.setAdditions(jobAdditionService.getByJobId(job.getId()));
+        jobVo.setLanguage(dictService.getById(job.getLanguageId()));
         JobAddress jobAddress = jobAddressService.getByJobId(job.getId());
         if(jobAddress != null){
             jobVo.setAddress(jobAddress.getAddress());
@@ -615,6 +636,7 @@ public class JobService extends BaseService {
             jobVo.setLongitude(jobAddress.getLongitude());
         }
         if (includeCompany) {
+            jobVo.setCompany(companyService.getSimpleCompanyInfo(job.getCompanyId()));
             jobVo.setCompanyUser(companyService.getCompanyUser(job.getCreatorId()));
         }
         Byte favorite = 0;

@@ -5,8 +5,10 @@ import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.UserType;
 import com.worldelite.job.context.SessionKeys;
 import com.worldelite.job.controller.BaseController;
+import com.worldelite.job.entity.OpUser;
 import com.worldelite.job.entity.UserCorporate;
 import com.worldelite.job.form.*;
+import com.worldelite.job.service.OpUserService;
 import com.worldelite.job.service.UserApplicantService;
 import com.worldelite.job.service.UserCorporateService;
 import com.worldelite.job.util.ResponseUtils;
@@ -38,6 +40,9 @@ public class UserCorporateApi extends BaseController {
 
     @Autowired
     private Producer captchaProducer;
+
+    @Autowired
+    private OpUserService opUserService;
 
     /**
      * 使用邮箱注册新用户
@@ -146,6 +151,18 @@ public class UserCorporateApi extends BaseController {
         }
         userCorporateService.modifyPassword(modifyPwdForm);
         return ApiResult.ok();
+    }
+
+    /**
+     * 判断当前登录用户是否为OP帐号
+     * @return
+     */
+    @ApiDoc
+    @RequireLogin(allow = UserType.COMPANY)
+    @GetMapping("check-op")
+    public ApiResult<Boolean> isOp(){
+        Boolean isOp = opUserService.isOp();
+        return ApiResult.ok(isOp);
     }
 
     /**

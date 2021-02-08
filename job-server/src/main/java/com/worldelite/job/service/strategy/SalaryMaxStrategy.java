@@ -1,6 +1,5 @@
 package com.worldelite.job.service.strategy;
 
-import com.worldelite.job.entity.Job;
 import com.worldelite.job.vo.JobVo;
 
 import java.util.Comparator;
@@ -20,33 +19,15 @@ public class SalaryMaxStrategy implements Comparator<JobVo> {
         Integer LSalary;
         Integer RSalary;
 
-        String[] LSalarySplit = LJobVo.getSalary().getName().split("-");
         Integer LSalaryMonths = Optional.ofNullable(LJobVo.getSalaryMonths()).orElse(0);
 
-        if (LSalarySplit.length > 1) {
-            Integer maxSalary = Integer.parseInt(LSalarySplit[1].substring(0, LSalarySplit[1].length() - 1));
-            if (LSalaryMonths == 0) {
-                LSalary = maxSalary * MONTH_NUMBER;
-            } else {
-                LSalary = maxSalary * LSalaryMonths;
-            }
+        if (LSalaryMonths == 0) {
+            LSalary = LJobVo.getSalaryMonths() * MONTH_NUMBER;
         } else {
-            LSalary = 0;
+            LSalary = LJobVo.getSalaryMonths() * LSalaryMonths;
         }
 
-        String[] RSalarySplit = RJobVo.getSalary().getName().split("-");
-        Integer RSalaryMonths = Optional.ofNullable(RJobVo.getSalaryMonths()).orElse(0);
-
-        if (RSalarySplit.length > 1) {
-            Integer maxSalary = Integer.parseInt(RSalarySplit[1].substring(0, RSalarySplit[1].length() - 1));
-            if (RSalaryMonths == 0) {
-                RSalary = maxSalary * MONTH_NUMBER;
-            } else {
-                RSalary = maxSalary * RSalaryMonths;
-            }
-        } else {
-            RSalary = 0;
-        }
+        RSalary = RJobVo.getMaxSalary()*RJobVo.getSalaryMonths();
 
         if (LSalary > RSalary) return 1;
         if (LSalary < RSalary) return -1;

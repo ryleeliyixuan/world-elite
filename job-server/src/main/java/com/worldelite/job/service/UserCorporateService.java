@@ -502,5 +502,4 @@ public class UserCorporateService extends BaseService {
             throw new ServiceException(message("api.error.data.date"));
         }
     }
-
 }

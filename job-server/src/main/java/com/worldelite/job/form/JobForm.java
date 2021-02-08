@@ -21,8 +21,6 @@ public class JobForm {
     private String depart; //部门
     @NotNull(message = "{edit.job.degree.not.null}")
     private Integer minDegreeId; // 学历要求
-    @NotNull(message = "{edit.job.salary.not.null}")
-    private Integer salaryId; //薪资范围ID
     private Integer salaryMonths; //发放月数
     @NotNull(message = "{edit.job.type.not.null}")
     private Integer jobType; //职位类型
@@ -42,6 +40,10 @@ public class JobForm {
     private String address; //地址
     private Double latitude; //纬度
     private Double longitude; //经度
+    private Integer languageId; //语言要求ID
+    private Long companyId; //职位公司ID
+    private Integer minSalary; //最低薪资
+    private Integer maxSalary; //最高薪资
 
     public String getName() {
         return FormUtils.removeAllHtmlTag(name);

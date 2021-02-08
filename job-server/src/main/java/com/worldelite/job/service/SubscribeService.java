@@ -80,10 +80,10 @@ public class SubscribeService extends BaseService{
                 degreeIds.add(jobVo.getMinDegree().getId());
                 degreeValues.add(jobVo.getMinDegree().getName());
             }
-            if(jobVo.getSalary() != null) {
-                salaryIds.add(jobVo.getSalary().getId());
-                salaryValues.add(jobVo.getSalary().getName());
-            }
+//            if(jobVo.getSalary() != null) {
+//                salaryIds.add(jobVo.getSalary().getId());
+//                salaryValues.add(jobVo.getSalary().getName());
+//            }
             if(jobVo.getJobType() != null) {
                 industryIds.add(jobVo.getJobType().getId());
                 industryValues.add(jobVo.getJobType().getName());

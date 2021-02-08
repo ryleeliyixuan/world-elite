@@ -1,0 +1,1 @@
+ALTER TABLE t_job ADD language_id INT(11) DEFAULT 0 NOT NULL COMMENT '语言要求ID';

@@ -274,13 +274,13 @@ public class EasyExcelExportService implements IExportExcelService {
                 jobExcel.setCompany(jobVo.getCompanyUser().getCompany().getFullName());
             }
         }
-        if(jobVo.getSalary() != null && jobVo.getSalary().getName() != null){
-            String salary = jobVo.getSalary().getName();
-            if(jobVo.getSalaryMonths() != null){
-                salary += ("x" + jobVo.getSalaryMonths());
-            }
-            jobExcel.setSalary(salary);
-        }
+//        if(jobVo.getSalary() != null && jobVo.getSalary().getName() != null){
+//            String salary = jobVo.getSalary().getName();
+//            if(jobVo.getSalaryMonths() != null){
+//                salary += ("x" + jobVo.getSalaryMonths());
+//            }
+//            jobExcel.setSalary(salary);
+//        }
         if(jobVo.getMinDegree() != null){
             jobExcel.setDegree(jobVo.getMinDegree().getName());
         }
