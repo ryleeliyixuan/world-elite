@@ -2,7 +2,9 @@
     <div class="app-container">
         <div class="title">发布活动管理</div>
         <div class="type-container">
-            <div v-for="status in menuList" :class="['text',{'select':listQuery.status===status.id}]" @click="onActivityStatus(status)">{{status.name}}</div>
+            <div v-for="status in menuList" :class="['text',{'select':listQuery.status===status.id}]"
+                 @click="onActivityStatus(status)">{{status.name}}
+            </div>
             <div class="publish-button" @click="onPublish">发布活动</div>
             <el-popover class="sort-container"
                         placement="bottom-end"
@@ -10,22 +12,28 @@
                         popper-class="option"
                         trigger="hover">
                 <div class="publish-order-item-container">
-                    <div class="publish-order-item" v-for="order in orderList" @click="onOrderItem(order)">{{order.name}}</div>
+                    <div class="publish-order-item" v-for="order in orderList" @click="onOrderItem(order)">
+                        {{order.name}}
+                    </div>
                 </div>
                 <svg-icon slot="reference" icon-class="sort" class-name="sort"></svg-icon>
             </el-popover>
         </div>
         <div class="line"></div>
-        <el-input v-model="listQuery.keyword" placeholder="请输入关键词" class="search-input" @keyup.enter.native="handleFilter">
+        <el-input v-model="listQuery.keyword" placeholder="请输入关键词" class="search-input"
+                  @keyup.enter.native="handleFilter">
             <el-button slot="prepend" icon="el-icon-search" @click="handleFilter"></el-button>
         </el-input>
         <div class="activity-item" v-for="item in dataList">
             <div class="activity-item-left">
                 <div class="activity-left-one">
                     <div class="activity-left-one-title">{{item.title}}</div>
-                    <div class="activity-left-one-state" :style="{'background':statusBGColorList[item.status]}">{{getStatus(item)}}</div>
+                    <div class="activity-left-one-state" :style="{'background':statusBGColorList[item.status]}">
+                        {{getStatus(item)}}
+                    </div>
                 </div>
-                <div class="activity-left-two">{{item.organizerInfoVo && item.organizerInfoVo.organizerName}} - <span class="activity-left-place">{{item.city.name}}</span>
+                <div class="activity-left-two">{{item.organizerInfoVo && item.organizerInfoVo.organizerName}} - <span
+                        class="activity-left-place">{{item.city.name}}</span>
                     -
                     {{item.address}}
                 </div>
@@ -33,20 +41,23 @@
                 </div>
                 <div class="activity-left-three">报名时间：<span class="activity-left-time">{{item.registrationStartTime | timestampToDateHourMinute}} -- {{item.registrationFinishTime | timestampToDateHourMinute}}</span>
                 </div>
-                <div class="activity-left-three">发布时间：<span class="activity-left-time">{{item.createTime | timestampToDateHourMinute}}</span></div>
+                <div class="activity-left-three">发布时间：<span class="activity-left-time">{{item.createTime | timestampToDateHourMinute}}</span>
+                </div>
             </div>
             <div class="activity-item-right">
                 <div class="activity-item-right-link">
                     <div class="activity-item-right-link-one" @click="onItem(item)">查看详情</div>
                     <div v-if="item.status===7" class="activity-item-right-link-one" @click="onReason(item)">查看原因</div>
-                    <div :class="['activity-item-right-link-one', {'edit-disable':!isEditInfoEnable(item)}]" @click="onEdit(item)">
+                    <div :class="['activity-item-right-link-one', {'edit-disable':!isEditInfoEnable(item)}]"
+                         @click="onEdit(item)">
                         {{isShowEditInfo(item)?'编辑信息':'重新编辑'}}
                     </div>
                     <div class="activity-item-right-link-one" v-if="isShowRegistrationInformationManagement(item)"
                          @click="onRegistrationInformationManagement(item)">报名信息管理
                     </div>
                 </div>
-                <div :class="['activity-item-right-button', {'disabled':!isCancelButtonEnable(item)}]" @click="onCancelActivity(item)">
+                <div :class="['activity-item-right-button', {'disabled':!isCancelButtonEnable(item)}]"
+                     @click="onCancelActivity(item)">
                     取消活动
                 </div>
             </div>
@@ -89,25 +100,25 @@
                 <div class="confirm" @click="onCancelActivityConfirm">确定</div>
             </div>
         </el-dialog>
-
-        <approve :visible.sync="showApproveDialog" :status="approveStatus" @close="getApprove"></approve>
     </div>
 </template>
 
 <script>
     import Pagination from "@/components/Pagination2";
-    import approve from "@/components/activity/ApproveDialog";
 
     export default {
         name: "ActivityPublishPage",
-        components: {Pagination, approve},
+        components: {Pagination},
         data() {
             return {
                 // 活动状态 0审核中;1草稿;2下架;3即将开始(报名即将开始和活动即将开始都是3);4报名中;5进行中;6活动结束;7审核未通过
                 statusList: [{id: 0, name: '审核中'}, {id: 1, name: '草稿'}, {id: 2, name: '已停止'}, {id: 3, name: '即将开始'},
                     {id: 4, name: '报名中'}, {id: 5, name: '进行中'}, {id: 6, name: '已结束'}, {id: 7, name: '审核未通过'}],
                 statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
-                menuList: [{id: undefined, name: '全部活动'}, {id: 3, name: '即将开始'}, {id: 4, name: '报名中'}, {id: 5, name: '进行中'},
+                menuList: [{id: undefined, name: '全部活动'}, {id: 3, name: '即将开始'}, {id: 4, name: '报名中'}, {
+                    id: 5,
+                    name: '进行中'
+                },
                     {id: 6, name: '已结束'}, {id: "0,7", name: '审核处理的活动'}],
                 orderList: [ // 活动排序列表
                     {name: '按发布时间顺序', sort: '+CREATE_TIME'},
@@ -136,9 +147,6 @@
                 activityDraft: undefined, // 草稿信息
                 publishActivityDialogVisible: false,// 发布活动，加载草稿确认对话框
                 draftDeleting: false, // 草稿删除中
-
-                showApproveDialog: false, // 显示实名认证对话框
-                approveStatus: undefined, // 实名认证状态   审核状态.1:审核中,2:通过,3拒绝",
             };
         },
         watch: {
@@ -162,7 +170,7 @@
                 // 加载远程草稿
                 this.$axios.get("/activity/my/draft-activity-info").then(data => {
                     this.activityDraft = data.data;
-                })
+                });
 
                 // 查看我的实名认证状态
                 this.getApprove();
@@ -252,26 +260,10 @@
 
             // 点击发布活动
             onPublish() {
-                if (this.approveStatus === 1) { // 审核中
-                    this.$alert("您的实名认证尚在审核中，我们会尽快处理")
-                } else if (this.approveStatus === 3) { // 审核被拒绝
-                    this.showApproveDialog = true;
-                } else if (this.approveStatus === 2) { // 审核已通过，可以发布新活动
-                    if (this.activityDraft) {
-                        this.publishActivityDialogVisible = true;
-                    } else {
-                        this.onPublishWithDraft();
-                    }
-                } else { // 未提交审核信息
-                    this.$confirm('首次发布活动需要进行实名认证，点击“去认证”进入认证页', '提示', {
-                        confirmButtonText: '去认证',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(() => {
-                        this.showApproveDialog = true;
-                    }).catch(() => {
-
-                    });
+                if (this.activityDraft) {
+                    this.publishActivityDialogVisible = true;
+                } else {
+                    this.onPublishWithDraft();
                 }
             },
 
@@ -302,7 +294,7 @@
             getStatus(activity) {
                 let description = "";
                 if (activity.status === 5) {
-                    let number = Math.floor((activity.activityFinishTime- new Date().getTime()) / 1000 / 60 / 60 / 24);
+                    let number = Math.floor((activity.activityFinishTime - new Date().getTime()) / 1000 / 60 / 60 / 24);
                     description = number === 0 ? " 即将结束" : (" " + number + "天后结束");
                 }
                 return this.statusList.find(item => activity.status === item.id).name + description;

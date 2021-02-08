@@ -662,7 +662,7 @@
                     .subscript {
                         position: absolute;
                         top: 0;
-                        left: -1px;
+                        left: 0;
                         width: 66px;
                         height: 62px;
                     }

@@ -211,10 +211,12 @@
                         // this.shareConfig.description = this.activity.description;
 
                         // 获取报名表信息
-                        return this.$axios.get(`/activity-questionnaire/${this.activity.questionnaireId}`)
-                    }).then(response => {
-                        this.applyTable = response.data;
-                    })
+                        if(this.activity.questionnaireId) {
+                            this.$axios.get(`/activity-questionnaire/${this.activity.questionnaireId}`).then(response => {
+                                this.applyTable = response.data;
+                            })
+                        }
+                    });
 
                     // 举报选项
                     this.$axios.get("/dict/list", {params: {type: 24, limit: 99}}).then(data => {
