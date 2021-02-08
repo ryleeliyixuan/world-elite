@@ -1419,6 +1419,7 @@
                     if (valid) {
                         this.posting = true;
                         this.expectJobForm.userId = this.userId;
+                        this.expectJobForm.categoryId = 122;
                         saveUserExpectJob(this.expectJobForm)
                             .then(() => {
                                 this.getResumeInfo();

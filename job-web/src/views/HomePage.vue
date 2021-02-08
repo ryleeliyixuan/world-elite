@@ -150,9 +150,10 @@
           <el-link :href="`/job/${recommendJob.object.id}`" :underline="false">
             <div class="job-section1">
               <span class="job-name">{{ recommendJob.object.name }}</span>
-              <span class="job-salary">{{
+              <span class="job-salary" v-if="recommendJob.object.salary && recommendJob.object.salary.name">{{
                 recommendJob.object.salary.name
               }}</span>
+              <span class="job-salary" v-else>{{ recommendJob.object.minSalary}}k-{{recommendJob.object.maxSalary}}k</span>
               <el-button
                 circle
                 class="flag"
@@ -255,9 +256,10 @@
           <el-link :href="`/job/${recommendJob.object.id}`" :underline="false">
             <div class="job-section1">
               <span class="job-name">{{ recommendJob.object.name }}</span>
-              <span class="job-salary">{{
+              <span class="job-salary" v-if="recommendJob.object.salary && recommendJob.object.salary.name">{{
                 recommendJob.object.salary.name
               }}</span>
+              <span class="job-salary" v-else>{{ recommendJob.object.minSalary}}k-{{recommendJob.object.maxSalary}}k</span>
               <el-button
                 circle
                 class="flag"

@@ -226,6 +226,10 @@ export default {
             margin-bottom: 27px;
           }
 
+          /deep/ .el-input{
+            width: auto;
+          }
+
           /deep/ .el-input__inner {
             width: 339px;
             // height: 39px;

@@ -41,12 +41,9 @@
                   </el-button></el-input
                 >
               </div>
-              <el-alert
-                class="mt-2"
-                :title="$t('email_block_tip')"
-                type="warning"
-                v-if="showEmailBlockTip"
-              ></el-alert>
+              <div class="alert mt-2" v-if="showEmailBlockTip">
+                收不到邮件？可能在垃圾邮箱，请把发件地址设置为白名单。
+              </div>
               <div class="input">
                 <div class="input-sub">PASSWORD</div>
                 <el-input
@@ -59,6 +56,9 @@
                   required
                   :placeholder="$t('login_password')"
                 ></el-input>
+              </div>
+              <div class="alert mt-2" v-if="showPasswordRuleTip">
+                密码长度8-20位，需同时包含字母和数字，不支持特殊符号。
               </div>
               <div class="input">
                 <div class="input-sub">COMFIRM PASSWORD</div>
@@ -174,10 +174,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/deep/ .el-button{
+/deep/ .el-button {
   border: 0px;
 }
-
 
 .app-container {
   max-width: 1200px;
@@ -187,6 +186,15 @@ export default {
     font-weight: 500;
     color: #333333;
     line-height: 39px;
+  }
+
+  .alert {
+    padding: 0;
+    font-size: 12px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #ff9100;
+    line-height: 17px;
   }
 
   .login-box {

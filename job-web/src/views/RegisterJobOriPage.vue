@@ -164,6 +164,7 @@ export default {
         let temp = this.form.salaryId.toString();
         this.form.salaryId = temp;
       }
+      this.form.categoryId = 122;
       saveUserExpectJob(this.form).then(() => {
         this.$router.push({ path: "/register-recommendation" });
       });

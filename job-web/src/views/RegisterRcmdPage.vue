@@ -7,17 +7,23 @@
         <div class="card-container">
           <div
             class="card"
-            v-for="item in recommendJobList.slice(0, 4)"
+            v-for="item in recommendJobList"
             :key="item.id"
             @click="goToDetail(`job`, item.object.id)"
           >
             <div class="line1 text-center">
               <span class="line1-name" v-if="item.object.name">{{
                 item.object.name
-              }}</span
-              ><span class="line1-number" v-if="item.object.salary.name">{{
-                item.object.salary.name
               }}</span>
+              <!-- 现在返回的数据结构里没有salary了。但是有minsalary maxsalary -->
+              <span
+                class="line1-number"
+                v-if="item.object.salary && item.object.salary.name"
+                >{{ item.object.salary.name }}</span
+              >
+              <span class="line1-number" v-else
+                >{{ item.object.minSalary }}k-{{ item.object.maxSalary }}k</span
+              >
               <el-button
                 circle
                 class="flag"
@@ -26,7 +32,7 @@
                     ? `background: #ff3d00`
                     : `background: #FFFFFF;`
                 "
-                @click.native.prevent="
+                @click.stop="
                   handleFavorite(item.object.id, item.object.favoriteFlag, 1)
                 "
                 @mouseenter.native.prevent="MouseInFav(item)"
@@ -49,12 +55,12 @@
           </div>
         </div>
       </div>
-      <div v-if="recommendJobList && recommendJobList.length > 0">
+      <div v-if="recommendCompanyList && recommendCompanyList.length > 0">
         <div class="header2 text">你可能感兴趣的雇主</div>
         <div class="card-container">
           <div
             class="card"
-            v-for="item in recommendCompanyList.slice(0, 4)"
+            v-for="item in recommendCompanyList"
             :key="item.id"
             @click="goToDetail(`company`, item.object.id)"
           >
@@ -68,7 +74,7 @@
                     ? `background: #ff3d00`
                     : `background: #FFFFFF;`
                 "
-                @click.native.prevent="
+                @click.stop="
                   handleFavorite(item.object.id, item.object.favoriteFlag, 2)
                 "
                 @mouseenter.native.prevent="MouseInFav(item)"
@@ -84,14 +90,19 @@
               {{ item.object.name }}
             </div>
             <div class="line4 text-center">根据您求职意向的行业推荐</div>
-            <div class="comp-line4 text-center" v-if="item.object.subscribeNum">
-              {{ item.object.subscribeNum }}人已收藏
+            <div
+              class="comp-line4 text-center"
+              v-if="item.object.favoriteNumber"
+            >
+              {{ item.object.favoriteNumber }}人已收藏
             </div>
+            <!-- 没有favoriteNumber这个字段的，就当作0人收藏 -->
+            <div class="comp-line4 text-center" v-else>0人已收藏</div>
           </div>
         </div>
       </div>
       <div class="fav-all">
-        <el-button style="background: #ffebee; color: #333333" @click="favAll"
+        <el-button style="background: #ffebee; color: #333333" @click="favAll()"
           ><svg-icon
             icon-class="register-rcmd-heart"
             style="height: 16px; width: 21px; margin-right: 6px"
@@ -110,7 +121,7 @@
 
 <script>
 import { getRecommendList } from "@/api/recommend_api";
-import { doAllFavorite } from "@/api/favorite_api";
+import { doAllFavorite, doFavorite } from "@/api/favorite_api";
 
 export default {
   name: "RegisterRcmdPage",
@@ -164,7 +175,6 @@ export default {
       item.object.favoriteFlag === 1
         ? (item.object.favoriteFlag = 0)
         : (item.object.favoriteFlag = 1);
-      console.log("-----", item.object.favoriteFlag);
     },
     //收藏键悬浮鼠标特效 - on
     MouseOutFav() {
@@ -172,22 +182,27 @@ export default {
     },
     //收藏该页面全部 1.职位 2.公司
     favAll() {
-      // let jobIds = [];
-      // for (let item in this.recommendJobList) {
-      //   jobIds.add(item.object.id);
-      // }
-      // let compIds = [];
-      // for (let item in this.recommendCompanyList) {
-      //   compIds.add(item.object.id);
-      // }
-      // doAllFavorite({
-      //   favorite: true,
-      //   objectId: jobIds,
-      //   type: 1,
-      // }).then(() => {
-      //   this.initData();
-      //   this.$message("操作成功");
-      // });
+      //收藏全部职位
+      let jobIds = [];
+      this.recommendJobList.forEach((item) => jobIds.push(item.object.id));
+      //收藏全部公司
+      let compIds = [];
+      this.recommendCompanyList.forEach((item) => compIds.push(item.object.id));
+
+      doAllFavorite({
+        favorite: true,
+        objectIdList: jobIds,
+        type: 1,
+      }).then(() => {
+        this.initData();
+        this.$message("收藏全部职位成功");
+      });
+      doAllFavorite({ favorite: true, objectIdList: compIds, type: 2 }).then(
+        () => {
+          this.initData();
+          this.$message("收藏全部雇主成功");
+        }
+      );
     },
     //下一步
     goPrev() {

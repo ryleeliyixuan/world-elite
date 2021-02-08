@@ -3199,6 +3199,7 @@
                         }else if (this.expectJobForm.salaryId=="50K以上"){
                             this.expectJobForm.salaryId=1037
                         }
+                        this.expectJobForm.categoryId = 122;
                         saveUserExpectJob(this.expectJobForm)
                             .then(() => {
                                 this.getResumeInfo();
