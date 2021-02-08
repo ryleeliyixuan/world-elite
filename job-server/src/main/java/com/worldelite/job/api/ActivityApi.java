@@ -133,13 +133,15 @@ public class ActivityApi extends BaseApi {
     @ApiDoc
     public ApiResult saveActivity(@RequestBody ActivityForm activityForm) {
         Set<ConstraintViolation<ActivityForm>> validateSet = null;
-        if (activityForm.getNeedRegistration() != null && activityForm.getNeedRegistration() == Bool.FALSE) {
-            validateSet = validator.validate(activityForm, ActivityForm.NoRegistrationField.class);
-        } else {
-            if (activityForm.getStatus() == null || activityForm.getStatus() != ActivityStatus.DRAFT.value) {
+
+        if (activityForm.getStatus() == null || activityForm.getStatus() != ActivityStatus.DRAFT.value) {
+            if (activityForm.getNeedRegistration() != null && activityForm.getNeedRegistration() == Bool.FALSE) {
+                validateSet = validator.validate(activityForm, ActivityForm.NoRegistrationField.class);
+            }else{
                 validateSet = validator.validate(activityForm, ActivityForm.AllField.class);
             }
         }
+
         if (validateSet != null && validateSet.size() > 0) {
             ConstraintViolation<ActivityForm> model = validateSet.iterator().next();
             throw new CheckException(model.getPropertyPath() + model.getMessage());
