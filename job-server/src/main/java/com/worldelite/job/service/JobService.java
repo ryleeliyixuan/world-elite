@@ -625,7 +625,6 @@ public class JobService extends BaseService {
         jobVo.setMinDegree(dictService.getById(job.getMinDegreeId()));
         jobVo.setCity(cityService.getCityVo(job.getCityId()));
         jobVo.setJobType(dictService.getById(job.getJobType()));
-        jobVo.setRecruitType(dictService.getById(job.getRecruitType()));
         jobVo.setExperience(dictService.getById(job.getExperienceId()));
         jobVo.setAdditions(jobAdditionService.getByJobId(job.getId()));
         jobVo.setLanguage(dictService.getById(job.getLanguageId()));

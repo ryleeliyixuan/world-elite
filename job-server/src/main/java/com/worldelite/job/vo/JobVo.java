@@ -16,7 +16,7 @@ public class JobVo implements VoConvertable<JobVo, Job>{
 
     private String id; //职位ID
     private DictVo jobType; //职位类型
-    private DictVo recruitType; //招聘类型
+    private Integer recruitType; //招聘类型
     private String name; //职位名称
     private CompanyUserVo companyUser; //所属企业用户
     private CompanyVo company; //所属企业
@@ -72,6 +72,7 @@ public class JobVo implements VoConvertable<JobVo, Job>{
         setMinSalary(job.getMinSalary());
         setMaxSalary(job.getMaxSalary());
         setTime(job.getPubTime());
+        setRecruitType(job.getRecruitType());
         if(StringUtils.isNotEmpty(job.getIndustryTags())) {
             setIndustryTags(job.getIndustryTags().split(","));
         }else{
