@@ -1,9 +1,9 @@
 <template>
     <div :class="['tinymce-container',{fullscreen:fullscreen}]" :style="{width:containerWidth}">
         <editor id="tinymce" v-model="content" :init="initTinymce"></editor>
-        <div class="editor-custom-btn-container">
-            <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK"/>
-        </div>
+<!--        <div class="editor-custom-btn-container">-->
+<!--            <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK"/>-->
+<!--        </div>-->
     </div>
 </template>
 <script>
@@ -16,32 +16,34 @@
     import plugins from './plugins'
     import toolbar from './toolbar'
 
-    import 'tinymce/plugins/anchor'// 插入瞄点
-    import 'tinymce/plugins/advlist'// 高级列表插件
-    import 'tinymce/plugins/autolink'// 自动链接
-    import 'tinymce/plugins/autoresize'// 自动适应大小
+    import 'tinymce/plugins/anchor' // 插入瞄点
+    import 'tinymce/plugins/advlist' // 高级列表插件
+    import 'tinymce/plugins/autolink' // 自动链接
+    import 'tinymce/plugins/autoresize' // 自动适应大小
     // import 'tinymce/plugins/autosave'// 自动保存
-    import 'tinymce/plugins/charmap'// 插入特殊字符
-    import 'tinymce/plugins/code'// 插入html源码
-    import 'tinymce/plugins/emoticons'// 插入unicode字符表情
+    import 'tinymce/plugins/charmap' // 插入特殊字符
+    import 'tinymce/plugins/code' // 插入html源码
+    import 'tinymce/plugins/emoticons' // 插入unicode字符表情
     import emojis from 'tinymce/plugins/emoticons/js/emojis' // emoji字符文件
-    import 'tinymce/plugins/fullscreen'// 全屏
-    import 'tinymce/plugins/help'// 帮助
-    import 'tinymce/plugins/hr'// 水平分割线
-    // import 'tinymce/plugins/image'// 插入上传图片插件
-    import 'tinymce/plugins/insertdatetime'// 插入日期时间
-    import 'tinymce/plugins/link'// 插入超链接
-    import 'tinymce/plugins/lists'// 列表插件
+    import 'tinymce/plugins/fullscreen' // 全屏
+    import 'tinymce/plugins/help' // 帮助
+    import 'tinymce/plugins/hr' // 水平分割线
+    import 'tinymce/plugins/image' // 插入上传图片插件
+    import 'tinymce/plugins/insertdatetime' // 插入日期时间
+    import 'tinymce/plugins/link' // 插入超链接
+    import 'tinymce/plugins/lists' // 列表插件
     // import 'tinymce/plugins/media'// 插入视频插件
-    import 'tinymce/plugins/pagebreak'// 插入分页符
-    import 'tinymce/plugins/preview'// 预览
-    import 'tinymce/plugins/print'// 打印
-    import 'tinymce/plugins/quickbars'// 快捷操作
+    import 'tinymce/plugins/pagebreak' // 插入分页符
+    import 'tinymce/plugins/preview' // 预览
+    import 'tinymce/plugins/print' // 打印
+    import 'tinymce/plugins/quickbars' // 快捷操作
     // import 'tinymce/plugins/save'// 保存
-    import 'tinymce/plugins/searchreplace'// 查找和替换
-    import 'tinymce/plugins/table'// 插入表格插件
-    import 'tinymce/plugins/toc'// 目录生成
-    import 'tinymce/plugins/wordcount'// 字数统计插件
+    import 'tinymce/plugins/searchreplace' // 查找和替换
+    import 'tinymce/plugins/table' // 插入表格插件
+    import 'tinymce/plugins/toc' // 目录生成
+    import 'tinymce/plugins/wordcount'
+    import {getUploadPicToken} from "@/api/upload_api";
+    // 字数统计插件
     // import bdmap from  './tinymce/bdmap/plugin.js'// 百度地图
 
     export default {
@@ -206,8 +208,13 @@
             // });
 
             imageHandler(blobInfo, successCallback, failCallback) {
-                console.log(blobInfo)
                 let file = blobInfo.blob()//转化为易于理解的file对象
+                getUploadPicToken(file.name).then(response => {
+                    const {data} = response
+                    this.$axios.upload(data.host, file, data).then(() => {
+                        successCallback(data.host + '/' + data.key);
+                    })
+                })
             },
             fileHandler(callback, value, meta) {
                 // Provide file and text for the link dialog
