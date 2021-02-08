@@ -179,11 +179,23 @@ public class LuceneSearchService implements SearchService {
             queryBuilder.add(IntPoint.newExactQuery(JobIndexFields.RECRUIT_TYPE_INDEX, searchForm.getRecruitId()), BooleanClause.Occur.MUST);
         }
 
-        Sort sort = null;
-        if (!StringUtils.isEmpty(searchForm.getSort()) && searchForm.getSort().equalsIgnoreCase("+PUB_TIME")) {
-            sort = new Sort();
-            SortField sortField = new SortField(JobIndexFields.JOB_PUBLISH_TIME_INDEX, SortField.Type.LONG, true);
-            sort.setSort(sortField);
+        Sort sort = new Sort();
+        List<SortField> sortFieldList = new ArrayList<>();
+
+        if (!StringUtils.isEmpty(searchForm.getSort())) {
+            if(searchForm.getSort().equalsIgnoreCase("+PUB_TIME")) {
+                sortFieldList.add(new SortField(JobIndexFields.JOB_PUBLISH_TIME_INDEX, SortField.Type.LONG, true));
+            }
+            if(searchForm.getSort().equalsIgnoreCase("+AVER_SALARY")) {
+                sortFieldList.add(new SortField(JobIndexFields.AVER_SALARY_INDEX, SortField.Type.INT, true));
+            }
+
+            sort.setSort(sortFieldList.toArray(new SortField[0]));
+        }
+
+        //如果没有查询条件时构造一个通配符查询全部
+        if (org.springframework.util.CollectionUtils.isEmpty(queryBuilder.build().clauses())) {
+            queryBuilder.add(new WildcardQuery(new Term(JobIndexFields.KEYWORD_INDEX, "*")), BooleanClause.Occur.SHOULD);
         }
 
         return searchJobByQuery(queryBuilder.build(), searchForm, sort);
@@ -503,6 +515,7 @@ public class LuceneSearchService implements SearchService {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long jobId = NumberUtils.toLong(hitDoc.get(JobIndexFields.JOB_ID));
                 JobVo jobVo = jobService.getJobInfo(jobId, true);
+                if(jobVo == null) continue;
                 subtitleVoList.add(jobVo);
             }
 

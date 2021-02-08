@@ -503,7 +503,7 @@
               v-if="pageResult.list && pageResult.list.length !== 0"
       >
         <el-card
-                v-show="job.salary && job.companyUser.company.name !== ''"
+                v-show="job.companyUser && job.companyUser.company && job.companyUser.company.name !== ''"
                 shadow="never"
                 :body-style="{ padding: '0px' }"
                 v-for="job in pageResult.list"
@@ -516,8 +516,7 @@
             <div class="recruit-type" v-if="job.recruitType === 154">内推</div>
             <div>
               <b class="section3-salary" style="font-size: 16px">
-                <!--{{ job.salary.name}} · {{ job.salaryMonths ? `${job.salaryMonths}薪` : "12薪" }}-->
-                {{ job.salary.name }}
+                {{ job.minSalary+'K-'+job.maxSalary+'K' }}
               </b>
               <span class="section3-city-degree" style="font-size: 15px">
                 {{
@@ -882,10 +881,11 @@
             });
             break;
           case "2":
-            this.onOrderPubTime();
+            this.onOrderJob('+PUB_TIME');
             break;
           case "3":
-            this.onOrderSalary();
+            //this.onOrderSalary();
+            this.onOrderJob('+AVER_SALARY');
             break;
           default:
             // 兜底
@@ -980,8 +980,8 @@
           }
         }
       },
-      onOrderPubTime() {
-        this.listQuery.sort = this.orderPubTime;
+      onOrderJob(sort) {
+        this.listQuery.sort = sort;
         searchJob(this.listQuery).then((response) => {
           if (!response.data.list || response.data.list.length === 0) {
             this.showNoResult = true;

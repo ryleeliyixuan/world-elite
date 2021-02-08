@@ -231,6 +231,7 @@ public class LuceneIndexService implements IndexService {
         }
         if(jobVo.getMinSalary() != null && jobVo.getMaxSalary() != null){
             doc.add(new IntPoint(JobIndexFields.AVER_SALARY_INDEX, (jobVo.getMaxSalary()+jobVo.getMinSalary())/2));
+            doc.add(new NumericDocValuesField(JobIndexFields.AVER_SALARY_INDEX, (jobVo.getMaxSalary()+jobVo.getMinSalary())/2));
         }
         //防止空指针,不想一级一级判空了
         try {
