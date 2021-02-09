@@ -240,15 +240,6 @@ public class ActivityService extends BaseService {
             //草稿直接保存
             if (activityForm.getStatus() != null && activityForm.getStatus() == ActivityStatus.DRAFT.value) {
                 activity.setStatus(ActivityStatus.DRAFT.value);
-                //关联报名表
-                if(activityForm.getNeedRegistration() == null || activityForm.getNeedRegistration() == Bool.TRUE) {
-                    if (StringUtils.isNotBlank(activityForm.getQuestionnaireType()) && activityForm.getQuestionnaireId() != null) {
-                        QuestionnaireTemplateVo template = activityQuestionnaireService
-                                .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
-                        activity.setQuestionnaireId(template.getId());
-                    }
-                }
-
                 activityMapper.insertSelective(activity);
             } else {
                 //关联报名表
@@ -256,6 +247,8 @@ public class ActivityService extends BaseService {
                     QuestionnaireTemplateVo template = activityQuestionnaireService
                             .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
                     activity.setQuestionnaireId(template.getId());
+                    //因为生成了报名表，所以报名表类型直接更新成报名表
+                    activity.setQuestionnaireType("0");
                 }
 
                 final OrganizerCreditVo organizerCredit = organizerCreditService.getOrganizerCredit(activity.getUserId());
@@ -420,7 +413,9 @@ public class ActivityService extends BaseService {
             }
         }
 
-        if(activity.getNeedRegistration() != null && activity.getNeedRegistration() == Bool.TRUE) {
+        //草稿状态不用返回报名表名
+        if(activity.getNeedRegistration() != null && activity.getNeedRegistration() == Bool.TRUE
+                && activity.getStatus()!=ActivityStatus.DRAFT.value) {
             //如果关联了报名表，则返回报名表名
             Integer questionnaireId = activity.getQuestionnaireId();
             if (questionnaireId != null) {

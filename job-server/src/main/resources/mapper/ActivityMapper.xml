@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.worldelite.job.mapper.ActivityMapper">
-<cache eviction="LRU" flushInterval="60000" size="512" readOnly="false"/>
+  <cache eviction="LRU" flushInterval="60000" size="512" readOnly="false"/>
   <resultMap id="BaseResultMap" type="com.worldelite.job.entity.Activity">
     <!--
       WARNING - @mbg.generated
@@ -28,6 +28,7 @@
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="questionnaire_id" jdbcType="INTEGER" property="questionnaireId" />
+    <result column="questionnaire_type" jdbcType="CHAR" property="questionnaireType" />
     <result column="follower" jdbcType="INTEGER" property="follower" />
     <result column="applicant_quantity" jdbcType="INTEGER" property="applicantQuantity" />
     <result column="weight" jdbcType="INTEGER" property="weight" />
@@ -51,8 +52,8 @@
     id, user_id, form, city_id, user_type, title, poster, organizer_id, organizer_type, 
     activity_start_time, activity_finish_time, registration_start_time, registration_finish_time, 
     need_registration, need_resume, only_overseas_student, audit_type, number_limit, 
-    address, status, questionnaire_id, follower, applicant_quantity, weight, send_notice_confirm, 
-    del_flag, create_time, update_time
+    address, status, questionnaire_id, questionnaire_type, follower, applicant_quantity, 
+    weight, send_notice_confirm, del_flag, create_time, update_time
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -96,10 +97,10 @@
       registration_finish_time, need_registration, 
       need_resume, only_overseas_student, audit_type, 
       number_limit, address, status, 
-      questionnaire_id, follower, applicant_quantity, 
-      weight, send_notice_confirm, del_flag, 
-      create_time, update_time, description
-      )
+      questionnaire_id, questionnaire_type, follower, 
+      applicant_quantity, weight, send_notice_confirm, 
+      del_flag, create_time, update_time, 
+      description)
     values (#{userId,jdbcType=BIGINT}, #{form,jdbcType=TINYINT}, #{cityId,jdbcType=INTEGER}, 
       #{userType,jdbcType=CHAR}, #{title,jdbcType=VARCHAR}, #{poster,jdbcType=VARCHAR}, 
       #{organizerId,jdbcType=INTEGER}, #{organizerType,jdbcType=CHAR}, #{activityStartTime,jdbcType=TIMESTAMP}, 
@@ -107,10 +108,10 @@
       #{registrationFinishTime,jdbcType=TIMESTAMP}, #{needRegistration,jdbcType=TINYINT}, 
       #{needResume,jdbcType=CHAR}, #{onlyOverseasStudent,jdbcType=CHAR}, #{auditType,jdbcType=CHAR}, 
       #{numberLimit,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{questionnaireId,jdbcType=INTEGER}, #{follower,jdbcType=INTEGER}, #{applicantQuantity,jdbcType=INTEGER}, 
-      #{weight,jdbcType=INTEGER}, #{sendNoticeConfirm,jdbcType=CHAR}, #{delFlag,jdbcType=TINYINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR}
-      )
+      #{questionnaireId,jdbcType=INTEGER}, #{questionnaireType,jdbcType=CHAR}, #{follower,jdbcType=INTEGER}, 
+      #{applicantQuantity,jdbcType=INTEGER}, #{weight,jdbcType=INTEGER}, #{sendNoticeConfirm,jdbcType=CHAR}, 
+      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{description,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.worldelite.job.entity.Activity">
     <!--
@@ -181,6 +182,9 @@
       </if>
       <if test="questionnaireId != null">
         questionnaire_id,
+      </if>
+      <if test="questionnaireType != null">
+        questionnaire_type,
       </if>
       <if test="follower != null">
         follower,
@@ -267,6 +271,9 @@
       </if>
       <if test="questionnaireId != null">
         #{questionnaireId,jdbcType=INTEGER},
+      </if>
+      <if test="questionnaireType != null">
+        #{questionnaireType,jdbcType=CHAR},
       </if>
       <if test="follower != null">
         #{follower,jdbcType=INTEGER},
@@ -361,6 +368,9 @@
       <if test="questionnaireId != null">
         questionnaire_id = #{questionnaireId,jdbcType=INTEGER},
       </if>
+      <if test="questionnaireType != null">
+        questionnaire_type = #{questionnaireType,jdbcType=CHAR},
+      </if>
       <if test="follower != null">
         follower = #{follower,jdbcType=INTEGER},
       </if>
@@ -414,6 +424,7 @@
       address = #{address,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
       questionnaire_id = #{questionnaireId,jdbcType=INTEGER},
+      questionnaire_type = #{questionnaireType,jdbcType=CHAR},
       follower = #{follower,jdbcType=INTEGER},
       applicant_quantity = #{applicantQuantity,jdbcType=INTEGER},
       weight = #{weight,jdbcType=INTEGER},
@@ -450,6 +461,7 @@
       address = #{address,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
       questionnaire_id = #{questionnaireId,jdbcType=INTEGER},
+      questionnaire_type = #{questionnaireType,jdbcType=CHAR},
       follower = #{follower,jdbcType=INTEGER},
       applicant_quantity = #{applicantQuantity,jdbcType=INTEGER},
       weight = #{weight,jdbcType=INTEGER},
