@@ -1,119 +1,119 @@
 <template>
   <div class="app-container">
     <div class="login-box text-center">
-      <div class="header1 text">WE精选推荐</div>
-      <div v-if="recommendJobList && recommendJobList.length > 0">
-        <div class="header2 text">你可能感兴趣的职位</div>
-        <div class="card-container">
-          <div
-            class="card"
-            v-for="item in recommendJobList"
-            :key="item.id"
-            @click="goToDetail(`job`, item.object.id)"
-          >
-            <div class="line1 text-center">
-              <span class="line1-name" v-if="item.object.name">{{
-                item.object.name
-              }}</span>
-              <!-- 现在返回的数据结构里没有salary了。但是有minsalary maxsalary -->
-              <span
-                class="line1-number"
-                v-if="item.object.salary && item.object.salary.name"
-                >{{ item.object.salary.name }}</span
-              >
-              <span class="line1-number" v-else
-                >{{ item.object.minSalary }}k-{{ item.object.maxSalary }}k</span
-              >
-              <el-button
-                circle
-                class="flag"
-                :style="
-                  item.object.favoriteFlag === 1
-                    ? `background: #ff3d00`
-                    : `background: #FFFFFF;`
-                "
-                @click.stop="
-                  handleFavorite(item.object.id, item.object.favoriteFlag, 1)
-                "
-                @mouseenter.native.prevent="MouseInFav(item)"
-                @mouseleave.native.prevent="MouseOutFav(item)"
-                ><svg-icon
-                  :icon-class="
-                    item.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
-                  "
-                  style="height: 10px; width: 11px"
-              /></el-button>
-            </div>
-            <div class="line2 text-center"></div>
-            <div class="line3 text-center">
-              <el-avatar
-                :size="40"
-                :src="item.object.companyUser.avatar"
-              ></el-avatar>
-            </div>
-            <div class="line4 text-center">根据您的求职意向推荐</div>
-          </div>
-        </div>
-      </div>
-      <div v-if="recommendCompanyList && recommendCompanyList.length > 0">
-        <div class="header2 text">你可能感兴趣的雇主</div>
-        <div class="card-container">
-          <div
-            class="card"
-            v-for="item in recommendCompanyList"
-            :key="item.id"
-            @click="goToDetail(`company`, item.object.id)"
-          >
-            <div class="comp-line1 text-center">
-              <el-avatar :size="40" :src="item.object.logo"></el-avatar>
-              <el-button
-                circle
-                class="flag"
-                :style="
-                  item.object.favoriteFlag === 1
-                    ? `background: #ff3d00`
-                    : `background: #FFFFFF;`
-                "
-                @click.stop="
-                  handleFavorite(item.object.id, item.object.favoriteFlag, 2)
-                "
-                @mouseenter.native.prevent="MouseInFav(item)"
-                @mouseleave.native.prevent="MouseOutFav(item)"
-                ><svg-icon
-                  :icon-class="
-                    item.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
-                  "
-                  style="height: 10px; width: 11px"
-              /></el-button>
-            </div>
-            <div class="comp-line2 text-center" v-if="item.object.name">
-              {{ item.object.name }}
-            </div>
-            <div class="line4 text-center">根据您求职意向的行业推荐</div>
+      <div v-loading="loading">
+        <div class="header1 text">WE精选推荐</div>
+        <div v-if="recommendJobList && recommendJobList.length > 0">
+          <div class="header2 text">你可能感兴趣的职位</div>
+          <div class="card-container">
             <div
-              class="comp-line4 text-center"
-              v-if="item.object.favoriteNumber"
+              class="card"
+              v-for="item in recommendJobList"
+              :key="item.id"
+              @click="goToDetail(`job`, item.object.id)"
             >
-              {{ item.object.favoriteNumber }}人已收藏
+              <div class="line1 text-center">
+                <span class="line1-name" v-if="item.object.name">{{
+                  item.object.name
+                }}</span>
+                <span class="line1-number"
+                  >{{ item.object.minSalary }}k-{{
+                    item.object.maxSalary
+                  }}k</span
+                >
+                <el-button
+                  circle
+                  class="flag"
+                  :style="
+                    item.object.favoriteFlag === 1
+                      ? `background: #ff3d00`
+                      : `background: #FFFFFF;`
+                  "
+                  @click.stop="
+                    handleFavorite(item.object.id, item.object.favoriteFlag, 1)
+                  "
+                  @mouseenter.native.prevent="MouseInFav(item)"
+                  @mouseleave.native.prevent="MouseOutFav(item)"
+                  ><svg-icon
+                    :icon-class="
+                      item.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
+                    "
+                    style="height: 10px; width: 11px"
+                /></el-button>
+              </div>
+              <div class="line2 text-center"></div>
+              <div class="line3 text-center">
+                <el-avatar
+                  :size="40"
+                  :src="item.object.companyUser.avatar"
+                ></el-avatar>
+              </div>
+              <div class="line4 text-center">根据您的求职意向推荐</div>
             </div>
-            <!-- 没有favoriteNumber这个字段的，就当作0人收藏 -->
-            <div class="comp-line4 text-center" v-else>0人已收藏</div>
           </div>
         </div>
-      </div>
-      <div class="fav-all">
-        <el-button style="background: #ffebee; color: #333333" @click="favAll()"
-          ><svg-icon
-            icon-class="register-rcmd-heart"
-            style="height: 16px; width: 21px; margin-right: 6px"
-          />收藏全部</el-button
-        >
-      </div>
-      <div class="footer">
-        <el-button style="background: #eceff1; color: #666666" @click="goPrev"
-          >上一步</el-button
-        >
-        <el-button @click="goNext">下一步</el-button>
+        <div v-if="recommendCompanyList && recommendCompanyList.length > 0">
+          <div class="header2 text">你可能感兴趣的雇主</div>
+          <div class="card-container">
+            <div
+              class="card"
+              v-for="item in recommendCompanyList"
+              :key="item.id"
+              @click="goToDetail(`company`, item.object.id)"
+            >
+              <div class="comp-line1 text-center">
+                <el-avatar :size="40" :src="item.object.logo"></el-avatar>
+                <el-button
+                  circle
+                  class="flag"
+                  :style="
+                    item.object.favoriteFlag === 1
+                      ? `background: #ff3d00`
+                      : `background: #FFFFFF;`
+                  "
+                  @click.stop="
+                    handleFavorite(item.object.id, item.object.favoriteFlag, 2)
+                  "
+                  @mouseenter.native.prevent="MouseInFav(item)"
+                  @mouseleave.native.prevent="MouseOutFav(item)"
+                  ><svg-icon
+                    :icon-class="
+                      item.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
+                    "
+                    style="height: 10px; width: 11px"
+                /></el-button>
+              </div>
+              <div class="comp-line2 text-center" v-if="item.object.name">
+                {{ item.object.name }}
+              </div>
+              <div class="line4 text-center">根据您求职意向的行业推荐</div>
+              <div
+                class="comp-line4 text-center"
+                v-if="item.object.favoriteNumber"
+              >
+                {{ item.object.favoriteNumber }}人已收藏
+              </div>
+              <!-- 没有favoriteNumber这个字段的，就当作0人收藏 -->
+              <div class="comp-line4 text-center" v-else>0人已收藏</div>
+            </div>
+          </div>
+        </div>
+        <div class="fav-all">
+          <el-button
+            style="background: #ffebee; color: #333333"
+            @click="favAll()"
+            ><svg-icon
+              icon-class="register-rcmd-heart"
+              style="height: 16px; width: 21px; margin-right: 6px"
+            />收藏全部</el-button
+          >
+        </div>
+        <div class="footer">
+          <el-button style="background: #eceff1; color: #666666" @click="goPrev"
+            >上一步</el-button
+          >
+          <el-button @click="goNext">下一步</el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -130,6 +130,7 @@ export default {
     return {
       recommendJobList: [],
       recommendCompanyList: [],
+      loading: true,
     };
   },
   created() {
@@ -138,6 +139,7 @@ export default {
   },
   methods: {
     initData() {
+      this.loading = true;
       //获取推荐职位
       getRecommendList({
         objectType: 1, // 职位
@@ -156,6 +158,7 @@ export default {
       }).then((response) => {
         this.recommendCompanyList = response.data.list;
         this.$emit("complete");
+        this.loading = false;
       });
     },
     //收藏某一个职位或公司
@@ -237,6 +240,7 @@ export default {
 
   .login-box {
     height: auto;
+    min-height: 600px;
     box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
     border-radius: 24px;
     background: #ffffff;
