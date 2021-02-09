@@ -241,7 +241,7 @@ public class ActivityService extends BaseService {
             if (activityForm.getStatus() != null && activityForm.getStatus() == ActivityStatus.DRAFT.value) {
                 activity.setStatus(ActivityStatus.DRAFT.value);
                 //关联报名表
-                if(activityForm.getNeedRegistration() != null && activityForm.getNeedRegistration() == Bool.TRUE) {
+                if(activityForm.getNeedRegistration() == null || activityForm.getNeedRegistration() == Bool.TRUE) {
                     if (StringUtils.isNotBlank(activityForm.getQuestionnaireType()) && activityForm.getQuestionnaireId() != null) {
                         QuestionnaireTemplateVo template = activityQuestionnaireService
                                 .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
@@ -252,7 +252,7 @@ public class ActivityService extends BaseService {
                 activityMapper.insertSelective(activity);
             } else {
                 //关联报名表
-                if(activityForm.getNeedRegistration() != null && activityForm.getNeedRegistration() == Bool.TRUE) {
+                if(activityForm.getNeedRegistration() == null || activityForm.getNeedRegistration() == Bool.TRUE) {
                     QuestionnaireTemplateVo template = activityQuestionnaireService
                             .addActivityQuestionnaireFromTemplate(activityForm.getQuestionnaireType(), activityForm.getQuestionnaireId());
                     activity.setQuestionnaireId(template.getId());
