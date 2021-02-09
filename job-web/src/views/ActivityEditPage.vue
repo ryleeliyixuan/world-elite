@@ -703,6 +703,7 @@
             onSaveDraft() {
                 if (this.saveDraft) {
                     this.draftSaving = true;
+                    this.activityForm.questionnaireId = this.useTemplate ? this.templateId : this.applyTableId;
                     this.activityForm.status = 1;
                     this.$axios.post("/activity/save", this.activityForm).then(data => {
                         this.draftSaving = false;
