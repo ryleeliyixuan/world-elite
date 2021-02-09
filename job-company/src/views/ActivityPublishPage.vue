@@ -171,16 +171,6 @@
                 this.$axios.get("/activity/my/draft-activity-info").then(data => {
                     this.activityDraft = data.data;
                 });
-
-                // 查看我的实名认证状态
-                this.getApprove();
-            },
-
-            // 查看我的实名认证状态
-            getApprove() {
-                this.$axios.get(`/realnameauth/${this.$store.state.user.userId}`).then(response => {
-                    this.approveStatus = response.data && response.data.status;
-                })
             },
 
             // 选择活动状态
