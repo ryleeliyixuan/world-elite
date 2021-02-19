@@ -3,98 +3,108 @@
     <div class="login-box text-center">
       <div v-loading="loading">
         <div class="header1 text">WE精选推荐</div>
-        <div v-if="recommendJobList && recommendJobList.length > 0">
-          <div class="header2 text">你可能感兴趣的职位</div>
-          <div class="card-container">
-            <div
-              class="card"
-              v-for="item in recommendJobList"
-              :key="item.id"
-              @click="goToDetail(`job`, item.object.id)"
-            >
-              <div class="line1 text-center">
-                <span class="line1-name" v-if="item.object.name">{{
-                  item.object.name
-                }}</span>
-                <span class="line1-number"
-                  >{{ item.object.minSalary }}k-{{
-                    item.object.maxSalary
-                  }}k</span
-                >
-                <el-button
-                  circle
-                  class="flag"
-                  :style="
-                    item.object.favoriteFlag === 1
-                      ? `background: #ff3d00`
-                      : `background: #FFFFFF;`
-                  "
-                  @click.stop="
-                    handleFavorite(item.object.id, item.object.favoriteFlag, 1)
-                  "
-                  @mouseenter.native.prevent="MouseInFav(item)"
-                  @mouseleave.native.prevent="MouseOutFav(item)"
-                  ><svg-icon
-                    :icon-class="
-                      item.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
+        <div class="content">
+          <div v-if="recommendJobList && recommendJobList.length > 0">
+            <div class="header2 text">你可能感兴趣的职位</div>
+            <div class="card-container">
+              <div
+                class="card"
+                v-for="item in recommendJobList"
+                :key="item.id"
+                @click="goToDetail(`job`, item.object.id)"
+              >
+                <div class="line1 text-center">
+                  <span class="line1-name" v-if="item.object.name">{{
+                    item.object.name
+                  }}</span>
+                  <span class="line1-number"
+                    >{{ item.object.minSalary }}k-{{
+                      item.object.maxSalary
+                    }}k</span
+                  >
+                  <el-button
+                    circle
+                    class="flag"
+                    :style="
+                      item.object.favoriteFlag === 1
+                        ? `background: #ff3d00`
+                        : `background: #FFFFFF;`
                     "
-                    style="height: 10px; width: 11px"
-                /></el-button>
+                    @click.stop="
+                      handleFavorite(
+                        item.object.id,
+                        item.object.favoriteFlag,
+                        1
+                      )
+                    "
+                    @mouseenter.native.prevent="MouseInFav(item)"
+                    @mouseleave.native.prevent="MouseOutFav(item)"
+                    ><svg-icon
+                      :icon-class="
+                        item.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
+                      "
+                      style="height: 10px; width: 11px"
+                  /></el-button>
+                </div>
+                <div class="line2 text-center"></div>
+                <div class="line3 text-center">
+                  <el-avatar
+                    :size="40"
+                    :src="item.object.companyUser.avatar"
+                  ></el-avatar>
+                </div>
+                <div class="line4 text-center">根据您的求职意向推荐</div>
               </div>
-              <div class="line2 text-center"></div>
-              <div class="line3 text-center">
-                <el-avatar
-                  :size="40"
-                  :src="item.object.companyUser.avatar"
-                ></el-avatar>
-              </div>
-              <div class="line4 text-center">根据您的求职意向推荐</div>
             </div>
           </div>
-        </div>
-        <div v-if="recommendCompanyList && recommendCompanyList.length > 0">
-          <div class="header2 text">你可能感兴趣的雇主</div>
-          <div class="card-container">
-            <div
-              class="card"
-              v-for="item in recommendCompanyList"
-              :key="item.id"
-              @click="goToDetail(`company`, item.object.id)"
-            >
-              <div class="comp-line1 text-center">
-                <el-avatar :size="40" :src="item.object.logo"></el-avatar>
-                <el-button
-                  circle
-                  class="flag"
-                  :style="
-                    item.object.favoriteFlag === 1
-                      ? `background: #ff3d00`
-                      : `background: #FFFFFF;`
-                  "
-                  @click.stop="
-                    handleFavorite(item.object.id, item.object.favoriteFlag, 2)
-                  "
-                  @mouseenter.native.prevent="MouseInFav(item)"
-                  @mouseleave.native.prevent="MouseOutFav(item)"
-                  ><svg-icon
-                    :icon-class="
-                      item.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
-                    "
-                    style="height: 10px; width: 11px"
-                /></el-button>
-              </div>
-              <div class="comp-line2 text-center" v-if="item.object.name">
-                {{ item.object.name }}
-              </div>
-              <div class="line4 text-center">根据您求职意向的行业推荐</div>
+          <div v-if="recommendCompanyList && recommendCompanyList.length > 0">
+            <div class="header2 text">你可能感兴趣的雇主</div>
+            <div class="card-container">
               <div
-                class="comp-line4 text-center"
-                v-if="item.object.favoriteNumber"
+                class="card"
+                v-for="item in recommendCompanyList"
+                :key="item.id"
+                @click="goToDetail(`company`, item.object.id)"
               >
-                {{ item.object.favoriteNumber }}人已收藏
+                <div class="comp-line1 text-center">
+                  <el-avatar :size="40" :src="item.object.logo"></el-avatar>
+                  <el-button
+                    circle
+                    class="flag"
+                    :style="
+                      item.object.favoriteFlag === 1
+                        ? `background: #ff3d00`
+                        : `background: #FFFFFF;`
+                    "
+                    @click.stop="
+                      handleFavorite(
+                        item.object.id,
+                        item.object.favoriteFlag,
+                        2
+                      )
+                    "
+                    @mouseenter.native.prevent="MouseInFav(item)"
+                    @mouseleave.native.prevent="MouseOutFav(item)"
+                    ><svg-icon
+                      :icon-class="
+                        item.object.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'
+                      "
+                      style="height: 10px; width: 11px"
+                  /></el-button>
+                </div>
+                <div class="comp-line2 text-center" v-if="item.object.name">
+                  {{ item.object.name }}
+                </div>
+                <div class="line4 text-center">根据您求职意向的行业推荐</div>
+                <div
+                  class="comp-line4 text-center"
+                  v-if="item.object.favoriteNumber"
+                >
+                  {{ item.object.favoriteNumber }}人已收藏
+                </div>
+                <!-- 没有favoriteNumber这个字段的，就当作0人收藏 -->
+                <div class="comp-line4 text-center" v-else>0人已收藏</div>
               </div>
-              <!-- 没有favoriteNumber这个字段的，就当作0人收藏 -->
-              <div class="comp-line4 text-center" v-else>0人已收藏</div>
             </div>
           </div>
         </div>
@@ -140,6 +150,11 @@ export default {
   methods: {
     initData() {
       this.loading = true;
+      this.getRcmdJob();
+      this.getRcmdComp();
+      this.loading = false;
+    },
+    getRcmdJob() {
       //获取推荐职位
       getRecommendList({
         objectType: 1, // 职位
@@ -149,6 +164,8 @@ export default {
       }).then((response) => {
         this.recommendJobList = response.data.list;
       });
+    },
+    getRcmdComp() {
       //获取推荐雇主
       getRecommendList({
         objectType: 2, // 公司
@@ -157,8 +174,6 @@ export default {
         sort: "+position",
       }).then((response) => {
         this.recommendCompanyList = response.data.list;
-        this.$emit("complete");
-        this.loading = false;
       });
     },
     //收藏某一个职位或公司
@@ -169,7 +184,8 @@ export default {
         type: type, //1 职位 2 公司
       };
       doFavorite(data).then(() => {
-        this.initData();
+        this.getRcmdJob();
+        this.getRcmdComp();
         this.$message("操作成功");
       });
     },
@@ -181,7 +197,8 @@ export default {
     },
     //收藏键悬浮鼠标特效 - on
     MouseOutFav() {
-      this.initData();
+      this.getRcmdJob();
+      this.getRcmdComp();
     },
     //收藏该页面全部 1.职位 2.公司
     favAll() {
@@ -197,12 +214,12 @@ export default {
         objectIdList: jobIds,
         type: 1,
       }).then(() => {
-        this.initData();
+        this.getRcmdJob();
         this.$message("收藏全部职位成功");
       });
       doAllFavorite({ favorite: true, objectIdList: compIds, type: 2 }).then(
         () => {
-          this.initData();
+          this.getRcmdComp();
           this.$message("收藏全部雇主成功");
         }
       );
@@ -254,6 +271,10 @@ export default {
       font-weight: 500;
       color: #333333;
       line-height: 33px;
+    }
+
+    .content {
+      min-height: 371px;
     }
     .header1 {
       margin-bottom: 32px;
