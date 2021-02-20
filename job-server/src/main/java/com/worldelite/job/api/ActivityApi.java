@@ -115,7 +115,7 @@ public class ActivityApi extends BaseApi {
      * @return
      * @throws IOException
      */
-    @RequireLogin
+    @RequireLogin(allow = {UserType.GENERAL, UserType.COMPANY, UserType.ADMIN})
     @GetMapping("my/draft-activity-info")
     @ApiDoc
     public ApiResult<PageResult<ActivityVo>> getMyDraftActivityInfo() {
@@ -128,7 +128,7 @@ public class ActivityApi extends BaseApi {
      * @param activityForm
      * @return
      */
-    @RequireLogin
+    @RequireLogin(allow = {UserType.GENERAL, UserType.COMPANY, UserType.ADMIN})
     @PostMapping("save")
     @ApiDoc
     public ApiResult saveActivity(@RequestBody ActivityForm activityForm) {
@@ -157,7 +157,7 @@ public class ActivityApi extends BaseApi {
      * @param id 活动ID
      * @return
      */
-    @RequireLogin
+    @RequireLogin(allow = {UserType.GENERAL, UserType.COMPANY, UserType.ADMIN})
     @PostMapping("takeoff")
     @ApiDoc
     public ApiResult takeOffActivity(@RequestParam Integer id, String reason) {
@@ -172,7 +172,7 @@ public class ActivityApi extends BaseApi {
      * @return
      */
     @ApiDoc
-    @RequireLogin
+    @RequireLogin(allow = {UserType.GENERAL, UserType.COMPANY, UserType.ADMIN})
     @PatchMapping("closeSendNotification")
     public ApiResult closeSendNotification(@RequestParam Integer id) {
         final boolean b = activityService.closeNotification(id);
@@ -185,7 +185,7 @@ public class ActivityApi extends BaseApi {
      * @param id 活动ID
      * @return
      */
-    @RequireLogin
+    @RequireLogin(allow = {UserType.GENERAL, UserType.COMPANY, UserType.ADMIN})
     @PostMapping("delete")
     @ApiDoc
     public ApiResult deleteActivity(@RequestParam Integer id) {
