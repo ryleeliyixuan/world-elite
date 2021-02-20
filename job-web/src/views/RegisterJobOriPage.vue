@@ -23,11 +23,12 @@
             >
             </el-option>
           </el-select>
-          <el-select
+          <!-- <el-select
             class="section-input-box"
             v-model="form.expectCity"
             multiple
             placeholder="意向工作城市"
+            @change="citySelectChange()"
           >
             <el-option
               v-for="item in cityOptions"
@@ -36,11 +37,20 @@
               :value="item.name"
             >
             </el-option>
-          </el-select>
+          </el-select> -->
+          <el-cascader
+            class="section-input-box"
+            placeholder="意向工作城市"
+            :show-all-levels="true"
+            :options="cityOptions"
+            :props="cityIdProps"
+            clearable
+            v-model="form.expectCity"
+          >
+          </el-cascader>
           <el-select
             class="section-input-box"
             v-model="form.industry"
-            multiple
             placeholder="意向求职行业"
           >
             <el-option
@@ -102,6 +112,17 @@ export default {
         subscribeFlag: 1,
       },
       cityOptions: [],
+      // 城市选择框属性
+      cityIdProps: {
+        multiple: false,
+        lazy: false,
+        emitPath: false,
+        checkStrictly: false,
+        expandTrigger: "hover",
+        value: "name",
+        label: "name",
+        children: "children",
+      },
       industryOptions: [],
       salaryOptions: [],
       workTypeOptions: [
@@ -126,10 +147,38 @@ export default {
   },
   methods: {
     initData() {
-      listByType(2).then((response) => (this.cityOptions = response.data.list));
+      // listByType(2).then((response) => (this.cityOptions = response.data.list));
       listByType(6).then(
         (response) => (this.industryOptions = response.data.list)
       );
+
+      //获取全部城市cityOptions
+      this.$axios
+        .request({
+          url: "/city/list",
+          method: "get",
+        })
+        .then((data) => {
+          let municipality = ["北京市", "上海市", "天津市", "重庆市"];
+          this.cityOptions = data.data.map((first) => {
+            if (first.children) {
+              first.children = first.children.map((second) => {
+                if (municipality.includes(second.name)) {
+                  delete second.children;
+                } else if (second.children) {
+                  second.children = second.children.map((third) => {
+                    delete third.children;
+                    return third;
+                  });
+                }
+                return second;
+              });
+            }
+            return first;
+          });
+          this.cityOptions.push({name: "不限"});
+          // console.log(this.cityOptions);
+        });
 
       //获取salaryOptions
       this.$axios
@@ -164,6 +213,10 @@ export default {
         let temp = this.form.salaryId.toString();
         this.form.salaryId = temp;
       }
+      if (this.form.expectCity && this.form.expectCity.length > 0) {
+        let temp = this.form.expectCity.toString();
+        this.form.expectCity = temp;
+      }
       this.form.categoryId = 122;
       saveUserExpectJob(this.form).then(() => {
         this.$router.push({ path: "/register-recommendation" });
@@ -172,6 +225,25 @@ export default {
     onPrevPage() {
       this.$router.push({ path: "/register-basic" });
     },
+    // citySelectChange() {
+    //   //没有选不限，直接return
+    //   let pos = this.form.expectCity.indexOf("不限");
+    //   if (pos == -1) {
+    //     return;
+    //   }
+    //   //选了不限，不限为最后一个
+    //   if (pos == this.form.expectCity.length - 1) {
+    //     let tempList = [];
+    //     tempList.push("不限");
+    //     this.form.expectCity = tempList;
+    //   } else if (pos == 0) {
+    //     //不限为第一个
+    //     let city = this.form.expectCity[1];
+    //     let tempList = [];
+    //     tempList.push(city);
+    //     this.form.expectCity = tempList;
+    //   }
+    // },
   },
 };
 </script>
