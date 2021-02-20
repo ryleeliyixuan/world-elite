@@ -140,18 +140,32 @@ public class ActivityStatusManager implements CommandLineRunner {
     public ActivityStatus getActivityStatus(Activity activity) {
         Date date = new Date();
         ActivityStatus status;
-        if (activity.getRegistrationStartTime() != null && date.compareTo(activity.getRegistrationStartTime()) < 0) {
+
+        Date registrationStartTime, registrationFinishTime, activityStartTime, activityFinishTime;
+
+        registrationStartTime = activity.getRegistrationStartTime() == null ? new Date(0) : activity.getRegistrationStartTime();
+        registrationFinishTime = activity.getRegistrationFinishTime() == null ? new Date(0) : activity.getRegistrationFinishTime();
+        activityStartTime = activity.getActivityStartTime() == null ? new Date(0) : activity.getActivityStartTime();
+        activityFinishTime = activity.getActivityFinishTime() == null ? new Date(0) : activity.getActivityFinishTime();
+
+        //当前时间小于报名开始时间
+        if (date.compareTo(registrationStartTime) < 0) {
             status = ActivityStatus.WILL;
-        } else if (activity.getRegistrationStartTime() != null && activity.getRegistrationFinishTime() != null &&
-                date.compareTo(activity.getRegistrationStartTime()) >= 0 && date.compareTo(activity.getRegistrationFinishTime()) <= 0) {
+        }
+        //当前时间大于报名开始时间,小于报名结束时间
+        else if (date.compareTo(registrationStartTime) >= 0 && date.compareTo(registrationFinishTime) <= 0) {
             status = ActivityStatus.SIGN_UP;
-        } else if (activity.getRegistrationFinishTime() != null && activity.getActivityStartTime() != null &&
-                date.compareTo(activity.getRegistrationFinishTime()) > 0 && date.compareTo(activity.getActivityStartTime()) < 0) {
+        }
+        //当前时间大于报名结束时间,小于活动开始时间
+        else if (date.compareTo(registrationFinishTime) > 0 && date.compareTo(activityStartTime) < 0) {
             status = ActivityStatus.WILL;
-        } else if (activity.getActivityStartTime() != null && activity.getActivityFinishTime() != null &&
-                date.compareTo(activity.getActivityStartTime()) >= 0 && date.compareTo(activity.getActivityFinishTime()) <= 0) {
+        }
+        //当前时间大于活动开始时间,小于活动结束时间
+        else if (date.compareTo(activityStartTime) >= 0 && date.compareTo(activityFinishTime) <= 0) {
             status = ActivityStatus.ACTIVE;
-        } else {
+        }
+        //活动结束
+        else {
             status = ActivityStatus.END;
         }
 
