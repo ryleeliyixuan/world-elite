@@ -30,16 +30,6 @@
                 </div>
               </div>
             </div>
-            <!-- <el-avatar
-              v-if="isDefaultAvatar == false"
-              :style="
-                ruleForm.avatar === userAvatarUrl
-                  ? `border: 1px solid #4895ef`
-                  : `border: 0px`
-              "
-              :src="userAvatarUrl"
-              :size="55"
-            ></el-avatar> -->
             <el-upload
               class="avatar-uploader"
               :action="uploadPicOptions.action"
