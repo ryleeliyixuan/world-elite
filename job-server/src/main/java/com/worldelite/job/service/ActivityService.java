@@ -78,6 +78,9 @@ public class ActivityService extends BaseService {
     @Autowired
     private CompanyUserMapper companyUserMapper;
 
+    @Autowired
+    private UserCorporateService userCorporateService;
+
     /**
      * 获取活动列表
      *
@@ -224,7 +227,8 @@ public class ActivityService extends BaseService {
         }
 
         final RealNameAuthVo realNameAuth = realNameAuthService.getRealNameAuth(activity.getUserId());
-        if (realNameAuth == null || realNameAuth.getStatus() != VerificationStatus.PASS.value) {
+        final UserCorporate userCorporate = userCorporateService.selectByPrimaryKey(activity.getUserId());
+        if ((realNameAuth == null || realNameAuth.getStatus() != VerificationStatus.PASS.value) && userCorporate == null) {
             throw new ServiceException(message("not.realname.auth"));
         }
 
