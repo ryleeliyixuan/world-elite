@@ -87,7 +87,8 @@
                    :visible.sync="cancelActivityDialogVisible"
                    width="445px">
             <div class="content">(活动取消后无法重新上线)</div>
-            <el-input type="textarea"
+            <el-input v-if="showReasonInput"
+                      type="textarea"
                       :rows="3"
                       placeholder="向报名者发送取消原因（必填）"
                       v-model="cancelActivityReason"
@@ -147,6 +148,8 @@
                 activityDraft: undefined, // 草稿信息
                 publishActivityDialogVisible: false,// 发布活动，加载草稿确认对话框
                 draftDeleting: false, // 草稿删除中
+
+                showReasonInput: true, //取消原因填写框
             };
         },
         watch: {
@@ -222,6 +225,8 @@
                     this.cancelActivity = activity;
                     this.cancelActivityDialogVisible = true;
                 }
+                this.showReasonInput = Boolean(activity.needRegistration);
+                // console.log("---", this.showReasonInput);
             },
 
             // 关闭取消活动对话框
@@ -318,9 +323,8 @@
 
             // 是否显示报名信息管理按钮
             isShowRegistrationInformationManagement(item) {
-                switch (item.status) {
+                switch (item.needRegistration) {
                     case 0:
-                    case 7:
                         return false;
                     default:
                         return true;
