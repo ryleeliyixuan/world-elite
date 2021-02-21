@@ -108,7 +108,7 @@
                     {id: 4, name: '报名中'}, {id: 5, name: '进行中'}, {id: 6, name: '已结束'}, {id: 7, name: '审核未通过'}],
                 statusBGColorList: ['#4895EF', '#C6FF00', '#B71C1C', '#FFC400', '#66BB6A', '#FF6E40', '#FF5252', '#37474F'],
                 menuList: [{id: undefined, name: '全部活动'}, {id: 3, name: '即将开始'}, {id: 4, name: '报名中'}, {id: 5, name: '进行中'},
-                    {id: 6, name: '已结束'}, {id: "0,7", name: '审核处理的活动'}],
+                    {id: "2,6", name: '已结束'}, {id: "0,7", name: '审核处理的活动'}],
                 orderList: [ // 活动排序列表
                     {name: '按发布时间顺序', sort: '+CREATE_TIME'},
                     {name: '按发布时间倒序', sort: '-CREATE_TIME'},
