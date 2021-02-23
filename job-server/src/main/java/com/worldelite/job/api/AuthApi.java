@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -82,13 +83,15 @@ public class AuthApi extends BaseController {
      */
     @ApiDoc
     @GetMapping("get-captcha")
-    public void getKaptchaImage(HttpSession session, HttpServletResponse response){
+    public void getCaptchaImage(HttpServletRequest request, HttpServletResponse response){
+        String capText = captchaProducer.createText();
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionKeys.KAPTCHA_SESSION_KEY, capText);
+
         response.setDateHeader("Expires", 0);
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
         response.addHeader("Cache-Control", "post-check=0, pre-check=0");
         response.setHeader("Pragma", "no-cache");
-        String capText = captchaProducer.createText();
-        session.setAttribute(SessionKeys.KAPTCHA_SESSION_KEY, capText);
         ResponseUtils.writeAsImage(response,captchaProducer.createImage(capText), "jpg");
     }
 
@@ -115,7 +118,8 @@ public class AuthApi extends BaseController {
     @ApiDoc
     @PostMapping("reset-pwd")
     @Deprecated
-    public ApiResult resetPassword(HttpSession session, @Valid @RequestBody ResetPwdForm resetPwdForm){
+    public ApiResult resetPassword(HttpServletRequest request, @Valid @RequestBody ResetPwdForm resetPwdForm){
+        HttpSession session = request.getSession();
         final String captcha = (String)session.getAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
         // 立即删除
         session.removeAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
@@ -136,7 +140,8 @@ public class AuthApi extends BaseController {
     @RequireLogin
     @PostMapping("modify-pwd")
     @Deprecated
-    public ApiResult modifyPassword(HttpSession session, @Valid @RequestBody ModifyPwdForm modifyPwdForm){
+    public ApiResult modifyPassword(HttpServletRequest request, @Valid @RequestBody ModifyPwdForm modifyPwdForm){
+        HttpSession session = request.getSession();
         final String captcha = (String)session.getAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
         // 立即删除
         session.removeAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
