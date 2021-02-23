@@ -128,6 +128,8 @@ public class ResumeApi extends BaseApi {
     @ApiDoc
     public ApiResult<ResumeVo> getResumeDetail(@RequestParam Long id) {
         ResumeService resumeService = ResumeServiceFactory.getResumeService(id);
+        if(resumeService == null) return ApiResult.fail(message("api.error.data.resume"));
+
         ResumeDetail resumeDetail = resumeService.getResumeDetail(id);
         return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }
