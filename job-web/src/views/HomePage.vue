@@ -62,7 +62,8 @@
           style="height: 19px; width: 19px"
         />
       </el-tooltip>
-      <el-tooltip
+      <!-- 隐藏聊一聊 -->
+      <!-- <el-tooltip
         class="tool-bar-tooltip"
         effect="dark"
         content="即时通讯"
@@ -71,7 +72,7 @@
           @click="goToMessage"
           icon-class="home-message"
           style="height: 19px; width: 19px"
-      /></el-tooltip>
+      /></el-tooltip> -->
       <el-tooltip
         class="tool-bar-tooltip"
         effect="dark"

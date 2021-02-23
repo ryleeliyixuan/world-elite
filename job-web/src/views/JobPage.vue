@@ -39,9 +39,10 @@
                 :icon-class="job.favoriteFlag === 1 ? 'jobflag' : 'jobunflag'"
                 style="height: 15px; width: 19px"
             /></el-button>
-            <el-button style="margin-right: 29px" circle @click="handleChat"
+            <!-- 隐藏聊一聊 -->
+            <!-- <el-button style="margin-right: 29px" circle @click="handleChat"
               ><svg-icon icon-class="jobchat" style="height: 18px; width: 19px"
-            /></el-button>
+            /></el-button> -->
             <div class="apply">
               <el-button
                 type="primary"

@@ -515,7 +515,13 @@
             <h6 class="section3-job-name">{{ job.name }}</h6>
             <div class="recruit-type" v-if="job.recruitType === 154">内推</div>
             <div>
-              <b class="section3-salary" style="font-size: 16px">
+              <b v-if="job.minSalary == 0 && job.maxSalary == 5" class="section3-salary" style="font-size: 16px">
+                {{ '5K以下' }}
+              </b>
+              <b v-if="job.minSalary == 0 && job.maxSalary == 0" class="section3-salary" style="font-size: 16px">
+                {{ '5K以下' }}
+              </b>
+              <b v-else class="section3-salary" style="font-size: 16px">
                 {{ job.minSalary+'K-'+job.maxSalary+'K' }}
               </b>
               <span class="section3-city-degree" style="font-size: 15px">
@@ -525,13 +531,14 @@
                   }`
                 }}
               </span>
-              <el-link
+              <!-- 隐藏聊一聊 -->
+              <!-- <el-link
                       class="chat-link"
                       @click="handleChat($event, job.creatorId, job.id)"
                       :underline="false"
                       icon="el-icon-chat-dot-round"
               >聊一聊</el-link
-              >
+              > -->
             </div>
           </div>
           <div

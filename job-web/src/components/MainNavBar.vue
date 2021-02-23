@@ -56,12 +56,13 @@
           class="chat"
           clickable
         />
-        <svg-icon
+        <!-- 隐藏聊一聊 -->
+        <!-- <svg-icon
           @click="routeTo('/chat')"
           icon-class="home-message"
           class="chat"
           clickable
-        />
+        /> -->
 
         <!-- 系统通知 -->
         <el-popover
