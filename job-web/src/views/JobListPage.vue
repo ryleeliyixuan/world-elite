@@ -515,12 +515,16 @@
             <h6 class="section3-job-name">{{ job.name }}</h6>
             <div class="recruit-type" v-if="job.recruitType === 154">内推</div>
             <div>
+              <!-- 职位薪资范围 -->
+              <!-- 0-5k -> 5k一下 -->
               <b v-if="job.minSalary == 0 && job.maxSalary == 5" class="section3-salary" style="font-size: 16px">
                 {{ '5K以下' }}
               </b>
-              <b v-if="job.minSalary == 0 && job.maxSalary == 0" class="section3-salary" style="font-size: 16px">
-                {{ '5K以下' }}
+               <!-- 0-0k -> 不限 -->
+              <b v-else-if="job.minSalary == 0 && job.maxSalary == 0" class="section3-salary" style="font-size: 16px">
+                {{ '不限' }}
               </b>
+              <!-- 其他数值正常显示 -->
               <b v-else class="section3-salary" style="font-size: 16px">
                 {{ job.minSalary+'K-'+job.maxSalary+'K' }}
               </b>
