@@ -469,14 +469,15 @@
               </div>
               <div class="question2-edit-line2">
                 <div
-                  v-for="option in question.optionsList"
+                  v-for="(option, index) in question.optionsList"
                   class="option-container"
+                  :key="index"
                 >
                   <svg-icon
                     icon-class="apply-table-unselected"
                     class-name="icon"
                   ></svg-icon>
-                  <div class="options">{{ option.options }}</div>
+                  <div class="options">{{ option.options || ("选项" + ++index)}}</div>
                 </div>
               </div>
               <div class="question2-edit-line3"></div>
@@ -531,7 +532,7 @@
                     <el-input
                       v-model="option.options"
                       class="option-input"
-                      placeholder="请输入选项"
+                      :placeholder="`选项`+ ++index"
                       maxlength="50"
                       show-word-limit
                       size="mini"
@@ -618,14 +619,15 @@
               </div>
               <div class="question2-done-line2">
                 <div
-                  v-for="option in question.optionsList"
+                  v-for="(option, index) in question.optionsList"
                   class="option-container"
+                  :key="index"
                 >
                   <svg-icon
                     icon-class="apply-table-unselected"
                     class-name="icon"
                   ></svg-icon>
-                  <div class="options">{{ option.options }}</div>
+                  <div class="options">{{ option.options || ("选项" + ++index) }}</div>
                 </div>
               </div>
             </div>
@@ -682,14 +684,15 @@
               </div>
               <div class="question3-edit-line2">
                 <div
-                  v-for="option in question.optionsList"
+                  v-for="(option, index) in question.optionsList"
                   class="option-container"
+                  :key="index"
                 >
                   <svg-icon
                     icon-class="apply-table-unchecked"
                     class-name="icon"
                   ></svg-icon>
-                  <div class="options">{{ option.options }}</div>
+                  <div class="options">{{ option.options || ("选项" + ++index) }}</div>
                 </div>
               </div>
               <div class="question3-edit-line3"></div>
@@ -744,7 +747,7 @@
                     <el-input
                       v-model="option.options"
                       class="option-input"
-                      placeholder="请输入选项"
+                      :placeholder="`选项`+ ++index"
                       maxlength="50"
                       show-word-limit
                       size="mini"
@@ -831,14 +834,15 @@
               </div>
               <div class="question3-done-line2">
                 <div
-                  v-for="option in question.optionsList"
+                  v-for="(option, index) in question.optionsList"
                   class="option-container"
+                  :key="index"
                 >
                   <svg-icon
                     icon-class="apply-table-unchecked"
                     class-name="icon"
                   ></svg-icon>
-                  <div class="options">{{ option.options }}</div>
+                  <div class="options">{{ option.options || ("选项" + ++index) }}</div>
                 </div>
               </div>
             </div>
@@ -1317,9 +1321,9 @@ export default {
         type: type,
         typeForSelect: undefined,
         optionsList: [
-          { options: "选项1" },
-          { options: "选项2" },
-          { options: "选项3" },
+          { options: undefined },
+          { options: undefined },
+          { options: undefined },
         ],
       };
       switch (type) {
@@ -1353,6 +1357,23 @@ export default {
 
     // 取消编辑题目
     onQuestionEditCancel(question) {
+      console.log("^^^^^^^", question);
+      //如果选项为空，报错
+      if (question.optionsList) {
+        try {
+          question.optionsList.forEach((option) => {
+            if (!option.options || option.options == "") {
+              throw new Error("empty"); //报错，就跳出循环
+            }
+          });
+        } catch (e) {
+          if (e.message == "empty") {
+            this.$message.warning("选项不能为空");
+            return;
+          }
+        }
+      }
+
       if (question.title) {
         this.$set(question, "edit", false);
       } else {
@@ -1385,8 +1406,9 @@ export default {
 
     // 添加问题选项
     onQuestionOptionAdd(question) {
-      if (question.optionsList.length < 10) {
-        question.optionsList.push({ options: undefined });
+      let num = question.optionsList.length;
+      if (num < 10) {
+        question.optionsList.push({ options: undefined});
       } else {
         this.$message.warning("选项已达上限");
       }
@@ -1455,7 +1477,7 @@ export default {
     onSaveTemplateSuccess() {
       this.saveTemplateSuccessDialogVisible = false;
       this.$storage.setObject("报名表", { id: this.templateId, type: "1" });
-    //   this.$router.go(-1); 该为不跳转
+      //   this.$router.go(-1); 该为不跳转
     },
 
     // 添加模板

@@ -205,7 +205,7 @@
                                     <svg-icon icon-class="questionMask" style="width: 10px; height: 11px; margin: 4px;"></svg-icon>
                                 </el-tooltip>
                             </div>
-                            <div class="line2" v-for="item in registrationTemplateList">
+                            <div class="line2" v-for="(item, index) in registrationTemplateList" :key="index">
                                 <span>{{item.templateName}}</span>
                                 <div class="operate-container">
                                     <svg-icon icon-class="template-edit" clickable @click="onTemplateEdit(item)"></svg-icon>
@@ -639,6 +639,7 @@
 
             // 模板编辑
             onTemplateEdit(template) {
+                this.activityForm.questionnaireId = this.templateId;
                 this.$storage.setObject('activityPreview', this.activityForm);
                 this.$router.push({path: "/activity/apply/table", query: {id: template.id, type: '1'}})
             },
