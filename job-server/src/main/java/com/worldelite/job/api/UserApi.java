@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -177,8 +176,7 @@ public class UserApi extends BaseController {
     @RequireLogin
     @PostMapping("modify-email")
     @ApiDoc
-    public ApiResult modifyEmail(HttpServletRequest request, @Valid @RequestBody ModifyEmailForm modifyEmailForm){
-        HttpSession session = request.getSession();
+    public ApiResult modifyEmail(HttpSession session, @Valid @RequestBody ModifyEmailForm modifyEmailForm){
         final String captcha = (String)session.getAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
         // 立即删除
         session.removeAttribute(SessionKeys.KAPTCHA_SESSION_KEY);
