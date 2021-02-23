@@ -17,9 +17,10 @@
         <el-menu-item class="nav-item" index="/activity-list"
           >活动</el-menu-item
         >
-        <el-menu-item class="nav-item" index="/mock/interview"
+        <!-- 隐藏模拟面试tab -->
+        <!-- <el-menu-item class="nav-item" index="/mock/interview"
           >模拟面试</el-menu-item
-        >
+        > -->
       </el-menu>
     </div>
 

@@ -1,7 +1,8 @@
 const state = {
     keyword: undefined,
     hideSearch: true,
-    messageCount: 0
+    messageCount: 0,
+    avatar: "",
 }
 
 const mutations = {
@@ -13,7 +14,7 @@ const mutations = {
     },
     MESSAGE_COUNT: (state, messageCount) => {
         state.messageCount = messageCount
-    }
+    },
 }
 
 export default {

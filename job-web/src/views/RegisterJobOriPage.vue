@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="login-box">
       <div class="section1"></div>
-      <div class="section2 text-center">
+      <div class="section2 text-center" v-loading="loading">
         <div class="section2-header">填写求职意向，打造职业档案</div>
         <div class="section2-input">
           <el-input
@@ -98,6 +98,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       subscribeFlag: "",
       form: {
         resumeId: undefined,
@@ -147,7 +148,7 @@ export default {
   },
   methods: {
     initData() {
-      // listByType(2).then((response) => (this.cityOptions = response.data.list));
+      this.loading = true;
       listByType(6).then(
         (response) => (this.industryOptions = response.data.list)
       );
@@ -176,8 +177,7 @@ export default {
             }
             return first;
           });
-          this.cityOptions.push({name: "不限"});
-          // console.log(this.cityOptions);
+          this.cityOptions.push({ name: "不限" });
         });
 
       //获取salaryOptions
@@ -191,6 +191,7 @@ export default {
           this.salaryOptions = response.data.list;
         });
       this.getResumeInfo();
+      this.loading = false;
     },
     getResumeInfo() {
       getResumeInfo().then((response) => {
@@ -200,7 +201,20 @@ export default {
           response.data[0].id &&
           response.data[0].id != ""
         ) {
+          this.form = response.data[0].userExpectJob;
           this.form.resumeId = response.data[0].id;
+          //初始化预期薪资
+          //获取salaryId -> salaryList
+          let tempSalaryList = response.data[0].userExpectJob.salaryId;
+          let salaryList = [];
+          tempSalaryList.forEach((item) => {
+            this.salaryOptions.forEach((option) => {
+              if (option.id == item) {
+                salaryList.push(option.id);
+              }
+            });
+          });
+          this.form.salaryId = salaryList;
         } else {
           addResume().then((response) => {
             this.form.resumeId = response.data.id;
@@ -209,17 +223,19 @@ export default {
       });
     },
     onSubmitForm() {
-      if (this.form.salaryId && this.form.salaryId.length > 0) {
-        let temp = this.form.salaryId.toString();
-        this.form.salaryId = temp;
-      }
+      this.loading = true; 
       if (this.form.expectCity && this.form.expectCity.length > 0) {
         let temp = this.form.expectCity.toString();
         this.form.expectCity = temp;
       }
       this.form.categoryId = 122;
+      if (this.form.salaryId && this.form.salaryId.length > 0) {
+        let temp = this.form.salaryId.toString();
+        this.form.salaryId = temp;
+      }
       saveUserExpectJob(this.form).then(() => {
         this.$router.push({ path: "/register-recommendation" });
+        this.loading = false;
       });
     },
     onPrevPage() {

@@ -26,6 +26,10 @@ export const storage = {
         return this.getUserInfo().name;
     },
 
+    // setAvatar: (userInfo) => {
+    //     return localStorage.setItem("avatar", JSON.stringify(userInfo));
+    // },
+
     getAvatar() {
         return this.getUserInfo().avatar;
     },
