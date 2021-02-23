@@ -795,7 +795,7 @@
                     name: "",
                     birth: undefined,
                     gender: 1,
-                    maritalStatus: 0,
+                    maritalStatus: undefined,
                     returnTime: undefined,
                     graduateTime: undefined,
                     curPlace: "",
