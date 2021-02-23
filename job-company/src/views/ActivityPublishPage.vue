@@ -237,7 +237,7 @@
 
             // 取消活动确认按钮
             onCancelActivityConfirm() {
-                if (this.cancelActivityReason) {
+                if ((this.showReasonInput && this.cancelActivityReason) || (!this.showReasonInput)) {
                     this.$axios.request({
                         method: "POST",
                         url: "/activity/takeoff",
