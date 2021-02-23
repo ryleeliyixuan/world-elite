@@ -490,13 +490,18 @@ public class ActivityService extends BaseService {
         PageHelper.startPage(1, 1, "follower desc");
         final List<Activity> mostFollower = activityMapper.selectAndList(options);
 
-        PageHelper.startPage(1, 2, "weight desc");
+        PageHelper.startPage(1, 4, "weight desc");
         final List<Activity> maxWeight = activityMapper.selectAndList(options);
 
         List<Activity> activityList = new ArrayList<>();
         activityList.addAll(newPublish);
         activityList.addAll(mostFollower);
-        activityList.addAll(maxWeight);
+
+        maxWeight.forEach(activity -> {
+            if(!activityList.contains(activity) && activityList.size() < 4){
+                activityList.add(activity);
+            }
+        });
 
         List<ActivityVo> activityVoList = new ArrayList<>(activityList.size());
         for (Activity activity : activityList) {
