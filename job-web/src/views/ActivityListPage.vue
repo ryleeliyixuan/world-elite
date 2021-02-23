@@ -63,8 +63,7 @@
                                    remote
                                    placeholder="输入国内外城市名，支持多个"
                                    :remote-method="searchCity"
-                                   :loading="loading"
-                                   @change="handleFilter">
+                                   :loading="loading">
                             <el-option
                                 v-for="item in cityOptions"
                                 :key="item.id"
@@ -210,6 +209,7 @@
                         city.selected = true;
                     }
                 })
+                this.handleFilter();
             }
         },
         mounted() {
