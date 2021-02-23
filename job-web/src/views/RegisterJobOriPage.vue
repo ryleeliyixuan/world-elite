@@ -63,7 +63,7 @@
           </el-select>
           <el-select
             class="section-input-box"
-            v-model="form.salaryId"
+            v-model="salaryIds"
             multiple
             placeholder="薪资范围"
           >
@@ -108,6 +108,7 @@ export default {
         industry: "",
         salaryId: "",
       },
+      salaryIds: [],
       subscribeForm: {
         email: "",
         subscribeFlag: 1,
@@ -214,7 +215,7 @@ export default {
               }
             });
           });
-          this.form.salaryId = salaryList;
+          this.salaryIds = salaryList;
         } else {
           addResume().then((response) => {
             this.form.resumeId = response.data.id;
@@ -229,6 +230,7 @@ export default {
         this.form.expectCity = temp;
       }
       this.form.categoryId = 122;
+      this.form.salaryId = this.salaryIds;
       if (this.form.salaryId && this.form.salaryId.length > 0) {
         let temp = this.form.salaryId.toString();
         this.form.salaryId = temp;
