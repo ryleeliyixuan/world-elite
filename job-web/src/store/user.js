@@ -76,6 +76,7 @@ const actions = {
                 commit('SET_NAME', data.name)
                 commit('SET_AVATAR', data.avatar)
                 commit('SET_USERID', data.userId)
+                storage.setUserInfo(data);
                 resolve()
             }).catch(error => {
                 reject(error)

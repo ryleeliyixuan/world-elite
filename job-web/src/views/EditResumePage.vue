@@ -659,7 +659,7 @@
                         <svg-icon
                           icon-class="edit"
                           style="width: 18px; height: 20px"
-                          v-on:click="handleEditExpectJob"
+                          v-on:click="handleEditExpectJob(), showExpectJobDialog = true"
                         ></svg-icon>
                       </span>
                     </el-row>
@@ -678,36 +678,7 @@
                                   item.userExpectJob.salaryId != ''
                                 "
                               >
-                                <span v-if="item.userExpectJob.salaryId == 1028"
-                                  >2K以下</span
-                                >
-                                <span v-if="item.userExpectJob.salaryId == 1029"
-                                  >2K-5K</span
-                                >
-                                <span v-if="item.userExpectJob.salaryId == 1031"
-                                  >5K-8K</span
-                                >
-                                <span v-if="item.userExpectJob.salaryId == 1032"
-                                  >8K-10K</span
-                                >
-                                <span v-if="item.userExpectJob.salaryId == 1033"
-                                  >10K-15K</span
-                                >
-                                <span v-if="item.userExpectJob.salaryId == 1034"
-                                  >15K-20K</span
-                                >
-                                <span v-if="item.userExpectJob.salaryId == 1035"
-                                  >20K-30K</span
-                                >
-                                <span v-if="item.userExpectJob.salaryId == 1036"
-                                  >30K-50K</span
-                                >
-                                <span v-if="item.userExpectJob.salaryId == 1037"
-                                  >50K以上</span
-                                >
-                                <span v-if="item.userExpectJob.salaryId == 1038"
-                                  >面议</span
-                                >
+                                {{ salaryNameList }}
                               </span>
                             </el-row>
                             <el-row class="info-other"
@@ -830,6 +801,8 @@
                                 class="m-input-text-width"
                               >
                                 <el-select
+                                  multiple
+                                  collapse-tags
                                   v-model="expectJobForm.salaryId"
                                   placeholder="薪资范围"
                                   :disabled="salaryCheck == 1"
@@ -2646,6 +2619,7 @@ export default {
           return time.getTime() >= Date.now() - 8.64e7;
         },
       },
+      salaryNameList: "",
     };
   },
   mounted() {
@@ -2995,6 +2969,8 @@ export default {
           this.editableTabsValue = this.resume[0].id;
           this.resumeIndex = this.resume.length - 1;
         }
+
+        this.setSalary();
       });
     },
     addResume() {
@@ -3030,8 +3006,43 @@ export default {
             this.editableTabsValue = this.resume[this.resume.length - 1].id;
             this.resumeIndex = this.resume.length - 1;
           }
+          this.setSalary();
         });
       });
+    },
+    setSalary() {
+      console.log("*****************");
+      let i;
+      if (this.newFlag == true) {
+        i = this.resume.length - 1;
+      } else if (this.newIndex && this.newIndex != "") {
+        i = this.newIndex;
+      } else {
+        i = 0;
+      }
+      //初始化预期薪资
+      //获取salaryOptions
+      this.$axios
+        .request({
+          url: "/dict/list",
+          method: "get",
+          params: { type: 26, sort: "+id" },
+        })
+        .then((response) => {
+          this.salaryOptions = response.data.list;
+        });
+
+      //获取salaryId -> salaryList
+      let tempSalaryList = this.resume[i].userExpectJob.salaryId;
+      let salaryNameArr = [];
+      tempSalaryList.forEach((item) => {
+        this.salaryOptions.forEach((option) => {
+          if (option.id == item) {
+            salaryNameArr.push(option.name);
+          }
+        });
+      });
+      this.salaryNameList = salaryNameArr.toString();
     },
     getResumeInfoAdd() {
       getResumeInfo().then((response) => {
@@ -3432,9 +3443,7 @@ export default {
             return first;
           });
           this.cityOptions.push({ name: "不限" });
-          // console.log(this.cityOptions);
         });
-      this.showExpectJobDialog = true;
       let i;
       if (this.newFlag == true) {
         i = this.resume.length - 1;
@@ -3443,28 +3452,23 @@ export default {
       } else {
         i = 0;
       }
-      if (this.resume[i].userExpectJob.salaryId == 1038) {
-        this.salaryCheck == true;
-        this.expectJobForm.salaryId = "  ";
-      } else if (this.resume[i].userExpectJob.salaryId == 1028) {
-        this.expectJobForm.salaryId = "2K以下";
-      } else if (this.resume[i].userExpectJob.salaryId == 1029) {
-        this.expectJobForm.salaryId = "2K-5K";
-      } else if (this.resume[i].userExpectJob.salaryId == 1031) {
-        this.expectJobForm.salaryId = "5K-8K";
-      } else if (this.resume[i].userExpectJob.salaryId == 1032) {
-        this.expectJobForm.salaryId = "8K-10K";
-      } else if (this.resume[i].userExpectJob.salaryId == 1033) {
-        this.expectJobForm.salaryId = "10K-15K";
-      } else if (this.resume[i].userExpectJob.salaryId == 1034) {
-        this.expectJobForm.salaryId = "15K-20K";
-      } else if (this.resume[i].userExpectJob.salaryId == 1035) {
-        this.expectJobForm.salaryId = "20K-30K";
-      } else if (this.resume[i].userExpectJob.salaryId == 1036) {
-        this.expectJobForm.salaryId = "30K-50K";
-      } else if (this.resume[i].userExpectJob.salaryId == 1037) {
-        this.expectJobForm.salaryId = "50K以上";
-      }
+
+      //初始化预期薪资
+      //获取salaryId -> salaryList
+      let tempSalaryList = this.resume[i].userExpectJob.salaryId;
+      let salaryList = [];
+      let salaryNameArr = [];
+      tempSalaryList.forEach((item) => {
+        this.salaryOptions.forEach((option) => {
+          if (option.id == item) {
+            salaryList.push(option.id);
+            salaryNameArr.push(option.name);
+          }
+        });
+      });
+      this.salaryNameList = salaryNameArr.toString();
+      this.expectJobForm.salaryId = salaryList;
+
       this.expectJobForm.resumeId = this.resume[i].id;
       this.expectJobForm.expectWorkType = this.resume[
         i
@@ -3479,6 +3483,7 @@ export default {
         this.$refs["expectJobForm"][0].clearValidate();
       });
     },
+
     handleEditResumeSkill() {
       this.showSkillDialog = true;
       this.skillTagListForm.length = 0;
@@ -3916,26 +3921,15 @@ export default {
           } else {
             this.expectJobForm.resumeId = this.resume[0].id;
           }
+
           if (this.salaryCheck == true) {
             this.expectJobForm.salaryId = 1038;
-          } else if (this.expectJobForm.salaryId == "2K以下") {
-            this.expectJobForm.salaryId = 1028;
-          } else if (this.expectJobForm.salaryId == "2K-5K") {
-            this.expectJobForm.salaryId = 1029;
-          } else if (this.expectJobForm.salaryId == "5K-8K") {
-            this.expectJobForm.salaryId = 1031;
-          } else if (this.expectJobForm.salaryId == "8K-10K") {
-            this.expectJobForm.salaryId = 1032;
-          } else if (this.expectJobForm.salaryId == "10K-15K") {
-            this.expectJobForm.salaryId = 1033;
-          } else if (this.expectJobForm.salaryId == "15K-20K") {
-            this.expectJobForm.salaryId = 1034;
-          } else if (this.expectJobForm.salaryId == "20K-30K") {
-            this.expectJobForm.salaryId = 1035;
-          } else if (this.expectJobForm.salaryId == "30K-50K") {
-            this.expectJobForm.salaryId = 1036;
-          } else if (this.expectJobForm.salaryId == "50K以上") {
-            this.expectJobForm.salaryId = 1037;
+          } else if (
+            this.expectJobForm.salaryId &&
+            this.expectJobForm.salaryId.length > 0
+          ) {
+            let temp = this.expectJobForm.salaryId.toString();
+            this.expectJobForm.salaryId = temp;
           }
           this.expectJobForm.categoryId = 122;
           saveUserExpectJob(this.expectJobForm)

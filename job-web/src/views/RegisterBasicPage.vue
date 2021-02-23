@@ -17,7 +17,7 @@
           <el-form-item class="form-avatar" label="头像" prop="avatar">
             <div class="avatar-container">
               <div class="avatar" v-for="avatar in avatarList" :key="avatar.id">
-                <div v-on:click="ruleForm.avatar = avatar.avatarUrl">
+                <div v-on:click="ruleForm.avatar = avatar.avatarUrl, isDefaultAvatar = true">
                   <el-avatar
                     :style="
                       ruleForm.avatar === avatar.avatarUrl
@@ -39,17 +39,19 @@
               :on-success="handleUploadSuccess"
               :before-upload="beforeUpload"
             >
+              <!-- 如果已设置头像，且不为默认头像 -->
               <el-avatar
                 :style="
                   ruleForm.avatar === imageUrl
                     ? `border: 1px solid #4895ef`
                     : `border: 0px`
                 "
-                v-if="imageUrl"
-                :src="imageUrl"
+                v-if="isDefaultAvatar === false && hasAvatar === true"
+                :src="ruleForm.avatar"
                 :size="55"
                 class="avatar"
               ></el-avatar>
+              <!-- 没有设置头像，或设置的头像为默认头像 -->
               <el-avatar style="background: #ecf6fd" :size="55" v-else
                 ><svg-icon
                   icon-class="register-avatar-upload"
@@ -79,7 +81,6 @@ import Toast from "@/utils/toast";
 
 export default {
   name: "RegisterBasicPage",
-
   data() {
     return {
       uploadPicOptions: {
@@ -91,6 +92,7 @@ export default {
       },
       userAvatarUrl: "",
       isDefaultAvatar: false,
+      hasAvatar: false,
       imageUrl: "",
       avatarList: [],
       ruleForm: {
@@ -108,31 +110,39 @@ export default {
   created() {
     this.initData();
     this.defaultAvatar();
-    this.$emit("complete");
   },
   watch: {
     imageUrl(oldVal, newVal) {
-      this.defaultAvatar();
+      this.avatarList.forEach((avatar) => {
+          if (avatar.avatarUrl === newVal) {
+            this.isDefaultAvatar = true;
+            return;
+          }
+          this.isDefaultAvatar = false;
+        });
     },
   },
   methods: {
     initData() {
+      this.hasAvatar = false;
+      this.isDefaultAvatar = false;
       getMyInfo().then((response) => {
-        this.ruleForm.avatar = response.data.avatar;
-        this.userAvatarUrl = response.data.avatar;
-        // console.log("-------", this.userAvatarUrl);
+        let avatar = response.data.avatar;
+        this.ruleForm.avatar = avatar;
+        this.hasAvatar = avatar && avatar != "" ? true: false;
+        this.userAvatarUrl = avatar;
         this.ruleForm.name = response.data.name;
       });
     },
     defaultAvatar() {
       defaultAvatar().then((response) => {
         this.avatarList = response.data.list;
-        for (var avatar in this.avatarList) {
-          if (avatar.avatarUrl == this.userAvatarUrl) {
+        this.avatarList.forEach((avatar) => {
+          if (avatar.avatarUrl === this.userAvatarUrl) {
             this.isDefaultAvatar = true;
             return;
           }
-        }
+        });
       });
     },
     modifyUser() {
@@ -143,7 +153,9 @@ export default {
               Toast.success("成功设置昵称与头像");
             })
             .finally(() => {
-              this.$router.push("/register-job-orientation");
+              this.$store.dispatch("user/MYINFO").then(() => {
+                this.$router.push("/register-job-orientation");
+              });
             });
         }
       });
@@ -161,8 +173,9 @@ export default {
             this.uploadPicOptions.params = data;
             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
             this.imageUrl = data.host + "/" + data.key;
-            this.imageUrl = URL.createObjectURL(file);
+            // this.imageUrl = URL.createObjectURL(file);
             this.ruleForm.avatar = this.imageUrl;
+            this.hasAvatar = true;
             resolve(data);
           })
           .catch((error) => {
@@ -180,10 +193,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/deep/ .el-button{
+/deep/ .el-button {
   border: 0px;
 }
-
 
 .app-container {
   max-width: 1200px;
@@ -318,7 +330,7 @@ export default {
         border-radius: 24px;
       }
     }
-    
+
     .text-center {
       font-size: 18px;
     }
@@ -359,7 +371,7 @@ export default {
           }
         }
 
-        .section2-next{
+        .section2-next {
           width: 200px;
         }
       }
