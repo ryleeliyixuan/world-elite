@@ -33,8 +33,7 @@
             <h6 class="mt-0 mb-1">{{ job.name }}</h6>
             <div class>
               <b class="text-danger"
-                >{{ job.salary.name
-                }}{{ job.salaryMonths ? ` × ${job.salaryMonths}` : "" }}</b
+                >{{job.minSalary}}K - {{job.maxSalary}}K{{ job.salaryMonths ? ` × ${job.salaryMonths}` : "" }}</b
               >
               <span class="ml-3 text-gray text-small">{{
                 `${job.city ? job.city.name : ""} / ${
@@ -142,14 +141,10 @@ export default {
   created() {
     this.getList();
   },
-  computed: {
-    activeName() {
-      return this.listQuery.type + "";
-    },
-  },
   methods: {
     getList() {
       parseListQuery(this.$route.query, this.listQuery);
+      this.activeName = this.listQuery.type + "";
       getFavoriteList(this.listQuery).then((response) => {
         this.list = response.data.list;
         this.total = response.data.total;
