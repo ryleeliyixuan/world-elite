@@ -496,8 +496,20 @@
     >
       <div class="text-center">若选择“否”，草稿将被清空无法恢复</div>
       <div class="button-container">
-        <div class="cancel" @click="restoreDialogVisible = false">否</div>
-        <div class="confirm" @click="onRestoreDraft">是</div>
+        <div
+          class="cancel"
+          @click="deleteDraft(), (restoreDialogVisible = false)"
+        >
+          否
+        </div>
+        <div
+          class="confirm"
+          @click="
+            handlerActivity(activityDraft), (restoreDialogVisible = false)
+          "
+        >
+          是
+        </div>
       </div>
     </el-dialog>
     <el-dialog
@@ -618,6 +630,7 @@ export default {
       cancelDialogVisible: false, // 取消发布
       saveDraft: false, // 是否存草稿
       draftSaving: false, // 草稿保存中
+      activityDraft: undefined, // 草稿信息
 
       publishing: false, // 发布中
 
@@ -628,7 +641,7 @@ export default {
       applyTable: undefined, // 报名表
 
       previewDialogVisible: false, // 报名表预览对话框
-      restoreDialogVisible: true, //恢复草稿对话框
+      restoreDialogVisible: false, //恢复草稿对话框
     };
   },
   watch: {
@@ -732,6 +745,7 @@ export default {
     initData() {
       // 获取我的模板
       this.getTemplate();
+      this.onRestoreDraft();
 
       // 获取全部城市
       this.$axios
@@ -954,8 +968,18 @@ export default {
           this.$router.go(-1);
         });
       } else {
+        this.deleteDraft();
         this.$router.go(-1);
       }
+    },
+
+    // 删除草稿
+    deleteDraft() {
+      this.$axios.request({
+        method: "POST",
+        url: "/activity/delete",
+        params: { id: this.activityDraft.id },
+      });
     },
 
     // 点击预览
@@ -1088,7 +1112,10 @@ export default {
       } else {
         // 没有预览数据时加载远程草稿
         this.$axios.get("/activity/my/draft-activity-info").then((data) => {
-          this.handlerActivity(data.data);
+          this.activityDraft = data.data;
+          if (this.activityDraft) {
+            this.restoreDialogVisible = true;
+          }
         });
       }
       this.restoreDialogVisible = false;
