@@ -1416,6 +1416,7 @@ export default {
 
     // 删除问题选项
     onQuestionOptionDelete(question, index) {
+      index--;
       question.optionsList.splice(index, 1);
     },
 
