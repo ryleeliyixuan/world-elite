@@ -1478,7 +1478,7 @@ export default {
     onSaveTemplateSuccess() {
       this.saveTemplateSuccessDialogVisible = false;
       this.$storage.setObject("报名表", { id: this.templateId, type: "1" });
-      //   this.$router.go(-1); 该为不跳转
+      this.$router.go(-1);
     },
 
     // 添加模板
