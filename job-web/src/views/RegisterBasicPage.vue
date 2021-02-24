@@ -168,12 +168,12 @@ export default {
         getUploadPicToken(file.name)
           .then((response) => {
             const { data } = response;
-            console.log(data);
+            // console.log(data);
             this.uploadPicOptions.action = data.host;
             this.uploadPicOptions.params = data;
             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
             this.imageUrl = data.host + "/" + data.key;
-            // this.imageUrl = URL.createObjectURL(file);
+            this.imageUrl = URL.createObjectURL(file);
             this.ruleForm.avatar = this.imageUrl;
             this.hasAvatar = true;
             resolve(data);
