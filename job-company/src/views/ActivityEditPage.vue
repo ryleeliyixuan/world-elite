@@ -720,6 +720,8 @@
                 this.activityForm.questionnaireId = this.useTemplate ? this.templateId : this.applyTableId;
                 if (!this.activityForm.title) {
                     message = "请输入活动名称";
+                } else if (!this.activityForm.organizerInfoForm.organizerName) {
+                     message = "请输入主办方";
                 }
                     // else if (!this.activityForm.organizerType) { // TODO 修改主办方验证
                     //     message = "请选择主办方类型";
@@ -745,7 +747,7 @@
                     message = "请上传活动海报";
                 } else if (this.activityForm.needRegistration===1&&!this.activityForm.questionnaireId) {
                     message = "请添加报名表或选择报名表模板";
-                }
+                } 
                 message && this.$message.warning(message);
                 return !message;
             },
