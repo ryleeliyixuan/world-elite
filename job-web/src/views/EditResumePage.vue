@@ -35,7 +35,7 @@
                     >还有必填没有填完，此简历将无法投递和被HR搜索到哦。</span
                   >
                   <span
-                    ><el-link class="required-link" @click="requiredEdit"
+                    ><el-link class="required-link" @click="requiredEdit(index)"
                       >去填写</el-link
                     ></span
                   >
@@ -659,7 +659,9 @@
                         <svg-icon
                           icon-class="edit"
                           style="width: 18px; height: 20px"
-                          v-on:click="handleEditExpectJob(), showExpectJobDialog = true"
+                          v-on:click="
+                            handleEditExpectJob(), (showExpectJobDialog = true)
+                          "
                         ></svg-icon>
                       </span>
                     </el-row>
@@ -3011,7 +3013,6 @@ export default {
       });
     },
     setSalary() {
-      console.log("*****************");
       let i;
       if (this.newFlag == true) {
         i = this.resume.length - 1;
@@ -3121,37 +3122,32 @@ export default {
         }
       });
     },
-    requiredEdit() {
-      let index;
-      if (this.newFlag == true) {
-        index = this.resume.length - 1;
-      } else if (this.newIndex && this.newIndex != "") {
-        index = this.newIndex;
-      } else {
-        index = this.resume.length - 1;
-      }
+    requiredEdit(index) {
       if (
-        this.resume[index].name == "" ||
         !this.resume[index].name ||
-        this.resume[index].birth == "" ||
+        this.resume[index].name === "" ||
         !this.resume[index].birth ||
-        this.resume[index].gender == "" ||
+        this.resume[index].birth === "" ||
         !this.resume[index].gender ||
-        this.resume[index].email == "" ||
-        !this.resume[index].email
+        String(this.resume[index].gender) === "" ||
+        !this.resume[index].email ||
+        this.resume[index].email === ""
       ) {
         this.handleEditResumeBasic();
-      } else if (
-        this.resume[index].priority == "" ||
-        !this.resume[index].priority
-      ) {
+      }
+
+      if (this.resume[index].priority == "" || !this.resume[index].priority) {
         this.handleEditPriority();
-      } else if (
+      }
+
+      if (
         this.resume[index].resumeEduList == "" ||
         !this.resume[index].resumeEduList
       ) {
         this.handleEditResumeEdu();
-      } else if (
+      }
+
+      if (
         this.resume[index].userExpectJob.expectPosition == "" ||
         !this.resume[index].userExpectJob.expectPosition ||
         this.resume[index].userExpectJob.expectCity == "" ||
