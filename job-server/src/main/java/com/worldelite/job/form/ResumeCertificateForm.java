@@ -19,7 +19,7 @@ public class ResumeCertificateForm {
     private Long resumeId;
     @NotBlank
     private String title; //标题
-    @JSONField(format = "yyyy-MM-DD")
+    @JSONField(format = "yyyy-MM-dd")
     private Date time;
 
 }

@@ -22,13 +22,13 @@ public class ActivityTitleSearchServiceTest {
 
     @Test
     public void testCreateOrRefreshActivityTitleIndex() {
-        activityTitleSearchService.createOrRefreshActivityTitleIndex();
+//        activityTitleSearchService.createOrRefreshActivityTitleIndex();
     }
 
 
     @Test
     public void testSearchActivityTitle() {
-        activityTitleSearchService.createOrRefreshActivityTitleIndex();
+//        activityTitleSearchService.createOrRefreshActivityTitleIndex();
 
         PageResult<String> result = activityTitleSearchService.searchActivityTitle("北京", 1, 5);
         System.out.println("result = " + result);
