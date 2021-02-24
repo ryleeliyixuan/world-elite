@@ -34,7 +34,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
     @JSONField(format = "yyyy-MM")
     private Date returnTime; //回国时间
     @ResumeScore
-    @JSONField(format = "yyyy-MM-DD hh:mm")
+    @JSONField(format = "yyyy-MM-dd hh:mm")
     private Date updateTime;
     @ResumeScore
     @JSONField(format = "yyyy-MM")
