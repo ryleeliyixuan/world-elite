@@ -26,6 +26,6 @@
     select
     <include refid="Base_Column_List" />
     from t_questionnaire_template
-    where template_name = #{templateName} or template_name like concat(#{templateName},'（%）') and user_id = #{userId}
+    where (template_name = #{templateName} or template_name like concat(#{templateName},'（%）')) and user_id = #{userId}
   </select>
 </mapper>
