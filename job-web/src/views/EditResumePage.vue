@@ -1966,26 +1966,44 @@
                   >附件简历内容也可被HR搜索到！</span
                 >
 
-                <el-row style="display: inline-flex">
-                  <div style="width: 210px">
-                    <el-row
-                      v-if="item.attachResume && item.attachResume.length > 0"
-                      style="
-                        font-size: 14px;
-                        font-family: PingFangSC-Medium, PingFang SC;
-                        font-weight: 500;
-                      "
-                    >
-                      <svg-icon
-                        icon-class="PDF"
-                        style="width: 14px; height: 18px"
-                      ></svg-icon>
+                <div
+                  style="
+                    display: flex;
+                    width: 265px;
+                    justify-content: space-between;
+                  "
+                >
+                  <div
+                    v-if="item.attachResume && item.attachResume.length > 0"
+                    style="
+                      font-size: 14px;
+                      font-family: PingFangSC-Medium, PingFang SC;
+                      font-weight: 500;
+                      display: inline-flex;
+                    "
+                  >
+                    <svg-icon
+                      icon-class="PDF"
+                      style="width: 14px; height: 18px"
+                    ></svg-icon>
 
-                      {{ item.name }}个人简历
-                      <!--                                            {{item.attachResume}}-->
-                    </el-row>
+                    {{ item.name }}个人简历
                   </div>
-                </el-row>
+                  <!-- 重命名，删除按钮 -->
+                  <!-- <div>
+                    <svg-icon
+                      icon-class="resumeOther-edit"
+                      style="width: 18px; height: 18px"
+                      v-on:click="handleEditAttachOthers(index)"
+                    ></svg-icon>
+                    <svg-icon
+                      icon-class="resumeOther-del"
+                      style="width: 18px; height: 20px"
+                      v-on:click="handleDelAttachOthers(index)"
+                    ></svg-icon>
+                  </div> -->
+                </div>
+
                 <el-form
                   ref="resumeForm2"
                   :model="resumeForm2"
@@ -2053,7 +2071,11 @@
                               <svg-icon
                                 icon-class="resumeOther-del"
                                 style="width: 18px; height: 20px"
-                                v-on:click="handleDelAttachOthers(index)"
+                                v-on:click="
+                                  (cancelAttachDialogVisible = true),
+                                    (delAttachItemName = others.name),
+                                    (delAttachItemIndex = index)
+                                "
                               ></svg-icon>
                             </el-row>
                           </div>
@@ -2093,7 +2115,6 @@
                     :limit="1"
                     :action="uploadAttachmentOptions.action"
                     :data="uploadAttachmentOptions.params"
-                    :accept="uploadAttachmentOptions.acceptFileType"
                     :show-file-list="false"
                     :on-success="handleUploadAttachOthersSuccess"
                     :before-upload="beforeAttachmengUpload"
@@ -2139,6 +2160,34 @@
         title="图片剪裁"
         width="50%"
       ></el-dialog>
+      <!-- 是否删除附件 -->
+      <el-dialog
+        class="cancel-dialog"
+        :visible.sync="cancelAttachDialogVisible"
+        width="30%"
+      >
+        <div class="text-center">
+          <div style="font-size: 46px">
+            <i class="el-icon-warning" style="color: #ff1744"></i>
+          </div>
+          <div class="text">您确定要删除“{{ delAttachItemName }}”吗</div>
+        </div>
+        <div class="footer text-center">
+          <el-button
+            type="primary"
+            @click="
+              (cancelAttachDialogVisible = false),
+                handleDelAttachOthers(delAttachItemIndex)
+            "
+            >确 定</el-button
+          >
+          <el-button
+            @click="cancelAttachDialogVisible = false"
+            style="color: #4895ef"
+            >取 消</el-button
+          >
+        </div>
+      </el-dialog>
       <!--            <el-dialog :visible.sync="photoDialog"-->
       <!--                       width="50%" >-->
       <!--                <div style="margin-left: 105px">-->
@@ -2241,6 +2290,9 @@ export default {
   name: "EditResumePage",
   data() {
     return {
+      cancelAttachDialogVisible: true, //是否删除附件对话框
+      delAttachItemName: "", // 将要被删除的附件名字
+      delAttachItemIndex: undefined, // 将要被删除的附件INDEX
       cityOptions: [],
       // 城市选择框属性
       cityIdProps: {
@@ -2819,7 +2871,6 @@ export default {
       } else {
         n = 0;
       }
-      console.log("------");
       if (
         this.resume[n].resumeMergeAttachList &&
         this.resume[n].resumeMergeAttachList.length > 0
@@ -2833,11 +2884,7 @@ export default {
         let result = nowAttachOthers.map((value, index) => {
           return { link: value.resumeAttach, name: value.name };
         });
-
-        console.log(result);
-        console.log("=====");
         result.push(this.resumeAttachForm1);
-        console.log(result);
         this.resumeAttachForm.attachOthers = result;
         this.handleSaveAttachOthersResume(false);
       } else {
@@ -3123,6 +3170,7 @@ export default {
       });
     },
     requiredEdit(index) {
+      console.log("----------", this.resume[index]);
       if (
         !this.resume[index].name ||
         this.resume[index].name === "" ||
@@ -3148,12 +3196,12 @@ export default {
       }
 
       if (
-        this.resume[index].userExpectJob.expectPosition == "" ||
         !this.resume[index].userExpectJob.expectPosition ||
-        this.resume[index].userExpectJob.expectCity == "" ||
+        this.resume[index].userExpectJob.expectPosition == "" ||
         !this.resume[index].userExpectJob.expectCity ||
-        this.resume[index].userExpectJob.expectWorkType == "" ||
-        !this.resume[index].userExpectJob.expectWorkType
+        this.resume[index].userExpectJob.expectCity == "" ||
+        !this.resume[index].userExpectJob.expectWorkType ||
+        this.resume[index].userExpectJob.expectWorkType == ""
       ) {
         this.handleEditExpectJob();
       }
@@ -3846,6 +3894,14 @@ export default {
             this.resumePracticeForm.startTime = this.resumePracticeForm.workingDates[0];
             this.resumePracticeForm.finishTime = this.resumePracticeForm.workingDates[1];
           }
+          if (
+            !this.resumePracticeForm.startTime ||
+            this.resumePracticeForm.startTime == "" ||
+            !this.resumePracticeForm.finishTime ||
+            this.resumePracticeForm.finishTime == ""
+          ) {
+            return;
+          }
           saveResumePractice(this.resumePracticeForm)
             .then(() => {
               this.getResumeInfo();
@@ -4058,14 +4114,6 @@ export default {
 
       // this.$router.push({path: `/resume/${this.resume.id}`});
     },
-    handleClose() {
-      this.$confirm("确认关闭？")
-        .then((_) => {
-          this.getResumeInfo();
-          this.showResumeDialog = false;
-        })
-        .catch((_) => {});
-    },
 
     exportPdf() {
       if (this.newResumeId && this.newResumeId != "") {
@@ -4152,6 +4200,45 @@ $border-style: 1px solid #eee;
   /*margin: 20px auto;*/
   /*min-height: calc(100vh - 477px);*/
   /*background: rgba(213, 226, 240, 0.21);*/
+
+  .cancel-dialog {
+    .text {
+      margin-top: 12px;
+      margin-bottom: 30px;
+      font-size: 21px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #333333;
+      line-height: 29px;
+    }
+
+    /deep/ .el-dialog__body{
+      padding-top: 0;
+    }
+
+    /deep/ .el-dialog {
+      background: #ffffff;
+      border-radius: 27px;
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /deep/ .el-button {
+          width: 101px;
+          height: 31px;
+          border-radius: 16px;
+
+          border: 1px solid #4895ef;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          span {
+          }
+        }
+      }
+    }
+  }
   min-width: 375px;
   ::v-deep.el-tabs__nav-scroll {
     width: fit-content;
