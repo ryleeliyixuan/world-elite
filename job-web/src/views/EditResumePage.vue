@@ -2290,7 +2290,7 @@ export default {
   name: "EditResumePage",
   data() {
     return {
-      cancelAttachDialogVisible: true, //是否删除附件对话框
+      cancelAttachDialogVisible: false, //是否删除附件对话框
       delAttachItemName: "", // 将要被删除的附件名字
       delAttachItemIndex: undefined, // 将要被删除的附件INDEX
       cityOptions: [],
