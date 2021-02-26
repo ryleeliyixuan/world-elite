@@ -263,6 +263,7 @@
               "
               v-model="checked"
               :label="scope.row.id"
+              :disabled="Object.keys(scope.row.userExpectJob).length === 0"
             ></el-radio>
           </template>
         </el-table-column>
@@ -422,7 +423,6 @@ export default {
     handleCurrentChange(id, progess) {
       this.selectedId = id;
       this.selectedProgress = progess;
-      console.log(this.selectedProgress);
     },
     handleEditResume(id) {
       let page = this.$router.resolve({
