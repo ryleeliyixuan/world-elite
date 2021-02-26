@@ -89,11 +89,8 @@
                     <span v-text="job.name" class="post-name"></span>
                     <span v-text="job.companyUser.company.synopsis" class="post-desc"></span>
                     <div class="mid-2">
-                        <span v-text="job.salary.value" class="post-salary"></span>.
-                        &nbsp;
-                        <span v-text="job.address" class="post-addr"></span>.
-                        &nbsp;
-                        <span v-text="job.minDegree.name" class="post-degree"></span>
+                        <span class="post-salary">{{job.minSalary}}K - {{job.maxSalary}}K</span>.
+                        <span class="post-degree">{{job.minDegree? job.minDegree.name: ''}}. {{job.city? job.city.name: ''}}</span>
                     </div>
                 </div>
                 <span class="post-line"></span>
