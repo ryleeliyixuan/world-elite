@@ -72,7 +72,8 @@
                 <em class="ml-3 pull-right">
                     <#if exp.onWork?? && exp.onWork == 1>
                         在职
-                    <#else>
+                    </#if>
+                    <#if exp.startTime?? && exp.finishTime??>
                         ${exp.startTime?string("yyyy-MM")} 到 ${exp.finishTime?string("yyyy-MM")}
                     </#if>
                 </em>
@@ -92,8 +93,9 @@
                 ><em class="ml-3 pull-right">
                     <#if practice.onWork?? && practice.onWork == 1>
                         实践中
-                    <#else>
-                    ${practice.startTime?string("yyyy-MM")} 到 ${practice.finishTime?string("yyyy-MM")}
+                    </#if>
+                    <#if practice.startTime?? && practice.finishTime??>
+                        ${practice.startTime?string("yyyy-MM")} 到 ${practice.finishTime?string("yyyy-MM")}
                     </#if>
                 </em>
             </p>
