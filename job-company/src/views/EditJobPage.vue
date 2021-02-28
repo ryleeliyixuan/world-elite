@@ -97,6 +97,25 @@
                 </el-cascader>
             </el-form-item>
 
+            <el-form-item label="选择定位" prop="position">
+                <p class="text-gray">输入城市和写字楼位置，然后拖动定位器进行选择。</p>
+                <div class="edit-map-box">
+                    <el-amap vid="marker" :zoom="mapZoom" :center="poiMapMarker.position" :plugin="mapPlugin" :events="events">
+                        <el-amap-search-box
+                            class="map-search-box"
+                            :search-option="mapSearchOption"
+                            :on-search-result="onSearchPoiResult"
+                        ></el-amap-search-box>
+                        <el-amap-marker
+                            vid="poi-marker"
+                            :position="poiMapMarker.position"
+                            :events="poiMapMarker.events"
+                            :draggable="poiMapMarker.draggable"
+                        ></el-amap-marker>
+                    </el-amap>
+                </div>
+            </el-form-item>
+
             <el-form-item label="工作地址" prop="address">
                 <el-input v-model="jobForm.address"
                           maxlength="250"
@@ -370,6 +389,29 @@
     import {quillEditor} from "vue-quill-editor";
     import {saveJob} from "../api/job_api";
     import Toast from '@/utils/toast'
+    import Vue from "vue";
+    import VueAMap, {lazyAMapApiLoaderInstance} from "vue-amap";
+
+    Vue.use(VueAMap);
+
+    VueAMap.initAMapApiLoader({
+        key: process.env.VUE_APP_AMAP_KEY,
+        plugin: [
+            "AMap.Autocomplete",
+            "AMap.PlaceSearch",
+            "AMap.Scale",
+            "AMap.Geocoder",
+            'AMap.ToolBar'
+        ],
+        v: "1.4.4"
+    });
+
+    let geocoder;
+
+    lazyAMapApiLoaderInstance.load().then(() => {
+        // eslint-disable-next-line no-undef
+        geocoder = new AMap.Geocoder({extensions: "base"});
+    });
 
     let id = 0;
     export default {
@@ -388,6 +430,13 @@
             const checkSalary = (rule, value, callback) => {
                 if (this.jobForm.minSalary && !this.jobForm.maxSalary) {
                     return callback(new Error('请选择最高薪资'));
+                } else {
+                    callback();
+                }
+            }
+            const checkPosition = (rule, value, callback) => {
+                if (!this.jobForm.latitude || !this.jobForm.longitude) {
+                    return callback(new Error('请选择位置'));
                 } else {
                     callback();
                 }
@@ -415,6 +464,8 @@
                     minSalary: 1,
                     maxSalary: 8,
                     cityId: undefined,
+                    latitude: undefined,
+                    longitude: undefined,
                     address: undefined,
                     recruitType: undefined,
                     jobType: undefined,
@@ -438,6 +489,7 @@
                     description: [{required: true, message: "请输入职位描述", trigger: "blur"}],
                     salary: [{required: true, validator: checkSalary}],
                     companyId: [{required: true, validator: checkCompany}],
+                    position: [{required: true, validator: checkPosition,trigger: "change"}],
                     experienceId: [{required: true, message: "请选择经验要求", trigger: "change"}],
                     languageId: [{required: true, message: "请选择语言要求", trigger: "change"}],
                     cityId: [{required: true, message: "请选择工作城市", trigger: "change"}],
@@ -510,6 +562,41 @@
                 secondCategoryId: undefined, // 选中的二级职位id
                 isOP: false,
                 companyOptions: [],
+
+                mapZoom: 14,
+                poiMapMarker: {
+                    position: [121.5273285, 31.21515044],
+                    events: {
+                        dragend: e => {
+                            console.log(this)
+                            this.poiMapMarker.position = [e.lnglat.lng, e.lnglat.lat];
+                            this.getCompanyAddress(e.lnglat.lng, e.lnglat.lat);
+                        }
+                    },
+                    draggable: true
+                },
+                mapPlugin: [{
+                    pName: 'ToolBar',
+                    events: {
+                        init(instance) {
+                            console.log(instance);
+                        }
+                    }
+                }],
+                mapSearchOption: {
+                    city: "北京",
+                    citylimit: false
+                },
+                events: {
+                    init(instance) {
+                        console.log(instance);
+                    },
+                    // 点击获取地址的数据
+                    click:(e) => {
+                        this.poiMapMarker.position = [e.lnglat.lng, e.lnglat.lat];
+                        this.getCompanyAddress(e.lnglat.lng, e.lnglat.lat);
+                    }
+                }
             };
         },
         created() {
@@ -525,6 +612,14 @@
                     if (this.jobForm.id === undefined) {
                         this.$store.commit("setting/JOB_DRAFT", this.jobForm);
                     }
+                },
+                deep: true
+            },
+
+            poiMapMarker: {
+                handler(location) {
+                    this.jobForm.longitude = location.position[0];
+                    this.jobForm.latitude = location.position[1];
                 },
                 deep: true
             }
@@ -909,6 +1004,39 @@
                 if (this.jobForm.minSalary >= this.jobForm.maxSalary) {
                     this.jobForm.maxSalary = undefined;
                 }
+            },
+
+            onSearchPoiResult(pois) {
+                let latSum = 0;
+                let lngSum = 0;
+                if (pois.length > 0) {
+                    pois.forEach(poi => {
+                        let {lng, lat} = poi;
+                        lngSum += lng;
+                        latSum += lat;
+                    });
+                    let center = {
+                        lng: lngSum / pois.length,
+                        lat: latSum / pois.length
+                    };
+                    this.poiMapMarker.position = [center.lng, center.lat];
+                }
+            },
+
+
+            getCompanyAddress(lng, lat) {
+                // 这里通过高德 SDK 完成。
+                let geocoder = new AMap.Geocoder({
+                    radius: 1000,
+                    extensions: 'all'
+                })
+                geocoder.getAddress([lng, lat], (status, result) => {
+                    if (status === 'complete' && result.info === 'OK') {
+                        if (result && result.regeocode) {
+                            this.jobForm.address = result.regeocode.formattedAddress;
+                        }
+                    }
+                })
             }
         }
     };
@@ -1138,5 +1266,27 @@
                 border-radius: 20px;
             }
         }
+    }
+
+    .map-box {
+        height: 200px;
+    }
+
+    .edit-map-box {
+        height: 300px;
+        position: relative;
+        width: 680px;
+    }
+
+    .map-search-box {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+    }
+
+    .preview-box {
+        background: #fff;
+        padding: 20px;
+        border:  1px solid #eee;
     }
 </style>
