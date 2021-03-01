@@ -2,7 +2,7 @@ package com.worldelite.job.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.worldelite.job.anatation.ResumeScore;
-import com.worldelite.job.entity.*;
+import com.worldelite.job.entity.Resume;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.TimeUtils;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author yeguozhong yedaxia.github.com
  */
 @Data
-public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
+public class ResumeVo implements VoConvertable<ResumeVo, Resume> {
 
     private String id; //简历ID
     @ResumeScore
@@ -70,33 +70,13 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
 
     private List<ResumeLinkVo> resumeLinkList;
 
-    public void setResumeMergeAttachList(List<ResumeMergeAttachVo> resumeMergeAttachList) {
-        this.resumeMergeAttachList = resumeMergeAttachList;
-    }
+    private List<ResumeMergeAttachVo> resumeMergeAttachList;
 
-    private List<ResumeMergeAttachVo>resumeMergeAttachList;
+    private List<ResumeLanguageVo> resumeLanguageList;
 
-    public void setResumeLanguageList(List<ResumeLanguageVo> resumeLanguageList) {
-        this.resumeLanguageList = resumeLanguageList;
-    }
+    private List<ResumeCertificateVo> resumeCertificateList;
 
-    private List<ResumeLanguageVo>resumeLanguageList;
-
-    public void setResumeCertificateList(List<ResumeCertificateVo> resumeCertificateList) {
-        this.resumeCertificateList = resumeCertificateList;
-    }
-
-    private List<ResumeCertificateVo>resumeCertificateList;
-
-    public UserExpectJobVo getUserExpectJob() {
-        return userExpectJob;
-    }
-
-    public void setUserExpectJob(UserExpectJobVo userExpectJob) {
-        this.userExpectJob = userExpectJob;
-    }
-
-    private UserExpectJobVo userExpectJob;
+    private UserExpectJobVo userExpectJob; //求职意向
 
     //已投递职位总数
     private Integer applyTotalCount;
@@ -123,7 +103,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume>{
         setStatus(resume.getStatus());
         setType(resume.getType());
         setAttachResume(AppUtils.absOssUrl(resume.getAttachResume()));
-        if(resume.getBirth() != null){
+        if (resume.getBirth() != null) {
             setAge(TimeUtils.getCurrentAge(resume.getBirth()));
         }
         setReturnTime(resume.getReturnTime());

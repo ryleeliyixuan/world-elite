@@ -2,7 +2,6 @@ package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.ObjectType;
 import com.worldelite.job.entity.Recommend;
 import com.worldelite.job.exception.ServiceException;
@@ -136,9 +135,10 @@ public class RecommendService {
         Page<Long> companyIdList = (Page<Long>) recommendMapper.selectRecentJobCompanyId();
         PageResult<CompanyVo> pageResult = new PageResult(companyIdList);
         List<CompanyVo> companyVoList = new ArrayList<>();
-        for(Long id:companyIdList){
+        for (Long id : companyIdList) {
             CompanyVo companyInfo = companyService.getCompanyInfo(id);
-            companyVoList.add(companyInfo);
+            if (companyInfo != null)
+                companyVoList.add(companyInfo);
         }
 
         pageResult.setList(companyVoList);
