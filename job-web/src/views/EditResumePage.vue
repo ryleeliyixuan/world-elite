@@ -3925,9 +3925,7 @@ export default {
           } else {
             i = 0;
           }
-          this.resumeLanguageForm.resumeId = this.resume[
-            this.resume.length - 1
-          ].id;
+          this.resumeLanguageForm.resumeId = this.resume[i].id;
           saveResumeLanguage(this.resumeLanguageForm)
             .then(() => {
               this.getResumeInfo();
