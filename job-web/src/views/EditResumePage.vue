@@ -768,6 +768,7 @@
                                   :options="cityOptions"
                                   :props="cityIdProps"
                                   clearable
+                                  filterable
                                   v-model="expectJobForm.expectCity"
                                 >
                                 </el-cascader>
