@@ -40,14 +40,10 @@
               :before-upload="beforeUpload"
             >
               <!-- 如果已设置头像，且不为默认头像 -->
-              <el-avatar
-                :style="
-                  ruleForm.avatar === imageUrl
-                    ? `border: 1px solid #4895ef`
-                    : `border: 0px`
-                "
+              <el-avatar               
+                style="border: 1px solid #4895ef"
                 v-if="isDefaultAvatar === false && hasAvatar === true"
-                :src="ruleForm.avatar"
+                :src="imageUrl"
                 :size="55"
                 class="avatar"
               ></el-avatar>
@@ -129,6 +125,7 @@ export default {
       getMyInfo().then((response) => {
         let avatar = response.data.avatar;
         this.ruleForm.avatar = avatar;
+        this.imageUrl = avatar;
         this.hasAvatar = avatar && avatar != "" ? true: false;
         this.userAvatarUrl = avatar;
         this.ruleForm.name = response.data.name;
@@ -168,13 +165,12 @@ export default {
         getUploadPicToken(file.name)
           .then((response) => {
             const { data } = response;
-            // console.log(data);
             this.uploadPicOptions.action = data.host;
             this.uploadPicOptions.params = data;
             this.uploadPicOptions.fileUrl = data.host + "/" + data.key;
             this.imageUrl = data.host + "/" + data.key;
-            this.imageUrl = URL.createObjectURL(file);
             this.ruleForm.avatar = this.imageUrl;
+            this.imageUrl = URL.createObjectURL(file);
             this.hasAvatar = true;
             resolve(data);
           })
