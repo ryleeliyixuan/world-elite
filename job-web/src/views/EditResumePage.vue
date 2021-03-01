@@ -3082,16 +3082,18 @@ export default {
         });
 
       //获取salaryId -> salaryList
-      let tempSalaryList = this.resume[i].userExpectJob.salaryId;
-      let salaryNameArr = [];
-      tempSalaryList.forEach((item) => {
-        this.salaryOptions.forEach((option) => {
-          if (option.id == item) {
-            salaryNameArr.push(option.name);
-          }
+      if(this.resume[i].userExpectJob && this.resume[i].userExpectJob.salaryId){
+        let tempSalaryList = this.resume[i].userExpectJob.salaryId;
+        let salaryNameArr = [];
+        tempSalaryList.forEach((item) => {
+          this.salaryOptions.forEach((option) => {
+            if (option.id == item) {
+              salaryNameArr.push(option.name);
+            }
+          });
         });
-      });
-      this.salaryNameList = salaryNameArr.toString();
+        this.salaryNameList = salaryNameArr.toString();
+      }
     },
     getResumeInfoAdd() {
       getResumeInfo().then((response) => {
@@ -3500,20 +3502,21 @@ export default {
 
       //初始化预期薪资
       //获取salaryId -> salaryList
-      let tempSalaryList = this.resume[i].userExpectJob.salaryId;
-      let salaryList = [];
-      let salaryNameArr = [];
-      tempSalaryList.forEach((item) => {
-        this.salaryOptions.forEach((option) => {
-          if (option.id == item) {
-            salaryList.push(option.id);
-            salaryNameArr.push(option.name);
-          }
+      if(this.resume[i].userExpectJob && this.resume[i].userExpectJob.salaryId) {
+        let tempSalaryList = this.resume[i].userExpectJob.salaryId;
+        let salaryList = [];
+        let salaryNameArr = [];
+        tempSalaryList.forEach((item) => {
+          this.salaryOptions.forEach((option) => {
+            if (option.id == item) {
+              salaryList.push(option.id);
+              salaryNameArr.push(option.name);
+            }
+          });
         });
-      });
-      this.salaryNameList = salaryNameArr.toString();
-      this.expectJobForm.salaryId = salaryList;
-
+        this.salaryNameList = salaryNameArr.toString();
+        this.expectJobForm.salaryId = salaryList;
+      }
       this.expectJobForm.resumeId = this.resume[i].id;
       this.expectJobForm.expectWorkType = this.resume[
         i
