@@ -901,7 +901,7 @@ export default {
     amendOptions(options) {
       let validOptions = [];
       for (let i = 0; i < options.length; i++) {
-        if (options[i].name !== "高中" && options[i].name !== "专科") {
+        if (options[i].name !== "高中" && options[i].name !== "专科" && options[i].name !== "MBA" && options[i].name !== "EMBA") {
           validOptions.push(options[i]);
         }
       }

@@ -639,7 +639,7 @@
         methods: {
             initData(jobId) {
                 getCategoryTree().then(response => (this.jobCategoryOptions = response.data));
-                listByType(1).then(response => (this.degreeOptions = response.data.list));
+                listByType(25).then(response => (this.degreeOptions = this.amendOptions(response.data.list)));
                 listByType(8).then(response => (this.jobTypeOptions1 = response.data.list));
                 listByType(13).then(response => (this.experienceOptions = response.data.list));
                 listByType(28).then(response => (this.languageOptions = response.data.list));
@@ -712,6 +712,17 @@
                 })
 
             },
+
+            amendOptions(options) {
+                let validOptions = [];
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].name !== "高中" && options[i].name !== "专科" && options[i].name !== "MBA" && options[i].name !== "EMBA") {
+                        validOptions.push(options[i]);
+                    }
+                }
+                return validOptions;
+            },
+
             onSubmit() {
                 this.$refs["jobForm"].validate(valid => {
                     if (valid) {
