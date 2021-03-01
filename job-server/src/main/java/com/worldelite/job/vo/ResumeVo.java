@@ -17,65 +17,68 @@ import java.util.List;
 public class ResumeVo implements VoConvertable<ResumeVo, Resume> {
 
     private String id; //简历ID
-    @ResumeScore
+    @ResumeScore(2)
     private String avatar; //头像
-    @ResumeScore
+    @ResumeScore(3)
     private String name; //名字
     private String title; // 简历名字
-    @ResumeScore
+    @ResumeScore(2)
     private Byte gender; //性别
-    @ResumeScore
+    @ResumeScore(2)
     private Integer age; //年龄
-    @ResumeScore
+    @ResumeScore(2)
     @JSONField(format = "yyyy-MM-dd")
     private Date birth; //生日
     private ResumeEduVo maxResumeEdu; //学历
-    @ResumeScore
     @JSONField(format = "yyyy-MM")
     private Date returnTime; //回国时间
-    @ResumeScore
     @JSONField(format = "yyyy-MM-dd hh:mm")
     private Date updateTime;
-    @ResumeScore
     @JSONField(format = "yyyy-MM")
     private Date graduateTime; //毕业时间
-    @ResumeScore
+    @ResumeScore(2)
     private String curPlace; //现居地址
     private String phoneCode; //号码区号
-    @ResumeScore
+    @ResumeScore(2)
     private String phone; //电话号码
+    @ResumeScore(3)
     private String email; //邮箱
     @ResumeScore(4)
     private String introduction; //个人介绍
+    @ResumeScore(5)
     private String attachResume; //附件简历
+    //TODO 这个好像没用
     private String attachOther; // 其他附件
     private String userId; //用户Id
     private String companyId; //企业Id
     private Byte status; //简历状态
     private Byte type; //简历类型
 
+    @ResumeScore(2)
     private Byte maritalStatus; // 政治面貌
-    private Byte priority;
+    @ResumeScore(1)
+    private Byte priority; //简历优先级
 
     private Integer resumeCompleteProgress; //简历完善进度
 
-    @ResumeScore(4)
-    private List<ResumeEduVo> resumeEduList;
-    @ResumeScore(4)
-    private List<ResumeExpVo> resumeExpList;
-    @ResumeScore(4)
-    private List<ResumePracticeVo> resumePracticeList;
-    @ResumeScore
-    private List<ResumeSkillVo> resumeSkillList;
+    @ResumeScore(15)
+    private List<ResumeEduVo> resumeEduList;//教育信息
+    @ResumeScore(10)
+    private List<ResumeExpVo> resumeExpList; //工作经历
+    @ResumeScore(10)
+    private List<ResumePracticeVo> resumePracticeList; //实践经验/项目/其它经历
+    @ResumeScore(5)
+    private List<ResumeSkillVo> resumeSkillList;//能力标签
 
-    private List<ResumeLinkVo> resumeLinkList;
+    private List<ResumeLinkVo> resumeLinkList;//社交主页
 
-    private List<ResumeMergeAttachVo> resumeMergeAttachList;
-
-    private List<ResumeLanguageVo> resumeLanguageList;
-
-    private List<ResumeCertificateVo> resumeCertificateList;
-
+    @ResumeScore(5)
+    private List<ResumeMergeAttachVo> resumeMergeAttachList;// 其他附件
+    @ResumeScore(5)
+    private List<ResumeLanguageVo> resumeLanguageList;//语言能力
+    @ResumeScore(5)
+    private List<ResumeCertificateVo> resumeCertificateList;//证书/奖项
+    @ResumeScore(15)
     private UserExpectJobVo userExpectJob; //求职意向
 
     //已投递职位总数
