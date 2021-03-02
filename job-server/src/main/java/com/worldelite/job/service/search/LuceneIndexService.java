@@ -190,7 +190,11 @@ public class LuceneIndexService implements IndexService {
             doc.add(new IntPoint(JobIndexFields.CITY_PARENT_INDEX, jobVo.getCity().getParentId()));
             keyWordBuilder.append(jobVo.getCity().getName());
         }
-        // lanRequiredIds TODO 创建索引，数据库中没有这方面的数据
+
+        if (jobVo.getLanguage() != null) {
+            doc.add(new IntPoint(JobIndexFields.LAN_REQUIRED_INDEX, jobVo.getLanguage().getId()));
+            keyWordBuilder.append(jobVo.getLanguage().getName());
+        }
 
         if (jobVo.getTime() != null) {
             doc.add(new LongPoint(JobIndexFields.JOB_PUBLISH_TIME_INDEX, jobVo.getTime().getTime()));

@@ -10,7 +10,7 @@
         <div v-show="A">
           <!-- 所在城市 -->
           <div class="section1-filter">
-            <span class="section1-filter-title">所在城市：</span>
+            <span class="section1-filter-title">工作地点：</span>
             <el-checkbox-group v-model="listQuery.cityIds" size="small">
               <el-checkbox-button
                 v-for="item in cityOptions"
@@ -632,7 +632,7 @@
 </template>
 
 <script>
-import { listByType, listByTypeAll } from "@/api/dict_api";
+import { listByType, listByTypeWithSort, listByTypeAll } from "@/api/dict_api";
 import { searchJob, getCompanyJobList } from "@/api/job_api";
 import Pagination from "@/components/Pagination";
 import { mapGetters } from "vuex";
@@ -866,7 +866,7 @@ export default {
         this.buildInitIds(this.initDegreeIds, this.degreeOptions);
         this.refreshOptions();
       });
-      listByType(13).then((response) => {
+      listByTypeWithSort(13, '+value').then((response) => {
         this.experienceOptions = response.data.list;
         this.buildUnlimitedMap(this.experienceOptions, "exp");
         this.listQuery.experienceIds.push(this.unlimitedMap["exp"]);
@@ -879,18 +879,7 @@ export default {
         this.listQuery.companyDefineIds.push(this.unlimitedMap["define"]);
         this.buildInitIds(this.initDefineIds, this.companyDefineOptions);
       });
-      this.$axios
-        .request({
-          url: "/skill-tag/list",
-          method: "get",
-          params: {
-            type: 163,
-            page: 1,
-            limit: 10,
-            sort: "-value",
-          },
-        })
-        .then((resp) => {
+      listByTypeWithSort(28, '+id').then((resp) => {
           this.lanRequiredOptions = resp.data.list;
           this.buildUnlimitedMap(this.lanRequiredOptions, "lang");
           this.listQuery.lanRequiredIds.push(this.unlimitedMap["lang"]);
