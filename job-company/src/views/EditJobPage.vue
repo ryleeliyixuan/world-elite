@@ -640,7 +640,7 @@
             initData(jobId) {
                 getCategoryTree().then(response => (this.jobCategoryOptions = response.data));
                 listByType(25).then(response => (this.degreeOptions = this.amendOptions(response.data.list)));
-                listByType(8).then(response => (this.jobTypeOptions1 = response.data.list));
+                listByType(8).then(response => (this.jobTypeOptions1 = this.amendjobTypeOptions(response.data.list)));
                 listByType(13).then(response => (this.experienceOptions = response.data.list));
                 listByType(28).then(response => (this.languageOptions = response.data.list));
                 listByType(27).then(response => (this.additionOptions = response.data.list));
@@ -717,6 +717,16 @@
                 let validOptions = [];
                 for (let i = 0; i < options.length; i++) {
                     if (options[i].name !== "高中" && options[i].name !== "专科" && options[i].name !== "MBA" && options[i].name !== "EMBA") {
+                        validOptions.push(options[i]);
+                    }
+                }
+                return validOptions;
+            },
+
+            amendjobTypeOptions(options) {
+                let validOptions = [];
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].name !== "不限") {
                         validOptions.push(options[i]);
                     }
                 }
