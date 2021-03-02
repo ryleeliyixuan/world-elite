@@ -6,9 +6,9 @@
           <div class="session1-left">
             <div
               class="text1 mb-2"
-              v-if="job.companyUser && job.companyUser.company"
+              v-if="job && job.company"
             >
-              {{ job.companyUser.company.name }}招聘
+              {{ job.company.name }}招聘
             </div>
             <div class="session1-job-name mb-2">
               {{ job.name }}
@@ -69,34 +69,34 @@
           <div class="session2-container-right">
             <div
               class="session2-container-right-1"
-              v-if="job.companyUser && job.companyUser.company"
+              v-if="job && job.company"
             >
               <div class="basic-info mb-2">公司基本信息:</div>
               <el-link
-                :href="`/company/${job.companyUser.company.id}`"
+                :href="`/company/${job.company.id}`"
                 :underline="false"
               >
                 <div class="session2-logo-container">
                   <el-image
-                    :src="job.companyUser.company.logo"
+                    :src="job.company.logo"
                     class="session2-logo"
                   ></el-image>
                 </div>
               </el-link>
               <div
-                v-if="job.companyUser.company.industry"
+                v-if="job.company.industry"
                 class="info-text mt-2"
               >
                 <svg-icon
                   icon-class="companycategory"
                   style="height: 19px; width: 19px; margin-right: 9px"
                 />
-                {{ job.companyUser.company.industry.name }}
+                {{ job.company.industry.name }}
               </div>
               <div
                 v-if="
-                  job.companyUser.company.stage &&
-                  job.companyUser.company.property
+                  job.company.stage &&
+                  job.company.property
                 "
                 class="info-text mt-2"
               >
@@ -104,18 +104,18 @@
                   icon-class="companytype"
                   style="height: 19px; width: 19px; margin-right: 9px"
                 />
-                {{ job.companyUser.company.property.name }} |
-                {{ job.companyUser.company.stage.name }}
+                {{ job.company.property.name }} |
+                {{ job.company.stage.name }}
               </div>
-              <div v-if="job.companyUser.company.scale" class="info-text mt-2">
+              <div v-if="job.company.scale" class="info-text mt-2">
                 <svg-icon
                   icon-class="employeedata"
                   style="height: 19px; width: 21px; margin-right: 9px"
                 />
-                {{ job.companyUser.company.scale.name }}
+                {{ job.company.scale.name }}
               </div>
               <div
-                v-if="job.companyUser.company.homepage"
+                v-if="job.company.homepage"
                 class="info-text mt-2"
               >
                 <svg-icon
@@ -134,15 +134,15 @@
             <div
               class="session2-container-right-2"
               v-if="
-                job.companyUser &&
-                job.companyUser.company &&
-                job.companyUser.company.addressList &&
-                job.companyUser.company.addressList.length > 0
+                job &&
+                job.company &&
+                job.company.addressList &&
+                job.company.addressList.length > 0
               "
             >
               <div class="basic-info mb-2">公司地址:</div>
               <div
-                v-for="(addr, index) in job.companyUser.company.addressList"
+                v-for="(addr, index) in job.company.addressList"
                 :key="addr.id"
               >
                 <div class="map-wrapper">
@@ -383,12 +383,12 @@ export default {
   },
   computed: {
     companyLink() {
-      return this.job.companyUser.company.homepage.startsWith("http")
-        ? this.job.companyUser.company.homepage
-        : "http://" + this.job.companyUser.company.homepage;
+      return this.job.company.homepage.startsWith("http")
+        ? this.job.company.homepage
+        : "http://" + this.job.company.homepage;
     },
     companyLinkName() {
-      return this.job.companyUser.company.homepage.replace(/http(s)?:\/\//, "");
+      return this.job.company.homepage.replace(/http(s)?:\/\//, "");
     },
   },
   methods: {
@@ -397,15 +397,15 @@ export default {
       getJobInfo(jobId).then((response) => {
         this.job = response.data;
         const title = `${this.job.name} - ${
-          this.job.companyUser.company ? this.job.companyUser.company.name : ""
+          this.job.company ? this.job.company.name : ""
         }`;
         if (
-          this.job.companyUser &&
-          this.job.companyUser.company &&
-          this.job.companyUser.company.addressList &&
-          this.job.companyUser.company.addressList.length > 0
+          this.job &&
+          this.job.company &&
+          this.job.company.addressList &&
+          this.job.company.addressList.length > 0
         ) {
-          for (const addr of this.job.companyUser.company.addressList) {
+          for (const addr of this.job.company.addressList) {
             addr.mapWindow = {
               position: [addr.longitude, addr.latitude],
               content: addr.address,
