@@ -12,3 +12,16 @@ export function listByType(type){
         } 
       })
 }
+
+export function listByTypeWithSort(type, sort){
+    return request({
+        url: '/dict/list',
+        method: 'get',
+        params: {
+            type: type,
+            page: 1,
+            limit: 500,
+            sort: sort
+        }
+    })
+}

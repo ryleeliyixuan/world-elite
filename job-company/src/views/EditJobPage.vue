@@ -361,6 +361,7 @@
     import Toast from '@/utils/toast'
     import Vue from "vue";
     import VueAMap, {lazyAMapApiLoaderInstance} from "vue-amap";
+    import {listByTypeWithSort} from "@/api/dict_api";
 
     Vue.use(VueAMap);
 
@@ -611,7 +612,7 @@
                 getCategoryTree().then(response => (this.jobCategoryOptions = response.data));
                 listByType(25).then(response => (this.degreeOptions = this.amendOptions(response.data.list)));
                 listByType(8).then(response => (this.jobTypeOptions1 = this.amendjobTypeOptions(response.data.list)));
-                listByType(13).then(response => (this.experienceOptions = response.data.list));
+                listByTypeWithSort(13, '+value').then(response => (this.experienceOptions = response.data.list));
                 listByType(28).then(response => (this.languageOptions = response.data.list));
                 listByType(27).then(response => (this.additionOptions = response.data.list));
 
