@@ -156,37 +156,7 @@
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="职位关键词" prop="keywords" v-if="skillList.length">
-                <div class="keywords-container">
-                    <el-tag v-for="tag in industryList" v-if="tag.selected"
-                            :key="tag.name"
-                            closable
-                            @close="onDeleteTag(tag)">
-                        {{tag.name}}
-                    </el-tag>
-                    <el-tag v-for="tag in skillList" v-if="tag.selected"
-                            :key="tag.name"
-                            closable
-                            @close="onDeleteTag(tag)">
-                        {{tag.name}}
-                    </el-tag>
-                    <el-tag v-for="tag in industryAdditionList" v-if="tag.selected"
-                            :key="tag.name"
-                            closable
-                            @close="onDeleteTag(tag)">
-                        {{tag.name}}
-                    </el-tag>
-                    <el-tag v-for="tag in skillAdditionList" v-if="tag.selected"
-                            :key="tag.name"
-                            closable
-                            @close="onDeleteTag(tag)">
-                        {{tag.name}}
-                    </el-tag>
-                    <span class="position-world" @click="onKeywords">
-                        <i class="el-icon-plus position-icon"></i>
-                    </span>
-                </div>
-            </el-form-item>
+
 
             <el-form-item label="职位描述" prop="description">
                 <quill-editor v-model="jobForm.description"
@@ -387,7 +357,7 @@
     import "quill/dist/quill.snow.css";
     import "quill/dist/quill.bubble.css";
     import {quillEditor} from "vue-quill-editor";
-    import {saveJob} from "../api/job_api";
+    import {opSaveJob, saveJob} from "../api/job_api";
     import Toast from '@/utils/toast'
     import Vue from "vue";
     import VueAMap, {lazyAMapApiLoaderInstance} from "vue-amap";
@@ -743,13 +713,24 @@
                         this.jobForm.additionIds = this.additionOptions.filter(item => this.additionNames.includes(item.name)).map(item => item.id);
                         this.jobForm.recruitType = this.isOP ? 1 : 0;
                         console.log(this.jobForm);
-                        saveJob(this.jobForm).then(() => {
-                            Toast.success(this.isModify ? "保存成功" : "发布成功");
-                            this.$store.commit("setting/JOB_DRAFT", undefined);
-                            this.$router.go(-1);
-                        }).finally(() => {
-                            this.posting = false;
-                        });
+
+                        if(this.isOP){
+                            opSaveJob(this.jobForm).then(() => {
+                                Toast.success(this.isModify ? "保存成功" : "发布成功");
+                                this.$store.commit("setting/JOB_DRAFT", undefined);
+                                this.$router.go(-1);
+                            }).finally(() => {
+                                this.posting = false;
+                            });
+                        }else{
+                            saveJob(this.jobForm).then(() => {
+                                Toast.success(this.isModify ? "保存成功" : "发布成功");
+                                this.$store.commit("setting/JOB_DRAFT", undefined);
+                                this.$router.go(-1);
+                            }).finally(() => {
+                                this.posting = false;
+                            });
+                        }
                     }
                 });
             },

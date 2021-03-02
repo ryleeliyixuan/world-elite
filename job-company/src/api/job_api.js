@@ -16,6 +16,14 @@ export function saveJob(data) {
     })
 }
 
+export function opSaveJob(data) {
+    return request({
+        url: '/job/op-save',
+        method: 'post',
+        data
+    })
+}
+
 export function getManageJobList(data) {
     return request({
         url: '/job/manage-job-list',
