@@ -116,10 +116,10 @@ public class LuceneSearchService implements SearchService {
         if (ArrayUtils.isNotEmpty(searchForm.getExperienceIds())) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getExperienceIds(), JobIndexFields.EXPERIENCE_INDEX), BooleanClause.Occur.MUST);
         }
-        // TODO 为简历skilltag索引
-        /*if (ArrayUtils.isNotEmpty(searchForm.getLanRequiredIds())) {
+
+        if (ArrayUtils.isNotEmpty(searchForm.getLanRequiredIds()) && !useList(searchForm.getLanRequiredIds(), 1040)) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getLanRequiredIds(), JobIndexFields.LAN_REQUIRED_INDEX), BooleanClause.Occur.MUST);
-        }*/
+        }
 
         if (ArrayUtils.isNotEmpty(searchForm.getCompanyIndustryIds()) && !useList(searchForm.getCompanyIndustryIds(), 257)) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getCompanyIndustryIds(), JobIndexFields.COMPANY_INDUSTRY_INDEX), BooleanClause.Occur.MUST);
