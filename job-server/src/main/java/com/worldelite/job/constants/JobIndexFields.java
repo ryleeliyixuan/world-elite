@@ -114,4 +114,9 @@ public interface JobIndexFields {
      * 公司id- 新百科公司下职位搜索时用
      */
     String COMPANY_ID = "company_id";
+
+    /**
+     * 特殊筛选
+     */
+    String ADDITIONS_INDEX = "additions_index";
 }

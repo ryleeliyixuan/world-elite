@@ -202,13 +202,13 @@
           <div class="section1-filter">
             <span id="pointMore" class="section1-filter-title">特殊筛选：</span>
             <el-checkbox-group v-model="listQuery.specialIds" size="small">
-              <!--<el-checkbox-button>
-                  内推
-                </el-checkbox-button>-->
-              <el-checkbox-button> 留学经验优先 </el-checkbox-button>
-              <!--<el-checkbox-button>
-                  线上工作
-                </el-checkbox-button>-->
+              <el-checkbox-button
+                      v-for="item in specialOptions"
+                      :label="item.id"
+                      :key="item.id"
+                      @change="handleFilter(item.id)"
+              >{{ item.name }}</el-checkbox-button
+              >
             </el-checkbox-group>
           </div>
 
@@ -694,6 +694,7 @@ export default {
       initDefineIds: [],
       initCategoryIds: [],
       initLanRequiredIds: [],
+      initSpecialIds: [],
       initScaleIds: [],
 
       loading: false,
@@ -749,6 +750,7 @@ export default {
       experienceOptions: [],
       companyDefineOptions: [],
       lanRequiredOptions: [],
+      specialOptions: [],
       showNoResult: false,
       cityIdProps: {
         multiple: true,
@@ -879,6 +881,14 @@ export default {
         this.listQuery.companyDefineIds.push(this.unlimitedMap["define"]);
         this.buildInitIds(this.initDefineIds, this.companyDefineOptions);
       });
+
+      listByType(27).then(response => {
+        this.specialOptions = response.data.list;
+        this.buildUnlimitedMap(this.specialOptions, "special");
+        this.listQuery.specialIds.push(this.unlimitedMap["special"]);
+        this.buildInitIds(this.initSpecialIds, this.specialOptions);
+      });
+
       listByTypeWithSort(28, '+id').then((resp) => {
           this.lanRequiredOptions = resp.data.list;
           this.buildUnlimitedMap(this.lanRequiredOptions, "lang");
@@ -1106,7 +1116,7 @@ export default {
         options.lanIds.indexOf(null) === -1 ? options.lanIds : [];
       this.listQuery.jobTypes =
         options.jobTypeIds.indexOf(null) === -1 ? options.jobTypeIds : [];
-      // this.listQuery.specialIds = options.specialIds.indexOf(null) === -1 ? options.specialIds : [];
+      this.listQuery.specialIds = options.specialIds.indexOf(null) === -1 ? options.specialIds : [];
 
       this.listQuery.page = 1;
       this.refreshInpCity(options);
@@ -1276,6 +1286,11 @@ export default {
       }
       if (
         this.listQuery.lanRequiredIds.indexOf(this.unlimitedMap["lang"]) !== -1
+      ) {
+        count++;
+      }
+      if (
+        this.listQuery.specialIds.indexOf(this.unlimitedMap["special"]) !== -1
       ) {
         count++;
       }
@@ -1482,6 +1497,23 @@ export default {
         this.removeElByValue(
           this.listQuery.lanRequiredIds,
           this.unlimitedMap["lang"]
+        );
+      }
+
+      if (id === this.unlimitedMap["special"]) {
+        this.listQuery.specialIds = [this.unlimitedMap["special"]];
+      }
+      if (
+              this.refreshChecked(
+                      this.listQuery.specialIds,
+                      "special",
+                      id,
+                      this.initSpecialIds
+              )
+      ) {
+        this.removeElByValue(
+                this.listQuery.specialIds,
+                this.unlimitedMap["special"]
         );
       }
     },
