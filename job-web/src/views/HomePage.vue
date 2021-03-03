@@ -147,6 +147,7 @@
           class="job-card"
           v-for="recommendJob in recommendJobList.slice(0, 3)"
           :key="recommendJob.id"
+          v-if="recommendJob.object"
         >
           <el-link :href="`/job/${recommendJob.object.id}`" :underline="false">
             <div class="job-section1">
@@ -253,6 +254,7 @@
           class="job-card"
           v-for="recommendJob in recommendJobList.slice(3, 6)"
           :key="recommendJob.id"
+          v-if="recommendJob.object"
         >
           <el-link :href="`/job/${recommendJob.object.id}`" :underline="false">
             <div class="job-section1">
@@ -371,6 +373,7 @@
           class="company-card"
           v-for="company in recommendCompanyList"
           :key="company.id"
+          v-if="company.object && company.object.stage && company.object.property && company.object.scale && company.object.industry"
         >
           <el-link :href="`/company/${company.object.id}`" :underline="false">
             <div class="company-section1">
@@ -437,7 +440,7 @@
         class="company-container"
         v-if="recentJobList && recentJobList.length > 0"
       >
-        <div class="company-card" v-for="item in recentJobList" :key="item.id">
+        <div class="company-card" v-for="item in recentJobList" :key="item.id" v-if="item.stage && item.property && item.scale && item.industry">
           <el-link :href="`/company/${item.id}`" :underline="false">
             <div class="company-section1">
               <div class="company-name">{{ item.name }}</div>
@@ -566,15 +569,13 @@ import { mapGetters } from "vuex";
 export default {
   name: "HomePage",
   computed: {
+    ...mapGetters(["token"]),
     filteredActivityList: function () {
       return this.activitylist.slice(0, 2);
     },
   },
   created() {
     this.initData();
-  },
-  computed: {
-    ...mapGetters(["token"]),
   },
   data() {
     return {
