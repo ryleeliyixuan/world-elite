@@ -1,6 +1,6 @@
 package com.worldelite.job.service.search;
 
-import com.worldelite.job.constants.ActivityIndexFields;
+import cn.hutool.core.util.StrUtil;
 import com.worldelite.job.constants.JobIndexFields;
 import com.worldelite.job.constants.ResumeAttachmentIndexFields;
 import com.worldelite.job.constants.ResumeIndexFields;
@@ -119,6 +119,14 @@ public class LuceneSearchService implements SearchService {
 
         if (ArrayUtils.isNotEmpty(searchForm.getLanRequiredIds()) && !useList(searchForm.getLanRequiredIds(), 1040)) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getLanRequiredIds(), JobIndexFields.LAN_REQUIRED_INDEX), BooleanClause.Occur.MUST);
+        }
+
+        if (ArrayUtils.isNotEmpty(searchForm.getSpecialIds())) {
+            BooleanQuery.Builder query = new BooleanQuery.Builder();
+            for (Integer specialId : searchForm.getSpecialIds()) {
+                query.add(new WildcardQuery(new Term(JobIndexFields.ADDITIONS_INDEX, "*" + specialId + StrUtil.COLON + "*")), BooleanClause.Occur.SHOULD);
+            }
+            queryBuilder.add(query.build(), BooleanClause.Occur.MUST);
         }
 
         if (ArrayUtils.isNotEmpty(searchForm.getCompanyIndustryIds()) && !useList(searchForm.getCompanyIndustryIds(), 257)) {

@@ -1,5 +1,6 @@
 package com.worldelite.job.service.search;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.worldelite.job.constants.JobIndexFields;
 import com.worldelite.job.constants.JobStatus;
@@ -194,6 +195,12 @@ public class LuceneIndexService implements IndexService {
         if (jobVo.getLanguage() != null) {
             doc.add(new IntPoint(JobIndexFields.LAN_REQUIRED_INDEX, jobVo.getLanguage().getId()));
             keyWordBuilder.append(jobVo.getLanguage().getName());
+        }
+
+        if (jobVo.getAdditions() != null && jobVo.getAdditions().size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            jobVo.getAdditions().forEach(dictVo -> sb.append(dictVo.getId()).append(StrUtil.COLON));
+            doc.add(new StringField(JobIndexFields.ADDITIONS_INDEX, sb.toString(), Field.Store.YES));
         }
 
         if (jobVo.getTime() != null) {
