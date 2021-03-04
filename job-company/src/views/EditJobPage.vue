@@ -712,7 +712,7 @@
                         this.jobForm.industryTags = this.industryList.filter(item => item.selected).map(item => item.name);
                         this.jobForm.skillTags = this.skillList.filter(item => item.selected).map(item => item.name);
                         this.jobForm.additionIds = this.additionOptions.filter(item => this.additionNames.includes(item.name)).map(item => item.id);
-                        this.jobForm.recruitType = this.isOP ? 1 : 0;
+                        this.jobForm.recruitType = this.isOP ? 172 : 0;
                         console.log(this.jobForm);
 
                         if(this.isOP){

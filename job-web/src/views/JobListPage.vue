@@ -535,7 +535,7 @@
             <div class="section3-line1">
               <h6 class="section3-job-name">{{ job.name }}</h6>
               <!-- 内推 -->
-              <div v-if="job.recruitType === 154" class="recruit-type">
+              <div v-if="job.recruitType === 172" class="recruit-type">
                 <svg-icon
                   icon-class="job-fast-track"
                   style="height: 33px; width: 105px"
