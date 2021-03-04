@@ -173,7 +173,7 @@ export default {
         })
         .finally(() => {
           this.sendingValidCode = false;
-          this.refreshCaptcha(); //刷新图片验证码
+          // this.refreshCaptcha(); //刷新图片验证码
         });
     },
     onLogin() {
