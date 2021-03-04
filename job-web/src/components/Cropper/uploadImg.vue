@@ -177,7 +177,6 @@ export default {
     line-height: 2px;
     text-align: center;
     border-color: #ffffff;
-    margin-left: 5px;
   }
 }
 </style>
