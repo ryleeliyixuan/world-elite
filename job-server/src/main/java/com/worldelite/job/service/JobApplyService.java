@@ -16,7 +16,10 @@ import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.resume.ResumeService;
 import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.util.AppUtils;
-import com.worldelite.job.vo.*;
+import com.worldelite.job.vo.ApiCode;
+import com.worldelite.job.vo.ApplyResumeVo;
+import com.worldelite.job.vo.JobVo;
+import com.worldelite.job.vo.PageResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +31,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class JobApplyService extends BaseService{
+public class JobApplyService extends BaseService {
 
     @Autowired
     private JobApplyMapper jobApplyMapper;
@@ -65,16 +68,17 @@ public class JobApplyService extends BaseService{
 
     /**
      * 申请职位
+     *
      * @param resumeId 简历ID
-     * @param jobId 职位ID
+     * @param jobId    职位ID
      */
-    public JobApply applyJob(Long resumeId,Long jobId,Byte status) {
+    public JobApply applyJob(Long resumeId, Long jobId, Byte status) {
         //如果简历ID不存在，则使用当前登录用户默认简历
-        if(resumeId==null){
+        if (resumeId == null) {
             ResumeService resumeService = ResumeServiceFactory.getDefaultService();
             ResumeDetail resumeDetail = resumeService.getDefaultOrCreate();
             //默认简历也不存在，则判定为数据异常
-            if(resumeDetail==null){
+            if (resumeDetail == null) {
                 throw new ServiceException(message("job.apply.no.resume"), ApiCode.UNCOMPLETE_RESUME);
             }
             resumeId = resumeDetail.getResumeId();
@@ -88,7 +92,7 @@ public class JobApplyService extends BaseService{
         JobApply newJobApply = new JobApply();
         newJobApply.setJobId(jobId);
         newJobApply.setUserId(curUser().getId());
-        if(status==null){
+        if (status == null) {
             status = JobApplyStatus.APPLY.value;
         }
         newJobApply.setStatus(status);
@@ -102,7 +106,7 @@ public class JobApplyService extends BaseService{
         message.setToUser(job.getCreatorId());
         message.setContent(message("message.job.apply", job.getName()));
         message.setUrl(String.format("/manage-resume?jobIds=%s", job.getId()));
-        message.setMsgType((byte)1);
+        message.setMsgType((byte) 1);
         messageService.sendMessage(message);
         return newJobApply;
     }
@@ -142,7 +146,10 @@ public class JobApplyService extends BaseService{
             ResumeService resumeService = ResumeServiceFactory.getDefaultService();
             Resume resume = resumeService.getResumeBasic(jobApply.getResumeId());
             //一份职位申请，如果对应简历不存在，判定为数据异常
-            if(resume==null) throw new ServiceException(message("api.error.data.resume"));
+            if (resume == null) {
+                log.warn("用户[{}]的简历[{}]不存在", jobApply.getUserId(), jobApply.getResumeId());
+                continue;
+            }
             //根据简历类型获取简历详情
             resumeService = ResumeServiceFactory.getResumeService(resume.getType());
             ResumeDetail resumeDetail = resumeService.getResumeDetail(resume.getId());
@@ -158,6 +165,7 @@ public class JobApplyService extends BaseService{
 
     /**
      * 处理简历
+     *
      * @param applyResumeForm
      */
     public void handleApplyResume(JobApplyForm applyResumeForm) {
@@ -173,17 +181,17 @@ public class JobApplyService extends BaseService{
 
         JobVo job = jobService.getJobInfo(jobApply.getJobId(), true);
         Long creatorId = Long.valueOf(job.getCreatorId());
-        if (!job.getId().equals("0")&&!creatorId.equals(curUser().getId())) {
+        if (!job.getId().equals("0") && !creatorId.equals(curUser().getId())) {
             throw new ServiceException(ApiCode.PERMISSION_DENIED);
         }
         //只有未查看状态才能变换到查看状态
-        if(applyResumeForm.getStatus()==JobApplyStatus.VIEW.value && jobApply.getStatus()!=JobApplyStatus.APPLY.value){
+        if (applyResumeForm.getStatus() == JobApplyStatus.VIEW.value && jobApply.getStatus() != JobApplyStatus.APPLY.value) {
             return;
         }
         jobApply.setStatus(applyResumeForm.getStatus());
         jobApplyMapper.updateByPrimaryKeySelective(jobApply);
 
-        if(applyResumeForm.getStatus() == JobApplyStatus.VIEW.value){
+        if (applyResumeForm.getStatus() == JobApplyStatus.VIEW.value) {
             return;
         }
 
@@ -191,9 +199,9 @@ public class JobApplyService extends BaseService{
         ResumeService resumeService = ResumeServiceFactory.getResumeService(resume.getType());
         ResumeDetail resumeDetail = resumeService.getResumeDetail(resume.getId());
         String jobPlaceholder = "";
-        if(job.getId().equals("0")){
+        if (job.getId().equals("0")) {
             return;
-        }else {
+        } else {
             jobPlaceholder = String.format("%s.%s", job.getCompanyUser().getCompany().getName(), job.getName());
         }
         EmailForm emailForm = null;
@@ -202,29 +210,29 @@ public class JobApplyService extends BaseService{
         if (applyResumeForm.getStatus() == JobApplyStatus.CANDIDATE.value) {
             emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_CANDIDATE);
             messageContent = message("message.apply.candidate", jobPlaceholder);
-            msgType = (byte)1;
+            msgType = (byte) 1;
         } else if (applyResumeForm.getStatus() == JobApplyStatus.INTERVIEW.value) {
             emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_INTERVIEW);
             messageContent = message("message.apply.interview", jobPlaceholder);
-            msgType = (byte)1;
+            msgType = (byte) 1;
         } else if (applyResumeForm.getStatus() == JobApplyStatus.OFFER.value) {
             emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_OFFER);
             messageContent = message("message.apply.offer", jobPlaceholder);
-            msgType = (byte)1;
+            msgType = (byte) 1;
         } else if (applyResumeForm.getStatus() == JobApplyStatus.ABANDON.value) {
             emailForm = configService.getEmailForm(ConfigType.EMAIL_JOB_APPLY_ABANDON);
             messageContent = message("message.apply.abandon", jobPlaceholder);
-            msgType = (byte)0;
+            msgType = (byte) 0;
         }
 
         if (emailForm != null) {
-            final String emailBody = emailForm.getEmailBody().replace("${JOB}", jobPlaceholder).replace("${DETAIL_URL}", AppUtils.wholeWebUrl("/apply-jobs" ));
+            final String emailBody = emailForm.getEmailBody().replace("${JOB}", jobPlaceholder).replace("${DETAIL_URL}", AppUtils.wholeWebUrl("/apply-jobs"));
             emailForm.setEmailBody(emailBody);
             emailForm.setAddress(resumeDetail.getEmail());
             emailService.sendEmail(emailForm);
         }
 
-        if(messageContent != null){
+        if (messageContent != null) {
             Message message = new Message();
             message.setFromUser(curUser().getId());
             message.setToUser(resume.getUserId());
