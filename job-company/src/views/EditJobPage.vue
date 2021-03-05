@@ -93,6 +93,8 @@
                              filterable
                              clearable
                              v-model="jobForm.cityId"
+                             ref="cityCascader"
+                             @change="getLocation"
                              :disabled="isModify">
                 </el-cascader>
             </el-form-item>
@@ -1040,6 +1042,22 @@
                         }
                     }
                 })
+            },
+
+            getLocation(){
+                let e = this.$refs['cityCascader'].getCheckedNodes()[0].pathLabels;
+                if(e.length > 1){
+                    let addr = e.join("");
+
+                    let geocoder = new AMap.Geocoder({});
+                    geocoder.getLocation(addr, (status, result) => {
+                        if (status === "complete" && result.geocodes.length) {
+
+                            let lnglat = result.geocodes[0].location;
+                            this.poiMapMarker.position = [lnglat.lng, lnglat.lat];
+                        }
+                    });
+                }
             }
         }
     };
