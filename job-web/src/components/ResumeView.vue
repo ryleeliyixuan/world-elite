@@ -88,7 +88,7 @@
             </div>
         </div>
         <div v-if="resumeDetail.resumeLanguageList" class="session">
-            <el-row class="title point">项目/其它经历</el-row>
+            <el-row class="title point">语言能力</el-row>
             <div class="content" v-for="(language,index) in resumeDetail.resumeLanguageList" :key="language.id">
                 <el-row>
                     <el-col :span="12"><span class="key">语种{{index+1}}：</span><span class="value">{{language.title}}</span></el-col>
@@ -98,7 +98,7 @@
         </div>
         <div v-if="resumeDetail.resumeCertificateList" class="session">
             <el-row class="title point">证书/奖项</el-row>
-            <div class="content" v-for="awards in resumeDetail.resumeLanguageList" :key="awards.id">
+            <div class="content" v-for="awards in resumeDetail.resumeCertificateList" :key="awards.id">
                 <el-row>
                     <el-col :span="12"><span class="key">证书/奖项名称：</span><span class="value">{{awards.title}}</span></el-col>
                     <el-col :span="12"><span class="key">获得时间：</span><span class="value">{{awards.time}}</span></el-col>
