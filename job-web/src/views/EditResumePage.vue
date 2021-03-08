@@ -693,7 +693,7 @@
                     </div>
                   </div>
                   <div class="entry-line">
-                    <div class="entry">
+                    <div>
                       <span class="bold small" style="width: 100%"
                         >工作描述：</span
                       ><span class="light" v-if="resumeExp.description">
