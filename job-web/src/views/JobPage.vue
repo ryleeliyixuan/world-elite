@@ -4,16 +4,13 @@
       <el-card :body-style="{ padding: '0px' }" shadow="never">
         <div class="session1-container" v-if="job">
           <div class="session1-left">
-            <div
-              class="text1 mb-2"
-              v-if="job && job.company"
-            >
+            <div class="text1 mb-2" v-if="job && job.company">
               {{ job.company.name }}招聘
             </div>
             <div class="session1-job-name mb-2">
               {{ job.name }}
               <span class="salary-text ml-4">
-               {{ job.minSalary+'K-'+job.maxSalary+'K' }}
+                {{ job.minSalary + "K-" + job.maxSalary + "K" }}
               </span>
             </div>
             <div class="text3 mb-2">
@@ -67,15 +64,9 @@
           </div>
           <div class="divider"></div>
           <div class="session2-container-right">
-            <div
-              class="session2-container-right-1"
-              v-if="job && job.company"
-            >
+            <div class="session2-container-right-1" v-if="job && job.company">
               <div class="basic-info mb-2">公司基本信息:</div>
-              <el-link
-                :href="`/company/${job.company.id}`"
-                :underline="false"
-              >
+              <el-link :href="`/company/${job.company.id}`" :underline="false">
                 <div class="session2-logo-container">
                   <el-image
                     :src="job.company.logo"
@@ -83,10 +74,7 @@
                   ></el-image>
                 </div>
               </el-link>
-              <div
-                v-if="job.company.industry"
-                class="info-text mt-2"
-              >
+              <div v-if="job.company.industry" class="info-text mt-2">
                 <svg-icon
                   icon-class="companycategory"
                   style="height: 19px; width: 19px; margin-right: 9px"
@@ -94,10 +82,7 @@
                 {{ job.company.industry.name }}
               </div>
               <div
-                v-if="
-                  job.company.stage &&
-                  job.company.property
-                "
+                v-if="job.company.stage && job.company.property"
                 class="info-text mt-2"
               >
                 <svg-icon
@@ -114,10 +99,7 @@
                 />
                 {{ job.company.scale.name }}
               </div>
-              <div
-                v-if="job.company.homepage"
-                class="info-text mt-2"
-              >
+              <div v-if="job.company.homepage" class="info-text mt-2">
                 <svg-icon
                   icon-class="website"
                   style="height: 17px; width: 21px; margin-right: 12px"
@@ -263,8 +245,9 @@
               "
               v-model="checked"
               :label="scope.row.id"
-              :disabled="Object.keys(scope.row.userExpectJob).length === 0"
-            ></el-radio>
+              :disabled="scope.row.incompleted"
+            >
+            </el-radio>
           </template>
         </el-table-column>
         <el-table-column prop="title" label="简历名称" width="180">
@@ -274,6 +257,18 @@
                 ? scope.row.title
                 : "未命名简历"
             }}</span>
+            <el-tooltip
+              v-if="scope.row.incompleted"
+              effect="dark"
+              content="必填项未完成无法投递"
+              placement="right"
+            >
+              <svg-icon
+                class="ml-1"
+                style="vertical-align: middle; font-size: 12px; margin-top: 4px;"
+                icon-class="help-mark"
+              ></svg-icon>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column
@@ -475,7 +470,26 @@ export default {
     getResumeInfo() {
       this.resumeListLoading = true;
       getResumeInfo()
-        .then((response) => (this.resume = response.data))
+        .then((response) => {
+          this.resume = response.data;
+          // 判断简历是否完整
+          this.resume.forEach((item) => {
+            if (
+              item.userExpectJob &&
+              item.userExpectJob.category &&
+              item.resumeEduList &&
+              item.name != "" &&
+              item.birth &&
+              item.birth != "" &&
+              item.email &&
+              item.email != ""
+            ) {
+              item.incompleted = false;
+            } else {
+              item.incompleted = true;
+            }
+          });
+        })
         .finally(() => {
           this.resumeListLoading = false;
         });

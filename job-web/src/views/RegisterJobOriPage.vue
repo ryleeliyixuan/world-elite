@@ -89,7 +89,7 @@
 </template>
 <script>
 import { saveUserExpectJob, getMyInfo } from "@/api/user_api";
-import { getResumeInfo, addResume } from "@/api/resume_api";
+import { getResumeInfo, saveResumeBasic } from "@/api/resume_api";
 import { listByType } from "@/api/dict_api";
 import Toast from "@/utils/toast";
 
@@ -149,6 +149,7 @@ export default {
   },
   methods: {
     initData() {
+      console.log("[[[[[", this.$store.state.user.userId);
       this.loading = true;
       listByType(6).then(
         (response) => (this.industryOptions = response.data.list)
@@ -217,14 +218,23 @@ export default {
           });
           this.salaryIds = salaryList;
         } else {
-          addResume().then((response) => {
-            this.form.resumeId = response.data.id;
-          });
+          saveResumeBasic({
+            userId: this.$store.state.user.userId,
+            title: "简历1",
+          })
+            .then(() => {
+            })
+            .finally(() => {
+              this.$message({
+                message: "成功创建简历",
+                type: "success",
+              });
+            });
         }
       });
     },
     onSubmitForm() {
-      this.loading = true; 
+      this.loading = true;
       if (this.form.expectCity && this.form.expectCity.length > 0) {
         let temp = this.form.expectCity.toString();
         this.form.expectCity = temp;

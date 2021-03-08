@@ -28,9 +28,38 @@
             >
           </div>
           <div class="small bold mt-2 d-flex justify-content-between">
-            <span>简历名称：{{ curResume.title }}</span>
+            <div>
+              <span
+                >简历名称：
+                <span v-show="!showEditTitle">{{ curResume.title }}</span>
+                <svg-icon
+                  v-if="!showEditTitle"
+                  class="svg-cls"
+                  icon-class="edit"
+                  style="
+                    width: 18px;
+                    height: 19px;
+                    margin-left: 5px;
+                    margin-right: 50px;
+                  "
+                  @click="
+                    (showEditTitle = true), (resumeTitle = curResume.title)
+                  "
+                ></svg-icon>
+                <el-input
+                  size="mini"
+                  style="width: 90px"
+                  v-else
+                  v-model="resumeTitle"
+                  placeholder="请输入简历名称"
+                  @keyup.enter.native="saveResumeTitle()"
+                  @blur="showEditTitle = false"
+                ></el-input>
+              </span>
+            </div>
             <span>更新时间：{{ curResume.updateTime }}</span>
-            <span>
+            <!-- 隐藏优先级 -->
+            <!-- <span>
               <el-tooltip placement="top" width="200" effect="dark">
                 <div slot="content">
                   HR在搜索简历时只会搜索到最符合搜索条件的那一版简历。<br />但是当你有多版简历同等程度满足HR搜索条件时，<br />优先级更高的简历会出现在HR面前。<br />注：在简历名称处拖拽简历顺序也可调整优先级。
@@ -58,7 +87,7 @@
                   :key="dict.value"
                 />
               </el-select>
-            </span>
+            </span> -->
           </div>
           <!-- 基本信息 -->
           <div class="resume-module mt-4">
@@ -94,13 +123,15 @@
                   <div class="entry">
                     <span class="bold small">性别：</span
                     ><span v-if="curResume.gender" class="light">{{
-                      curResume.gender === "1" ? "男" : "女"
+                      curResume.gender == 1 ? "男" : "女"
                     }}</span>
                   </div>
                   <div class="entry">
                     <span class="bold small">政治面貌：</span
                     ><span v-if="curResume.maritalStatusName" class="light">{{
-                      curResume.maritalStatusName
+                      curResume.maritalStatusName == "未选择"
+                        ? ""
+                        : curResume.maritalStatusName
                     }}</span>
                   </div>
                 </div>
@@ -693,9 +724,8 @@
                     </div>
                   </div>
                   <div class="entry-line">
-                    <div>
-                      <span class="bold small" style="width: 100%"
-                        >工作描述：</span
+                    <div class="entry" style="width: 100%">
+                      <span class="bold small">工作描述：</span
                       ><span class="light" v-if="resumeExp.description">
                         {{ resumeExp.description }}
                       </span>
@@ -1287,6 +1317,7 @@
                 maxlength="6"
                 class="m-input-text-width mt-2"
                 style="width: 190px; padding-left: 5px"
+                @keyup.enter.native="addNewSkillTag()"
               >
               </el-input>
               <svg-icon
@@ -1411,7 +1442,7 @@
           :on-success="handleUploadAttachSuccess"
           :before-upload="beforeAttachUpload"
         >
-          <el-button class="upload-btn">
+          <el-button class="upload-btn" v-loading="uploadAttachLoading">
             <svg-icon
               class="svg-cls"
               icon-class="upload"
@@ -1434,17 +1465,28 @@
                   style="width: 14px; height: 18px; vertical-align: sub"
                 ></svg-icon>
               </span>
-              <span
-                class="small bold"
-                >{{ others.name }}</span
-              >
+              <el-input
+                v-if="
+                  showEditOtherTitle == true &&
+                  showEditOtherTitleIndex === index
+                "
+                size="mini"
+                style="width: 125px"
+                v-model="otherTitle"
+                placeholder="请输入附件名称"
+                @keyup.enter.native="saveOtherTitle(index)"
+                @blur="showEditOtherTitle = false"
+              ></el-input>
+              <span v-else class="small bold">{{ others.name }}</span>
             </span>
             <span>
-              <!-- <svg-icon
+              <svg-icon
                 icon-class="resumeOther-edit"
                 style="width: 18px; height: 18px"
-                @click="handleEditAttachOthers(index)"
-              ></svg-icon> -->
+                @click="
+                  (showEditOtherTitleIndex = index), (showEditOtherTitle = true)
+                "
+              ></svg-icon>
               <svg-icon
                 icon-class="resumeOther-del"
                 style="width: 18px; height: 20px"
@@ -1468,7 +1510,7 @@
           :before-upload="beforeAttachUpload"
           :file-list="fileList"
         >
-          <el-button class="upload-btn">
+          <el-button class="upload-btn" v-loading="uploadOtherAttachLoading">
             <svg-icon
               class="svg-cls"
               icon-class="upload"
@@ -1570,7 +1612,6 @@ import Toast from "@/utils/toast";
 import { checkPicSize, checkAttachmentSize } from "@/utils/common";
 import { exportResumeToPdf } from "@/api/export_api";
 import ResumeView from "@/components/ResumeView";
-import { addResume } from "../api/resume_api";
 import UploadImg from "@/components/Cropper/uploadImg";
 
 export default {
@@ -1581,6 +1622,8 @@ export default {
   },
   data() {
     return {
+      uploadAttachLoading: false, // 简历上传加载
+      uploadOtherAttachLoading: false, // 简历上传加载
       getResumePageList: false, // 是否获取简历列表
       resumeIncompleted: true, // 简历完整性
       resumePageList: [], // 简历列表
@@ -1589,6 +1632,9 @@ export default {
       resumeId: undefined, // 现处简历的id
       curResume: {}, // 现处简历
       userId: undefined, // 用户id
+      resumeTitle: "", // 编辑简历名称
+      otherTitle: "", // 编辑其他附件名称
+      showEditOtherTitleIndex: -1, // 编辑其他附件index
 
       salaryNameList: "", // 薪水id转化为名字列表
       salaryOptions: [], // 获取salaryOptions
@@ -1665,6 +1711,7 @@ export default {
       newSkillTag: "",
 
       // 编辑框
+      showEditOtherTitle: false, // 其他附件名称
       showEditBasic: false,
       showEditEdu: false,
       showEditJobOri: false,
@@ -1674,6 +1721,7 @@ export default {
       showEditHonor: false,
       showEditSkillTag: false,
       showEditSelfIntro: false,
+      showEditTitle: false,
       // 取消对话框
       cancelAttachDialogVisible: false,
       delAttachItemName: "",
@@ -2047,6 +2095,21 @@ export default {
           this.getResumePageList = true;
         });
     },
+    // 编辑简历名称
+    saveResumeTitle() {
+      saveResumeBasic({ id: this.resumeId, title: this.resumeTitle })
+        .then(() => {
+          this.getResumeInfo(this.activeTabIndex);
+        })
+        .finally(() => {
+          this.showEditTitle = false;
+          this.$message({
+            message: "操作成功",
+            type: "success",
+          });
+        });
+    },
+    // 编辑必填项目
     editRequiredField() {
       if (
         !(this.curResume.userExpectJob && this.curResume.userExpectJob.category)
@@ -2137,6 +2200,9 @@ export default {
     },
     // 编辑工作教育经历，给表单赋值
     handleEditEdu(resumeEdu) {
+      if (!resumeEdu) {
+        return;
+      }
       this.resumeEduForm.id = resumeEdu.id;
       this.resumeEduForm.schoolName = resumeEdu.schoolName;
       this.resumeEduForm.majorName = resumeEdu.majorName;
@@ -2190,8 +2256,13 @@ export default {
       }
       this.$refs["resumeEduForm"].validate((valid) => {
         if (valid) {
-          this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
-          this.resumeEduForm.finishTime = this.resumeEduForm.workingDates[1];
+          if (this.schoolCheck == true) {
+            this.resumeEduForm.startTime = this.curResume.updateTime;
+            this.resumeEduForm.finishTime = this.curResume.updateTime;
+          } else {
+            this.resumeEduForm.startTime = this.resumeEduForm.workingDates[0];
+            this.resumeEduForm.finishTime = this.resumeEduForm.workingDates[1];
+          }
           this.resumeEduForm.resumeId = this.resumeId;
           saveResumeEdu(this.resumeEduForm)
             .then(() => {
@@ -2228,7 +2299,7 @@ export default {
     },
     // 保存求职意向
     saveUserExpectJob() {
-      this.$refs["expectJobForm"]((valid) => {
+      this.$refs["expectJobForm"].validate((valid) => {
         if (valid) {
           this.expectJobForm.resumeId = this.resumeId;
           if (
@@ -2475,6 +2546,10 @@ export default {
         item: { name: this.newSkillTag },
         select: true,
       });
+      this.skillTagList.push({
+        item: { name: this.newSkillTag },
+        selected: true,
+      });
       this.newSkillTag = "";
     },
 
@@ -2603,7 +2678,7 @@ export default {
         if (checkAttachmentSize(file)) {
           reject();
         } else {
-          console.log("file", file);
+          // console.log("file", file);
           getUploadAttachmentToken(file.name)
             .then((response) => {
               const { data } = response;
@@ -2622,6 +2697,7 @@ export default {
     // 上传附件
     handleUploadAttachSuccess() {
       // console.log("-------", this.$refs);
+      this.uploadAttachLoading = true;
       saveResumeBasic({
         userId: this.userId,
         id: this.resumeId,
@@ -2631,20 +2707,27 @@ export default {
           this.getResumeInfo(this.activeTabIndex);
         })
         .finally(() => {
-          this.$refs['upload'].clearFiles();
+          this.$refs["upload"].clearFiles();
           this.$message({
             message: "操作成功",
             type: "success",
           });
+          this.uploadAttachLoading = false;
         });
     },
     // 上传其他附件
     handleUploadAttachOthersSuccess() {
-      let data = Array.from(this.curResume.resumeMergeAttachList).map(
-        (item) => {
+      this.uploadOtherAttachLoading = true;
+      let data = [];
+      if (
+        this.curResume.resumeMergeAttachList &&
+        this.curResume.resumeMergeAttachList.length > 0
+      ) {
+        data = Array.from(this.curResume.resumeMergeAttachList).map((item) => {
           return { link: item.resumeAttach, name: item.name };
-        }
-      );
+        });
+      }
+
       data.push({
         link: this.uploadAttachmentOptions.fileUrl,
         name: this.uploadAttachmentOptions.fileName,
@@ -2658,11 +2741,12 @@ export default {
           this.getResumeInfo(this.activeTabIndex);
         })
         .finally(() => {
-          this.$refs['upload'].clearFiles();
+          this.$refs["upload"].clearFiles();
           this.$message({
             message: "操作成功",
             type: "success",
           });
+          this.uploadOtherAttachLoading = false;
         });
     },
     // 删除其他附件
@@ -2690,8 +2774,28 @@ export default {
           });
         });
     },
-    // 编辑附件
-    handleEditAttachOthers() {
+    // 编辑其他附件名称
+    handleEditOtherTitle() {},
+    // 保存其他附件名称
+    saveOtherTitle(index) {
+      let data = this.curResume.resumeMergeAttachList;
+      data[index].name = this.otherTitle;
+
+      saveResumeBasic({
+        userId: this.userId,
+        id: this.resumeId,
+        attachOthers: data,
+      })
+        .then(() => {
+          this.getResumeInfo(this.activeTabIndex);
+        })
+        .finally(() => {
+          this.$refs["upload"].clearFiles();
+          this.$message({
+            message: "操作成功",
+            type: "success",
+          });
+        });
     },
   },
 };
@@ -2823,6 +2927,7 @@ export default {
         .entry-line {
           display: flex;
           justify-content: space-between;
+          width: 100%;
           .entry {
             width: 50%;
           }
@@ -2933,95 +3038,6 @@ export default {
           border-color: #4cc9f0;
           border-radius: 5px;
           line-height: 10px;
-        }
-
-        .m-input-text-width {
-          font-size: 12px;
-          font-family: PingFangSC-Medium, PingFang SC;
-          font-weight: 500;
-          color: #333333;
-          ::v-deep.el-form-item__error {
-            color: #f56c6c;
-            font-size: 12px;
-            line-height: 0px;
-            padding-top: 4px;
-            position: absolute;
-            top: 90%;
-            left: 0;
-          }
-
-          .ej-btn {
-            width: 75px;
-            height: 23px;
-            border-radius: 12px;
-            border: 1px solid #4895ef;
-            font-size: 12px;
-            font-family: PingFangSC-Medium, PingFang SC;
-            font-weight: 500;
-            color: #4895ef;
-            line-height: 1px;
-          }
-
-          ::v-deep .el-date-editor .el-range-separator {
-            padding: 0 5px;
-            line-height: 14px;
-            width: 5%;
-            color: #303133;
-          }
-
-          ::v-deep .el-input__icon {
-            height: 100%;
-            width: 25px;
-            text-align: center;
-            -webkit-transition: all 0.3s;
-            transition: all 0.3s;
-            line-height: unset;
-            color: #4895ef;
-          }
-
-          ::v-deep .el-input {
-            position: relative;
-            font-size: 14px;
-            display: inline-block;
-            width: 173px;
-          }
-
-          ::v-deep .el-input__inner {
-            width: 173px;
-            height: 23px;
-            background: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #ccdbf5;
-            font-size: 11px;
-            font-family: PingFangSC-Regular, PingFang SC;
-            font-weight: 400;
-            color: #999999;
-          }
-
-          ::v-deep .el-form-item__label {
-            width: 80px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #333333;
-            line-height: 36px;
-            /*padding: 0 0px 0 0;*/
-          }
-
-          ::v-deep.el-date-editor .el-range-input,
-          .el-date-editor .el-range-separator {
-            height: 100%;
-            width: 70px;
-            margin: 0;
-            text-align: center;
-            display: inline-block;
-            font-size: 11px;
-          }
-
-          ::v-deep.el-form-item__content {
-            line-height: 40px;
-            position: relative;
-            font-size: 11px;
-          }
         }
 
         .m1-input-text-width {
@@ -3389,6 +3405,95 @@ export default {
 
   .bold {
     font-weight: 500;
+  }
+
+  .m-input-text-width {
+    font-size: 12px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    ::v-deep.el-form-item__error {
+      color: #f56c6c;
+      font-size: 12px;
+      line-height: 0px;
+      padding-top: 4px;
+      position: absolute;
+      top: 90%;
+      left: 0;
+    }
+
+    .ej-btn {
+      width: 75px;
+      height: 23px;
+      border-radius: 12px;
+      border: 1px solid #4895ef;
+      font-size: 12px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #4895ef;
+      line-height: 1px;
+    }
+
+    ::v-deep .el-date-editor .el-range-separator {
+      padding: 0 5px;
+      line-height: 14px;
+      width: 5%;
+      color: #303133;
+    }
+
+    ::v-deep .el-input__icon {
+      height: 100%;
+      width: 25px;
+      text-align: center;
+      -webkit-transition: all 0.3s;
+      transition: all 0.3s;
+      line-height: unset;
+      color: #4895ef;
+    }
+
+    ::v-deep .el-input {
+      position: relative;
+      font-size: 14px;
+      display: inline-block;
+      width: 173px;
+    }
+
+    ::v-deep .el-input__inner {
+      width: 173px;
+      height: 23px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #ccdbf5;
+      font-size: 11px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #999999;
+    }
+
+    ::v-deep .el-form-item__label {
+      width: 80px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #333333;
+      line-height: 36px;
+      /*padding: 0 0px 0 0;*/
+    }
+
+    ::v-deep.el-date-editor .el-range-input,
+    .el-date-editor .el-range-separator {
+      height: 100%;
+      width: 70px;
+      margin: 0;
+      text-align: center;
+      display: inline-block;
+      font-size: 11px;
+    }
+
+    ::v-deep.el-form-item__content {
+      line-height: 40px;
+      position: relative;
+      font-size: 11px;
+    }
   }
 
   //priority
