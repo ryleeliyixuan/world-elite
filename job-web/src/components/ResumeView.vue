@@ -52,7 +52,7 @@
                 </el-row>
                 <el-row>
                     <el-col :span="12"><span class="key">工作类型：</span><span class="value">{{resumeDetail.userExpectJob.expectWorkType}}</span></el-col>
-                    <el-col :span="12" v-if="resumeDetail.userExpectJob.category"><span class="key">期望行业：</span><span class="value">{{resumeDetail.userExpectJob.category.name}}</span>
+                    <el-col :span="12"><span class="key">期望行业：</span><span class="value">{{resumeDetail.userExpectJob.industry}}</span>
                     </el-col>
                 </el-row>
             </div>

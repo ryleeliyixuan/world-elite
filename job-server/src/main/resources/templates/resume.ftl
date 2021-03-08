@@ -192,7 +192,7 @@
                         <span><b>工作类型：</b>${(resume.userExpectJob.expectWorkType)!''}</span>
                     </div>
                     <div style="width: 50%;  float: right">
-                        <span><b>期望行业：</b><#if resume.userExpectJob.category??>${(resume.userExpectJob.category.name)!''}</#if></span>
+                        <span><b>期望行业：</b>${(resume.userExpectJob.industry)!''}</span>
                     </div>
                 </div>
             </div>
