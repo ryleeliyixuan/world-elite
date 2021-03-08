@@ -80,7 +80,10 @@
                         </div>
                         <div>
                             <div style="width: 50%; float: left">
-                                <span>性别： ${(resume.gender == 1)?string("男","女")}</span>
+                                <span>性别：
+                                    <#if resume.gender == 1>男</#if>
+                                    <#if resume.gender == 2>女</#if>
+                                </span>
                             </div>
                             <div style="width: 50%; float: right">
                                 <span>政治面貌：
@@ -94,7 +97,7 @@
                         </div>
                         <div style="clear: both">
                             <div style="width: 50%; float: left">
-                                <span>年龄：<#if resume.age??>${resume.age}岁</#if></span>
+                                <span>年龄：<#if resume.age?? && resume.age != 0>${resume.age}岁</#if></span>
                             </div>
                             <div style="width: 50%; float: right">
                                 <span>现居地址：<#if resume.curPlace??>${resume.curPlace}</#if></span>

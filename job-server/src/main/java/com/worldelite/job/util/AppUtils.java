@@ -3,8 +3,8 @@ package com.worldelite.job.util;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.worldelite.job.anatation.ResumeScore;
-import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.context.MessageResource;
+import com.worldelite.job.context.SpringContextHolder;
 import com.worldelite.job.context.config.AliConfig;
 import com.worldelite.job.context.config.DomainConfig;
 import com.worldelite.job.form.PageForm;
@@ -19,10 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author yeguozhong yedaxia.github.com
@@ -113,11 +110,12 @@ public class AppUtils {
 
     /**
      * 获取 Bean 对象
+     *
      * @param clazz
      * @param <T>
      * @return
      */
-    public static <T> T getBean(Class<T> clazz){
+    public static <T> T getBean(Class<T> clazz) {
         return SpringContextHolder.getApplicationContext().getBean(clazz);
     }
 
@@ -207,14 +205,26 @@ public class AppUtils {
                     total += resumeScore.value();
                     field.setAccessible(true);
                     Object value = field.get(object);
-                    if (value != null) {
-                        if (value instanceof Collection ) {
-                            if(CollectionUtils.isNotEmpty((Collection) value)){
-                                current += resumeScore.value();
-                            }
-                        } else {
+                    if (value == null) continue;
+
+                    final String[] exclude = resumeScore.exclude();
+                    if (exclude.length > 0 && Arrays.asList(exclude).contains(value.toString()))
+                        continue;
+
+                    final String[] include = resumeScore.include();
+                    if (include.length > 0 && !Arrays.asList(include).contains(value.toString()))
+                        continue;
+
+                    if (value instanceof String) {
+                        if (StringUtils.isNotBlank((CharSequence) value)) {
                             current += resumeScore.value();
                         }
+                    } else if (value instanceof Collection) {
+                        if (CollectionUtils.isNotEmpty((Collection) value)) {
+                            current += resumeScore.value();
+                        }
+                    } else {
+                        current += resumeScore.value();
                     }
                 }
             }
