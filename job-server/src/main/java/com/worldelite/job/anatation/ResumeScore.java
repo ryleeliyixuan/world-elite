@@ -14,4 +14,20 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResumeScore {
     int value() default 1;
+
+    /**
+     * 包含的值<br/>
+     * 优先级低于exclude
+     *
+     * @return
+     */
+    String[] include() default {};
+
+    /**
+     * 不包含的值, 调用字段的toString().<br/>
+     * 优先级高于include
+     *
+     * @return
+     */
+    String[] exclude() default {};
 }

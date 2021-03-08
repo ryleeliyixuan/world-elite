@@ -1,5 +1,6 @@
 package com.worldelite.job.vo;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,5 +24,9 @@ public class UserExpectJobVo {
     public void setSalaryId(String salaryId) {
         if (StringUtils.isNoneBlank(salaryId))
             this.salaryId = salaryId.split(",");
+    }
+
+    public String toString(){
+        return JSON.toJSONString(this);
     }
 }

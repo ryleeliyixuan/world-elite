@@ -22,9 +22,9 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume> {
     @ResumeScore(3)
     private String name; //名字
     private String title; // 简历名字
-    @ResumeScore(2)
+    @ResumeScore(value = 2, include = {"1","2"})
     private Byte gender; //性别
-    @ResumeScore(2)
+    @ResumeScore(value = 2, exclude = "0")
     private Integer age; //年龄
     @ResumeScore(2)
     @JSONField(format = "yyyy-MM-dd")
@@ -43,7 +43,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume> {
     private String phone; //电话号码
     @ResumeScore(3)
     private String email; //邮箱
-    @ResumeScore(4)
+    @ResumeScore(5)
     private String introduction; //个人介绍
     @ResumeScore(5)
     private String attachResume; //附件简历
@@ -54,9 +54,8 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume> {
     private Byte status; //简历状态
     private Byte type; //简历类型
 
-    @ResumeScore(2)
+    @ResumeScore(value = 2, exclude = "-1")
     private Byte maritalStatus; // 政治面貌
-    @ResumeScore(1)
     private Byte priority; //简历优先级
 
     private Integer resumeCompleteProgress; //简历完善进度
@@ -78,7 +77,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume> {
     private List<ResumeLanguageVo> resumeLanguageList;//语言能力
     @ResumeScore(5)
     private List<ResumeCertificateVo> resumeCertificateList;//证书/奖项
-    @ResumeScore(15)
+    @ResumeScore(value = 15, exclude = "{}")
     private UserExpectJobVo userExpectJob; //求职意向
 
     //已投递职位总数
