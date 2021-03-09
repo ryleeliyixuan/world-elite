@@ -4,8 +4,17 @@
       <el-card :body-style="{ padding: '0px' }" shadow="never">
         <div class="session1-container" v-if="job">
           <div class="session1-left">
-            <div class="text1 mb-2" v-if="job && job.company">
+            <div
+              class="text1 mb-2"
+              v-if="job && job.company && job.recruitType != 172"
+            >
               {{ job.company.name }}招聘
+            </div>
+            <div
+              class="text1 mb-2"
+              v-if="job && job.company && job.recruitType == 172"
+            >
+              WE内推岗位
             </div>
             <div class="session1-job-name mb-2">
               {{ job.name }}
@@ -16,7 +25,11 @@
             <div class="text3 mb-2">
               {{ job.city ? job.city.name : "" }} |
               {{ job.minDegree ? job.minDegree.name : "" }} |
-              {{ job.jobType ? job.jobType.name : "" }}
+              {{ job.jobType ? job.jobType.name : "" }} |
+              {{ job.experience.name ? job.experience.name : "" }} 
+              <span v-for="item in job.additions" :key="item.id">
+                | {{item.name }}
+              </span>
             </div>
             <div class="text4">{{ job.time }}</div>
           </div>
@@ -64,6 +77,16 @@
           </div>
           <div class="divider"></div>
           <div class="session2-container-right">
+            <div class="mb-4" v-if="job && job.recruitType == 172">
+              <svg-icon
+                  icon-class="job-fast-track"
+                  style="height: 70px; width: 180px; margin-left: -25px"
+                />
+              <div
+                >"WE内推"是World
+                Elite最具竞争力的产品之一，致力于推出一个让每个学生都放心的渠道获取内推资源，凭借自己的努力走出自己的职业道路。</div
+              >
+            </div>
             <div class="session2-container-right-1" v-if="job && job.company">
               <div class="basic-info mb-2">公司基本信息:</div>
               <el-link :href="`/company/${job.company.id}`" :underline="false">
@@ -122,7 +145,7 @@
                 job.company.addressList.length > 0
               "
             >
-              <div class="basic-info mb-2">公司地址:</div>
+              <div class="basic-info mb-2">工作地址:</div>
               <div
                 v-for="(addr, index) in job.company.addressList"
                 :key="addr.id"
