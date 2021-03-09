@@ -26,9 +26,9 @@
               {{ job.city ? job.city.name : "" }} |
               {{ job.minDegree ? job.minDegree.name : "" }} |
               {{ job.jobType ? job.jobType.name : "" }} |
-              {{ job.experience.name ? job.experience.name : "" }} 
+              {{ job.experience.name ? job.experience.name : "" }}
               <span v-for="item in job.additions" :key="item.id">
-                | {{item.name }}
+                | {{ item.name }}
               </span>
             </div>
             <div class="text4">{{ job.time }}</div>
@@ -79,13 +79,13 @@
           <div class="session2-container-right">
             <div class="mb-4" v-if="job && job.recruitType == 172">
               <svg-icon
-                  icon-class="job-fast-track"
-                  style="height: 70px; width: 180px; margin-left: -25px"
-                />
-              <div
-                >"WE内推"是World
-                Elite最具竞争力的产品之一，致力于推出一个让每个学生都放心的渠道获取内推资源，凭借自己的努力走出自己的职业道路。</div
-              >
+                icon-class="job-fast-track"
+                style="height: 70px; width: 180px; margin-left: -25px"
+              />
+              <div>
+                "WE内推"是World
+                Elite最具竞争力的产品之一，致力于推出一个让每个学生都放心的渠道获取内推资源，凭借自己的努力走出自己的职业道路。
+              </div>
             </div>
             <div class="session2-container-right-1" v-if="job && job.company">
               <div class="basic-info mb-2">公司基本信息:</div>
@@ -140,20 +140,16 @@
               class="session2-container-right-2"
               v-if="
                 job &&
-                job.company &&
-                job.company.addressList &&
-                job.company.addressList.length > 0
+                job.address &&
+                job.latitude &&
+                job.longitude
               "
             >
               <div class="basic-info mb-2">工作地址:</div>
-              <div
-                v-for="(addr, index) in job.company.addressList"
-                :key="addr.id"
-              >
                 <div class="map-wrapper">
                   <div class="map-box mb-4">
                     <el-amap
-                      :vid="'amap' + index"
+                      :vid="'amap'"
                       :zoom="mapZoom"
                       :center="addr.mapWindow.position"
                     >
@@ -180,9 +176,9 @@
                       "
                     />
                   </div>
-                  <div class="info-text">{{ addr.address }}</div>
+                  <div class="info-text">{{ job.address }}</div>
                 </div>
-              </div>
+
             </div>
             <div class="session2-container-right-3">
               <div class="basic-info mb-2">分享该职位:</div>
@@ -369,6 +365,9 @@ export default {
       //map
       activeAddress: 0,
       mapZoom: 13,
+      addr: {
+        mapWindow: {},
+      },
 
       //applydialog
       applyDialog: false,
@@ -418,18 +417,17 @@ export default {
         const title = `${this.job.name} - ${
           this.job.company ? this.job.company.name : ""
         }`;
+        // 工作地址
         if (
           this.job &&
-          this.job.company &&
-          this.job.company.addressList &&
-          this.job.company.addressList.length > 0
+          this.job.address &&
+          this.job.latitude &&
+          this.job.longitude
         ) {
-          for (const addr of this.job.company.addressList) {
-            addr.mapWindow = {
-              position: [addr.longitude, addr.latitude],
-              content: addr.address,
-            };
-          }
+          this.addr.mapWindow = {
+            position: [this.job.longitude, this.job.latitude],
+            content: this.job.address,
+          };
         }
         setPageTitle(title);
         this.shareConfig.title = title;
