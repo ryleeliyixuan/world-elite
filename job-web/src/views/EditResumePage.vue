@@ -48,10 +48,12 @@
                 ></svg-icon>
                 <el-input
                   size="mini"
-                  style="width: 90px"
+                  style="width: 150px"
                   v-else
                   v-model="resumeTitle"
                   placeholder="请输入简历名称"
+                  maxlength="10"
+                  show-word-limit
                   @keyup.enter.native="saveResumeTitle()"
                   @blur="showEditTitle = false"
                 ></el-input>
@@ -510,8 +512,8 @@
               </div>
               <svg-icon
                 v-show="!showEditJobOri"
-                icon-class="edu-add"
-                style="width: 19px; height: 19px"
+                icon-class="edit"
+                style="width: 18px; height: 19px"
                 @click="handleEditExpectJob()"
               ></svg-icon>
             </div>
@@ -1264,8 +1266,8 @@
               </div>
               <svg-icon
                 v-show="!showEditSkillTag"
-                icon-class="edu-add"
-                style="width: 19px; height: 19px"
+                icon-class="edit"
+                style="width: 18px; height: 19px"
                 @click="showEditSkillTag = true"
               ></svg-icon>
             </div>
@@ -1345,8 +1347,8 @@
               </div>
               <svg-icon
                 v-show="!showEditSelfIntro"
-                icon-class="edu-add"
-                style="width: 19px; height: 19px"
+                icon-class="edit"
+                style="width: 18px; height: 19px"
                 @click="showEditSelfIntro = true"
               ></svg-icon>
             </div>
@@ -1408,15 +1410,19 @@
       <el-divider></el-divider>
       <div class="section2">
         <div class="line1">
-          <span class="bold large">附件：</span>
+          <span style="width: 55px" class="bold large">附件：</span>
           <span>
             <svg-icon
-              class="mr-1"
               icon-class="tips"
-              style="width: 13px; height: 13px; vertical-align: middle"
+              style="
+                width: 13px;
+                height: 13px;
+                vertical-align: middle;
+                margin-right: 3px;
+              "
             ></svg-icon>
           </span>
-          <span class="light" style="font-size: 12px"
+          <span class="light" style="font-size: 11px"
             >附件简历内容也可被HR搜索到！</span
           >
         </div>
@@ -1537,7 +1543,20 @@
       </div>
     </div>
     <!-- 简历预览 -->
-    <el-dialog :visible.sync="showPreview" width="800px">
+    <el-dialog class="resume-preview" :visible.sync="showPreview" width="750px">
+      <div class="d-flex justify-content-end">
+        <svg-icon
+          class="mr-1"
+          icon-class="resumedownload"
+          style="width: 29px; height: 20x"
+          @click="exportPdf"
+        ></svg-icon>
+        <svg-icon
+          icon-class="resume-close"
+          style="width: 17px; height: 17x"
+          @click="showPreview = false"
+        ></svg-icon>
+      </div>
       <ResumeView :resumeDetail="this.curResume"></ResumeView>
     </el-dialog>
     <!-- 是否删除附件 对话框 -->
@@ -1572,9 +1591,6 @@
 </template>
 
 <script>
-import EditResumeTitle from "@/components/EditResumeTitle";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { getAllCountries, getCurrentCountry } from "@/api/country_api";
 import {
   getResumeInfo,
   parseAttachment,
@@ -1597,22 +1613,15 @@ import {
   delResumeAwards,
   delResume,
 } from "@/api/resume_api";
-import { searchSchool } from "@/api/school_api";
 import { listByType, listByTypeSalary } from "@/api/dict_api";
-import { serachByName } from "@/api/company_api";
-import { getCityByName } from "@/api/city_api";
-import { getCategoryTree } from "@/api/category_api";
 import { saveUserExpectJob } from "@/api/user_api";
 import { getUploadPicToken, getUploadAttachmentToken } from "@/api/upload_api";
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
-import { quillEditor } from "vue-quill-editor";
 import Toast from "@/utils/toast";
 import { checkPicSize, checkAttachmentSize } from "@/utils/common";
 import { exportResumeToPdf } from "@/api/export_api";
 import ResumeView from "@/components/ResumeView";
 import UploadImg from "@/components/Cropper/uploadImg";
+import { downloadFile } from "@/utils/common";
 
 export default {
   name: "EditResumePage",
@@ -2553,7 +2562,7 @@ export default {
       this.newSkillTag = "";
     },
 
-    // 保存技能标签
+    // 保存能力标签
     saveSkillTag() {
       let data = {
         resumeId: this.resumeId,
@@ -2585,7 +2594,8 @@ export default {
           title: "简历" + (total + 1),
         })
           .then(() => {
-            this.getResumeInfo(total);
+            this.activeTabIndex = total;
+            this.getResumeInfo(this.activeTabIndex);
           })
           .finally(() => {
             this.$message({
@@ -2797,6 +2807,20 @@ export default {
           });
         });
     },
+    // 简历导出下载
+    exportPdf() {
+      exportResumeToPdf(this.resumeId)
+        .then((response) => {
+          downloadFile({
+            fileKey: response.data,
+            fileName: `${this.$store.getters.name}_个人简历.pdf`,
+            success: () => {
+              this.$set(this, "showPreview", false);
+            },
+          });
+        })
+        .catch(() => {});
+    },
   },
 };
 </script>
@@ -2808,6 +2832,18 @@ export default {
   min-height: calc(100vh - 477px);
   background: rgba(213, 226, 240, 0.21);
   display: flex;
+
+  .resume-preview {
+    /deep/ .el-dialog__header {
+      display: none;
+    }
+    /deep/.el-dialog__body{
+      padding-top: 20px;
+    }
+    /deep/.el-dialog__headerbtn {
+      display: none;
+    }
+  }
 
   .cancel-dialog {
     .text {

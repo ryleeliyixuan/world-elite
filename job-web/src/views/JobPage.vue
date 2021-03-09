@@ -233,6 +233,7 @@
         style="width: 100%"
         :show-header="false"
         v-loading="resumeListLoading"
+        @row-click="handleClickRow"
       >
         <el-table-column width="30">
           <template slot-scope="scope">
@@ -265,7 +266,7 @@
             >
               <svg-icon
                 class="ml-1"
-                style="vertical-align: middle; font-size: 12px; margin-top: 4px;"
+                style="vertical-align: middle; font-size: 12px; margin-top: 4px"
                 icon-class="help-mark"
               ></svg-icon>
             </el-tooltip>
@@ -418,6 +419,13 @@ export default {
     handleCurrentChange(id, progess) {
       this.selectedId = id;
       this.selectedProgress = progess;
+    },
+    // 点击简历投递中的整行
+    handleClickRow(row) {
+      // console.log(row);
+      this.checked = row.id;
+      this.selectedId = row.id;
+      this.selectedProgress = row.progess;
     },
     handleEditResume(id) {
       let page = this.$router.resolve({
