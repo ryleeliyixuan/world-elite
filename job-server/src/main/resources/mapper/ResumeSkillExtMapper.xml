@@ -13,6 +13,7 @@
         and name = #{name,jdbcType=VARCHAR}
       </if>
     </where>
+    order by id
   </select>
   <delete id="deleteByResumeId" parameterType="java.lang.Long">
     delete from t_resume_skill
