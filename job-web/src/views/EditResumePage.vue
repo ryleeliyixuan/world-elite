@@ -1428,14 +1428,44 @@
         </div>
         <div
           v-if="curResume.attachResume && curResume.attachResume.length > 0"
-          class="mt-2 small light d-inline-flex"
+          class="mt-2 small light d-flex justify-content-between"
         >
-          <svg-icon
-            class="mr-2"
-            icon-class="PDF"
-            style="width: 14px; height: 18px"
-          ></svg-icon>
-          {{ curResume.name }}的个人简历
+          <span>
+            <svg-icon
+              class="mr-2"
+              icon-class="PDF"
+              style="width: 14px; height: 18px"
+            ></svg-icon>
+            <span v-if="showEditResumeAttachTitle == false">{{
+              curResume.attachResumeName && curResume.attachResumeName != ""
+                ? curResume.attachResumeName
+                : curResume.name + "的个人简历"
+            }}</span>
+            <el-input
+              v-if="showEditResumeAttachTitle"
+              size="mini"
+              style="width: 150px"
+              v-model="resumeAttachTitle"
+              placeholder="请输入简历附件名称"
+              @keyup.enter.native="saveResumeAttachTitle()"
+              @blur="showEditResumeAttachTitle = false"
+            ></el-input>
+          </span>
+          <span>
+            <svg-icon
+              icon-class="resumeOther-edit"
+              style="width: 18px; height: 18px"
+              @click="
+                (resumeAttachTitle = curResume.attachResumeName),
+                  (showEditResumeAttachTitle = true)
+              "
+            ></svg-icon>
+            <svg-icon
+              icon-class="resumeOther-del"
+              style="width: 18px; height: 20px"
+              @click="cancelResumeAttachDialogVisible = true"
+            ></svg-icon>
+          </span>
         </div>
         <el-upload
           class="mt-2 mb-4 upload-attach-box"
@@ -1559,7 +1589,34 @@
       </div>
       <ResumeView :resumeDetail="this.curResume"></ResumeView>
     </el-dialog>
-    <!-- 是否删除附件 对话框 -->
+    <!-- 是否删除简历附件 对话框 -->
+    <el-dialog
+      class="cancel-dialog"
+      :visible.sync="cancelResumeAttachDialogVisible"
+      width="30%"
+    >
+      <div class="text-center">
+        <div style="font-size: 46px">
+          <i class="el-icon-warning" style="color: #ff1744"></i>
+        </div>
+        <div class="text">您确定要删除简历附件吗</div>
+      </div>
+      <div class="footer text-center">
+        <el-button
+          type="primary"
+          @click="
+            (cancelResumeAttachDialogVisible = false), handleDelResumeAttach()
+          "
+          >确 定</el-button
+        >
+        <el-button
+          @click="cancelResumeAttachDialogVisible = false"
+          style="color: #4895ef"
+          >取 消</el-button
+        >
+      </div>
+    </el-dialog>
+    <!-- 是否删除其他附件 对话框 -->
     <el-dialog
       class="cancel-dialog"
       :visible.sync="cancelAttachDialogVisible"
@@ -1643,6 +1700,7 @@ export default {
       userId: undefined, // 用户id
       resumeTitle: "", // 编辑简历名称
       otherTitle: "", // 编辑其他附件名称
+      resumeAttachTitle: "", // 编辑简历附件名称
       showEditOtherTitleIndex: -1, // 编辑其他附件index
 
       salaryNameList: "", // 薪水id转化为名字列表
@@ -1720,6 +1778,7 @@ export default {
       newSkillTag: "",
 
       // 编辑框
+      showEditResumeAttachTitle: false, // 附件简历
       showEditOtherTitle: false, // 其他附件名称
       showEditBasic: false,
       showEditEdu: false,
@@ -1732,6 +1791,7 @@ export default {
       showEditSelfIntro: false,
       showEditTitle: false,
       // 取消对话框
+      cancelResumeAttachDialogVisible: false,
       cancelAttachDialogVisible: false,
       delAttachItemName: "",
       delAttachItemIndex: undefined,
@@ -1990,6 +2050,19 @@ export default {
         });
       // 获取简历信息
       this.getResumeInfo(0); // 默认返回列表中的第一个为activetab
+      
+      // 新注册账号，没有简历名称的，assign简历名称
+      if (
+        this.resumePageList &&
+        this.resumePageList.length > 0 &&
+        (!this.resumePageList[0].title || (this.resumePageList[0].title && this.resumePageList[0].title == ""))
+      ) {
+        saveResumeBasic({
+          userId: this.$store.state.user.userId,
+          id: this.resumePageList[0].id,
+          title: "简历1",
+        });
+      }
     },
     // 获取简历信息
     getResumeInfo(index) {
@@ -2784,8 +2857,6 @@ export default {
           });
         });
     },
-    // 编辑其他附件名称
-    handleEditOtherTitle() {},
     // 保存其他附件名称
     saveOtherTitle(index) {
       let data = this.curResume.resumeMergeAttachList;
@@ -2801,6 +2872,29 @@ export default {
         })
         .finally(() => {
           this.$refs["upload"].clearFiles();
+          this.$message({
+            message: "操作成功",
+            type: "success",
+          });
+        });
+    },
+    // 删除简历附件
+    handleDelResumeAttach() {
+      delResumeAttachment(this.resumeId).then(() => {
+        this.getResumeInfo(this.activeTabIndex);
+      });
+    },
+    // 保存附件简历名称
+    saveResumeAttachTitle() {
+      saveResumeBasic({
+        userId: this.userId,
+        id: this.resumeId,
+        attachResumeName: this.resumeAttachTitle,
+      })
+        .then(() => {
+          this.getResumeInfo(this.activeTabIndex);
+        })
+        .finally(() => {
           this.$message({
             message: "操作成功",
             type: "success",
@@ -2837,7 +2931,7 @@ export default {
     /deep/ .el-dialog__header {
       display: none;
     }
-    /deep/.el-dialog__body{
+    /deep/.el-dialog__body {
       padding-top: 20px;
     }
     /deep/.el-dialog__headerbtn {
