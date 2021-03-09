@@ -203,11 +203,11 @@
             <span id="pointMore" class="section1-filter-title">特殊筛选：</span>
             <el-checkbox-group v-model="listQuery.specialIds" size="small">
               <el-checkbox-button
-                      v-for="item in specialOptions"
-                      :label="item.id"
-                      :key="item.id"
-                      @change="handleFilter(item.id)"
-              >{{ item.name }}</el-checkbox-button
+                v-for="item in specialOptions"
+                :label="item.id"
+                :key="item.id"
+                @change="handleFilter(item.id)"
+                >{{ item.name }}</el-checkbox-button
               >
             </el-checkbox-group>
           </div>
@@ -273,6 +273,7 @@
               <div
                 class="quickFilter-history-box"
                 v-for="(item, index) in this.historyOptions"
+                :key="index"
                 @click="reHandleFilter(item)"
               >
                 <div>
@@ -561,9 +562,35 @@
                 {{ "不限" }}
               </b>
               <!-- 其他数值正常显示 -->
-              <b v-else class="section3-salary" style="font-size: 16px">
-                {{ job.minSalary + "K-" + job.maxSalary + "K" }}
+              <!-- 实习为“min-max 元/天” -->
+              <b
+                v-else-if="job.jobType.id == 107"
+                class="section3-salary"
+                style="font-size: 16px"
+              >
+                {{
+                  job.minSalary +
+                  "K-" +
+                  job.maxSalary +
+                  "K" +
+                  " * " +
+                  job.salaryMonths
+                }}
               </b>
+              <!-- 全职为“min-max * number” -->
+              <b
+                v-else-if="job.jobType.id == 108"
+                class="section3-salary"
+                style="font-size: 16px"
+              >
+                {{ job.minSalary + "-" + job.maxSalary + " 元/天" }}
+              </b>
+              <span v-if="job.experience.name" class="section3-city-degree" style="font-size: 15px">
+                {{ job.experience.name }}
+              </span>
+              <span v-if="job.jobType.name" class="section3-city-degree" style="font-size: 15px">
+                {{ job.jobType.name }}
+              </span>
               <span class="section3-city-degree" style="font-size: 15px">
                 {{
                   `${job.city ? job.city.name : ""}/${
@@ -868,7 +895,7 @@ export default {
         this.buildInitIds(this.initDegreeIds, this.degreeOptions);
         this.refreshOptions();
       });
-      listByTypeWithSort(13, '+value').then((response) => {
+      listByTypeWithSort(13, "+value").then((response) => {
         this.experienceOptions = response.data.list;
         this.buildUnlimitedMap(this.experienceOptions, "exp");
         this.listQuery.experienceIds.push(this.unlimitedMap["exp"]);
@@ -882,29 +909,34 @@ export default {
         this.buildInitIds(this.initDefineIds, this.companyDefineOptions);
       });
 
-      listByType(27).then(response => {
+      listByType(27).then((response) => {
         this.specialOptions = response.data.list;
         this.buildUnlimitedMap(this.specialOptions, "special");
 
-        if(this.unlimitedMap["special"] !== undefined)
+        if (this.unlimitedMap["special"] !== undefined)
           this.listQuery.specialIds.push(this.unlimitedMap["special"]);
 
         this.buildInitIds(this.initSpecialIds, this.specialOptions);
         this.refreshOptions();
       });
 
-      listByTypeWithSort(28, '+id').then((resp) => {
-          this.lanRequiredOptions = resp.data.list;
-          this.buildUnlimitedMap(this.lanRequiredOptions, "lang");
-          this.listQuery.lanRequiredIds.push(this.unlimitedMap["lang"]);
-          this.buildInitIds(this.initLanRequiredIds, this.lanRequiredOptions);
-        });
+      listByTypeWithSort(28, "+id").then((resp) => {
+        this.lanRequiredOptions = resp.data.list;
+        this.buildUnlimitedMap(this.lanRequiredOptions, "lang");
+        this.listQuery.lanRequiredIds.push(this.unlimitedMap["lang"]);
+        this.buildInitIds(this.initLanRequiredIds, this.lanRequiredOptions);
+      });
       this.paneLoading = false;
     },
     amendOptions(options) {
       let validOptions = [];
       for (let i = 0; i < options.length; i++) {
-        if (options[i].name !== "高中" && options[i].name !== "专科" && options[i].name !== "MBA" && options[i].name !== "EMBA") {
+        if (
+          options[i].name !== "高中" &&
+          options[i].name !== "专科" &&
+          options[i].name !== "MBA" &&
+          options[i].name !== "EMBA"
+        ) {
           validOptions.push(options[i]);
         }
       }
@@ -1120,7 +1152,8 @@ export default {
         options.lanIds.indexOf(null) === -1 ? options.lanIds : [];
       this.listQuery.jobTypes =
         options.jobTypeIds.indexOf(null) === -1 ? options.jobTypeIds : [];
-      this.listQuery.specialIds = options.specialIds.indexOf(null) === -1 ? options.specialIds : [];
+      this.listQuery.specialIds =
+        options.specialIds.indexOf(null) === -1 ? options.specialIds : [];
 
       this.listQuery.page = 1;
       this.refreshInpCity(options);
@@ -1508,16 +1541,16 @@ export default {
         this.listQuery.specialIds = [this.unlimitedMap["special"]];
       }
       if (
-              this.refreshChecked(
-                      this.listQuery.specialIds,
-                      "special",
-                      id,
-                      this.initSpecialIds
-              )
+        this.refreshChecked(
+          this.listQuery.specialIds,
+          "special",
+          id,
+          this.initSpecialIds
+        )
       ) {
         this.removeElByValue(
-                this.listQuery.specialIds,
-                this.unlimitedMap["special"]
+          this.listQuery.specialIds,
+          this.unlimitedMap["special"]
         );
       }
     },
@@ -1591,34 +1624,34 @@ export default {
         sort: undefined,
         salaryAsc: 0,
       };
-      if(this.unlimitedMap["city"] !== undefined)
+      if (this.unlimitedMap["city"] !== undefined)
         this.listQuery.cityIds.push(this.unlimitedMap["city"]);
 
-      if(this.unlimitedMap["scale"] !== undefined)
+      if (this.unlimitedMap["scale"] !== undefined)
         this.listQuery.companyScaleIds.push(this.unlimitedMap["scale"]);
 
-      if(this.unlimitedMap["industry"] !== undefined)
+      if (this.unlimitedMap["industry"] !== undefined)
         this.listQuery.companyIndustryIds.push(this.unlimitedMap["industry"]);
 
-      if(this.unlimitedMap["jobType"] !== undefined)
+      if (this.unlimitedMap["jobType"] !== undefined)
         this.listQuery.jobTypes.push(this.unlimitedMap["jobType"]);
 
-      if(this.unlimitedMap["salary"] !== undefined)
+      if (this.unlimitedMap["salary"] !== undefined)
         this.listQuery.salaryRangeIds.push(this.unlimitedMap["salary"]);
 
-      if(this.unlimitedMap["degree"] !== undefined)
+      if (this.unlimitedMap["degree"] !== undefined)
         this.listQuery.degreeIds.push(this.unlimitedMap["degree"]);
 
-      if(this.unlimitedMap["exp"] !== undefined)
+      if (this.unlimitedMap["exp"] !== undefined)
         this.listQuery.experienceIds.push(this.unlimitedMap["exp"]);
 
-      if(this.unlimitedMap["define"] !== undefined)
+      if (this.unlimitedMap["define"] !== undefined)
         this.listQuery.companyDefineIds.push(this.unlimitedMap["define"]);
 
-      if(this.unlimitedMap["special"] !== undefined)
+      if (this.unlimitedMap["special"] !== undefined)
         this.listQuery.specialIds.push(this.unlimitedMap["special"]);
 
-      if(this.unlimitedMap["lang"] !== undefined)
+      if (this.unlimitedMap["lang"] !== undefined)
         this.listQuery.lanRequiredIds.push(this.unlimitedMap["lang"]);
 
       this.refreshOptions();
@@ -2107,7 +2140,7 @@ export default {
           color: #333333;
           line-height: 25px;
           display: inline-block;
-          max-width: 205px;
+          max-width: 275px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
