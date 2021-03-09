@@ -6,6 +6,7 @@ import com.worldelite.job.entity.Resume;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.util.TimeUtils;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -47,6 +48,7 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume> {
     private String introduction; //个人介绍
     @ResumeScore(5)
     private String attachResume; //附件简历
+    private String attachResumeName; //附件简历名
     //TODO 这个好像没用
     private String attachOther; // 其他附件
     private String userId; //用户Id
@@ -105,6 +107,9 @@ public class ResumeVo implements VoConvertable<ResumeVo, Resume> {
         setStatus(resume.getStatus());
         setType(resume.getType());
         setAttachResume(AppUtils.absOssUrl(resume.getAttachResume()));
+        if(StringUtils.isNotBlank(getAttachResume())){
+            setAttachResumeName(resume.getAttachResumeName());
+        }
         if (resume.getBirth() != null) {
             setAge(TimeUtils.getCurrentAge(resume.getBirth()));
         }

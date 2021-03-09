@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -63,15 +62,6 @@ public class ResumeDetail {
     //社交主页
     private List<ResumeLink> resumeLinkList;
 
-
-    public UserExpectJobVo getUserExpectJobVo() {
-        return userExpectJobVo;
-    }
-
-    public void setUserExpectJobVo(UserExpectJobVo userExpectJobVo) {
-        this.userExpectJobVo = userExpectJobVo;
-    }
-
     private UserExpectJobVo userExpectJobVo;
 
     //期望职位
@@ -91,36 +81,11 @@ public class ResumeDetail {
 
     private Byte priority;
 
-    public void setResumeMergeAttachList(List<ResumeMergeAttach> resumeMergeAttachList) {
-        this.resumeMergeAttachList = resumeMergeAttachList;
-    }
-
-    public List<ResumeMergeAttach> getResumeMergeAttachList() {
-        return resumeMergeAttachList;
-    }
-
     private List<ResumeMergeAttach> resumeMergeAttachList;
-
-
-    public List<ResumeLanguage> getResumeLanguageList() {
-        return resumeLanguageList;
-    }
-
-    public void setResumeLanguageList(List<ResumeLanguage> resumeLanguageList) {
-        this.resumeLanguageList = resumeLanguageList;
-    }
 
     private List<ResumeLanguage> resumeLanguageList;
 
-    public List<ResumeCertificate> getResumeCertificateList() {
-        return resumeCertificateList;
-    }
-
-    public void setResumeCertificateList(List<ResumeCertificate> resumeCertificateList) {
-        this.resumeCertificateList = resumeCertificateList;
-    }
-
-    private List<ResumeCertificate>resumeCertificateList;
+    private List<ResumeCertificate> resumeCertificateList;
 
     /**
      * 计算简历完成度评分,没有最高分 越高越好
@@ -232,7 +197,7 @@ public class ResumeDetail {
                 }
             });
         }
-        
+
         //certificate
         if (resumeCertificateList != null && resumeCertificateList.size() > 0) {
             resumeCertificateList.forEach(resumeCertificate -> {
@@ -247,7 +212,7 @@ public class ResumeDetail {
                 }
             });
         }
-        
+
 //        if (categoryList != null && categoryList.size() > 0) {
 //            categoryList.forEach(jobCategory -> {
 //                for (Field f : jobCategory.getClass().getDeclaredFields()) {

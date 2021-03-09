@@ -258,6 +258,7 @@ public class ResumeCompanyService extends ResumeService{
         if (StringUtils.isNotEmpty(resumeForm.getAttachResume())) {
             String newAttachResume = AppUtils.getOssKey(resumeForm.getAttachResume());
             resume.setAttachResume(newAttachResume);
+            resume.setAttachResumeName(resumeForm.getAttachResumeName());
         }
 
 
@@ -268,9 +269,14 @@ public class ResumeCompanyService extends ResumeService{
         Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
         if (resume != null) {
             resume.setAttachResume("");
+            resume.setAttachResumeName("");
             resumeMapper.updateByPrimaryKey(resume);
         }
-        return getResumeDetail(resume.getId());
+        //TODO 现在方法返回值没有用 直接返回null
+        /*if (resume != null) {
+            return getResumeDetail(resume.getId());
+        }*/
+        return null;
     }
 
     @Override

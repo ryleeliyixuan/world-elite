@@ -355,6 +355,7 @@ public class ResumeGeneralService extends ResumeService {
         //存为简历附件
         if (parseAttachmentForm != null && parseAttachmentForm.getAsAttachment()) {
             resumeVo.setAttachResume(fileName); //附件简历
+            resumeVo.setAttachResumeName(attachmentName);
         }
         return resumeVo;
     }
@@ -433,6 +434,7 @@ public class ResumeGeneralService extends ResumeService {
         if (StringUtils.isNotEmpty(resumeForm.getAttachResume())) {
             String newAttachResume = AppUtils.getOssKey(resumeForm.getAttachResume());
             resume.setAttachResume(newAttachResume);
+            resume.setAttachResumeName(resumeForm.getAttachResumeName());
         }
         if (StringUtils.isNotEmpty(resumeForm.getAvatar())) {
             resume.setAvatar(AppUtils.getOssKey(resumeForm.getAvatar()));
@@ -445,9 +447,14 @@ public class ResumeGeneralService extends ResumeService {
         Resume resume = resumeMapper.selectByPrimaryKey(resumeId);
         if (resume != null) {
             resume.setAttachResume("");
+            resume.setAttachResumeName("");
             resumeMapper.updateByPrimaryKey(resume);
         }
-        return getResumeDetail(resume.getId());
+        //TODO 现在方法返回值没有用 直接返回null
+        /*if (resume != null) {
+            return getResumeDetail(resume.getId());
+        }*/
+        return null;
     }
 
     @Override
@@ -605,6 +612,7 @@ public class ResumeGeneralService extends ResumeService {
             resumeVo.setMaritalStatus(resumeDetail.getResumeBasic().getMaritalStatus());
             resumeVo.setPriority(resumeDetail.getResumeBasic().getPriority());
             resumeVo.setAttachResume(resumeDetail.getResumeBasic().getAttachResume());
+            resumeVo.setAttachResumeName(resumeDetail.getResumeBasic().getAttachResumeName());
         }
 
         //教育信息
