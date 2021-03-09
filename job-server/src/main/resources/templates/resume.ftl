@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
     <title>简历详情.${resume.name}</title>
     <style>
+        div {
+            page-break-inside: avoid;
+            page-break-before: auto;
+            page-break-after: auto;
+        }
+
         .resume-body {
             width: 1000px;
             padding: 20px;
