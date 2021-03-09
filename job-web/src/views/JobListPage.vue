@@ -885,8 +885,12 @@ export default {
       listByType(27).then(response => {
         this.specialOptions = response.data.list;
         this.buildUnlimitedMap(this.specialOptions, "special");
-        this.listQuery.specialIds.push(this.unlimitedMap["special"]);
+
+        if(this.unlimitedMap["special"] !== undefined)
+          this.listQuery.specialIds.push(this.unlimitedMap["special"]);
+
         this.buildInitIds(this.initSpecialIds, this.specialOptions);
+        this.refreshOptions();
       });
 
       listByTypeWithSort(28, '+id').then((resp) => {
@@ -1587,6 +1591,36 @@ export default {
         sort: undefined,
         salaryAsc: 0,
       };
+      if(this.unlimitedMap["city"] !== undefined)
+        this.listQuery.cityIds.push(this.unlimitedMap["city"]);
+
+      if(this.unlimitedMap["scale"] !== undefined)
+        this.listQuery.companyScaleIds.push(this.unlimitedMap["scale"]);
+
+      if(this.unlimitedMap["industry"] !== undefined)
+        this.listQuery.companyIndustryIds.push(this.unlimitedMap["industry"]);
+
+      if(this.unlimitedMap["jobType"] !== undefined)
+        this.listQuery.jobTypes.push(this.unlimitedMap["jobType"]);
+
+      if(this.unlimitedMap["salary"] !== undefined)
+        this.listQuery.salaryRangeIds.push(this.unlimitedMap["salary"]);
+
+      if(this.unlimitedMap["degree"] !== undefined)
+        this.listQuery.degreeIds.push(this.unlimitedMap["degree"]);
+
+      if(this.unlimitedMap["exp"] !== undefined)
+        this.listQuery.experienceIds.push(this.unlimitedMap["exp"]);
+
+      if(this.unlimitedMap["define"] !== undefined)
+        this.listQuery.companyDefineIds.push(this.unlimitedMap["define"]);
+
+      if(this.unlimitedMap["special"] !== undefined)
+        this.listQuery.specialIds.push(this.unlimitedMap["special"]);
+
+      if(this.unlimitedMap["lang"] !== undefined)
+        this.listQuery.lanRequiredIds.push(this.unlimitedMap["lang"]);
+
       this.refreshOptions();
       this.handleRouteList();
     },
