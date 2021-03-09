@@ -70,6 +70,7 @@ public class ResumeForm {
     }
 
     private String attachResume;
+    private String attachResumeName;
 
     private Long companyId; //公司ID
     private Byte status; //简历状态
