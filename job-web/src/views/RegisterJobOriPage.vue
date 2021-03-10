@@ -199,12 +199,18 @@ export default {
       getResumeInfo().then((response) => {
         // 新注册账号，没有简历名称的，assign简历名称
         let resume = response.data;
-        if (resume && resume.length > 0 && (!resume[0].title || (resume[0].title && resume[0].title == ""))) {
+        if (
+          resume &&
+          resume.length > 0 &&
+          (!resume[0].title || (resume[0].title && resume[0].title == ""))
+        ) {
           saveResumeBasic({
             userId: this.$store.state.user.userId,
             id: resume[0].id,
             title: "简历1",
-          })
+          }).then(() => {
+            this.getResumeInfo();
+          });
         }
 
         if (
