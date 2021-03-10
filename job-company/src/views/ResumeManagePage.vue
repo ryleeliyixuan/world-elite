@@ -84,9 +84,8 @@
             </el-col>
             <el-col :span="6" v-if="isOP">
               <el-select
-                v-model="listQuery.companyIds"
+                v-model="listQuery.companyId"
                 placeholder="公司"
-                multiple
                 clearable
                 filterable
                 size="small"
@@ -543,29 +542,17 @@
 </template>
 
 <script>
-import { getCategoryTree } from "@/api/category_api";
-import Pagination from "@/components/Pagination";
-import {
-  applyResumeList,
-  applyResumeListOnline,
-  applyResumeListAttachment,
-  handleApplyResume,
-} from "@/api/resume_api";
-import { searchSchool } from "@/api/school_api";
-import { listByType } from "@/api/dict_api";
-import { getUserJobOptions } from "@/api/job_api";
-import ResumeView from "@/components/ResumeView";
-import ResumeLibrary from "@/components/ResumeLibrary";
-import { exportResumeToPdf } from "@/api/export_api";
-import {
-  checkPicSize,
-  downloadFile,
-  formatListQuery,
-  parseListQuery,
-} from "@/utils/common";
-import { getUploadAttachmentToken } from "@/api/upload_api";
+  import Pagination from "@/components/Pagination";
+  import {applyResumeList, handleApplyResume,} from "@/api/resume_api";
+  import {listByType} from "@/api/dict_api";
+  import {getUserJobOptions} from "@/api/job_api";
+  import ResumeView from "@/components/ResumeView";
+  import ResumeLibrary from "@/components/ResumeLibrary";
+  import {exportResumeToPdf} from "@/api/export_api";
+  import {checkPicSize, downloadFile, formatListQuery, parseListQuery,} from "@/utils/common";
+  import {getUploadAttachmentToken} from "@/api/upload_api";
 
-export default {
+  export default {
   name: "ResumeManagePage",
   components: { Pagination, ResumeView, ResumeLibrary },
   data() {
@@ -584,7 +571,7 @@ export default {
         name: undefined,
         // jobIds: [],
         degreeIds: [],
-        companyIds: [],
+        companyId: undefined,
         gender: undefined,
         schoolIds: [],
         categoryIds: [],
@@ -680,9 +667,28 @@ export default {
           this.isOP = data.data;
         });
 
-      getUserJobOptions().then((response) => (this.jobOptions = response.data));
+      getUserJobOptions().then((response) => {
+        this.jobOptions = response.data;
+
+        if (this.jobOptions !== null) {
+          let companyIdSet = new Set();
+          for (let i = 0; i < this.jobOptions.length; i++) {
+            let company = this.jobOptions[i].company;
+            if (company === null) continue;
+
+            if (!companyIdSet.has(company.id)) {
+              companyIdSet.add(company.id);
+
+              let companyOption = {};
+              companyOption.id = company.id;
+              companyOption.name = company.name;
+              this.companyOptions.push(companyOption);
+            }
+          }
+        }
+      });
+
       this.getList();
-      
     },
 
     handleSelectMenu(index) {

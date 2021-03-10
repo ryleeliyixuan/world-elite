@@ -14,4 +14,5 @@ public class ApplyResumeListForm extends PageForm{
     private Byte[] statuses; //投递状态
     private Long[] jobIds; //职位
     private Integer[] degreeIds; //学历
+    private Long companyId;
 }
