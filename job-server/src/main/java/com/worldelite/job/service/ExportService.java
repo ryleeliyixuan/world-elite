@@ -8,6 +8,7 @@ import com.worldelite.job.constants.Gender;
 import com.worldelite.job.context.config.DomainConfig;
 import com.worldelite.job.entity.Download;
 import com.worldelite.job.entity.Resume;
+import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.IExportable;
 import com.worldelite.job.form.RegistrationExportForm;
@@ -86,9 +87,16 @@ public class ExportService extends BaseService {
         if(resume == null){
             throw new ServiceException(ApiCode.OBJECT_NOT_FOUND);
         }
-        //UserApplicant loginUser = userMapper.selectByPrimaryKey(curUser().getId());
+        //有时会出现curUser() token为空的情况
+        String token = curUser().getToken();
+        if(StringUtils.isBlank(token)){
+            UserApplicant loginUser = userMapper.selectByPrimaryKey(curUser().getId());
+            if(loginUser == null) throw new ServiceException(message("export.resume.fail"));
+            token = loginUser.getToken();
+        }
+
         final String resumeTplUrl = String.format("%s/resume/%s?_token=%s",
-                domainConfig.getLocalHost(), resumeId, curUser().getToken());
+                domainConfig.getLocalHost(), resumeId, token);
         File resumePdfFile = null;
         try {
             resumePdfFile = fileService.getFile(UUID.randomUUID().toString() + ".pdf");
@@ -114,8 +122,16 @@ public class ExportService extends BaseService {
      * @return
      */
     public String exportRegistrationToPdf(Integer registrationId) {
+        //有时会出现curUser() token为空的情况
+        String token = curUser().getToken();
+        if(StringUtils.isBlank(token)){
+            UserApplicant loginUser = userMapper.selectByPrimaryKey(curUser().getId());
+            if(loginUser == null) throw new ServiceException(message("export.resume.fail"));
+            token = loginUser.getToken();
+        }
+
         final String registrationTplUrl = String.format("%s/registration/%s?_token=%s",
-                domainConfig.getLocalHost(), registrationId, curUser().getToken());
+                domainConfig.getLocalHost(), registrationId, token);
         File registrationPdfFile = null;
         try {
             registrationPdfFile = fileService.getFile(UUID.randomUUID().toString() + ".pdf");
