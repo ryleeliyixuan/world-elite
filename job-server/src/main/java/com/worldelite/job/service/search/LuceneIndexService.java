@@ -240,13 +240,14 @@ public class LuceneIndexService implements IndexService {
         if (jobVo.getRecruitType() != null) {
             doc.add(new IntPoint(JobIndexFields.RECRUIT_TYPE_INDEX, jobVo.getRecruitType()));
         }
-        if(jobVo.getMinSalary() != null && jobVo.getMaxSalary() != null){
-            doc.add(new IntPoint(JobIndexFields.AVER_SALARY_INDEX, (jobVo.getMaxSalary()+jobVo.getMinSalary())/2));
-            doc.add(new NumericDocValuesField(JobIndexFields.AVER_SALARY_INDEX, (jobVo.getMaxSalary()+jobVo.getMinSalary())/2));
+        if (jobVo.getMinSalary() != null && jobVo.getMaxSalary() != null) {
+            final int totalAverageSalary = getTotalAverageSalary(jobVo);
+            doc.add(new IntPoint(JobIndexFields.AVER_SALARY_INDEX, totalAverageSalary));
+            doc.add(new NumericDocValuesField(JobIndexFields.AVER_SALARY_INDEX, totalAverageSalary));
         }
         //防止空指针,不想一级一级判空了
         try {
-            if(jobVo.getCompanyUser().getCompany().getId() != null){
+            if (jobVo.getCompanyUser().getCompany().getId() != null) {
                 doc.add(new LongPoint(JobIndexFields.COMPANY_ID, Long.parseLong(jobVo.getCompanyUser().getCompany().getId())));
             }
         } catch (Exception ignored) {
@@ -494,5 +495,46 @@ public class LuceneIndexService implements IndexService {
                 document.add(new IntPoint(ResumeIndexFields.EXPECT_CITY, city.getId()));
             }
         }
+    }
+
+    private int getTotalAverageSalary(JobVo jobVo) {
+
+        //职位类型全职,实习,兼职
+        //全职时salaryMonths有效, 实习,兼职按照12个月
+        if (jobVo.getJobType() != null) {
+            int jobType = jobVo.getJobType().getId();
+
+            //处理最大薪资
+            int maxSalary, minSalary;
+            if (jobVo.getMaxSalary() == null || jobVo.getMaxSalary() <= 0)
+                maxSalary = 0;
+            else
+                maxSalary = jobVo.getMaxSalary();
+
+            if (jobVo.getMinSalary() == null || jobVo.getMinSalary() <= 0)
+                minSalary = 0;
+            else
+                minSalary = jobVo.getMinSalary();
+
+
+            int totalAverageSalary;
+            if (jobType == 108 || jobType == 1003) {
+                //实习,兼职按天计算工资需要特殊处理, 每月按照20天算,得到年总天数*平均日工资
+                totalAverageSalary = 20 * 12 * ((minSalary + maxSalary) / 2);
+            } else {
+                //处理月
+                int salaryMonths;
+                if (jobVo.getSalaryMonths() == null || jobVo.getSalaryMonths() <= 0)
+                    salaryMonths = 12;
+                else
+                    salaryMonths = jobVo.getSalaryMonths();
+                //全职计算平均年薪
+                totalAverageSalary = salaryMonths * ((minSalary + maxSalary) / 2) * 1000;
+            }
+
+            return totalAverageSalary;
+        }
+
+        return 0;
     }
 }
