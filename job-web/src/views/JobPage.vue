@@ -26,7 +26,13 @@
               {{ job.city ? job.city.name : "" }} |
               {{ job.minDegree ? job.minDegree.name : "" }} |
               {{ job.jobType ? job.jobType.name : "" }} |
-              {{ job.experience.name ? job.experience.name : "" }}
+              {{
+                job.experience.name
+                  ? job.experience.name == "不限"
+                    ? "工作经验不限"
+                    : job.experience.name
+                  : ""
+              }}
               <span v-for="item in job.additions" :key="item.id">
                 | {{ item.name }}
               </span>
@@ -138,47 +144,41 @@
             </div>
             <div
               class="session2-container-right-2"
-              v-if="
-                job &&
-                job.address &&
-                job.latitude &&
-                job.longitude
-              "
+              v-if="job && job.address && job.latitude && job.longitude"
             >
               <div class="basic-info mb-2">工作地址:</div>
-                <div class="map-wrapper">
-                  <div class="map-box mb-4">
-                    <el-amap
-                      :vid="'amap'"
-                      :zoom="mapZoom"
-                      :center="addr.mapWindow.position"
-                    >
-                      <el-amap-marker :position="addr.mapWindow.position">
-                      </el-amap-marker>
-                      <el-amap-info-window
-                        :position="addr.mapWindow.position"
-                        :content="addr.mapWindow.content"
-                        :close-when-click-map="true"
-                      ></el-amap-info-window>
-                    </el-amap>
-                  </div>
+              <div class="map-wrapper">
+                <div class="map-box mb-4">
+                  <el-amap
+                    :vid="'amap'"
+                    :zoom="mapZoom"
+                    :center="addr.mapWindow.position"
+                  >
+                    <el-amap-marker :position="addr.mapWindow.position">
+                    </el-amap-marker>
+                    <el-amap-info-window
+                      :position="addr.mapWindow.position"
+                      :content="addr.mapWindow.content"
+                      :close-when-click-map="true"
+                    ></el-amap-info-window>
+                  </el-amap>
                 </div>
-                <div class="address-label">
-                  <div class="address-label-icon-wrapper">
-                    <svg-icon
-                      icon-class="jobaddress"
-                      style="
-                        height: 19px;
-                        width: 15px;
-                        margin-right: 7px;
-                        top: 3px;
-                        position: absolute;
-                      "
-                    />
-                  </div>
-                  <div class="info-text">{{ job.address }}</div>
+              </div>
+              <div class="address-label">
+                <div class="address-label-icon-wrapper">
+                  <svg-icon
+                    icon-class="jobaddress"
+                    style="
+                      height: 19px;
+                      width: 15px;
+                      margin-right: 7px;
+                      top: 3px;
+                      position: absolute;
+                    "
+                  />
                 </div>
-
+                <div class="info-text">{{ job.address }}</div>
+              </div>
             </div>
             <div class="session2-container-right-3">
               <div class="basic-info mb-2">分享该职位:</div>
