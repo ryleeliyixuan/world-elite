@@ -2050,19 +2050,6 @@ export default {
         });
       // 获取简历信息
       this.getResumeInfo(0); // 默认返回列表中的第一个为activetab
-      
-      // 新注册账号，没有简历名称的，assign简历名称
-      if (
-        this.resumePageList &&
-        this.resumePageList.length > 0 &&
-        (!this.resumePageList[0].title || (this.resumePageList[0].title && this.resumePageList[0].title == ""))
-      ) {
-        saveResumeBasic({
-          userId: this.$store.state.user.userId,
-          id: this.resumePageList[0].id,
-          title: "简历1",
-        });
-      }
     },
     // 获取简历信息
     getResumeInfo(index) {
@@ -2170,6 +2157,23 @@ export default {
                   this.curResume.maritalStatusName = status.name;
                 }
               });
+
+              // 新注册账号，没有简历名称的，assign简历名称
+              if (
+                this.resumePageList &&
+                this.resumePageList.length > 0 &&
+                (!this.resumePageList[0].title ||
+                  (this.resumePageList[0].title &&
+                    this.resumePageList[0].title == ""))
+              ) {
+                saveResumeBasic({
+                  userId: this.$store.state.user.userId,
+                  id: this.resumePageList[0].id,
+                  title: "简历1",
+                }).then(() => {
+                  this.getResumeInfo(this.activeTabIndex);
+                });
+              }
             }
           }
         })
@@ -2777,7 +2781,7 @@ export default {
         }
       });
     },
-    // 上传附件
+    // 上传简历附件
     handleUploadAttachSuccess() {
       // console.log("-------", this.$refs);
       this.uploadAttachLoading = true;
@@ -2785,6 +2789,7 @@ export default {
         userId: this.userId,
         id: this.resumeId,
         attachResume: this.uploadAttachmentOptions.fileUrl,
+        attachResumeName: this.uploadAttachmentOptions.fileName
       })
         .then(() => {
           this.getResumeInfo(this.activeTabIndex);
@@ -2890,11 +2895,13 @@ export default {
         userId: this.userId,
         id: this.resumeId,
         attachResumeName: this.resumeAttachTitle,
+        attachResume: this.curResume.attachResume,
       })
         .then(() => {
           this.getResumeInfo(this.activeTabIndex);
         })
         .finally(() => {
+          this.showEditResumeAttachTitle = false;
           this.$message({
             message: "操作成功",
             type: "success",
