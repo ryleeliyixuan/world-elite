@@ -408,7 +408,7 @@ public class JobService extends BaseService {
         List<Job> jobList = jobMapper.selectAndList(options);
         List<JobVo> jobVoList = new ArrayList<>(jobList.size());
         for (Job job : jobList) {
-            jobVoList.add(toJobVo(job, false));
+            jobVoList.add(toJobVo(job, true));
         }
         return jobVoList;
     }

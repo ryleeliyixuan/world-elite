@@ -120,8 +120,12 @@ public class JobApplyService extends BaseService {
     public PageResult<ApplyResumeVo> getApplyResumeList(ApplyResumeListForm listForm) {
         JobApplyOptions options = new JobApplyOptions();
         options.setCreatorId(listForm.getCreatorId());
-        CompanyUser companyUser = companyUserMapper.selectByUserId(listForm.getCreatorId());
-        options.setCompanyId(companyUser.getCompanyId());
+        if (listForm.getCompanyId() == null) {
+            CompanyUser companyUser = companyUserMapper.selectByUserId(listForm.getCreatorId());
+            options.setCompanyId(companyUser.getCompanyId());
+        } else
+            options.setCompanyId(listForm.getCompanyId());
+
         if (ArrayUtils.isNotEmpty(listForm.getJobIds())) {
             options.setJobIds(StringUtils.join(listForm.getJobIds(), ","));
         }
