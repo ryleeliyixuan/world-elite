@@ -2,7 +2,7 @@
 	<div class="app-container">
 		<div class="main-container">
 		<img src="../assets/examine1.png" style="padding-left: 450px">
-		<p class="a">请联系人工客服： xiaokefu@we.com</p>
+		<p class="a">请联系人工客服： career@myworldelite.com</p>
 		<p class="a1">我们将尽快完成资料审核</p>
 		<div style="padding-left: 445px">
 			<el-button class="Btn" @click="onSubmit">返回首页</el-button>

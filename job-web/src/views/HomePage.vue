@@ -147,15 +147,57 @@
           class="job-card"
           v-for="recommendJob in recommendJobList.slice(0, 3)"
           :key="recommendJob.id"
-          v-if="recommendJob.object"
         >
           <el-link :href="`/job/${recommendJob.object.id}`" :underline="false">
             <div class="job-section1">
-              <span class="job-name">{{ recommendJob.object.name }}</span>
-              <span class="job-salary" v-if="recommendJob.object.salary && recommendJob.object.salary.name">{{
-                recommendJob.object.salary.name
-              }}</span>
-              <span class="job-salary" v-else>{{ recommendJob.object.minSalary}}k-{{recommendJob.object.maxSalary}}k</span>
+              <div class="job-name">{{ recommendJob.object.name }}</div>
+              <!-- 薪资范围 -->
+              <!-- 0-5k -> 5k一下 -->
+              <div
+                v-if="
+                  recommendJob.object.minSalary == 0 &&
+                  recommendJob.object.maxSalary == 5
+                "
+                class="job-salary"
+                style="font-size: 16px"
+              >
+                {{ "5K以下" }}
+              </div>
+              <!-- 0-0k -> 不限 -->
+              <div
+                v-else-if="
+                  recommendJob.object.minSalary == 0 &&
+                  recommendJob.object.maxSalary == 0
+                "
+                class="job-salary"
+                style="font-size: 16px"
+              >
+                {{ "薪酬不限" }}
+              </div>
+              <!-- 其他数值正常显示 -->
+              <!-- 全职为“min-max * number” -->
+              <div
+                v-else-if="recommendJob.object.jobType.id == 107"
+                class="job-salary"
+              >
+                {{
+                  recommendJob.object.minSalary +
+                  "K-" +
+                  recommendJob.object.maxSalary +
+                  "K" +
+                  " * " +
+                  recommendJob.object.salaryMonths
+                }}
+              </div>
+              <!-- 实习为“min-max 元/天” -->
+              <div v-else class="job-salary">
+                {{
+                  recommendJob.object.minSalary +
+                  "-" +
+                  recommendJob.object.maxSalary +
+                  " 元/天"
+                }}
+              </div>
               <el-button
                 circle
                 class="flag"
@@ -259,10 +301,53 @@
           <el-link :href="`/job/${recommendJob.object.id}`" :underline="false">
             <div class="job-section1">
               <span class="job-name">{{ recommendJob.object.name }}</span>
-              <span class="job-salary" v-if="recommendJob.object.salary && recommendJob.object.salary.name">{{
-                recommendJob.object.salary.name
-              }}</span>
-              <span class="job-salary" v-else>{{ recommendJob.object.minSalary}}k-{{recommendJob.object.maxSalary}}k</span>
+              <!-- 薪资范围 -->
+              <!-- 0-5k -> 5k一下 -->
+              <div
+                v-if="
+                  recommendJob.object.minSalary == 0 &&
+                  recommendJob.object.maxSalary == 5
+                "
+                class="job-salary"
+                style="font-size: 16px"
+              >
+                {{ "5K以下" }}
+              </div>
+              <!-- 0-0k -> 不限 -->
+              <div
+                v-else-if="
+                  recommendJob.object.minSalary == 0 &&
+                  recommendJob.object.maxSalary == 0
+                "
+                class="job-salary"
+                style="font-size: 16px"
+              >
+                {{ "薪酬不限" }}
+              </div>
+              <!-- 其他数值正常显示 -->
+              <!-- 全职为“min-max * number” -->
+              <div
+                v-else-if="recommendJob.object.jobType.id == 107"
+                class="job-salary"
+              >
+                {{
+                  recommendJob.object.minSalary +
+                  "K-" +
+                  recommendJob.object.maxSalary +
+                  "K" +
+                  " * " +
+                  recommendJob.object.salaryMonths
+                }}
+              </div>
+              <!-- 实习为“min-max 元/天” -->
+              <div v-else class="job-salary">
+                {{
+                  recommendJob.object.minSalary +
+                  "-" +
+                  recommendJob.object.maxSalary +
+                  " 元/天"
+                }}
+              </div>
               <el-button
                 circle
                 class="flag"
@@ -373,7 +458,13 @@
           class="company-card"
           v-for="company in recommendCompanyList"
           :key="company.id"
-          v-if="company.object && company.object.stage && company.object.property && company.object.scale && company.object.industry"
+          v-if="
+            company.object &&
+            company.object.stage &&
+            company.object.property &&
+            company.object.scale &&
+            company.object.industry
+          "
         >
           <el-link :href="`/company/${company.object.id}`" :underline="false">
             <div class="company-section1">
@@ -440,8 +531,12 @@
         class="company-container"
         v-if="recentJobList && recentJobList.length > 0"
       >
-        <div class="company-card" v-for="item in recentJobList" :key="item.id" v-if="item.stage && item.property && item.scale && item.industry">
-          <el-link :href="`/company/${item.id}`" :underline="false">
+        <div class="company-card" v-for="item in recentJobList" :key="item.id">
+          <el-link
+            :href="`/company/${item.id}`"
+            :underline="false"
+            v-if="item.stage && item.property && item.scale && item.industry"
+          >
             <div class="company-section1">
               <div class="company-name">{{ item.name }}</div>
               <!-- <img class="company-logo" :src="company.object.logo" /> -->
@@ -695,7 +790,7 @@ export default {
     moreJob() {
       this.$router.push("/job-list");
     },
-    moreWiki(){
+    moreWiki() {
       this.$router.push("/wiki-card");
     },
     moreActivity() {
@@ -1097,6 +1192,14 @@ export default {
         background: linear-gradient(135deg, #f9fbfd 0%, #ddecfd 100%);
         cursor: pointer;
         margin-right: 35px;
+
+        /deep/.el-link.el-link--default {
+          width: 100%;
+
+          /deep/.el-link--inner {
+            width: 100%;
+          }
+        }
         .job-section1 {
           display: flex;
           justify-content: space-between;
@@ -1122,9 +1225,6 @@ export default {
             font-family: PingFangSC-Semibold, PingFang SC;
             font-weight: 600;
             color: #ff5a59;
-            margin-left: 55px;
-            margin-top: 4px;
-            margin-right: 13px;
           }
           /deep/.el-button {
             margin-top: 4px;

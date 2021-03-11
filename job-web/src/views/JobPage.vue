@@ -18,14 +18,51 @@
             </div>
             <div class="session1-job-name mb-2">
               {{ job.name }}
-              <span class="salary-text ml-4">
-                {{ job.minSalary + "K-" + job.maxSalary + "K" }}
+              <!-- 薪资 -->
+              <!-- 职位薪资范围 -->
+              <!-- 0-5k -> 5k一下 -->
+              <span
+                v-if="job.minSalary == 0 && job.maxSalary == 5"
+                class="salary-text ml-4"
+                style="font-size: 16px"
+              >
+                {{ "5K以下" }}
+              </span>
+              <!-- 0-0k -> 不限 -->
+              <span
+                v-else-if="job.minSalary == 0 && job.maxSalary == 0"
+                class="salary-text ml-4"
+                style="font-size: 16px"
+              >
+                {{ "薪酬不限" }}
+              </span>
+              <!-- 其他数值正常显示 -->
+              <!-- 全职为“min-max * number” -->
+              <span v-else-if="job.jobType.id == 107" class="salary-text ml-4">
+                {{
+                  job.minSalary +
+                  "K-" +
+                  job.maxSalary +
+                  "K" +
+                  " * " +
+                  job.salaryMonths
+                }}
+              </span>
+              <!-- 实习为“min-max 元/天” -->
+              <span v-else class="salary-text ml-4">
+                {{ job.minSalary + "-" + job.maxSalary + " 元/天" }}
               </span>
             </div>
             <div class="text3 mb-2">
               {{ job.city ? job.city.name : "" }} |
-              {{ job.minDegree ? job.minDegree.name : "" }} |
-              {{ job.jobType ? job.jobType.name : "" }} |
+              {{
+                job.minDegree && job.minDegree.name
+                  ? job.minDegree.name == "不限"
+                    ? "学历不限"
+                    : job.minDegree.name
+                  : ""
+              }}
+              | {{ job.jobType ? job.jobType.name : "" }} |
               {{
                 job.experience.name
                   ? job.experience.name == "不限"

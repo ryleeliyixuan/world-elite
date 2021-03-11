@@ -97,7 +97,7 @@
 
         <div class="dialog-success" v-else-if="dialogStatus===3">
             <el-image :src="require('@/assets/activity/other-approve.png')" class="image"/>
-            <div class="text1">请联系人工客服： xiaokefu@we.com</div>
+            <div class="text1">请联系人工客服： career@myworldelite.com</div>
             <div class="text2">我们将尽快完成资料审核</div>
             <div class="confirm" @click="onClose">确认</div>
         </div>
