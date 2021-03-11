@@ -10,7 +10,7 @@
           {{job.name}}
           <span
             class="text-danger ml-4 salary-text"
-          >{{job.salary.name}}{{job.salaryMonths? ` × ${job.salaryMonths}个月` : ''}}</span>
+          >{{job.minSalary - job.maxSalary}}</span>
         </h2>
         <div
           class="mt-2"
@@ -68,11 +68,13 @@
 </template>
 
 <script>
+import JobDetail from "@/components/JobDetail";
 import { getJobInfo, getJobRecommendResumes } from "@/api/job_api";
 import { setPageTitle } from "@/utils/setting";
 
 export default {
   name: "JobPage",
+  components: { JobDetail },
   data() {
     return {
       job: undefined,

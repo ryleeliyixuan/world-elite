@@ -69,11 +69,13 @@
       </el-form-item>
 
       <el-form-item label="薪资待遇" prop="salary">
+        <!-- 全职 -->
         <el-select
           v-model="jobForm.minSalary"
           placeholder="最低薪资"
           class="salary-option mr-2"
           @change="onSalaryChange"
+          v-if="jobForm.jobType == 107"
         >
           <el-option
             v-for="item in salaryOptions"
@@ -84,13 +86,29 @@
           >
           </el-option>
         </el-select>
-
+        <!-- 实习 -->
+        <el-select
+          v-model="jobForm.minSalary"
+          placeholder="最低薪资"
+          class="salary-option mr-2"
+          @change="onSalaryChange"
+          v-else
+        >
+          <el-option
+            v-for="item in internSalaryOptions"
+            :key="item"
+            :label="item === 0 ? '面议' : item"
+            :value="item"
+          >
+          </el-option>
+        </el-select>
         <span class="pl-2 pr-2" v-if="jobForm.minSalary !== 0">-</span>
+        <!-- 全职 -->
         <el-select
           v-model="jobForm.maxSalary"
           placeholder="最高薪资"
           class="salary-option ml-2 mr-2"
-          v-if="jobForm.minSalary !== 0"
+          v-if="jobForm.minSalary !== 0 && jobForm.jobType == 107"
         >
           <el-option
             v-for="item in salaryOptions"
@@ -101,13 +119,33 @@
           >
           </el-option>
         </el-select>
+        <!-- 实习 -->
+        <el-select
+          v-model="jobForm.maxSalary"
+          placeholder="最高薪资"
+          class="salary-option ml-2 mr-2"
+          v-else-if="jobForm.minSalary !== 0 && jobForm.jobType != 107"
+        >
+          <el-option
+            v-for="item in internSalaryOptions"
+            v-if="item > jobForm.minSalary"
+            :key="item"
+            :label="item === 0 ? '面议' : item"
+            :value="item"
+          >
+          </el-option>
+        </el-select>
 
-        <span class="pl-2 pr-2" v-if="jobForm.minSalary !== 0">×</span>
+        <span
+          class="pl-2 pr-2"
+          v-if="jobForm.minSalary !== 0 && jobForm.jobType == 107"
+          >×</span
+        >
         <el-select
           v-model="jobForm.salaryMonths"
           placeholder="薪资月数"
           class="salary-option ml-2 mr-2"
-          v-if="jobForm.minSalary !== 0"
+          v-if="jobForm.minSalary !== 0 && jobForm.jobType == 107"
         >
           <el-option
             v-for="item in salaryMonthOptions"
@@ -116,7 +154,12 @@
             :value="item"
           ></el-option>
         </el-select>
-        <span class="pl-2 pr-2" v-if="jobForm.minSalary !== 0">薪</span>
+        <span
+          class="pl-2 pr-2"
+          v-if="jobForm.minSalary !== 0 && jobForm.jobType == 107"
+          >薪</span
+        >
+        <span class="pl-2 pr-2" v-else-if="jobForm.minSalary !== 0">元/天</span>
       </el-form-item>
 
       <el-form-item label="工作城市" prop="cityId">
@@ -462,7 +505,6 @@
         >
       </span>
     </el-dialog>
-
     <!-- 预览功能 -->
     <el-dialog title="预览" :visible.sync="dialogVisible2" width="70%">
       <div class="container">
@@ -597,7 +639,7 @@ export default {
         longitude: undefined,
         address: undefined,
         recruitType: undefined,
-        jobType: undefined,
+        jobType: 107,
         description: undefined,
         keywords: undefined,
         experienceId: undefined,
@@ -698,6 +740,26 @@ export default {
       additionOptions: [],
       additionNames: [],
       languageOptions: [],
+      internSalaryOptions: 
+      [
+        0,
+        50,
+        100,
+        150,
+        200,
+        250,
+        300,
+        350,
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+      ],
       salaryOptions: [
         0,
         1,
