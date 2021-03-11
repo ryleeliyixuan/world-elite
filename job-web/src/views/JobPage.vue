@@ -444,9 +444,11 @@ export default {
     // 点击简历投递中的整行
     handleClickRow(row) {
       // console.log(row);
-      this.checked = row.id;
-      this.selectedId = row.id;
-      this.selectedProgress = row.progess;
+      if (!row.incompleted) {
+        this.checked = row.id;
+        this.selectedId = row.id;
+        this.selectedProgress = row.progess;
+      }
     },
     handleEditResume(id) {
       let page = this.$router.resolve({
