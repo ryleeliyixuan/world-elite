@@ -512,8 +512,16 @@
     />清除选项</el-button
     >-->
     <div class="app-container">
-      <div v-if="showNoResult" style="text-align: center; line-height: 40px">
-        暂无搜索结果，显示全部职位
+      <div
+        v-if="showNoResult"
+        style="text-align: center; line-height: 40px"
+        class="d-flex align-items-center justify-content-center m-4"
+      >
+        <svg-icon
+          icon-class="job-notfound"
+          style="height: 99px; width: 131px"
+        />
+        抱歉！暂无搜索结果，显示全部职位
       </div>
       <div
         class="section3-container"
@@ -561,7 +569,7 @@
                 {{ "不限" }}
               </b>
               <!-- 其他数值正常显示 -->
-              <!-- 实习为“min-max 元/天” -->
+              <!-- 全职为“min-max * number” -->
               <b
                 v-else-if="job.jobType.id == 107"
                 class="section3-salary"
@@ -576,18 +584,22 @@
                   job.salaryMonths
                 }}
               </b>
-              <!-- 全职为“min-max * number” -->
-              <b
-                v-else-if="job.jobType.id == 108"
-                class="section3-salary"
-                style="font-size: 16px"
-              >
+              <!-- 实习为“min-max 元/天” -->
+              <b v-else class="section3-salary" style="font-size: 16px">
                 {{ job.minSalary + "-" + job.maxSalary + " 元/天" }}
               </b>
-              <span v-if="job.experience.name" class="section3-city-degree" style="font-size: 15px">
+              <span
+                v-if="job.experience.name"
+                class="section3-city-degree"
+                style="font-size: 15px"
+              >
                 {{ job.experience.name }}
               </span>
-              <span v-if="job.jobType.name" class="section3-city-degree" style="font-size: 15px">
+              <span
+                v-if="job.jobType.name"
+                class="section3-city-degree"
+                style="font-size: 15px"
+              >
                 {{ job.jobType.name }}
               </span>
               <span class="section3-city-degree" style="font-size: 15px">
@@ -1655,6 +1667,8 @@ export default {
 
       this.refreshOptions();
       this.handleRouteList();
+      this.sortValue = "1"; // 排序变成推荐顺序
+      this.sortChange();
     },
     getList() {
       this.showNoResult = false;

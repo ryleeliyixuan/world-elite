@@ -262,7 +262,7 @@
             <div style="display: flex; flex-direction: column; align-items: center;" v-if="status!=='1' && identity===2">
                 <div style="font-weight: bold;font-size: 18px">抱歉，您目前无法提供面试预约：</div>
                 <div style="font-weight: bold;font-size: 18px">详情请联系客服：</div>
-                <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
+                <div style="font-weight: bold;font-size: 18px">career@myworldelite.com</div>
                 <el-button type="primary" primary size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
                            @click="onRequire2">确认
@@ -278,7 +278,7 @@
 
             <div style="display: flex; flex-direction: column; align-items: center;" v-else-if="showContactEmail">
                 <div style="font-weight: bold;font-size: 18px">请联系人工客服：</div>
-                <div style="font-weight: bold;font-size: 18px">xiaokefu@we.com</div>
+                <div style="font-weight: bold;font-size: 18px">career@myworldelite.com</div>
                 <el-button type="primary" primary size="mini"
                            style="width:80px; font-size:12px; height:25px; margin: 30px 0 0 0; border-radius: 2px; line-height: 20px; padding: 0;"
                            @click="onRequire">确认

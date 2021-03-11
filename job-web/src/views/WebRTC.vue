@@ -645,7 +645,7 @@
 
             // 人工客服
             onService() {
-                this.dialogText = "请联系人工客服：<br/>xiaokefu@we.com";
+                this.dialogText = "请联系人工客服：<br/>career@myworldelite.com";
                 this.dialogVisible = true;
             },
             // 上传资源
