@@ -282,12 +282,12 @@
                                 >{{ category.name }}
                                 </el-tag>
                             </p>
-                            <p v-if="resume.userExpectJob.salary">
+                            <p v-if="resume.userExpectJob && resume.userExpectJob.salaryId">
                                 <el-tag
                                         effect="plain"
                                         class="mr-2"
                                         size="small"
-                                >{{resume.userExpectJob.salary.name}}</el-tag>
+                                >{{getExpectSalary(resume.userExpectJob.salaryId)}}</el-tag>
                             </p>
                         </div>
                     </div>
@@ -1075,8 +1075,14 @@
                     params: {parentId: 0}
                 }).then(data => {
                     this.cityOptions = data.data;
-                })
+                });
             },
+
+            getExpectSalary(salaryId) {
+                let salary = this.salaryOptions.filter(it => it.id === salaryId);
+                return salary ? salary.name : "";
+            },
+
             beforeAvatarUpload(file) {
                 return new Promise((resolve, reject) => {
                     if (checkPicSize(file)) {

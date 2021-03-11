@@ -206,7 +206,7 @@ public class JobApplyService extends BaseService {
         if (job.getId().equals("0")) {
             return;
         } else {
-            jobPlaceholder = String.format("%s.%s", job.getCompanyUser().getCompany().getName(), job.getName());
+            jobPlaceholder = String.format("%s.%s", job.getCompany().getName(), job.getName());
         }
         EmailForm emailForm = null;
         String messageContent = null;

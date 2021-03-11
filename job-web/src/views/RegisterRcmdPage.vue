@@ -50,7 +50,7 @@
                 <div class="line3 text-center">
                   <el-avatar
                     :size="40"
-                    :src="item.object.companyUser.avatar"
+                    :src="item.object.company.logo"
                   ></el-avatar>
                 </div>
                 <div class="line4 text-center">根据您的求职意向推荐</div>
