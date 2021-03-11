@@ -521,9 +521,8 @@
       >
         <el-card
           v-show="
-            job.companyUser &&
-            job.companyUser.company &&
-            job.companyUser.company.name !== ''
+            job.company &&
+            job.company.name !== ''
           "
           shadow="never"
           :body-style="{ padding: '0px' }"
@@ -610,31 +609,31 @@
           </div>
           <div
             class="section3-right-container"
-            v-if="job.companyUser && job.companyUser.company"
+            v-if="job.company"
           >
             <div class="section3-company-info-container">
               <h6 class="section3-company-name">
-                {{ job.companyUser.company.name }}
+                {{ job.company.name }}
               </h6>
               <div class="section3-company-tag">
-                <el-tag v-if="job.companyUser.company.industry">
-                  {{ job.companyUser.company.industry.name }}
+                <el-tag v-if="job.company.industry">
+                  {{ job.company.industry.name }}
                 </el-tag>
-                <el-tag v-if="job.companyUser.company.property">
-                  {{ job.companyUser.company.property.name }}
+                <el-tag v-if="job.company.property">
+                  {{ job.company.property.name }}
                 </el-tag>
-                <el-tag v-if="job.companyUser.company.scale">
-                  {{ job.companyUser.company.scale.name }}
+                <el-tag v-if="job.company.scale">
+                  {{ job.company.scale.name }}
                 </el-tag>
               </div>
             </div>
-            <el-link :href="`/company/${job.companyUser.company.id}`">
+            <el-link :href="`/company/${job.company.id}`">
               <el-image
                 class="section3-logo"
-                :src="job.companyUser.company.logo"
+                :src="job.company.logo"
                 v-if="
-                  job.companyUser.company.logo &&
-                  job.companyUser.company.logo !== ''
+                  job.company.logo &&
+                  job.company.logo !== ''
                 "
               >
                 <div slot="error" class="section3-logo-error">
