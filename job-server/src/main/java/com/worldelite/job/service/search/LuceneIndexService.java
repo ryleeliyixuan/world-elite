@@ -108,9 +108,13 @@ public class LuceneIndexService implements IndexService {
             PageHelper.startPage(curPage++, 100, false);
             resumeList = resumeMapper.selectAndList(options);
             for (Resume resume : resumeList) {
-                Document doc = createResumeDoc(resume.getId());
-                if (doc != null) {
-                    indexWriter.addDocument(doc);
+                try {
+                    Document doc = createResumeDoc(resume.getId());
+                    if (doc != null) {
+                        indexWriter.addDocument(doc);
+                    }
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
                 }
             }
         } while (CollectionUtils.isNotEmpty(resumeList));
@@ -383,6 +387,7 @@ public class LuceneIndexService implements IndexService {
 
     private Document createResumeDoc(Long resumeId) {
         ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeId);
+        assert resumeService != null;
         ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
         ResumeVo resumeVo = resumeService.toResumeVo(resumeDetail);
         if (checkIfResumeNotComplete(resumeVo)) return null;
@@ -390,7 +395,7 @@ public class LuceneIndexService implements IndexService {
         final Document doc = new Document();
         doc.add(new StoredField(ResumeIndexFields.RESUME_ID, resumeId));
         doc.add(new LongPoint(ResumeIndexFields.RESUME_ID_INDEX, resumeId));
-        UserExpectJobVo expectJobVo = null;
+        UserExpectJobVo expectJobVo = resumeVo.getUserExpectJob();
 
         if (expectJobVo != null) {
             if (CollectionUtils.isNotEmpty(expectJobVo.getCityList())) {
