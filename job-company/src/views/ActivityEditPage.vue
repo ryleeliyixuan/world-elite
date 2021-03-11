@@ -140,6 +140,39 @@
                 </div>
             </div>
             <div class="line">
+                <div class="name">是否需要上传简历<span>*</span></div>
+                <div class="option-container" @click="onNeedResume('1')">
+                    <svg-icon
+                            v-if="activityForm.needResume !== '1'"
+                            icon-class="unselected"
+                            style="margin-right: 3px"
+                    ></svg-icon>
+                    <svg-icon
+                            v-else
+                            icon-class="selected"
+                            style="margin-right: 3px"
+                    ></svg-icon>
+                    <div class="option-text">是</div>
+                </div>
+                <div
+                        class="option-container"
+                        @click="onNeedResume('0')"
+                        style="margin-left: 21px"
+                >
+                    <svg-icon
+                            v-if="activityForm.needResume !== '0'"
+                            icon-class="unselected"
+                            style="margin-right: 3px"
+                    ></svg-icon>
+                    <svg-icon
+                            v-else
+                            icon-class="selected"
+                            style="margin-right: 3px"
+                    ></svg-icon>
+                    <div class="option-text">否</div>
+                </div>
+            </div>
+            <div class="line">
                 <div class="name">
                     活动时间<span>*</span>
                 </div>
