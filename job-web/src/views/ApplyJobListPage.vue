@@ -1,21 +1,26 @@
 <template>
   <div class="app-container">
     <h5>我的投递</h5>
-    <pagination
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="handleRouteList"
-    />
+
     <!-- 通过投递成功／通过初筛／邀请面试／不合适 四种状态来方便用户追踪申请的进度，提升用户体验。 -->
     <div class="job-list">
       <el-tabs class="nav-bar" v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="投递成功" name="0"></el-tab-pane>
+        <el-tab-pane label="全部投递" name="0"></el-tab-pane>
+        <el-tab-pane label="投递成功" name="2"></el-tab-pane>
         <el-tab-pane label="通过初筛" name="3"></el-tab-pane>
         <el-tab-pane label="邀请面试" name="4"></el-tab-pane>
         <el-tab-pane label="不合适" name="6"></el-tab-pane>
       </el-tabs>
+
+      <pagination
+              :total="total"
+              :page.sync="listQuery.page"
+              :limit.sync="listQuery.limit"
+              @pagination="handleRouteList"
+      />
+
       <template v-if="pageResult.list && pageResult.list.length !== 0">
+
         <el-card
           shadow="hover"
           v-for="job in pageResult.list"
@@ -26,7 +31,7 @@
           <div class="item-container">
             <div class="item-company-container">
               <div class="text-small text-gray item-company-name">
-                <span>{{ job.companyUser.company.name }}</span>
+                <span>{{ job.company.name }}</span>
                 <div>
                   <span style="margin-right: 10px">{{ job.applyTime }}</span>
                   <el-button
@@ -42,8 +47,9 @@
               <div class="item-footer">
                 <div class="item-footer-text">
                   <b class="text-danger"
-                    >{{ job.salary.name
-                    }}{{ job.salaryMonths ? ` × ${job.salaryMonths}` : "" }}</b
+                    >
+                    {{job.minSalary}}K - {{job.maxSalary}}K{{ job.salaryMonths ? ` × ${job.salaryMonths}` : "" }}
+                  </b
                   >
                   <span class="ml-3 text-gray text-small">{{
                     `${job.city ? job.city.name : ""} / ${
@@ -98,6 +104,7 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
+        0: "全部投递",
         1: "投递中",
         2: "投递成功",
         3: "通过初筛",
@@ -142,6 +149,8 @@ export default {
       } else {
         this.listQuery.status = status;
       }
+      this.listQuery.page = 1;
+      this.handleRouteList();
       this.getList();
     },
     handleChat(item) {
