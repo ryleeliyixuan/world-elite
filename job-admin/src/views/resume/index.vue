@@ -251,7 +251,7 @@
           @pagination="getResumeApplyJobList"
         />
         <el-table key="applyJobTable" :data="applyJobsPage.list" style="margin-top: 10px">
-          <el-table-column label="公司" prop="companyUser.company.name"></el-table-column>
+          <el-table-column label="公司" prop="company.name"></el-table-column>
           <el-table-column label="职位">
             <template slot-scope="{row}">
               <el-link

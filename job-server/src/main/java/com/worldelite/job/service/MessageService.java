@@ -119,7 +119,7 @@ public class MessageService extends BaseService {
         int page = 1;
         int pageSize = 20;
         List<Favorite> favoriteList;
-        CompanyVo companyVo = jobVo.getCompanyUser().getCompany();
+        CompanyVo companyVo = jobVo.getCompany();
         Favorite options = new Favorite();
         options.setType(FavoriteType.COMPANY.value);
         options.setObjectId(NumberUtils.toLong(companyVo.getId()));

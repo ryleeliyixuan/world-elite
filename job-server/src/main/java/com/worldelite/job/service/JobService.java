@@ -564,6 +564,7 @@ public class JobService extends BaseService {
         List<JobVo> jobVoList = new ArrayList<>(jobApplyPage.size());
         for (JobApply jobApply : jobApplyPage) {
             JobVo jobVo = getJobInfo(jobApply.getJobId(), true);
+            if(jobVo == null) continue;
             jobVo.setApplyStatus(jobApply.getStatus());
             jobVo.setApplyTime(jobApply.getCreateTime());
             jobVoList.add(jobVo);

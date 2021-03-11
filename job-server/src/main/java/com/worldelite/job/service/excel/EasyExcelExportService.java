@@ -269,10 +269,11 @@ public class EasyExcelExportService implements IExportExcelService {
             jobExcel.setCategory(jobVo.getCategory().getName());
         }
         if(jobVo.getCompanyUser() != null){
+            //如果是op账户创建的职位,name是op的
             jobExcel.setCreator(jobVo.getCompanyUser().getName());
-            if(jobVo.getCompanyUser().getCompany() != null){
-                jobExcel.setCompany(jobVo.getCompanyUser().getCompany().getFullName());
-            }
+        }
+        if(jobVo.getCompany() != null){
+            jobExcel.setCompany(jobVo.getCompany().getFullName());
         }
 //        if(jobVo.getSalary() != null && jobVo.getSalary().getName() != null){
 //            String salary = jobVo.getSalary().getName();

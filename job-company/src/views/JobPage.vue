@@ -4,13 +4,13 @@
       <b-col>
         <div
           class="text-gray text-small"
-          v-if="job.companyUser && job.companyUser.company"
-        >{{job.companyUser.company.name}}招聘</div>
+          v-if="job.company"
+        >{{job.company.name}}招聘</div>
         <h2 class="mt-3">
           {{job.name}}
           <span
             class="text-danger ml-4 salary-text"
-          >{{job.minSalary - job.maxSalary}}</span>
+          >{{job.minSalary}}K - {{job.maxSalary}}K{{ job.salaryMonths ? ` × ${job.salaryMonths}` : "" }}</span>
         </h2>
         <div
           class="mt-2"
@@ -107,12 +107,12 @@ export default {
   },
   computed: {
     companyLink() {
-      return this.job.companyUser.company.homepage.startsWith("http")
-        ? this.job.companyUser.company.homepage
-        : "http://" + this.job.companyUser.company.homepage;
+      return this.job.company.homepage.startsWith("http")
+        ? this.job.company.homepage
+        : "http://" + this.job.company.homepage;
     },
     companyLinkName() {
-      return this.job.companyUser.company.homepage.replace(/http(s)?:\/\//);
+      return this.job.company.homepage.replace(/http(s)?:\/\//);
     }
   },
   methods: {
@@ -121,7 +121,7 @@ export default {
       getJobInfo(jobId).then(response => {
         this.job = response.data;
         const title = `${this.job.name} - ${
-          this.job.companyUser.company ? this.job.companyUser.company.name : ""
+          this.job.company ? this.job.company.name : ""
         }`;
         setPageTitle(title);
         this.shareConfig.title = title;

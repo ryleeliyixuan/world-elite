@@ -93,7 +93,7 @@
                                 <span class="item-card"
                                       v-if="resumeInfo.maxResumeEdu && resumeInfo.maxResumeEdu.degree">{{resumeInfo.maxResumeEdu.degree.name}}</span>
                                 <span class="item-card">{{resumeInfo.age}}岁</span>
-                                <span class="item-card" v-if="resumeInfo.userExpectJob && resumeInfo.userExpectJob.salary">{{resumeInfo.userExpectJob.salary.name}}</span>
+                                <span class="item-card" v-if="resumeInfo.userExpectJob && resumeInfo.userExpectJob.salaryId">{{getExpectSalary(resumeInfo.userExpectJob.salaryId)}}</span>
                             </div>
                             <div>
                                 <span class="item-card" v-if="resumeInfo.maxResumeEdu">{{resumeInfo.maxResumeEdu.schoolName}}</span>
@@ -205,6 +205,7 @@
     import im from "@/utils/im"
     import {getUploadPicToken} from '@/api/upload_api'
     import {handleApplyResume} from "@/api/resume_api";
+    import {listByType} from "@/api/dict_api";
 
     export default {
         name: "ChatBox",
@@ -257,6 +258,7 @@
                     "🌙", "🕐", "⌚", "⌛", "🍀", "🌹", "🍄", "🍒", "🍓", "🐟", "🐭", "🐴"],
                 showEmoji: false,
                 insertPosition: 0,
+                salaryList: undefined
             };
         },
 
@@ -282,6 +284,11 @@
             }).catch(() => {
                 this.$router.push({path: "/login", query: {...this.$route.query, redirect: "/chat"}});
             });
+
+            listByType(9).then((response) => {
+                this.salaryList = response.data.list;
+            });
+
             this.$emit("complete");
         },
         activated() {
@@ -290,6 +297,10 @@
             }
         },
         methods: {
+            getExpectSalary(salaryId) {
+                let salary = this.salaryList.filter(it => it.id === salaryId);
+                return salary ? salary.name : "";
+            },
             // 获取会话列表
             getConversationList() {
                 im.getConversationList().then(data => {

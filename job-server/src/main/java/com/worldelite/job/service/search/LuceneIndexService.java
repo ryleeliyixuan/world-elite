@@ -212,8 +212,8 @@ public class LuceneIndexService implements IndexService {
             doc.add(new IntPoint(JobIndexFields.EXPERIENCE_INDEX, jobVo.getExperience().getId()));
         }
 
-        if (jobVo.getCompanyUser() != null) {
-            CompanyVo companyVo = jobVo.getCompanyUser().getCompany();
+        if (jobVo.getCompany() != null) {
+            CompanyVo companyVo = jobVo.getCompany();
             if (companyVo != null) {
                 keyWordBuilder.append(companyVo.getName());
                 if (companyVo.getScale() != null) {
@@ -227,7 +227,7 @@ public class LuceneIndexService implements IndexService {
                     keyWordBuilder.append(companyVo.getIndustry().getName());
                 }
                 if (companyVo.getProperty() != null) {
-                    doc.add(new IntPoint(JobIndexFields.COMPANY_DEFINE_INDEX, jobVo.getCompanyUser().getCompany().getProperty().getId()));
+                    doc.add(new IntPoint(JobIndexFields.COMPANY_DEFINE_INDEX, jobVo.getCompany().getProperty().getId()));
                 }
             }
         }
@@ -247,8 +247,8 @@ public class LuceneIndexService implements IndexService {
         }
         //防止空指针,不想一级一级判空了
         try {
-            if (jobVo.getCompanyUser().getCompany().getId() != null) {
-                doc.add(new LongPoint(JobIndexFields.COMPANY_ID, Long.parseLong(jobVo.getCompanyUser().getCompany().getId())));
+            if (jobVo.getCompany().getId() != null) {
+                doc.add(new LongPoint(JobIndexFields.COMPANY_ID, Long.parseLong(jobVo.getCompany().getId())));
             }
         } catch (Exception ignored) {
         }

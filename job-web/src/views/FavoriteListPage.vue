@@ -24,9 +24,8 @@
           <b-media right-align vertical-align="center">
             <p class="text-small text-gray">
               {{
-                job.companyUser &&
-                job.companyUser.company &&
-                job.companyUser.company.name
+                job.company &&
+                job.company.name
               }}
               <span class="float-right">{{ job.favoriteTime }}</span>
             </p>

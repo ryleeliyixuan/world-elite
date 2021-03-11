@@ -61,7 +61,7 @@
       <el-table-column label="职位分类" prop="name"></el-table-column>
       <el-table-column label="类型" prop="jobType.name"></el-table-column>
       <el-table-column label="发布者" prop="companyUser.name"></el-table-column>
-      <el-table-column label="公司" prop="companyUser.company.name"></el-table-column>
+      <el-table-column label="公司" prop="company.name"></el-table-column>
       <el-table-column label="薪资待遇">
         <template slot-scope="{row}">
           {{row.minSalary}} - {{row.maxSalary}}

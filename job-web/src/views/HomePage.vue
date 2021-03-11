@@ -247,35 +247,32 @@
           </el-link>
           <el-divider></el-divider>
           <el-link
-            :href="`/company/${recommendJob.object.companyUser.company.id}`"
+            :href="`/company/${recommendJob.object.company.id}`"
             :underline="false"
-            v-if="
-              recommendJob.object.companyUser &&
-              recommendJob.object.companyUser.company
-            "
+            v-if="recommendJob.object.company"
           >
             <div class="job-company-container">
               <div class="company-info">
                 <div class="company-name">
-                  {{ recommendJob.object.companyUser.company.name }}
+                  {{ recommendJob.object.company.name }}
                 </div>
                 <div style="display: flex">
                   <div class="text-gray text-small company-tag">
                     {{
-                      recommendJob.object.companyUser.company.property
-                        ? recommendJob.object.companyUser.company.property.name
+                      recommendJob.object.company.property
+                        ? recommendJob.object.company.property.name
                         : ""
                     }}
                     |
                     {{
-                      recommendJob.object.companyUser.company.industry
-                        ? recommendJob.object.companyUser.company.industry.name
+                      recommendJob.object.company.industry
+                        ? recommendJob.object.company.industry.name
                         : ""
                     }}
                     |
                     {{
-                      recommendJob.object.companyUser.company.scale
-                        ? recommendJob.object.companyUser.company.scale.name
+                      recommendJob.object.company.scale
+                        ? recommendJob.object.company.scale.name
                         : ""
                     }}
                   </div>
@@ -397,34 +394,31 @@
           </el-link>
           <el-divider></el-divider>
           <el-link
-            :href="`/company/${recommendJob.object.companyUser.company.id}`"
+            :href="`/company/${recommendJob.object.company.id}`"
             :underline="false"
-            v-if="
-              recommendJob.object.companyUser &&
-              recommendJob.object.companyUser.company
-            "
+            v-if="recommendJob.object.company"
           >
             <div class="job-company-container">
               <div class="company-info">
                 <div class="company-name">
-                  {{ recommendJob.object.companyUser.company.name }}
+                  {{ recommendJob.object.company.name }}
                 </div>
                 <div class="text-gray text-small company-tag">
                   {{
-                    recommendJob.object.companyUser.company.property
-                      ? recommendJob.object.companyUser.company.property.name
+                    recommendJob.object.company.property
+                      ? recommendJob.object.company.property.name
                       : ""
                   }}
                   |
                   {{
-                    recommendJob.object.companyUser.company.industry
-                      ? recommendJob.object.companyUser.company.industry.name
+                    recommendJob.object.company.industry
+                      ? recommendJob.object.company.industry.name
                       : ""
                   }}
                   |
                   {{
-                    recommendJob.object.companyUser.company.scale
-                      ? recommendJob.object.companyUser.company.scale.name
+                    recommendJob.object.company.scale
+                      ? recommendJob.object.company.scale.name
                       : ""
                   }}
                 </div>
