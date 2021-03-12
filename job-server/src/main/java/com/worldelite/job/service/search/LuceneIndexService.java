@@ -7,6 +7,7 @@ import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.ResumeIndexFields;
 import com.worldelite.job.context.LuceneContext;
 import com.worldelite.job.entity.*;
+import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.mapper.JobMapper;
 import com.worldelite.job.mapper.ResumeMapper;
 import com.worldelite.job.service.JobCategoryService;
@@ -113,7 +114,7 @@ public class LuceneIndexService implements IndexService {
                     if (doc != null) {
                         indexWriter.addDocument(doc);
                     }
-                } catch (IOException e) {
+                } catch (ServiceException e) {
                     log.error(e.getMessage(), e);
                 }
             }
