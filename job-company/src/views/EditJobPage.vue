@@ -16,6 +16,7 @@
           remote
           reserve-keyword
           :remote-method="searchCompanyOptions"
+          @click.native="searchCompanyOptions()"
           placeholder="请输入公司名称"
           size="small"
         >
@@ -740,7 +741,7 @@ export default {
       additionOptions: [],
       additionNames: [],
       languageOptions: [],
-      internSalaryOptions: 
+      internSalaryOptions:
       [
         0,
         50,
@@ -1365,19 +1366,15 @@ export default {
     },
 
     searchCompanyOptions(query) {
-      if (query !== "") {
-        this.$axios
-          .request({
-            url: "/company/search",
-            params: { name: query },
-            method: "get",
-          })
-          .then((response) => {
-            this.companyOptions = response.data.list;
-          });
-      } else {
-        this.companyOptions = [];
-      }
+      this.$axios
+        .request({
+          url: "/company/search",
+          params: { name: query },
+          method: "get",
+        })
+        .then((response) => {
+          this.companyOptions = response.data.list;
+        });
     },
 
     onSalaryChange() {
