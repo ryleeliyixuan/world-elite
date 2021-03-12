@@ -883,7 +883,7 @@ export default {
       getCategoryTree().then(
         (response) => (this.jobCategoryOptions = response.data)
       );
-      listByType(25).then(
+      listByTypeWithSort(25, "-value").then(
         (response) =>
           (this.degreeOptions = this.amendOptions(response.data.list))
       );
