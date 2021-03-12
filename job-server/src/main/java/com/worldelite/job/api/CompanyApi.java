@@ -758,10 +758,9 @@ public class CompanyApi extends BaseApi {
      *
      * @return
      */
-    @RequireLogin(allow = UserType.ADMIN)
     @GetMapping("create-or-refresh-company-name-index")
-    public ApiResult createOrRefreshJobNameIndex() {
-        companyNameSearchService.createOrRefreshJobNameIndex();
+    public ApiResult createOrRefreshCompanyNameIndex() {
+        companyNameSearchService.createOrRefreshCompanyNameIndex();
         return ApiResult.ok();
     }
 
@@ -775,8 +774,7 @@ public class CompanyApi extends BaseApi {
     @ApiDoc
     @GetMapping("search-company-name")
     public ApiResult<PageResult<String>> searchJobName(@Valid SearchNameForm searchNameForm) {
-        companyNameSearchService.createOrRefreshJobNameIndex();
-        PageResult<String> result = companyNameSearchService.searchJobName(searchNameForm);
+        PageResult<String> result = companyNameSearchService.searchCompanyName(searchNameForm);
         return ApiResult.ok(result);
     }
 

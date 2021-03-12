@@ -53,7 +53,7 @@ public class CompanyNameSearchService {
      * 刷新职位名索引
      */
     @SneakyThrows
-    public void createOrRefreshJobNameIndex() {
+    public void createOrRefreshCompanyNameIndex() {
         List<Document> docs = new ArrayList<>();
         CompanyOptions options = new CompanyOptions();
         List<Company> companies = companyMapper.selectAndList(options);
@@ -75,13 +75,13 @@ public class CompanyNameSearchService {
     }
 
     @SneakyThrows
-    public PageResult<String> searchJobName(SearchNameForm searchNameForm) {
-        return searchJobName(searchNameForm.getKeyWords(), searchNameForm.getPage(), searchNameForm.getSize());
+    public PageResult<String> searchCompanyName(SearchNameForm searchNameForm) {
+        return searchCompanyName(searchNameForm.getKeyWords(), searchNameForm.getPage(), searchNameForm.getSize());
     }
 
 
     @SneakyThrows
-    public PageResult<String> searchJobName(String keyWords, int page, int size) {
+    public PageResult<String> searchCompanyName(String keyWords, int page, int size) {
         List<String> arrayList = new ArrayList<>();
         IndexSearcher indexSearcher = null;
         try {
