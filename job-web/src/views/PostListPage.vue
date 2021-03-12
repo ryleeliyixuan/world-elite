@@ -370,14 +370,30 @@ export default {
         (response) => (this.salaryRangeOptions = response.data.list)
       );
       //学历下拉
-      listByType(1).then(
-        (response) => (this.degreeOptions = response.data.list)
+      listByType(25).then(
+        (response) => (this.degreeOptions = this.amendOptions(response.data.list))
       );
       //岗位分类下拉
       listByType(6).then(
         (response) => (this.companyIndustryOptions = response.data.list)
       );
     },
+
+    amendOptions(options) {
+      let validOptions = [];
+      for (let i = 0; i < options.length; i++) {
+        if (
+                options[i].name !== "高中" &&
+                options[i].name !== "专科" &&
+                options[i].name !== "MBA" &&
+                options[i].name !== "EMBA"
+        ) {
+          validOptions.push(options[i]);
+        }
+      }
+      return validOptions;
+    },
+
     handleFilter() {
       this.listQuery.page = 1;
       this.handleRouteList();
