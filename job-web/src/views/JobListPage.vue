@@ -528,10 +528,7 @@
         v-if="pageResult.list && pageResult.list.length !== 0"
       >
         <el-card
-          v-show="
-            job.company &&
-            job.company.name !== ''
-          "
+          v-show="job.company && job.company.name !== ''"
           shadow="never"
           :body-style="{ padding: '0px' }"
           v-for="job in pageResult.list"
@@ -539,7 +536,7 @@
           class="section3-item-container"
           @click.native="openJobDetail(job.id)"
         >
-          <div class="section3-left-container">
+          <div class="section3-left-container mr-3">
             <div class="section3-line1">
               <h6 class="section3-job-name">{{ job.name }}</h6>
               <!-- 内推 -->
@@ -588,12 +585,17 @@
               <b v-else class="section3-salary" style="font-size: 16px">
                 {{ job.minSalary + "-" + job.maxSalary + " 元/天" }}
               </b>
+              <!-- 工作经验 -->
               <span
                 v-if="job.experience.name"
                 class="section3-city-degree"
                 style="font-size: 15px"
               >
-                {{ job.experience.name }}
+                {{
+                  job.experience.name == "不限"
+                    ? "工作经验不限"
+                    : job.experience.name
+                }}
               </span>
               <span
                 v-if="job.jobType.name"
@@ -602,10 +604,15 @@
               >
                 {{ job.jobType.name }}
               </span>
+              <!-- 城市/学历 -->
               <span class="section3-city-degree" style="font-size: 15px">
                 {{
                   `${job.city ? job.city.name : ""}/${
-                    job.minDegree ? job.minDegree.name.substring(0, 2) : ""
+                    job.minDegree
+                      ? job.minDegree.name == "不限"
+                        ? "学历不限"
+                        : job.minDegree.name.substring(0, 2)
+                      : ""
                   }`
                 }}
               </span>
@@ -619,10 +626,7 @@
               > -->
             </div>
           </div>
-          <div
-            class="section3-right-container"
-            v-if="job.company"
-          >
+          <div class="section3-right-container" v-if="job.company">
             <div class="section3-company-info-container">
               <h6 class="section3-company-name">
                 {{ job.company.name }}
@@ -643,10 +647,7 @@
               <el-image
                 class="section3-logo"
                 :src="job.company.logo"
-                v-if="
-                  job.company.logo &&
-                  job.company.logo !== ''
-                "
+                v-if="job.company.logo && job.company.logo !== ''"
               >
                 <div slot="error" class="section3-logo-error">
                   <i class="el-icon-picture-outline"></i>
@@ -2132,9 +2133,13 @@ export default {
       box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
       border-radius: 8px;
       border: 0px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
       /deep/ .el-card__body {
         display: flex;
+        width: 100%;
       }
     }
 
