@@ -544,7 +544,7 @@
 <script>
   import Pagination from "@/components/Pagination";
   import {applyResumeList, handleApplyResume,} from "@/api/resume_api";
-  import {listByType} from "@/api/dict_api";
+  import {listByType, listByTypeWithSort} from "@/api/dict_api";
   import {getUserJobOptions} from "@/api/job_api";
   import ResumeView from "@/components/ResumeView";
   import ResumeLibrary from "@/components/ResumeLibrary";
@@ -653,7 +653,7 @@
 
   methods: {
     initData() {
-      listByType(1).then(
+      listByTypeWithSort(25, "-value").then(
         (response) => (this.degreeOptions = response.data.list)
       );
 

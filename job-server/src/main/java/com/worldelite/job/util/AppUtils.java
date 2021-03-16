@@ -125,7 +125,8 @@ public class AppUtils {
      * @return
      */
     public static HttpServletRequest request() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        return requestAttributes != null ? requestAttributes.getRequest() : null;
     }
 
     /**
@@ -143,7 +144,8 @@ public class AppUtils {
      * @return
      */
     public static HttpServletResponse response() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        return requestAttributes != null ? requestAttributes.getResponse() : null;
     }
 
     /**

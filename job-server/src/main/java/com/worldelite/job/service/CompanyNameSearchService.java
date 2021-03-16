@@ -64,7 +64,7 @@ public class CompanyNameSearchService {
         });
 
         try {
-            indexWriter.deleteDocuments(new Term(CompanyIndexFields.COMPANY_FULL_NAME));
+            indexWriter.deleteAll();
             indexWriter.commit();
 
             indexWriter.addDocuments(docs);

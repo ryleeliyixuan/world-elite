@@ -1,23 +1,26 @@
 package com.worldelite.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
-import com.worldelite.job.constants.Bool;
-import com.worldelite.job.constants.FavoriteType;
-import com.worldelite.job.constants.JobStatus;
-import com.worldelite.job.constants.UserType;
+import com.worldelite.job.constants.*;
+import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.*;
 import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.List;
 /**
  * @author yeguozhong yedaxia.github.com
  */
+@Slf4j
 @Service
 public class CompanyService extends BaseService{
 
@@ -54,6 +58,15 @@ public class CompanyService extends BaseService{
 
     @Autowired
     private FavoriteService favoriteService;
+
+    @Autowired
+    private CompanyNameSearchService companyNameSearchService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Resource(name = "luceneIndexCmdFanoutExchange")
+    private FanoutExchange exchange;
 
     /**
      * 搜索公司
@@ -263,6 +276,14 @@ public class CompanyService extends BaseService{
             company.setUpdateTime(new Date());
             companyMapper.updateByPrimaryKeySelective(company);
         }
+
+        companyNameSearchService.createOrRefreshCompanyNameIndex();
+
+        //MQ广播索引更新指令
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(null, OperationType.CREATE_OR_UPDATE, BusinessType.COMPANY);
+        rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
+        log.info("Lucene index synchronize command message [saveCompany] {}",indexCmdDto.toString());
+
         return company.getId();
     }
 
@@ -275,6 +296,12 @@ public class CompanyService extends BaseService{
         if(company != null){
             company.setDelFlag(Bool.TRUE);
             companyMapper.updateByPrimaryKeySelective(company);
+
+            companyNameSearchService.createOrRefreshCompanyNameIndex();
+            //MQ广播索引更新指令
+            LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(null, OperationType.DELETE, BusinessType.COMPANY);
+            rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
+            log.info("Lucene index synchronize command message [delCompany] {}",indexCmdDto.toString());
         }
     }
 

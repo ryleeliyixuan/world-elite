@@ -1,5 +1,6 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.worldelite.job.constants.*;
 import com.worldelite.job.dto.JobRecruitDto;
@@ -20,10 +21,8 @@ import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.document.Document;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +89,9 @@ public class JobService extends BaseService {
 
     @Autowired
     private OpUserService opUserService;
+
+    @Autowired
+    private JobNameSearchService jobNameSearchService;
 
     /**
      * 获取职位信息: 适用列表
@@ -208,9 +210,13 @@ public class JobService extends BaseService {
         jobAddressService.add(job.getId(),jobForm.getAddress(),jobForm.getLatitude(),jobForm.getLongitude());
 
         //增加索引
-        Document document = indexService.saveJobItem(job.getId());
+        indexService.saveJobItem(job.getId());
 
-        rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.CreateOrUpdate, BusinessType.Job));
+        jobNameSearchService.createOrRefreshJobNameIndex();
+        //职位索引同步指令消息
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(job.getId(), OperationType.CREATE_OR_UPDATE, BusinessType.JOB);
+        rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
+        log.info("Lucene index synchronize command message [saveJob] {}",indexCmdDto.toString());
     }
 
     /**
@@ -456,12 +462,6 @@ public class JobService extends BaseService {
         job.setStatus(JobStatus.OFFLINE.value);
         job.setUpdateTime(new Date());
 
-        //从索引中删除
-        Document document = indexService.deleteJobItem(jobId);
-
-        //MQ广播索引更新指令
-        rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.Delete, BusinessType.Job));
-
         // 被系统或者管理员强制下架，记录原因，并发送消息
         if (force || curUser().getType() == UserType.ADMIN.value) {
 
@@ -480,6 +480,15 @@ public class JobService extends BaseService {
         }
 
         jobMapper.updateByPrimaryKeySelective(job);
+
+        //从索引中删除
+        indexService.deleteJobItem(jobId);
+
+        jobNameSearchService.createOrRefreshJobNameIndex();
+        //MQ广播索引更新指令
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(jobId, OperationType.DELETE, BusinessType.JOB);
+        rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
+        log.info("Lucene index synchronize command message [takeOffJob] {}",indexCmdDto.toString());
     }
 
     /**

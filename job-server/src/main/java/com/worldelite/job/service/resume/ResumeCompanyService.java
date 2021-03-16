@@ -12,7 +12,6 @@ import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
 import com.worldelite.job.mapper.CompanyUserMapper;
 import com.worldelite.job.mapper.ResumeMapper;
-import com.worldelite.job.mapper.ResumeMergeAttachMapper;
 import com.worldelite.job.service.*;
 import com.worldelite.job.service.sdk.ResumeSDK;
 import com.worldelite.job.service.search.IndexService;
@@ -37,7 +36,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class ResumeCompanyService extends ResumeService{
+public class ResumeCompanyService extends ResumeService {
 
     @Value("${search.index.resumeindex2}")
     private String folder;
@@ -87,7 +86,7 @@ public class ResumeCompanyService extends ResumeService{
         Long userId = curUser().getId();
         List<Resume> resumeList = getResumeByUserId(userId);
         //如果简历存在则返回第一份简历的简历详情
-        if(CollectionUtils.isNotEmpty(resumeList)){
+        if (CollectionUtils.isNotEmpty(resumeList)) {
             Resume resume = resumeList.get(0);
             return getResumeDetail(resume.getId());
         }
@@ -105,19 +104,19 @@ public class ResumeCompanyService extends ResumeService{
     public ResumeDetail saveBasic(ResumeForm resumeForm) {
         //简历不存在则先创建空简历
         Resume resume = null;
-        if(resumeForm.getId() != null){
+        if (resumeForm.getId() != null) {
             resume = resumeMapper.selectByPrimaryKey(resumeForm.getId());
         }
-        if(resume == null){
+        if (resume == null) {
             resume = newResumeBasic();
         }
         //用表单数据替换旧简历数据
-        fillResumeBasic(resume,resumeForm);
+        fillResumeBasic(resume, resumeForm);
         //更新简历数据
         resume.setUpdateTime(new Date());
         resumeMapper.updateByPrimaryKeySelective(resume);
         //更新用户数据
-        updateUser(resume.getUserId(),resumeForm);
+        updateUser(resume.getUserId(), resumeForm);
         return getResumeDetail(resume.getId());
     }
 
@@ -148,19 +147,19 @@ public class ResumeCompanyService extends ResumeService{
         Long resumeId = resumeDetail.getResumeId();
         //保存教育信息
         List<ResumeEduForm> resumeEduFormList = resumeSDK.getResumeEdu(result);
-        for(ResumeEduForm eduForm:resumeEduFormList){
+        for (ResumeEduForm eduForm : resumeEduFormList) {
             eduForm.setResumeId(resumeId);
             resumeEduService.saveResumeEdu(eduForm);
         }
         //保存工作经验
         List<ResumeExpForm> resumeExpFormList = resumeSDK.getResumeExperience(result);
-        for(ResumeExpForm expForm:resumeExpFormList){
+        for (ResumeExpForm expForm : resumeExpFormList) {
             expForm.setResumeId(resumeId);
             resumeExpService.saveResumeExp(expForm);
         }
         //保存实践经验
         List<ResumePracticeForm> practiceFormList = resumeSDK.getResumePractice(result);
-        for(ResumePracticeForm practiceForm:practiceFormList){
+        for (ResumePracticeForm practiceForm : practiceFormList) {
             practiceForm.setResumeId(resumeId);
             resumePracticeService.saveResumePractice(practiceForm);
         }
@@ -174,7 +173,7 @@ public class ResumeCompanyService extends ResumeService{
         resumeLinkService.saveResumeLink(resumeLinkForm);
         //生成索引
         resumeDetail = getResumeDetail(resumeId);
-        indexService.saveResumeItem(resumeDetail,folder);
+        indexService.saveResumeItem(resumeDetail, folder);
 
         return toResumeVo(resumeDetail);
     }
@@ -193,19 +192,19 @@ public class ResumeCompanyService extends ResumeService{
         Long resumeId = resumeDetail.getResumeId();
         //保存教育信息
         List<ResumeEduForm> resumeEduFormList = resumeSDK.getResumeEdu(result);
-        for(ResumeEduForm eduForm:resumeEduFormList){
+        for (ResumeEduForm eduForm : resumeEduFormList) {
             eduForm.setResumeId(resumeId);
             resumeEduService.saveResumeEdu(eduForm);
         }
         //保存工作经验
         List<ResumeExpForm> resumeExpFormList = resumeSDK.getResumeExperience(result);
-        for(ResumeExpForm expForm:resumeExpFormList){
+        for (ResumeExpForm expForm : resumeExpFormList) {
             expForm.setResumeId(resumeId);
             resumeExpService.saveResumeExp(expForm);
         }
         //保存实践经验
         List<ResumePracticeForm> practiceFormList = resumeSDK.getResumePractice(result);
-        for(ResumePracticeForm practiceForm:practiceFormList){
+        for (ResumePracticeForm practiceForm : practiceFormList) {
             practiceForm.setResumeId(resumeId);
             resumePracticeService.saveResumePractice(practiceForm);
         }
@@ -219,13 +218,13 @@ public class ResumeCompanyService extends ResumeService{
         resumeLinkService.saveResumeLink(resumeLinkForm);
         //生成索引
         resumeDetail = getResumeDetail(resumeId);
-        indexService.saveResumeItem(resumeDetail,folder);
+        indexService.saveResumeItem(resumeDetail, folder);
     }
 
     private void updateUser(Long userId, ResumeForm resumeForm) {
         UserRepository userRepository = userRepositoryService.getUserById(userId);
         //简历对应用户不存在
-        if(userRepository==null) throw new ServiceException(message("api.error.data.user"));
+        if (userRepository == null) throw new ServiceException(message("api.error.data.user"));
         userRepository.setName(resumeForm.getName());
         userRepository.setEmail(resumeForm.getEmail());
         userRepository.setGender(resumeForm.getGender());
@@ -237,15 +236,16 @@ public class ResumeCompanyService extends ResumeService{
 
     /**
      * 将表单中的简历基础数据提取出来
+     *
      * @param resume
      * @param resumeForm
      */
-    public void fillResumeBasic(Resume resume,ResumeForm resumeForm){
+    public void fillResumeBasic(Resume resume, ResumeForm resumeForm) {
         resume.setName(resumeForm.getName());
         resume.setBirth(resumeForm.getBirth());
         resume.setGender(resumeForm.getGender());
         resume.setType(ResumeType.COMPANY.value);
-        if(resumeForm.getStatus()!=null) {
+        if (resumeForm.getStatus() != null) {
             resume.setStatus(resumeForm.getStatus());
         }
         resume.setCountryId(resumeForm.getCountryId());
@@ -294,7 +294,7 @@ public class ResumeCompanyService extends ResumeService{
         Long userId = resume.getUserId();
         UserRepository userRepository = userRepositoryService.getUserById(userId);
         //简历对应用户不存在
-        if(userRepository==null) throw new ServiceException(message("api.error.data.user"));
+        if (userRepository == null) throw new ServiceException(message("api.error.data.user"));
         //简历ID
         resumeDetail.setResumeId(resumeId);
         //用户ID
@@ -349,7 +349,7 @@ public class ResumeCompanyService extends ResumeService{
         Page<Resume> resumePage = (Page<Resume>) resumeMapper.selectAndList(resumeOptions);
         PageResult<ResumeDetail> pageResult = new PageResult<>(resumePage);
         List<ResumeDetail> resumeList = new ArrayList<>(resumePage.size());
-        for(Resume resume: resumePage) {
+        for (Resume resume : resumePage) {
             resumeList.add(getResumeDetail(resume.getId()));
         }
         pageResult.setList(resumeList);
@@ -361,11 +361,11 @@ public class ResumeCompanyService extends ResumeService{
         //企业简历类型为企业用户简历，状态为正常状态
         resumeListForm.setType(ResumeType.COMPANY.value);
         resumeListForm.setStatus(ResumeStatus.PUBLISH.value);
-        return searchService.searchResume(resumeListForm,folder);
+        return searchService.searchResume(resumeListForm, folder);
     }
 
     @Override
-    public void rebuildAllIndex(){
+    public void rebuildAllIndex() {
         //因为一次读取全部简历数据会对内存产生很大压力
         //所以分批次从数据库读取数据再生成索引
         List<Resume> resumeList;
@@ -377,36 +377,40 @@ public class ResumeCompanyService extends ResumeService{
             resumeList = resumeMapper.selectAndList(options);
             for (Resume resume : resumeList) {
                 //获取简历详情
-                ResumeDetail resumeDetail = getResumeDetail(resume.getId());
-                UserRepository userRepository = userRepositoryService.getUserById(resume.getUserId());
-                //简历详情或者用户信息不存在时
-                //说明该简历为异常数据
-                //不创建索引，直接跳过
-                if(resumeDetail!=null && userRepository!=null) {
-/*                    resumeDetail.setUserId(resume.getUserId());
-                    resumeDetail.setName(userRepository.getName());
-                    resumeDetail.setEmail(userRepository.getEmail());
-                    resumeDetail.setGender(userRepository.getGender());*/
-                    //生成索引
-                    indexService.saveResumeItem(resumeDetail,folder);
+                try {
+                    ResumeDetail resumeDetail = getResumeDetail(resume.getId());
+                    UserRepository userRepository = userRepositoryService.getUserById(resume.getUserId());
+                    //简历详情或者用户信息不存在时
+                    //说明该简历为异常数据
+                    //不创建索引，直接跳过
+                    if (resumeDetail != null && userRepository != null) {
+    /*                    resumeDetail.setUserId(resume.getUserId());
+                        resumeDetail.setName(userRepository.getName());
+                        resumeDetail.setEmail(userRepository.getEmail());
+                        resumeDetail.setGender(userRepository.getGender());*/
+                        //生成索引
+                        indexService.saveResumeItem(resumeDetail, folder);
+                    }
+                } catch (ServiceException e) {
+                    log.error(e.getMessage(), e);
                 }
             }
         } while (CollectionUtils.isNotEmpty(resumeList));
     }
 
-    public void getRebuildProcess(){
+    public void getRebuildProcess() {
 
     }
 
     @Override
     public ResumeVo toResumeVo(ResumeDetail resumeDetail) {
         //简历ID如果不存在则不进行转换
-        if(resumeDetail.getResumeId() == null) return null;
+        if (resumeDetail.getResumeId() == null) return null;
         ResumeVo resumeVo = new ResumeVo().asVo(resumeDetail.getResumeBasic());
         resumeVo.setAvatar(resumeDetail.getAvatar());
         resumeVo.setEmail(resumeDetail.getEmail());
         resumeVo.setPhoneCode(resumeDetail.getPhoneCode());
-        if(resumeDetail.getPhone() != null && resumeDetail.getPhone() != 0){
+        if (resumeDetail.getPhone() != null && resumeDetail.getPhone() != 0) {
             resumeVo.setPhone(String.valueOf(resumeDetail.getPhone()));
         }
 
@@ -424,43 +428,43 @@ public class ResumeCompanyService extends ResumeService{
 
         //教育信息
         List<ResumeEdu> resumeEduList = resumeDetail.getResumeEduList();
-        if(CollectionUtils.isNotEmpty(resumeEduList)){
-            List<ResumeEduVo> resumeEduVoList = AppUtils.asVoList(resumeEduList,ResumeEduVo.class);
+        if (CollectionUtils.isNotEmpty(resumeEduList)) {
+            List<ResumeEduVo> resumeEduVoList = AppUtils.asVoList(resumeEduList, ResumeEduVo.class);
             resumeVo.setResumeEduList(resumeEduVoList);
             ResumeEduVo maxResumeEduVo = JSON.parseObject(JSON.toJSONString(resumeEduVoList.get(0)), ResumeEduVo.class);
             resumeVo.setMaxResumeEdu(maxResumeEduVo);
         }
         //能力标签
         List<ResumeSkill> resumeSkillList = resumeDetail.getResumeSkillList();
-        if(CollectionUtils.isNotEmpty(resumeSkillList)){
-            List<ResumeSkillVo> resumeSkillVoList = AppUtils.asVoList(resumeSkillList,ResumeSkillVo.class);
+        if (CollectionUtils.isNotEmpty(resumeSkillList)) {
+            List<ResumeSkillVo> resumeSkillVoList = AppUtils.asVoList(resumeSkillList, ResumeSkillVo.class);
             resumeVo.setResumeSkillList(resumeSkillVoList);
         }
         //工作经历
         List<ResumeExperience> resumeExpList = resumeDetail.getResumeExpList();
-        if(CollectionUtils.isNotEmpty(resumeExpList)){
-            List<ResumeExpVo> resumeExpVoList = AppUtils.asVoList(resumeExpList,ResumeExpVo.class);
+        if (CollectionUtils.isNotEmpty(resumeExpList)) {
+            List<ResumeExpVo> resumeExpVoList = AppUtils.asVoList(resumeExpList, ResumeExpVo.class);
             resumeVo.setResumeExpList(resumeExpVoList);
         }
         //实践经验
         List<ResumePractice> resumePracticeList = resumeDetail.getResumePracticeList();
-        if(CollectionUtils.isNotEmpty(resumePracticeList)){
-            List<ResumePracticeVo> resumePracticeVoList = AppUtils.asVoList(resumePracticeList,ResumePracticeVo.class);
+        if (CollectionUtils.isNotEmpty(resumePracticeList)) {
+            List<ResumePracticeVo> resumePracticeVoList = AppUtils.asVoList(resumePracticeList, ResumePracticeVo.class);
             resumeVo.setResumePracticeList(resumePracticeVoList);
         }
         //社交主页
         List<ResumeLink> resumeLinkList = resumeDetail.getResumeLinkList();
-        if(CollectionUtils.isNotEmpty(resumeLinkList)){
-            List<ResumeLinkVo> resumeLinkVoList = AppUtils.asVoList(resumeLinkList,ResumeLinkVo.class);
+        if (CollectionUtils.isNotEmpty(resumeLinkList)) {
+            List<ResumeLinkVo> resumeLinkVoList = AppUtils.asVoList(resumeLinkList, ResumeLinkVo.class);
             resumeVo.setResumeLinkList(resumeLinkVoList);
         }
         //求职意向
         UserExpectJobVo userExpectJobVo = new UserExpectJobVo();
-        if(CollectionUtils.isNotEmpty(resumeDetail.getCategoryList())){
-            userExpectJobVo.setCategoryList(AppUtils.asVoList(resumeDetail.getCategoryList(),JobCategoryVo.class));
+        if (CollectionUtils.isNotEmpty(resumeDetail.getCategoryList())) {
+            userExpectJobVo.setCategoryList(AppUtils.asVoList(resumeDetail.getCategoryList(), JobCategoryVo.class));
         }
-        if(CollectionUtils.isNotEmpty(resumeDetail.getCityList())){
-            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(),CityVo.class));
+        if (CollectionUtils.isNotEmpty(resumeDetail.getCityList())) {
+            userExpectJobVo.setCityList(AppUtils.asVoList(resumeDetail.getCityList(), CityVo.class));
         }
 //        if(resumeDetail.getSalary()!=null){
 //            userExpectJobVo.setSalary(new DictVo().asVo(resumeDetail.getSalary()));
@@ -475,7 +479,7 @@ public class ResumeCompanyService extends ResumeService{
     public PageResult<ResumeVo> toResumeVo(PageResult<ResumeDetail> pageResult) {
         PageResult<ResumeVo> voPageResult = new PageResult<>();
         List<ResumeVo> resumeVoList = new ArrayList<>();
-        for(ResumeDetail resumeDetail:pageResult.getList()){
+        for (ResumeDetail resumeDetail : pageResult.getList()) {
             resumeVoList.add(toResumeVo(resumeDetail));
         }
         voPageResult.setTotal(pageResult.getTotal());
@@ -490,22 +494,24 @@ public class ResumeCompanyService extends ResumeService{
 
     /**
      * 获取登录用户对应的企业ID
+     *
      * @return 企业ID
      */
-    private Long getCompanyId(){
+    private Long getCompanyId() {
         UserCorporate user = getDefaultUser();
         CompanyUser companyUser = companyUserMapper.selectByUserId(user.getId());
         //任意企业用户都会对应一个企业，如果不存在，则判定企业数据缺失
-        if(companyUser==null) throw new ServiceException(message("api.error.data.company"));
+        if (companyUser == null) throw new ServiceException(message("api.error.data.company"));
         return companyUser.getCompanyId();
     }
 
     /**
      * 通过用户ID获取企业简历列表
+     *
      * @param userId 用户ID
      * @return 简历列表
      */
-    private List<Resume> getResumeByUserId(Long userId){
+    private List<Resume> getResumeByUserId(Long userId) {
         ResumeOptions options = new ResumeOptions();
         //获取当前登录用户草稿状态的简历
         options.setCreatorId(userId);
@@ -516,9 +522,10 @@ public class ResumeCompanyService extends ResumeService{
 
     /**
      * 创建空的简历基础信息
+     *
      * @return 简历基础信息
      */
-    private Resume newResumeBasic(){
+    private Resume newResumeBasic() {
         //新建企业简历用户
         UserRepository userRepository = userRepositoryService.newUser();
         userRepositoryService.addUser(userRepository);
@@ -535,21 +542,23 @@ public class ResumeCompanyService extends ResumeService{
 
     /**
      * 获取简历对应的用户信息
+     *
      * @return 普通用户
      */
-    private UserCorporate getResumeUser(Long userId){
+    private UserCorporate getResumeUser(Long userId) {
         //默认当前登录用户
-        if(userId == null) userId = curUser().getId();
+        if (userId == null) userId = curUser().getId();
         UserCorporate userCorporate = userCorporateService.selectByPrimaryKey(userId);
-        if(userCorporate == null) throw new ServiceException(message("api.error.data.user"));
+        if (userCorporate == null) throw new ServiceException(message("api.error.data.user"));
         return userCorporate;
     }
 
     /**
      * 获取默认简历用户
+     *
      * @return 默认简历用户
      */
-    private UserCorporate getDefaultUser(){
+    private UserCorporate getDefaultUser() {
         return getResumeUser(null);
     }
 }

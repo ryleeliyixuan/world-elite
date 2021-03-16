@@ -7,7 +7,7 @@ export function getDictList(params) {
       params
     })
   }
-  
+
   export function saveDict(data) {
     return request({
       url: '/dict/save',
@@ -15,7 +15,7 @@ export function getDictList(params) {
       data
     })
   }
-  
+
   export function deleteDict(id) {
     return request({
       url: '/dict/delete',
@@ -33,6 +33,19 @@ export function listByType(type) {
       page: 1,
       limit: 100,
       sort: '+id'
+    }
+  })
+}
+
+export function listByTypeWithSort(type, sort){
+  return request({
+    url: '/dict/list',
+    method: 'get',
+    params: {
+      type: type,
+      page: 1,
+      limit: 100,
+      sort: sort
     }
   })
 }
