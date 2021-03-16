@@ -49,9 +49,6 @@ public class ExportService extends BaseService {
     @Value("${export.excel.max.count}")
     private Long excelMaxCount;
 
-    @Value("${export.pdf.host}")
-    private String exportHost;
-
     @Autowired
     private FileService fileService;
 

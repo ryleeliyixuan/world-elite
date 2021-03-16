@@ -1,14 +1,14 @@
 package com.worldelite.job.service.resume;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.worldelite.job.constants.JobApplyStatus;
-import com.worldelite.job.constants.ResumeStatus;
-import com.worldelite.job.constants.ResumeType;
+import com.worldelite.job.constants.*;
+import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.*;
 import com.worldelite.job.exception.ServiceException;
 import com.worldelite.job.form.*;
@@ -24,10 +24,13 @@ import com.worldelite.job.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -86,6 +89,12 @@ public class ResumeGeneralService extends ResumeService {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Resource(name = "luceneIndexCmdFanoutExchange")
+    private FanoutExchange exchange;
 
     //only return single resume
     @Override
@@ -205,8 +214,14 @@ public class ResumeGeneralService extends ResumeService {
         //更新索引
         log.debug("简历ID：{}", resume.getId());
         ResumeDetail resumeDetail = getResumeDetail(resume.getId());
-        if (resumeDetail.calcCompletion() > 50)
+        if (resumeDetail.calcCompletion() > 50) {
             indexService.saveResumeItem(resumeDetail, folder);
+
+            //MQ广播索引更新指令
+            LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(resumeDetail.getResumeId(), OperationType.CREATE_OR_UPDATE, BusinessType.RESUME);
+            rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
+            log.info("Lucene index synchronize command message [saveResumeItem] {}", indexCmdDto.toString());
+        }
 
         return resumeDetail;
     }
@@ -217,8 +232,15 @@ public class ResumeGeneralService extends ResumeService {
         resume.setUpdateTime(new Date());
         resumeMapper.updateByPrimaryKeySelective(resume);
         ResumeDetail resumeDetail = getResumeDetail(resume.getId());
-        if (resumeDetail.calcCompletion() > 50)
+
+        if (resumeDetail.calcCompletion() > 50) {
             indexService.saveResumeItem(resumeDetail, folder);
+
+            //MQ广播索引更新指令
+            LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(resumeDetail.getResumeId(), OperationType.CREATE_OR_UPDATE, BusinessType.RESUME);
+            rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
+            log.info("Lucene index synchronize command message [saveResumeItem] {}", indexCmdDto.toString());
+        }
 
         return getResumeDetail(resume.getId());
     }
@@ -450,6 +472,7 @@ public class ResumeGeneralService extends ResumeService {
             resume.setAttachResumeName("");
             resumeMapper.updateByPrimaryKey(resume);
         }
+
         //TODO 现在方法返回值没有用 直接返回null
         /*if (resume != null) {
             return getResumeDetail(resume.getId());
@@ -460,6 +483,13 @@ public class ResumeGeneralService extends ResumeService {
     @Override
     public void deleteResume(Long resumeId) {
         resumeMapper.deleteByPrimaryKey(resumeId);
+
+        if (resumeId == null) return;
+        indexService.deleteResumeItem(resumeId);
+        //MQ广播索引更新指令
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(resumeId, OperationType.DELETE, BusinessType.RESUME);
+        rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
+        log.info("Lucene index synchronize command message [deleteResume] {}", indexCmdDto.toString());
     }
 
     @Override
@@ -475,19 +505,23 @@ public class ResumeGeneralService extends ResumeService {
             resumeList = resumeMapper.selectAndList(options);
             for (Resume resume : resumeList) {
                 //获取简历详情
-                ResumeDetail resumeDetail = getResumeDetail(resume.getId());
-                UserApplicant userApplicant = userApplicantService.selectByPrimaryKey(resume.getUserId());
-                //简历详情或者用户信息不存在时
-                //说明该简历为异常数据
-                //不创建索引，直接跳过
-                if (resumeDetail != null && userApplicant != null && resumeDetail.calcCompletion() > 50) {
-                    /*resumeDetail.setUserId(resume.getUserId());
-                    resumeDetail.setName(userApplicant.getName());
-                    resumeDetail.setEmail(userApplicant.getEmail());
-                    resumeDetail.setGender(userApplicant.getGender());*/
+                try {
+                    ResumeDetail resumeDetail = getResumeDetail(resume.getId());
+                    UserApplicant userApplicant = userApplicantService.selectByPrimaryKey(resume.getUserId());
+                    //简历详情或者用户信息不存在时
+                    //说明该简历为异常数据
+                    //不创建索引，直接跳过
+                    if (resumeDetail != null && userApplicant != null && resumeDetail.calcCompletion() > 50) {
+                        /*resumeDetail.setUserId(resume.getUserId());
+                        resumeDetail.setName(userApplicant.getName());
+                        resumeDetail.setEmail(userApplicant.getEmail());
+                        resumeDetail.setGender(userApplicant.getGender());*/
 
-                    //生成索引
-                    indexService.saveResumeItem(resumeDetail, folder);
+                        //生成索引
+                        indexService.saveResumeItem(resumeDetail, folder);
+                    }
+                } catch (ServiceException e) {
+                    log.error(e.getMessage(), e);
                 }
             }
         } while (CollectionUtils.isNotEmpty(resumeList));
@@ -502,15 +536,16 @@ public class ResumeGeneralService extends ResumeService {
         ResumeDetail resumeDetail = new ResumeDetail();
         //获取基础信息
         Resume resume = getResumeBasic(resumeId);
+
+        if (resume == null) return null;
         //获取用户信息
-        Long userId = resume.getUserId();
-        UserApplicant userApplicant = getResumeUser(userId);
+        UserApplicant userApplicant = getResumeUser(resume.getUserId());
         //简历ID
         resumeDetail.setResumeId(resumeId);
         //用户ID
         resumeDetail.setUserId(userApplicant.getId());
         //名字
-        resumeDetail.setName(userApplicant.getName());
+        resumeDetail.setName(resume.getName());
         //邮箱
         resumeDetail.setEmail(resume.getEmail());
         resumeDetail.setTitle(resume.getTitle());

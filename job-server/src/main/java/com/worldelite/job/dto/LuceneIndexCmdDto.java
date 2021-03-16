@@ -8,14 +8,23 @@ import lombok.NoArgsConstructor;
 import org.apache.lucene.document.Document;
 
 /**
- * luence索引同步消息dto
+ * Lucene索引同步消息dto
  **/
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class LuceneIndexCmdDto {
-    private Document doc;
+    /**
+     * 关键key. id或其他
+     */
+    private Object key;
+    /**
+     * 操作类型. Insert/Delete/Update
+     */
     private OperationType opType;
+    /**
+     * 业务类型. 职位/活动/简历
+     */
     private BusinessType bizType;
 }

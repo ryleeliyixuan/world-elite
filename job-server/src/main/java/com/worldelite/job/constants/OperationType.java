@@ -4,15 +4,9 @@ package com.worldelite.job.constants;
  * CRUD操作类型
  **/
 public enum OperationType {
-    CreateOrUpdate("CU", "添加/更新"),
-    Delete("D", "删除");
-
-
-    private String operation;
-    private String name;
+    CREATE_OR_UPDATE("CU", "添加/更新"),
+    DELETE("D", "删除");
 
     OperationType(String operation, String name) {
-        this.operation = operation;
-        this.name = name;
     }
 }

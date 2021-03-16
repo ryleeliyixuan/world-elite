@@ -1,6 +1,7 @@
 package com.worldelite.job.service;
 
 import com.worldelite.job.constants.JobIndexFields;
+import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.entity.Job;
 import com.worldelite.job.entity.JobOptions;
 import com.worldelite.job.form.SearchNameForm;
@@ -112,9 +113,10 @@ public class JobNameSearchService {
      */
     @SneakyThrows
     public void createOrRefreshJobNameIndex() {
+        log.info("create or refresh all job name index.");
         List<Document> docs = new ArrayList<>();
-//        final Map<Object, Object> maps = redisTemplate.opsForHash().entries(RedisAttr.ATTR_JOB_NAME_INFO);
         JobOptions options = new JobOptions();
+        options.setStatus(JobStatus.PUBLISH.value);
         List<Job> jobs = jobMapper.selectAndList(options);
         jobs.forEach(job -> {
             Document doc = new Document();
@@ -126,7 +128,7 @@ public class JobNameSearchService {
         try {
             //删除旧的,虽然delete会自动提交,但是防止删除操作延迟到添加新的以后执行把新加的给删了 这里还是强制提交一次
             //将删除操作flush
-            indexWriter.deleteDocuments(new Term(JobIndexFields.JOB_NAME));
+            indexWriter.deleteAll();
             indexWriter.commit();
 
             //添加新的

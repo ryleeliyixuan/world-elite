@@ -280,7 +280,7 @@ import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import ResumeView from "@/components/ResumeView";
 import { getResumeList } from "@/api/resume_api";
-import { listByType } from "@/api/dict_api";
+import { listByType, listByTypeWithSort } from "@/api/dict_api";
 import { searchSchool } from "@/api/school_api";
 import { getCategoryTree } from "@/api/category_api";
 import { getResumeApplyJobs } from "@/api/job_api";
@@ -364,7 +364,7 @@ export default {
   methods: {
     initData() {
       this.getList();
-      listByType(1).then(response => (this.degreeOptions = response.data.list));
+      listByTypeWithSort(25, "-value").then(response => (this.degreeOptions = response.data.list));
       listByType(2).then(response => (this.cityOptions = response.data.list));
       listByType(9).then(
         response => (this.salaryRangeOptions = response.data.list)

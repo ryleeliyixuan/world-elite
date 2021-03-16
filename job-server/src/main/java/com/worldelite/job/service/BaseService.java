@@ -5,6 +5,8 @@ import com.worldelite.job.util.AppUtils;
 import com.worldelite.job.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author yeguozhong yedaxia.github.com
  */
@@ -29,6 +31,7 @@ public abstract class BaseService {
      * @return
      */
     protected UserVo curUser() {
-        return (UserVo) AppUtils.request().getAttribute(AttrKeys.LOGIN_USER);
+        final HttpServletRequest request = AppUtils.request();
+        return (UserVo) (request != null ? request.getAttribute(AttrKeys.LOGIN_USER) : null);
     }
 }

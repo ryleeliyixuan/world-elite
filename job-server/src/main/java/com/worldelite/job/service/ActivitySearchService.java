@@ -1,6 +1,8 @@
 package com.worldelite.job.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.worldelite.job.constants.*;
+import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.Activity;
 import com.worldelite.job.entity.ActivityOptions;
 import com.worldelite.job.entity.Dict;
@@ -21,6 +23,8 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -58,6 +62,12 @@ public class ActivitySearchService {
 
     @Resource(name = "activitySearcherManager")
     private SearcherManager searcherManager;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Resource(name = "luceneIndexCmdFanoutExchange")
+    private FanoutExchange exchange;
 
     @SneakyThrows
     public PageResult<String> searchActivityTitle(SearchNameForm searchNameForm) {
@@ -140,12 +150,21 @@ public class ActivitySearchService {
     public void createOrRefreshActivityListIndex(ActivityInfoRefreshEvent event) throws IOException {
         log.info("create or refresh activity info index. {}", event.toString());
 
+        createOrRefreshActivityListIndex(event.getActivityId());
+
+        //MQ广播索引更新指令
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(event.getActivityId(), OperationType.CREATE_OR_UPDATE, BusinessType.ACTIVITY);
+        rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
+        log.info("Lucene index synchronize command message [createOrRefreshActivityListIndex] {}",indexCmdDto.toString());
+    }
+
+    public void createOrRefreshActivityListIndex(Integer activityId) throws IOException {
         //更新指定面试官的信息
-        if (event.getActivityId() != null) {
-            final Activity activity = activityMapper.selectByPrimaryKey(event.getActivityId());
+        if (activityId != null) {
+            final Activity activity = activityMapper.selectByPrimaryKey(activityId);
             //活动被删除
             if (activity == null) {
-                indexWriter.deleteDocuments(new Term(ActivityIndexFields.ACTIVITY_ID, String.valueOf(event.getActivityId())));
+                indexWriter.deleteDocuments(new Term(ActivityIndexFields.ACTIVITY_ID, String.valueOf(activityId)));
                 indexWriter.commit();
 
                 return;
@@ -182,7 +201,7 @@ public class ActivitySearchService {
                 || activity.getStatus() == ActivityStatus.REVIEW_FAILURE.value
                 || activity.getStatus() == ActivityStatus.DRAFT.value
                 || activity.getStatus() == ActivityStatus.OFFLINE.value
-                || activity.getDelFlag() == Bool.TRUE){
+                || activity.getDelFlag() == Bool.TRUE) {
 
             //对无效的活动尝试删除索引
             indexWriter.deleteDocuments(new Term(ActivityIndexFields.ACTIVITY_ID, String.valueOf(activity.getId())));
@@ -201,7 +220,7 @@ public class ActivitySearchService {
         doc.add(new IntPoint(ActivityIndexFields.STATUS, activity.getStatus()));
         doc.add(new NumericDocValuesField(ActivityIndexFields.STATUS, activity.getStatus()));
 
-        if(activity.getNeedRegistration() != null && activity.getNeedRegistration() == Bool.TRUE) {
+        if (activity.getNeedRegistration() != null && activity.getNeedRegistration() == Bool.TRUE) {
             doc.add(new LongPoint(ActivityIndexFields.REGISTRATION_START_TIME, activity.getRegistrationStartTime().getTime()));
             doc.add(new NumericDocValuesField(ActivityIndexFields.REGISTRATION_START_TIME, activity.getRegistrationStartTime().getTime()));
             doc.add(new LongPoint(ActivityIndexFields.REGISTRATION_FINISH_TIME, activity.getRegistrationFinishTime().getTime()));

@@ -99,6 +99,7 @@ public class ResumeApi extends BaseApi {
 //        PageResult<ResumeDetail> pageResult = resumeService.list(listForm);
 //        return ApiResult.ok(resumeService.toResumeVo(pageResult));
         ResumeService resumeService = ResumeServiceFactory.getResumeService(ResumeType.GENERAL.value);
+        assert resumeService != null;
         PageResult<ResumeDetail> pageResult = resumeService.search(listForm);
         return ApiResult.ok(resumeService.toResumeVo(pageResult));
     }
@@ -113,6 +114,7 @@ public class ResumeApi extends BaseApi {
     @ApiDoc
     public ApiResult<PageResult<ResumeVo>> searchResume(@RequestBody ResumeListForm listForm){
         ResumeService resumeService = ResumeServiceFactory.getResumeService(listForm.getType());
+        assert resumeService != null;
         PageResult<ResumeDetail> pageResult = resumeService.search(listForm);
         return ApiResult.ok(resumeService.toResumeVo(pageResult));
     }
@@ -145,6 +147,7 @@ public class ResumeApi extends BaseApi {
     @ApiDoc
     public ApiResult<ResumeVo> saveBasic(@RequestBody ResumeForm resumeForm) {
         ResumeService resumeService = ResumeServiceFactory.getResumeService(resumeForm.getType());
+        assert resumeService != null;
         ResumeDetail resumeDetail = resumeService.saveBasic(resumeForm);
         return ApiResult.ok(resumeService.toResumeVo(resumeDetail));
     }

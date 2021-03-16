@@ -1,10 +1,8 @@
 package com.worldelite.job.api;
 
-import com.alibaba.druid.sql.PagerUtils;
 import com.worldelite.job.anatation.RequireLogin;
 import com.worldelite.job.constants.JobStatus;
 import com.worldelite.job.constants.UserType;
-import com.worldelite.job.entity.ScanResult;
 import com.worldelite.job.form.*;
 import com.worldelite.job.service.DictService;
 import com.worldelite.job.service.IContentScanner;
@@ -14,9 +12,6 @@ import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.vo.*;
 import io.github.yedaxia.apidocs.ApiDoc;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 职位接口
@@ -73,13 +67,14 @@ public class JobApi extends BaseApi {
 
     /**
      * OP保存职位
+     *
      * @param jobForm
      * @return
      */
     @ApiDoc
     @PostMapping("op-save")
     @RequireLogin(allow = UserType.COMPANY)
-    public ApiResult saveOpJob(@RequestBody JobForm jobForm){
+    public ApiResult saveOpJob(@RequestBody JobForm jobForm) {
         jobService.saveOpJob(jobForm);
         return ApiResult.ok();
     }
@@ -369,7 +364,6 @@ public class JobApi extends BaseApi {
      *
      * @return
      */
-    @RequireLogin(allow = UserType.ADMIN)
     @GetMapping("create-or-refresh-job-name-index")
     public ApiResult createOrRefreshJobNameIndex() {
         jobNameSearchServiceImpl.createOrRefreshJobNameIndex();
@@ -386,7 +380,6 @@ public class JobApi extends BaseApi {
     @ApiDoc
     @GetMapping("search-job-name")
     public ApiResult<PageResult<String>> searchJobName(SearchNameForm searchNameForm) {
-        jobNameSearchServiceImpl.createOrRefreshJobNameIndex();
         PageResult<String> result = jobNameSearchServiceImpl.searchJobName(searchNameForm);
         return ApiResult.ok(result);
     }

@@ -168,7 +168,7 @@ public class LuceneSearchService implements SearchService {
             }
             BooleanQuery.Builder salaryRangeQueryBuilder = new BooleanQuery.Builder();
             for (Integer rangeId : searchForm.getSalaryRangeIds()) {
-                Query query = IntPoint.newExactQuery(JobIndexFields.AVER_SALARY_INDEX,rangeId);
+                Query query = IntPoint.newExactQuery(JobIndexFields.AVER_SALARY_INDEX, rangeId);
                 salaryRangeQueryBuilder.add(query, BooleanClause.Occur.SHOULD);
             }
             queryBuilder.add(salaryRangeQueryBuilder.build(), BooleanClause.Occur.MUST);
@@ -180,7 +180,7 @@ public class LuceneSearchService implements SearchService {
         if (ArrayUtils.isNotEmpty(searchForm.getJobTypes()) && !useList(searchForm.getJobTypes(), 258)) {
             queryBuilder.add(addMultiShouldQuery(searchForm.getJobTypes(), JobIndexFields.JOB_TYPE_INDEX), BooleanClause.Occur.MUST);
         }
-        if(searchForm.getCompanyId() != null){
+        if (searchForm.getCompanyId() != null) {
             queryBuilder.add(LongPoint.newExactQuery(JobIndexFields.COMPANY_ID, searchForm.getCompanyId()), BooleanClause.Occur.MUST);
         }
         if (searchForm.getRecruitId() != null && searchForm.getRecruitId() != 0) {
@@ -191,10 +191,10 @@ public class LuceneSearchService implements SearchService {
         List<SortField> sortFieldList = new ArrayList<>();
 
         if (!StringUtils.isEmpty(searchForm.getSort())) {
-            if(searchForm.getSort().equalsIgnoreCase("+PUB_TIME")) {
+            if (searchForm.getSort().equalsIgnoreCase("+PUB_TIME")) {
                 sortFieldList.add(new SortField(JobIndexFields.JOB_PUBLISH_TIME_INDEX, SortField.Type.LONG, true));
             }
-            if(searchForm.getSort().equalsIgnoreCase("+AVER_SALARY")) {
+            if (searchForm.getSort().equalsIgnoreCase("+AVER_SALARY")) {
                 sortFieldList.add(new SortField(JobIndexFields.AVER_SALARY_INDEX, SortField.Type.INT, true));
             }
 
@@ -376,8 +376,10 @@ public class LuceneSearchService implements SearchService {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long resumeId = NumberUtils.toLong(hitDoc.get(ResumeIndexFields.RESUME_ID));
+                assert resumeService != null;
                 ResumeDetail resumeDetail = resumeService.getResumeDetail(resumeId);
-                resumeList.add(resumeDetail);
+                if (resumeDetail != null)
+                    resumeList.add(resumeDetail);
             }
 
             pageResult.setList(resumeList);
@@ -523,7 +525,7 @@ public class LuceneSearchService implements SearchService {
                 Document hitDoc = indexSearcher.doc(scoreDoc.doc);
                 Long jobId = NumberUtils.toLong(hitDoc.get(JobIndexFields.JOB_ID));
                 JobVo jobVo = jobService.getJobInfo(jobId, true);
-                if(jobVo == null) continue;
+                if (jobVo == null) continue;
                 subtitleVoList.add(jobVo);
             }
 

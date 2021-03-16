@@ -359,7 +359,7 @@
 <script>
     import Pagination from "@/components/Pagination";
     import PDFObject from "pdfobject";
-    import {listByType} from "@/api/dict_api";
+    import {listByType, listByTypeWithSort} from "@/api/dict_api";
     import {searchSchool} from "@/api/school_api";
     import {getCategoryTree} from "@/api/category_api";
     import {formatListQuery, parseListQuery} from "@/utils/common";
@@ -564,7 +564,7 @@
                 }
             },
             initData() {
-                listByType(1).then(
+                listByTypeWithSort(25, "-value").then(
                     (response) => (this.degreeOptions = response.data.list)
                 );
                 listByType(2).then((response) => (this.cityOptions = response.data.list));

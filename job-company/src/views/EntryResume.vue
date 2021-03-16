@@ -748,7 +748,7 @@
         saveUserExpectJob
     } from "@/api/resume_api";
     import {searchSchool} from "@/api/school_api";
-    import {listByType} from "@/api/dict_api";
+    import {listByType, listByTypeWithSort} from "@/api/dict_api";
     import {serachByName} from "@/api/company_api";
     import {getCategoryTree} from "@/api/category_api";
     import {getUploadPicToken, getUploadAttachmentToken} from "@/api/upload_api";
@@ -1053,7 +1053,7 @@
                         this.resumeForm.phoneCode = data.phoneCode;
                     }
                 });
-                listByType(1).then(
+                listByTypeWithSort(25, "-value").then(
                     (response) => (this.degreeOptions = response.data.list)
                 );
                 listByType(3).then(

@@ -1,14 +1,12 @@
 package com.worldelite.job.service.resume;
 
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.util.StrUtil;
 import com.worldelite.job.constants.BusinessType;
 import com.worldelite.job.constants.OperationType;
 import com.worldelite.job.constants.ResumeIndexFields;
 import com.worldelite.job.dto.LuceneIndexCmdDto;
 import com.worldelite.job.entity.Resume;
 import com.worldelite.job.entity.ResumeDetail;
-import com.worldelite.job.entity.ResumeOptions;
-import com.worldelite.job.entity.UserApplicant;
 import com.worldelite.job.form.ParseAttachmentForm;
 import com.worldelite.job.form.ResumeForm;
 import com.worldelite.job.form.ResumeListForm;
@@ -18,7 +16,7 @@ import com.worldelite.job.service.search.IndexService;
 import com.worldelite.job.service.search.SearchService;
 import com.worldelite.job.vo.PageResult;
 import com.worldelite.job.vo.ResumeVo;
-import org.apache.commons.collections.CollectionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -32,6 +30,7 @@ import java.util.List;
  * 简历服务类接口
  * 提供系统必需的简历模块功能
  */
+@Slf4j
 public abstract class ResumeService extends BaseService{
 
     @Autowired
@@ -157,18 +156,8 @@ public abstract class ResumeService extends BaseService{
      * @param resumeDetail
      */
     public void saveResumeItem(ResumeDetail resumeDetail){
-        Document document = indexService.saveResumeItem(resumeDetail,folder);
-        //MQ广播索引更新指令
-        rabbitTemplate.convertAndSend(exchange.getName(), "", new LuceneIndexCmdDto(document, OperationType.CreateOrUpdate, BusinessType.Resume));
-    }
+        indexService.saveResumeItem(resumeDetail,folder);
 
-    /**
-     * 给简历添加索引
-     * @param document 简历Document
-     */
-    public void saveResumeItem(Document document){
-        Long resumeId = Long.valueOf(document.get(ResumeIndexFields.RESUME_ID));
-        saveResumeItem(resumeId);
     }
 
     public PageResult<ResumeDetail> searchDefault(ResumeListForm resumeListForm){
