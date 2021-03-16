@@ -125,7 +125,11 @@
                   <div class="entry">
                     <span class="bold small">性别：</span
                     ><span v-if="curResume.gender" class="light">{{
-                      curResume.gender == 1 ? "男" : "女"
+                      curResume.gender == 1
+                        ? "男"
+                        : curResume.gender == 2
+                        ? "女"
+                        : ""
                     }}</span>
                   </div>
                   <div class="entry">
@@ -270,6 +274,7 @@
                       <el-date-picker
                         v-model="resumeForm.returnTime"
                         type="date"
+                        value-format="yyyy-MM-dd"
                         placeholder="选择日期"
                       ></el-date-picker>
                     </el-form-item>
@@ -372,7 +377,9 @@
                     </div>
                     <div class="entry">
                       <span class="bold small">GPA：</span
-                      ><span class="light">{{ resumeEdu.gpa }}</span>
+                      ><span class="light">{{
+                        resumeEdu.gpa == 0 ? "" : resumeEdu.gpa
+                      }}</span>
                     </div>
                   </div>
                 </div>
@@ -727,10 +734,12 @@
                   </div>
                   <div class="entry-line">
                     <div class="entry" style="width: 100%">
-                      <span class="bold small">工作描述：</span
-                      ><span class="light" v-if="resumeExp.description">
-                        {{ resumeExp.description }}
-                      </span>
+                      <span class="bold small">工作描述：</span>
+                      <span
+                        class="light textarea-preview"
+                        v-if="resumeExp.description"
+                        >{{ resumeExp.description }}</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -924,9 +933,11 @@
                   </div>
                   <div class="entry-line">
                     <div class="entry" style="width: 100%">
-                      <span class="bold small">介绍：</span
-                      ><span class="light" v-if="practice.description">
-                        {{ practice.description }}
+                      <span class="bold small">介绍：</span>
+                      <span
+                        class="light textarea-preview"
+                        v-if="practice.description"
+                        >{{ practice.description }}
                       </span>
                     </div>
                   </div>
@@ -1349,7 +1360,7 @@
                 v-show="!showEditSelfIntro"
                 icon-class="edit"
                 style="width: 18px; height: 19px"
-                @click="showEditSelfIntro = true"
+                @click="handleEditSelfIntro()"
               ></svg-icon>
             </div>
             <!-- 展示 -->
@@ -1357,21 +1368,27 @@
               v-if="!showEditSelfIntro"
               class="line2 mt-3 content small light"
             >
-              {{ curResume.introduction }}
+              <span class="textarea-preview">{{ curResume.introduction }}</span>
             </div>
             <!-- 编辑 -->
             <div v-else class="edit-box">
               <div class="left-right">
                 <div class="bold xsmall" style="width: 60px">自我介绍：</div>
-                <el-input
-                  v-model="curResume.introduction"
-                  type="textarea"
-                  :row="3"
-                  :maxlength="300"
-                  show-word-limit
-                  class="intro-text"
-                  placeholder="简单介绍一下自己吧~"
-                ></el-input>
+                <el-form
+                  ref="resumeForm1"
+                  :model="resumeForm1"
+                  label-width="80px"
+                >
+                  <el-input
+                    v-model="resumeForm1.introduction"
+                    type="textarea"
+                    :row="3"
+                    :maxlength="300"
+                    show-word-limit
+                    class="intro-text"
+                    placeholder="简单介绍一下自己吧~"
+                  ></el-input>
+                </el-form>
               </div>
               <div class="footer mt-4">
                 <el-button
@@ -1469,7 +1486,7 @@
         </div>
         <el-upload
           class="mt-2 mb-4 upload-attach-box"
-          ref="upload"
+          ref="resume-upload"
           :limit="1"
           :action="uploadAttachmentOptions.action"
           :data="uploadAttachmentOptions.params"
@@ -1812,6 +1829,12 @@ export default {
       //   acceptFileType: ".pdf,.doc,docx",
       // },
 
+      // 自我介绍
+      resumeForm1: {
+        id: undefined,
+        resumeId: undefined,
+        introduction: undefined,
+      },
       // 基本信息
       resumeForm: {
         priority: undefined,
@@ -2524,10 +2547,22 @@ export default {
       this.checkExpWorkingTimeFlag();
       this.showEditWork = true;
     },
+    // 处理textarea里的空格和空行
+    textToHtml(string) {
+      //替换所有的换行符
+      string = string.replace(/\r\n/g, "<br>"); //兼容i7、i8
+      string = string.replace(/\n/g, "<br>"); //i9及以上
+      //替换所有的空格（中文空格、英文空格都会被替换）
+      string = string.replace(/\s/g, "&nbsp;");
+      //输出转换后的字符串
+      // console.log(string);
+      return string;
+    },
     // 保存工作实习经历
     saveResumeExp() {
       this.$refs["resumeExpForm"].validate((valid) => {
         if (valid) {
+          // this.resumeExpForm.description = this.textToHtml(this.resumeExpForm.description);
           this.resumeExpForm.depart = "xxx";
           this.resumeExpForm.resumeId = this.resumeId;
           if (
@@ -2701,23 +2736,30 @@ export default {
           });
         });
     },
+    // 编辑自我介绍
+    handleEditSelfIntro() {
+      this.resumeForm1.userId = this.userId;
+      this.resumeForm1.id = this.resumeId;
+      this.resumeForm1.introduction = this.curResume.introduction;
+      this.showEditSelfIntro = true;
+    },
     // 保存自我介绍
-    saveSelfIntro(introduction) {
-      saveResumeBasic({
-        userId: this.userId,
-        id: this.resumeId,
-        introduction: introduction,
-      })
-        .then(() => {
-          this.getResumeInfo(this.activeTabIndex);
-        })
-        .finally(() => {
-          this.$message({
-            message: "操作成功",
-            type: "success",
-          });
-          this.showEditSelfIntro = false;
-        });
+    saveSelfIntro() {
+      this.$refs["resumeForm1"].validate((valid) => {
+        if (valid) {
+          saveResumeBasic(this.resumeForm1)
+            .then(() => {
+              this.getResumeInfo(this.activeTabIndex);
+            })
+            .finally(() => {
+              this.$message({
+                message: "操作成功",
+                type: "success",
+              });
+              this.showEditSelfIntro = false;
+            });
+        }
+      });
     },
     // 更改简历优先级
     onChangePriority(val) {
@@ -2783,24 +2825,25 @@ export default {
     },
     // 上传简历附件
     handleUploadAttachSuccess() {
-      // console.log("-------", this.$refs);
       this.uploadAttachLoading = true;
       saveResumeBasic({
         userId: this.userId,
         id: this.resumeId,
         attachResume: this.uploadAttachmentOptions.fileUrl,
-        attachResumeName: this.uploadAttachmentOptions.fileName
+        attachResumeName: this.uploadAttachmentOptions.fileName,
       })
         .then(() => {
           this.getResumeInfo(this.activeTabIndex);
         })
         .finally(() => {
-          this.$refs["upload"].clearFiles();
+          console.log("---before----", this.$refs);
+          this.$refs["resume-upload"].clearFiles();
           this.$message({
             message: "操作成功",
             type: "success",
           });
           this.uploadAttachLoading = false;
+          console.log("---after----", this.$refs);
         });
     },
     // 上传其他附件
@@ -2887,6 +2930,7 @@ export default {
     handleDelResumeAttach() {
       delResumeAttachment(this.resumeId).then(() => {
         this.getResumeInfo(this.activeTabIndex);
+        this.$refs["resume-upload"].clearFiles();
       });
     },
     // 保存附件简历名称
@@ -2933,6 +2977,17 @@ export default {
   min-height: calc(100vh - 477px);
   background: rgba(213, 226, 240, 0.21);
   display: flex;
+
+  .textarea-preview {
+    display: block;
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+    word-break: break-all;
+    overflow: hidden;
+  }
 
   .resume-preview {
     /deep/ .el-dialog__header {

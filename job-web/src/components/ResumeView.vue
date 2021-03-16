@@ -8,7 +8,7 @@
             <el-col :span="18" :offset="1">
                 <el-row class="title">{{resumeDetail.name}}</el-row>
                 <el-row>
-                    <el-col :span="12"><span class="key">性别：</span><span class="value">{{resumeDetail.gender===1?"男":"女"}}</span></el-col>
+                    <el-col :span="12"><span class="key">性别：</span><span class="value">{{resumeDetail.gender === 1 ? "男": resumeDetail.gender === 2 ?"女" : ""}}</span></el-col>
                     <el-col :span="12"><span class="key">政治面貌：</span><span class="value">{{getMaritalStatus()}}</span></el-col>
                 </el-row>
                 <el-row>
