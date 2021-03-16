@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -95,6 +96,9 @@ public class ResumeGeneralService extends ResumeService {
 
     @Resource(name = "luceneIndexCmdFanoutExchange")
     private FanoutExchange exchange;
+
+    @Resource(name = "luceneIndexCmdQueue")
+    private Queue queue;
 
     //only return single resume
     @Override
@@ -218,7 +222,7 @@ public class ResumeGeneralService extends ResumeService {
             indexService.saveResumeItem(resumeDetail, folder);
 
             //MQ广播索引更新指令
-            LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(resumeDetail.getResumeId(), OperationType.CREATE_OR_UPDATE, BusinessType.RESUME);
+            LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(resumeDetail.getResumeId(), OperationType.CREATE_OR_UPDATE, BusinessType.RESUME, queue.getActualName());
             rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
             log.info("Lucene index synchronize command message [saveResumeItem] {}", indexCmdDto.toString());
         }
@@ -237,7 +241,7 @@ public class ResumeGeneralService extends ResumeService {
             indexService.saveResumeItem(resumeDetail, folder);
 
             //MQ广播索引更新指令
-            LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(resumeDetail.getResumeId(), OperationType.CREATE_OR_UPDATE, BusinessType.RESUME);
+            LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(resumeDetail.getResumeId(), OperationType.CREATE_OR_UPDATE, BusinessType.RESUME, queue.getActualName());
             rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
             log.info("Lucene index synchronize command message [saveResumeItem] {}", indexCmdDto.toString());
         }
@@ -487,7 +491,7 @@ public class ResumeGeneralService extends ResumeService {
         if (resumeId == null) return;
         indexService.deleteResumeItem(resumeId);
         //MQ广播索引更新指令
-        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(resumeId, OperationType.DELETE, BusinessType.RESUME);
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(resumeId, OperationType.DELETE, BusinessType.RESUME, queue.getActualName());
         rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
         log.info("Lucene index synchronize command message [deleteResume] {}", indexCmdDto.toString());
     }

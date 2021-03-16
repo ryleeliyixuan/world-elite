@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,8 @@ public class CompanyService extends BaseService{
     @Resource(name = "luceneIndexCmdFanoutExchange")
     private FanoutExchange exchange;
 
+    @Resource(name = "luceneIndexCmdQueue")
+    private Queue queue;
     /**
      * 搜索公司
      *
@@ -280,7 +283,7 @@ public class CompanyService extends BaseService{
         companyNameSearchService.createOrRefreshCompanyNameIndex();
 
         //MQ广播索引更新指令
-        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(null, OperationType.CREATE_OR_UPDATE, BusinessType.COMPANY);
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(null, OperationType.CREATE_OR_UPDATE, BusinessType.COMPANY, queue.getActualName());
         rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
         log.info("Lucene index synchronize command message [saveCompany] {}",indexCmdDto.toString());
 
@@ -299,7 +302,7 @@ public class CompanyService extends BaseService{
 
             companyNameSearchService.createOrRefreshCompanyNameIndex();
             //MQ广播索引更新指令
-            LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(null, OperationType.DELETE, BusinessType.COMPANY);
+            LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(null, OperationType.DELETE, BusinessType.COMPANY, queue.getActualName());
             rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
             log.info("Lucene index synchronize command message [delCompany] {}",indexCmdDto.toString());
         }
