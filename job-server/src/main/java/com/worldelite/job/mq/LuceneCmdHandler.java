@@ -3,20 +3,19 @@ package com.worldelite.job.mq;
 import com.worldelite.job.constants.BusinessType;
 import com.worldelite.job.constants.OperationType;
 import com.worldelite.job.dto.LuceneIndexCmdDto;
-import com.worldelite.job.entity.ResumeDetail;
 import com.worldelite.job.service.ActivitySearchService;
 import com.worldelite.job.service.CompanyNameSearchService;
 import com.worldelite.job.service.JobNameSearchService;
 import com.worldelite.job.service.ResumeAttachService;
-import com.worldelite.job.service.resume.ResumeService;
-import com.worldelite.job.service.resume.ResumeServiceFactory;
 import com.worldelite.job.service.search.IndexService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 
 /**
@@ -41,8 +40,8 @@ public class LuceneCmdHandler {
     @Autowired
     private ActivitySearchService activitySearchService;
 
-    @Value("${search.index.resumeindex2}")
-    private String folder;
+    @Resource(name = "luceneIndexCmdQueue")
+    private Queue queue;
 
     /**
      * 添加或更新附件简历
@@ -51,7 +50,12 @@ public class LuceneCmdHandler {
      */
     @RabbitListener(queues = "#{luceneIndexCmdQueue.name}", containerFactory = "customContainerFactory")
     public void processLuceneAddOrUpdate(LuceneIndexCmdDto message) {
-        log.info("Process Lucene Add Or Update {}", message);
+        log.info("process lucene add or update {}", message);
+
+        if (StringUtils.equals(queue.getActualName(), message.getSource())) {
+            log.info("ignore messages sent by itself.");
+            return;
+        }
 
         try {
             if (message.getBizType() == BusinessType.RESUME) {

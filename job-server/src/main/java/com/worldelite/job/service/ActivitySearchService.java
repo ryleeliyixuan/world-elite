@@ -24,6 +24,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -68,6 +69,9 @@ public class ActivitySearchService {
 
     @Resource(name = "luceneIndexCmdFanoutExchange")
     private FanoutExchange exchange;
+
+    @Resource(name = "luceneIndexCmdQueue")
+    private Queue queue;
 
     @SneakyThrows
     public PageResult<String> searchActivityTitle(SearchNameForm searchNameForm) {
@@ -153,7 +157,7 @@ public class ActivitySearchService {
         createOrRefreshActivityListIndex(event.getActivityId());
 
         //MQ广播索引更新指令
-        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(event.getActivityId(), OperationType.CREATE_OR_UPDATE, BusinessType.ACTIVITY);
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(event.getActivityId(), OperationType.CREATE_OR_UPDATE, BusinessType.ACTIVITY, queue.getActualName());
         rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
         log.info("Lucene index synchronize command message [createOrRefreshActivityListIndex] {}",indexCmdDto.toString());
     }

@@ -27,4 +27,9 @@ public class LuceneIndexCmdDto {
      * 业务类型. 职位/活动/简历
      */
     private BusinessType bizType;
+
+    /**
+     * 消息来源
+     */
+    private String source;
 }

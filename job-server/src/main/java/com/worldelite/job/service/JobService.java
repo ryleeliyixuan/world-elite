@@ -81,6 +81,9 @@ public class JobService extends BaseService {
     @Resource(name = "luceneIndexCmdFanoutExchange")
     private FanoutExchange exchange;
 
+    @Resource(name = "luceneIndexCmdQueue")
+    private org.springframework.amqp.core.Queue queue;
+
     @Autowired
     private JobAdditionService jobAdditionService;
 
@@ -214,7 +217,7 @@ public class JobService extends BaseService {
 
         jobNameSearchService.createOrRefreshJobNameIndex();
         //职位索引同步指令消息
-        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(job.getId(), OperationType.CREATE_OR_UPDATE, BusinessType.JOB);
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(job.getId(), OperationType.CREATE_OR_UPDATE, BusinessType.JOB, queue.getActualName());
         rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
         log.info("Lucene index synchronize command message [saveJob] {}",indexCmdDto.toString());
     }
@@ -486,7 +489,7 @@ public class JobService extends BaseService {
 
         jobNameSearchService.createOrRefreshJobNameIndex();
         //MQ广播索引更新指令
-        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(jobId, OperationType.DELETE, BusinessType.JOB);
+        LuceneIndexCmdDto indexCmdDto = new LuceneIndexCmdDto(jobId, OperationType.DELETE, BusinessType.JOB, queue.getActualName());
         rabbitTemplate.convertAndSend(exchange.getName(), StrUtil.EMPTY, indexCmdDto);
         log.info("Lucene index synchronize command message [takeOffJob] {}",indexCmdDto.toString());
     }
