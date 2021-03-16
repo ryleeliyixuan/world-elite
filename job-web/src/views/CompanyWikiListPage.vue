@@ -42,7 +42,8 @@
                     industryId: undefined,
                     keyword: undefined,
                     page: 1,
-                    limit: 10
+                    limit: 10,
+                    sort: '-priority'
                 },
                 total: 0,
                 list: [],
