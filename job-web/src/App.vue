@@ -14,18 +14,21 @@
       </div>
     </transition>
     <el-backtop></el-backtop>
-    <el-dialog
-      title="提示"
-      :visible.sync="mobibleAlertVisible"
-      width="80%"
-    >
-      <span>该页面不兼容移动端设备，请用PC端打开该网页</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="mobibleAlertVisible = false">取 消</el-button>
-        <el-button type="primary" @click="mobibleAlertVisible = false"
-          >确 定</el-button
+    <el-dialog :visible.sync="mobibleAlertVisible" width="80%">
+      <div class="not-responsive-dialog">
+        <el-image
+          class="mb-4"
+          style="width: 100px; height: 100px"
+          :src="require('@/assets/page-not-responsive.png')"
+        ></el-image>
+        <span class="mb-2"
+          >抱歉，网站目前尚未适配手机端，请用电脑打开网站查看更多信息。如有任何问题，请联系我们小助手：</span
         >
-      </span>
+        <el-image
+          style="width: 100px; height: 100px"
+          :src="require('@/assets/qr-code-assistant.png')"
+        ></el-image>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -58,14 +61,14 @@ export default {
     }
   },
   created() {
-     // 判断用户设备
-     let flag = navigator.userAgent.match(
-        /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
-      );
-     // console.log("--------", flag);
-      if (flag) {
-          this.mobibleAlertVisible = true;
-      }
+    // 判断用户设备
+    let flag = navigator.userAgent.match(
+      /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+    );
+    // console.log("--------", flag);
+    if (flag) {
+      this.mobibleAlertVisible = true;
+    }
   },
 };
 </script>
@@ -81,6 +84,18 @@ export default {
   overflow: auto;
   display: flex;
   flex-direction: column;
+
+  /deep/.el-dialog {
+    border: 0px;
+    border-radius: 20px;
+  }
+
+  .not-responsive-dialog {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
 
   .nav-bar {
     width: 100%;
