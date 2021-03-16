@@ -766,14 +766,14 @@ public class CompanyApi extends BaseApi {
 
 
     /**
-     * 根据名字搜索job
+     * 根据名字搜索公司
      *
      * @param searchNameForm
      * @return
      */
     @ApiDoc
     @GetMapping("search-company-name")
-    public ApiResult<PageResult<String>> searchJobName(@Valid SearchNameForm searchNameForm) {
+    public ApiResult<PageResult<String>> searchCompanyName(@Valid SearchNameForm searchNameForm) {
         PageResult<String> result = companyNameSearchService.searchCompanyName(searchNameForm);
         return ApiResult.ok(result);
     }

@@ -152,7 +152,7 @@ export default {
     getItem(item) {
       this.$axios
         .get("/company/list-wiki-by-industry", {
-          params: { industryId: item.id },
+          params: { industryId: item.id, sort: '-priority'},
         })
         .then((data) => {
           this.$set(this.companyList, item.id, data.data.list);
