@@ -507,38 +507,175 @@
       </span>
     </el-dialog>
     <!-- 预览功能 -->
-    <el-dialog title="预览" :visible.sync="dialogVisible2" width="70%">
-      <div class="container">
-        <b-row align-v="center" v-if="jobForm">
-          <b-col>
-            <h2 class="mt-3">
-              {{ jobForm.name }}
-              <span class="text-danger ml-4 salary-text"
-                >{{ previewSalary
-                }}{{
-                  jobForm.salaryMonths ? ` × ${jobForm.salaryMonths}个月` : ""
-                }}</span
+    <el-dialog
+      title="预览"
+      :visible.sync="dialogVisible2"
+      width="80%"
+      class="preview-container"
+    >
+      <el-card :body-style="{ padding: '0px' }" shadow="never">
+        <div class="session1-container" v-if="job">
+          <div class="session1-left">
+            <div class="text1 mb-2" v-if="job && !isOP && job.companyName">
+              {{ job.companyName }}招聘
+            </div>
+            <div class="text1 mb-2" v-if="job && isOP">WE内推岗位</div>
+            <div class="session1-job-name mb-2">
+              <span v-if="job.name">{{ job.name }}</span>
+              <!-- 薪酬 -->
+              <!-- 面议 -->
+              <span v-if="job.minSalary == 0" class="salary-text ml-4">
+                面议
+              </span>
+              <!-- 全职 -->
+              <span v-else-if="job.jobType == `全职`" class="salary-text ml-4">
+                {{
+                  job.minSalary +
+                  "K-" +
+                  job.maxSalary +
+                  "K" +
+                  " * " +
+                  job.salaryMonths
+                }}
+              </span>
+              <!-- 实习/兼职 -->
+              <span v-else class="salary-text ml-4">
+                {{ job.minSalary + "-" + job.maxSalary + " 元/天" }}
+              </span>
+            </div>
+            <div class="text3 mb-2">
+              {{ job.city ? job.city : "城市不限" }} |
+              {{
+                job.minDegree
+                  ? job.minDegree == "不限"
+                    ? "学历不限"
+                    : job.minDegree
+                  : ""
+              }}
+              | {{ job.jobType ? job.jobType : "" }} |
+              {{
+                job.experience
+                  ? job.experience == "不限"
+                    ? "工作经验不限"
+                    : job.experience
+                  : ""
+              }}
+              <span v-for="(item, index) in job.additionNames" :key="index">
+                | {{ item }}
+              </span>
+            </div>
+            <div class="text4">{{ nowDate }}</div>
+          </div>
+        </div>
+        <div class="session2-container" v-if="job">
+          <div class="session2-container-left">
+            <div v-html="job.description"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="session2-container-right">
+            <div class="mb-4" v-if="job && isOP">
+              <svg-icon
+                icon-class="job-fast-track"
+                style="height: 70px; width: 180px; margin-left: -25px"
+              />
+              <div>
+                "WE内推"是World
+                Elite最具竞争力的产品之一，致力于推出一个让每个学生都放心的渠道获取内推资源，凭借自己的努力走出自己的职业道路。
+              </div>
+            </div>
+            <div
+              class="session2-container-right-1"
+              v-if="job && !isOP && companyInfo"
+            >
+              <div class="basic-info mb-2">公司基本信息:</div>
+              <el-link :href="`/company/${companyInfo.id}`" :underline="false">
+                <div class="session2-logo-container">
+                  <el-image
+                    :src="companyInfo.logo"
+                    class="session2-logo"
+                  ></el-image>
+                </div>
+              </el-link>
+              <div v-if="companyInfo.industry" class="info-text mt-2">
+                <svg-icon
+                  icon-class="companycategory"
+                  style="height: 19px; width: 19px; margin-right: 9px"
+                />
+                {{ companyInfo.industry.name }}
+              </div>
+              <div
+                v-if="companyInfo.stage && companyInfo.property"
+                class="info-text mt-2"
               >
-            </h2>
-            <div class="mt-2">
-              {{ previewCity }} / {{ previewMinDegree }} /
-              {{ previewJobType }}/{{ previewRecruitType }}
+                <svg-icon
+                  icon-class="companytype"
+                  style="height: 19px; width: 19px; margin-right: 9px"
+                />
+                {{ companyInfo.property.name }} |
+                {{ companyInfo.stage.name }}
+              </div>
+              <div v-if="companyInfo.scale" class="info-text mt-2">
+                <svg-icon
+                  icon-class="employeedata"
+                  style="height: 19px; width: 21px; margin-right: 9px"
+                />
+                {{ companyInfo.scale.name }}
+              </div>
+              <div v-if="companyInfo.homepage" class="info-text mt-2">
+                <svg-icon
+                  icon-class="website"
+                  style="height: 17px; width: 21px; margin-right: 12px"
+                />
+                <el-link
+                  :href="companyLink"
+                  target="_blank"
+                  :underline="false"
+                  class="website-text"
+                  >{{ companyLinkName }}
+                </el-link>
+              </div>
             </div>
-            <div class="mt-2 text-gray text-small">{{ nowDate }}</div>
-          </b-col>
-          <b-col cols="4"></b-col>
-        </b-row>
-        <el-divider />
-        <b-row>
-          <b-col v-if="jobForm">
-            <div v-html="jobForm.description"></div>
-            <div v-if="jobForm.address" class="mt-4">
-              <h5 class="mt-4 mb-4">工作地址</h5>
-              <p>{{ jobForm.address }}</p>
+            <div
+              class="session2-container-right-2"
+              v-if="job && job.address && job.latitude && job.longitude"
+            >
+              <div class="basic-info mb-2">工作地址:</div>
+              <div class="map-wrapper">
+                <div class="map-box mb-4">
+                  <el-amap
+                    :vid="'amap'"
+                    :zoom="mapZoom"
+                    :center="addr.mapWindow.position"
+                  >
+                    <el-amap-marker :position="addr.mapWindow.position">
+                    </el-amap-marker>
+                    <el-amap-info-window
+                      :position="addr.mapWindow.position"
+                      :content="addr.mapWindow.content"
+                      :close-when-click-map="true"
+                    ></el-amap-info-window>
+                  </el-amap>
+                </div>
+              </div>
+              <div class="address-label">
+                <div class="address-label-icon-wrapper">
+                  <svg-icon
+                    icon-class="jobaddress"
+                    style="
+                      height: 19px;
+                      width: 15px;
+                      margin-right: 7px;
+                      top: 3px;
+                      position: absolute;
+                    "
+                  />
+                </div>
+                <div class="info-text">{{ job.address }}</div>
+              </div>
             </div>
-          </b-col>
-        </b-row>
-      </div>
+          </div>
+        </div>
+      </el-card>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible2 = false"
           >确 定</el-button
@@ -553,6 +690,7 @@ import { getCategoryTree } from "@/api/category_api";
 import { listByType } from "@/api/dict_api";
 import { getJobInfo } from "@/api/job_api";
 import { getNowDate } from "@/utils/dateUtil";
+import { getCompanyInfo, myCompanyInfo } from "@/api/company_api";
 
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -563,6 +701,7 @@ import Toast from "@/utils/toast";
 import Vue from "vue";
 import VueAMap, { lazyAMapApiLoaderInstance } from "vue-amap";
 import { listByTypeWithSort } from "@/api/dict_api";
+import { mapGetters } from "vuex";
 
 Vue.use(VueAMap);
 
@@ -614,6 +753,40 @@ export default {
       }
     };
     return {
+      // 预览用
+      companyLinkName: "",
+      companyLink: "",
+      companyInfo: {
+        id: undefined,
+        name: "",
+        logo: "",
+        property: { name: "" },
+        stage: { name: "" },
+        industry: { name: "" },
+        scale: { name: "" },
+        homepage: "",
+      },
+      job: {
+        companyName: "",
+        name: "",
+        minDegree: "",
+        experience: "",
+        city: "",
+        additionNames: [],
+        salaryMonths: undefined,
+        minSalary: undefined,
+        maxSalary: undefined,
+        jobType: undefined,
+        time: undefined,
+        description: undefined,
+        latitude: undefined,
+        longitude: undefined,
+        address: undefined,
+      }, 
+      addr: {
+        mapWindow: {},
+      },
+
       dialogVisible: false,
       dialogConfirm: false,
       dialogVisible2: false, //预览弹框
@@ -632,15 +805,15 @@ export default {
         name: undefined,
         categoryId: undefined,
         minDegreeId: undefined,
-        salaryMonths: 12,
-        minSalary: 1,
-        maxSalary: 8,
+        salaryMonths: undefined,
+        minSalary: undefined,
+        maxSalary: undefined,
         cityId: undefined,
         latitude: undefined,
         longitude: undefined,
         address: undefined,
         recruitType: undefined,
-        jobType: 107,
+        jobType: undefined,
         description: undefined,
         keywords: undefined,
         experienceId: undefined,
@@ -741,8 +914,7 @@ export default {
       additionOptions: [],
       additionNames: [],
       languageOptions: [],
-      internSalaryOptions:
-      [
+      internSalaryOptions: [
         0,
         50,
         100,
@@ -802,7 +974,7 @@ export default {
       showIndustryAddButton: false,
       showSkillAddButton: false,
       secondCategoryId: undefined, // 选中的二级职位id
-      isOP: false,
+      isOP: false, // 是否为超级账号
       companyOptions: [],
 
       mapZoom: 14,
@@ -867,6 +1039,7 @@ export default {
     },
   },
   computed: {
+    //  ...mapGetters(["userId"]),
     title() {
       return this.$route.query.id ? "编辑职位" : "新增职位";
     },
@@ -880,6 +1053,7 @@ export default {
 
   methods: {
     initData(jobId) {
+      // console.log("à1111111", this.$route);
       getCategoryTree().then(
         (response) => (this.jobCategoryOptions = response.data)
       );
@@ -900,6 +1074,25 @@ export default {
       listByType(27).then(
         (response) => (this.additionOptions = response.data.list)
       );
+
+      myCompanyInfo().then((response) => {
+        if (response.data) {
+          let info = response.data;
+          this.companyInfo = info;
+          this.companyInfo.logo = info.logo;
+          this.companyInfo.id = info.id;
+          this.companyInfo.name = info.name;
+          this.companyInfo.property.name = info.property.name;
+          this.companyInfo.stage.name = info.stage.name;
+          this.companyInfo.industry.name = info.industry.name;
+          this.companyInfo.scale.name = info.scale.name;
+          this.companyInfo.homepage = info.homepage;
+          this.companyLinkName = info.homepage.replace(/http(s)?:\/\//, "");
+          this.companyLink = info.homepage.startsWith("http")
+            ? info.homepage
+            : "http://" + info.homepage;
+        }
+      });
 
       if (jobId) {
         getJobInfo(jobId).then((response) => {
@@ -1045,17 +1238,50 @@ export default {
         }
       });
     },
-
+    // 预览职位
     onPreview() {
       this.$refs["jobForm"].validate((valid) => {
         if (valid) {
+          this.job.name = this.jobForm.name;
+          this.job.minSalary = this.jobForm.minSalary;
+          this.job.maxSalary = this.jobForm.maxSalary;
+          this.job.salaryMonths = this.jobForm.salaryMonths;
+          this.job.description = this.jobForm.description;
+          this.job.additionNames = this.additionNames;
           this.nowDate = getNowDate();
-          this.previewJobType = this.jobTypeOptions1.find(
+          // 如果不是超级账户，获取公司名称
+          if (!this.isOP) {
+            this.job.companyName = this.companyInfo.name;
+          }
+          // 处理jobtype
+          this.job.jobType = this.jobTypeOptions1.find(
             (option) => option.id === this.jobForm.jobType
           ).name;
-          this.previewMinDegree = this.degreeOptions.find(
+          // 处理mindegree
+          this.job.minDegree = this.degreeOptions.find(
             (option) => option.id === this.jobForm.minDegreeId
           ).name;
+          // 处理experience
+          this.job.experience = this.experienceOptions.find(
+            (option) => option.id === this.jobForm.experienceId
+          ).name;
+
+          // 处理地址
+          this.job.address = this.jobForm.address;
+          this.job.latitude = this.jobForm.latitude;
+          this.job.longitude = this.jobForm.longitude;
+          if (
+            this.job &&
+            this.job.address &&
+            this.job.latitude &&
+            this.job.longitude
+          ) {
+            this.addr.mapWindow = {
+              position: [this.job.longitude, this.job.latitude],
+              content: this.job.address,
+            };
+          }
+
           this.dialogVisible2 = true;
         }
       });
@@ -1417,9 +1643,12 @@ export default {
 
     getLocation() {
       let e = this.$refs["cityCascader"].getCheckedNodes()[0].pathLabels;
-      if (e.length > 1) {
+      // console.log("eeeeeeeee", e);
+      if (e.length == 1) {
+        this.job.city = e[0];
+      } else if (e.length > 1) {
+        this.job.city = e[1];
         let addr = e.join("");
-
         let geocoder = new AMap.Geocoder({});
         geocoder.getLocation(addr, (status, result) => {
           if (status === "complete" && result.geocodes.length) {
@@ -1672,5 +1901,221 @@ button:focus {
   background: #fff;
   padding: 20px;
   border: 1px solid #eee;
+}
+
+.preview-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+  min-height: calc(100vh - 477px);
+  padding-top: 31px;
+  padding-bottom: 194px;
+
+  /deep/.el-card {
+    background: #ffffff;
+    box-shadow: 0px 4px 16px 3px rgba(191, 199, 215, 0.31);
+  }
+
+  .session1-container {
+    height: 198px;
+    display: flex;
+    align-items: center;
+    background: url("../assets/job/job-background.svg") no-repeat;
+    background-size: 1200px 198px;
+
+    .session1-left {
+      padding: 28px 50px;
+      display: flex;
+      flex-direction: column;
+      flex: 2;
+
+      .text1 {
+        font-size: 16px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #e0e0e0;
+        line-height: 22px;
+      }
+
+      .session1-job-name {
+        font-size: 24px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #fafafa;
+        line-height: 33px;
+
+        .salary-text {
+          font-size: 24px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #eeff41;
+          line-height: 33px;
+        }
+      }
+
+      .text3 {
+        font-size: 18px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #fafafa;
+        line-height: 25px;
+      }
+
+      .text4 {
+        font-size: 16px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #e0e0e0;
+        line-height: 22px;
+      }
+    }
+
+    .session1-right {
+      display: flex;
+      flex: 1;
+      margin-left: 30px;
+      /deep/.el-button {
+        box-shadow: 0px 5px 13px 0px #2868c0;
+        border: 0px;
+        height: 45px;
+        width: 45px;
+      }
+
+      /deep/.el-button + .el-button {
+        margin-left: 0px;
+      }
+
+      .apply {
+        /deep/ .el-button {
+          background: #ffffff;
+          box-shadow: 0px 5px 13px 0px #2868c0;
+          border-radius: 20px;
+          min-width: 125px;
+
+          span {
+            font-size: 16px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+            line-height: 22px;
+          }
+        }
+      }
+    }
+  }
+
+  .session2-container {
+    display: flex;
+    padding: 31px 68px 50px 50px;
+
+    .session2-container-left {
+      display: flex;
+      flex-direction: column;
+      flex: 3;
+      margin-right: 50px;
+
+      .session2-job-address {
+        margin-top: 10px;
+
+        span {
+          line-height: 50px;
+          margin-top: 10px;
+        }
+      }
+    }
+
+    .session2-container-bottom {
+      display: none;
+    }
+
+    .divider {
+      width: 1px;
+      background: #cccccc;
+      border-radius: 1px;
+    }
+
+    .session2-container-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-left: 50px;
+      min-width: 200px;
+
+      .session2-container-right-2 {
+        margin-top: 60px;
+        .address-label {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          .address-label-icon-wrapper {
+            position: relative;
+            width: 40px;
+            height: 19px;
+          }
+        }
+        /deep/ .amap-logo {
+          display: none !important;
+        }
+
+        /deep/ .amap-info {
+          display: none !important;
+        }
+        /deep/ .el-vue-amap {
+          background-color: white !important;
+        }
+        /deep/ .amap-maps {
+          border-radius: 13px;
+        }
+      }
+
+      .session2-container-right-3 {
+        margin-top: 60px;
+      }
+
+      .basic-info {
+        font-size: 18px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+        line-height: 25px;
+      }
+
+      .el-link {
+        text-align: left;
+        display: inline;
+
+        .session2-logo-container {
+          display: flex;
+          align-items: flex-end;
+          justify-content: flex-start;
+
+          .session2-logo {
+            width: 130px;
+          }
+
+          .company-text {
+            font-size: 18px;
+            padding-left: 12px;
+          }
+        }
+      }
+
+      .info-text {
+        font-size: 16px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #333333;
+        line-height: 22px;
+      }
+
+      .website-text {
+        font-size: 16px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #4895ef;
+        line-height: 22px;
+      }
+    }
+  }
 }
 </style>
