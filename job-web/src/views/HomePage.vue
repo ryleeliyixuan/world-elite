@@ -1189,10 +1189,10 @@ export default {
 
         /deep/.el-link.el-link--default {
           width: 100%;
+        }
 
-          /deep/.el-link--inner {
-            width: 100%;
-          }
+        /deep/.el-link--inner {
+          width: 100%;
         }
         .job-section1 {
           display: flex;
