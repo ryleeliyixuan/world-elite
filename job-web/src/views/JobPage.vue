@@ -17,14 +17,13 @@
               WE内推岗位
             </div>
             <div class="session1-job-name mb-2">
-              {{ job.name }}
+              <span> {{ job.name }} </span>
               <!-- 薪资 -->
               <!-- 职位薪资范围 -->
               <!-- 0-5k -> 5k一下 -->
               <span
                 v-if="job.minSalary == 0 && job.maxSalary == 5"
                 class="salary-text ml-4"
-                style="font-size: 16px"
               >
                 {{ "5K以下" }}
               </span>
@@ -32,7 +31,6 @@
               <span
                 v-else-if="job.minSalary == 0 && job.maxSalary == 0"
                 class="salary-text ml-4"
-                style="font-size: 16px"
               >
                 {{ "薪酬不限" }}
               </span>
@@ -66,7 +64,7 @@
               {{
                 job.experience.name
                   ? job.experience.name == "不限"
-                    ? "工作经验不限"
+                    ? "经验不限"
                     : job.experience.name
                   : ""
               }}
