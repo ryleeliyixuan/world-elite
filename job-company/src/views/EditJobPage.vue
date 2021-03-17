@@ -556,7 +556,7 @@
               {{
                 job.experience
                   ? job.experience == "不限"
-                    ? "工作经验不限"
+                    ? "经验不限"
                     : job.experience
                   : ""
               }}
