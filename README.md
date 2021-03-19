@@ -9,8 +9,8 @@ World Elite is an online talent services platform that provides job seekers and 
 
 ## Deployment Guide
 Direct to the corresponding folder, and run the following command to run the project. 
-> use` npm install` to install the dependencies in the local node_modules folder
-> use` npm run dev` to compile scripts
+use` npm install` to install the dependencies in the local node_modules folder
+use` npm run dev` to compile scripts
 
 Note: The server-side is deployed remotely. APIs could be down as the server-side service went expired, causing a failed connection to the back-end. If so, please check out the demo(screenshots) folder and read through the demo section below.
 
@@ -30,13 +30,13 @@ Check out the Demo folder for screenshots of the websites.
 ### Front-end
 #### Job-web / myworldelite.com
 Job-web / myworldelite.com incorporates six major sections:
-1. Homepage: (Developed by Me)
+1. Homepage: **(Developed by Me)**
 - 	displays key events and promotions using carousel
 - 	displays hottest jobs, hottest wiki, most recent jobs, and hottest workplace events requested from the back-end
-2. Job:  (Developed by Me)
+2. Job:  **(Developed by Me)**
 - 	provides a filter bar that features advanced search options, and list all the jobs that meet users’ search criteria
 - 	features a Job-Detail page to present details of a certain job position; allows users to share, apply for, and subscribe to this job
-3. Wiki: provides encyclopedias of over 100+ employers.  (Developed by Me)
+3. Wiki: provides encyclopedias of over 100+ employers.  **(Developed by Me)**
 - 	3.0 IndexPage: lists the top 4 EmployerWiki by industry
 - 	3.1 IntroPage: uses chart and map components to present basic information of each employer (e.g. introduction, recruitment timeline, salary, employee data, company address, etc.)
 - 	3.2 WikiJobPage: lists all the jobs associated with a certain company and provides a filter bar
@@ -44,7 +44,7 @@ Job-web / myworldelite.com incorporates six major sections:
 - 	3.4 WikiCommunityPage: 
 	- 3.4.1 WikiCommunityPostPage: provides discussion boards for job-seekers to share tips on the recruitment process of each company; displays a list of hottest posts on the right side.Users can make a new post. They can like, comment, report every post. And they can like, reply, report every comment. 
 	- 3.4.2 WikiCommunityScorePage: provides rating boards for job-seekers to rate and comment on each company. Users can post a new rating with comments. They can like, comment, report every rating. And they can like, reply, report every comment below each rating. 
-4. Activity (Maintained by Me)
+4. Activity **(Maintained by Me)**
 - 	4.0 IndexPage: displays key events and promotions using carousel; provides a filter bar that features advanced search options, and list all the activities that meet users’ search criteria
 - 	4.1 MyActivitiesPage: list all the activities that users follow / sign up for
 - 	4.2 PublishPage: allows users to manage all recruiment activities posted by themselves
@@ -55,7 +55,7 @@ Job-web / myworldelite.com incorporates six major sections:
 - 	5.2 MockDetailPage: presents details of a certain interviewer; allows users to make an appointment with him/her.
 - 	5.3 MockPromisePage: displays all available slots of a certain interviewer, and allows users to choose a slot to make an appoinment.
 - 	5.4 RegisterInteviewerPage: allows users to sign up as an interviewer
-6. Other (Developed by Me)
+6. Other **(Developed by Me)**
 - 	6.1 Message: displays all the notifications and messages users receivied
 - 	6.2 Login and Sign in: features eight pages which allows users to log in, sign in, modify password, find password, fill up personal information (eg. avatar, nickname, job orientation), and get job recommendation upon finishing registration
 - 6.3 Edit Resume: allows users to fill up their online resumes used to apply for jobs, and features the functionality of uploading attachments, previewing and downloading resumes.
