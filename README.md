@@ -9,8 +9,9 @@ World Elite is an online talent services platform that provides job seekers and 
 
 ## Deployment Guide
 Direct to the corresponding folder, and run the following command to run the project. 
-use` npm install` to install the dependencies in the local node_modules folder
-use` npm run dev` to compile scripts
+> use` npm install` to install the dependencies in the local node_modules folder
+
+> use` npm run dev` to compile scripts
 
 Note: The server-side is deployed remotely. APIs could be down as the server-side service went expired, causing a failed connection to the back-end. If so, please check out the demo(screenshots) folder and read through the demo section below.
 
