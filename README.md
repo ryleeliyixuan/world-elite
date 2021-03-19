@@ -10,18 +10,21 @@ World Elite is an online talent services platform that provides job seekers and 
 ## Deployment Guide
 Direct to the corresponding folder, and run the following command to run the project. 
 > use` npm install` to install the dependencies in the local node_modules folder
-use` npm run dev` to compile scripts
+> use` npm run dev` to compile scripts
 
 Note: The server-side is deployed remotely. APIs could be down as the server-side service went expired, causing a failed connection to the back-end. If so, please check out the demo(screenshots) folder and read through the demo section below.
 
 ## Responsibility and Commitment
+
 [![Commitment](https://imgtu.com/i/6fWj29 "Commitment")](https://imgtu.com/i/6fWj29 "Commitment")
 [![Commitment_2](https://imgtu.com/i/6fWX8J "Commitment_2")](https://imgtu.com/i/6fWX8J "Commitment_2")
+
 **Daily Task:** From March 2020 to March 2021, I worked as a front-end engineer. My daily task is to build the front-end of the websites based on product manager’s prototype using HTML5, CSS, JavaScript. I used frontend frameworks (Vue.js), preprocessors (Sass and Less), and third-party tools (git, Redux, Ajax, Postman, Babel, Webpack). And I maintained code and fixed bugs on daily basis, enhancing the functionality and user experience based on feedback.
 
 **Customized UI components:** I provided insight on a streamlined and user-friendly interface to product managers, translating UX wireframes and mockups into responsive, interactive features. I focused on modularity and reusability, built our own framework, and developed customized UI components with the UI/UX team, thereby creating a common collaborative ground between designers and developers. 
 
 **Page Optimazation:** Realizing the impact of web performance optimization on user experience and business metrics, I took the initiative to establish a performance culture. After running performance experiments and measuring outcomes with A/B testing and DevTools, I built a proof of concept on how speed would benefit key performance indicators that we care about (e.g. daily active users, page view per user, page bounce rate, and conversation rate). Then, I worked closely with my colleagues to plan a set of realistic performance goals which combined Core Web Vitals (LCP, FID, and CLS) with custom-tailored metrics such as first/last visual change. I managed to improve these performance metrics by lazy-loading expensive components, using tree-shaking to reduce payload, and using service workers for caching and network fallback. As a result, the site loaded 32% faster; bounce rates decreased by 12%; our conversion rate was up 25%.
+
 ## Demo
 Check out the Demo folder for screenshots of the websites.  
 ### Front-end
